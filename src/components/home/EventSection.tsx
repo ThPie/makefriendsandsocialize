@@ -1,0 +1,75 @@
+import { Link } from 'react-router-dom';
+import type { Event } from '@/types';
+
+interface EventCardProps {
+  event: Event;
+}
+
+const EventCard = ({ event }: EventCardProps) => (
+  <div className="flex flex-col gap-4 rounded-xl bg-card group hover:shadow-lg transition-all duration-300 border border-border hover:border-primary/30 overflow-hidden">
+    <div
+      className="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover group-hover:scale-105 transition-transform duration-500"
+      style={{ backgroundImage: `url("${event.imageUrl}")` }}
+      role="img"
+      aria-label={event.altText}
+    />
+    <div className="flex flex-col gap-3 p-4 pt-0 z-10 bg-card">
+      <p className="font-display text-xl font-medium leading-normal text-card-foreground mt-4">
+        {event.title}
+      </p>
+      <p className="text-sm font-normal leading-normal text-muted-foreground">
+        {event.date}
+      </p>
+      <Link
+        to="/events"
+        className="group/link inline-flex items-center gap-2 text-sm font-bold text-primary hover:opacity-80 transition-opacity"
+      >
+        View Details
+        <span className="material-symbols-outlined transition-transform group-hover/link:translate-x-1 text-lg">
+          arrow_forward
+        </span>
+      </Link>
+    </div>
+  </div>
+);
+
+const upcomingEvents: Event[] = [
+  {
+    id: '1',
+    title: "The Sommelier's Soirée",
+    date: "October 28, 2024",
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCF49HGQJP65G_cdlImOjVm6qvRUqwV8NQjahyExBHe8E3qhGQL3BK_gIF6Wj_l3m33Jg8jJd4sXHw-GVS-KW555lSd5jrFYqvKO3HVx_xMzct_etrJphUpCZ2I0vbWzrPEZWzlW8NstikL5YbCT0OfUI4h7yNE3vEPub4Plzd9or04oo8MkEN3EOxrczMl3hTniCliktz2NqBl6WwD4pr99vSGX519763F6eS4TzbrJdEAZqdDtDHp_ynqghBLLBXIOXEhc3l7nApW",
+    altText: "Close-up of a sommelier pouring red wine into a crystal glass.",
+  },
+  {
+    id: '2',
+    title: "Midnight Masquerade Gala",
+    date: "November 15, 2024",
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuClgU_611cUYNohAqNcWq_Xkx6s4-i1HvpyoaEAEb4zUUoq0gd5uIJN0NcJSPvQjg-lOGRRdfSqw-sJcQlqt7UwVEF_rQ6qzzPtqG_DUSHpvRQeZ56oXEynYWaHF6_nae8bywcnoImoS3ksHGbwy3rJwbg5gDfqxHNtBERdF7QJXD8jHA_L7SHnldmJkumQXa-Cii-jg0-F9S06UOqUF17wNDTNa72L7DHRhYeKzxNhv9zLmUVAr6GbRlxRiEAX3e7kOOtxHvEI8y-G",
+    altText: "A person wearing an ornate masquerade mask at a dimly lit gala.",
+  },
+  {
+    id: '3',
+    title: "An Evening of Strings",
+    date: "December 5, 2024",
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuBUmnH2qI1gvD_mZdcLDHKjyfpHGz9xjEkny_n0RAUYRhuzb6ng3auyHBL5xp6OFW3W8ltEyFKV-Htj0dd4A7A9REEppgteHr8MB5ho3G9q9BDL8xeTjchdk46vxXppq5EWxxA8VlwHiSACny_sSASNOI_MSJrqgrb3MQ6VyNogYb5A0NjFxOrg1bSFG-fOSwZkcb1OEPYEHUbllObXB0WOjSbU679BucMbxsiwiDqQeKn93Yk_PuGE3kqnNPpo-Ba5QHag7VPeZ8mN",
+    altText: "A string quartet performing on a stage with warm, dramatic lighting.",
+  },
+];
+
+export const EventSection = () => {
+  return (
+    <section className="w-full px-6 md:px-10" id="events">
+      <div className="mx-auto max-w-[1440px]">
+        <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
+          Upcoming Gatherings
+        </h2>
+        <div className="mt-6 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6">
+          {upcomingEvents.map((event) => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
