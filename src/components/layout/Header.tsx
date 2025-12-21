@@ -39,7 +39,7 @@ export const Header = () => {
           : 'border-transparent bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-6 py-3 md:px-10">
+      <div className="mx-auto flex h-full items-center justify-between px-6 py-3 md:px-10 lg:px-16 xl:px-20">
         {/* Logo */}
         <Link to="/" className="flex items-center">
           <img 

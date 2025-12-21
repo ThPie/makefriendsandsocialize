@@ -20,8 +20,8 @@ const features = [
 
 export const WhyChooseSection = () => {
   return (
-    <section className="py-16 md:py-24 px-6 md:px-10">
-      <div className="mx-auto max-w-[1440px]">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20">
+      <div className="mx-auto max-w-7xl">
         <div className="text-center mb-12 md:mb-16">
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
             Why Choose Our Community?

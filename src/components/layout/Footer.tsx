@@ -14,7 +14,6 @@ export const Footer = () => {
     if (!email) return;
 
     setIsSubmitting(true);
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 800));
     
     toast({
@@ -27,10 +26,10 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="mt-12 w-full border-t border-border bg-background transition-colors duration-300">
-      <div className="mx-auto max-w-[1440px] px-6 py-12 md:px-10 md:py-16">
+    <footer className="w-full border-t border-border bg-background transition-colors duration-300">
+      <div className="w-full px-6 py-12 md:px-10 md:py-16 lg:px-16 xl:px-20">
         {/* Newsletter Section */}
-        <div className="mb-12 pb-12 border-b border-border">
+        <div className="mx-auto max-w-7xl mb-12 pb-12 border-b border-border">
           <div className="max-w-2xl mx-auto text-center">
             <h3 className="font-display text-2xl md:text-3xl font-semibold text-foreground mb-3">
               Stay Connected
@@ -59,7 +58,7 @@ export const Footer = () => {
         </div>
 
         {/* Footer Links */}
-        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+        <div className="mx-auto max-w-7xl flex flex-col items-center justify-between gap-6 md:flex-row">
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <img 

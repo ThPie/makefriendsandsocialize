@@ -57,8 +57,8 @@ const tiers = [
 
 export const PricingSection = () => {
   return (
-    <section className="py-16 md:py-24 px-6 md:px-10 bg-secondary/5">
-      <div className="mx-auto max-w-[1440px]">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-secondary/5">
+      <div className="mx-auto max-w-7xl">
         <div className="text-center mb-12 md:mb-16">
           <span className="inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-4">
             Membership
