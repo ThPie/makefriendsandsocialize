@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import logo from '@/assets/logo.png';
 
 const navItems = [
   { label: 'Home', path: '/' },
@@ -38,21 +39,14 @@ export const Header = () => {
           : 'border-transparent bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-6 py-4 md:px-10">
+      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-6 py-3 md:px-10">
         {/* Logo */}
-        <Link to="/" className="flex cursor-pointer flex-col gap-0 group select-none">
-          <div className="flex items-baseline">
-            <span className="font-sans text-2xl font-light tracking-tight text-foreground group-hover:opacity-80 transition-opacity">
-              MakeFriends
-            </span>
-            <div className="ml-1 h-3 w-3 rounded-full bg-gradient-to-br from-primary to-amber-600 shadow-sm"></div>
-          </div>
-          <div className="flex items-center gap-2 -mt-1.5 pl-0.5">
-            <span className="font-display text-lg font-bold italic text-primary">&</span>
-            <span className="font-sans text-[0.65rem] font-medium tracking-[0.25em] uppercase text-muted-foreground group-hover:tracking-[0.3em] transition-all">
-              socialize
-            </span>
-          </div>
+        <Link to="/" className="flex items-center">
+          <img 
+            src={logo} 
+            alt="MakeFriends & Socialize" 
+            className="h-12 md:h-14 w-auto object-contain"
+          />
         </Link>
 
         {/* Desktop Navigation */}
