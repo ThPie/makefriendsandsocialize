@@ -5,25 +5,21 @@ const MembershipPage = () => {
   return (
     <div className="flex-1 w-full flex flex-col items-center">
       {/* Hero */}
-      <section className="w-full max-w-[1440px] px-4 sm:px-10 md:px-0 py-5">
-        <div className="p-4">
-          <div 
-            className="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-center justify-center p-4 text-center" 
-            style={{
-              backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.4) 0%, rgba(20, 57, 59, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuA1LPDNLmTM3QdP2Pr0_KuoEX2ABfPK8uOWYED8mrY7Vm_PWmos6JzhSkimaZ6s4lDEw-_pnBlX4nJbSAAMUJJrDg5sVnr05RQtaY2O0PShRnO4btK8Y248sf2ZXAIAx6DnGZIL388TKe51HP_Wwbt_2LkZ9FisLlXFm4XbwcttGVEcwEsoaIbo_T4KcuNryiU09AJ5jR-ds4q_z8noYp2Ga4TC-heUZNwTIoeTOsAJ5Xl7lsGhw4vlFiN2rW9ANb9IZSoxFaCWsxtA")'
-            }}
-          >
-            <div className="flex flex-col gap-2">
-              <h1 className="text-white text-4xl font-black font-display leading-tight tracking-tight md:text-5xl">
-                Join an Inner Circle of Distinction
-              </h1>
-              <p className="text-white/90 text-sm font-normal leading-normal md:text-base max-w-2xl mx-auto">
-                Cultivate connections and celebrate moments through our exclusive community and curated events.
-              </p>
-            </div>
-            <Button size="lg">Apply Now</Button>
-          </div>
+      <section 
+        className="w-full min-h-[480px] flex flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center px-6 py-20 text-center" 
+        style={{
+          backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.4) 0%, rgba(20, 57, 59, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuA1LPDNLmTM3QdP2Pr0_KuoEX2ABfPK8uOWYED8mrY7Vm_PWmos6JzhSkimaZ6s4lDEw-_pnBlX4nJbSAAMUJJrDg5sVnr05RQtaY2O0PShRnO4btK8Y248sf2ZXAIAx6DnGZIL388TKe51HP_Wwbt_2LkZ9FisLlXFm4XbwcttGVEcwEsoaIbo_T4KcuNryiU09AJ5jR-ds4q_z8noYp2Ga4TC-heUZNwTIoeTOsAJ5Xl7lsGhw4vlFiN2rW9ANb9IZSoxFaCWsxtA")'
+        }}
+      >
+        <div className="flex flex-col gap-2 max-w-[800px]">
+          <h1 className="text-white text-4xl font-black font-display leading-tight tracking-tight md:text-5xl">
+            Join an Inner Circle of Distinction
+          </h1>
+          <p className="text-white/90 text-sm font-normal leading-normal md:text-base max-w-2xl mx-auto">
+            Cultivate connections and celebrate moments through our exclusive community and curated events.
+          </p>
         </div>
+        <Button size="lg">Apply Now</Button>
       </section>
 
       {/* Legacy Section */}

@@ -25,22 +25,21 @@ const GalleryPage = () => {
 
   return (
     <div className="flex-1 w-full flex flex-col items-center">
-      <div className="w-full max-w-[1440px]">
-        {/* Hero */}
-        <div className="px-4 py-3">
-          <div 
-            className="bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-lg min-h-80" 
-            style={{
-              backgroundImage: 'linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 25%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCvlDLnFAUBGIy5PJIrjxlFuYUiP-OgNIMHpQhXa40KTcIpzW72E3Zz1tM0FPuand9c5SsbE2sbV7A5ySDr87EXiASgXVbyqZ8ShWcyOjYV3jEH-IgtJ-S31IgOgCuqlihSprqSvQ22QtCMlkcfa8f1CGSU6DE-RYrQxg--WqM1w3z_JJRk9uf9aNNLnOR7xo9z1IOj8QgULeAvRvKv6VfUYiYpsqYVcvw2QDVIOB5q3zfAmA7xoEwZqOayWGo6PBlKRji2oquzDY9h")'
-            }}
-          >
-            <div className="flex p-6 md:p-8">
-              <h1 className="text-white tracking-tight text-4xl md:text-5xl font-bold font-display leading-tight drop-shadow-md">
-                Our Celebrated Moments
-              </h1>
-            </div>
-          </div>
+      {/* Hero */}
+      <div 
+        className="w-full bg-cover bg-center flex flex-col justify-end min-h-[320px] px-6 py-12" 
+        style={{
+          backgroundImage: 'linear-gradient(0deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCvlDLnFAUBGIy5PJIrjxlFuYUiP-OgNIMHpQhXa40KTcIpzW72E3Zz1tM0FPuand9c5SsbE2sbV7A5ySDr87EXiASgXVbyqZ8ShWcyOjYV3jEH-IgtJ-S31IgOgCuqlihSprqSvQ22QtCMlkcfa8f1CGSU6DE-RYrQxg--WqM1w3z_JJRk9uf9aNNLnOR7xo9z1IOj8QgULeAvRvKv6VfUYiYpsqYVcvw2QDVIOB5q3zfAmA7xoEwZqOayWGo6PBlKRji2oquzDY9h")'
+        }}
+      >
+        <div className="max-w-[1440px] mx-auto w-full">
+          <h1 className="text-white tracking-tight text-4xl md:text-5xl font-bold font-display leading-tight drop-shadow-md">
+            Our Celebrated Moments
+          </h1>
         </div>
+      </div>
+
+      <div className="w-full max-w-[1440px]">
 
         {/* Filters */}
         <div className="flex gap-3 p-3 overflow-x-auto no-scrollbar">
