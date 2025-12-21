@@ -8,6 +8,9 @@ interface Message {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/event-assistant`;
 
+// Professional woman avatar in dark green blazer
+const AVATAR_URL = "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face";
+
 export const EventChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -113,24 +116,36 @@ export const EventChatbot = () => {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button with Avatar */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-all duration-300 flex items-center justify-center group"
+        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full shadow-lg hover:scale-110 transition-all duration-300 overflow-hidden border-2 border-primary ring-4 ring-primary/20"
         aria-label="Open Event Assistant"
       >
-        <span className="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform">
-          {isOpen ? 'close' : 'smart_toy'}
-        </span>
+        {isOpen ? (
+          <div className="w-full h-full bg-secondary flex items-center justify-center">
+            <span className="material-symbols-outlined text-2xl text-secondary-foreground">close</span>
+          </div>
+        ) : (
+          <img 
+            src={AVATAR_URL} 
+            alt="Event Assistant" 
+            className="w-full h-full object-cover"
+          />
+        )}
       </button>
 
       {/* Chat Window */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] h-[500px] max-h-[70vh] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-in">
           {/* Header */}
-          <div className="bg-primary text-primary-foreground p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-foreground/20 rounded-full flex items-center justify-center">
-              <span className="material-symbols-outlined">smart_toy</span>
+          <div className="bg-secondary text-secondary-foreground p-4 flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary">
+              <img 
+                src={AVATAR_URL} 
+                alt="Event Assistant" 
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <h3 className="font-bold font-display text-lg">Event Assistant</h3>
