@@ -38,16 +38,18 @@ export const Header = () => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
+  const isDark = resolvedTheme === 'dark';
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 w-full px-4 pt-4">
       {/* Ambient Glow Effect */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div 
           className={`absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] rounded-full blur-[100px] transition-opacity duration-500 ${
-            isScrolled ? 'opacity-30' : 'opacity-50'
+            isScrolled ? 'opacity-20' : 'opacity-40'
           }`}
           style={{
-            background: 'radial-gradient(ellipse, hsl(var(--primary) / 0.4) 0%, transparent 70%)'
+            background: 'radial-gradient(ellipse, hsl(var(--primary) / 0.3) 0%, transparent 70%)'
           }}
         />
       </div>
@@ -55,22 +57,24 @@ export const Header = () => {
       {/* Floating Header Container */}
       <div 
         className={`relative mx-auto max-w-6xl rounded-2xl border transition-all duration-500 ${
-          isScrolled 
-            ? 'bg-secondary/95 backdrop-blur-xl border-border/50 shadow-lg shadow-primary/10' 
-            : 'bg-secondary/80 backdrop-blur-md border-secondary-foreground/10'
+          isDark 
+            ? 'bg-white/95 backdrop-blur-xl border-white/20 shadow-lg' 
+            : 'bg-secondary/90 backdrop-blur-xl border-secondary-foreground/10 shadow-lg shadow-black/10'
         }`}
       >
-        <div className="flex h-16 items-center justify-between px-6">
+        <div className="flex h-20 items-center justify-between px-8 lg:px-10">
           {/* Left Nav - Desktop */}
-          <nav className="hidden lg:flex items-center gap-6 flex-1">
+          <nav className="hidden lg:flex items-center gap-8 flex-1">
             {leftNavItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`text-sm font-medium transition-colors ${
                   location.pathname === item.path
                     ? 'text-primary'
-                    : 'text-secondary-foreground/80'
+                    : isDark 
+                      ? 'text-secondary hover:text-primary' 
+                      : 'text-secondary-foreground/80 hover:text-primary'
                 }`}
               >
                 {item.label}
@@ -84,28 +88,30 @@ export const Header = () => {
               src={logo} 
               alt="MakeFriends & Socialize" 
               className={`h-10 md:h-12 w-auto object-contain transition-all duration-300 ${
-                resolvedTheme === 'light' ? 'invert' : ''
+                !isDark ? '' : 'invert'
               }`}
             />
           </Link>
 
           {/* Right Nav - Desktop */}
-          <div className="hidden lg:flex items-center gap-6 flex-1 justify-end">
+          <div className="hidden lg:flex items-center gap-8 flex-1 justify-end">
             {rightNavItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`text-sm font-medium transition-colors ${
                   location.pathname === item.path
                     ? 'text-primary'
-                    : 'text-secondary-foreground/80'
+                    : isDark 
+                      ? 'text-secondary hover:text-primary' 
+                      : 'text-secondary-foreground/80 hover:text-primary'
                 }`}
               >
                 {item.label}
               </Link>
             ))}
             <ThemeToggle />
-            <Button asChild size="sm" className="rounded-full px-5">
+            <Button asChild size="sm" className="rounded-full px-6">
               <Link to="/membership">Become a Member</Link>
             </Button>
           </div>
@@ -115,7 +121,11 @@ export const Header = () => {
             <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="flex items-center justify-center rounded-md p-2 text-secondary-foreground hover:bg-secondary-foreground/10 transition-colors"
+              className={`flex items-center justify-center rounded-md p-2 transition-colors ${
+                isDark 
+                  ? 'text-secondary hover:bg-secondary/10' 
+                  : 'text-secondary-foreground hover:bg-secondary-foreground/10'
+              }`}
               aria-label="Toggle menu"
             >
               <span className="material-symbols-outlined">
@@ -127,7 +137,9 @@ export const Header = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden border-t border-border/30 p-6 flex flex-col gap-4 animate-fade-in">
+          <div className={`lg:hidden border-t p-6 flex flex-col gap-4 animate-fade-in ${
+            isDark ? 'border-secondary/20' : 'border-border/30'
+          }`}>
             {allNavItems.map((item) => (
               <Link
                 key={item.path}
@@ -135,7 +147,9 @@ export const Header = () => {
                 className={`text-lg font-medium text-left transition-colors ${
                   location.pathname === item.path
                     ? 'text-primary'
-                    : 'text-secondary-foreground hover:text-primary'
+                    : isDark 
+                      ? 'text-secondary hover:text-primary' 
+                      : 'text-secondary-foreground hover:text-primary'
                 }`}
               >
                 {item.label}
