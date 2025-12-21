@@ -1,7 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { ChevronDown } from 'lucide-react';
 
 export const Hero = () => {
+  const scrollToContent = () => {
+    window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+  };
+
   return (
     <div className="relative w-full">
       <div
@@ -12,18 +17,27 @@ export const Hero = () => {
         role="img"
         aria-label="An elegant evening social gathering with people mingling in a softly lit, luxurious room."
       >
-          <div className="flex flex-col gap-6 max-w-[800px] animate-fade-in">
-            <h1 className="font-display text-5xl font-bold leading-tight tracking-tight text-white md:text-7xl drop-shadow-lg">
-              Where Extraordinary Connections Begin
-            </h1>
-            <p className="text-lg font-normal leading-normal text-white/90 md:text-xl drop-shadow-md">
-              Cultivating connections and celebrating moments through exclusive events.
-            </p>
-          </div>
+        <div className="flex flex-col gap-6 max-w-[800px] animate-fade-in">
+          <h1 className="font-display text-5xl font-bold leading-tight tracking-tight text-white md:text-7xl drop-shadow-lg">
+            Where Extraordinary Connections Begin
+          </h1>
+          <p className="text-lg font-normal leading-normal text-white/90 md:text-xl drop-shadow-md">
+            Cultivating connections and celebrating moments through exclusive events.
+          </p>
+        </div>
         <Button size="lg" asChild className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
           <Link to="/membership">Request an Invitation</Link>
         </Button>
       </div>
+      
+      {/* Scroll indicator */}
+      <button
+        onClick={scrollToContent}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/80 hover:text-white transition-colors animate-bounce cursor-pointer"
+        aria-label="Scroll down"
+      >
+        <ChevronDown size={32} />
+      </button>
     </div>
   );
 };
