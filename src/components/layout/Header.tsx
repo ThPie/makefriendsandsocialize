@@ -41,22 +41,10 @@ export const Header = () => {
   const isDark = resolvedTheme === 'dark';
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full px-4 pt-4">
-      {/* Ambient Glow Effect */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div 
-          className={`absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] rounded-full blur-[100px] transition-opacity duration-500 ${
-            isScrolled ? 'opacity-20' : 'opacity-40'
-          }`}
-          style={{
-            background: 'radial-gradient(ellipse, hsl(var(--primary) / 0.3) 0%, transparent 70%)'
-          }}
-        />
-      </div>
-
+    <header className="fixed top-0 left-0 right-0 z-50 w-full px-4 pt-4 pointer-events-none">
       {/* Floating Header Container */}
       <div 
-        className={`relative mx-auto max-w-6xl rounded-2xl border transition-all duration-500 ${
+        className={`pointer-events-auto relative mx-auto max-w-6xl rounded-2xl border transition-all duration-500 ${
           isDark 
             ? 'bg-white/95 backdrop-blur-xl border-white/20 shadow-lg' 
             : 'bg-secondary/90 backdrop-blur-xl border-secondary-foreground/10 shadow-lg shadow-black/10'
