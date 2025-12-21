@@ -46,9 +46,7 @@ export const Header = () => {
     >
       <div className="mx-auto flex h-full items-center justify-between px-6 py-4 lg:px-10">
         {/* Left Nav - Desktop */}
-        <nav className={`hidden lg:flex items-center gap-6 flex-1 transition-all duration-300 ${
-          !isScrolled ? 'bg-black/20 backdrop-blur-sm rounded-full px-5 py-2' : ''
-        }`}>
+        <nav className="hidden lg:flex items-center gap-6 flex-1">
           {leftNavItems.map((item) => (
             <Link
               key={item.path}
@@ -75,9 +73,7 @@ export const Header = () => {
         </Link>
 
         {/* Right Nav - Desktop */}
-        <div className={`hidden lg:flex items-center gap-6 flex-1 justify-end transition-all duration-300 ${
-          !isScrolled ? 'bg-black/20 backdrop-blur-sm rounded-full px-5 py-2' : ''
-        }`}>
+        <div className="hidden lg:flex items-center gap-6 flex-1 justify-end">
           {rightNavItems.map((item) => (
             <Link
               key={item.path}
