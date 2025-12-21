@@ -17,7 +17,7 @@ const ContactPage = () => {
       {/* Hero */}
       <div 
         className="w-full min-h-[400px] flex flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center px-6 py-20 text-center" 
-        style={{backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.5) 0%, rgba(20, 57, 59, 0.8) 100%), url("https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2669&auto=format&fit=crop")'}}
+        style={{backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.2) 0%, rgba(20, 57, 59, 0.4) 100%), url("https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2669&auto=format&fit=crop")'}}
       >
         <div className="flex flex-col gap-2 max-w-[800px]">
           <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl font-display">Connect With The Society</h1>
