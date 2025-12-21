@@ -2,7 +2,6 @@ import { Hero } from '@/components/home/Hero';
 import { EventSection } from '@/components/home/EventSection';
 import { EthosSection } from '@/components/home/EthosSection';
 import { MembershipSection } from '@/components/home/MembershipSection';
-import { EventChatbot } from '@/components/EventChatbot';
 
 const HomePage = () => {
   return (
@@ -11,7 +10,6 @@ const HomePage = () => {
       <EventSection />
       <EthosSection />
       <MembershipSection />
-      <EventChatbot />
     </main>
   );
 };

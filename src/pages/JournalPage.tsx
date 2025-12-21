@@ -56,7 +56,7 @@ const JournalPage = () => {
   const regularArticles = articles.filter(a => !a.featured);
 
   return (
-    <div className="flex-1 w-full flex flex-col items-center pt-24">
+    <div className="flex-1 w-full flex flex-col items-center">
       {/* Header */}
       <div className="flex flex-wrap justify-between gap-3 p-4 w-full max-w-[1280px] mt-8">
         <div className="flex min-w-72 flex-col gap-3">

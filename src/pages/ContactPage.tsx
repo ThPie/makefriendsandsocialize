@@ -15,13 +15,15 @@ const ContactPage = () => {
   return (
     <div className="flex-grow flex flex-col items-center">
       {/* Hero */}
-      <div 
-        className="w-full min-h-[400px] flex flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center px-6 py-20 text-center" 
-        style={{backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.5) 0%, rgba(20, 57, 59, 0.8) 100%), url("https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2669&auto=format&fit=crop")'}}
-      >
-        <div className="flex flex-col gap-2 max-w-[800px]">
-          <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl font-display">Connect With The Society</h1>
-          <p className="text-white/80 text-sm font-normal leading-normal md:text-base">We welcome your inquiries. Please use the information below to get in touch.</p>
+      <div className="w-full max-w-[1440px] mt-8 p-4">
+        <div 
+          className="flex min-h-[400px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-center justify-center p-4" 
+          style={{backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.5) 0%, rgba(20, 57, 59, 0.8) 100%), url("https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2669&auto=format&fit=crop")'}}
+        >
+          <div className="flex flex-col gap-2 text-center">
+            <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl font-display">Connect With The Society</h1>
+            <p className="text-white/80 text-sm font-normal leading-normal md:text-base">We welcome your inquiries. Please use the information below to get in touch.</p>
+          </div>
         </div>
       </div>
 
