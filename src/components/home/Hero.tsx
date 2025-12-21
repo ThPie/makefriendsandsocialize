@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { ChevronDown } from 'lucide-react';
 
 export const Hero = () => {
   return (
@@ -23,6 +24,15 @@ export const Hero = () => {
         <Button size="lg" asChild className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
           <Link to="/membership">Request an Invitation</Link>
         </Button>
+        
+        {/* Scroll Down Indicator */}
+        <button 
+          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70 hover:text-white transition-colors animate-bounce"
+          aria-label="Scroll down"
+        >
+          <ChevronDown size={32} />
+        </button>
       </div>
     </div>
   );
