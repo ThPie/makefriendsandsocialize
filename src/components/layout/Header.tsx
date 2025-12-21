@@ -44,55 +44,72 @@ export const Header = () => {
           : 'border-transparent bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-full items-center justify-between px-6 py-4 lg:px-10">
-        {/* Left Nav - Desktop */}
-        <nav className="hidden lg:flex items-center gap-6 flex-1">
-          {leftNavItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                location.pathname === item.path
-                  ? 'text-primary'
-                  : isScrolled ? 'text-foreground/80' : 'text-white/90'
-              }`}
-              style={{ textShadow: isScrolled ? 'none' : '0 1px 2px rgba(0,0,0,0.3)' }}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+      <div className="mx-auto flex h-full items-center justify-center px-6 py-4 lg:px-10">
+        {/* Desktop Navigation Pill */}
+        <div className={`hidden lg:flex items-center gap-2 transition-all duration-300 ${
+          isScrolled 
+            ? '' 
+            : 'bg-background/20 backdrop-blur-md border border-white/10 rounded-full px-4 py-2'
+        }`}>
+          {/* Left Nav */}
+          <nav className="flex items-center gap-6">
+            {leftNavItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  location.pathname === item.path
+                    ? 'text-primary'
+                    : isScrolled ? 'text-foreground/80' : 'text-white/90'
+                }`}
+                style={{ textShadow: isScrolled ? 'none' : '0 1px 2px rgba(0,0,0,0.3)' }}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
 
-        {/* Centered Logo */}
-        <Link to="/" className="flex items-center justify-center lg:absolute lg:left-1/2 lg:-translate-x-1/2">
-          <img 
-            src={logo} 
-            alt="MakeFriends & Socialize" 
-            className="h-10 md:h-12 w-auto object-contain"
-          />
-        </Link>
+          {/* Centered Logo */}
+          <Link to="/" className="flex items-center justify-center mx-8">
+            <img 
+              src={logo} 
+              alt="MakeFriends & Socialize" 
+              className="h-10 md:h-12 w-auto object-contain"
+            />
+          </Link>
 
-        {/* Right Nav - Desktop */}
-        <div className="hidden lg:flex items-center gap-6 flex-1 justify-end">
-          {rightNavItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                location.pathname === item.path
-                  ? 'text-primary'
-                  : isScrolled ? 'text-foreground/80' : 'text-white/90'
-              }`}
-              style={{ textShadow: isScrolled ? 'none' : '0 1px 2px rgba(0,0,0,0.3)' }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {/* Right Nav */}
+          <nav className="flex items-center gap-6">
+            {rightNavItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  location.pathname === item.path
+                    ? 'text-primary'
+                    : isScrolled ? 'text-foreground/80' : 'text-white/90'
+                }`}
+                style={{ textShadow: isScrolled ? 'none' : '0 1px 2px rgba(0,0,0,0.3)' }}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
           <ThemeToggle />
-          <Button asChild size="sm" className="rounded-full px-5">
+          <Button asChild size="sm" className="rounded-full px-5 ml-2">
             <Link to="/membership">Become a Member</Link>
           </Button>
         </div>
+
+        {/* Mobile: Logo centered */}
+        <Link to="/" className="flex items-center justify-center lg:hidden absolute left-1/2 -translate-x-1/2">
+          <img 
+            src={logo} 
+            alt="MakeFriends & Socialize" 
+            className="h-10 w-auto object-contain"
+          />
+        </Link>
 
         {/* Mobile Menu Button */}
         <div className="flex items-center gap-3 lg:hidden">
