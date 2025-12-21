@@ -7,7 +7,7 @@ export const Hero = () => {
       <div
         className="w-full flex min-h-[calc(100vh-81px)] flex-col gap-8 bg-cover bg-center bg-no-repeat items-center justify-center px-6 py-20 text-center"
         style={{
-          backgroundImage: `linear-gradient(rgba(20, 57, 59, 0.2), rgba(20, 57, 59, 0.4)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuALlg_lhUHqLRNeE3gFSxRbbm8jSE0aqI1u-ZcwATjIGoQogVHcL2OHTrhhup9LjakYQSqr_QC4AJX0w9rWQ8IW1lx8QZUZAv9M15Q3_2sR8ztqsBzz3NvXI5ZWnCCCepFwhvJB9AsMfHLfxR2R_hIcIusPCmJj_AekZ3ThepjJqPr5BxPLu4xwm7hqG_VNVhy_4SBQPcd6OBNwFbi6d6w2xKIvc0wcCtFORE8kPyuGrBK68YFzYROcREKIiSp7no4QEIXE5HufZx44")`,
+          backgroundImage: `linear-gradient(rgba(20, 57, 59, 0.4), rgba(20, 57, 59, 0.7)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuALlg_lhUHqLRNeE3gFSxRbbm8jSE0aqI1u-ZcwATjIGoQogVHcL2OHTrhhup9LjakYQSqr_QC4AJX0w9rWQ8IW1lx8QZUZAv9M15Q3_2sR8ztqsBzz3NvXI5ZWnCCCepFwhvJB9AsMfHLfxR2R_hIcIusPCmJj_AekZ3ThepjJqPr5BxPLu4xwm7hqG_VNVhy_4SBQPcd6OBNwFbi6d6w2xKIvc0wcCtFORE8kPyuGrBK68YFzYROcREKIiSp7no4QEIXE5HufZx44")`,
         }}
         role="img"
         aria-label="An elegant evening social gathering with people mingling in a softly lit, luxurious room."

@@ -5,7 +5,7 @@ const AboutPage = () => {
       <section 
         className="w-full min-h-[480px] flex flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center px-6 py-20 text-center" 
         style={{
-          backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.15) 0%, rgba(20, 57, 59, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuD8-F3RY9H5cqEv7-lZOpcYmt4E5bLYfLDW5gCw3Bz2tS0M1tJY_stkdmb3tg_U2mBg8BCNImMzNg1-bw1YUJyKJgp9-XRGw6bslt88e3BZWh8JDxfxmiRHJ0XGnNSsfmNYWFVIN9Ntq7kMOH8BSBLDcygmOmq1KImEma6iU3IkxdZcYBvSDfNHKtW2024ILgRsPr1zqBao9VjQgYkg2D9Zy9137MbsF4D3A2AiKgy1i1SHQ4Jp_jb3gKarxjHqlbPUEDUaPdh5x-XO")'
+          backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.3) 0%, rgba(20, 57, 59, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuD8-F3RY9H5cqEv7-lZOpcYmt4E5bLYfLDW5gCw3Bz2tS0M1tJY_stkdmb3tg_U2mBg8BCNImMzNg1-bw1YUJyKJgp9-XRGw6bslt88e3BZWh8JDxfxmiRHJ0XGnNSsfmNYWFVIN9Ntq7kMOH8BSBLDcygmOmq1KImEma6iU3IkxdZcYBvSDfNHKtW2024ILgRsPr1zqBao9VjQgYkg2D9Zy9137MbsF4D3A2AiKgy1i1SHQ4Jp_jb3gKarxjHqlbPUEDUaPdh5x-XO")'
         }}
       >
         <div className="flex flex-col gap-2 max-w-[800px]">
