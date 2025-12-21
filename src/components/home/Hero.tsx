@@ -1,19 +1,42 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export const Hero = () => {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const scrollToContent = () => {
     window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full overflow-hidden">
+      {/* Parallax Background */}
       <div
-        className="w-full flex min-h-screen flex-col gap-8 bg-cover bg-center bg-no-repeat items-center justify-center px-6 py-20 text-center"
+        className="absolute inset-0 w-full h-[120%] bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(rgba(20, 57, 59, 0.4), rgba(20, 57, 59, 0.7)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuALlg_lhUHqLRNeE3gFSxRbbm8jSE0aqI1u-ZcwATjIGoQogVHcL2OHTrhhup9LjakYQSqr_QC4AJX0w9rWQ8IW1lx8QZUZAv9M15Q3_2sR8ztqsBzz3NvXI5ZWnCCCepFwhvJB9AsMfHLfxR2R_hIcIusPCmJj_AekZ3ThepjJqPr5BxPLu4xwm7hqG_VNVhy_4SBQPcd6OBNwFbi6d6w2xKIvc0wcCtFORE8kPyuGrBK68YFzYROcREKIiSp7no4QEIXE5HufZx44")`,
+          backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuALlg_lhUHqLRNeE3gFSxRbbm8jSE0aqI1u-ZcwATjIGoQogVHcL2OHTrhhup9LjakYQSqr_QC4AJX0w9rWQ8IW1lx8QZUZAv9M15Q3_2sR8ztqsBzz3NvXI5ZWnCCCepFwhvJB9AsMfHLfxR2R_hIcIusPCmJj_AekZ3ThepjJqPr5BxPLu4xwm7hqG_VNVhy_4SBQPcd6OBNwFbi6d6w2xKIvc0wcCtFORE8kPyuGrBK68YFzYROcREKIiSp7no4QEIXE5HufZx44")`,
+          transform: `translateY(${scrollY * 0.4}px)`,
         }}
+      />
+      {/* Overlay */}
+      <div 
+        className="absolute inset-0 bg-gradient-to-b from-[rgba(20,57,59,0.4)] to-[rgba(20,57,59,0.7)]"
+        style={{ transform: `translateY(${scrollY * 0.4}px)` }}
+      />
+      
+      {/* Content */}
+      <div
+        className="relative w-full flex min-h-screen flex-col gap-8 items-center justify-center px-6 py-20 text-center"
         role="img"
         aria-label="An elegant evening social gathering with people mingling in a softly lit, luxurious room."
       >

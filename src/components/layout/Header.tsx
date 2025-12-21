@@ -46,13 +46,13 @@ export const Header = () => {
     >
       <div className="mx-auto flex h-full items-center justify-center px-6 py-4 lg:px-10">
         {/* Desktop Navigation Pill */}
-        <div className={`hidden lg:flex items-center gap-2 transition-all duration-300 ${
+        <div className={`hidden lg:flex items-center transition-all duration-300 ${
           isScrolled 
-            ? '' 
-            : 'bg-background/20 backdrop-blur-md border border-white/10 rounded-full px-4 py-2'
+            ? 'gap-2' 
+            : 'bg-background/20 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 gap-4'
         }`}>
           {/* Left Nav */}
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-6 min-w-[200px] justify-end">
             {leftNavItems.map((item) => (
               <Link
                 key={item.path}
@@ -79,7 +79,7 @@ export const Header = () => {
           </Link>
 
           {/* Right Nav */}
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-6 min-w-[200px]">
             {rightNavItems.map((item) => (
               <Link
                 key={item.path}
