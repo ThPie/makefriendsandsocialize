@@ -38,13 +38,13 @@ export const Header = () => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 w-full border-b transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
         isScrolled 
-          ? 'border-border bg-background/95 backdrop-blur-md shadow-sm' 
-          : 'border-transparent bg-secondary/95 backdrop-blur-sm'
+          ? 'border-b border-border bg-background/95 backdrop-blur-md shadow-sm' 
+          : 'border-transparent bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-full items-center justify-between px-6 py-3 lg:px-10">
+      <div className="mx-auto flex h-full items-center justify-between px-6 py-4 lg:px-10">
         {/* Left Nav - Desktop */}
         <nav className="hidden lg:flex items-center gap-6 flex-1">
           {leftNavItems.map((item) => (
@@ -54,8 +54,9 @@ export const Header = () => {
               className={`text-sm font-medium transition-colors hover:text-primary ${
                 location.pathname === item.path
                   ? 'text-primary'
-                  : isScrolled ? 'text-foreground/80' : 'text-secondary-foreground/80'
+                  : isScrolled ? 'text-foreground/80' : 'text-white/90'
               }`}
+              style={{ textShadow: isScrolled ? 'none' : '0 1px 2px rgba(0,0,0,0.3)' }}
             >
               {item.label}
             </Link>
@@ -80,8 +81,9 @@ export const Header = () => {
               className={`text-sm font-medium transition-colors hover:text-primary ${
                 location.pathname === item.path
                   ? 'text-primary'
-                  : isScrolled ? 'text-foreground/80' : 'text-secondary-foreground/80'
+                  : isScrolled ? 'text-foreground/80' : 'text-white/90'
               }`}
+              style={{ textShadow: isScrolled ? 'none' : '0 1px 2px rgba(0,0,0,0.3)' }}
             >
               {item.label}
             </Link>
