@@ -59,12 +59,12 @@ const upcomingEvents: Event[] = [
 
 export const EventSection = () => {
   return (
-    <section className="w-full px-6 md:px-10" id="events">
-      <div className="mx-auto max-w-[1440px]">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="events">
+      <div className="mx-auto max-w-7xl">
         <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
           Upcoming Gatherings
         </h2>
-        <div className="mt-6 grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6">
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {upcomingEvents.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}

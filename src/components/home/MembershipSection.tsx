@@ -23,8 +23,8 @@ const benefits: Benefit[] = [
 
 export const MembershipSection = () => {
   return (
-    <section className="mb-12 w-full px-6 md:mb-20 md:px-10" id="membership">
-      <div className="mx-auto max-w-[1440px]">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="membership">
+      <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
             The Privileges of Membership

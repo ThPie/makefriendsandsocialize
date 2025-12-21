@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 export const SlowDatingSection = () => {
   return (
-    <section className="py-16 md:py-24 px-6 md:px-10 bg-secondary/5">
-      <div className="mx-auto max-w-[1440px]">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-secondary/5">
+      <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Image */}
           <div className="relative overflow-hidden rounded-2xl aspect-[4/3] lg:aspect-square">
