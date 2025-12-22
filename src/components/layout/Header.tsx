@@ -30,9 +30,14 @@ export const Header = () => {
     ? logoDark 
     : (resolvedTheme === 'dark' ? logoDark : logoLight);
 
+  const [scrollDepth, setScrollDepth] = useState(0);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
+      // Calculate scroll depth for dynamic shadow (0-1, maxes out at 200px scroll)
+      const depth = Math.min(window.scrollY / 200, 1);
+      setScrollDepth(depth);
     };
 
     handleScroll();
@@ -50,8 +55,13 @@ export const Header = () => {
       className={`fixed top-0 left-0 right-0 z-50 w-full border-b transition-all duration-300 ${
         isTransparent 
           ? 'border-transparent bg-gradient-to-b from-black/50 via-black/25 to-transparent' 
-          : 'border-border bg-background/95 backdrop-blur-md shadow-sm'
+          : 'border-border bg-background/95 backdrop-blur-md'
       }`}
+      style={{
+        boxShadow: isTransparent 
+          ? 'none' 
+          : `0 ${4 + scrollDepth * 8}px ${12 + scrollDepth * 20}px -${4 - scrollDepth * 2}px hsl(var(--foreground) / ${0.05 + scrollDepth * 0.1})`
+      }}
     >
       <div className="mx-auto flex h-full items-center justify-between px-4 py-2 md:px-8 lg:px-12 xl:px-16">
         {/* Logo */}

@@ -80,7 +80,7 @@ export const PricingSection = () => {
           {tiers.map((tier, index) => (
             <div
               key={index}
-              className={`relative bg-card rounded-2xl p-8 border transition-all duration-300 hover-lift scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''} ${
+              className={`relative bg-card rounded-2xl p-8 border transition-all duration-500 hover:-translate-y-2 hover:shadow-elegant scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''} ${
                 tier.popular
                   ? 'border-primary shadow-elegant'
                   : 'border-border/50'

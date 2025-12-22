@@ -47,7 +47,7 @@ export const TestimonialsSection = () => {
           {testimonials.map((testimonial, index) => (
             <div
               key={testimonial.id}
-              className={`relative bg-card rounded-2xl p-8 border border-border/50 transition-all duration-300 hover-lift hover:shadow-elegant scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+              className={`relative bg-card rounded-2xl p-8 border border-border/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-elegant scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
             >
               <Quote className="w-10 h-10 text-primary/20 mb-4" />
               <p className="text-muted-foreground leading-relaxed mb-6 italic">
