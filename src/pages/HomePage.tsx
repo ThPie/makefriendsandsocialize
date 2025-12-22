@@ -5,7 +5,6 @@ import { SlowDatingSection } from '@/components/home/SlowDatingSection';
 import { EthosSection } from '@/components/home/EthosSection';
 import { FAQSection } from '@/components/home/FAQSection';
 import { PricingSection } from '@/components/home/PricingSection';
-import { MembershipSection } from '@/components/home/MembershipSection';
 import { EventChatbot } from '@/components/EventChatbot';
 
 const HomePage = () => {
@@ -16,9 +15,8 @@ const HomePage = () => {
       <EventSection />
       <SlowDatingSection />
       <EthosSection />
-      <FAQSection />
       <PricingSection />
-      <MembershipSection />
+      <FAQSection />
       <EventChatbot />
     </main>
   );

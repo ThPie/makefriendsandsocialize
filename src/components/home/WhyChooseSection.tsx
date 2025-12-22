@@ -1,4 +1,5 @@
 import { Heart, Sparkles, Calendar } from 'lucide-react';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 const features = [
   {
@@ -19,10 +20,12 @@ const features = [
 ];
 
 export const WhyChooseSection = () => {
+  const { ref, isVisible } = useScrollAnimation();
+
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20">
-      <div className="mx-auto max-w-7xl">
-        <div className="text-center mb-12 md:mb-16">
+      <div ref={ref} className="mx-auto max-w-7xl">
+        <div className={`text-center mb-12 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
             Why Choose Our Community?
           </h2>
@@ -35,7 +38,7 @@ export const WhyChooseSection = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="group bg-card rounded-2xl p-8 shadow-elegant hover-lift border border-border/50 transition-all duration-300"
+              className={`group bg-card rounded-2xl p-8 shadow-elegant hover-lift border border-border/50 transition-all duration-300 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
             >
               <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
                 <feature.icon className="w-7 h-7 text-primary" />

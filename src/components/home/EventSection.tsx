@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import type { Event } from '@/types';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 interface EventCardProps {
   event: Event;
+  className?: string;
 }
 
-const EventCard = ({ event }: EventCardProps) => (
-  <div className="flex flex-col gap-4 rounded-xl bg-card group hover:shadow-lg transition-all duration-300 border border-border hover:border-primary/30 overflow-hidden">
+const EventCard = ({ event, className = '' }: EventCardProps) => (
+  <div className={`flex flex-col gap-4 rounded-xl bg-card group hover:shadow-lg transition-all duration-300 border border-border hover:border-primary/30 overflow-hidden ${className}`}>
     <div
       className="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover group-hover:scale-105 transition-transform duration-500"
       style={{ backgroundImage: `url("${event.imageUrl}")` }}
@@ -58,15 +60,21 @@ const upcomingEvents: Event[] = [
 ];
 
 export const EventSection = () => {
+  const { ref, isVisible } = useScrollAnimation();
+
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="events">
-      <div className="mx-auto max-w-7xl">
-        <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
+      <div ref={ref} className="mx-auto max-w-7xl">
+        <h2 className={`font-display text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl scroll-animate ${isVisible ? 'visible' : ''}`}>
           Upcoming Gatherings
         </h2>
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {upcomingEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
+          {upcomingEvents.map((event, index) => (
+            <EventCard 
+              key={event.id} 
+              event={event} 
+              className={`scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+            />
           ))}
         </div>
       </div>
