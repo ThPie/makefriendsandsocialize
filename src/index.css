@@ -170,4 +170,42 @@
   .scroll-animate-delay-3 {
     transition-delay: 300ms;
   }
+
+  .scroll-animate-delay-4 {
+    transition-delay: 400ms;
+  }
+
+  .scroll-animate-delay-5 {
+    transition-delay: 500ms;
+  }
+
+  /* Card hover animations */
+  .card-animate {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  .card-animate:hover {
+    @apply -translate-y-2 shadow-elegant;
+  }
+
+  /* Staggered fade-in for lists */
+  .stagger-animate > * {
+    @apply opacity-0 translate-y-6 transition-all duration-500 ease-out;
+  }
+
+  .stagger-animate.visible > *:nth-child(1) { @apply opacity-100 translate-y-0; transition-delay: 0ms; }
+  .stagger-animate.visible > *:nth-child(2) { @apply opacity-100 translate-y-0; transition-delay: 100ms; }
+  .stagger-animate.visible > *:nth-child(3) { @apply opacity-100 translate-y-0; transition-delay: 200ms; }
+  .stagger-animate.visible > *:nth-child(4) { @apply opacity-100 translate-y-0; transition-delay: 300ms; }
+  .stagger-animate.visible > *:nth-child(5) { @apply opacity-100 translate-y-0; transition-delay: 400ms; }
+  .stagger-animate.visible > *:nth-child(6) { @apply opacity-100 translate-y-0; transition-delay: 500ms; }
+
+  /* Scale-in animation */
+  .scroll-scale {
+    @apply opacity-0 scale-95 transition-all duration-700 ease-out;
+  }
+
+  .scroll-scale.visible {
+    @apply opacity-100 scale-100;
+  }
 }

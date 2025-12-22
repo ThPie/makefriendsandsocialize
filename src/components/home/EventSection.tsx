@@ -8,7 +8,7 @@ interface EventCardProps {
 }
 
 const EventCard = ({ event, className = '' }: EventCardProps) => (
-  <div className={`flex flex-col gap-4 rounded-xl bg-card group hover:shadow-lg transition-all duration-300 border border-border hover:border-primary/30 overflow-hidden ${className}`}>
+  <div className={`flex flex-col gap-4 rounded-xl bg-card group hover:shadow-elegant transition-all duration-500 border border-border hover:border-primary/30 hover:-translate-y-2 overflow-hidden ${className}`}>
     <div
       className="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover group-hover:scale-105 transition-transform duration-500"
       style={{ backgroundImage: `url("${event.imageUrl}")` }}

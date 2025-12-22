@@ -22,7 +22,7 @@ export const SlowDatingSection = () => {
           {/* Content */}
           <div className={`flex flex-col justify-center scroll-animate scroll-animate-delay-2 ${isVisible ? 'visible' : ''}`}>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-6 leading-tight">
-              Redefining Connections with Time
+              Slow Dating, Matchmaking
             </h2>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
               In a world of swipes and instant judgments, we believe in the power of slow, 
