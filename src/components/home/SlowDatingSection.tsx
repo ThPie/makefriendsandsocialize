@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-
+import slowDatingImage from '@/assets/slow-dating.jpg';
 export const SlowDatingSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
@@ -12,8 +12,8 @@ export const SlowDatingSection = () => {
           {/* Image */}
           <div className={`relative overflow-hidden rounded-2xl aspect-[4/3] lg:aspect-square scroll-animate ${isVisible ? 'visible' : ''}`}>
             <img
-              src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&auto=format&fit=crop&q=80"
-              alt="Friends connecting at an elegant venue"
+              src={slowDatingImage}
+              alt="Elegant couple enjoying a sophisticated moment"
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-secondary/30 to-transparent" />
