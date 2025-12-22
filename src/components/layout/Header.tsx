@@ -80,7 +80,9 @@ export const Header = () => {
           <img 
             src={logo} 
             alt="MakeFriends & Socialize" 
-            className="h-14 md:h-16 lg:h-18 w-auto object-contain"
+            className={`w-auto object-contain transition-all duration-300 ${
+              isScrolled ? 'h-14 md:h-16' : 'h-16 md:h-20 lg:h-24'
+            }`}
           />
         </Link>
 
