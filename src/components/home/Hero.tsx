@@ -1,19 +1,49 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+
+const videos = [
+  '/videos/hero-1.mp4',
+  '/videos/hero-2.mp4',
+  '/videos/hero-3.mp4',
+  '/videos/hero-4.mp4',
+];
 
 export const Hero = () => {
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleVideoEnd = () => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentVideoIndex((prev) => (prev + 1) % videos.length);
+      setIsTransitioning(false);
+    }, 300);
+  };
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, [currentVideoIndex]);
+
   return (
     <section className="relative w-full overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 bg-black">
         <video
-          className="h-full w-full object-cover"
+          ref={videoRef}
+          key={currentVideoIndex}
+          className={`h-full w-full object-cover transition-opacity duration-300 ${
+            isTransitioning ? 'opacity-0' : 'opacity-100'
+          }`}
           autoPlay
           muted
           playsInline
-          loop
+          onEnded={handleVideoEnd}
         >
-          <source src="/videos/hero-1.mp4" type="video/mp4" />
+          <source src={videos[currentVideoIndex]} type="video/mp4" />
         </video>
         {/* Black Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60" />
