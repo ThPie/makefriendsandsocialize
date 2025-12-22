@@ -1,54 +1,22 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { useState, useRef, useEffect } from 'react';
-
-const videos = [
-  '/videos/hero-1.mp4',
-  '/videos/hero-2.mp4',
-  '/videos/hero-3.mp4',
-  '/videos/hero-4.mp4',
-];
 
 export const Hero = () => {
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handleVideoEnd = () => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentVideoIndex((prev) => (prev + 1) % videos.length);
-      setIsTransitioning(false);
-    }, 300);
-  };
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {
-        // Autoplay may be blocked, that's okay
-      });
-    }
-  }, [currentVideoIndex]);
-
   return (
     <section className="relative w-full overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0 bg-primary/80">
+      <div className="absolute inset-0 bg-black">
         <video
-          ref={videoRef}
-          key={currentVideoIndex}
-          className={`h-full w-full object-cover transition-opacity duration-300 ${
-            isTransitioning ? 'opacity-0' : 'opacity-100'
-          }`}
+          className="h-full w-full object-cover"
           autoPlay
           muted
           playsInline
-          onEnded={handleVideoEnd}
+          loop
         >
-          <source src={videos[currentVideoIndex]} type="video/mp4" />
+          <source src="/videos/hero-1.mp4" type="video/mp4" />
         </video>
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/25 to-primary/40" />
+        {/* Black Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60" />
       </div>
 
       {/* Content */}
@@ -68,22 +36,6 @@ export const Hero = () => {
             <Link to="/membership">Request an Invitation</Link>
           </Button>
         </div>
-      </div>
-
-      {/* Video Progress Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-        {videos.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentVideoIndex(index)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              index === currentVideoIndex 
-                ? 'w-8 bg-white' 
-                : 'w-1.5 bg-white/50 hover:bg-white/70'
-            }`}
-            aria-label={`Go to video ${index + 1}`}
-          />
-        ))}
       </div>
     </section>
   );
