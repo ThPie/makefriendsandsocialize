@@ -64,7 +64,7 @@ export const Header = () => {
                 className={`text-sm font-medium leading-normal transition-colors hover:text-primary ${
                   location.pathname === item.path
                     ? 'text-primary'
-                    : 'text-foreground/80'
+                    : isScrolled ? 'text-foreground/80' : 'text-white/90'
                 }`}
               >
                 {item.label}
