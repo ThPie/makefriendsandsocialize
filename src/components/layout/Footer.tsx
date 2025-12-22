@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import logo from '@/assets/logo.png';
+import havnLogo from '@/assets/havn-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
@@ -54,6 +55,23 @@ export const Footer = () => {
                 {isSubmitting ? 'Subscribing...' : 'Subscribe'}
               </Button>
             </form>
+          </div>
+        </div>
+
+        {/* Venue Partners Section */}
+        <div className="mx-auto max-w-7xl mb-12 pb-12 border-b border-border">
+          <div className="flex flex-col items-center text-center">
+            <img
+              src={havnLogo}
+              alt="HAVN"
+              className="h-12 md:h-14 w-auto object-contain filter brightness-0 invert opacity-80 mb-4"
+            />
+            <p className="text-muted-foreground text-sm max-w-sm">
+              A design-forward coworking space for founders, creatives, and builders.
+            </p>
+            <p className="text-muted-foreground/60 text-xs mt-3">
+              Our Venue Partners
+            </p>
           </div>
         </div>
 
