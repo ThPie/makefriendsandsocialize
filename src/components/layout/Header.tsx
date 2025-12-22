@@ -93,7 +93,7 @@ export const Header = () => {
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button asChild>
-              <Link to="/membership">Become a Member</Link>
+              <Link to="/membership">Request Membership</Link>
             </Button>
           </div>
         </div>
@@ -103,7 +103,7 @@ export const Header = () => {
           <ThemeToggle />
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center justify-center rounded-md p-2 text-foreground hover:bg-muted transition-colors"
+            className="flex items-center justify-center rounded-md p-3 text-foreground hover:bg-muted transition-colors min-w-[44px] min-h-[44px]"
             aria-label="Toggle menu"
           >
             <span className="material-symbols-outlined">
@@ -130,7 +130,7 @@ export const Header = () => {
             </Link>
           ))}
           <Button asChild className="w-full mt-2">
-            <Link to="/membership">Become a Member</Link>
+            <Link to="/membership">Request Membership</Link>
           </Button>
         </div>
       )}

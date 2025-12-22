@@ -9,27 +9,19 @@ import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 const faqs = [
   {
     question: 'How do I become a member?',
-    answer: 'You can apply for membership through our website. Simply visit the Membership page, choose your preferred tier, and complete the application. Our team will review your application and get back to you within 48 hours.',
+    answer: 'Request an invitation through our website. Our team reviews each application personally and responds within 48 hours.',
   },
   {
     question: 'What is the dress code for events?',
-    answer: 'Our events typically follow a smart casual to cocktail dress code. Specific attire requirements are communicated with each event invitation. We encourage our members to dress elegantly while feeling comfortable.',
-  },
-  {
-    question: 'Are events open to the public?',
-    answer: 'Most of our events are exclusive to members and their guests. However, we occasionally host open events for prospective members to experience our community firsthand.',
+    answer: 'Smart casual to cocktail attire. Specific requirements are shared with each event invitation—we encourage elegance with comfort.',
   },
   {
     question: 'How often do you host events?',
-    answer: 'We host multiple events each week, ranging from intimate dinners to larger social gatherings. Members receive priority access and early registration for all events.',
-  },
-  {
-    question: 'What locations do you serve?',
-    answer: 'We currently operate in major metropolitan areas including New York, Los Angeles, London, and Miami. We are continuously expanding to new cities based on member interest.',
+    answer: 'Multiple events each week—from intimate dinners to cultural outings. Members receive priority access to all gatherings.',
   },
   {
     question: 'Can I bring a guest to events?',
-    answer: 'Yes! Depending on your membership tier, you may bring guests to our events. Patron members can bring 1 guest, Fellow members can bring 2, and Founder members have unlimited guest privileges.',
+    answer: 'Yes. Patron members may bring 1 guest, Fellow members 2 guests, and Founder members have unlimited guest privileges.',
   },
 ];
 

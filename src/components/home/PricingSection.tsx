@@ -16,7 +16,7 @@ const tiers = [
       'Member newsletter',
       'Early event notifications',
     ],
-    cta: 'Get Started',
+    cta: 'Request Invitation',
     variant: 'outline' as const,
     popular: false,
   },
@@ -33,7 +33,7 @@ const tiers = [
       'Matchmaking introductions',
       'VIP event access',
     ],
-    cta: 'Join Now',
+    cta: 'Select Plan',
     variant: 'default' as const,
     popular: true,
   },
@@ -50,7 +50,7 @@ const tiers = [
       'Global chapter access',
       'Founding member benefits',
     ],
-    cta: 'Contact Us',
+    cta: 'Inquire',
     variant: 'secondary' as const,
     popular: false,
   },
@@ -87,7 +87,7 @@ export const PricingSection = () => {
               }`}
             >
               {tier.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium z-10 whitespace-nowrap">
                   Most Popular
                 </span>
               )}

@@ -25,17 +25,17 @@ export const SlowDatingSection = () => {
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-6 leading-tight">
               Private <span className="text-gradient">Introductions</span>
             </h2>
-            <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
+            <p className="text-muted-foreground text-base md:text-lg mb-6 leading-relaxed">
               For select members seeking meaningful connections beyond our social gatherings, 
               we offer a discreet introduction service. No algorithms, no profiles—just 
               thoughtful, human-facilitated introductions.
             </p>
-            <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
+            <p className="text-muted-foreground text-base md:text-lg mb-8 leading-relaxed">
               This premium service is available exclusively to established members 
               and operates entirely through personal consultation with our team.
             </p>
             <div>
-              <Button asChild variant="outline" size="lg" className="rounded-full px-8">
+              <Button asChild variant="outline" size="lg" className="rounded-full px-8 min-h-[48px]">
                 <Link to="/contact">Inquire Privately</Link>
               </Button>
             </div>

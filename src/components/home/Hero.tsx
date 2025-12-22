@@ -57,10 +57,10 @@ export const Hero = () => {
       >
         <div className="mx-auto flex max-w-[900px] flex-col items-center gap-8 animate-fade-in">
           <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-lg">
-            Where Extraordinary <span className="text-gradient">Connections</span> Begin
+            A Private Social Club for <span className="text-gradient">Authentic Connections</span>
           </h1>
           <p className="max-w-2xl text-lg font-normal leading-relaxed text-white/90 md:text-xl drop-shadow-md">
-            Cultivating connections and celebrating moments through exclusive events.
+            Weekly curated events. Vetted members. Genuine friendships—not networking.
           </p>
           <Button size="lg" asChild className="animate-fade-in mt-2" style={{ animationDelay: '0.2s' }}>
             <Link to="/membership">Request an Invitation</Link>

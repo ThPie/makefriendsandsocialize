@@ -61,7 +61,7 @@ export const Footer = () => {
 
         {/* Partners & Brands Section */}
         <div className="mx-auto max-w-7xl mb-12 pb-12 border-b border-border">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-12 sm:gap-16">
+          <div className="flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-16">
             {/* HAVN - Venue Partner */}
             <div className="flex flex-col items-center text-center group">
               <p className="text-muted-foreground/60 text-xs mb-4">Our Venue Partner</p>
@@ -142,7 +142,7 @@ export const Footer = () => {
 
           {/* Copyright */}
           <p className="text-sm text-muted-foreground">
-            © 2024 MakeFriends. All rights reserved.
+            © 2025 MakeFriends. All rights reserved.
           </p>
         </div>
       </div>

@@ -21,7 +21,7 @@ const MembershipPage = () => {
                 Cultivate connections and celebrate moments through our exclusive community and curated events.
               </p>
             </div>
-            <Button size="lg">Apply Now</Button>
+            <Button size="lg">Request an Invitation</Button>
           </div>
         </div>
       </section>
@@ -81,13 +81,13 @@ const MembershipPage = () => {
           <div className="flex flex-col gap-1">
             <h3 className="text-foreground text-base font-bold leading-tight font-display tracking-tight">Patron</h3>
             <p className="flex items-baseline gap-1.5 text-foreground">
-              <span className="text-4xl font-black leading-tight tracking-tight font-display">$5,000</span>
-              <span className="text-muted-foreground text-sm font-bold leading-tight">Per Annum</span>
+              <span className="text-4xl font-black leading-tight tracking-tight font-display">$99</span>
+              <span className="text-muted-foreground text-sm font-bold leading-tight">/month</span>
             </p>
           </div>
           <Button variant="secondary" className="w-full">Select Tier</Button>
           <div className="flex flex-col gap-3 pt-2">
-            {['Access to all seasonal gatherings', 'Quarterly digital newsletter', 'Member-rate for special events', 'Spouse/partner privileges'].map((item, i) => (
+            {['Access to weekly events', '1 guest per event', 'Community app access', 'Member newsletter'].map((item, i) => (
               <div key={i} className="flex items-start gap-3 text-sm text-foreground">
                 <span className="material-symbols-outlined text-primary text-base leading-tight">check</span>
                 <span>{item}</span>
@@ -98,19 +98,19 @@ const MembershipPage = () => {
 
         {/* Fellow (Featured) */}
         <div className="flex flex-1 flex-col gap-4 rounded-xl border-2 border-primary bg-primary/5 p-6 relative shadow-lg hover:shadow-xl transition-shadow">
-          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-            <p className="text-primary-foreground text-xs font-medium leading-normal tracking-wide rounded-full bg-primary px-3 py-1 text-center">Most Popular</p>
+          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
+            <p className="text-primary-foreground text-xs font-medium leading-normal tracking-wide rounded-full bg-primary px-3 py-1 text-center whitespace-nowrap">Most Popular</p>
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 mt-2">
             <h3 className="text-foreground text-base font-bold leading-tight font-display tracking-tight">Fellow</h3>
             <p className="flex items-baseline gap-1.5 text-foreground">
-              <span className="text-4xl font-black leading-tight tracking-tight font-display">$15,000</span>
-              <span className="text-muted-foreground text-sm font-bold leading-tight">Per Annum</span>
+              <span className="text-4xl font-black leading-tight tracking-tight font-display">$249</span>
+              <span className="text-muted-foreground text-sm font-bold leading-tight">/month</span>
             </p>
           </div>
           <Button className="w-full">Select Tier</Button>
           <div className="flex flex-col gap-3 pt-2">
-            {['All Patron benefits', 'Priority invitations to premier events', 'Four complimentary guest passes', 'Access to our private concierge'].map((item, i) => (
+            {['Everything in Patron', '2 guests per event', 'Priority reservations', 'Exclusive member dinners', 'Matchmaking introductions'].map((item, i) => (
               <div key={i} className="flex items-start gap-3 text-sm text-foreground">
                 <span className="material-symbols-outlined text-primary text-base leading-tight">check</span>
                 <span>{item}</span>
@@ -127,13 +127,13 @@ const MembershipPage = () => {
               <p className="text-primary-foreground text-xs font-medium leading-normal tracking-wide rounded-full bg-primary/70 px-3 py-1 text-center">By Invitation</p>
             </div>
             <p className="flex items-baseline gap-1.5 text-foreground">
-              <span className="text-4xl font-black leading-tight tracking-tight font-display">$50,000</span>
-              <span className="text-muted-foreground text-sm font-bold leading-tight">Per Annum</span>
+              <span className="text-4xl font-black leading-tight tracking-tight font-display">Custom</span>
+              <span className="text-muted-foreground text-sm font-bold leading-tight"></span>
             </p>
           </div>
           <Button variant="secondary" className="w-full">Inquire Now</Button>
           <div className="flex flex-col gap-3 pt-2">
-            {['All Fellow benefits', 'Seat on the advisory committee', "Annual Founder's Retreat invitation", 'Unlimited guest privileges'].map((item, i) => (
+            {['Everything in Fellow', 'Unlimited guests', 'Private event hosting', 'Concierge service', 'Global chapter access'].map((item, i) => (
               <div key={i} className="flex items-start gap-3 text-sm text-foreground">
                 <span className="material-symbols-outlined text-primary text-base leading-tight">check</span>
                 <span>{item}</span>
@@ -171,7 +171,7 @@ const MembershipPage = () => {
         <h2 className="text-foreground text-3xl font-bold leading-tight tracking-tight font-display">Begin Your Journey</h2>
         <p className="text-muted-foreground mt-3 mb-6 max-w-lg">Take the first step towards joining a distinguished community of peers.</p>
         <Button size="lg" asChild>
-          <Link to="/contact">Begin Your Application</Link>
+          <Link to="/contact">Request an Invitation</Link>
         </Button>
       </section>
     </div>
