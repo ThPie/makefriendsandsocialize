@@ -154,15 +154,15 @@ export const PricingSection = () => {
             {benefits.map((benefit, index) => (
               <div 
                 key={benefit.id} 
-                className={`flex flex-col items-center gap-5 text-center scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+                className={`group flex flex-col items-center gap-5 text-center p-6 rounded-xl transition-all duration-300 hover:bg-secondary-foreground/5 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-primary">
-                  <benefit.Icon className="w-7 h-7" strokeWidth={1.5} />
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-primary transition-all duration-300 group-hover:bg-primary/30 group-hover:shadow-[0_0_25px_hsl(var(--primary)/0.4)] group-hover:scale-110">
+                  <benefit.Icon className="w-7 h-7 transition-transform duration-300 group-hover:scale-110" strokeWidth={1.5} />
                 </div>
-                <h3 className="font-display text-xl font-semibold text-secondary-foreground italic">
+                <h3 className="font-display text-xl font-semibold text-secondary-foreground italic transition-colors duration-300 group-hover:text-primary">
                   {benefit.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-secondary-foreground/70">
+                <p className="text-sm leading-relaxed text-secondary-foreground/70 transition-colors duration-300 group-hover:text-secondary-foreground/90">
                   {benefit.description}
                 </p>
               </div>
