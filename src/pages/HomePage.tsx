@@ -6,6 +6,8 @@ import { EthosSection } from '@/components/home/EthosSection';
 import { FAQSection } from '@/components/home/FAQSection';
 import { PricingSection } from '@/components/home/PricingSection';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
+import { PartnersSection } from '@/components/home/PartnersSection';
+import { ContactSection } from '@/components/home/ContactSection';
 import { EventChatbot } from '@/components/EventChatbot';
 
 const HomePage = () => {
@@ -18,6 +20,8 @@ const HomePage = () => {
       <EthosSection />
       <TestimonialsSection />
       <PricingSection />
+      <PartnersSection />
+      <ContactSection />
       <FAQSection />
       <EventChatbot />
     </main>
