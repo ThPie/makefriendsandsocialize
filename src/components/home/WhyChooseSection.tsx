@@ -4,18 +4,18 @@ import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 const features = [
   {
     icon: Heart,
-    title: 'Genuine Connections',
-    description: 'Meet like-minded individuals in a warm, welcoming environment designed for authentic relationships.',
+    title: 'Vetted, Like-Minded Members',
+    description: 'Every member is personally reviewed to ensure a community of ambitious, warm, and interesting people.',
   },
   {
     icon: Sparkles,
-    title: 'Curated Experiences',
-    description: 'Every event is thoughtfully crafted to spark conversation and create lasting memories.',
+    title: 'Thoughtfully Designed Events',
+    description: 'From intimate dinners to cultural outings—each gathering is crafted to spark genuine conversation.',
   },
   {
     icon: Calendar,
-    title: 'Regular Events',
-    description: 'Weekly gatherings ensure you always have opportunities to expand your social circle.',
+    title: 'Weekly Gatherings, Year-Round',
+    description: 'Multiple events each week ensure you always have opportunities to meet new friends.',
   },
 ];
 
@@ -27,10 +27,10 @@ export const WhyChooseSection = () => {
       <div ref={ref} className="mx-auto max-w-7xl">
         <div className={`text-center mb-12 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
-            Why Choose Our <span className="text-primary">Community</span>?
+            Why Members <span className="text-primary">Choose Us</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Discover what makes MakeFriends the premier destination for meaningful social connections.
+            A private community for professionals who value depth over volume.
           </p>
         </div>
 

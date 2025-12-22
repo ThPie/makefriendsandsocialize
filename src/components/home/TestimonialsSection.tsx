@@ -4,7 +4,7 @@ import { Quote } from 'lucide-react';
 const testimonials = [
   {
     id: 1,
-    quote: "The Gathering Society has completely transformed my social life. I've made genuine friendships that I know will last a lifetime.",
+    quote: "MakeFriends has completely transformed my social life. I've made genuine friendships that I know will last a lifetime.",
     name: 'Alexandra Chen',
     role: 'Fellow Member',
     image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face',
@@ -53,11 +53,11 @@ export const TestimonialsSection = () => {
               <p className="text-muted-foreground leading-relaxed mb-6 italic">
                 "{testimonial.quote}"
               </p>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 min-h-[44px]">
                 <img
                   src={testimonial.image}
                   alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20"
+                  className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20 flex-shrink-0"
                 />
                 <div>
                   <p className="font-display text-lg font-semibold text-foreground">

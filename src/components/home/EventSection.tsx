@@ -65,9 +65,14 @@ export const EventSection = () => {
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="events">
       <div ref={ref} className="mx-auto max-w-7xl">
-        <h2 className={`font-display text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl scroll-animate ${isVisible ? 'visible' : ''}`}>
-          Upcoming <span className="text-primary">Gatherings</span>
-        </h2>
+        <div className={`scroll-animate ${isVisible ? 'visible' : ''}`}>
+          <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
+            Upcoming <span className="text-primary">Gatherings</span>
+          </h2>
+          <p className="text-muted-foreground text-lg mt-3 max-w-2xl">
+            From intimate dinners to grand galas—experience gatherings designed to inspire.
+          </p>
+        </div>
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {upcomingEvents.map((event, index) => (
             <EventCard 
