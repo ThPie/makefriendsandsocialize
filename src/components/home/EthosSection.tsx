@@ -9,7 +9,7 @@ export const EthosSection = () => {
         <div className={`rounded-2xl bg-card px-8 py-16 md:px-16 md:py-20 border border-border scroll-animate ${isVisible ? 'visible' : ''}`}>
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-card-foreground md:text-4xl">
-              The Society's Ethos
+              The <span className="text-primary">Society's</span> Ethos
             </h2>
             <p className="mt-6 text-base leading-relaxed text-muted-foreground md:text-lg">
               Our purpose is to bring together discerning individuals in settings that

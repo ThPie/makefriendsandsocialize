@@ -6,7 +6,7 @@ export const SlowDatingSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-secondary/5">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-secondary/5" id="dating">
       <div ref={ref} className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Image */}
@@ -22,7 +22,7 @@ export const SlowDatingSection = () => {
           {/* Content */}
           <div className={`flex flex-col justify-center scroll-animate scroll-animate-delay-2 ${isVisible ? 'visible' : ''}`}>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-6 leading-tight">
-              Slow Dating, Matchmaking
+              Slow Dating, <span className="text-gradient">Matchmaking</span>
             </h2>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
               In a world of swipes and instant judgments, we believe in the power of slow, 

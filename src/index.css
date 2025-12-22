@@ -109,9 +109,18 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
+  }
+
+  /* Scroll margin for fixed header */
+  section[id] {
+    scroll-margin-top: 100px;
   }
 
   /* Display font for headings */
