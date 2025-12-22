@@ -62,7 +62,14 @@ export const Hero = () => {
             setMemberCount(data.member_count);
           }
           if (data.avatar_urls && data.avatar_urls.length > 0) {
-            setAvatarUrls(data.avatar_urls);
+            // Filter to only use member photos, not event photos
+            const memberPhotos = data.avatar_urls.filter(
+              (url: string) => url.includes('/photos/member/') && !url.includes('/photos/event/')
+            );
+            // Only use filtered photos if we have enough, otherwise keep defaults
+            if (memberPhotos.length >= 3) {
+              setAvatarUrls(memberPhotos);
+            }
           }
         }
       } catch (error) {

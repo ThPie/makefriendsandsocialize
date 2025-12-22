@@ -78,48 +78,53 @@ serve(async (req) => {
       }
     }
 
-    // Extract avatar URLs from the HTML - look for higher resolution versions
-    const avatarUrls: string[] = [];
+    // Extract MEMBER avatar URLs from the HTML - explicitly exclude event photos
+    const memberAvatarUrls: string[] = [];
     
     // Function to upgrade avatar URL to higher resolution
     const upgradeToHighRes = (url: string): string => {
-      // Replace thumb_ with highres_ for better quality
       let highResUrl = url.replace(/\/thumb_/, '/highres_');
-      // If URL has size parameters, increase them
       highResUrl = highResUrl.replace(/\?w=\d+/, '?w=200');
       highResUrl = highResUrl.replace(/&w=\d+/, '&w=200');
-      // Add size parameter if not present
       if (!highResUrl.includes('?w=') && !highResUrl.includes('&w=')) {
         highResUrl += (highResUrl.includes('?') ? '&' : '?') + 'w=200';
       }
       return highResUrl;
     };
     
-    // Common patterns for Meetup member avatars - prioritize highres versions
-    const imgPatterns = [
-      /<img[^>]*src=["']([^"']*secure\.meetupstatic\.com[^"']*highres_[^"']*)["'][^>]*>/gi,
-      /<img[^>]*src=["']([^"']*secure\.meetupstatic\.com\/photos\/member[^"']*)["'][^>]*>/gi,
-      /<img[^>]*src=["']([^"']*secure\.meetupstatic\.com[^"']*member[^"']*)["'][^>]*>/gi,
-      /<img[^>]*src=["']([^"']*meetupstatic\.com[^"']*member[^"']*)["'][^>]*>/gi,
-    ];
+    // Helper to check if URL is a member photo (NOT an event photo)
+    const isMemberPhoto = (url: string): boolean => {
+      // Must contain /photos/member/ to be a member avatar
+      if (!url.includes('/photos/member/')) return false;
+      // Explicitly reject event photos
+      if (url.includes('/photos/event/')) return false;
+      if (url.includes('event')) return false;
+      return true;
+    };
+    
+    // Pattern to find all meetupstatic images
+    const imgPattern = /<img[^>]*src=["']([^"']*meetupstatic\.com[^"']*)["'][^>]*>/gi;
 
-    for (const pattern of imgPatterns) {
-      let match;
-      while ((match = pattern.exec(html)) !== null && avatarUrls.length < 12) {
-        let url = match[1];
-        // Filter out default avatars, placeholders, and very small default images
-        if (!url.includes('placeholder') && 
-            !url.includes('default') && 
-            !url.includes('member_') && // Skip generic member icons
-            !avatarUrls.some(existing => existing.includes(url.split('/').pop()?.split('?')[0] || ''))) {
-          // Upgrade to higher resolution
-          url = upgradeToHighRes(url);
-          avatarUrls.push(url);
-        }
-      }
+    let match;
+    while ((match = imgPattern.exec(html)) !== null && memberAvatarUrls.length < 12) {
+      let url = match[1];
+      
+      // Only accept member photos
+      if (!isMemberPhoto(url)) continue;
+      
+      // Filter out placeholders, defaults, and duplicates
+      if (url.includes('placeholder') || url.includes('default') || url.includes('member_')) continue;
+      
+      // Check for duplicates by filename
+      const filename = url.split('/').pop()?.split('?')[0] || '';
+      if (memberAvatarUrls.some(existing => existing.includes(filename))) continue;
+      
+      // Upgrade to higher resolution and add
+      url = upgradeToHighRes(url);
+      memberAvatarUrls.push(url);
     }
 
-    console.log('Found avatar URLs:', avatarUrls.length, avatarUrls.slice(0, 3));
+    console.log('Found MEMBER avatar URLs:', memberAvatarUrls.length, memberAvatarUrls.slice(0, 3));
 
     // If we didn't find enough avatars, use high-quality placeholder avatars
     const defaultAvatars = [
@@ -131,7 +136,9 @@ serve(async (req) => {
       'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&h=200&fit=crop&crop=face',
     ];
 
-    const finalAvatars = avatarUrls.length >= 5 ? avatarUrls.slice(0, 8) : defaultAvatars;
+    // Only use member avatars if we have enough, otherwise fall back to Unsplash
+    const finalAvatars = memberAvatarUrls.length >= 5 ? memberAvatarUrls.slice(0, 8) : defaultAvatars;
+    console.log('Using avatars:', finalAvatars.length, 'from members:', memberAvatarUrls.length >= 5);
 
     // Store in Supabase
     const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
