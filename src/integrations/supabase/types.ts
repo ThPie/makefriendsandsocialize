@@ -14,7 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      meetup_stats: {
+        Row: {
+          avatar_urls: string[] | null
+          created_at: string
+          id: string
+          last_updated: string
+          meetup_url: string | null
+          member_count: number
+          rating: number | null
+        }
+        Insert: {
+          avatar_urls?: string[] | null
+          created_at?: string
+          id?: string
+          last_updated?: string
+          meetup_url?: string | null
+          member_count?: number
+          rating?: number | null
+        }
+        Update: {
+          avatar_urls?: string[] | null
+          created_at?: string
+          id?: string
+          last_updated?: string
+          meetup_url?: string | null
+          member_count?: number
+          rating?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
