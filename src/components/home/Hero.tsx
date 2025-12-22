@@ -1,14 +1,59 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+
+const videos = [
+  '/videos/hero-1.mp4',
+  '/videos/hero-2.mp4',
+  '/videos/hero-3.mp4',
+  '/videos/hero-4.mp4',
+];
 
 export const Hero = () => {
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleVideoEnd = () => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentVideoIndex((prev) => (prev + 1) % videos.length);
+      setIsTransitioning(false);
+    }, 300);
+  };
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // Autoplay may be blocked, that's okay
+      });
+    }
+  }, [currentVideoIndex]);
+
   return (
-    <section className="relative w-full">
+    <section className="relative w-full overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0 bg-primary/80">
+        <video
+          ref={videoRef}
+          key={currentVideoIndex}
+          className={`h-full w-full object-cover transition-opacity duration-300 ${
+            isTransitioning ? 'opacity-0' : 'opacity-100'
+          }`}
+          autoPlay
+          muted
+          playsInline
+          onEnded={handleVideoEnd}
+        >
+          <source src={videos[currentVideoIndex]} type="video/mp4" />
+        </video>
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/25 to-primary/40" />
+      </div>
+
+      {/* Content */}
       <div
-        className="flex min-h-[calc(100vh-81px)] w-full flex-col items-center justify-center bg-cover bg-center bg-no-repeat px-6 py-20 text-center transition-all duration-700 md:px-10"
-        style={{
-          backgroundImage: `linear-gradient(rgba(20, 57, 59, 0.25), rgba(20, 57, 59, 0.4)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuALlg_lhUHqLRNeE3gFSxRbbm8jSE0aqI1u-ZcwATjIGoQogVHcL2OHTrhhup9LjakYQSqr_QC4AJX0w9rWQ8IW1lx8QZUZAv9M15Q3_2sR8ztqsBzz3NvXI5ZWnCCCepFwhvJB9AsMfHLfxR2R_hIcIusPCmJj_AekZ3ThepjJqPr5BxPLu4xwm7hqG_VNVhy_4SBQPcd6OBNwFbi6d6w2xKIvc0wcCtFORE8kPyuGrBK68YFzYROcREKIiSp7no4QEIXE5HufZx44")`,
-        }}
+        className="relative flex min-h-[calc(100vh-81px)] w-full flex-col items-center justify-center px-6 py-20 text-center md:px-10"
         role="img"
         aria-label="An elegant evening social gathering with people mingling in a softly lit, luxurious room."
       >
@@ -23,6 +68,22 @@ export const Hero = () => {
             <Link to="/membership">Request an Invitation</Link>
           </Button>
         </div>
+      </div>
+
+      {/* Video Progress Indicators */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {videos.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentVideoIndex(index)}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              index === currentVideoIndex 
+                ? 'w-8 bg-white' 
+                : 'w-1.5 bg-white/50 hover:bg-white/70'
+            }`}
+            aria-label={`Go to video ${index + 1}`}
+          />
+        ))}
       </div>
     </section>
   );
