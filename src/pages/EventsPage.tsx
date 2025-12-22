@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { EventChatbot } from '@/components/EventChatbot';
@@ -306,6 +307,9 @@ const EventsPage = () => {
                       className={`flex-1 ${rsvpStatus[event.id] ? 'border-destructive/50 text-destructive hover:bg-destructive/10' : ''}`}
                     >
                       {rsvpStatus[event.id] ? 'Cancel RSVP' : 'RSVP Now'}
+                    </Button>
+                    <Button variant="outline" asChild>
+                      <Link to={`/events/${event.id}`}>Details</Link>
                     </Button>
                   </div>
                 </div>

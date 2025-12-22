@@ -33,7 +33,7 @@ const MembershipPage = () => {
             A Legacy of Connection
           </h2>
           <p className="text-muted-foreground text-base font-normal leading-normal max-w-[720px]">
-            The Gathering Society is founded on the principle that the most meaningful moments are shared. We provide a private, curated environment for leaders, innovators, and connoisseurs to connect, inspire, and create lasting relationships.
+            MakeFriends Socialize is founded on the principle that the most meaningful moments are shared. We provide a private, curated environment for leaders, innovators, and connoisseurs to connect, inspire, and create lasting relationships.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

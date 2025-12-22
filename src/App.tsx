@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { Layout } from "@/components/layout/Layout";
 import HomePage from "@/pages/HomePage";
 import EventsPage from "@/pages/EventsPage";
+import EventDetailPage from "@/pages/EventDetailPage";
 import MembershipPage from "@/pages/MembershipPage";
 import GalleryPage from "@/pages/GalleryPage";
 import AboutPage from "@/pages/AboutPage";
@@ -32,6 +33,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/events" element={<EventsPage />} />
+              <Route path="/events/:id" element={<EventDetailPage />} />
               <Route path="/membership" element={<MembershipPage />} />
               <Route path="/gallery" element={<GalleryPage />} />
               <Route path="/about" element={<AboutPage />} />
