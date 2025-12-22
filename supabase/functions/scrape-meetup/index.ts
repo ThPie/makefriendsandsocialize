@@ -28,10 +28,10 @@ serve(async (req) => {
     const { meetupUrl } = await req.json();
     const baseUrl = meetupUrl || 'https://www.meetup.com/makefriendsandsocialize/';
     
-    // Scrape members page sorted by newest first to get recent joiners
-    const membersUrl = baseUrl.replace(/\/$/, '') + '/members/?sort=chapter_joined_date';
+    // Scrape members page sorted by last visited/active members
+    const membersUrl = baseUrl.replace(/\/$/, '') + '/members/?sort=last_visited';
 
-    console.log('Scraping Meetup members URL:', membersUrl);
+    console.log('Scraping Meetup members URL (sorted by last visited):', membersUrl);
 
     // First try to scrape the members page sorted by newest
     let scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
