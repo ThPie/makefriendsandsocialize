@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import logo from '@/assets/logo.png';
+import { useTheme } from 'next-themes';
+import logoDark from '@/assets/logo.png';
+import logoLight from '@/assets/logo-light.png';
 
 const navItems = [
   { label: 'Home', path: '/' },
@@ -18,6 +20,9 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const { resolvedTheme } = useTheme();
+  
+  const logo = resolvedTheme === 'dark' ? logoDark : logoLight;
 
   useEffect(() => {
     const handleScroll = () => {
