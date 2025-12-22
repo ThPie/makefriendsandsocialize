@@ -1,1 +1,7 @@
 project_id = "qzqomqctuqldexnxgmlh"
+
+[functions.event-assistant]
+verify_jwt = false
+
+[functions.scrape-meetup]
+verify_jwt = false

@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { MemberAvatars } from './MemberAvatars';
 
 const videos = [
   '/videos/hero-1.mp4',
@@ -9,9 +11,21 @@ const videos = [
   '/videos/hero-4.mp4',
 ];
 
+// Default avatars as fallback
+const defaultAvatars = [
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face',
+];
+
 export const Hero = () => {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [memberCount, setMemberCount] = useState(928);
+  const [avatarUrls, setAvatarUrls] = useState<string[]>(defaultAvatars);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleVideoEnd = () => {
@@ -27,6 +41,39 @@ export const Hero = () => {
       videoRef.current.play().catch(() => {});
     }
   }, [currentVideoIndex]);
+
+  // Fetch meetup stats from database
+  useEffect(() => {
+    const fetchMeetupStats = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('meetup_stats')
+          .select('member_count, avatar_urls')
+          .limit(1)
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error fetching meetup stats:', error);
+          return;
+        }
+
+        if (data) {
+          if (data.member_count) {
+            setMemberCount(data.member_count);
+          }
+          if (data.avatar_urls && data.avatar_urls.length > 0) {
+            setAvatarUrls(data.avatar_urls);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching meetup stats:', error);
+      } finally {
+        setIsLoadingStats(false);
+      }
+    };
+
+    fetchMeetupStats();
+  }, []);
 
   return (
     <section className="relative w-full overflow-hidden">
@@ -62,7 +109,17 @@ export const Hero = () => {
           <p className="max-w-2xl text-lg font-normal leading-relaxed text-white/90 md:text-xl drop-shadow-md">
             Weekly curated events. Vetted members. Genuine friendships and meaningful business connections.
           </p>
-          <Button size="lg" asChild className="animate-fade-in mt-2" style={{ animationDelay: '0.2s' }}>
+          
+          {/* Member Avatars */}
+          <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
+            <MemberAvatars
+              avatarUrls={avatarUrls}
+              memberCount={memberCount}
+              isLoading={isLoadingStats}
+            />
+          </div>
+
+          <Button size="lg" asChild className="animate-fade-in mt-2" style={{ animationDelay: '0.3s' }}>
             <Link to="/membership">Request an Invitation</Link>
           </Button>
         </div>
