@@ -125,8 +125,23 @@ serve(async (req) => {
       return true;
     };
     
-    // Pattern to find all meetupstatic images
+    // Pattern to find all meetupstatic images with surrounding context to detect organizers
     const imgPattern = /<img[^>]*src=["']([^"']*meetupstatic\.com[^"']*)["'][^>]*>/gi;
+    
+    // Check for organizer/host context near an image
+    const isNearOrganizerText = (html: string, matchIndex: number): boolean => {
+      // Look at surrounding 500 characters
+      const start = Math.max(0, matchIndex - 300);
+      const end = Math.min(html.length, matchIndex + 300);
+      const context = html.substring(start, end).toLowerCase();
+      
+      // Check for organizer/host indicators
+      return context.includes('organizer') || 
+             context.includes('host') || 
+             context.includes('co-organizer') ||
+             context.includes('leadership') ||
+             context.includes('assistant organizer');
+    };
 
     let match;
     while ((match = imgPattern.exec(html)) !== null && memberAvatarUrls.length < 12) {
@@ -138,12 +153,22 @@ serve(async (req) => {
       // Filter out placeholders, defaults, and duplicates
       if (url.includes('placeholder') || url.includes('default') || url.includes('member_')) continue;
       
-      // Check for duplicates by filename
-      const filename = url.split('/').pop()?.split('?')[0] || '';
-      if (memberAvatarUrls.some(existing => existing.includes(filename))) continue;
+      // Skip organizers/hosts
+      if (isNearOrganizerText(html, match.index)) {
+        console.log('Skipping organizer avatar:', url.substring(0, 80));
+        continue;
+      }
       
-      // Upgrade to higher resolution and add
+      // Upgrade to higher resolution
       url = upgradeToHighRes(url);
+      
+      // Check for duplicates by full URL (after upgrading)
+      if (memberAvatarUrls.includes(url)) continue;
+      
+      // Also check by base filename to catch different query params
+      const filename = url.split('/').pop()?.split('?')[0] || '';
+      if (memberAvatarUrls.some(existing => existing.split('/').pop()?.split('?')[0] === filename)) continue;
+      
       memberAvatarUrls.push(url);
     }
 
