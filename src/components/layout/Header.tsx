@@ -22,7 +22,10 @@ export const Header = () => {
   const location = useLocation();
   const { resolvedTheme } = useTheme();
   
-  const logo = resolvedTheme === 'dark' ? logoDark : logoLight;
+  // Use light logo when header is transparent (over video), themed logo when scrolled
+  const logo = isScrolled 
+    ? (resolvedTheme === 'dark' ? logoDark : logoLight)
+    : logoDark; // Always use dark/light logo when over video (transparent header)
 
   useEffect(() => {
     const handleScroll = () => {
