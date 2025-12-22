@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Check, PartyPopper, Users, Sparkles } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
@@ -56,27 +56,6 @@ const tiers = [
   },
 ];
 
-const benefits = [
-  {
-    id: 'access',
-    title: 'Exclusive Access',
-    description: 'Gain entry to our private, members-only events, from intimate soirées to grand galas, held in the most sought-after venues.',
-    Icon: PartyPopper,
-  },
-  {
-    id: 'networking',
-    title: 'Curated Networking',
-    description: 'Connect with a diverse and influential community of leaders, innovators, and connoisseurs from various fields.',
-    Icon: Users,
-  },
-  {
-    id: 'experiences',
-    title: 'Bespoke Experiences',
-    description: 'Enjoy meticulously planned experiences that cater to a refined palate, from gourmet dining to unique cultural engagements.',
-    Icon: Sparkles,
-  },
-];
-
 export const PricingSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
@@ -97,7 +76,7 @@ export const PricingSection = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto mb-20 md:mb-28">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
           {tiers.map((tier, index) => (
             <div
               key={index}
@@ -146,28 +125,6 @@ export const PricingSection = () => {
               </Button>
             </div>
           ))}
-        </div>
-
-        {/* Benefit Cards - Dark Section */}
-        <div className={`bg-secondary rounded-2xl p-8 md:p-12 lg:p-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
-            {benefits.map((benefit, index) => (
-              <div 
-                key={benefit.id} 
-                className={`group flex flex-col items-center gap-5 text-center p-6 rounded-xl transition-all duration-300 hover:bg-secondary-foreground/5 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
-              >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-primary transition-all duration-300 group-hover:bg-primary/30 group-hover:shadow-[0_0_25px_hsl(var(--primary)/0.4)] group-hover:scale-110">
-                  <benefit.Icon className="w-7 h-7 transition-transform duration-300 group-hover:scale-110" strokeWidth={1.5} />
-                </div>
-                <h3 className="font-display text-xl font-semibold text-secondary-foreground italic transition-colors duration-300 group-hover:text-primary">
-                  {benefit.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-secondary-foreground/70 transition-colors duration-300 group-hover:text-secondary-foreground/90">
-                  {benefit.description}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
