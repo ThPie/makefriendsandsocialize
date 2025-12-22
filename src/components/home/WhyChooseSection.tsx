@@ -23,11 +23,11 @@ export const WhyChooseSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="why">
       <div ref={ref} className="mx-auto max-w-7xl">
         <div className={`text-center mb-12 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
-            Why Choose Our Community?
+            Why Choose Our <span className="text-primary">Community</span>?
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Discover what makes MakeFriends the premier destination for meaningful social connections.

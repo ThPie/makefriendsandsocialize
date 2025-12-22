@@ -37,11 +37,11 @@ export const FAQSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="faq">
       <div ref={ref} className="mx-auto max-w-7xl">
         <div className={`text-center mb-12 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
-            Frequently Asked Questions
+            Frequently Asked <span className="text-primary">Questions</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Everything you need to know about our community and events.

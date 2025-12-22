@@ -68,7 +68,7 @@ export const PricingSection = () => {
             Membership
           </span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
-            Simple, Transparent Pricing
+            Simple, Transparent <span className="text-primary">Pricing</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Choose the membership that fits your lifestyle and start connecting today.
