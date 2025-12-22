@@ -57,42 +57,49 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Story */}
+      {/* Story, Mission, Values - Horizontal Layout */}
       <section className="py-12 md:py-20 w-full max-w-[1440px] px-4">
-        <h2 className="text-foreground text-3xl font-bold leading-tight tracking-tight pb-4 font-display">
-          Our <span className="text-primary">Story</span>
-        </h2>
-        <p className="text-muted-foreground text-lg font-normal leading-relaxed mb-6">
-          Founded in 2025, MakeFriends & Socialize was born from a vision to create meaningful connections in an increasingly digital world. We recognized the need for a platform that brings together like-minded individuals who value authentic relationships, love, and sophisticated social experiences.
-        </p>
-        <p className="text-muted-foreground text-lg font-normal leading-relaxed">
-          Our community has grown to become a trusted space for professionals and socialites to meet, connect, and build lasting friendships and relationships through carefully curated events and experiences.
-        </p>
-      </section>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Story */}
+          <div className="flex flex-col">
+            <h2 className="text-foreground text-2xl md:text-3xl font-bold leading-tight tracking-tight pb-4 font-display">
+              Our <span className="text-primary">Story</span>
+            </h2>
+            <p className="text-muted-foreground text-base font-normal leading-relaxed mb-4">
+              Founded in 2025, MakeFriends & Socialize was born from a vision to create meaningful connections in an increasingly digital world.
+            </p>
+            <p className="text-muted-foreground text-base font-normal leading-relaxed">
+              Our community has grown to become a trusted space for professionals and socialites to meet, connect, and build lasting friendships through carefully curated events.
+            </p>
+          </div>
 
-      {/* Mission */}
-      <section className="py-12 md:py-20 w-full max-w-[1440px] px-4 bg-secondary/5 rounded-2xl mx-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-foreground text-3xl font-bold leading-tight tracking-tight pb-6 font-display">
-            Our <span className="text-primary">Mission</span>
-          </h2>
-          <p className="text-muted-foreground text-lg font-normal leading-relaxed mb-6">
-            To cultivate a vibrant network of like-minded individuals through meticulously curated luxury experiences that foster genuine connections, meaningful relationships, and lasting partnerships.
-          </p>
-          <p className="text-muted-foreground text-lg font-normal leading-relaxed">
-            We believe that the most valuable asset in life is not wealth or status, but the quality of relationships we build. Our mission is to create the perfect environment where these relationships can flourish naturally, authentically, and meaningfully.
-          </p>
+          {/* Mission */}
+          <div className="flex flex-col">
+            <h2 className="text-foreground text-2xl md:text-3xl font-bold leading-tight tracking-tight pb-4 font-display">
+              Our <span className="text-primary">Mission</span>
+            </h2>
+            <p className="text-muted-foreground text-base font-normal leading-relaxed mb-4">
+              To cultivate a vibrant network of like-minded individuals through meticulously curated luxury experiences that foster genuine connections and lasting partnerships.
+            </p>
+            <p className="text-muted-foreground text-base font-normal leading-relaxed">
+              We believe the most valuable asset in life is not wealth or status, but the quality of relationships we build.
+            </p>
+          </div>
+
+          {/* Values */}
+          <div className="flex flex-col">
+            <h2 className="text-foreground text-2xl md:text-3xl font-bold leading-tight tracking-tight pb-4 font-display">
+              Our <span className="text-primary">Values</span>
+            </h2>
+            <p className="text-muted-foreground text-base font-normal leading-relaxed">
+              These core principles guide every decision we make and every experience we create: Exclusivity, Quality, Discretion, Authenticity, Elegance, and Community.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Values */}
-      <section className="py-12 md:py-20 w-full max-w-[1440px] px-4">
-        <h2 className="text-foreground text-3xl font-bold leading-tight tracking-tight pb-8 text-center font-display">
-          Our <span className="text-primary">Values</span>
-        </h2>
-        <p className="text-muted-foreground text-center text-lg mb-10 max-w-2xl mx-auto">
-          These core principles guide every decision we make and every experience we create.
-        </p>
+      {/* Values Grid */}
+      <section className="py-12 md:py-20 w-full max-w-[1440px] px-4 bg-secondary/5 rounded-2xl mx-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {values.map((item, i) => (
             <div 
