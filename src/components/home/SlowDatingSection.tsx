@@ -1,13 +1,16 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 export const SlowDatingSection = () => {
+  const { ref, isVisible } = useScrollAnimation();
+
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-secondary/5">
-      <div className="mx-auto max-w-7xl">
+      <div ref={ref} className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Image */}
-          <div className="relative overflow-hidden rounded-2xl aspect-[4/3] lg:aspect-square">
+          <div className={`relative overflow-hidden rounded-2xl aspect-[4/3] lg:aspect-square scroll-animate ${isVisible ? 'visible' : ''}`}>
             <img
               src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&auto=format&fit=crop&q=80"
               alt="Friends connecting at an elegant venue"
@@ -17,7 +20,7 @@ export const SlowDatingSection = () => {
           </div>
 
           {/* Content */}
-          <div className="flex flex-col justify-center">
+          <div className={`flex flex-col justify-center scroll-animate scroll-animate-delay-2 ${isVisible ? 'visible' : ''}`}>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-6 leading-tight">
               Redefining Connections with Time
             </h2>
