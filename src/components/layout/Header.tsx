@@ -53,19 +53,21 @@ export const Header = () => {
           : 'border-border bg-background/95 backdrop-blur-md shadow-sm'
       }`}
     >
-      <div className="mx-auto flex h-full items-center justify-between px-6 py-3 md:px-10 lg:px-16 xl:px-20">
+      <div className="mx-auto flex h-full items-center justify-between px-4 py-2 md:px-8 lg:px-12 xl:px-16">
         {/* Logo */}
         <Link to="/" className="flex items-center">
           <img 
             src={logo} 
             alt="MakeFriends & Socialize" 
-            className="h-12 md:h-14 w-auto object-contain"
+            className={`w-auto object-contain transition-all duration-300 ${
+              isTransparent ? 'h-14 md:h-16' : 'h-10 md:h-12'
+            }`}
           />
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden flex-1 items-center justify-end gap-8 lg:flex">
-          <nav className="flex items-center gap-8">
+        <div className="hidden flex-1 items-center justify-end gap-6 lg:flex">
+          <nav className="flex items-center gap-6">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -80,7 +82,7 @@ export const Header = () => {
               </Link>
             ))}
           </nav>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button asChild>
               <Link to="/membership">Become a Member</Link>
@@ -89,7 +91,7 @@ export const Header = () => {
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="flex items-center gap-3 lg:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <ThemeToggle />
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
