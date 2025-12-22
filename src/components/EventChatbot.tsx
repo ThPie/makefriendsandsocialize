@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import chatbotAvatar from '@/assets/chatbot-avatar.png';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -11,7 +12,11 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/event-assist
 export const EventChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: "Welcome to The Gathering Society! I'm your Event Assistant. How can I help you discover our curated events today?" }
+    {
+      role: 'assistant',
+      content:
+        "Welcome to The Gathering Society! I'm your Event Assistant. How can I help you discover our curated events today?",
+    },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -77,10 +82,10 @@ export const EventChatbot = () => {
             const content = parsed.choices?.[0]?.delta?.content;
             if (content) {
               assistantContent += content;
-              setMessages(prev => {
+              setMessages((prev) => {
                 const last = prev[prev.length - 1];
                 if (last?.role === 'assistant' && prev.length > messages.length) {
-                  return prev.map((m, i) => 
+                  return prev.map((m, i) =>
                     i === prev.length - 1 ? { ...m, content: assistantContent } : m
                   );
                 }
@@ -95,9 +100,13 @@ export const EventChatbot = () => {
       }
     } catch (error) {
       console.error('Chat error:', error);
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: "I apologize, but I'm having trouble responding right now. Please try again." }
+        {
+          role: 'assistant',
+          content:
+            "I apologize, but I'm having trouble responding right now. Please try again.",
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -116,12 +125,16 @@ export const EventChatbot = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-all duration-300 flex items-center justify-center group"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-all duration-300 flex items-center justify-center group overflow-hidden"
         aria-label="Open Event Assistant"
       >
-        <span className="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform">
-          {isOpen ? 'close' : 'smart_toy'}
-        </span>
+        <img
+          src={chatbotAvatar}
+          alt="Professional event assistant avatar"
+          className="h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
       </button>
 
       {/* Chat Window */}
@@ -129,8 +142,14 @@ export const EventChatbot = () => {
         <div className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] h-[500px] max-h-[70vh] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-in">
           {/* Header */}
           <div className="bg-primary text-primary-foreground p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-foreground/20 rounded-full flex items-center justify-center">
-              <span className="material-symbols-outlined">smart_toy</span>
+            <div className="w-10 h-10 rounded-full overflow-hidden border border-primary-foreground/20">
+              <img
+                src={chatbotAvatar}
+                alt="Professional event assistant avatar"
+                className="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
             </div>
             <div>
               <h3 className="font-bold font-display text-lg">Event Assistant</h3>
@@ -160,9 +179,18 @@ export const EventChatbot = () => {
               <div className="flex justify-start">
                 <div className="bg-muted text-foreground px-4 py-2.5 rounded-2xl rounded-bl-md">
                   <div className="flex gap-1">
-                    <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span
+                      className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                      style={{ animationDelay: '0ms' }}
+                    />
+                    <span
+                      className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                      style={{ animationDelay: '150ms' }}
+                    />
+                    <span
+                      className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"
+                      style={{ animationDelay: '300ms' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -197,3 +225,4 @@ export const EventChatbot = () => {
     </>
   );
 };
+
