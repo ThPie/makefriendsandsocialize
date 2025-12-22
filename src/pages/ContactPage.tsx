@@ -60,7 +60,7 @@ const ContactPage = () => {
       <div className="w-full max-w-[1440px] mt-8 p-4">
         <div 
           className="flex min-h-[400px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-center justify-center p-4 relative overflow-hidden" 
-          style={{backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.6) 0%, rgba(20, 57, 59, 0.9) 100%), url("https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2669&auto=format&fit=crop")'}}
+          style={{backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.6) 0%, rgba(20, 57, 59, 0.9) 100%), url("/images/contact-hero.jpg")'}}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/20" />
           <div className="flex flex-col gap-4 text-center relative z-10">
