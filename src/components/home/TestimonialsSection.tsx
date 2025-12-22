@@ -1,5 +1,6 @@
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Quote } from 'lucide-react';
+import { useParallax } from '@/hooks/useParallax';
 
 const testimonials = [
   {
@@ -27,10 +28,23 @@ const testimonials = [
 
 export const TestimonialsSection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const decorOffset = useParallax({ speed: 0.1, direction: 'up' });
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20">
-      <div ref={ref} className="mx-auto max-w-7xl">
+    <section className="relative w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 overflow-hidden">
+      {/* Floating Decorative Elements with Parallax */}
+      <div 
+        className="absolute top-20 left-10 w-64 h-64 rounded-full bg-primary/5 blur-3xl will-change-transform"
+        style={{ transform: `translateY(${decorOffset}px)` }}
+        aria-hidden="true"
+      />
+      <div 
+        className="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-secondary/10 blur-3xl will-change-transform"
+        style={{ transform: `translateY(${decorOffset * -0.5}px)` }}
+        aria-hidden="true"
+      />
+
+      <div ref={ref} className="relative mx-auto max-w-7xl">
         <div className={`text-center mb-12 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <span className="inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-4">
             Testimonials
