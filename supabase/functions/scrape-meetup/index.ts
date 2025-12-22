@@ -26,25 +26,51 @@ serve(async (req) => {
     }
 
     const { meetupUrl } = await req.json();
-    const urlToScrape = meetupUrl || 'https://www.meetup.com/makefriendsandsocialize/';
+    const baseUrl = meetupUrl || 'https://www.meetup.com/makefriendsandsocialize/';
+    
+    // Scrape members page sorted by newest first to get recent joiners
+    const membersUrl = baseUrl.replace(/\/$/, '') + '/members/?sort=chapter_joined_date';
 
-    console.log('Scraping Meetup URL:', urlToScrape);
+    console.log('Scraping Meetup members URL:', membersUrl);
 
-    // Scrape the Meetup page using Firecrawl
-    const scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
+    // First try to scrape the members page sorted by newest
+    let scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${firecrawlApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        url: urlToScrape,
+        url: membersUrl,
         formats: ['html', 'markdown'],
         onlyMainContent: false,
       }),
     });
 
-    const scrapeData = await scrapeResponse.json();
+    let scrapeData = await scrapeResponse.json();
+    let html = scrapeData.data?.html || scrapeData.html || '';
+    let markdown = scrapeData.data?.markdown || scrapeData.markdown || '';
+
+    // If members page failed or returned login page, fall back to main group page
+    const isLoginPage = html.includes('Log in') && html.includes('Sign up') && !html.includes('/photos/member/');
+    if (!scrapeResponse.ok || isLoginPage) {
+      console.log('Members page not accessible, falling back to main group page');
+      scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${firecrawlApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: baseUrl,
+          formats: ['html', 'markdown'],
+          onlyMainContent: false,
+        }),
+      });
+      scrapeData = await scrapeResponse.json();
+      html = scrapeData.data?.html || scrapeData.html || '';
+      markdown = scrapeData.data?.markdown || scrapeData.markdown || '';
+    }
 
     if (!scrapeResponse.ok) {
       console.error('Firecrawl API error:', scrapeData);
@@ -53,9 +79,6 @@ serve(async (req) => {
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    const html = scrapeData.data?.html || scrapeData.html || '';
-    const markdown = scrapeData.data?.markdown || scrapeData.markdown || '';
 
     console.log('Scrape successful, parsing data...');
 
@@ -157,7 +180,7 @@ serve(async (req) => {
         .update({
           member_count: memberCount,
           avatar_urls: finalAvatars,
-          meetup_url: urlToScrape,
+          meetup_url: baseUrl,
           last_updated: new Date().toISOString(),
         })
         .eq('id', existingStats[0].id)
@@ -169,7 +192,7 @@ serve(async (req) => {
         .insert({
           member_count: memberCount,
           avatar_urls: finalAvatars,
-          meetup_url: urlToScrape,
+          meetup_url: baseUrl,
         })
         .select();
     }
