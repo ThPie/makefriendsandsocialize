@@ -8,10 +8,8 @@ import logoLight from '@/assets/logo-light.png';
 
 const navItems = [
   { label: 'Home', path: '/' },
-  { label: 'About', path: '/about' },
   { label: 'Events', path: '/events' },
-  { label: 'Journal', path: '/journal' },
-  { label: 'Gallery', path: '/gallery' },
+  { label: 'About', path: '/about' },
   { label: 'Membership', path: '/membership' },
   { label: 'Contact', path: '/contact' },
 ];

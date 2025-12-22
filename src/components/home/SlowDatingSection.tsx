@@ -21,21 +21,22 @@ export const SlowDatingSection = () => {
 
           {/* Content */}
           <div className={`flex flex-col justify-center scroll-animate scroll-animate-delay-2 ${isVisible ? 'visible' : ''}`}>
+            <p className="text-primary text-sm font-bold uppercase tracking-wide mb-4">By Invitation Only</p>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-6 leading-tight">
-              Slow Dating, <span className="text-gradient">Matchmaking</span>
+              Private <span className="text-gradient">Introductions</span>
             </h2>
             <p className="text-muted-foreground text-lg mb-6 leading-relaxed">
-              In a world of swipes and instant judgments, we believe in the power of slow, 
-              meaningful connections. Our curated matchmaking approach prioritizes depth 
-              over speed, allowing genuine bonds to form naturally.
+              For select members seeking meaningful connections beyond our social gatherings, 
+              we offer a discreet introduction service. No algorithms, no profiles—just 
+              thoughtful, human-facilitated introductions.
             </p>
             <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-              Each introduction is thoughtfully facilitated by our experienced hosts, 
-              creating the perfect atmosphere for authentic conversations and lasting friendships.
+              This premium service is available exclusively to established members 
+              and operates entirely through personal consultation with our team.
             </p>
             <div>
-              <Button asChild size="lg" className="rounded-full px-8">
-                <Link to="/membership">Join Matchmaking</Link>
+              <Button asChild variant="outline" size="lg" className="rounded-full px-8">
+                <Link to="/contact">Inquire Privately</Link>
               </Button>
             </div>
           </div>

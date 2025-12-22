@@ -14,9 +14,9 @@ const HomePage = () => {
       <Hero />
       <WhyChooseSection />
       <EventSection />
-      <SlowDatingSection />
       <EthosSection />
       <TestimonialsSection />
+      <SlowDatingSection />
       <PricingSection />
       <FAQSection />
       <EventChatbot />
