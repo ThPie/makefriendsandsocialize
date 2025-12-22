@@ -80,13 +80,18 @@ export const Footer = () => {
             {/* The Maison Pierre - In-house Brand */}
             <div className="flex flex-col items-center text-center group">
               <p className="text-muted-foreground/60 text-xs mb-4">Our In-House Brand</p>
-              <div className="h-16 w-40 flex items-center justify-center mb-4">
+              <a 
+                href="https://themaisonpierre.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="h-16 w-40 flex items-center justify-center mb-4"
+              >
                 <img
                   src={maisonPierreLogo}
                   alt="The Maison Pierre"
                   className="max-h-full max-w-full object-contain opacity-80 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
                 />
-              </div>
+              </a>
               <p className="text-muted-foreground text-sm max-w-xs">
                 Timeless elegance in bespoke tailoring—where clothing becomes an extension of self.
               </p>
