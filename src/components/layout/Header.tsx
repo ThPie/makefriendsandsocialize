@@ -22,17 +22,19 @@ export const Header = () => {
   const location = useLocation();
   const { resolvedTheme } = useTheme();
   
-  // Use light logo when header is transparent (over video), themed logo when scrolled
-  const logo = isScrolled 
-    ? (resolvedTheme === 'dark' ? logoDark : logoLight)
-    : logoDark; // Always use dark/light logo when over video (transparent header)
+  const isHomePage = location.pathname === '/';
+  const isTransparent = isHomePage && !isScrolled;
+  
+  // Use light logo when header is transparent (over video), themed logo when scrolled/inner pages
+  const logo = isTransparent 
+    ? logoDark 
+    : (resolvedTheme === 'dark' ? logoDark : logoLight);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
-    // Ensure correct initial state on load/refresh
     handleScroll();
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -46,9 +48,9 @@ export const Header = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 w-full border-b transition-all duration-300 ${
-        isScrolled 
-          ? 'border-border bg-background/95 backdrop-blur-md shadow-sm' 
-          : 'border-transparent bg-transparent'
+        isTransparent 
+          ? 'border-transparent bg-gradient-to-b from-black/50 via-black/25 to-transparent' 
+          : 'border-border bg-background/95 backdrop-blur-md shadow-sm'
       }`}
     >
       <div className="mx-auto flex h-full items-center justify-between px-6 py-3 md:px-10 lg:px-16 xl:px-20">
@@ -71,7 +73,7 @@ export const Header = () => {
                 className={`text-sm font-medium leading-normal transition-colors hover:text-primary ${
                   location.pathname === item.path
                     ? 'text-primary'
-                    : isScrolled ? 'text-foreground/80' : 'text-white/90'
+                    : isTransparent ? 'text-white/90' : 'text-foreground/80'
                 }`}
               >
                 {item.label}
