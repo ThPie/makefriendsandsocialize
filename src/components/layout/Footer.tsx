@@ -69,7 +69,7 @@ export const Footer = () => {
                 href="https://joinhavn.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="h-16 w-40 flex items-center justify-center mb-4"
+                className="h-10 w-28 flex items-center justify-center mb-4"
               >
                 <img
                   src={havnLogo}
@@ -89,7 +89,7 @@ export const Footer = () => {
                 href="https://themaisonpierre.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="h-16 w-40 flex items-center justify-center mb-4"
+                className="h-10 w-28 flex items-center justify-center mb-4"
               >
                 <img
                   src={maisonPierreLogo}

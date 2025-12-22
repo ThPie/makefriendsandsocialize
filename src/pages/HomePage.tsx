@@ -1,6 +1,7 @@
 import { Hero } from '@/components/home/Hero';
 import { WhyChooseSection } from '@/components/home/WhyChooseSection';
 import { EventSection } from '@/components/home/EventSection';
+import { BusinessEventsSection } from '@/components/home/BusinessEventsSection';
 import { SlowDatingSection } from '@/components/home/SlowDatingSection';
 import { EthosSection } from '@/components/home/EthosSection';
 import { FAQSection } from '@/components/home/FAQSection';
@@ -14,6 +15,7 @@ const HomePage = () => {
       <Hero />
       <WhyChooseSection />
       <EventSection />
+      <BusinessEventsSection />
       <TestimonialsSection />
       <EthosSection />
       <SlowDatingSection />

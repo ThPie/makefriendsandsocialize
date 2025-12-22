@@ -1,4 +1,4 @@
-import { Heart, Sparkles, Calendar } from 'lucide-react';
+import { Heart, Sparkles, Calendar, Briefcase } from 'lucide-react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 const features = [
@@ -17,6 +17,11 @@ const features = [
     title: 'Weekly Gatherings, Year-Round',
     description: 'Multiple events each week ensure you always have opportunities to meet new friends.',
   },
+  {
+    icon: Briefcase,
+    title: 'Business Networking',
+    description: 'Connect with founders, executives, and entrepreneurs at events designed to foster partnerships.',
+  },
 ];
 
 export const WhyChooseSection = () => {
@@ -34,7 +39,7 @@ export const WhyChooseSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {features.map((feature, index) => (
             <div
               key={index}
