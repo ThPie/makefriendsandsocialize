@@ -6,13 +6,10 @@ import { useTheme } from 'next-themes';
 import logoDark from '@/assets/logo.png';
 import logoLight from '@/assets/logo-light.png';
 
-const leftNavItems = [
+const navItems = [
   { label: 'Home', path: '/' },
   { label: 'About', path: '/about' },
   { label: 'Events', path: '/events' },
-];
-
-const rightNavItems = [
   { label: 'Journal', path: '/journal' },
   { label: 'Gallery', path: '/gallery' },
   { label: 'Membership', path: '/membership' },
@@ -46,8 +43,6 @@ export const Header = () => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  const allNavItems = [...leftNavItems, ...rightNavItems];
-
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 w-full border-b transition-all duration-300 ${
@@ -56,40 +51,20 @@ export const Header = () => {
           : 'border-transparent bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-full items-center justify-center gap-8 md:gap-10 lg:gap-12 px-6 py-3 md:px-10 lg:px-16 xl:px-20">
-        
-        {/* Desktop Navigation - Left */}
-        <nav className="hidden lg:flex items-center gap-6">
-          {leftNavItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`text-sm font-medium leading-normal transition-colors hover:text-primary ${
-                location.pathname === item.path
-                  ? 'text-primary'
-                  : isScrolled ? 'text-foreground/80' : 'text-white/90'
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Centered Logo */}
-        <Link to="/" className="flex items-center justify-center">
+      <div className="mx-auto flex h-full items-center justify-between px-6 py-3 md:px-10 lg:px-16 xl:px-20">
+        {/* Logo */}
+        <Link to="/" className="flex items-center">
           <img 
             src={logo} 
             alt="MakeFriends & Socialize" 
-            className={`w-auto object-contain transition-all duration-300 ${
-              isScrolled ? 'h-14 md:h-16' : 'h-16 md:h-20 lg:h-24'
-            }`}
+            className="h-12 md:h-14 w-auto object-contain"
           />
         </Link>
 
-        {/* Desktop Navigation - Right */}
-        <div className="hidden lg:flex items-center gap-6">
-          <nav className="flex items-center gap-6">
-            {rightNavItems.map((item) => (
+        {/* Desktop Navigation */}
+        <div className="hidden flex-1 items-center justify-end gap-8 lg:flex">
+          <nav className="flex items-center gap-8">
+            {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -103,7 +78,12 @@ export const Header = () => {
               </Link>
             ))}
           </nav>
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Button asChild>
+              <Link to="/membership">Become a Member</Link>
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Menu Button */}
@@ -111,9 +91,7 @@ export const Header = () => {
           <ThemeToggle />
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`flex items-center justify-center rounded-md p-2 transition-colors ${
-              isScrolled ? 'text-foreground hover:bg-muted' : 'text-white hover:bg-white/10'
-            }`}
+            className="flex items-center justify-center rounded-md p-2 text-foreground hover:bg-muted transition-colors"
             aria-label="Toggle menu"
           >
             <span className="material-symbols-outlined">
@@ -126,7 +104,7 @@ export const Header = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="absolute left-0 top-full w-full border-b border-border bg-background p-6 lg:hidden shadow-xl flex flex-col gap-4 animate-slide-in-from-top">
-          {allNavItems.map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
@@ -139,6 +117,9 @@ export const Header = () => {
               {item.label}
             </Link>
           ))}
+          <Button asChild className="w-full mt-2">
+            <Link to="/membership">Become a Member</Link>
+          </Button>
         </div>
       )}
     </header>
