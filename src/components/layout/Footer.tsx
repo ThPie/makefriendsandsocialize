@@ -65,13 +65,18 @@ export const Footer = () => {
             {/* HAVN - Venue Partner */}
             <div className="flex flex-col items-center text-center group">
               <p className="text-muted-foreground/60 text-xs mb-4">Our Venue Partner</p>
-              <div className="h-16 w-40 flex items-center justify-center mb-4">
+              <a 
+                href="https://joinhavn.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="h-16 w-40 flex items-center justify-center mb-4"
+              >
                 <img
                   src={havnLogo}
                   alt="HAVN"
                   className="max-h-full max-w-full object-contain filter brightness-0 invert opacity-70 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
                 />
-              </div>
+              </a>
               <p className="text-muted-foreground text-sm max-w-xs">
                 A design-forward coworking space for founders, creatives, and builders.
               </p>
