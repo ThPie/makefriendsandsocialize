@@ -56,10 +56,10 @@ export const Header = () => {
           : 'border-transparent bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-full items-center justify-between px-6 py-3 md:px-10 lg:px-16 xl:px-20">
+      <div className="mx-auto flex h-full items-center justify-center gap-8 md:gap-10 lg:gap-12 px-6 py-3 md:px-10 lg:px-16 xl:px-20">
         
         {/* Desktop Navigation - Left */}
-        <nav className="hidden lg:flex items-center gap-6 flex-1">
+        <nav className="hidden lg:flex items-center gap-6">
           {leftNavItems.map((item) => (
             <Link
               key={item.path}
@@ -87,7 +87,7 @@ export const Header = () => {
         </Link>
 
         {/* Desktop Navigation - Right */}
-        <div className="hidden lg:flex items-center justify-end gap-6 flex-1">
+        <div className="hidden lg:flex items-center gap-6">
           <nav className="flex items-center gap-6">
             {rightNavItems.map((item) => (
               <Link
