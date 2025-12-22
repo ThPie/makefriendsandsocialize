@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import logo from '@/assets/logo.png';
 import havnLogo from '@/assets/havn-logo.png';
+import maisonPierreLogo from '@/assets/maison-pierre-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
@@ -58,20 +59,39 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Venue Partners Section */}
+        {/* Partners Section */}
         <div className="mx-auto max-w-7xl mb-12 pb-12 border-b border-border">
-          <div className="flex flex-col items-center text-center">
-            <img
-              src={havnLogo}
-              alt="HAVN"
-              className="h-12 md:h-14 w-auto object-contain filter brightness-0 invert opacity-80 mb-4"
-            />
-            <p className="text-muted-foreground text-sm max-w-sm">
-              A design-forward coworking space for founders, creatives, and builders.
-            </p>
-            <p className="text-muted-foreground/60 text-xs mt-3">
-              Our Venue Partners
-            </p>
+          <p className="text-muted-foreground/60 text-xs text-center mb-8">
+            Our Partners
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-12 sm:gap-16">
+            {/* HAVN */}
+            <div className="flex flex-col items-center text-center">
+              <div className="h-16 w-40 flex items-center justify-center mb-4">
+                <img
+                  src={havnLogo}
+                  alt="HAVN"
+                  className="max-h-full max-w-full object-contain filter brightness-0 invert opacity-80"
+                />
+              </div>
+              <p className="text-muted-foreground text-sm max-w-xs">
+                A design-forward coworking space for founders, creatives, and builders.
+              </p>
+            </div>
+            
+            {/* The Maison Pierre */}
+            <div className="flex flex-col items-center text-center">
+              <div className="h-16 w-40 flex items-center justify-center mb-4">
+                <img
+                  src={maisonPierreLogo}
+                  alt="The Maison Pierre"
+                  className="max-h-full max-w-full object-contain opacity-90"
+                />
+              </div>
+              <p className="text-muted-foreground text-sm max-w-xs">
+                Timeless elegance in bespoke tailoring—where clothing becomes an extension of self.
+              </p>
+            </div>
           </div>
         </div>
 
