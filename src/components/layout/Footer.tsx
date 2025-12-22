@@ -59,19 +59,17 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Partners Section */}
+        {/* Partners & Brands Section */}
         <div className="mx-auto max-w-7xl mb-12 pb-12 border-b border-border">
-          <p className="text-muted-foreground/60 text-xs text-center mb-8">
-            Our Partners
-          </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-12 sm:gap-16">
-            {/* HAVN */}
-            <div className="flex flex-col items-center text-center">
+            {/* HAVN - Venue Partner */}
+            <div className="flex flex-col items-center text-center group">
+              <p className="text-muted-foreground/60 text-xs mb-4">Our Venue Partner</p>
               <div className="h-16 w-40 flex items-center justify-center mb-4">
                 <img
                   src={havnLogo}
                   alt="HAVN"
-                  className="max-h-full max-w-full object-contain filter brightness-0 invert opacity-80"
+                  className="max-h-full max-w-full object-contain filter brightness-0 invert opacity-70 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
                 />
               </div>
               <p className="text-muted-foreground text-sm max-w-xs">
@@ -79,13 +77,14 @@ export const Footer = () => {
               </p>
             </div>
             
-            {/* The Maison Pierre */}
-            <div className="flex flex-col items-center text-center">
+            {/* The Maison Pierre - In-house Brand */}
+            <div className="flex flex-col items-center text-center group">
+              <p className="text-muted-foreground/60 text-xs mb-4">Our In-House Brand</p>
               <div className="h-16 w-40 flex items-center justify-center mb-4">
                 <img
                   src={maisonPierreLogo}
                   alt="The Maison Pierre"
-                  className="max-h-full max-w-full object-contain opacity-90"
+                  className="max-h-full max-w-full object-contain opacity-80 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
                 />
               </div>
               <p className="text-muted-foreground text-sm max-w-xs">
