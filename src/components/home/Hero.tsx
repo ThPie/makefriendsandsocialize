@@ -60,7 +60,7 @@ export const Hero = () => {
             A Private Social Club for <span className="text-gradient">Authentic Connections</span>
           </h1>
           <p className="max-w-2xl text-lg font-normal leading-relaxed text-white/90 md:text-xl drop-shadow-md">
-            Weekly curated events. Vetted members. Genuine friendships—not networking.
+            Weekly curated events. Vetted members. Genuine friendships and meaningful business connections.
           </p>
           <Button size="lg" asChild className="animate-fade-in mt-2" style={{ animationDelay: '0.2s' }}>
             <Link to="/membership">Request an Invitation</Link>
