@@ -170,4 +170,19 @@
   .scroll-animate-delay-3 {
     transition-delay: 300ms;
   }
+
+  /* Parallax section styles */
+  .parallax-section {
+    @apply relative overflow-hidden;
+  }
+
+  .parallax-bg {
+    @apply absolute inset-0 w-full h-[120%] -top-[10%] bg-cover bg-center bg-no-repeat will-change-transform;
+    transition: transform 0.1s ease-out;
+  }
+
+  .parallax-content {
+    @apply relative z-10 will-change-transform;
+    transition: transform 0.1s ease-out;
+  }
 }
