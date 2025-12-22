@@ -66,9 +66,16 @@ export const Hero = () => {
             const memberPhotos = data.avatar_urls.filter(
               (url: string) => url.includes('/photos/member/') && !url.includes('/photos/event/')
             );
+            
+            // Remove duplicates
+            const uniquePhotos = [...new Set(memberPhotos)];
+            
+            // Shuffle the array randomly
+            const shuffledPhotos = uniquePhotos.sort(() => Math.random() - 0.5);
+            
             // Only use filtered photos if we have enough, otherwise keep defaults
-            if (memberPhotos.length >= 3) {
-              setAvatarUrls(memberPhotos);
+            if (shuffledPhotos.length >= 3) {
+              setAvatarUrls(shuffledPhotos);
             }
           }
         }
