@@ -1,5 +1,6 @@
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Quote } from 'lucide-react';
+import { getUnsplashUrl, getUnsplashSrcSet, getSizesForLayout } from '@/lib/responsive-images';
 
 const testimonials = [
   {
@@ -7,26 +8,27 @@ const testimonials = [
     quote: "MakeFriends has completely transformed my social life. I've made genuine friendships that I know will last a lifetime.",
     name: 'Alexandra Chen',
     role: 'Fellow Member',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face',
+    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
   },
   {
     id: 2,
     quote: "Every event is impeccably curated. The attention to detail and the quality of connections I've made here are unmatched.",
     name: 'Marcus Williams',
     role: 'Founder Member',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d',
   },
   {
     id: 3,
     quote: "As someone new to the city, this community welcomed me with open arms. Now I have a network of incredible people I can call friends.",
     name: 'Sophie Laurent',
     role: 'Patron Member',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80',
   },
 ];
 
 export const TestimonialsSection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const avatarSizes = getSizesForLayout('avatar');
 
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="testimonials">
@@ -44,36 +46,43 @@ export const TestimonialsSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={testimonial.id}
-              className={`relative bg-card rounded-2xl p-8 border border-border/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-elegant scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
-            >
-              <Quote className="w-10 h-10 text-primary/20 mb-4" />
-              <p className="text-muted-foreground leading-relaxed mb-6 italic">
-                "{testimonial.quote}"
-              </p>
-              <div className="flex items-center gap-4 min-h-[44px]">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  loading="lazy"
-                  decoding="async"
-                  width={48}
-                  height={48}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20 flex-shrink-0"
-                />
-                <div>
-                  <p className="font-display text-lg font-semibold text-foreground">
-                    {testimonial.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {testimonial.role}
-                  </p>
+          {testimonials.map((testimonial, index) => {
+            const optimizedSrc = getUnsplashUrl(testimonial.image, 96, 96);
+            const srcSet = getUnsplashSrcSet(testimonial.image, [48, 96, 144]);
+            
+            return (
+              <div
+                key={testimonial.id}
+                className={`relative bg-card rounded-2xl p-8 border border-border/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-elegant scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+              >
+                <Quote className="w-10 h-10 text-primary/20 mb-4" />
+                <p className="text-muted-foreground leading-relaxed mb-6 italic">
+                  "{testimonial.quote}"
+                </p>
+                <div className="flex items-center gap-4 min-h-[44px]">
+                  <img
+                    src={optimizedSrc}
+                    srcSet={srcSet}
+                    sizes={avatarSizes}
+                    alt={testimonial.name}
+                    loading="lazy"
+                    decoding="async"
+                    width={48}
+                    height={48}
+                    className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20 flex-shrink-0"
+                  />
+                  <div>
+                    <p className="font-display text-lg font-semibold text-foreground">
+                      {testimonial.name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {testimonial.role}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

@@ -1,42 +1,50 @@
 import { Link } from 'react-router-dom';
 import type { Event } from '@/types';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { getGooglePhotosSrcSet, getSizesForLayout } from '@/lib/responsive-images';
 
 interface EventCardProps {
   event: Event;
   className?: string;
 }
 
-const EventCard = ({ event, className = '' }: EventCardProps) => (
-  <div className={`flex flex-col gap-4 rounded-xl bg-card group hover:shadow-elegant transition-all duration-500 border border-border hover:border-primary/30 hover:-translate-y-2 overflow-hidden ${className}`}>
-    <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
-      <img
-        src={event.imageUrl}
-        alt={event.altText}
-        loading="lazy"
-        decoding="async"
-        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-      />
+const EventCard = ({ event, className = '' }: EventCardProps) => {
+  const srcSet = getGooglePhotosSrcSet(event.imageUrl);
+  const sizes = getSizesForLayout('third');
+
+  return (
+    <div className={`flex flex-col gap-4 rounded-xl bg-card group hover:shadow-elegant transition-all duration-500 border border-border hover:border-primary/30 hover:-translate-y-2 overflow-hidden ${className}`}>
+      <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
+        <img
+          src={event.imageUrl}
+          srcSet={srcSet}
+          sizes={sizes}
+          alt={event.altText}
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+      </div>
+      <div className="flex flex-col gap-3 p-4 pt-0 z-10 bg-card">
+        <p className="font-display text-xl font-medium leading-normal text-card-foreground mt-4">
+          {event.title}
+        </p>
+        <p className="text-sm font-normal leading-normal text-muted-foreground">
+          {event.date}
+        </p>
+        <Link
+          to="/events"
+          className="group/link inline-flex items-center gap-2 text-sm font-bold text-primary hover:opacity-80 transition-opacity min-h-[44px] py-2"
+        >
+          View Details
+          <span className="material-symbols-outlined transition-transform group-hover/link:translate-x-1 text-lg">
+            arrow_forward
+          </span>
+        </Link>
+      </div>
     </div>
-    <div className="flex flex-col gap-3 p-4 pt-0 z-10 bg-card">
-      <p className="font-display text-xl font-medium leading-normal text-card-foreground mt-4">
-        {event.title}
-      </p>
-      <p className="text-sm font-normal leading-normal text-muted-foreground">
-        {event.date}
-      </p>
-      <Link
-        to="/events"
-        className="group/link inline-flex items-center gap-2 text-sm font-bold text-primary hover:opacity-80 transition-opacity min-h-[44px] py-2"
-      >
-        View Details
-        <span className="material-symbols-outlined transition-transform group-hover/link:translate-x-1 text-lg">
-          arrow_forward
-        </span>
-      </Link>
-    </div>
-  </div>
-);
+  );
+};
 
 const upcomingEvents: Event[] = [
   {
