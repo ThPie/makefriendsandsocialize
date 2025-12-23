@@ -5,11 +5,32 @@ import { supabase } from '@/integrations/supabase/client';
 import { MemberAvatars } from './MemberAvatars';
 import { AdaptiveVideo } from '@/components/ui/adaptive-video';
 
-const videos = [
-  '/videos/hero-1.mp4',
-  '/videos/hero-2.mp4',
-  '/videos/hero-3.mp4',
-  '/videos/hero-4.mp4',
+/**
+ * Video quality sources for adaptive streaming
+ * Each video has both low (720p) and high (1080p) quality versions
+ * Currently using same files - replace with actual quality variants when available
+ */
+const videoQualitySources = [
+  {
+    id: 1,
+    low: '/videos/hero-1.mp4',  // TODO: Replace with hero-1-720p.mp4
+    high: '/videos/hero-1.mp4', // TODO: Replace with hero-1-1080p.mp4
+  },
+  {
+    id: 2,
+    low: '/videos/hero-2.mp4',
+    high: '/videos/hero-2.mp4',
+  },
+  {
+    id: 3,
+    low: '/videos/hero-3.mp4',
+    high: '/videos/hero-3.mp4',
+  },
+  {
+    id: 4,
+    low: '/videos/hero-4.mp4',
+    high: '/videos/hero-4.mp4',
+  },
 ];
 
 // Default avatars as fallback
@@ -31,10 +52,16 @@ export const Hero = () => {
   const handleVideoEnd = () => {
     setIsTransitioning(true);
     setTimeout(() => {
-      setCurrentVideoIndex((prev) => (prev + 1) % videos.length);
+      setCurrentVideoIndex((prev) => (prev + 1) % videoQualitySources.length);
       setIsTransitioning(false);
     }, 300);
   };
+
+  // Get quality sources for current video
+  const currentQualitySources = [
+    { quality: 'low' as const, src: videoQualitySources[currentVideoIndex].low, type: 'video/mp4' },
+    { quality: 'high' as const, src: videoQualitySources[currentVideoIndex].high, type: 'video/mp4' },
+  ];
 
   // Fetch meetup stats from database
   useEffect(() => {
@@ -94,7 +121,7 @@ export const Hero = () => {
           }`}
         >
           <AdaptiveVideo
-            sources={[{ src: videos[currentVideoIndex], type: 'video/mp4' }]}
+            qualitySources={currentQualitySources}
             poster="/images/hero-poster.webp"
             onVideoEnd={handleVideoEnd}
             preloadStrategy={currentVideoIndex === 0 ? 'auto' : 'metadata'}
