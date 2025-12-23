@@ -57,6 +57,10 @@ export const TestimonialsSection = () => {
                 <img
                   src={testimonial.image}
                   alt={testimonial.name}
+                  loading="lazy"
+                  decoding="async"
+                  width={48}
+                  height={48}
                   className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20 flex-shrink-0"
                 />
                 <div>

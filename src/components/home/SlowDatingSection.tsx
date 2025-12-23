@@ -10,10 +10,14 @@ export const SlowDatingSection = () => {
       <div ref={ref} className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Image */}
-          <div className={`relative overflow-hidden rounded-2xl aspect-[4/3] lg:aspect-square scroll-animate ${isVisible ? 'visible' : ''}`}>
+          <div className={`relative overflow-hidden rounded-2xl aspect-[4/3] lg:aspect-square scroll-animate bg-muted ${isVisible ? 'visible' : ''}`}>
             <img
               src={slowDatingImage}
               alt="Elegant couple enjoying a sophisticated moment"
+              loading="lazy"
+              decoding="async"
+              width={600}
+              height={600}
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-secondary/30 to-transparent" />
