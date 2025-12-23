@@ -1,4 +1,4 @@
-import { Heart, Sparkles, Calendar, Briefcase } from 'lucide-react';
+import { Heart, Gem, Calendar, Briefcase } from 'lucide-react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 const features = [
@@ -8,7 +8,7 @@ const features = [
     description: 'Every member is personally reviewed to ensure a community of ambitious, warm, and interesting people.',
   },
   {
-    icon: Sparkles,
+    icon: Gem,
     title: 'Thoughtfully Designed Events',
     description: 'From intimate dinners to cultural outings—each gathering is crafted to spark genuine conversation.',
   },

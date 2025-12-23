@@ -1,4 +1,4 @@
-import { Shield, Sparkles, Heart, Users, Award, Lock } from 'lucide-react';
+import { Shield, Crown, Heart, Users, Award, Lock } from 'lucide-react';
 
 const values = [
   {
@@ -22,7 +22,7 @@ const values = [
     desc: 'We foster genuine connections and meaningful relationships, not superficial networking.',
   },
   {
-    icon: Sparkles,
+    icon: Crown,
     title: 'Elegance',
     desc: 'Sophistication and refinement are woven into every aspect of our experiences.',
   },
