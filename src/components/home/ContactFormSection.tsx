@@ -37,32 +37,33 @@ export const ContactFormSection = () => {
   };
 
   return (
-    <section className="w-full" id="contact">
-      <div ref={ref} className="grid grid-cols-1 lg:grid-cols-2 min-h-[700px]">
-        {/* Left Side - Image with Overlay */}
-        <div 
-          className={`relative hidden lg:block scroll-animate ${isVisible ? 'visible' : ''}`}
-        >
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="contact">
+      <div ref={ref} className="mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 rounded-2xl overflow-hidden border border-border/50">
+          {/* Left Side - Image with Overlay */}
           <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${contactHero})` }}
-          />
-          <div className="absolute inset-0 bg-secondary/80" />
-          <div className="relative z-10 flex flex-col justify-center h-full p-12 xl:p-20">
-            <h2 className="font-display text-4xl xl:text-5xl font-semibold text-primary-foreground leading-tight">
-              Let's Start a<br />
-              <span className="text-primary">Conversation</span>
-            </h2>
-            <p className="mt-6 text-primary-foreground/80 text-lg max-w-md leading-relaxed">
-              Whether you're curious about membership, planning an event, or simply want to learn more—we'd love to hear from you.
-            </p>
+            className={`relative hidden lg:block scroll-animate ${isVisible ? 'visible' : ''}`}
+          >
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${contactHero})` }}
+            />
+            <div className="absolute inset-0 bg-secondary/80" />
+            <div className="relative z-10 flex flex-col justify-center h-full p-10 xl:p-14">
+              <h2 className="font-display text-3xl xl:text-4xl font-semibold text-primary-foreground leading-tight">
+                Let's Start a<br />
+                <span className="text-primary">Conversation</span>
+              </h2>
+              <p className="mt-5 text-primary-foreground/80 text-base max-w-md leading-relaxed">
+                Whether you're curious about membership, planning an event, or simply want to learn more—we'd love to hear from you.
+              </p>
+            </div>
           </div>
-        </div>
 
-        {/* Right Side - Form */}
-        <div 
-          className={`bg-card px-6 py-16 md:px-10 lg:px-12 xl:px-20 flex items-center scroll-animate scroll-animate-delay-1 ${isVisible ? 'visible' : ''}`}
-        >
+          {/* Right Side - Form */}
+          <div 
+            className={`bg-card px-6 py-12 md:px-8 lg:px-10 xl:px-14 flex items-center scroll-animate scroll-animate-delay-1 ${isVisible ? 'visible' : ''}`}
+          >
           <div className="w-full max-w-lg mx-auto">
             {/* Mobile Header */}
             <div className="lg:hidden text-center mb-10">
@@ -176,6 +177,7 @@ export const ContactFormSection = () => {
               </Button>
             </form>
           </div>
+        </div>
         </div>
       </div>
     </section>
