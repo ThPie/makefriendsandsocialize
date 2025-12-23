@@ -15,7 +15,7 @@ export const EventChatbot = () => {
     {
       role: 'assistant',
       content:
-        "Welcome to The Gathering Society! I'm your Event Assistant. How can I help you discover our curated events today?",
+        "Welcome to Make Friends and Socialize! I'm your Event Assistant. How can I help you discover our curated events today?",
     },
   ]);
   const [input, setInput] = useState('');

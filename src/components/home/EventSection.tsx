@@ -65,11 +65,11 @@ export const EventSection = () => {
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="events">
       <div ref={ref} className="mx-auto max-w-7xl">
-        <div className={`scroll-animate ${isVisible ? 'visible' : ''}`}>
+        <div className={`scroll-animate text-center ${isVisible ? 'visible' : ''}`}>
           <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
             Upcoming <span className="text-primary">Gatherings</span>
           </h2>
-          <p className="text-muted-foreground text-lg mt-3 max-w-2xl">
+          <p className="text-muted-foreground text-lg mt-3 max-w-2xl mx-auto">
             From intimate dinners to grand galas—experience gatherings designed to inspire.
           </p>
         </div>
@@ -81,6 +81,17 @@ export const EventSection = () => {
               className={`scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
             />
           ))}
+        </div>
+        <div className={`mt-10 text-center scroll-animate ${isVisible ? 'visible' : ''}`}>
+          <Link
+            to="/events"
+            className="inline-flex items-center gap-2 text-primary font-bold hover:opacity-80 transition-opacity group"
+          >
+            View More Events
+            <span className="material-symbols-outlined transition-transform group-hover:translate-x-1 text-lg">
+              arrow_forward
+            </span>
+          </Link>
         </div>
       </div>
     </section>
