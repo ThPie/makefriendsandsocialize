@@ -1,4 +1,4 @@
-import { Briefcase, Users, Lightbulb, Handshake } from 'lucide-react';
+import { Briefcase, Users, Presentation, Handshake } from 'lucide-react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -15,7 +15,7 @@ const businessFeatures = [
     description: 'Join curated discussions with peers from your sector to share insights and opportunities.',
   },
   {
-    icon: Lightbulb,
+    icon: Presentation,
     title: 'Pitch & Learn Nights',
     description: 'Present your ideas and receive feedback from experienced founders and investors.',
   },
