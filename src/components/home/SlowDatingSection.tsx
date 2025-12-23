@@ -28,22 +28,21 @@ export const SlowDatingSection = () => {
 
           {/* Content */}
           <div className={`flex flex-col justify-center scroll-animate scroll-animate-delay-2 ${isVisible ? 'visible' : ''}`}>
-            <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-4">By Invitation Only</p>
+            <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-4">A Member Privilege</p>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-6 leading-tight">
-              Private <span className="text-gradient">Introductions</span>
+              Curated <span className="text-gradient">Introductions</span>
             </h2>
             <p className="text-muted-foreground text-base md:text-lg mb-6 leading-relaxed">
-              For select members seeking meaningful connections beyond our social gatherings, 
-              we offer a discreet introduction service. No algorithms, no profiles—just 
-              thoughtful, human-facilitated introductions.
+              The Club facilitates meaningful connections between members who share values and interests. 
+              Our team provides thoughtful, human-facilitated introductions—no algorithms, no profiles.
             </p>
             <p className="text-muted-foreground text-base md:text-lg mb-8 leading-relaxed">
-              This premium service is available exclusively to established members 
-              and operates entirely through personal consultation with our team.
+              This exclusive service is a benefit of your membership, 
+              available through personal consultation with our concierge team.
             </p>
             <div>
               <Button asChild variant="outline" size="lg" className="rounded-full px-8 min-h-[48px]">
-                <Link to="/contact">Inquire Privately</Link>
+                <Link to="/contact">Learn More</Link>
               </Button>
             </div>
           </div>

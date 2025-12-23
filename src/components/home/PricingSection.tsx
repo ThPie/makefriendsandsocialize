@@ -12,11 +12,11 @@ const tiers = [
     features: [
       'Access to weekly events',
       '1 guest per event',
-      'Community app access',
+      'Exclusive member portal access',
       'Member newsletter',
       'Early event notifications',
     ],
-    cta: 'Request Invitation',
+    cta: 'Apply for Membership',
     variant: 'outline' as const,
     popular: false,
   },
@@ -30,10 +30,10 @@ const tiers = [
       '2 guests per event',
       'Priority reservations',
       'Exclusive member dinners',
-      'Matchmaking introductions',
+      'Curated member introductions',
       'VIP event access',
     ],
-    cta: 'Select Plan',
+    cta: 'Apply for Membership',
     variant: 'default' as const,
     popular: true,
   },
@@ -46,7 +46,7 @@ const tiers = [
       'Everything in Fellow',
       'Unlimited guests',
       'Private event hosting',
-      'Concierge service',
+      'Personal concierge service',
       'Global chapter access',
       'Founding member benefits',
     ],
@@ -62,16 +62,16 @@ export const PricingSection = () => {
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-secondary/5" id="membership">
       <div ref={ref} className="mx-auto max-w-7xl">
-        {/* Pricing Header */}
+        {/* Membership Header */}
         <div className={`text-center mb-12 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <span className="inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-4">
             Membership
           </span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
-            Simple, Transparent <span className="text-primary">Pricing</span>
+            Membership <span className="text-primary">Tiers</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Choose the membership that fits your lifestyle and start connecting today.
+            Select the tier that aligns with your vision and unlock the full club experience.
           </p>
         </div>
 

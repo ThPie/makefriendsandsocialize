@@ -85,9 +85,9 @@ const MembershipPage = () => {
               <span className="text-muted-foreground text-sm font-bold leading-tight">/month</span>
             </p>
           </div>
-          <Button variant="secondary" className="w-full">Select Tier</Button>
+          <Button variant="secondary" className="w-full">Apply for Membership</Button>
           <div className="flex flex-col gap-3 pt-2">
-            {['Access to weekly events', '1 guest per event', 'Community app access', 'Member newsletter'].map((item, i) => (
+            {['Access to weekly events', '1 guest per event', 'Exclusive member portal access', 'Member newsletter'].map((item, i) => (
               <div key={i} className="flex items-start gap-3 text-sm text-foreground">
                 <span className="material-symbols-outlined text-primary text-base leading-tight">check</span>
                 <span>{item}</span>
@@ -108,9 +108,9 @@ const MembershipPage = () => {
               <span className="text-muted-foreground text-sm font-bold leading-tight">/month</span>
             </p>
           </div>
-          <Button className="w-full">Select Tier</Button>
+          <Button className="w-full">Apply for Membership</Button>
           <div className="flex flex-col gap-3 pt-2">
-            {['Everything in Patron', '2 guests per event', 'Priority reservations', 'Exclusive member dinners', 'Matchmaking introductions'].map((item, i) => (
+            {['Everything in Patron', '2 guests per event', 'Priority reservations', 'Exclusive member dinners', 'Curated member introductions'].map((item, i) => (
               <div key={i} className="flex items-start gap-3 text-sm text-foreground">
                 <span className="material-symbols-outlined text-primary text-base leading-tight">check</span>
                 <span>{item}</span>
