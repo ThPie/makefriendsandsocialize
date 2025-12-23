@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { MemberAvatars } from './MemberAvatars';
+import { AdaptiveVideo } from '@/components/ui/adaptive-video';
 
 const videos = [
   '/videos/hero-1.mp4',
@@ -26,7 +27,6 @@ export const Hero = () => {
   const [memberCount, setMemberCount] = useState(928);
   const [avatarUrls, setAvatarUrls] = useState<string[]>(defaultAvatars);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handleVideoEnd = () => {
     setIsTransitioning(true);
@@ -35,12 +35,6 @@ export const Hero = () => {
       setIsTransitioning(false);
     }, 300);
   };
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
-  }, [currentVideoIndex]);
 
   // Fetch meetup stats from database
   useEffect(() => {
@@ -93,21 +87,21 @@ export const Hero = () => {
     <section className="relative w-full overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 bg-black">
-        <video
-          ref={videoRef}
+        <div
           key={currentVideoIndex}
-          className={`h-full w-full object-cover transition-opacity duration-300 ${
+          className={`h-full w-full transition-opacity duration-300 ${
             isTransitioning ? 'opacity-0' : 'opacity-100'
           }`}
-          autoPlay
-          muted
-          playsInline
-          preload={currentVideoIndex === 0 ? 'auto' : 'metadata'}
-          poster="/images/hero-poster.webp"
-          onEnded={handleVideoEnd}
         >
-          <source src={videos[currentVideoIndex]} type="video/mp4" />
-        </video>
+          <AdaptiveVideo
+            sources={[{ src: videos[currentVideoIndex], type: 'video/mp4' }]}
+            poster="/images/hero-poster.webp"
+            onVideoEnd={handleVideoEnd}
+            preloadStrategy={currentVideoIndex === 0 ? 'auto' : 'metadata'}
+            showPosterOnSlowConnection={true}
+            className="h-full w-full"
+          />
+        </div>
         {/* Black Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60" />
       </div>

@@ -1,11 +1,23 @@
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Users } from 'lucide-react';
+import { getUnsplashSrcSet, getSizesForLayout } from '@/lib/responsive-images';
 
 interface MemberAvatarsProps {
   avatarUrls: string[];
   memberCount: number;
   isLoading?: boolean;
 }
+
+/**
+ * Generate srcSet for avatar URLs (supports both Unsplash and Meetup URLs)
+ */
+const getAvatarSrcSet = (url: string): string | undefined => {
+  if (url.includes('unsplash.com')) {
+    return getUnsplashSrcSet(url, [48, 96, 144], { fit: 'crop', crop: 'face' });
+  }
+  // Meetup and other URLs don't support dynamic sizing
+  return undefined;
+};
 
 export const MemberAvatars = ({ avatarUrls, memberCount, isLoading }: MemberAvatarsProps) => {
   if (isLoading) {
@@ -26,28 +38,35 @@ export const MemberAvatars = ({ avatarUrls, memberCount, isLoading }: MemberAvat
 
   const displayAvatars = avatarUrls.slice(0, 5);
   const remainingCount = memberCount > 5 ? memberCount - 5 : 0;
+  const avatarSizes = getSizesForLayout('avatar');
 
   return (
     <div className="flex items-center gap-4">
       <div className="flex -space-x-3">
-        {displayAvatars.map((url, index) => (
-          <Avatar
-            key={index}
-            className="h-10 w-10 border-2 border-white/80 shadow-lg ring-2 ring-black/10 transition-transform hover:scale-110 hover:z-10"
-            style={{ animationDelay: `${index * 0.1}s` }}
-          >
-            <AvatarImage
-              src={url}
-              alt={`Member ${index + 1}`}
-              loading="eager"
-              decoding="async"
-              className="object-cover"
-            />
-            <AvatarFallback className="bg-primary/80 text-primary-foreground text-xs font-medium">
-              <Users className="h-4 w-4" />
-            </AvatarFallback>
-          </Avatar>
-        ))}
+        {displayAvatars.map((url, index) => {
+          const srcSet = getAvatarSrcSet(url);
+          
+          return (
+            <Avatar
+              key={index}
+              className="h-10 w-10 border-2 border-white/80 shadow-lg ring-2 ring-black/10 transition-transform hover:scale-110 hover:z-10"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <AvatarImage
+                src={url}
+                srcSet={srcSet}
+                sizes={avatarSizes}
+                alt={`Member ${index + 1}`}
+                loading="eager"
+                decoding="async"
+                className="object-cover"
+              />
+              <AvatarFallback className="bg-primary/80 text-primary-foreground text-xs font-medium">
+                <Users className="h-4 w-4" />
+              </AvatarFallback>
+            </Avatar>
+          );
+        })}
         {remainingCount > 0 && (
           <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/80 bg-primary text-primary-foreground text-xs font-bold shadow-lg">
             +{remainingCount > 999 ? '999+' : remainingCount}
