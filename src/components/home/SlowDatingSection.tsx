@@ -21,7 +21,7 @@ export const SlowDatingSection = () => {
 
           {/* Content */}
           <div className={`flex flex-col justify-center scroll-animate scroll-animate-delay-2 ${isVisible ? 'visible' : ''}`}>
-            <p className="text-primary text-sm font-bold uppercase tracking-wide mb-4">By Invitation Only</p>
+            <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-4">By Invitation Only</p>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-6 leading-tight">
               Private <span className="text-gradient">Introductions</span>
             </h2>

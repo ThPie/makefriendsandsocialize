@@ -48,12 +48,12 @@ export const BusinessEventsSection = () => {
           {businessFeatures.map((feature, index) => (
             <div
               key={index}
-              className={`group bg-card rounded-2xl p-6 shadow-elegant border border-border/50 transition-all duration-500 hover:shadow-lg hover:-translate-y-1 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+              className={`group bg-card rounded-2xl p-8 shadow-elegant border border-border/50 transition-all duration-500 hover:shadow-lg hover:-translate-y-1 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
             >
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                <feature.icon className="w-6 h-6 text-primary" />
+              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                <feature.icon className="w-7 h-7 text-primary" />
               </div>
-              <h3 className="font-display text-lg md:text-xl font-semibold text-foreground mb-2">
+              <h3 className="font-display text-xl md:text-2xl font-semibold text-foreground mb-3">
                 {feature.title}
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
