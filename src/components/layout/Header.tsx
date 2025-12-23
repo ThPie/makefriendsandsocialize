@@ -120,7 +120,7 @@ export const Header = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`text-lg font-medium text-left transition-colors ${
+              className={`text-lg font-medium text-left transition-colors min-h-[48px] flex items-center ${
                 location.pathname === item.path
                   ? 'text-primary'
                   : 'text-foreground hover:text-primary'
