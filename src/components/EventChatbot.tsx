@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import chatbotAvatar from '@/assets/chatbot-avatar.png';
+import chatbotAvatarWebp from '@/assets/chatbot-avatar.webp';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -128,13 +129,16 @@ export const EventChatbot = () => {
         className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-all duration-300 flex items-center justify-center group overflow-hidden"
         aria-label="Open Event Assistant"
       >
-        <img
-          src={chatbotAvatar}
-          alt="Professional event assistant avatar"
-          className="h-full w-full object-cover"
-          loading="lazy"
-          decoding="async"
-        />
+        <picture>
+          <source srcSet={chatbotAvatarWebp} type="image/webp" />
+          <img
+            src={chatbotAvatar}
+            alt="Professional event assistant avatar"
+            className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
       </button>
 
       {/* Chat Window */}
@@ -143,13 +147,16 @@ export const EventChatbot = () => {
           {/* Header */}
           <div className="bg-primary text-primary-foreground p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-primary-foreground/20">
-              <img
-                src={chatbotAvatar}
-                alt="Professional event assistant avatar"
-                className="h-full w-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
+              <picture>
+                <source srcSet={chatbotAvatarWebp} type="image/webp" />
+                <img
+                  src={chatbotAvatar}
+                  alt="Professional event assistant avatar"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </div>
             <div>
               <h3 className="font-bold font-display text-lg">Event Assistant</h3>

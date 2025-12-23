@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useTheme } from 'next-themes';
 import logoDark from '@/assets/logo.png';
+import logoDarkWebp from '@/assets/logo.webp';
 import logoLight from '@/assets/logo-light.png';
+import logoLightWebp from '@/assets/logo-light.webp';
 
 const navItems = [
   { label: 'Home', path: '/' },
@@ -27,6 +29,9 @@ export const Header = () => {
   const logo = isTransparent 
     ? logoDark 
     : (resolvedTheme === 'dark' ? logoDark : logoLight);
+  const logoWebp = isTransparent 
+    ? logoDarkWebp 
+    : (resolvedTheme === 'dark' ? logoDarkWebp : logoLightWebp);
 
   const [scrollDepth, setScrollDepth] = useState(0);
 
@@ -64,13 +69,16 @@ export const Header = () => {
       <div className="mx-auto flex h-full items-center justify-between px-4 py-2 md:px-8 lg:px-12 xl:px-16">
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <img 
-            src={logo} 
-            alt="MakeFriends & Socialize" 
-            className={`w-auto object-contain transition-all duration-300 ${
-              isTransparent ? 'h-14 md:h-16' : 'h-10 md:h-12'
-            }`}
-          />
+          <picture>
+            <source srcSet={logoWebp} type="image/webp" />
+            <img 
+              src={logo} 
+              alt="MakeFriends & Socialize" 
+              className={`w-auto object-contain transition-all duration-300 ${
+                isTransparent ? 'h-14 md:h-16' : 'h-10 md:h-12'
+              }`}
+            />
+          </picture>
         </Link>
 
         {/* Desktop Navigation */}
