@@ -55,13 +55,13 @@ export const ContactFormSection = () => {
               imgClassName="w-full h-full object-cover"
               priority={false}
             />
-            <div className="absolute inset-0 bg-secondary/80" />
-            <div className="relative z-10 flex flex-col justify-center h-full p-10 xl:p-14">
-              <h2 className="font-display text-3xl xl:text-4xl font-semibold text-primary-foreground leading-tight">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+            <div className="relative z-10 flex flex-col justify-end h-full p-10 xl:p-14">
+              <h2 className="font-display text-3xl xl:text-4xl font-semibold text-white leading-tight">
                 Let's Start a<br />
                 <span className="text-primary">Conversation</span>
               </h2>
-              <p className="mt-5 text-primary-foreground/80 text-base max-w-md leading-relaxed">
+              <p className="mt-5 text-white/90 text-base max-w-md leading-relaxed">
                 Whether you're curious about membership, planning an event, or simply want to learn more—we'd love to hear from you.
               </p>
             </div>
