@@ -9,12 +9,15 @@ interface EventCardProps {
 
 const EventCard = ({ event, className = '' }: EventCardProps) => (
   <div className={`flex flex-col gap-4 rounded-xl bg-card group hover:shadow-elegant transition-all duration-500 border border-border hover:border-primary/30 hover:-translate-y-2 overflow-hidden ${className}`}>
-    <div
-      className="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover group-hover:scale-105 transition-transform duration-500"
-      style={{ backgroundImage: `url("${event.imageUrl}")` }}
-      role="img"
-      aria-label={event.altText}
-    />
+    <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
+      <img
+        src={event.imageUrl}
+        alt={event.altText}
+        loading="lazy"
+        decoding="async"
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+    </div>
     <div className="flex flex-col gap-3 p-4 pt-0 z-10 bg-card">
       <p className="font-display text-xl font-medium leading-normal text-card-foreground mt-4">
         {event.title}

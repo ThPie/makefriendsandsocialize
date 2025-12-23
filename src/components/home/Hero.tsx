@@ -102,6 +102,8 @@ export const Hero = () => {
           autoPlay
           muted
           playsInline
+          preload={currentVideoIndex === 0 ? 'auto' : 'metadata'}
+          poster="/images/hero-poster.jpg"
           onEnded={handleVideoEnd}
         >
           <source src={videos[currentVideoIndex]} type="video/mp4" />

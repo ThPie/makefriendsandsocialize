@@ -44,9 +44,12 @@ export const ContactFormSection = () => {
           <div 
             className={`relative hidden lg:block scroll-animate ${isVisible ? 'visible' : ''}`}
           >
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${contactHero})` }}
+            <img
+              src={contactHero}
+              alt="Contact hero background"
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-secondary/80" />
             <div className="relative z-10 flex flex-col justify-center h-full p-10 xl:p-14">

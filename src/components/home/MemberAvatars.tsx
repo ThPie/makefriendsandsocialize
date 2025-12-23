@@ -39,6 +39,8 @@ export const MemberAvatars = ({ avatarUrls, memberCount, isLoading }: MemberAvat
             <AvatarImage
               src={url}
               alt={`Member ${index + 1}`}
+              loading="eager"
+              decoding="async"
               className="object-cover"
             />
             <AvatarFallback className="bg-primary/80 text-primary-foreground text-xs font-medium">
