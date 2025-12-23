@@ -24,7 +24,7 @@ const EventCard = ({ event, className = '' }: EventCardProps) => (
       </p>
       <Link
         to="/events"
-        className="group/link inline-flex items-center gap-2 text-sm font-bold text-primary hover:opacity-80 transition-opacity"
+        className="group/link inline-flex items-center gap-2 text-sm font-bold text-primary hover:opacity-80 transition-opacity min-h-[44px] py-2"
       >
         View Details
         <span className="material-symbols-outlined transition-transform group-hover/link:translate-x-1 text-lg">
@@ -85,7 +85,7 @@ export const EventSection = () => {
         <div className={`mt-10 text-center scroll-animate ${isVisible ? 'visible' : ''}`}>
           <Link
             to="/events"
-            className="inline-flex items-center gap-2 text-primary font-bold hover:opacity-80 transition-opacity group"
+            className="inline-flex items-center gap-2 text-primary font-bold hover:opacity-80 transition-opacity group min-h-[44px] py-2"
           >
             View More Events
             <span className="material-symbols-outlined transition-transform group-hover:translate-x-1 text-lg">
