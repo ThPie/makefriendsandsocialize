@@ -227,152 +227,171 @@ export default function AuthPage() {
   if (step === 1) {
     return (
       <div className="min-h-screen flex">
-        {/* Left Side - Form */}
-        <div className="w-full lg:w-1/2 bg-card flex flex-col justify-center px-8 md:px-16 lg:px-20 py-12">
-          <div className="max-w-md mx-auto w-full animate-fade-in">
-            {/* Logo */}
-            <Link to="/" className="inline-block mb-12">
-              <img src={logoLight} alt="MakeFriends & Socialize" className="h-10" />
-            </Link>
+        {/* Left Side - Form with Gradient Background */}
+        <div className="w-full lg:w-1/2 relative flex flex-col justify-center px-8 md:px-16 lg:px-20 py-12 overflow-hidden">
+          {/* Layered Gradient Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)]" />
+          
+          {/* Radial Glow Effects */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-[hsl(180,60%,25%)]/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-primary/5 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
+          
+          {/* Watermark */}
+          <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+            <span className="font-display text-[20rem] font-bold text-white/[0.02] select-none tracking-tighter">
+              MFS
+            </span>
+          </div>
+          
+          {/* Glassmorphism Form Container */}
+          <div className="relative z-10 max-w-md mx-auto w-full">
+            <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl animate-fade-in">
+              {/* Logo */}
+              <Link to="/" className="inline-block mb-10">
+                <img src={logoLight} alt="MakeFriends & Socialize" className="h-10" />
+              </Link>
 
-            {/* Header */}
-            <div className="mb-8">
-              <h1 className="font-display text-3xl md:text-4xl text-card-foreground mb-2">
-                {mode === 'signin' ? 'Sign in' : 'Create Account'}
-              </h1>
-              <p className="text-muted-foreground">
-                {mode === 'signin' 
-                  ? 'Welcome back! Please enter your details.'
-                  : 'Join our exclusive community today.'
-                }
-              </p>
-            </div>
-
-            {/* Form */}
-            <div className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-card-foreground">Email Address</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-background pl-10"
-                  />
-                </div>
+              {/* Header */}
+              <div className="mb-8">
+                <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
+                  {mode === 'signin' ? 'Sign in' : 'Create Account'}
+                </h1>
+                <p className="text-white/60">
+                  {mode === 'signin' 
+                    ? 'Welcome back! Please enter your details.'
+                    : 'Join our exclusive community today.'
+                  }
+                </p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-card-foreground">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="bg-background pl-10"
-                  />
-                </div>
-              </div>
-
-              {mode === 'signup' && (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-card-foreground">Confirm Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        placeholder="••••••••"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="bg-background pl-10"
-                      />
-                    </div>
+              {/* Form */}
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-white/90">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10 focus:border-primary/50 focus:ring-primary/20"
+                    />
                   </div>
+                </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-white/90">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10 focus:border-primary/50 focus:ring-primary/20"
+                    />
+                  </div>
+                </div>
+
+                {mode === 'signup' && (
+                  <>
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-card-foreground">First Name</Label>
+                      <Label htmlFor="confirmPassword" className="text-white/90">Confirm Password</Label>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
                         <Input
-                          id="firstName"
-                          placeholder="James"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                          className="bg-background pl-10"
+                          id="confirmPassword"
+                          type="password"
+                          placeholder="••••••••"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10 focus:border-primary/50 focus:ring-primary/20"
                         />
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-card-foreground">Last Name</Label>
-                      <Input
-                        id="lastName"
-                        placeholder="Harrington"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        className="bg-background"
-                      />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="firstName" className="text-white/90">First Name</Label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
+                          <Input
+                            id="firstName"
+                            placeholder="James"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10 focus:border-primary/50 focus:ring-primary/20"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lastName" className="text-white/90">Last Name</Label>
+                        <Input
+                          id="lastName"
+                          placeholder="Harrington"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
+                        />
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
-
-              {mode === 'signin' && (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="remember" 
-                      checked={rememberMe}
-                      onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                    />
-                    <label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
-                      Remember me
-                    </label>
-                  </div>
-                  <Link to="/auth/forgot-password" className="text-sm text-primary hover:underline">
-                    Forgot password?
-                  </Link>
-                </div>
-              )}
-
-              <Button
-                onClick={handleStep1Submit}
-                disabled={isSubmitting}
-                className="w-full"
-                size="lg"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : mode === 'signin' ? (
-                  'Sign In'
-                ) : (
-                  <>
-                    Continue
-                    <ArrowRight className="ml-2 h-4 w-4" />
                   </>
                 )}
-              </Button>
 
-              <p className="text-center text-sm text-muted-foreground">
-                {mode === 'signin' ? "Don't have an account?" : 'Already a member?'}{' '}
-                <button
-                  onClick={() => {
-                    setMode(mode === 'signin' ? 'signup' : 'signin');
-                    setStep(1);
-                  }}
-                  className="text-primary hover:underline font-medium"
+                {mode === 'signin' && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="remember" 
+                        checked={rememberMe}
+                        onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                        className="border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                      />
+                      <label htmlFor="remember" className="text-sm text-white/60 cursor-pointer">
+                        Remember me
+                      </label>
+                    </div>
+                    <Link to="/auth/forgot-password" className="text-sm text-primary hover:text-primary/80 transition-colors">
+                      Forgot password?
+                    </Link>
+                  </div>
+                )}
+
+                <Button
+                  onClick={handleStep1Submit}
+                  disabled={isSubmitting}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
+                  size="lg"
                 >
-                  {mode === 'signin' ? 'Sign up' : 'Sign In'}
-                </button>
-              </p>
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : mode === 'signin' ? (
+                    'Sign In'
+                  ) : (
+                    <>
+                      Continue
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+
+                <p className="text-center text-sm text-white/50">
+                  {mode === 'signin' ? "Don't have an account?" : 'Already a member?'}{' '}
+                  <button
+                    onClick={() => {
+                      setMode(mode === 'signin' ? 'signup' : 'signin');
+                      setStep(1);
+                    }}
+                    className="text-primary hover:text-primary/80 font-medium transition-colors"
+                  >
+                    {mode === 'signin' ? 'Sign up' : 'Sign In'}
+                  </button>
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -386,9 +405,6 @@ export default function AuthPage() {
             backgroundPosition: 'center',
           }}
         >
-          {/* Subtle gradient overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-          
           <div className="relative z-10 flex flex-col items-start animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <h2 className="font-display text-4xl xl:text-5xl text-white mb-4 drop-shadow-lg">
               Welcome to<br />
