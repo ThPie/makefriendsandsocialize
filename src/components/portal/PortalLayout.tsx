@@ -24,6 +24,7 @@ import {
   LogOut,
   Loader2,
   Crown,
+  Shield,
 } from 'lucide-react';
 
 interface PortalLayoutProps {
@@ -41,7 +42,7 @@ const menuItems = [
 export function PortalLayout({ children }: PortalLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, profile, membership, applicationStatus, isLoading, signOut } = useAuth();
+  const { user, profile, membership, applicationStatus, isLoading, isAdmin, signOut } = useAuth();
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -148,6 +149,19 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
+
+            {/* Admin Link */}
+            {isAdmin && (
+              <div className="mt-6 pt-6 border-t border-border">
+                <Link
+                  to="/admin"
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg text-primary hover:bg-primary/10 transition-colors"
+                >
+                  <Shield className="h-5 w-5" />
+                  <span>Admin Dashboard</span>
+                </Link>
+              </div>
+            )}
           </SidebarContent>
 
           {/* Sign Out */}

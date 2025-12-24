@@ -91,22 +91,64 @@ export default function PortalProfile() {
       return;
     }
 
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Please upload a JPG, PNG, or WebP image');
+      return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be less than 5MB');
+      return;
+    }
+
     setIsUploading(true);
 
-    // For now, we'll use a placeholder since storage isn't set up
-    // In production, you'd upload to Supabase Storage
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64 = reader.result as string;
-      // Note: In production, upload to storage and get URL
-      // For demo, we'll show a toast about storage setup
-      toast.info('Photo upload requires storage setup. Please contact admin.');
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(fileName, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(fileName);
+
+      setAvatarUrls(prev => [...prev, publicUrl]);
+      toast.success('Photo uploaded successfully');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload photo');
+    } finally {
       setIsUploading(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
-  const removePhoto = (index: number) => {
+  const removePhoto = async (index: number) => {
+    const urlToRemove = avatarUrls[index];
+    
+    // Extract file path from URL for deletion
+    try {
+      const url = new URL(urlToRemove);
+      const pathParts = url.pathname.split('/profile-photos/');
+      if (pathParts.length > 1) {
+        const filePath = pathParts[1];
+        await supabase.storage
+          .from('profile-photos')
+          .remove([filePath]);
+      }
+    } catch (error) {
+      console.error('Error removing file from storage:', error);
+    }
+
     setAvatarUrls(prev => prev.filter((_, i) => i !== index));
   };
 
