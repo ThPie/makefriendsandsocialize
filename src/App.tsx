@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Layout } from "@/components/layout/Layout";
 import { PortalLayout } from "@/components/portal/PortalLayout";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import HomePage from "@/pages/HomePage";
 import EventsPage from "@/pages/EventsPage";
 import EventDetailPage from "@/pages/EventDetailPage";
@@ -28,6 +29,10 @@ import PortalProfile from "@/pages/portal/PortalProfile";
 import PortalNetwork from "@/pages/portal/PortalNetwork";
 import PortalConnections from "@/pages/portal/PortalConnections";
 import PortalEvents from "@/pages/portal/PortalEvents";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminApplications from "@/pages/admin/AdminApplications";
+import AdminMembers from "@/pages/admin/AdminMembers";
+import AdminConnections from "@/pages/admin/AdminConnections";
 
 const queryClient = new QueryClient();
 
@@ -65,6 +70,12 @@ const App = () => (
               <Route path="/portal/network" element={<PortalLayout><PortalNetwork /></PortalLayout>} />
               <Route path="/portal/connections" element={<PortalLayout><PortalConnections /></PortalLayout>} />
               <Route path="/portal/events" element={<PortalLayout><PortalEvents /></PortalLayout>} />
+              
+              {/* Admin routes with admin layout */}
+              <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
+              <Route path="/admin/applications" element={<AdminLayout><AdminApplications /></AdminLayout>} />
+              <Route path="/admin/members" element={<AdminLayout><AdminMembers /></AdminLayout>} />
+              <Route path="/admin/connections" element={<AdminLayout><AdminConnections /></AdminLayout>} />
               
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
