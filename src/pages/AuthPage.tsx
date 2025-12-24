@@ -443,19 +443,38 @@ export default function AuthPage() {
     );
   }
 
-  // Multi-step signup (steps 2 & 3) - centered card layout
+  // Multi-step signup (steps 2 & 3) - modern video background layout
   return (
-    <div className="min-h-screen bg-secondary flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-lg animate-fade-in">
+    <div className="min-h-screen relative flex items-center justify-center px-4 py-16 overflow-hidden">
+      {/* Video Background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover"
+        poster="/images/hero-poster.webp"
+      >
+        <source src="/videos/hero-1.mp4" type="video/mp4" />
+      </video>
+      
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/95 via-[hsl(180,50%,12%)]/90 to-[hsl(180,55%,15%)]/85" />
+      
+      {/* Radial Glow Effects */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-[hsl(180,60%,25%)]/15 rounded-full blur-3xl" />
+      
+      <div className="relative z-10 w-full max-w-2xl animate-fade-in">
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-block mb-6">
             <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10 mx-auto" />
           </Link>
-          <h1 className="font-display text-3xl md:text-4xl text-secondary-foreground mb-2">
+          <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
             Complete Your Application
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-white/60">
             Just a few more details to personalize your experience
           </p>
         </div>
@@ -465,48 +484,48 @@ export default function AuthPage() {
           {[1, 2, 3].map((s) => (
             <div
               key={s}
-              className={`h-2 w-12 rounded-full transition-colors ${
-                s <= step ? 'bg-primary' : 'bg-muted'
+              className={`h-2 w-12 rounded-full transition-all duration-300 ${
+                s < step ? 'bg-primary' : s === step ? 'bg-primary shadow-lg shadow-primary/50' : 'bg-white/20'
               }`}
             />
           ))}
         </div>
 
-        {/* Form Card */}
-        <div className="bg-card rounded-lg p-8 shadow-elegant">
+        {/* Form Card - Glassmorphism */}
+        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
           {/* Step 2: About You */}
           {step === 2 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
-                <h2 className="font-display text-2xl text-card-foreground">About You</h2>
-                <p className="text-muted-foreground text-sm mt-1">Tell us a bit about yourself</p>
+                <h2 className="font-display text-2xl text-white">About You</h2>
+                <p className="text-white/50 text-sm mt-1">Tell us a bit about yourself</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="industry" className="text-card-foreground">Industry</Label>
+                  <Label htmlFor="industry" className="text-white/90">Industry</Label>
                   <Input
                     id="industry"
                     placeholder="e.g. Finance, Technology, Media"
                     value={industry}
                     onChange={(e) => setIndustry(e.target.value)}
-                    className="bg-background"
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="jobTitle" className="text-card-foreground">Job Title</Label>
+                  <Label htmlFor="jobTitle" className="text-white/90">Job Title</Label>
                   <Input
                     id="jobTitle"
                     placeholder="e.g. Creative Director, Founder"
                     value={jobTitle}
                     onChange={(e) => setJobTitle(e.target.value)}
-                    className="bg-background"
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="signatureStyle" className="text-card-foreground">
+                <Label htmlFor="signatureStyle" className="text-white/90">
                   Tell us about yourself
                 </Label>
                 <Textarea
@@ -514,42 +533,42 @@ export default function AuthPage() {
                   placeholder="I'm a creative director with a passion for art and design. I thrive in environments where meaningful conversations happen..."
                   value={signatureStyle}
                   onChange={(e) => setSignatureStyle(e.target.value)}
-                  className="bg-background min-h-[100px]"
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20 min-h-[100px]"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-card-foreground">What brings you to our community?</Label>
+              <div className="space-y-3">
+                <Label className="text-white/90">What brings you to our community?</Label>
                 <div className="flex flex-wrap gap-2">
                   {MOTIVATIONS.map((motivation) => (
                     <button
                       key={motivation}
                       onClick={() => toggleMotivation(motivation)}
-                      className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+                      className={`px-4 py-2 rounded-full text-sm border transition-all duration-200 ${
                         selectedBrands.includes(motivation)
-                          ? 'bg-primary text-primary-foreground border-primary'
-                          : 'bg-transparent text-card-foreground border-border hover:border-primary'
+                          ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25'
+                          : 'bg-white/5 text-white/80 border-white/10 hover:border-white/30 hover:bg-white/10'
                       }`}
                     >
                       {motivation}
-                      {selectedBrands.includes(motivation) && <Check className="inline ml-1 h-3 w-3" />}
+                      {selectedBrands.includes(motivation) && <Check className="inline ml-1.5 h-3 w-3" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 pt-4">
                 <Button
                   variant="outline"
                   onClick={() => setStep(1)}
-                  className="flex-1"
+                  className="flex-1 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back
                 </Button>
                 <Button
                   onClick={() => setStep(3)}
-                  className="flex-1"
+                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
                 >
                   Continue
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -562,12 +581,12 @@ export default function AuthPage() {
           {step === 3 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
-                <h2 className="font-display text-2xl text-card-foreground">Your Lifestyle</h2>
-                <p className="text-muted-foreground text-sm mt-1">Help us understand what you're looking for</p>
+                <h2 className="font-display text-2xl text-white">Your Lifestyle</h2>
+                <p className="text-white/50 text-sm mt-1">Help us understand what you're looking for</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="values" className="text-card-foreground">
+                <Label htmlFor="values" className="text-white/90">
                   What would make your membership valuable?
                 </Label>
                 <Textarea
@@ -575,35 +594,35 @@ export default function AuthPage() {
                   placeholder="Access to curated events, meeting inspiring people, and being part of a community that values authenticity..."
                   value={valuesInPartner}
                   onChange={(e) => setValuesInPartner(e.target.value)}
-                  className="bg-background min-h-[100px]"
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20 min-h-[100px]"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-card-foreground">Your Interests</Label>
+              <div className="space-y-3">
+                <Label className="text-white/90">Your Interests</Label>
                 <div className="flex flex-wrap gap-2">
                   {INTERESTS.map((interest) => (
                     <button
                       key={interest}
                       onClick={() => toggleInterest(interest)}
-                      className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+                      className={`px-4 py-2 rounded-full text-sm border transition-all duration-200 ${
                         selectedInterests.includes(interest)
-                          ? 'bg-primary text-primary-foreground border-primary'
-                          : 'bg-transparent text-card-foreground border-border hover:border-primary'
+                          ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25'
+                          : 'bg-white/5 text-white/80 border-white/10 hover:border-white/30 hover:bg-white/10'
                       }`}
                     >
                       {interest}
-                      {selectedInterests.includes(interest) && <Check className="inline ml-1 h-3 w-3" />}
+                      {selectedInterests.includes(interest) && <Check className="inline ml-1.5 h-3 w-3" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 pt-4">
                 <Button
                   variant="outline"
                   onClick={() => setStep(2)}
-                  className="flex-1"
+                  className="flex-1 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back
@@ -611,7 +630,7 @@ export default function AuthPage() {
                 <Button
                   onClick={handleFinalSubmit}
                   disabled={isSubmitting}
-                  className="flex-1"
+                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
                 >
                   {isSubmitting ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
