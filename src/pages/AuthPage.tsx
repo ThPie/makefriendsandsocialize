@@ -41,6 +41,8 @@ export default function AuthPage() {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [valuesInPartner, setValuesInPartner] = useState('');
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [industry, setIndustry] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
 
   useEffect(() => {
     if (user && !isLoading) {
@@ -119,6 +121,8 @@ export default function AuthPage() {
           favorite_brands: selectedBrands,
           values_in_partner: valuesInPartner,
           interests: selectedInterests,
+          industry,
+          job_title: jobTitle,
         })
         .eq('id', session.user.id);
 
@@ -131,6 +135,8 @@ export default function AuthPage() {
           favorite_brands: selectedBrands,
           values_in_partner: valuesInPartner,
           interests: selectedInterests,
+          industry,
+          job_title: jobTitle,
           status: 'pending',
         });
     }
@@ -300,6 +306,29 @@ export default function AuthPage() {
               <div className="text-center mb-6">
                 <h2 className="font-display text-2xl text-card-foreground">About You</h2>
                 <p className="text-muted-foreground text-sm mt-1">Tell us a bit about yourself</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="industry" className="text-card-foreground">Industry</Label>
+                  <Input
+                    id="industry"
+                    placeholder="e.g. Finance, Technology, Media"
+                    value={industry}
+                    onChange={(e) => setIndustry(e.target.value)}
+                    className="bg-background"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="jobTitle" className="text-card-foreground">Job Title</Label>
+                  <Input
+                    id="jobTitle"
+                    placeholder="e.g. Creative Director, Founder"
+                    value={jobTitle}
+                    onChange={(e) => setJobTitle(e.target.value)}
+                    className="bg-background"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
