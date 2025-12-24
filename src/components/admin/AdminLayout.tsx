@@ -27,6 +27,7 @@ import {
   Image,
   Settings,
   UserCog,
+  Quote,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -39,6 +40,7 @@ const menuItems = [
   { title: 'Members', url: '/admin/members', icon: Users },
   { title: 'Events', url: '/admin/events', icon: Calendar },
   { title: 'Connections', url: '/admin/connections', icon: Heart },
+  { title: 'Testimonials', url: '/admin/testimonials', icon: Quote },
   { title: 'Content', url: '/admin/content', icon: Image },
   { title: 'Roles', url: '/admin/roles', icon: UserCog },
   { title: 'Settings', url: '/admin/settings', icon: Settings },

@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Users, Calendar, Heart, Crown, ArrowRight } from 'lucide-react';
+import { SubmitReview } from '@/components/portal/SubmitReview';
 
 export default function PortalDashboard() {
   const { profile, membership, canAccessMatchmaking } = useAuth();
@@ -181,6 +182,9 @@ export default function PortalDashboard() {
           </CardContent>
         </Card>
       )}
+
+      {/* Submit Review */}
+      <SubmitReview />
     </div>
   );
 }

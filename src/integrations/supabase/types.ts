@@ -326,6 +326,7 @@ export type Database = {
           job_title: string | null
           last_name: string | null
           signature_style: string | null
+          terms_accepted_at: string | null
           updated_at: string
           values_in_partner: string | null
         }
@@ -342,6 +343,7 @@ export type Database = {
           job_title?: string | null
           last_name?: string | null
           signature_style?: string | null
+          terms_accepted_at?: string | null
           updated_at?: string
           values_in_partner?: string | null
         }
@@ -358,8 +360,54 @@ export type Database = {
           job_title?: string | null
           last_name?: string | null
           signature_style?: string | null
+          terms_accepted_at?: string | null
           updated_at?: string
           values_in_partner?: string | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          is_approved: boolean
+          is_featured: boolean
+          name: string
+          quote: string
+          rating: number | null
+          role: string | null
+          source: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_approved?: boolean
+          is_featured?: boolean
+          name: string
+          quote: string
+          rating?: number | null
+          role?: string | null
+          source?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_approved?: boolean
+          is_featured?: boolean
+          name?: string
+          quote?: string
+          rating?: number | null
+          role?: string | null
+          source?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
