@@ -53,7 +53,7 @@ export default function PortalDashboard() {
           Welcome back, {profile?.first_name || 'Member'}
         </h1>
         <p className="text-muted-foreground">
-          Your exclusive access to The Gathering Society
+          Your exclusive access to Make Friends and Socialize
         </p>
       </div>
 
