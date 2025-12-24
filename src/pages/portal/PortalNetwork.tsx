@@ -1,0 +1,285 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { toast } from 'sonner';
+import { Loader2, Search, Heart, Crown, ArrowRight, Filter } from 'lucide-react';
+
+interface MemberProfile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  signature_style: string | null;
+  avatar_urls: string[];
+  interests: string[];
+}
+
+export default function PortalNetwork() {
+  const { user, canAccessMatchmaking, membership } = useAuth();
+  const [members, setMembers] = useState<MemberProfile[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedInterest, setSelectedInterest] = useState<string | null>(null);
+  const [requestingIds, setRequestingIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (canAccessMatchmaking) {
+      fetchMembers();
+    } else {
+      setIsLoading(false);
+    }
+  }, [canAccessMatchmaking]);
+
+  const fetchMembers = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name, signature_style, avatar_urls, interests')
+      .eq('is_visible', true)
+      .neq('id', user.id);
+
+    if (error) {
+      toast.error('Failed to load members');
+      setIsLoading(false);
+      return;
+    }
+
+    setMembers((data as MemberProfile[]) || []);
+    setIsLoading(false);
+  };
+
+  const handleRequestIntroduction = async (memberId: string) => {
+    if (!user) return;
+
+    setRequestingIds(prev => new Set([...prev, memberId]));
+
+    const { error } = await supabase
+      .from('connections')
+      .insert({
+        requester_id: user.id,
+        requested_id: memberId,
+        status: 'pending',
+      });
+
+    setRequestingIds(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(memberId);
+      return newSet;
+    });
+
+    if (error) {
+      if (error.code === '23505') {
+        toast.error('You have already requested an introduction');
+      } else {
+        toast.error('Failed to request introduction');
+      }
+      return;
+    }
+
+    toast.success('Introduction requested successfully');
+  };
+
+  // Get unique interests from all members
+  const allInterests = [...new Set(members.flatMap(m => m.interests || []))];
+
+  // Filter members
+  const filteredMembers = members.filter(member => {
+    const matchesSearch = !searchTerm || 
+      member.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.signature_style?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesInterest = !selectedInterest || 
+      member.interests?.includes(selectedInterest);
+
+    return matchesSearch && matchesInterest;
+  });
+
+  // Upgrade prompt for Patron members
+  if (!canAccessMatchmaking) {
+    return (
+      <div className="max-w-2xl mx-auto text-center py-16">
+        <div className="mb-8">
+          <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
+            <Crown className="h-10 w-10 text-primary" />
+          </div>
+          <h1 className="font-display text-3xl md:text-4xl text-foreground mb-4">
+            Unlock The Network
+          </h1>
+          <p className="text-muted-foreground text-lg mb-8">
+            The Network is where meaningful connections begin. Upgrade to Fellow membership 
+            to browse member profiles and request curated introductions.
+          </p>
+        </div>
+
+        <Card className="bg-card border-primary/20 mb-8">
+          <CardContent className="p-8">
+            <h3 className="font-display text-xl text-foreground mb-4">Fellow Membership Includes</h3>
+            <ul className="text-left space-y-3 text-muted-foreground mb-6">
+              <li className="flex items-center gap-3">
+                <Heart className="h-5 w-5 text-primary" />
+                <span>Curated member introductions</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Heart className="h-5 w-5 text-primary" />
+                <span>Access to The Network</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Heart className="h-5 w-5 text-primary" />
+                <span>Priority event access</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Heart className="h-5 w-5 text-primary" />
+                <span>Exclusive slow dating events</span>
+              </li>
+            </ul>
+            <Button asChild size="lg" className="w-full">
+              <Link to="/membership">
+                Upgrade to Fellow
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <p className="text-sm text-muted-foreground">
+          Current membership: <span className="text-foreground capitalize">{membership?.tier || 'Patron'}</span>
+        </p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+          The Network
+        </h1>
+        <p className="text-muted-foreground">
+          Discover like-minded members and request introductions
+        </p>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by name or style..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant={selectedInterest === null ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setSelectedInterest(null)}
+          >
+            <Filter className="h-4 w-4 mr-2" />
+            All
+          </Button>
+          {allInterests.slice(0, 5).map((interest) => (
+            <Button
+              key={interest}
+              variant={selectedInterest === interest ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSelectedInterest(interest)}
+            >
+              {interest}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Members Grid */}
+      {filteredMembers.length === 0 ? (
+        <div className="text-center py-16">
+          <p className="text-muted-foreground">No members found matching your criteria</p>
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredMembers.map((member) => (
+            <Card key={member.id} className="group overflow-hidden hover-lift">
+              {/* Photo */}
+              <div className="aspect-[3/4] relative overflow-hidden bg-muted">
+                {member.avatar_urls?.[0] ? (
+                  <img
+                    src={member.avatar_urls[0]}
+                    alt={member.first_name || 'Member'}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Avatar className="h-24 w-24">
+                      <AvatarFallback className="text-3xl">
+                        {member.first_name?.[0] || 'M'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                )}
+              </div>
+
+              <CardContent className="p-5">
+                <h3 className="font-display text-xl text-foreground mb-1">
+                  {member.first_name || 'Anonymous'}
+                </h3>
+                
+                {member.signature_style && (
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                    "{member.signature_style}"
+                  </p>
+                )}
+
+                {member.interests?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {member.interests.slice(0, 3).map((interest) => (
+                      <span
+                        key={interest}
+                        className="px-2 py-0.5 rounded-full text-xs bg-muted text-muted-foreground"
+                      >
+                        {interest}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => handleRequestIntroduction(member.id)}
+                  disabled={requestingIds.has(member.id)}
+                >
+                  {requestingIds.has(member.id) ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Heart className="h-4 w-4 mr-2" />
+                      Request Introduction
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

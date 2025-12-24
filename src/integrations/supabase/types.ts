@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      application_waitlist: {
+        Row: {
+          admin_notes: string | null
+          favorite_brands: string[] | null
+          id: string
+          interests: string[] | null
+          reviewed_at: string | null
+          status: Database["public"]["Enums"]["application_status"]
+          style_description: string | null
+          submitted_at: string
+          user_id: string
+          values_in_partner: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          favorite_brands?: string[] | null
+          id?: string
+          interests?: string[] | null
+          reviewed_at?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          style_description?: string | null
+          submitted_at?: string
+          user_id: string
+          values_in_partner?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          favorite_brands?: string[] | null
+          id?: string
+          interests?: string[] | null
+          reviewed_at?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          style_description?: string | null
+          submitted_at?: string
+          user_id?: string
+          values_in_partner?: string | null
+        }
+        Relationships: []
+      }
+      connections: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          requested_id: string
+          requester_id: string
+          status: Database["public"]["Enums"]["connection_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          requested_id: string
+          requester_id: string
+          status?: Database["public"]["Enums"]["connection_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          requested_id?: string
+          requester_id?: string
+          status?: Database["public"]["Enums"]["connection_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       meetup_stats: {
         Row: {
           avatar_urls: string[] | null
@@ -44,15 +113,135 @@ export type Database = {
         }
         Relationships: []
       }
+      memberships: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["membership_status"]
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          tier: Database["public"]["Enums"]["membership_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["membership_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: Database["public"]["Enums"]["membership_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["membership_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: Database["public"]["Enums"]["membership_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_urls: string[] | null
+          bio: string | null
+          created_at: string
+          favorite_brands: string[] | null
+          first_name: string | null
+          id: string
+          interests: string[] | null
+          is_visible: boolean | null
+          last_name: string | null
+          signature_style: string | null
+          updated_at: string
+          values_in_partner: string | null
+        }
+        Insert: {
+          avatar_urls?: string[] | null
+          bio?: string | null
+          created_at?: string
+          favorite_brands?: string[] | null
+          first_name?: string | null
+          id: string
+          interests?: string[] | null
+          is_visible?: boolean | null
+          last_name?: string | null
+          signature_style?: string | null
+          updated_at?: string
+          values_in_partner?: string | null
+        }
+        Update: {
+          avatar_urls?: string[] | null
+          bio?: string | null
+          created_at?: string
+          favorite_brands?: string[] | null
+          first_name?: string | null
+          id?: string
+          interests?: string[] | null
+          is_visible?: boolean | null
+          last_name?: string | null
+          signature_style?: string | null
+          updated_at?: string
+          values_in_partner?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_membership_tier: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["membership_tier"]
+      }
+      has_active_membership: { Args: { _user_id: string }; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "member"
+      application_status: "pending" | "approved" | "rejected"
+      connection_status: "pending" | "accepted" | "declined"
+      membership_status: "pending" | "active" | "cancelled" | "expired"
+      membership_tier: "patron" | "fellow" | "founder"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -179,6 +368,12 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "member"],
+      application_status: ["pending", "approved", "rejected"],
+      connection_status: ["pending", "accepted", "declined"],
+      membership_status: ["pending", "active", "cancelled", "expired"],
+      membership_tier: ["patron", "fellow", "founder"],
+    },
   },
 } as const

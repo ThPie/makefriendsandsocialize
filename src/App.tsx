@@ -4,7 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Layout } from "@/components/layout/Layout";
+import { PortalLayout } from "@/components/portal/PortalLayout";
 import HomePage from "@/pages/HomePage";
 import EventsPage from "@/pages/EventsPage";
 import EventDetailPage from "@/pages/EventDetailPage";
@@ -19,36 +21,56 @@ import TermsPage from "@/pages/TermsPage";
 import CodeOfConductPage from "@/pages/CodeOfConductPage";
 import CookiesPage from "@/pages/CookiesPage";
 import NotFound from "@/pages/NotFound";
+import AuthPage from "@/pages/AuthPage";
+import AuthWaitingPage from "@/pages/AuthWaitingPage";
+import PortalDashboard from "@/pages/portal/PortalDashboard";
+import PortalProfile from "@/pages/portal/PortalProfile";
+import PortalNetwork from "@/pages/portal/PortalNetwork";
+import PortalConnections from "@/pages/portal/PortalConnections";
+import PortalEvents from "@/pages/portal/PortalEvents";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Layout>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/events" element={<EventsPage />} />
-              <Route path="/events/:id" element={<EventDetailPage />} />
-              <Route path="/membership" element={<MembershipPage />} />
-              <Route path="/gallery" element={<GalleryPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/journal" element={<JournalPage />} />
-              <Route path="/journal/:id" element={<JournalPostPage />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/terms" element={<TermsPage />} />
-              <Route path="/rules" element={<CodeOfConductPage />} />
-              <Route path="/cookies" element={<CookiesPage />} />
-              <Route path="*" element={<NotFound />} />
+              {/* Public routes with main layout */}
+              <Route path="/" element={<Layout><HomePage /></Layout>} />
+              <Route path="/events" element={<Layout><EventsPage /></Layout>} />
+              <Route path="/events/:id" element={<Layout><EventDetailPage /></Layout>} />
+              <Route path="/membership" element={<Layout><MembershipPage /></Layout>} />
+              <Route path="/gallery" element={<Layout><GalleryPage /></Layout>} />
+              <Route path="/about" element={<Layout><AboutPage /></Layout>} />
+              <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
+              <Route path="/journal" element={<Layout><JournalPage /></Layout>} />
+              <Route path="/journal/:id" element={<Layout><JournalPostPage /></Layout>} />
+              <Route path="/privacy" element={<Layout><PrivacyPage /></Layout>} />
+              <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
+              <Route path="/rules" element={<Layout><CodeOfConductPage /></Layout>} />
+              <Route path="/cookies" element={<Layout><CookiesPage /></Layout>} />
+              
+              {/* Auth routes */}
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/auth/waiting" element={<AuthWaitingPage />} />
+              
+              {/* Portal routes with portal layout */}
+              <Route path="/portal" element={<PortalLayout><PortalDashboard /></PortalLayout>} />
+              <Route path="/portal/profile" element={<PortalLayout><PortalProfile /></PortalLayout>} />
+              <Route path="/portal/network" element={<PortalLayout><PortalNetwork /></PortalLayout>} />
+              <Route path="/portal/connections" element={<PortalLayout><PortalConnections /></PortalLayout>} />
+              <Route path="/portal/events" element={<PortalLayout><PortalEvents /></PortalLayout>} />
+              
+              <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
-          </Layout>
-        </BrowserRouter>
-      </TooltipProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );
