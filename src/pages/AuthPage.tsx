@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, ArrowRight, Check, Loader2, Mail, Lock, User } from 'lucide-react';
 import { z } from 'zod';
 import { MemberAvatars } from '@/components/home/MemberAvatars';
+import { FloatingParticles } from '@/components/ui/floating-particles';
 import contactHero from '@/assets/contact-hero.webp';
 import logoWhite from '@/assets/logo-white.png';
 
@@ -461,9 +462,8 @@ export default function AuthPage() {
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/95 via-[hsl(180,50%,12%)]/90 to-[hsl(180,55%,15%)]/85" />
       
-      {/* Radial Glow Effects */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-[hsl(180,60%,25%)]/15 rounded-full blur-3xl" />
+      {/* Floating Particles */}
+      <FloatingParticles count={20} />
       
       <div className="relative z-10 w-full max-w-2xl animate-fade-in">
         {/* Header */}
