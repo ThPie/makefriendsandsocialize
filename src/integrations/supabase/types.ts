@@ -19,7 +19,9 @@ export type Database = {
           admin_notes: string | null
           favorite_brands: string[] | null
           id: string
+          industry: string | null
           interests: string[] | null
+          job_title: string | null
           reviewed_at: string | null
           status: Database["public"]["Enums"]["application_status"]
           style_description: string | null
@@ -31,7 +33,9 @@ export type Database = {
           admin_notes?: string | null
           favorite_brands?: string[] | null
           id?: string
+          industry?: string | null
           interests?: string[] | null
+          job_title?: string | null
           reviewed_at?: string | null
           status?: Database["public"]["Enums"]["application_status"]
           style_description?: string | null
@@ -43,7 +47,9 @@ export type Database = {
           admin_notes?: string | null
           favorite_brands?: string[] | null
           id?: string
+          industry?: string | null
           interests?: string[] | null
+          job_title?: string | null
           reviewed_at?: string | null
           status?: Database["public"]["Enums"]["application_status"]
           style_description?: string | null
@@ -160,8 +166,10 @@ export type Database = {
           favorite_brands: string[] | null
           first_name: string | null
           id: string
+          industry: string | null
           interests: string[] | null
           is_visible: boolean | null
+          job_title: string | null
           last_name: string | null
           signature_style: string | null
           updated_at: string
@@ -174,8 +182,10 @@ export type Database = {
           favorite_brands?: string[] | null
           first_name?: string | null
           id: string
+          industry?: string | null
           interests?: string[] | null
           is_visible?: boolean | null
+          job_title?: string | null
           last_name?: string | null
           signature_style?: string | null
           updated_at?: string
@@ -188,8 +198,10 @@ export type Database = {
           favorite_brands?: string[] | null
           first_name?: string | null
           id?: string
+          industry?: string | null
           interests?: string[] | null
           is_visible?: boolean | null
+          job_title?: string | null
           last_name?: string | null
           signature_style?: string | null
           updated_at?: string
