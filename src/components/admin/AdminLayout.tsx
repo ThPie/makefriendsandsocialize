@@ -23,6 +23,10 @@ import {
   Loader2,
   ArrowLeft,
   Shield,
+  Calendar,
+  Image,
+  Settings,
+  UserCog,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -33,7 +37,11 @@ const menuItems = [
   { title: 'Overview', url: '/admin', icon: LayoutDashboard },
   { title: 'Applications', url: '/admin/applications', icon: FileText },
   { title: 'Members', url: '/admin/members', icon: Users },
+  { title: 'Events', url: '/admin/events', icon: Calendar },
   { title: 'Connections', url: '/admin/connections', icon: Heart },
+  { title: 'Content', url: '/admin/content', icon: Image },
+  { title: 'Roles', url: '/admin/roles', icon: UserCog },
+  { title: 'Settings', url: '/admin/settings', icon: Settings },
 ];
 
 export function AdminLayout({ children }: AdminLayoutProps) {
