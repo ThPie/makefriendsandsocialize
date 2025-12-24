@@ -12,7 +12,7 @@ import { ArrowLeft, ArrowRight, Check, Loader2, Mail, Lock, User } from 'lucide-
 import { z } from 'zod';
 import { MemberAvatars } from '@/components/home/MemberAvatars';
 import contactHero from '@/assets/contact-hero.webp';
-import logoLight from '@/assets/logo-light.webp';
+import logoWhite from '@/assets/logo-white.png';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
@@ -226,11 +226,23 @@ export default function AuthPage() {
   // Split-screen layout for Step 1 (credentials)
   if (step === 1) {
     return (
-      <div className="min-h-screen flex">
+      <div className="min-h-screen flex relative">
+        {/* Background Image for Mobile/Tablet */}
+        <div 
+          className="absolute inset-0 lg:hidden"
+          style={{
+            backgroundImage: `url(${contactHero})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/95 via-[hsl(180,50%,12%)]/90 to-[hsl(180,55%,15%)]/85" />
+        </div>
+
         {/* Left Side - Form with Gradient Background */}
         <div className="w-full lg:w-1/2 relative flex flex-col justify-center px-8 md:px-16 lg:px-20 py-12 overflow-hidden">
-          {/* Layered Gradient Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)]" />
+          {/* Layered Gradient Background - Desktop only */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)] hidden lg:block" />
           
           {/* Radial Glow Effects */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -249,7 +261,7 @@ export default function AuthPage() {
             <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl animate-fade-in">
               {/* Logo */}
               <Link to="/" className="inline-block mb-10">
-                <img src={logoLight} alt="MakeFriends & Socialize" className="h-10" />
+                <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10" />
               </Link>
 
               {/* Header */}
@@ -438,7 +450,7 @@ export default function AuthPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-block mb-6">
-            <img src={logoLight} alt="MakeFriends & Socialize" className="h-10 mx-auto brightness-0 invert" />
+            <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10 mx-auto" />
           </Link>
           <h1 className="font-display text-3xl md:text-4xl text-secondary-foreground mb-2">
             Complete Your Application
