@@ -4,23 +4,28 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Clock, CheckCircle2 } from 'lucide-react';
 import logoWhite from '@/assets/logo-white.png';
-import { FloatingParticles } from '@/components/ui/floating-particles';
 import { BrandedLoader } from '@/components/ui/branded-loader';
 
 export default function AuthWaitingPage() {
   const navigate = useNavigate();
-  const { user, applicationStatus, membership, isLoading } = useAuth();
+  const { user, applicationStatus, membership, isLoading, isAdmin } = useAuth();
 
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/auth');
     }
     
+    // If admin, redirect to admin dashboard
+    if (isAdmin) {
+      navigate('/admin');
+      return;
+    }
+    
     // If approved, redirect to portal
     if (applicationStatus === 'approved' || membership?.status === 'active') {
       navigate('/portal');
     }
-  }, [user, applicationStatus, membership, isLoading, navigate]);
+  }, [user, applicationStatus, membership, isLoading, isAdmin, navigate]);
 
   if (isLoading) {
     return <BrandedLoader message="Loading your application..." />;
@@ -40,11 +45,8 @@ export default function AuthWaitingPage() {
         <source src="/videos/hero-2.mp4" type="video/mp4" />
       </video>
       
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/95 via-[hsl(180,50%,12%)]/90 to-[hsl(180,55%,15%)]/85" />
-      
-      {/* Floating Particles */}
-      <FloatingParticles count={25} />
+      {/* Gradient Overlay - Reduced opacity */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/75 via-[hsl(180,50%,12%)]/70 to-[hsl(180,55%,15%)]/65" />
       
       <div className="relative z-10 max-w-lg text-center animate-fade-in">
         {/* Logo */}
@@ -59,7 +61,7 @@ export default function AuthWaitingPage() {
               <Clock className="h-12 w-12 text-destructive" />
             </div>
           ) : (
-            <div className="w-24 h-24 mx-auto rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center animate-pulse">
+            <div className="w-24 h-24 mx-auto rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center">
               <CheckCircle2 className="h-12 w-12 text-primary" />
             </div>
           )}
