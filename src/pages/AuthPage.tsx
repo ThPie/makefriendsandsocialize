@@ -14,13 +14,14 @@ const emailSchema = z.string().email('Please enter a valid email address');
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
 
 const INTERESTS = [
-  'Art & Culture', 'Wine & Dining', 'Travel', 'Fashion', 'Architecture',
-  'Literature', 'Music', 'Philanthropy', 'Entrepreneurship', 'Wellness'
+  'Arts & Culture', 'Fine Dining & Wine', 'Travel & Adventure', 'Entrepreneurship',
+  'Wellness & Mindfulness', 'Music & Nightlife', 'Philanthropy', 'Fashion & Design',
+  'Technology & Innovation', 'Sports & Fitness'
 ];
 
-const BRANDS = [
-  'Hermès', 'Loro Piana', 'Brunello Cucinelli', 'Tom Ford', 'Ralph Lauren',
-  'Zegna', 'Dior', 'Chanel', 'Gucci', 'Prada'
+const MOTIVATIONS = [
+  'Networking', 'New Friendships', 'Dating & Romance', 'Business Connections',
+  'Cultural Events', 'Personal Growth', 'Exclusive Experiences', 'Like-minded Community'
 ];
 
 export default function AuthPage() {
@@ -138,11 +139,11 @@ export default function AuthPage() {
     navigate('/auth/waiting');
   };
 
-  const toggleBrand = (brand: string) => {
+  const toggleMotivation = (motivation: string) => {
     setSelectedBrands(prev => 
-      prev.includes(brand) 
-        ? prev.filter(b => b !== brand)
-        : [...prev, brand]
+      prev.includes(motivation) 
+        ? prev.filter(b => b !== motivation)
+        : [...prev, motivation]
     );
   };
 
@@ -293,21 +294,21 @@ export default function AuthPage() {
             </div>
           )}
 
-          {/* Step 2: Style Profile */}
+          {/* Step 2: About You */}
           {step === 2 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
-                <h2 className="font-display text-2xl text-card-foreground">Your Style Profile</h2>
-                <p className="text-muted-foreground text-sm mt-1">Tell us about your personal aesthetic</p>
+                <h2 className="font-display text-2xl text-card-foreground">About You</h2>
+                <p className="text-muted-foreground text-sm mt-1">Tell us a bit about yourself</p>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="signatureStyle" className="text-card-foreground">
-                  Describe Your Signature Style
+                  Tell us about yourself
                 </Label>
                 <Textarea
                   id="signatureStyle"
-                  placeholder="Timeless elegance with a modern edge. I gravitate towards quality craftsmanship and understated luxury..."
+                  placeholder="I'm a creative director with a passion for art and design. I thrive in environments where meaningful conversations happen..."
                   value={signatureStyle}
                   onChange={(e) => setSignatureStyle(e.target.value)}
                   className="bg-background min-h-[100px]"
@@ -315,20 +316,20 @@ export default function AuthPage() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-card-foreground">Brands That Resonate With You</Label>
+                <Label className="text-card-foreground">What brings you to our community?</Label>
                 <div className="flex flex-wrap gap-2">
-                  {BRANDS.map((brand) => (
+                  {MOTIVATIONS.map((motivation) => (
                     <button
-                      key={brand}
-                      onClick={() => toggleBrand(brand)}
+                      key={motivation}
+                      onClick={() => toggleMotivation(motivation)}
                       className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
-                        selectedBrands.includes(brand)
+                        selectedBrands.includes(motivation)
                           ? 'bg-primary text-primary-foreground border-primary'
                           : 'bg-transparent text-card-foreground border-border hover:border-primary'
                       }`}
                     >
-                      {brand}
-                      {selectedBrands.includes(brand) && <Check className="inline ml-1 h-3 w-3" />}
+                      {motivation}
+                      {selectedBrands.includes(motivation) && <Check className="inline ml-1 h-3 w-3" />}
                     </button>
                   ))}
                 </div>
@@ -354,21 +355,21 @@ export default function AuthPage() {
             </div>
           )}
 
-          {/* Step 3: Values */}
+          {/* Step 3: Your Lifestyle */}
           {step === 3 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
-                <h2 className="font-display text-2xl text-card-foreground">Your Values</h2>
-                <p className="text-muted-foreground text-sm mt-1">What matters most to you in a connection</p>
+                <h2 className="font-display text-2xl text-card-foreground">Your Lifestyle</h2>
+                <p className="text-muted-foreground text-sm mt-1">Help us understand what you're looking for</p>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="values" className="text-card-foreground">
-                  What Do You Value Most in a Partner?
+                  What would make your membership valuable?
                 </Label>
                 <Textarea
                   id="values"
-                  placeholder="Intellectual curiosity, shared appreciation for the finer things, authenticity..."
+                  placeholder="Access to curated events, meeting inspiring people, and being part of a community that values authenticity..."
                   value={valuesInPartner}
                   onChange={(e) => setValuesInPartner(e.target.value)}
                   className="bg-background min-h-[100px]"
