@@ -39,6 +39,7 @@ import AdminEvents from "@/pages/admin/AdminEvents";
 import AdminContent from "@/pages/admin/AdminContent";
 import AdminRoles from "@/pages/admin/AdminRoles";
 import AdminSettings from "@/pages/admin/AdminSettings";
+import AdminTestimonials from "@/pages/admin/AdminTestimonials";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +87,7 @@ const App = () => (
               <Route path="/admin/members" element={<AdminLayout><AdminMembers /></AdminLayout>} />
               <Route path="/admin/events" element={<AdminLayout><AdminEvents /></AdminLayout>} />
               <Route path="/admin/connections" element={<AdminLayout><AdminConnections /></AdminLayout>} />
+              <Route path="/admin/testimonials" element={<AdminLayout><AdminTestimonials /></AdminLayout>} />
               <Route path="/admin/content" element={<AdminLayout><AdminContent /></AdminLayout>} />
               <Route path="/admin/roles" element={<AdminLayout><AdminRoles /></AdminLayout>} />
               <Route path="/admin/settings" element={<AdminLayout><AdminSettings /></AdminLayout>} />

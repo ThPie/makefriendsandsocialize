@@ -45,7 +45,7 @@ export default function AuthPage() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   // Member stats state
   const [memberCount, setMemberCount] = useState(928);
   const [avatarUrls, setAvatarUrls] = useState<string[]>(defaultAvatars);
@@ -150,6 +150,11 @@ export default function AuthPage() {
   };
 
   const handleFinalSubmit = async () => {
+    if (!acceptedTerms) {
+      toast.error('Please accept the Privacy Policy and Terms of Service');
+      return;
+    }
+    
     setIsSubmitting(true);
     
     const { error: signUpError } = await signUp(email, password);
@@ -180,6 +185,7 @@ export default function AuthPage() {
           interests: selectedInterests,
           industry,
           job_title: jobTitle,
+          terms_accepted_at: new Date().toISOString(),
         })
         .eq('id', session.user.id);
 
@@ -621,6 +627,34 @@ export default function AuthPage() {
                 </div>
               </div>
 
+              {/* Terms & Privacy Consent */}
+              <div className="flex items-start gap-3 pt-2">
+                <Checkbox
+                  id="terms"
+                  checked={acceptedTerms}
+                  onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                  className="mt-1 border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+                <label htmlFor="terms" className="text-sm text-white/70 cursor-pointer leading-relaxed">
+                  I have read and agree to the{' '}
+                  <Link
+                    to="/privacy"
+                    target="_blank"
+                    className="text-primary hover:text-primary/80 underline underline-offset-2"
+                  >
+                    Privacy Policy
+                  </Link>{' '}
+                  and{' '}
+                  <Link
+                    to="/terms"
+                    target="_blank"
+                    className="text-primary hover:text-primary/80 underline underline-offset-2"
+                  >
+                    Terms of Service
+                  </Link>
+                </label>
+              </div>
+
               <div className="flex gap-4 pt-4">
                 <Button
                   variant="outline"
@@ -632,8 +666,8 @@ export default function AuthPage() {
                 </Button>
                 <Button
                   onClick={handleFinalSubmit}
-                  disabled={isSubmitting}
-                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
+                  disabled={isSubmitting || !acceptedTerms}
+                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
