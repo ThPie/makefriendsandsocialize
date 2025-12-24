@@ -23,6 +23,8 @@ import CodeOfConductPage from "@/pages/CodeOfConductPage";
 import CookiesPage from "@/pages/CookiesPage";
 import NotFound from "@/pages/NotFound";
 import AuthPage from "@/pages/AuthPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import AuthWaitingPage from "@/pages/AuthWaitingPage";
 import PortalDashboard from "@/pages/portal/PortalDashboard";
 import PortalProfile from "@/pages/portal/PortalProfile";
@@ -62,6 +64,9 @@ const App = () => (
               
               {/* Auth routes */}
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/auth/waiting" element={<AuthWaitingPage />} />
+              <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
               <Route path="/auth/waiting" element={<AuthWaitingPage />} />
               
               {/* Portal routes with portal layout */}
