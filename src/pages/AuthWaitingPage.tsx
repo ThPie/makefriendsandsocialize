@@ -2,9 +2,10 @@ import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Clock, CheckCircle2, Loader2 } from 'lucide-react';
+import { Clock, CheckCircle2 } from 'lucide-react';
 import logoWhite from '@/assets/logo-white.png';
 import { FloatingParticles } from '@/components/ui/floating-particles';
+import { BrandedLoader } from '@/components/ui/branded-loader';
 
 export default function AuthWaitingPage() {
   const navigate = useNavigate();
@@ -22,22 +23,7 @@ export default function AuthWaitingPage() {
   }, [user, applicationStatus, membership, isLoading, navigate]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen relative flex items-center justify-center overflow-hidden">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          poster="/images/hero-poster.webp"
-        >
-          <source src="/videos/hero-2.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/95 via-[hsl(180,50%,12%)]/90 to-[hsl(180,55%,15%)]/85" />
-        <Loader2 className="relative z-10 h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <BrandedLoader message="Loading your application..." />;
   }
 
   return (
