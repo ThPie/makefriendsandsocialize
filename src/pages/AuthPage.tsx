@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, ArrowRight, Check, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Loader2, Mail, Lock, User } from 'lucide-react';
 import { z } from 'zod';
+import { MemberAvatars } from '@/components/home/MemberAvatars';
+import contactHero from '@/assets/contact-hero.webp';
+import logoLight from '@/assets/logo-light.webp';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
@@ -24,12 +28,26 @@ const MOTIVATIONS = [
   'Cultural Events', 'Personal Growth', 'Exclusive Experiences', 'Like-minded Community'
 ];
 
+const defaultAvatars = [
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face',
+];
+
 export default function AuthPage() {
   const navigate = useNavigate();
   const { user, signUp, signIn, isLoading } = useAuth();
-  const [mode, setMode] = useState<'signin' | 'signup'>('signup');
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  
+  // Member stats state
+  const [memberCount, setMemberCount] = useState(928);
+  const [avatarUrls, setAvatarUrls] = useState<string[]>(defaultAvatars);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
   
   // Form state
   const [email, setEmail] = useState('');
@@ -43,6 +61,46 @@ export default function AuthPage() {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [industry, setIndustry] = useState('');
   const [jobTitle, setJobTitle] = useState('');
+
+  // Fetch member stats from meetup_stats (same as Hero)
+  useEffect(() => {
+    const fetchMemberStats = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('meetup_stats')
+          .select('member_count, avatar_urls')
+          .order('last_updated', { ascending: false })
+          .limit(1)
+          .single();
+        
+        if (error) throw error;
+        
+        if (data) {
+          setMemberCount(data.member_count || 928);
+          
+          if (data.avatar_urls && data.avatar_urls.length > 0) {
+            const memberPhotos = data.avatar_urls.filter((url: string) => 
+              url.includes('member_') || 
+              url.includes('photos.meetupstatic.com') ||
+              url.includes('secure.meetupstatic.com/photos/member')
+            );
+            
+            const photosToUse = memberPhotos.length >= 5 ? memberPhotos : data.avatar_urls;
+            const uniquePhotos = [...new Set(photosToUse)];
+            const shuffled = uniquePhotos.sort(() => Math.random() - 0.5);
+            
+            setAvatarUrls(shuffled.length > 0 ? shuffled : defaultAvatars);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching member stats:', err);
+      } finally {
+        setIsLoadingStats(false);
+      }
+    };
+    
+    fetchMemberStats();
+  }, []);
 
   useEffect(() => {
     if (user && !isLoading) {
@@ -92,7 +150,6 @@ export default function AuthPage() {
   const handleFinalSubmit = async () => {
     setIsSubmitting(true);
     
-    // Sign up the user
     const { error: signUpError } = await signUp(email, password);
     
     if (signUpError) {
@@ -107,11 +164,9 @@ export default function AuthPage() {
       return;
     }
 
-    // Wait for session to be established
     const { data: { session } } = await supabase.auth.getSession();
     
     if (session?.user) {
-      // Update profile
       await supabase
         .from('profiles')
         .update({
@@ -126,7 +181,6 @@ export default function AuthPage() {
         })
         .eq('id', session.user.id);
 
-      // Submit application
       await supabase
         .from('application_waitlist')
         .insert({
@@ -169,89 +223,93 @@ export default function AuthPage() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-secondary flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-lg">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="font-display text-4xl md:text-5xl text-secondary-foreground mb-4">
-            {mode === 'signin' ? 'Welcome Back' : 'Apply for Membership'}
-          </h1>
-          <p className="text-muted-foreground">
-            {mode === 'signin' 
-              ? 'Sign in to access your member portal'
-              : 'Join an exclusive community of refined individuals'
-            }
-          </p>
-        </div>
+  // Split-screen layout for Step 1 (credentials)
+  if (step === 1) {
+    return (
+      <div className="min-h-screen flex">
+        {/* Left Side - Form */}
+        <div className="w-full lg:w-1/2 bg-card flex flex-col justify-center px-8 md:px-16 lg:px-20 py-12">
+          <div className="max-w-md mx-auto w-full">
+            {/* Logo */}
+            <Link to="/" className="inline-block mb-12">
+              <img src={logoLight} alt="MakeFriends & Socialize" className="h-10" />
+            </Link>
 
-        {/* Progress Steps (signup only) */}
-        {mode === 'signup' && (
-          <div className="flex justify-center gap-2 mb-8">
-            {[1, 2, 3].map((s) => (
-              <div
-                key={s}
-                className={`h-2 w-12 rounded-full transition-colors ${
-                  s <= step ? 'bg-primary' : 'bg-muted'
-                }`}
-              />
-            ))}
-          </div>
-        )}
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="font-display text-3xl md:text-4xl text-card-foreground mb-2">
+                {mode === 'signin' ? 'Sign in' : 'Create Account'}
+              </h1>
+              <p className="text-muted-foreground">
+                {mode === 'signin' 
+                  ? 'Welcome back! Please enter your details.'
+                  : 'Join our exclusive community today.'
+                }
+              </p>
+            </div>
 
-        {/* Form Card */}
-        <div className="bg-card rounded-lg p-8 shadow-elegant">
-          {/* Step 1: Credentials */}
-          {step === 1 && (
-            <div className="space-y-6">
+            {/* Form */}
+            <div className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-card-foreground">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-background"
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-background pl-10"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-card-foreground">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-background"
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-background pl-10"
+                  />
+                </div>
               </div>
 
               {mode === 'signup' && (
                 <>
                   <div className="space-y-2">
                     <Label htmlFor="confirmPassword" className="text-card-foreground">Confirm Password</Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="••••••••"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="bg-background"
-                    />
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="bg-background pl-10"
+                      />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName" className="text-card-foreground">First Name</Label>
-                      <Input
-                        id="firstName"
-                        placeholder="James"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className="bg-background"
-                      />
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                        <Input
+                          id="firstName"
+                          placeholder="James"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          className="bg-background pl-10"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName" className="text-card-foreground">Last Name</Label>
@@ -265,6 +323,24 @@ export default function AuthPage() {
                     </div>
                   </div>
                 </>
+              )}
+
+              {mode === 'signin' && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="remember" 
+                      checked={rememberMe}
+                      onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                    />
+                    <label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
+                      Remember me
+                    </label>
+                  </div>
+                  <button className="text-sm text-primary hover:underline">
+                    Forgot password?
+                  </button>
+                </div>
               )}
 
               <Button
@@ -292,14 +368,89 @@ export default function AuthPage() {
                     setMode(mode === 'signin' ? 'signup' : 'signin');
                     setStep(1);
                   }}
-                  className="text-primary hover:underline"
+                  className="text-primary hover:underline font-medium"
                 >
-                  {mode === 'signin' ? 'Apply for Membership' : 'Sign In'}
+                  {mode === 'signin' ? 'Sign up' : 'Sign In'}
                 </button>
               </p>
             </div>
-          )}
+          </div>
+        </div>
 
+        {/* Right Side - Branded Panel */}
+        <div 
+          className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12"
+          style={{
+            backgroundImage: `url(${contactHero})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-secondary/80" />
+          
+          {/* Content */}
+          <div className="relative z-10">
+            {/* Top decoration or logo can go here */}
+          </div>
+          
+          <div className="relative z-10 flex flex-col items-start">
+            <h2 className="font-display text-4xl xl:text-5xl text-secondary-foreground mb-4">
+              Welcome to<br />
+              <span className="text-primary">MakeFriends & Socialize</span>
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-md mb-8">
+              Join an exclusive community of refined individuals who share a passion for meaningful connections, curated experiences, and extraordinary moments.
+            </p>
+            
+            {/* Floating Card with Avatars */}
+            <div className="bg-card/10 backdrop-blur-md border border-white/10 rounded-xl p-6 w-full max-w-md">
+              <p className="text-secondary-foreground font-medium mb-4">
+                Get access to exclusive events and connect with like-minded people
+              </p>
+              <MemberAvatars 
+                avatarUrls={avatarUrls} 
+                memberCount={memberCount} 
+                isLoading={isLoadingStats}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Multi-step signup (steps 2 & 3) - centered card layout
+  return (
+    <div className="min-h-screen bg-secondary flex items-center justify-center px-4 py-16">
+      <div className="w-full max-w-lg">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-block mb-6">
+            <img src={logoLight} alt="MakeFriends & Socialize" className="h-10 mx-auto" />
+          </Link>
+          <h1 className="font-display text-3xl md:text-4xl text-secondary-foreground mb-2">
+            Complete Your Application
+          </h1>
+          <p className="text-muted-foreground">
+            Just a few more details to personalize your experience
+          </p>
+        </div>
+
+        {/* Progress Steps */}
+        <div className="flex justify-center gap-2 mb-8">
+          {[1, 2, 3].map((s) => (
+            <div
+              key={s}
+              className={`h-2 w-12 rounded-full transition-colors ${
+                s <= step ? 'bg-primary' : 'bg-muted'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Form Card */}
+        <div className="bg-card rounded-lg p-8 shadow-elegant">
           {/* Step 2: About You */}
           {step === 2 && (
             <div className="space-y-6">
