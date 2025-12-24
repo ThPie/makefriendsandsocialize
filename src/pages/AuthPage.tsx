@@ -229,7 +229,7 @@ export default function AuthPage() {
       <div className="min-h-screen flex">
         {/* Left Side - Form */}
         <div className="w-full lg:w-1/2 bg-card flex flex-col justify-center px-8 md:px-16 lg:px-20 py-12">
-          <div className="max-w-md mx-auto w-full">
+          <div className="max-w-md mx-auto w-full animate-fade-in">
             {/* Logo */}
             <Link to="/" className="inline-block mb-12">
               <img src={logoLight} alt="MakeFriends & Socialize" className="h-10" />
@@ -337,9 +337,9 @@ export default function AuthPage() {
                       Remember me
                     </label>
                   </div>
-                  <button className="text-sm text-primary hover:underline">
+                  <Link to="/auth/forgot-password" className="text-sm text-primary hover:underline">
                     Forgot password?
-                  </button>
+                  </Link>
                 </div>
               )}
 
@@ -379,33 +379,28 @@ export default function AuthPage() {
 
         {/* Right Side - Branded Panel */}
         <div 
-          className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12"
+          className="hidden lg:flex lg:w-1/2 relative flex-col justify-end p-12"
           style={{
             backgroundImage: `url(${contactHero})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         >
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-secondary/80" />
+          {/* Subtle gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
           
-          {/* Content */}
-          <div className="relative z-10">
-            {/* Top decoration or logo can go here */}
-          </div>
-          
-          <div className="relative z-10 flex flex-col items-start">
-            <h2 className="font-display text-4xl xl:text-5xl text-secondary-foreground mb-4">
+          <div className="relative z-10 flex flex-col items-start animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <h2 className="font-display text-4xl xl:text-5xl text-white mb-4 drop-shadow-lg">
               Welcome to<br />
               <span className="text-primary">MakeFriends & Socialize</span>
             </h2>
-            <p className="text-muted-foreground text-lg max-w-md mb-8">
+            <p className="text-white/90 text-lg max-w-md mb-8 drop-shadow-md">
               Join an exclusive community of refined individuals who share a passion for meaningful connections, curated experiences, and extraordinary moments.
             </p>
             
             {/* Floating Card with Avatars */}
-            <div className="bg-card/10 backdrop-blur-md border border-white/10 rounded-xl p-6 w-full max-w-md">
-              <p className="text-secondary-foreground font-medium mb-4">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 w-full max-w-md animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <p className="text-white font-medium mb-4">
                 Get access to exclusive events and connect with like-minded people
               </p>
               <MemberAvatars 
@@ -423,11 +418,11 @@ export default function AuthPage() {
   // Multi-step signup (steps 2 & 3) - centered card layout
   return (
     <div className="min-h-screen bg-secondary flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-lg animate-fade-in">
         {/* Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-block mb-6">
-            <img src={logoLight} alt="MakeFriends & Socialize" className="h-10 mx-auto" />
+            <img src={logoLight} alt="MakeFriends & Socialize" className="h-10 mx-auto brightness-0 invert" />
           </Link>
           <h1 className="font-display text-3xl md:text-4xl text-secondary-foreground mb-2">
             Complete Your Application
