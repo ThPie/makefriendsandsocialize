@@ -16,6 +16,8 @@ interface MemberProfile {
   signature_style: string | null;
   avatar_urls: string[];
   interests: string[];
+  industry: string | null;
+  job_title: string | null;
 }
 
 export default function PortalNetwork() {
@@ -24,6 +26,7 @@ export default function PortalNetwork() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInterest, setSelectedInterest] = useState<string | null>(null);
+  const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
   const [requestingIds, setRequestingIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -39,7 +42,7 @@ export default function PortalNetwork() {
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, first_name, last_name, signature_style, avatar_urls, interests')
+      .select('id, first_name, last_name, signature_style, avatar_urls, interests, industry, job_title')
       .eq('is_visible', true)
       .neq('id', user.id);
 
@@ -84,19 +87,25 @@ export default function PortalNetwork() {
     toast.success('Introduction requested successfully');
   };
 
-  // Get unique interests from all members
+  // Get unique interests and industries from all members
   const allInterests = [...new Set(members.flatMap(m => m.interests || []))];
+  const allIndustries = [...new Set(members.map(m => m.industry).filter(Boolean))] as string[];
 
   // Filter members
   const filteredMembers = members.filter(member => {
     const matchesSearch = !searchTerm || 
       member.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.signature_style?.toLowerCase().includes(searchTerm.toLowerCase());
+      member.signature_style?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.industry?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.job_title?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesInterest = !selectedInterest || 
       member.interests?.includes(selectedInterest);
 
-    return matchesSearch && matchesInterest;
+    const matchesIndustry = !selectedIndustry ||
+      member.industry === selectedIndustry;
+
+    return matchesSearch && matchesInterest && matchesIndustry;
   });
 
   // Upgrade prompt for Patron members
@@ -174,36 +183,66 @@ export default function PortalNetwork() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
+      <div className="space-y-4">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by name or style..."
+            placeholder="Search by name, industry, or job title..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
 
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            variant={selectedInterest === null ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSelectedInterest(null)}
-          >
-            <Filter className="h-4 w-4 mr-2" />
-            All
-          </Button>
-          {allInterests.slice(0, 5).map((interest) => (
+        {/* Industry Filter */}
+        {allIndustries.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground font-medium">Filter by Industry</p>
+            <div className="flex gap-2 flex-wrap">
+              <Button
+                variant={selectedIndustry === null ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSelectedIndustry(null)}
+              >
+                All Industries
+              </Button>
+              {allIndustries.map((industry) => (
+                <Button
+                  key={industry}
+                  variant={selectedIndustry === industry ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedIndustry(industry)}
+                >
+                  {industry}
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Interest Filter */}
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground font-medium">Filter by Interest</p>
+          <div className="flex gap-2 flex-wrap">
             <Button
-              key={interest}
-              variant={selectedInterest === interest ? 'default' : 'outline'}
+              variant={selectedInterest === null ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setSelectedInterest(interest)}
+              onClick={() => setSelectedInterest(null)}
             >
-              {interest}
+              <Filter className="h-4 w-4 mr-2" />
+              All
             </Button>
-          ))}
+            {allInterests.slice(0, 6).map((interest) => (
+              <Button
+                key={interest}
+                variant={selectedInterest === interest ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSelectedInterest(interest)}
+              >
+                {interest}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -240,6 +279,12 @@ export default function PortalNetwork() {
                   {member.first_name || 'Anonymous'}
                 </h3>
                 
+                {(member.job_title || member.industry) && (
+                  <p className="text-sm text-primary font-medium mb-2">
+                    {member.job_title}{member.job_title && member.industry ? ' · ' : ''}{member.industry}
+                  </p>
+                )}
+
                 {member.signature_style && (
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                     "{member.signature_style}"
