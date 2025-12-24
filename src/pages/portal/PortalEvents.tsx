@@ -128,7 +128,7 @@ export default function PortalEvents() {
           Upcoming Events
         </h1>
         <p className="text-muted-foreground">
-          Exclusive gatherings for members of The Gathering Society
+          Exclusive gatherings for members of Make Friends and Socialize
         </p>
       </div>
 

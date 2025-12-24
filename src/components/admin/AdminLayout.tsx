@@ -87,7 +87,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               <Shield className="h-5 w-5 text-primary" />
               <div>
                 <h1 className="font-display text-xl text-foreground">Admin</h1>
-                <p className="text-xs text-muted-foreground">The Gathering Society</p>
+                <p className="text-xs text-muted-foreground">Make Friends and Socialize</p>
               </div>
             </div>
           </SidebarHeader>

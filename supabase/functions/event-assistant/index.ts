@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 const eventsContext = `
-You are the Event Assistant for The Gathering Society, an exclusive membership club. You help members discover and learn about our curated events.
+You are the Event Assistant for Make Friends and Socialize, an exclusive membership club. You help members discover and learn about our curated events.
 
 Available Events:
 1. Wine Tasting Masterclass - October 28, 2024 at The Cellar Room, Downtown. Category: Dining. Join our sommelier for an intimate evening exploring rare vintages from Bordeaux and Tuscany. Includes paired canapés.

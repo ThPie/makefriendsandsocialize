@@ -78,7 +78,7 @@ export default function AuthWaitingPage() {
           {applicationStatus === 'rejected' ? (
             'We appreciate your interest, but we are unable to offer membership at this time. We wish you the very best.'
           ) : (
-            'Thank you for applying to The Gathering Society. Our membership committee is reviewing your application with the care it deserves. We will be in touch within 48 hours.'
+            'Thank you for applying to Make Friends and Socialize. Our membership committee is reviewing your application with the care it deserves. We will be in touch within 48 hours.'
           )}
         </p>
 

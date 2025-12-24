@@ -180,7 +180,7 @@ export default function PortalProfile() {
           My Profile
         </h1>
         <p className="text-muted-foreground">
-          Craft your digital identity for The Gathering Society
+          Craft your digital identity for Make Friends and Socialize
         </p>
       </div>
 
