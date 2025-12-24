@@ -12,6 +12,7 @@ import { ArrowLeft, ArrowRight, Check, Loader2, Mail, Lock, User } from 'lucide-
 import { z } from 'zod';
 import { MemberAvatars } from '@/components/home/MemberAvatars';
 import { FloatingParticles } from '@/components/ui/floating-particles';
+import { BrandedLoader } from '@/components/ui/branded-loader';
 import contactHero from '@/assets/contact-hero.webp';
 import logoWhite from '@/assets/logo-white.png';
 
@@ -217,11 +218,7 @@ export default function AuthPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-secondary">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <BrandedLoader />;
   }
 
   // Split-screen layout for Step 1 (credentials)
@@ -238,6 +235,12 @@ export default function AuthPage() {
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/95 via-[hsl(180,50%,12%)]/90 to-[hsl(180,55%,15%)]/85" />
+          <FloatingParticles count={15} />
+        </div>
+
+        {/* Floating Particles - Desktop */}
+        <div className="absolute inset-0 hidden lg:block pointer-events-none">
+          <FloatingParticles count={12} />
         </div>
 
         {/* Left Side - Form with Gradient Background */}
