@@ -145,64 +145,103 @@ export type Database = {
           age: number
           age_range_max: number
           age_range_min: number
+          apology_language: string | null
+          bio: string | null
           conflict_resolution: string | null
           core_values: string | null
           created_at: string | null
+          current_curiosity: string | null
           dealbreakers: string | null
+          defining_enough: string | null
           display_name: string
           emotional_connection: string | null
+          financial_philosophy: string | null
+          friendship_benchmark: string | null
+          future_goals: string | null
           gender: string
           id: string
           is_active: boolean | null
           location: string | null
           occupation: string | null
+          photo_url: string | null
+          politics_stance: string | null
+          religion_stance: string | null
           status: string
+          support_style: string | null
           target_gender: string
           tuesday_night_test: string | null
+          unpopular_opinion: string | null
           updated_at: string | null
           user_id: string
+          vulnerability_check: string | null
         }
         Insert: {
           age: number
           age_range_max?: number
           age_range_min?: number
+          apology_language?: string | null
+          bio?: string | null
           conflict_resolution?: string | null
           core_values?: string | null
           created_at?: string | null
+          current_curiosity?: string | null
           dealbreakers?: string | null
+          defining_enough?: string | null
           display_name: string
           emotional_connection?: string | null
+          financial_philosophy?: string | null
+          friendship_benchmark?: string | null
+          future_goals?: string | null
           gender: string
           id?: string
           is_active?: boolean | null
           location?: string | null
           occupation?: string | null
+          photo_url?: string | null
+          politics_stance?: string | null
+          religion_stance?: string | null
           status?: string
+          support_style?: string | null
           target_gender: string
           tuesday_night_test?: string | null
+          unpopular_opinion?: string | null
           updated_at?: string | null
           user_id: string
+          vulnerability_check?: string | null
         }
         Update: {
           age?: number
           age_range_max?: number
           age_range_min?: number
+          apology_language?: string | null
+          bio?: string | null
           conflict_resolution?: string | null
           core_values?: string | null
           created_at?: string | null
+          current_curiosity?: string | null
           dealbreakers?: string | null
+          defining_enough?: string | null
           display_name?: string
           emotional_connection?: string | null
+          financial_philosophy?: string | null
+          friendship_benchmark?: string | null
+          future_goals?: string | null
           gender?: string
           id?: string
           is_active?: boolean | null
           location?: string | null
           occupation?: string | null
+          photo_url?: string | null
+          politics_stance?: string | null
+          religion_stance?: string | null
           status?: string
+          support_style?: string | null
           target_gender?: string
           tuesday_night_test?: string | null
+          unpopular_opinion?: string | null
           updated_at?: string | null
           user_id?: string
+          vulnerability_check?: string | null
         }
         Relationships: []
       }

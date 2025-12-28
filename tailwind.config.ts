@@ -61,6 +61,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Dating theme colors
+        dating: {
+          forest: "hsl(var(--dating-forest))",
+          cream: "hsl(var(--dating-cream))",
+          terracotta: "hsl(var(--dating-terracotta))",
+          charcoal: "hsl(var(--dating-charcoal))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
