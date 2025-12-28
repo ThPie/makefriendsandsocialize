@@ -96,10 +96,15 @@ export type Database = {
           created_at: string | null
           id: string
           match_reason: string
+          meeting_date: string | null
+          meeting_status: string | null
+          meeting_time: string | null
           status: string | null
           updated_at: string | null
           user_a_id: string
+          user_a_response: string | null
           user_b_id: string
+          user_b_response: string | null
         }
         Insert: {
           admin_notes?: string | null
@@ -107,10 +112,15 @@ export type Database = {
           created_at?: string | null
           id?: string
           match_reason: string
+          meeting_date?: string | null
+          meeting_status?: string | null
+          meeting_time?: string | null
           status?: string | null
           updated_at?: string | null
           user_a_id: string
+          user_a_response?: string | null
           user_b_id: string
+          user_b_response?: string | null
         }
         Update: {
           admin_notes?: string | null
@@ -118,10 +128,15 @@ export type Database = {
           created_at?: string | null
           id?: string
           match_reason?: string
+          meeting_date?: string | null
+          meeting_status?: string | null
+          meeting_time?: string | null
           status?: string | null
           updated_at?: string | null
           user_a_id?: string
+          user_a_response?: string | null
           user_b_id?: string
+          user_b_response?: string | null
         }
         Relationships: [
           {
@@ -398,6 +413,54 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      meeting_proposals: {
+        Row: {
+          created_at: string | null
+          id: string
+          match_id: string
+          proposed_by: string
+          proposed_date: string
+          proposed_time: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          match_id: string
+          proposed_by: string
+          proposed_date: string
+          proposed_time: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          match_id?: string
+          proposed_by?: string
+          proposed_date?: string
+          proposed_time?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_proposals_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "dating_matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meeting_proposals_proposed_by_fkey"
+            columns: ["proposed_by"]
+            isOneToOne: false
+            referencedRelation: "dating_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       meetup_stats: {
         Row: {
