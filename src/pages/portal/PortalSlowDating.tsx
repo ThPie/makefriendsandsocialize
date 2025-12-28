@@ -1,13 +1,14 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Heart, Sparkles, Clock, CheckCircle2, XCircle, User, ArrowRight } from 'lucide-react';
+import { Heart, Sparkles, Clock, CheckCircle2, XCircle, User } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BlurredMatchCard } from '@/components/dating/BlurredMatchCard';
 
 interface DatingProfile {
   id: string;
@@ -16,6 +17,7 @@ interface DatingProfile {
   bio: string | null;
   status: string;
   age: number;
+  gender: string;
   location: string | null;
   created_at: string;
 }
@@ -25,19 +27,29 @@ interface Match {
   compatibility_score: number;
   match_reason: string;
   status: string;
+  meeting_status: string;
+  meeting_date: string | null;
+  meeting_time: string | null;
+  user_a_response: string;
+  user_b_response: string;
+  user_a_id: string;
+  user_b_id: string;
   created_at: string;
-  matched_profile: {
+  matched_profile?: {
     id: string;
     display_name: string;
     photo_url: string | null;
     age: number;
+    gender: string;
     location: string | null;
+    occupation: string | null;
     bio: string | null;
   };
 }
 
 export default function PortalSlowDating() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Fetch user's dating profile
   const { data: profile, isLoading: profileLoading } = useQuery({
@@ -84,7 +96,7 @@ export default function PortalSlowDating() {
           
           const { data: matchedProfile } = await supabase
             .from('dating_profiles')
-            .select('id, display_name, photo_url, age, location, bio')
+            .select('id, display_name, photo_url, age, gender, location, occupation, bio')
             .eq('id', matchedProfileId)
             .single();
 
@@ -133,6 +145,13 @@ export default function PortalSlowDating() {
         };
     }
   };
+
+  const isWoman = profile?.gender?.toLowerCase() === 'female' || profile?.gender?.toLowerCase() === 'woman';
+
+  // Categorize matches
+  const activeMatches = matches?.filter(m => m.status !== 'declined' && m.status !== 'mutual_yes') || [];
+  const revealedMatches = matches?.filter(m => m.status === 'mutual_yes') || [];
+  const endedMatches = matches?.filter(m => m.status === 'declined') || [];
 
   if (profileLoading) {
     return (
@@ -230,14 +249,39 @@ export default function PortalSlowDating() {
         </CardContent>
       </Card>
 
-      {/* Matches Section */}
+      {/* Revealed Matches Section */}
+      {revealedMatches.length > 0 && (
+        <div>
+          <h2 className="text-xl font-display text-foreground mb-4 flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-dating-terracotta" />
+            Your Connections
+            <Badge variant="secondary" className="ml-2 bg-dating-terracotta/10 text-dating-terracotta">
+              {revealedMatches.length}
+            </Badge>
+          </h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            {revealedMatches.map((match) => (
+              <BlurredMatchCard
+                key={match.id}
+                match={match}
+                currentProfileId={profile.id}
+                isWoman={isWoman}
+                onSchedule={() => navigate(`/portal/match/${match.id}`)}
+                onViewDetails={() => navigate(`/portal/match/${match.id}`)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Active Matches Section */}
       <div>
         <h2 className="text-xl font-display text-foreground mb-4 flex items-center gap-2">
-          <Heart className="h-5 w-5 text-dating-terracotta" />
-          Your Matches
-          {matches && matches.length > 0 && (
+          <Heart className="h-5 w-5 text-dating-forest" />
+          Active Matches
+          {activeMatches.length > 0 && (
             <Badge variant="secondary" className="ml-2">
-              {matches.length}
+              {activeMatches.length}
             </Badge>
           )}
         </h2>
@@ -247,65 +291,24 @@ export default function PortalSlowDating() {
             <Skeleton className="h-48" />
             <Skeleton className="h-48" />
           </div>
-        ) : matches && matches.length > 0 ? (
+        ) : activeMatches.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
-            {matches.map((match) => (
-              <Card key={match.id} className="overflow-hidden hover:shadow-lg transition-shadow border-dating-cream">
-                <CardContent className="p-0">
-                  <div className="flex">
-                    {/* Photo */}
-                    <div className="w-32 h-full min-h-[160px] bg-dating-cream/30 flex-shrink-0">
-                      {match.matched_profile?.photo_url ? (
-                        <img
-                          src={match.matched_profile.photo_url}
-                          alt={match.matched_profile.display_name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <User className="h-12 w-12 text-dating-forest/30" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Info */}
-                    <div className="flex-1 p-4 space-y-2">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="font-display text-lg text-foreground">
-                            {match.matched_profile?.display_name}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">
-                            {match.matched_profile?.age} years old
-                            {match.matched_profile?.location && ` • ${match.matched_profile.location}`}
-                          </p>
-                        </div>
-                        <Badge className="bg-dating-terracotta/10 text-dating-terracotta border-dating-terracotta/20">
-                          {match.compatibility_score}%
-                        </Badge>
-                      </div>
-
-                      <p className="text-sm text-muted-foreground line-clamp-2 italic">
-                        "{match.match_reason}"
-                      </p>
-
-                      <div className="pt-2">
-                        <Button variant="ghost" size="sm" className="text-dating-forest hover:text-dating-forest/80">
-                          View Details
-                          <ArrowRight className="ml-1 h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+            {activeMatches.map((match) => (
+              <BlurredMatchCard
+                key={match.id}
+                match={match}
+                currentProfileId={profile.id}
+                isWoman={isWoman}
+                onSchedule={() => navigate(`/portal/match/${match.id}`)}
+                onViewDetails={() => navigate(`/portal/match/${match.id}`)}
+              />
             ))}
           </div>
         ) : (
           <Card className="border-dashed border-2 border-muted">
             <CardContent className="py-12 text-center">
               <Heart className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
-              <h3 className="font-medium text-foreground mb-2">No Matches Yet</h3>
+              <h3 className="font-medium text-foreground mb-2">No Active Matches Yet</h3>
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">
                 {profile.status === 'vetted'
                   ? "Our matchmakers are carefully reviewing profiles to find your ideal connections. We'll notify you when we find a match!"
@@ -315,6 +318,27 @@ export default function PortalSlowDating() {
           </Card>
         )}
       </div>
+
+      {/* Ended Matches Section */}
+      {endedMatches.length > 0 && (
+        <div>
+          <h2 className="text-lg font-medium text-muted-foreground mb-4">
+            Past Matches
+          </h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            {endedMatches.map((match) => (
+              <BlurredMatchCard
+                key={match.id}
+                match={match}
+                currentProfileId={profile.id}
+                isWoman={isWoman}
+                onSchedule={() => {}}
+                onViewDetails={() => navigate(`/portal/match/${match.id}`)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
