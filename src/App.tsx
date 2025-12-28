@@ -43,6 +43,7 @@ import AdminTestimonials from "@/pages/admin/AdminTestimonials";
 import AdminDating from "@/pages/admin/AdminDating";
 import AdminDatingProfile from "@/pages/admin/AdminDatingProfile";
 import DatingIntakePage from "@/pages/DatingIntakePage";
+import SlowDatingPage from "@/pages/SlowDatingPage";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ const App = () => (
               <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
               <Route path="/rules" element={<Layout><CodeOfConductPage /></Layout>} />
               <Route path="/cookies" element={<Layout><CookiesPage /></Layout>} />
+              <Route path="/slow-dating" element={<SlowDatingPage />} />
               
               {/* Auth routes */}
               <Route path="/auth" element={<AuthPage />} />

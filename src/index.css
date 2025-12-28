@@ -45,6 +45,12 @@
     --background-light: 45 33% 97%;
     --background-dark: 180 50% 17%;
 
+    /* Dating Theme Colors */
+    --dating-forest: 160 40% 18%;
+    --dating-cream: 45 40% 95%;
+    --dating-terracotta: 16 60% 58%;
+    --dating-charcoal: 180 10% 20%;
+
     /* Sidebar */
     --sidebar-background: 45 30% 95%;
     --sidebar-foreground: 180 50% 15%;
@@ -91,6 +97,12 @@
     /* Background variants */
     --background-light: 45 33% 97%;
     --background-dark: 180 50% 12%;
+
+    /* Dating Theme Colors */
+    --dating-forest: 160 40% 18%;
+    --dating-cream: 45 40% 95%;
+    --dating-terracotta: 16 60% 58%;
+    --dating-charcoal: 180 10% 20%;
 
     /* Sidebar */
     --sidebar-background: 180 45% 10%;
