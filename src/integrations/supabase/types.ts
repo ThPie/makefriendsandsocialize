@@ -536,6 +536,7 @@ export type Database = {
           created_at: string
           error_message: string | null
           id: string
+          is_read: boolean
           notification_type: string
           payload: Json
           sent_at: string | null
@@ -546,6 +547,7 @@ export type Database = {
           created_at?: string
           error_message?: string | null
           id?: string
+          is_read?: boolean
           notification_type: string
           payload?: Json
           sent_at?: string | null
@@ -556,6 +558,7 @@ export type Database = {
           created_at?: string
           error_message?: string | null
           id?: string
+          is_read?: boolean
           notification_type?: string
           payload?: Json
           sent_at?: string | null
