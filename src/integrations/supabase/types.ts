@@ -89,6 +89,123 @@ export type Database = {
         }
         Relationships: []
       }
+      dating_matches: {
+        Row: {
+          admin_notes: string | null
+          compatibility_score: number
+          created_at: string | null
+          id: string
+          match_reason: string
+          status: string | null
+          updated_at: string | null
+          user_a_id: string
+          user_b_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          compatibility_score: number
+          created_at?: string | null
+          id?: string
+          match_reason: string
+          status?: string | null
+          updated_at?: string | null
+          user_a_id: string
+          user_b_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          compatibility_score?: number
+          created_at?: string | null
+          id?: string
+          match_reason?: string
+          status?: string | null
+          updated_at?: string | null
+          user_a_id?: string
+          user_b_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_matches_user_a_id_fkey"
+            columns: ["user_a_id"]
+            isOneToOne: false
+            referencedRelation: "dating_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dating_matches_user_b_id_fkey"
+            columns: ["user_b_id"]
+            isOneToOne: false
+            referencedRelation: "dating_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dating_profiles: {
+        Row: {
+          age: number
+          age_range_max: number
+          age_range_min: number
+          conflict_resolution: string | null
+          core_values: string | null
+          created_at: string | null
+          dealbreakers: string | null
+          display_name: string
+          emotional_connection: string | null
+          gender: string
+          id: string
+          is_active: boolean | null
+          location: string | null
+          occupation: string | null
+          status: string
+          target_gender: string
+          tuesday_night_test: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          age: number
+          age_range_max?: number
+          age_range_min?: number
+          conflict_resolution?: string | null
+          core_values?: string | null
+          created_at?: string | null
+          dealbreakers?: string | null
+          display_name: string
+          emotional_connection?: string | null
+          gender: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          occupation?: string | null
+          status?: string
+          target_gender: string
+          tuesday_night_test?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          age?: number
+          age_range_max?: number
+          age_range_min?: number
+          conflict_resolution?: string | null
+          core_values?: string | null
+          created_at?: string | null
+          dealbreakers?: string | null
+          display_name?: string
+          emotional_connection?: string | null
+          gender?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          occupation?: string | null
+          status?: string
+          target_gender?: string
+          tuesday_night_test?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       event_rsvps: {
         Row: {
           created_at: string

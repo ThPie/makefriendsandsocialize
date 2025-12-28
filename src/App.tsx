@@ -40,6 +40,9 @@ import AdminContent from "@/pages/admin/AdminContent";
 import AdminRoles from "@/pages/admin/AdminRoles";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminTestimonials from "@/pages/admin/AdminTestimonials";
+import AdminDating from "@/pages/admin/AdminDating";
+import AdminDatingProfile from "@/pages/admin/AdminDatingProfile";
+import DatingIntakePage from "@/pages/DatingIntakePage";
 
 const queryClient = new QueryClient();
 
@@ -81,10 +84,15 @@ const App = () => (
               <Route path="/portal/connections" element={<PortalLayout><PortalConnections /></PortalLayout>} />
               <Route path="/portal/events" element={<PortalLayout><PortalEvents /></PortalLayout>} />
               
+              {/* Dating intake route */}
+              <Route path="/dating/apply" element={<DatingIntakePage />} />
+              
               {/* Admin routes with admin layout */}
               <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
               <Route path="/admin/applications" element={<AdminLayout><AdminApplications /></AdminLayout>} />
               <Route path="/admin/members" element={<AdminLayout><AdminMembers /></AdminLayout>} />
+              <Route path="/admin/dating" element={<AdminLayout><AdminDating /></AdminLayout>} />
+              <Route path="/admin/dating/:id" element={<AdminLayout><AdminDatingProfile /></AdminLayout>} />
               <Route path="/admin/events" element={<AdminLayout><AdminEvents /></AdminLayout>} />
               <Route path="/admin/connections" element={<AdminLayout><AdminConnections /></AdminLayout>} />
               <Route path="/admin/testimonials" element={<AdminLayout><AdminTestimonials /></AdminLayout>} />

@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.scrape-meetup]
 verify_jwt = false
+
+[functions.find-matches]
+verify_jwt = false
