@@ -36,6 +36,7 @@ const menuItems = [
   { title: 'My Profile', url: '/portal/profile', icon: User },
   { title: 'The Network', url: '/portal/network', icon: Users },
   { title: 'Connections', url: '/portal/connections', icon: Heart },
+  { title: 'Slow Dating', url: '/portal/slow-dating', icon: Heart },
   { title: 'Events', url: '/portal/events', icon: Calendar },
 ];
 

@@ -31,6 +31,7 @@ import PortalProfile from "@/pages/portal/PortalProfile";
 import PortalNetwork from "@/pages/portal/PortalNetwork";
 import PortalConnections from "@/pages/portal/PortalConnections";
 import PortalEvents from "@/pages/portal/PortalEvents";
+import PortalSlowDating from "@/pages/portal/PortalSlowDating";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminApplications from "@/pages/admin/AdminApplications";
 import AdminMembers from "@/pages/admin/AdminMembers";
@@ -84,6 +85,7 @@ const App = () => (
               <Route path="/portal/profile" element={<PortalLayout><PortalProfile /></PortalLayout>} />
               <Route path="/portal/network" element={<PortalLayout><PortalNetwork /></PortalLayout>} />
               <Route path="/portal/connections" element={<PortalLayout><PortalConnections /></PortalLayout>} />
+              <Route path="/portal/slow-dating" element={<PortalLayout><PortalSlowDating /></PortalLayout>} />
               <Route path="/portal/events" element={<PortalLayout><PortalEvents /></PortalLayout>} />
               
               {/* Dating intake route */}
