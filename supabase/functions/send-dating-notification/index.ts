@@ -14,6 +14,8 @@ interface NotificationRequest {
   process_pending?: boolean;
 }
 
+const SITE_URL = Deno.env.get("SITE_URL") || "https://the-gathering.lovable.app";
+
 const getVettedEmailHtml = (displayName: string) => `
 <!DOCTYPE html>
 <html>
@@ -54,7 +56,7 @@ const getVettedEmailHtml = (displayName: string) => `
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center">
-                    <a href="${Deno.env.get("SITE_URL") || "https://the-gathering.lovable.app"}/portal/slow-dating" 
+                    <a href="${SITE_URL}/portal/slow-dating" 
                        style="display: inline-block; background-color: #C65D3B; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 6px; font-size: 16px;">
                       View Your Profile
                     </a>
@@ -132,7 +134,7 @@ const getNewMatchEmailHtml = (displayName: string, matchName: string, compatibil
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center" style="padding-top: 20px;">
-                    <a href="${Deno.env.get("SITE_URL") || "https://the-gathering.lovable.app"}/portal/slow-dating" 
+                    <a href="${SITE_URL}/portal/slow-dating" 
                        style="display: inline-block; background-color: #1B4332; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 6px; font-size: 16px;">
                       View Your Match
                     </a>
@@ -159,6 +161,334 @@ const getNewMatchEmailHtml = (displayName: string, matchName: string, compatibil
 </html>
 `;
 
+const getMeetingScheduledEmailHtml = (displayName: string, meetingDate: string, meetingTime: string) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #FAF7F2; font-family: Georgia, serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #FAF7F2; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #1B4332; padding: 40px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: normal;">Your Meeting is Confirmed!</h1>
+              <p style="color: #A3C9A8; margin: 10px 0 0 0; font-size: 16px;">📅 Mark your calendar</p>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px;">
+              <p style="color: #2D3748; font-size: 18px; line-height: 1.6; margin: 0 0 20px 0;">
+                Dear ${displayName},
+              </p>
+              <p style="color: #4A5568; font-size: 16px; line-height: 1.8; margin: 0 0 20px 0;">
+                Great news! Your first meeting has been scheduled. We're excited for you to connect with your match in person.
+              </p>
+              
+              <!-- Meeting Details Card -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1B4332; border-radius: 8px; margin: 20px 0;">
+                <tr>
+                  <td style="padding: 24px; text-align: center;">
+                    <p style="color: #A3C9A8; font-size: 14px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
+                      Meeting Date
+                    </p>
+                    <p style="color: #ffffff; font-size: 24px; margin: 0 0 16px 0; font-weight: bold;">
+                      ${meetingDate}
+                    </p>
+                    <p style="color: #A3C9A8; font-size: 14px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
+                      Time Slot
+                    </p>
+                    <p style="color: #ffffff; font-size: 18px; margin: 0;">
+                      ${meetingTime}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              
+              <p style="color: #4A5568; font-size: 16px; line-height: 1.8; margin: 20px 0;">
+                <strong>What to expect:</strong><br>
+                You'll meet at our curated venue for a relaxed conversation. Just be yourself – there's no pressure, just an opportunity to connect authentically.
+              </p>
+              
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-top: 20px;">
+                    <a href="${SITE_URL}/portal/slow-dating" 
+                       style="display: inline-block; background-color: #C65D3B; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 6px; font-size: 16px;">
+                      View Match Details
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
+              <p style="color: #718096; font-size: 14px; margin: 0;">
+                With warmth,<br>
+                <strong>The Gathering Team</strong>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+const getDecisionTimeEmailHtml = (displayName: string, matchName: string) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #FAF7F2; font-family: Georgia, serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #FAF7F2; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #C65D3B; padding: 40px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: normal;">How Did It Go?</h1>
+              <p style="color: #FFE4D6; margin: 10px 0 0 0; font-size: 16px;">💭 We'd love to hear from you</p>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px;">
+              <p style="color: #2D3748; font-size: 18px; line-height: 1.6; margin: 0 0 20px 0;">
+                Dear ${displayName},
+              </p>
+              <p style="color: #4A5568; font-size: 16px; line-height: 1.8; margin: 0 0 20px 0;">
+                We hope your meeting with ${matchName} was a wonderful experience! We're curious to know how it went.
+              </p>
+              <p style="color: #4A5568; font-size: 16px; line-height: 1.8; margin: 0 0 20px 0;">
+                When you're ready, please log in to share your decision. Remember, your response is completely private – only you know what you've chosen until there's a mutual connection.
+              </p>
+              
+              <!-- Info Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F7FAFC; border-radius: 8px; margin: 20px 0; border-left: 4px solid #1B4332;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <p style="color: #4A5568; font-size: 14px; line-height: 1.6; margin: 0;">
+                      <strong>Remember:</strong> There's no pressure. Whether you felt a spark or not, your honest feedback helps us continue to improve our matching process.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-top: 20px;">
+                    <a href="${SITE_URL}/portal/slow-dating" 
+                       style="display: inline-block; background-color: #1B4332; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 6px; font-size: 16px;">
+                      Share Your Decision
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
+              <p style="color: #718096; font-size: 14px; margin: 0;">
+                With warmth,<br>
+                <strong>The Gathering Team</strong>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+const getMutualMatchEmailHtml = (displayName: string, matchName: string, matchId: string) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #FAF7F2; font-family: Georgia, serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #FAF7F2; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #1B4332 0%, #C65D3B 100%); padding: 50px; text-align: center;">
+              <p style="color: #ffffff; font-size: 48px; margin: 0 0 10px 0;">🎉</p>
+              <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: normal;">It's a Connection!</h1>
+              <p style="color: #FFE4D6; margin: 15px 0 0 0; font-size: 18px;">You both felt the spark ✨</p>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px;">
+              <p style="color: #2D3748; font-size: 18px; line-height: 1.6; margin: 0 0 20px 0;">
+                Wonderful news, ${displayName}!
+              </p>
+              <p style="color: #4A5568; font-size: 16px; line-height: 1.8; margin: 0 0 20px 0;">
+                Both you and <strong>${matchName}</strong> expressed interest in continuing your connection. This is a beautiful moment, and we're thrilled to be part of your journey.
+              </p>
+              
+              <!-- Celebration Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1B4332; border-radius: 8px; margin: 20px 0;">
+                <tr>
+                  <td style="padding: 24px; text-align: center;">
+                    <p style="color: #A3C9A8; font-size: 14px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
+                      Your Match
+                    </p>
+                    <p style="color: #ffffff; font-size: 24px; margin: 0 0 8px 0; font-weight: bold;">
+                      ${matchName}
+                    </p>
+                    <p style="color: #A3C9A8; font-size: 14px; margin: 0;">
+                      Full profile now revealed!
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              
+              <p style="color: #4A5568; font-size: 16px; line-height: 1.8; margin: 20px 0;">
+                Their full profile is now visible in your portal. Take some time to learn more about them – we hope this is the beginning of something beautiful.
+              </p>
+              
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-top: 20px;">
+                    <a href="${SITE_URL}/portal/match/${matchId}" 
+                       style="display: inline-block; background-color: #C65D3B; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 6px; font-size: 16px;">
+                      View ${matchName}'s Profile
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
+              <p style="color: #718096; font-size: 14px; margin: 0;">
+                Cheering you on,<br>
+                <strong>The Gathering Team</strong>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+const getMatchDeclinedEmailHtml = (displayName: string) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #FAF7F2; font-family: Georgia, serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #FAF7F2; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #4A5568; padding: 40px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: normal;">Match Update</h1>
+              <p style="color: #E2E8F0; margin: 10px 0 0 0; font-size: 16px;">Some news about your recent match</p>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px;">
+              <p style="color: #2D3748; font-size: 18px; line-height: 1.6; margin: 0 0 20px 0;">
+                Dear ${displayName},
+              </p>
+              <p style="color: #4A5568; font-size: 16px; line-height: 1.8; margin: 0 0 20px 0;">
+                We wanted to let you know that this particular match has come to a close. While it wasn't meant to be this time, please know that finding the right connection takes time.
+              </p>
+              <p style="color: #4A5568; font-size: 16px; line-height: 1.8; margin: 0 0 20px 0;">
+                Our matchmakers continue to search for meaningful connections for you. The right person is out there, and we're committed to helping you find them.
+              </p>
+              
+              <!-- Encouragement Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F7FAFC; border-radius: 8px; margin: 20px 0; border-left: 4px solid #1B4332;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <p style="color: #4A5568; font-size: 14px; line-height: 1.6; margin: 0;">
+                      <strong>Remember:</strong> Every step in this journey brings you closer to finding your person. Stay open, stay authentic, and trust the process. 💚
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-top: 20px;">
+                    <a href="${SITE_URL}/portal/slow-dating" 
+                       style="display: inline-block; background-color: #1B4332; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 6px; font-size: 16px;">
+                      View Your Matches
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
+              <p style="color: #718096; font-size: 14px; margin: 0;">
+                With warmth,<br>
+                <strong>The Gathering Team</strong>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+const getTimeLabel = (timeValue: string): string => {
+  const labels: Record<string, string> = {
+    morning: 'Morning (10 AM - 12 PM)',
+    afternoon: 'Afternoon (2 PM - 5 PM)',
+    evening: 'Evening (6 PM - 9 PM)',
+  };
+  return labels[timeValue] || timeValue;
+};
+
 const handler = async (req: Request): Promise<Response> => {
   console.log("send-dating-notification function called");
 
@@ -180,7 +510,7 @@ const handler = async (req: Request): Promise<Response> => {
     if (notification_id) {
       const { data, error } = await supabaseClient
         .from("notification_queue")
-        .select("*, profiles:user_id(first_name, last_name), auth_user:user_id(email)")
+        .select("*")
         .eq("id", notification_id)
         .eq("status", "pending");
       
@@ -216,25 +546,84 @@ const handler = async (req: Request): Promise<Response> => {
         const displayName = notification.payload?.display_name || "Member";
 
         let emailResult;
+        let subject = "";
 
-        if (notification.notification_type === "dating_vetted") {
-          emailResult = await resend.emails.send({
-            from: "The Gathering <onboarding@resend.dev>",
-            to: [userEmail],
-            subject: "Welcome to Slow Dating - You've Been Approved! 💚",
-            html: getVettedEmailHtml(displayName),
-          });
-        } else if (notification.notification_type === "new_match") {
-          const matchName = notification.payload?.match_display_name || "Your Match";
-          const compatibilityScore = notification.payload?.compatibility_score || 0;
-          const matchReason = notification.payload?.match_reason || "A promising connection";
+        switch (notification.notification_type) {
+          case "dating_vetted":
+            subject = "Welcome to Slow Dating - You've Been Approved! 💚";
+            emailResult = await resend.emails.send({
+              from: "The Gathering <onboarding@resend.dev>",
+              to: [userEmail],
+              subject,
+              html: getVettedEmailHtml(displayName),
+            });
+            break;
 
-          emailResult = await resend.emails.send({
-            from: "The Gathering <onboarding@resend.dev>",
-            to: [userEmail],
-            subject: `You Have a New Match! 💕`,
-            html: getNewMatchEmailHtml(displayName, matchName, compatibilityScore, matchReason),
-          });
+          case "new_match":
+            const matchName = notification.payload?.match_display_name || "Your Match";
+            const compatibilityScore = notification.payload?.compatibility_score || 0;
+            const matchReason = notification.payload?.match_reason || "A promising connection";
+
+            subject = "You Have a New Match! 💕";
+            emailResult = await resend.emails.send({
+              from: "The Gathering <onboarding@resend.dev>",
+              to: [userEmail],
+              subject,
+              html: getNewMatchEmailHtml(displayName, matchName, compatibilityScore, matchReason),
+            });
+            break;
+
+          case "meeting_scheduled":
+            const meetingDate = notification.payload?.meeting_date || "TBD";
+            const meetingTime = getTimeLabel(notification.payload?.meeting_time || "afternoon");
+
+            subject = "Your Meeting is Confirmed! 📅";
+            emailResult = await resend.emails.send({
+              from: "The Gathering <onboarding@resend.dev>",
+              to: [userEmail],
+              subject,
+              html: getMeetingScheduledEmailHtml(displayName, meetingDate, meetingTime),
+            });
+            break;
+
+          case "decision_time":
+            const decisionMatchName = notification.payload?.match_display_name || "your match";
+
+            subject = "How Did Your Meeting Go? 💭";
+            emailResult = await resend.emails.send({
+              from: "The Gathering <onboarding@resend.dev>",
+              to: [userEmail],
+              subject,
+              html: getDecisionTimeEmailHtml(displayName, decisionMatchName),
+            });
+            break;
+
+          case "mutual_match":
+            const mutualMatchName = notification.payload?.match_display_name || "Your Match";
+            const matchId = notification.payload?.match_id || "";
+
+            subject = "🎉 It's a Connection!";
+            emailResult = await resend.emails.send({
+              from: "The Gathering <onboarding@resend.dev>",
+              to: [userEmail],
+              subject,
+              html: getMutualMatchEmailHtml(displayName, mutualMatchName, matchId),
+            });
+            break;
+
+          case "match_declined":
+            subject = "Match Update";
+            emailResult = await resend.emails.send({
+              from: "The Gathering <onboarding@resend.dev>",
+              to: [userEmail],
+              subject,
+              html: getMatchDeclinedEmailHtml(displayName),
+            });
+            break;
+
+          default:
+            console.log(`Unknown notification type: ${notification.notification_type}`);
+            continue;
         }
 
         console.log("Email sent successfully:", emailResult);
