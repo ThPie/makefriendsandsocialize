@@ -40,11 +40,12 @@ const menuItems = [
   { title: 'Applications', url: '/admin/applications', icon: FileText },
   { title: 'Members', url: '/admin/members', icon: Users },
   { title: 'Slow Dating', url: '/admin/dating', icon: Sparkles },
+  { title: 'Matches', url: '/admin/matches', icon: Heart },
   { title: 'Events', url: '/admin/events', icon: Calendar },
-  { title: 'Connections', url: '/admin/connections', icon: Heart },
+  { title: 'Connections', url: '/admin/connections', icon: UserCog },
   { title: 'Testimonials', url: '/admin/testimonials', icon: Quote },
   { title: 'Content', url: '/admin/content', icon: Image },
-  { title: 'Roles', url: '/admin/roles', icon: UserCog },
+  { title: 'Roles', url: '/admin/roles', icon: Shield },
   { title: 'Settings', url: '/admin/settings', icon: Settings },
 ];
 
