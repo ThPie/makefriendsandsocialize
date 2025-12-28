@@ -26,6 +26,7 @@ import {
   Crown,
   Shield,
 } from 'lucide-react';
+import { NotificationBell } from './NotificationBell';
 
 interface PortalLayoutProps {
   children: ReactNode;
@@ -180,10 +181,18 @@ export function PortalLayout({ children }: PortalLayoutProps) {
 
         <main className="flex-1 overflow-auto">
           {/* Mobile Header */}
-          <header className="sticky top-0 z-40 flex items-center h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden">
-            <SidebarTrigger />
-            <span className="ml-4 font-display text-lg">The Gathering</span>
+          <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden">
+            <div className="flex items-center">
+              <SidebarTrigger />
+              <span className="ml-4 font-display text-lg">The Gathering</span>
+            </div>
+            <NotificationBell />
           </header>
+
+          {/* Desktop Notification Bell */}
+          <div className="hidden md:flex fixed top-4 right-8 z-50">
+            <NotificationBell />
+          </div>
 
           <div className="p-6 md:p-8 lg:p-10">
             {children}

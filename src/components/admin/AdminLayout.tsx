@@ -29,6 +29,7 @@ import {
   UserCog,
   Quote,
   Sparkles,
+  TrendingUp,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -41,6 +42,7 @@ const menuItems = [
   { title: 'Members', url: '/admin/members', icon: Users },
   { title: 'Slow Dating', url: '/admin/dating', icon: Sparkles },
   { title: 'Matches', url: '/admin/matches', icon: Heart },
+  { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp },
   { title: 'Events', url: '/admin/events', icon: Calendar },
   { title: 'Connections', url: '/admin/connections', icon: UserCog },
   { title: 'Testimonials', url: '/admin/testimonials', icon: Quote },
