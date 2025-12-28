@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
+import { fireCelebration } from '@/hooks/useConfetti';
 
 interface MatchDecisionProps {
   matchId: string;
@@ -61,8 +62,13 @@ export const MatchDecision = ({
     },
     onSuccess: ({ decision, newStatus }) => {
       if (newStatus === 'mutual_yes') {
+        // Fire confetti celebration!
+        fireCelebration();
+        setTimeout(() => fireCelebration(), 500);
+        
         toast.success('Wonderful! You both felt a connection. Profiles revealed!', {
           icon: <Sparkles className="h-5 w-5 text-dating-terracotta" />,
+          duration: 5000,
         });
       } else if (decision === 'accepted') {
         toast.success('Your response has been recorded');

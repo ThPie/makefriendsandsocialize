@@ -20,9 +20,10 @@ import {
   Sparkles,
   Lock
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import { fireCelebration } from '@/hooks/useConfetti';
 
 interface DatingProfile {
   id: string;
@@ -62,6 +63,7 @@ export default function PortalMatchDetail() {
   const { matchId } = useParams<{ matchId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const confettiFiredRef = useRef(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [showDecision, setShowDecision] = useState(false);
 
@@ -158,6 +160,18 @@ export default function PortalMatchDetail() {
   const isDeclined = match.status === 'declined';
   const awaitingDecision = match.meeting_status === 'met';
   const isScheduled = match.meeting_status === 'scheduled';
+
+  // Fire confetti when viewing a mutual match for the first time
+  useEffect(() => {
+    if (isRevealed && !confettiFiredRef.current) {
+      confettiFiredRef.current = true;
+      // Delay slightly so the page renders first
+      setTimeout(() => {
+        fireCelebration();
+        setTimeout(() => fireCelebration(), 400);
+      }, 300);
+    }
+  }, [isRevealed]);
   
   const currentResponse = isUserA ? match.user_a_response : match.user_b_response;
   const otherResponse = isUserA ? match.user_b_response : match.user_a_response;
