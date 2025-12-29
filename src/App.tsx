@@ -47,6 +47,7 @@ import AdminDating from "@/pages/admin/AdminDating";
 import AdminDatingProfile from "@/pages/admin/AdminDatingProfile";
 import AdminMatches from "@/pages/admin/AdminMatches";
 import AdminAnalytics from "@/pages/admin/AdminAnalytics";
+import AdminEventAnalytics from "@/pages/admin/AdminEventAnalytics";
 import DatingIntakePage from "@/pages/DatingIntakePage";
 import SlowDatingPage from "@/pages/SlowDatingPage";
 
@@ -104,6 +105,7 @@ const App = () => (
               <Route path="/admin/dating/:id" element={<AdminLayout><AdminDatingProfile /></AdminLayout>} />
               <Route path="/admin/matches" element={<AdminLayout><AdminMatches /></AdminLayout>} />
               <Route path="/admin/analytics" element={<AdminLayout><AdminAnalytics /></AdminLayout>} />
+              <Route path="/admin/event-analytics" element={<AdminLayout><AdminEventAnalytics /></AdminLayout>} />
               <Route path="/admin/events" element={<AdminLayout><AdminEvents /></AdminLayout>} />
               <Route path="/admin/connections" element={<AdminLayout><AdminConnections /></AdminLayout>} />
               <Route path="/admin/testimonials" element={<AdminLayout><AdminTestimonials /></AdminLayout>} />
