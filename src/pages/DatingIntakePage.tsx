@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, User, Sparkles, ChevronRight, ChevronLeft, Check, Camera, Briefcase, Brain, Shield, Upload, Users, Cigarette, Wine } from "lucide-react";
+import { Heart, User, Sparkles, ChevronRight, ChevronLeft, Check, Camera, Briefcase, Brain, Shield, Upload, Users, Cigarette, Wine, MapPin, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
@@ -65,6 +65,8 @@ interface FormData {
   politics_stance: string;
   religion_stance: string;
   future_goals: string;
+  // Search radius
+  search_radius: number;
 }
 
 const initialFormData: FormData = {
@@ -110,6 +112,7 @@ const initialFormData: FormData = {
   politics_stance: "",
   religion_stance: "",
   future_goals: "",
+  search_radius: 25,
 };
 
 const DatingIntakePage = () => {
@@ -118,9 +121,45 @@ const DatingIntakePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { user } = useAuth();
+  const { user, profile, isLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Auth guard: redirect if not logged in or profile incomplete
+  useEffect(() => {
+    if (isLoading) return;
+    
+    if (!user) {
+      toast({ 
+        title: "Sign In Required", 
+        description: "Please sign in to access the dating application.", 
+        variant: "destructive" 
+      });
+      navigate("/auth", { state: { returnTo: "/dating/apply" } });
+      return;
+    }
+    
+    if (!profile?.first_name) {
+      toast({ 
+        title: "Complete Your Profile", 
+        description: "Please complete your profile before applying to Slow Dating.", 
+        variant: "destructive" 
+      });
+      navigate("/portal/profile");
+      return;
+    }
+
+    // Pre-fill location from profile
+    if (profile) {
+      const locationParts = [profile.city, profile.state, profile.country].filter(Boolean);
+      if (locationParts.length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          location: locationParts.join(", ")
+        }));
+      }
+    }
+  }, [user, profile, isLoading, navigate, toast]);
 
   const updateField = (field: keyof FormData, value: string | number | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -283,6 +322,7 @@ const DatingIntakePage = () => {
         politics_stance: formData.politics_stance || null,
         religion_stance: formData.religion_stance || null,
         future_goals: formData.future_goals || null,
+        search_radius: formData.search_radius,
         status: "pending",
       });
 
@@ -315,6 +355,18 @@ const DatingIntakePage = () => {
     { number: 6, title: "Dealbreakers", icon: Shield },
     { number: 7, title: "Review", icon: Sparkles },
   ];
+
+  // Show loading state while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-dating-forest via-background to-dating-cream/10 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-dating-terracotta mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dating-forest via-background to-dating-cream/10">
@@ -494,17 +546,51 @@ const DatingIntakePage = () => {
                     </div>
                   </div>
 
-                  <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="location">City / Location</Label>
-                      <Input
-                        id="location"
-                        value={formData.location}
-                        onChange={(e) => updateField("location", e.target.value)}
-                        placeholder="e.g., New York, NY"
-                        className="bg-background/50"
-                      />
+                  {/* Location Section */}
+                  <div className="space-y-4 pt-4 border-t border-border/50">
+                    <div>
+                      <Label className="text-base flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-dating-terracotta" />
+                        Your Location
+                      </Label>
+                      {profile?.city || profile?.state || profile?.country ? (
+                        <p className="text-foreground font-medium mt-2">
+                          {[profile.city, profile.state, profile.country].filter(Boolean).join(", ")}
+                        </p>
+                      ) : (
+                        <p className="text-muted-foreground mt-2">No location set</p>
+                      )}
+                      <Link 
+                        to="/portal/profile" 
+                        className="text-sm text-dating-terracotta hover:underline mt-1 inline-block"
+                      >
+                        Edit your location in your profile →
+                      </Link>
                     </div>
+
+                    <div className="space-y-3">
+                      <Label>Search Radius: {formData.search_radius} miles</Label>
+                      <p className="text-sm text-muted-foreground">
+                        We'll prioritize matches within this distance.
+                      </p>
+                      <div className="px-2">
+                        <Slider
+                          value={[formData.search_radius]}
+                          onValueChange={([value]) => updateField("search_radius", value)}
+                          min={10}
+                          max={100}
+                          step={5}
+                          className="py-4"
+                        />
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                          <span>10 miles</span>
+                          <span>100 miles</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="occupation">Occupation</Label>
                       <Input

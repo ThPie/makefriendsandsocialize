@@ -33,6 +33,7 @@ interface DatingProfile {
   love_language: string | null;
   attachment_style: string | null;
   introvert_extrovert: string | null;
+  search_radius: number | null;
 }
 
 interface MatchResult {
