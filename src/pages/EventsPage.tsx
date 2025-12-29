@@ -1,99 +1,55 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { AnimatedButton } from '@/components/ui/animated-button';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { format } from 'date-fns';
+import { Calendar, MapPin, Users, Clock, Star, Image } from 'lucide-react';
 
-interface EventData {
+type SortOption = 'date-asc' | 'date-desc' | 'title-asc' | 'title-desc';
+type EventTab = 'upcoming' | 'past';
+
+interface Event {
   id: string;
   title: string;
   date: string;
-  image: string;
-  alt: string;
-  category: string;
-  description: string;
-  location: string;
+  time: string | null;
+  location: string | null;
+  description: string | null;
+  image_url: string | null;
+  tier: 'patron' | 'fellow' | 'founder';
+  capacity: number | null;
+  status: string;
+  venue_name?: string | null;
+  city?: string | null;
+  is_featured?: boolean | null;
+  tags?: string[] | null;
 }
 
-type SortOption = 'date-asc' | 'date-desc' | 'title-asc' | 'title-desc';
-
-const initialEvents: EventData[] = [
-  {
-    id: 'u1',
-    title: "Wine Tasting Masterclass",
-    date: "October 28, 2024",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBABKxm-yuOt1CudcjJKgFqis7Su-sL8Od3yq21xX0kWeIXS8YzLCuTLoIzDcKDnBLYTsBBzTni78b5ozrxMLSDhfXnMiyQBfxRZPPomHokDCK5r2kkzJUVYz0lBg9jJjx3nxYnTMkzigcxzs3EGdGTllmMCEinDDQiZHpodJUGyTQBc0npyLLoKt8skjj9uxs2AzrZiA_0-fdX6tIsJDvvO_kIO3gp-kuIi4-X-pzw8YauJNqCILhz-mkOSBmXJF1ehj70aAKqoY3U",
-    alt: "Close-up of a wine glass being filled with red wine during a tasting",
-    category: "Dining",
-    description: "Join our sommelier for an intimate evening exploring rare vintages from Bordeaux and Tuscany. Includes paired canapés.",
-    location: "The Cellar Room, Downtown"
-  },
-  {
-    id: 'u2',
-    title: "Charity Polo Match",
-    date: "November 05, 2024",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB53EIUhRVxzrFSmiUn5a_FFQ7SYrEcaN04gN0NcJSPvQjg-lOGRRdfSqw-sJcQlqt7UwVEF_rQ6qzzPtqG_DUSHpvRQeZ56oXEynYWaHF6_nae8bywcnoImoS3ksHGbwy3rJwbg5gDfqxHNtBERdF7QJXD8jHA_L7SHnldmJkumQXa-Cii-jg0-F9S06UOqUF17wNDTNa72L7DHRhYeKzxNhv9zLmUVAr6GbRlxRiEAX3e7kOOtxHvEI8y-G",
-    alt: "Polo players in action on a green field",
-    category: "Sports",
-    description: "Experience the thrill of the sport of kings. All proceeds go to the Children's Arts Foundation. VIP tent access available.",
-    location: "Greenfield Polo Club"
-  },
-  {
-    id: 'u3',
-    title: "Modern Art Gallery Opening",
-    date: "November 12, 2024",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCBEwh7892z_8-C0CE1ZbCMzsXtacvkMBagOtFMpteMAs5z7gi7hA2tEIEOqQ8j-YXIVfoT_FxPufpLwnwUXwE9uxP1xduBuekiNIHwI0qkfA7MSmhY3rMB4gojuBvoMAFli5lWXu8hBVqP-EKPpC4navu4ldWgUlc_lO9ze0QxoDCzNl_rl9cF4qiJS9EEppikOfF3HXEG-bgmKw4p3hvQ__MYY8OSUF5lRdC01xAGHBnuO6VV73nHPtFZtrEdH2tvzX8ESyDvPGeY",
-    alt: "People admiring abstract art in a gallery",
-    category: "Art & Culture",
-    description: "Be the first to view the 'Digital Horizons' exhibition. Meet the artists and enjoy champagne reception.",
-    location: "Lumina Gallery"
-  },
-  {
-    id: 'u4',
-    title: "Jazz & Cocktails Night",
-    date: "November 20, 2024",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDWbcMhp9CnqCo04DRW5tfiu7EP13nNKERg0j0AfkB0PnVQU4VnGrjByU8E6edWXkH9LF9i8IFxbumVKxsvGa92zA2LjCoYozavuqstZNkXVAzjs_RgV8lCh6nOY6coth3yFvHlmzOGzwlSV2Z18ixJOWIdWUa-xR-AKaGKrI1lTRcEq5ykzkGVUKdS1djEtFmyNDpBQTmFjnsJkE3aVC0M_Nl1Vnx-xPkBiFzYRh1BAlTp0Cmsi0d4cw3lafg9NjhL76tYKNCEmktT",
-    alt: "Close up of a jazz saxophone player in a dimly lit club",
-    category: "Music",
-    description: "A relaxed evening featuring the smooth sounds of the Miles Quartet. Signature cocktails served throughout the night.",
-    location: "Blue Note Lounge"
-  },
-  {
-    id: 'u5',
-    title: "Private Chef's Table Experience",
-    date: "December 01, 2024",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCF49HGQJP65G_cdlImOjVm6qvRUqwV8NQjahyExBHe8E3qhGQL3BK_gIF6Wj_l3m33Jg8jJd4sXHw-GVS-KW555lSd5jrFYqvKO3HVx_xMzct_etrJphUpCZ2I0vbWzrPEZWzlW8NstikL5YbCT0OfUI4h7yNE3vEPub4Plzd9or04oo8MkEN3EOxrczMl3hTniCliktz2NqBl6WwD4pr99vSGX519763F6eS4TzbrJdEAZqdDtDHp_ynqghBLLBXIOXEhc3l7nApW",
-    alt: "Elegant plated dish in a fine dining setting",
-    category: "Dining",
-    description: "An exclusive 8-course tasting menu prepared by Michelin-starred Chef Laurent. Limited to 12 guests.",
-    location: "The Private Kitchen"
-  },
-  {
-    id: 'u6',
-    title: "Opera Under the Stars",
-    date: "December 15, 2024",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBUmnH2qI1gvD_mZdcLDHKjyfpHGz9xjEkny_n0RAUYRhuzb6ng3auyHBL5xp6OFW3W8ltEyFKV-Htj0dd4A7A9REEppgteHr8MB5ho3G9q9BDL8xeTjchdk46vxXppq5EWxxA8VlwHiSACny_sSASNOI_MSJrqgrb3MQ6VyNogYb5A0NjFxOrg1bSFG-fOSwZkcb1OEPYEHUbllObXB0WOjSbU679BucMbxsiwiDqQeKn93Yk_PuGE3kqnNPpo-Ba5QHag7VPeZ8mN",
-    alt: "Outdoor opera performance with elegant staging",
-    category: "Music",
-    description: "Experience a magical evening of arias and duets in the gardens of Hartwell Estate. Black tie attire.",
-    location: "Hartwell Estate Gardens"
-  }
-];
-
 const EventSkeleton = () => (
-  <div className="flex flex-col gap-4 rounded-lg bg-card overflow-hidden animate-pulse border border-border">
-    <div className="w-full aspect-[4/3] bg-muted" />
-    <div className="flex flex-col gap-3 p-4">
+  <motion.div 
+    className="flex flex-col gap-4 rounded-2xl bg-card overflow-hidden border border-border"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+  >
+    <div className="w-full aspect-[4/3] bg-muted animate-pulse" />
+    <div className="flex flex-col gap-3 p-6">
       <div className="flex justify-between items-center">
-        <div className="h-4 w-1/3 bg-muted rounded" />
-        <div className="h-4 w-1/4 bg-muted rounded" />
+        <div className="h-4 w-1/3 bg-muted rounded animate-pulse" />
+        <div className="h-4 w-1/4 bg-muted rounded animate-pulse" />
       </div>
-      <div className="h-6 w-3/4 bg-muted rounded mt-1" />
-      <div className="h-16 w-full bg-muted rounded mt-2" />
+      <div className="h-6 w-3/4 bg-muted rounded mt-1 animate-pulse" />
+      <div className="h-16 w-full bg-muted rounded mt-2 animate-pulse" />
       <div className="flex gap-2 mt-auto pt-4">
-        <div className="h-10 w-full bg-muted rounded" />
+        <div className="h-10 w-full bg-muted rounded-xl animate-pulse" />
       </div>
     </div>
-  </div>
+  </motion.div>
 );
 
 const EventsPage = () => {
@@ -101,6 +57,7 @@ const EventsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [sortOrder, setSortOrder] = useState<SortOption>('date-asc');
+  const [activeTab, setActiveTab] = useState<EventTab>('upcoming');
   const [rsvpStatus, setRsvpStatus] = useState<Record<string, boolean>>(() => {
     try {
       return JSON.parse(localStorage.getItem('event_rsvpStatus') || '{}');
@@ -109,20 +66,42 @@ const EventsPage = () => {
     }
   });
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [isLoading, setIsLoading] = useState(true);
 
-  const categories = ["All", "Dining", "Sports", "Art & Culture", "Music"];
+  const categories = ["All", "Dining", "Sports", "Art & Culture", "Music", "Networking"];
+
+  // Fetch events from database
+  const { data: events = [], isLoading } = useQuery({
+    queryKey: ['events', activeTab],
+    queryFn: async () => {
+      const today = new Date().toISOString().split('T')[0];
+      
+      let query = supabase
+        .from('events')
+        .select('*')
+        .order('date', { ascending: activeTab === 'upcoming' });
+
+      if (activeTab === 'upcoming') {
+        query = query.gte('date', today).neq('status', 'past').neq('status', 'cancelled');
+      } else {
+        query = query.or(`date.lt.${today},status.eq.past`);
+      }
+
+      const { data, error } = await query;
+      
+      if (error) {
+        console.error('Error fetching events:', error);
+        throw error;
+      }
+      
+      return data as Event[];
+    },
+  });
 
   useEffect(() => {
     localStorage.setItem('event_rsvpStatus', JSON.stringify(rsvpStatus));
   }, [rsvpStatus]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleRSVP = (event: EventData) => {
+  const handleRSVP = (event: Event) => {
     const isCurrentlyRsvped = rsvpStatus[event.id];
     setRsvpStatus(prev => ({ ...prev, [event.id]: !prev[event.id] }));
     
@@ -130,18 +109,22 @@ const EventsPage = () => {
       title: isCurrentlyRsvped ? "RSVP Cancelled" : "RSVP Confirmed!",
       description: isCurrentlyRsvped 
         ? `You've cancelled your RSVP for ${event.title}`
-        : `You're going to ${event.title} on ${event.date}`,
+        : `You're going to ${event.title}`,
     });
   };
 
   const filteredAndSortedEvents = useMemo(() => {
-    let result = initialEvents.filter(event => {
-      const matchesCategory = activeCategory === "All" || event.category === activeCategory;
+    let result = events.filter(event => {
+      const matchesCategory = activeCategory === "All" || 
+        (event.tags && event.tags.some(tag => 
+          tag.toLowerCase().includes(activeCategory.toLowerCase())
+        ));
       const query = searchQuery.toLowerCase().trim();
       const matchesSearch = 
         event.title.toLowerCase().includes(query) ||
-        event.description.toLowerCase().includes(query) ||
-        event.location.toLowerCase().includes(query);
+        (event.description?.toLowerCase().includes(query)) ||
+        (event.location?.toLowerCase().includes(query)) ||
+        (event.city?.toLowerCase().includes(query));
       
       return matchesCategory && matchesSearch;
     });
@@ -162,51 +145,97 @@ const EventsPage = () => {
     });
 
     return result;
-  }, [activeCategory, searchQuery, sortOrder]);
+  }, [events, activeCategory, searchQuery, sortOrder]);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.4, ease: "easeOut" as const }
+    },
+  };
 
   return (
-    <div className="flex-1 w-full flex flex-col items-center">
+    <div className="flex-1 w-full flex flex-col items-center bg-background">
       {/* Header */}
-      <div className="w-full max-w-[1440px] px-4 md:px-10 py-8 flex flex-col gap-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="w-full max-w-[1440px] px-4 md:px-10 py-12 flex flex-col gap-8">
+        <motion.div 
+          className="flex flex-col md:flex-row md:items-center justify-between gap-4"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
           <div>
-            <h1 className="text-foreground text-4xl font-black leading-tight tracking-tight font-display">
+            <h1 className="text-foreground text-4xl md:text-5xl font-light leading-tight tracking-tight font-display">
               Events Calendar
             </h1>
-            <p className="text-muted-foreground text-base font-normal mt-2">
+            <p className="text-muted-foreground text-lg font-normal mt-3">
               Curated gatherings for the discerning few.
             </p>
           </div>
           
-          <div className="flex items-center gap-2 bg-muted p-1 rounded-lg self-start md:self-auto">
+          <div className="flex items-center gap-2 bg-card p-1 rounded-xl border border-border self-start md:self-auto">
             <button 
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-md transition-all ${viewMode === 'grid' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground'}`}
+              className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
               aria-label="Grid View"
             >
               <span className="material-symbols-outlined">grid_view</span>
             </button>
             <button 
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-md transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground'}`}
+              className={`p-2.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
               aria-label="List View"
             >
               <span className="material-symbols-outlined">view_list</span>
             </button>
           </div>
-        </div>
+        </motion.div>
+
+        {/* Tabs for Upcoming / Past */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as EventTab)} className="w-full">
+            <TabsList className="bg-card border border-border w-full md:w-auto">
+              <TabsTrigger value="upcoming" className="flex-1 md:flex-none gap-2">
+                <Calendar className="h-4 w-4" />
+                Upcoming Events
+              </TabsTrigger>
+              <TabsTrigger value="past" className="flex-1 md:flex-none gap-2">
+                <Clock className="h-4 w-4" />
+                Past Events
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </motion.div>
 
         {/* Filters */}
-        <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-card p-4 rounded-xl border border-border shadow-sm">
+        <motion.div 
+          className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-card p-5 rounded-2xl border border-border"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
           {/* Search */}
           <div className="w-full lg:w-96 relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">search</span>
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">search</span>
             <input 
               type="text" 
               placeholder="Search events, locations..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-muted border-none focus:ring-2 focus:ring-primary text-foreground placeholder:text-muted-foreground"
+              className="w-full pl-12 pr-4 py-3 rounded-xl bg-background border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground transition-all"
             />
           </div>
 
@@ -217,10 +246,10 @@ const EventsPage = () => {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                  className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
                     activeCategory === cat 
-                      ? 'bg-primary text-primary-foreground font-bold' 
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-background border border-border text-muted-foreground hover:text-foreground hover:border-primary/30'
                   }`}
                 >
                   {cat}
@@ -233,7 +262,7 @@ const EventsPage = () => {
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value as SortOption)}
-                className="w-full appearance-none pl-4 pr-10 py-2.5 rounded-lg bg-muted border-none text-foreground text-sm font-medium focus:ring-2 focus:ring-primary cursor-pointer"
+                className="w-full appearance-none pl-4 pr-10 py-2.5 rounded-xl bg-background border border-border text-foreground text-sm font-medium focus:ring-2 focus:ring-primary/20 cursor-pointer"
               >
                 <option value="date-asc">Date: Soonest</option>
                 <option value="date-desc">Date: Latest</option>
@@ -243,7 +272,7 @@ const EventsPage = () => {
               <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none text-lg">sort</span>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Events Grid */}
@@ -253,74 +282,152 @@ const EventsPage = () => {
             {[1, 2, 3, 4, 5, 6].map(i => <EventSkeleton key={i} />)}
           </div>
         ) : filteredAndSortedEvents.length > 0 ? (
-          <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
-            {filteredAndSortedEvents.map((event) => (
-              <div 
-                key={event.id} 
-                className={`group flex flex-col bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg ${viewMode === 'list' ? 'md:flex-row' : ''}`}
-              >
-                {/* Image */}
-                <div className={`relative overflow-hidden bg-muted ${viewMode === 'list' ? 'w-full md:w-1/3 aspect-video md:aspect-auto' : 'aspect-[4/3] w-full'}`}>
-                  <div 
-                    className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" 
-                    style={{ backgroundImage: `url("${event.image}")` }}
-                    role="img"
-                    aria-label={event.alt}
-                  />
-                  <div className="absolute top-3 right-3">
-                    <span className="bg-card/90 backdrop-blur-sm text-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-sm uppercase tracking-wider">
-                      {event.category}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="flex flex-col flex-1 p-5 md:p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <p className="text-primary text-sm font-bold uppercase tracking-wide">{event.date}</p>
-                    {rsvpStatus[event.id] && (
-                      <span className="flex items-center gap-1 text-green-600 dark:text-green-400 text-xs font-bold bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">
-                        <span className="material-symbols-outlined text-sm">check_circle</span>
-                        Going
-                      </span>
+          <motion.div 
+            className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <AnimatePresence>
+              {filteredAndSortedEvents.map((event) => (
+                <motion.div 
+                  key={event.id}
+                  variants={itemVariants}
+                  layout
+                  className={`group flex flex-col bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-300 ${viewMode === 'list' ? 'md:flex-row' : ''}`}
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                >
+                  {/* Image */}
+                  <div className={`relative overflow-hidden bg-muted ${viewMode === 'list' ? 'w-full md:w-1/3 aspect-video md:aspect-auto' : 'aspect-[4/3] w-full'}`}>
+                    {event.image_url ? (
+                      <div 
+                        className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" 
+                        style={{ backgroundImage: `url("${event.image_url}")` }}
+                        role="img"
+                        aria-label={event.title}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-muted">
+                        <Image className="h-12 w-12 text-muted-foreground/50" />
+                      </div>
+                    )}
+                    <div className="absolute top-3 right-3 flex gap-2">
+                      {event.is_featured && (
+                        <span className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                          <Star className="h-3 w-3 fill-current" />
+                          Featured
+                        </span>
+                      )}
+                      {event.tags && event.tags[0] && (
+                        <span className="bg-card/90 backdrop-blur-sm text-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-sm uppercase tracking-wider">
+                          {event.tags[0]}
+                        </span>
+                      )}
+                    </div>
+                    {activeTab === 'past' && (
+                      <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
+                        <Badge variant="secondary" className="text-sm px-4 py-1">
+                          Event Ended
+                        </Badge>
+                      </div>
                     )}
                   </div>
-                  
-                  <h3 className="text-foreground text-xl font-bold font-display leading-tight mb-2 group-hover:text-primary transition-colors">
-                    {event.title}
-                  </h3>
-                  
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
-                    {event.description}
-                  </p>
 
-                  <div className="flex items-center gap-2 text-muted-foreground text-xs font-medium mb-6 mt-auto">
-                    <span className="material-symbols-outlined text-base">location_on</span>
-                    {event.location}
-                  </div>
+                  {/* Content */}
+                  <div className="flex flex-col flex-1 p-6">
+                    <div className="flex justify-between items-start mb-2">
+                      <p className="text-primary text-sm font-bold uppercase tracking-wide">
+                        {format(new Date(event.date), 'MMMM d, yyyy')}
+                      </p>
+                      {rsvpStatus[event.id] && activeTab === 'upcoming' && (
+                        <span className="flex items-center gap-1 text-emerald-400 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full">
+                          <span className="material-symbols-outlined text-sm">check_circle</span>
+                          Going
+                        </span>
+                      )}
+                    </div>
+                    
+                    <h3 className="text-foreground text-xl font-semibold font-display leading-tight mb-2 group-hover:text-primary transition-colors">
+                      {event.title}
+                    </h3>
+                    
+                    {event.description && (
+                      <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
+                        {event.description}
+                      </p>
+                    )}
 
-                  <div className="flex gap-3 mt-auto border-t border-border pt-4">
-                    <Button 
-                      onClick={() => handleRSVP(event)}
-                      variant={rsvpStatus[event.id] ? "outline" : "default"}
-                      className={`flex-1 ${rsvpStatus[event.id] ? 'border-destructive/50 text-destructive hover:bg-destructive/10' : ''}`}
-                    >
-                      {rsvpStatus[event.id] ? 'Cancel RSVP' : 'RSVP Now'}
-                    </Button>
-                    <Button variant="outline" asChild>
-                      <Link to={`/events/${event.id}`}>Details</Link>
-                    </Button>
+                    <div className="flex flex-col gap-2 text-muted-foreground text-sm mb-6 mt-auto">
+                      {event.time && (
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4" />
+                          {event.time}
+                        </div>
+                      )}
+                      {(event.venue_name || event.location) && (
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4" />
+                          {event.venue_name || event.location}
+                          {event.city && <span className="text-muted-foreground/60">• {event.city}</span>}
+                        </div>
+                      )}
+                      {event.capacity && (
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          {event.capacity} spots
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex gap-3 mt-auto border-t border-border pt-4">
+                      {activeTab === 'upcoming' ? (
+                        <>
+                          <AnimatedButton 
+                            onClick={() => handleRSVP(event)}
+                            variant={rsvpStatus[event.id] ? "outline" : "default"}
+                            className={`flex-1 ${rsvpStatus[event.id] ? 'border-destructive/50 text-destructive hover:bg-destructive/10' : ''}`}
+                          >
+                            {rsvpStatus[event.id] ? 'Cancel RSVP' : 'RSVP Now'}
+                          </AnimatedButton>
+                          <Button variant="outline" asChild className="rounded-xl">
+                            <Link to={`/events/${event.id}`}>Details</Link>
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button variant="outline" asChild className="flex-1 rounded-xl">
+                            <Link to={`/gallery?event=${event.id}`}>
+                              <Image className="h-4 w-4 mr-2" />
+                              View Gallery
+                            </Link>
+                          </Button>
+                          <Button variant="outline" asChild className="rounded-xl">
+                            <Link to={`/events/${event.id}`}>Recap</Link>
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         ) : (
-          <div className="text-center py-20">
-            <span className="material-symbols-outlined text-6xl text-muted-foreground mb-4">event_busy</span>
-            <h3 className="text-xl font-bold text-foreground mb-2">No events found</h3>
-            <p className="text-muted-foreground">Try adjusting your search or filters</p>
-          </div>
+          <motion.div 
+            className="text-center py-20"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <Calendar className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              No {activeTab} events found
+            </h3>
+            <p className="text-muted-foreground">
+              {activeTab === 'upcoming' 
+                ? 'Check back soon for new events' 
+                : 'No past events to show'}
+            </p>
+          </motion.div>
         )}
       </div>
     </div>
