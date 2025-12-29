@@ -17,6 +17,9 @@ interface Profile {
   values_in_partner: string | null;
   interests: string[];
   is_visible: boolean;
+  country: string | null;
+  state: string | null;
+  city: string | null;
 }
 
 interface Membership {

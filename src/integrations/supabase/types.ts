@@ -198,6 +198,7 @@ export type Database = {
           politics_stance: string | null
           relationship_type: string | null
           religion_stance: string | null
+          search_radius: number | null
           smoking_status: string | null
           social_verification_notes: string | null
           social_verification_status: string | null
@@ -254,6 +255,7 @@ export type Database = {
           politics_stance?: string | null
           relationship_type?: string | null
           religion_stance?: string | null
+          search_radius?: number | null
           smoking_status?: string | null
           social_verification_notes?: string | null
           social_verification_status?: string | null
@@ -310,6 +312,7 @@ export type Database = {
           politics_stance?: string | null
           relationship_type?: string | null
           religion_stance?: string | null
+          search_radius?: number | null
           smoking_status?: string | null
           social_verification_notes?: string | null
           social_verification_status?: string | null
@@ -637,6 +640,8 @@ export type Database = {
         Row: {
           avatar_urls: string[] | null
           bio: string | null
+          city: string | null
+          country: string | null
           created_at: string
           favorite_brands: string[] | null
           first_name: string | null
@@ -647,6 +652,7 @@ export type Database = {
           job_title: string | null
           last_name: string | null
           signature_style: string | null
+          state: string | null
           terms_accepted_at: string | null
           updated_at: string
           values_in_partner: string | null
@@ -654,6 +660,8 @@ export type Database = {
         Insert: {
           avatar_urls?: string[] | null
           bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           favorite_brands?: string[] | null
           first_name?: string | null
@@ -664,6 +672,7 @@ export type Database = {
           job_title?: string | null
           last_name?: string | null
           signature_style?: string | null
+          state?: string | null
           terms_accepted_at?: string | null
           updated_at?: string
           values_in_partner?: string | null
@@ -671,6 +680,8 @@ export type Database = {
         Update: {
           avatar_urls?: string[] | null
           bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           favorite_brands?: string[] | null
           first_name?: string | null
@@ -681,6 +692,7 @@ export type Database = {
           job_title?: string | null
           last_name?: string | null
           signature_style?: string | null
+          state?: string | null
           terms_accepted_at?: string | null
           updated_at?: string
           values_in_partner?: string | null

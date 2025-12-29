@@ -36,6 +36,9 @@ export default function PortalProfile() {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [avatarUrls, setAvatarUrls] = useState<string[]>([]);
   const [isVisible, setIsVisible] = useState(false);
+  const [country, setCountry] = useState('');
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
 
   useEffect(() => {
     if (profile) {
@@ -48,6 +51,9 @@ export default function PortalProfile() {
       setSelectedInterests(profile.interests || []);
       setAvatarUrls(profile.avatar_urls || []);
       setIsVisible(profile.is_visible || false);
+      setCountry(profile.country || '');
+      setState(profile.state || '');
+      setCity(profile.city || '');
     }
   }, [profile]);
 
@@ -69,6 +75,9 @@ export default function PortalProfile() {
         interests: selectedInterests,
         avatar_urls: avatarUrls,
         is_visible: isVisible,
+        country,
+        state,
+        city,
       })
       .eq('id', user.id);
 
@@ -352,6 +361,47 @@ export default function PortalProfile() {
                 ))}
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Location */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-display text-xl">Location</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="country">Country</Label>
+                <Input
+                  id="country"
+                  placeholder="United States"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="state">State / Province</Label>
+                <Input
+                  id="state"
+                  placeholder="California"
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="city">City</Label>
+                <Input
+                  id="city"
+                  placeholder="Los Angeles"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                />
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Your location helps us connect you with nearby members and events.
+            </p>
           </CardContent>
         </Card>
 
