@@ -27,7 +27,8 @@ import {
   Shield,
 } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
-import logo from '@/assets/logo.webp';
+import logo from '@/assets/logo-light.webp';
+import { Home } from 'lucide-react';
 
 interface PortalLayoutProps {
   children: ReactNode;
@@ -96,10 +97,16 @@ export function PortalLayout({ children }: PortalLayoutProps) {
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <Sidebar className="border-r border-border">
-          <SidebarHeader className="p-6 border-b border-border">
-            <Link to="/" className="flex items-center gap-3">
+          <SidebarHeader className="p-4 border-b border-border">
+            <Link to="/" className="block mb-3">
               <img src={logo} alt="Make Friends & Socialize" className="h-10 w-auto" />
-              <p className="text-xs text-muted-foreground">Member Portal</p>
+            </Link>
+            <Link
+              to="/"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+            >
+              <Home className="h-4 w-4" />
+              <span>Back to Website</span>
             </Link>
           </SidebarHeader>
 
