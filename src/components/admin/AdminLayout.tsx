@@ -31,7 +31,8 @@ import {
   Sparkles,
   TrendingUp,
 } from 'lucide-react';
-import logo from '@/assets/logo.webp';
+import logo from '@/assets/logo-light.webp';
+import { Home } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -88,13 +89,20 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <Sidebar className="border-r border-border">
-          <SidebarHeader className="p-6 border-b border-border">
-            <Link to="/" className="flex items-center gap-3">
+          <SidebarHeader className="p-4 border-b border-border">
+            <Link to="/" className="flex items-center gap-3 mb-3">
               <img src={logo} alt="Make Friends & Socialize" className="h-10 w-auto" />
               <div className="flex items-center gap-1.5">
                 <Shield className="h-4 w-4 text-primary" />
                 <span className="text-xs text-muted-foreground">Admin</span>
               </div>
+            </Link>
+            <Link
+              to="/"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+            >
+              <Home className="h-4 w-4" />
+              <span>Back to Website</span>
             </Link>
           </SidebarHeader>
 
