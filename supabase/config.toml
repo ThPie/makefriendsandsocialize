@@ -17,3 +17,6 @@ verify_jwt = true
 
 [functions.verify-social-profiles]
 verify_jwt = false
+
+[functions.send-profile-notification]
+verify_jwt = false

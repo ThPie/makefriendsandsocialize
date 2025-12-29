@@ -576,6 +576,30 @@ export type Database = {
         }
         Relationships: []
       }
+      member_badges: {
+        Row: {
+          badge_type: string
+          earned_at: string
+          id: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          badge_type: string
+          earned_at?: string
+          id?: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          badge_type?: string
+          earned_at?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       memberships: {
         Row: {
           created_at: string
@@ -667,6 +691,8 @@ export type Database = {
           is_visible: boolean | null
           job_title: string | null
           last_name: string | null
+          onboarding_completed: boolean | null
+          profile_completed_at: string | null
           signature_style: string | null
           state: string | null
           terms_accepted_at: string | null
@@ -688,6 +714,8 @@ export type Database = {
           is_visible?: boolean | null
           job_title?: string | null
           last_name?: string | null
+          onboarding_completed?: boolean | null
+          profile_completed_at?: string | null
           signature_style?: string | null
           state?: string | null
           terms_accepted_at?: string | null
@@ -709,6 +737,8 @@ export type Database = {
           is_visible?: boolean | null
           job_title?: string | null
           last_name?: string | null
+          onboarding_completed?: boolean | null
+          profile_completed_at?: string | null
           signature_style?: string | null
           state?: string | null
           terms_accepted_at?: string | null
