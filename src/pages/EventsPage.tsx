@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { EventChatbot } from '@/components/EventChatbot';
 
 interface EventData {
   id: string;
@@ -324,9 +323,6 @@ const EventsPage = () => {
           </div>
         )}
       </div>
-
-      {/* AI Event Assistant Chatbot */}
-      <EventChatbot />
     </div>
   );
 };

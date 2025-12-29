@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { Layout } from "@/components/layout/Layout";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { EventChatbot } from "@/components/EventChatbot";
 import HomePage from "@/pages/HomePage";
 import EventsPage from "@/pages/EventsPage";
 import EventDetailPage from "@/pages/EventDetailPage";
@@ -93,7 +94,7 @@ const App = () => (
               <Route path="/portal/events" element={<PortalLayout><PortalEvents /></PortalLayout>} />
               
               {/* Dating intake route */}
-              <Route path="/dating/apply" element={<DatingIntakePage />} />
+              <Route path="/dating/apply" element={<Layout><DatingIntakePage /></Layout>} />
               
               {/* Admin routes with admin layout */}
               <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
@@ -112,6 +113,8 @@ const App = () => (
               
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
+            {/* Global Chatbot - available on all pages */}
+            <EventChatbot />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
