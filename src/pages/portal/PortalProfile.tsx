@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { Loader2, Check, Camera, X } from 'lucide-react';
 import { PushNotificationToggle } from '@/components/portal/PushNotificationToggle';
 import { LocationCombobox } from '@/components/ui/location-combobox';
+import { CityAutocomplete } from '@/components/ui/city-autocomplete';
 import { COUNTRIES, getRegionsForCountry } from '@/lib/location-data';
 
 const INTERESTS = [
@@ -414,11 +415,12 @@ export default function PortalProfile() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  placeholder="Los Angeles"
+                <CityAutocomplete
                   value={city}
-                  onChange={(e) => setCity(e.target.value)}
+                  onValueChange={setCity}
+                  country={country}
+                  state={state}
+                  placeholder="Search for a city..."
                 />
               </div>
             </div>
