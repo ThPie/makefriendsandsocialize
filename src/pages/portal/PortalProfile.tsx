@@ -8,20 +8,24 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
-import { Loader2, Check, Camera, X } from 'lucide-react';
+import { Loader2, Check, Camera, X, Calendar } from 'lucide-react';
 import { PushNotificationToggle } from '@/components/portal/PushNotificationToggle';
+import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
 import { LocationCombobox } from '@/components/ui/location-combobox';
 import { CityAutocomplete } from '@/components/ui/city-autocomplete';
 import { COUNTRIES, getRegionsForCountry } from '@/lib/location-data';
+import { format, differenceInYears, parse } from 'date-fns';
 
 const INTERESTS = [
-  'Art & Culture', 'Wine & Dining', 'Travel', 'Fashion', 'Architecture',
-  'Literature', 'Music', 'Philanthropy', 'Entrepreneurship', 'Wellness'
+  'Networking & Business', 'Arts & Culture', 'Food & Dining', 'Travel & Adventure',
+  'Fitness & Wellness', 'Sports', 'Music & Entertainment', 'Tech & Innovation',
+  'Philanthropy & Volunteering', 'Wine & Spirits', 'Reading & Literature', 'Outdoor Activities'
 ];
 
-const BRANDS = [
-  'Hermès', 'Loro Piana', 'Brunello Cucinelli', 'Tom Ford', 'Ralph Lauren',
-  'Zegna', 'Dior', 'Chanel', 'Gucci', 'Prada'
+const INDUSTRIES = [
+  'Technology', 'Finance & Banking', 'Healthcare', 'Real Estate', 'Legal',
+  'Marketing & Advertising', 'Consulting', 'Entertainment & Media', 'Education',
+  'Hospitality', 'Retail', 'Manufacturing', 'Non-Profit', 'Government', 'Other'
 ];
 
 export default function PortalProfile() {
@@ -32,10 +36,10 @@ export default function PortalProfile() {
   // Form state
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
   const [bio, setBio] = useState('');
-  const [signatureStyle, setSignatureStyle] = useState('');
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [valuesInPartner, setValuesInPartner] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
+  const [industry, setIndustry] = useState('');
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [avatarUrls, setAvatarUrls] = useState<string[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -47,10 +51,10 @@ export default function PortalProfile() {
     if (profile) {
       setFirstName(profile.first_name || '');
       setLastName(profile.last_name || '');
+      setDateOfBirth(profile.date_of_birth || '');
       setBio(profile.bio || '');
-      setSignatureStyle(profile.signature_style || '');
-      setSelectedBrands(profile.favorite_brands || []);
-      setValuesInPartner(profile.values_in_partner || '');
+      setJobTitle(profile.job_title || '');
+      setIndustry(profile.industry || '');
       setSelectedInterests(profile.interests || []);
       setAvatarUrls(profile.avatar_urls || []);
       setIsVisible(profile.is_visible || false);
@@ -60,9 +64,31 @@ export default function PortalProfile() {
     }
   }, [profile]);
 
+  const calculateAge = (dob: string): number => {
+    if (!dob) return 0;
+    try {
+      const birthDate = parse(dob, 'yyyy-MM-dd', new Date());
+      return differenceInYears(new Date(), birthDate);
+    } catch {
+      return 0;
+    }
+  };
+
+  const validateAge = (): boolean => {
+    if (!dateOfBirth) return true; // Allow empty during editing
+    const age = calculateAge(dateOfBirth);
+    return age >= 21;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    // Validate age if DOB is provided
+    if (dateOfBirth && !validateAge()) {
+      toast.error('You must be at least 21 years old to join');
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -71,10 +97,10 @@ export default function PortalProfile() {
       .update({
         first_name: firstName,
         last_name: lastName,
+        date_of_birth: dateOfBirth || null,
         bio,
-        signature_style: signatureStyle,
-        favorite_brands: selectedBrands,
-        values_in_partner: valuesInPartner,
+        job_title: jobTitle,
+        industry,
         interests: selectedInterests,
         avatar_urls: avatarUrls,
         is_visible: isVisible,
@@ -165,14 +191,6 @@ export default function PortalProfile() {
     setAvatarUrls(prev => prev.filter((_, i) => i !== index));
   };
 
-  const toggleBrand = (brand: string) => {
-    setSelectedBrands(prev => 
-      prev.includes(brand) 
-        ? prev.filter(b => b !== brand)
-        : [...prev, brand]
-    );
-  };
-
   const toggleInterest = (interest: string) => {
     setSelectedInterests(prev => 
       prev.includes(interest)
@@ -185,6 +203,19 @@ export default function PortalProfile() {
     ? `${firstName[0]}${lastName[0]}`
     : user?.email?.[0]?.toUpperCase() || 'M';
 
+  // Build profile data for completion indicator
+  const profileData = {
+    first_name: firstName,
+    last_name: lastName,
+    date_of_birth: dateOfBirth,
+    avatar_urls: avatarUrls,
+    bio,
+    job_title: jobTitle,
+    industry,
+    interests: selectedInterests,
+    city,
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
@@ -193,9 +224,12 @@ export default function PortalProfile() {
           My Profile
         </h1>
         <p className="text-muted-foreground">
-          Craft your digital identity for Make Friends and Socialize
+          Build your profile to connect with our community
         </p>
       </div>
+
+      {/* Profile Completion Indicator */}
+      <ProfileCompletionIndicator profile={profileData} />
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Photos Section */}
@@ -257,28 +291,51 @@ export default function PortalProfile() {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="firstName">First Name</Label>
+                <Label htmlFor="firstName">First Name *</Label>
                 <Input
                   id="firstName"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
+                  required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="lastName">Last Name</Label>
+                <Label htmlFor="lastName">Last Name *</Label>
                 <Input
                   id="lastName"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
+              <Label htmlFor="dateOfBirth" className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Date of Birth * (Must be 21+)
+              </Label>
+              <Input
+                id="dateOfBirth"
+                type="date"
+                value={dateOfBirth}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+                max={format(new Date(new Date().setFullYear(new Date().getFullYear() - 21)), 'yyyy-MM-dd')}
+                className="max-w-xs"
+              />
+              {dateOfBirth && !validateAge() && (
+                <p className="text-sm text-destructive">You must be at least 21 years old to join.</p>
+              )}
+              {dateOfBirth && validateAge() && (
+                <p className="text-sm text-muted-foreground">Age: {calculateAge(dateOfBirth)} years old</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="bio">About Me</Label>
               <Textarea
                 id="bio"
-                placeholder="Tell fellow members about yourself..."
+                placeholder="Tell us about yourself and what you're looking for in this community..."
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 className="min-h-[100px]"
@@ -287,65 +344,46 @@ export default function PortalProfile() {
           </CardContent>
         </Card>
 
-        {/* Style Profile */}
+        {/* Professional Info */}
         <Card>
           <CardHeader>
-            <CardTitle className="font-display text-xl">My Signature Style</CardTitle>
+            <CardTitle className="font-display text-xl">Professional Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="signatureStyle">Describe Your Style</Label>
-              <Textarea
-                id="signatureStyle"
-                placeholder="Timeless elegance with a modern edge..."
-                value={signatureStyle}
-                onChange={(e) => setSignatureStyle(e.target.value)}
-                className="min-h-[100px]"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Brands That Resonate</Label>
-              <div className="flex flex-wrap gap-2">
-                {BRANDS.map((brand) => (
-                  <button
-                    key={brand}
-                    type="button"
-                    onClick={() => toggleBrand(brand)}
-                    className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
-                      selectedBrands.includes(brand)
-                        ? 'bg-primary text-primary-foreground border-primary'
-                        : 'bg-transparent text-foreground border-border hover:border-primary'
-                    }`}
-                  >
-                    {brand}
-                    {selectedBrands.includes(brand) && <Check className="inline ml-1 h-3 w-3" />}
-                  </button>
-                ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="jobTitle">Job Title</Label>
+                <Input
+                  id="jobTitle"
+                  placeholder="e.g., Software Engineer, Marketing Director"
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="industry">Industry</Label>
+                <LocationCombobox
+                  value={industry}
+                  onValueChange={setIndustry}
+                  options={INDUSTRIES}
+                  placeholder="Select industry"
+                  searchPlaceholder="Search industries..."
+                  emptyMessage="No industries found."
+                  allowCustom={true}
+                />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Values & Interests */}
+        {/* Interests */}
         <Card>
           <CardHeader>
-            <CardTitle className="font-display text-xl">Values & Interests</CardTitle>
+            <CardTitle className="font-display text-xl">Interests</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="values">What I Value in a Connection</Label>
-              <Textarea
-                id="values"
-                placeholder="Intellectual curiosity, shared appreciation for the finer things..."
-                value={valuesInPartner}
-                onChange={(e) => setValuesInPartner(e.target.value)}
-                className="min-h-[100px]"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Interests</Label>
+              <Label>Select your interests (choose at least 2)</Label>
               <div className="flex flex-wrap gap-2">
                 {INTERESTS.map((interest) => (
                   <button
@@ -363,6 +401,9 @@ export default function PortalProfile() {
                   </button>
                 ))}
               </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                {selectedInterests.length} of 2 minimum selected
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -458,7 +499,7 @@ export default function PortalProfile() {
 
         {/* Submit */}
         <div className="flex justify-end">
-          <Button type="submit" disabled={isSubmitting} size="lg">
+          <Button type="submit" disabled={isSubmitting || (dateOfBirth && !validateAge())} size="lg">
             {isSubmitting ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
             ) : (

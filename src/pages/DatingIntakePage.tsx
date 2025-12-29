@@ -212,8 +212,8 @@ const DatingIntakePage = () => {
           toast({ title: "Missing Information", description: "Please fill in all required fields.", variant: "destructive" });
           return false;
         }
-        if (formData.age < 18) {
-          toast({ title: "Age Requirement", description: "You must be at least 18 years old.", variant: "destructive" });
+        if (formData.age < 21) {
+          toast({ title: "Age Requirement", description: "You must be at least 21 years old.", variant: "destructive" });
           return false;
         }
         return true;
