@@ -161,102 +161,168 @@ export type Database = {
           age_range_max: number
           age_range_min: number
           apology_language: string | null
+          attachment_style: string | null
+          been_married: boolean | null
           bio: string | null
+          children_details: string | null
           conflict_resolution: string | null
           core_values: string | null
           created_at: string | null
           current_curiosity: string | null
           dealbreakers: string | null
           defining_enough: string | null
+          diet_preference: string | null
           display_name: string
+          drinking_status: string | null
+          drug_use: string | null
           emotional_connection: string | null
+          exercise_frequency: string | null
+          facebook_url: string | null
           financial_philosophy: string | null
           friendship_benchmark: string | null
           future_goals: string | null
           gender: string
+          has_children: boolean | null
           id: string
+          instagram_url: string | null
+          introvert_extrovert: string | null
           is_active: boolean | null
+          linkedin_url: string | null
           location: string | null
+          love_language: string | null
+          marriage_history: string | null
+          marriage_timeline: string | null
+          morning_night_person: string | null
           occupation: string | null
           photo_url: string | null
           politics_stance: string | null
+          relationship_type: string | null
           religion_stance: string | null
+          smoking_status: string | null
+          social_verification_notes: string | null
+          social_verification_status: string | null
           status: string
           support_style: string | null
           target_gender: string
           tuesday_night_test: string | null
+          twitter_url: string | null
           unpopular_opinion: string | null
           updated_at: string | null
           user_id: string
           vulnerability_check: string | null
+          wants_children: string | null
         }
         Insert: {
           age: number
           age_range_max?: number
           age_range_min?: number
           apology_language?: string | null
+          attachment_style?: string | null
+          been_married?: boolean | null
           bio?: string | null
+          children_details?: string | null
           conflict_resolution?: string | null
           core_values?: string | null
           created_at?: string | null
           current_curiosity?: string | null
           dealbreakers?: string | null
           defining_enough?: string | null
+          diet_preference?: string | null
           display_name: string
+          drinking_status?: string | null
+          drug_use?: string | null
           emotional_connection?: string | null
+          exercise_frequency?: string | null
+          facebook_url?: string | null
           financial_philosophy?: string | null
           friendship_benchmark?: string | null
           future_goals?: string | null
           gender: string
+          has_children?: boolean | null
           id?: string
+          instagram_url?: string | null
+          introvert_extrovert?: string | null
           is_active?: boolean | null
+          linkedin_url?: string | null
           location?: string | null
+          love_language?: string | null
+          marriage_history?: string | null
+          marriage_timeline?: string | null
+          morning_night_person?: string | null
           occupation?: string | null
           photo_url?: string | null
           politics_stance?: string | null
+          relationship_type?: string | null
           religion_stance?: string | null
+          smoking_status?: string | null
+          social_verification_notes?: string | null
+          social_verification_status?: string | null
           status?: string
           support_style?: string | null
           target_gender: string
           tuesday_night_test?: string | null
+          twitter_url?: string | null
           unpopular_opinion?: string | null
           updated_at?: string | null
           user_id: string
           vulnerability_check?: string | null
+          wants_children?: string | null
         }
         Update: {
           age?: number
           age_range_max?: number
           age_range_min?: number
           apology_language?: string | null
+          attachment_style?: string | null
+          been_married?: boolean | null
           bio?: string | null
+          children_details?: string | null
           conflict_resolution?: string | null
           core_values?: string | null
           created_at?: string | null
           current_curiosity?: string | null
           dealbreakers?: string | null
           defining_enough?: string | null
+          diet_preference?: string | null
           display_name?: string
+          drinking_status?: string | null
+          drug_use?: string | null
           emotional_connection?: string | null
+          exercise_frequency?: string | null
+          facebook_url?: string | null
           financial_philosophy?: string | null
           friendship_benchmark?: string | null
           future_goals?: string | null
           gender?: string
+          has_children?: boolean | null
           id?: string
+          instagram_url?: string | null
+          introvert_extrovert?: string | null
           is_active?: boolean | null
+          linkedin_url?: string | null
           location?: string | null
+          love_language?: string | null
+          marriage_history?: string | null
+          marriage_timeline?: string | null
+          morning_night_person?: string | null
           occupation?: string | null
           photo_url?: string | null
           politics_stance?: string | null
+          relationship_type?: string | null
           religion_stance?: string | null
+          smoking_status?: string | null
+          social_verification_notes?: string | null
+          social_verification_status?: string | null
           status?: string
           support_style?: string | null
           target_gender?: string
           tuesday_night_test?: string | null
+          twitter_url?: string | null
           unpopular_opinion?: string | null
           updated_at?: string | null
           user_id?: string
           vulnerability_check?: string | null
+          wants_children?: string | null
         }
         Relationships: []
       }

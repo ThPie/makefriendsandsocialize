@@ -9,7 +9,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { MatchCard } from "@/components/dating/MatchCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, User, Heart, Sparkles, Check, X, Loader2, MapPin, Briefcase, Calendar } from "lucide-react";
+import { 
+  ArrowLeft, User, Heart, Sparkles, Check, X, Loader2, MapPin, Briefcase, Calendar,
+  Shield, ExternalLink, AlertTriangle, CheckCircle2, HelpCircle, Linkedin, Instagram, Facebook, Twitter,
+  Baby, Wine, Cigarette, Users
+} from "lucide-react";
 
 interface DatingProfile {
   id: string;
@@ -39,6 +43,29 @@ interface DatingProfile {
   status: string;
   is_active: boolean;
   created_at: string;
+  // New fields
+  linkedin_url: string | null;
+  instagram_url: string | null;
+  facebook_url: string | null;
+  twitter_url: string | null;
+  social_verification_status: string | null;
+  social_verification_notes: string | null;
+  relationship_type: string | null;
+  marriage_timeline: string | null;
+  has_children: boolean | null;
+  children_details: string | null;
+  wants_children: string | null;
+  been_married: boolean | null;
+  marriage_history: string | null;
+  smoking_status: string | null;
+  drinking_status: string | null;
+  drug_use: string | null;
+  exercise_frequency: string | null;
+  diet_preference: string | null;
+  love_language: string | null;
+  attachment_style: string | null;
+  introvert_extrovert: string | null;
+  morning_night_person: string | null;
 }
 
 interface Match {
@@ -58,6 +85,7 @@ const AdminDatingProfile = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isFindingMatches, setIsFindingMatches] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ["dating-profile", id],
@@ -158,6 +186,40 @@ const AdminDatingProfile = () => {
     }
   };
 
+  const handleVerifySocial = async () => {
+    if (!id) return;
+    
+    setIsVerifying(true);
+    
+    try {
+      const response = await supabase.functions.invoke("verify-social-profiles", {
+        body: { profileId: id },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      const result = response.data;
+      
+      toast({
+        title: "Verification Complete",
+        description: result.summary || "Profile has been verified.",
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["dating-profile", id] });
+    } catch (error: any) {
+      console.error("Error verifying profile:", error);
+      toast({
+        title: "Verification Failed",
+        description: error.message || "There was an error verifying the profile.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "vetted":
@@ -168,11 +230,45 @@ const AdminDatingProfile = () => {
       case "rejected":
         return <Badge className="bg-red-500/10 text-red-500 border-red-500/20">Rejected</Badge>;
       default:
-        return <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">New</Badge>;
+        return <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">Pending</Badge>;
+    }
+  };
+
+  const getVerificationBadge = (status: string | null) => {
+    switch (status) {
+      case "clean":
+        return (
+          <Badge className="bg-green-500/10 text-green-500 border-green-500/20 gap-1">
+            <CheckCircle2 className="h-3 w-3" />
+            Verified Clean
+          </Badge>
+        );
+      case "flagged":
+        return (
+          <Badge className="bg-red-500/10 text-red-500 border-red-500/20 gap-1">
+            <AlertTriangle className="h-3 w-3" />
+            Flagged
+          </Badge>
+        );
+      case "pending":
+        return (
+          <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20 gap-1">
+            <HelpCircle className="h-3 w-3" />
+            Pending Verification
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="bg-muted text-muted-foreground border-muted-foreground/20 gap-1">
+            <HelpCircle className="h-3 w-3" />
+            Unverified
+          </Badge>
+        );
     }
   };
 
   const isVetted = profile?.status === "vetted" || profile?.status === "approved";
+  const hasSocialLinks = profile?.linkedin_url || profile?.instagram_url || profile?.facebook_url || profile?.twitter_url;
 
   if (profileLoading) {
     return (
@@ -211,6 +307,7 @@ const AdminDatingProfile = () => {
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="font-display text-3xl text-foreground">{profile.display_name}</h1>
               {getStatusBadge(profile.status)}
+              {getVerificationBadge(profile.social_verification_status)}
             </div>
             <div className="flex items-center gap-4 text-muted-foreground mt-1 flex-wrap">
               <span className="flex items-center gap-1">
@@ -232,7 +329,27 @@ const AdminDatingProfile = () => {
               )}
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            {hasSocialLinks && (
+              <Button
+                variant="outline"
+                onClick={handleVerifySocial}
+                disabled={isVerifying}
+                className="gap-2"
+              >
+                {isVerifying ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Verifying...
+                  </>
+                ) : (
+                  <>
+                    <Shield className="h-4 w-4" />
+                    Run OSINT Scan
+                  </>
+                )}
+              </Button>
+            )}
             {(profile.status === "new" || profile.status === "pending") && (
               <>
                 <Button
@@ -263,6 +380,10 @@ const AdminDatingProfile = () => {
             <User className="h-4 w-4" />
             Profile
           </TabsTrigger>
+          <TabsTrigger value="verification" className="gap-2">
+            <Shield className="h-4 w-4" />
+            Verification
+          </TabsTrigger>
           <TabsTrigger value="matches" className="gap-2">
             <Heart className="h-4 w-4" />
             Matches ({matches?.length || 0})
@@ -282,13 +403,13 @@ const AdminDatingProfile = () => {
             </Card>
           )}
 
-          {/* Preferences */}
+          {/* Relationship & Preferences */}
           <Card className="border-border/50">
             <CardHeader>
-              <CardTitle className="font-display">Preferences</CardTitle>
+              <CardTitle className="font-display">Relationship Preferences</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="bg-muted/30 rounded-lg p-4">
                   <p className="text-sm text-muted-foreground">Looking for</p>
                   <p className="font-medium">{profile.target_gender}</p>
@@ -297,10 +418,141 @@ const AdminDatingProfile = () => {
                   <p className="text-sm text-muted-foreground">Age Range</p>
                   <p className="font-medium">{profile.age_range_min} - {profile.age_range_max}</p>
                 </div>
+                {profile.relationship_type && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground">Relationship Type</p>
+                    <p className="font-medium capitalize">{profile.relationship_type.replace(/_/g, " ")}</p>
+                  </div>
+                )}
+                {profile.marriage_timeline && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground">Marriage Timeline</p>
+                    <p className="font-medium capitalize">{profile.marriage_timeline.replace(/_/g, " ")}</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Family & Children */}
+          <Card className="border-border/50">
+            <CardHeader>
+              <CardTitle className="font-display flex items-center gap-2">
+                <Users className="h-5 w-5 text-dating-terracotta" />
+                Family Background
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="bg-muted/30 rounded-lg p-4">
-                  <p className="text-sm text-muted-foreground">Status</p>
-                  <p className="font-medium capitalize">{profile.status}</p>
+                  <p className="text-sm text-muted-foreground">Previously Married</p>
+                  <p className="font-medium">{profile.been_married ? "Yes" : "No"}</p>
                 </div>
+                <div className="bg-muted/30 rounded-lg p-4">
+                  <p className="text-sm text-muted-foreground">Has Children</p>
+                  <p className="font-medium">{profile.has_children ? "Yes" : "No"}</p>
+                </div>
+                {profile.wants_children && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground">Wants Children</p>
+                    <p className="font-medium capitalize">{profile.wants_children.replace(/_/g, " ")}</p>
+                  </div>
+                )}
+                {profile.children_details && (
+                  <div className="bg-muted/30 rounded-lg p-4 sm:col-span-2">
+                    <p className="text-sm text-muted-foreground">Children Details</p>
+                    <p className="font-medium">{profile.children_details}</p>
+                  </div>
+                )}
+                {profile.marriage_history && (
+                  <div className="bg-muted/30 rounded-lg p-4 sm:col-span-2">
+                    <p className="text-sm text-muted-foreground">Marriage History</p>
+                    <p className="font-medium">{profile.marriage_history}</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Lifestyle Habits */}
+          <Card className="border-border/50">
+            <CardHeader>
+              <CardTitle className="font-display flex items-center gap-2">
+                <Wine className="h-5 w-5 text-dating-terracotta" />
+                Lifestyle Habits
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {profile.smoking_status && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <Cigarette className="h-3 w-3" /> Smoking
+                    </p>
+                    <p className="font-medium capitalize">{profile.smoking_status.replace(/_/g, " ")}</p>
+                  </div>
+                )}
+                {profile.drinking_status && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <Wine className="h-3 w-3" /> Drinking
+                    </p>
+                    <p className="font-medium capitalize">{profile.drinking_status}</p>
+                  </div>
+                )}
+                {profile.exercise_frequency && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground">Exercise</p>
+                    <p className="font-medium capitalize">{profile.exercise_frequency.replace(/_/g, " ")}</p>
+                  </div>
+                )}
+                {profile.diet_preference && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground">Diet</p>
+                    <p className="font-medium capitalize">{profile.diet_preference}</p>
+                  </div>
+                )}
+                {profile.drug_use && (
+                  <div className="bg-muted/30 rounded-lg p-4 sm:col-span-2 lg:col-span-4">
+                    <p className="text-sm text-muted-foreground">Drug Use Statement</p>
+                    <p className="font-medium">{profile.drug_use}</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Personality & Connection Style */}
+          <Card className="border-border/50">
+            <CardHeader>
+              <CardTitle className="font-display">Personality & Connection Style</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {profile.love_language && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground">Love Language</p>
+                    <p className="font-medium capitalize">{profile.love_language.replace(/_/g, " ")}</p>
+                  </div>
+                )}
+                {profile.attachment_style && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground">Attachment Style</p>
+                    <p className="font-medium capitalize">{profile.attachment_style.replace(/_/g, " ")}</p>
+                  </div>
+                )}
+                {profile.introvert_extrovert && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground">Social Energy</p>
+                    <p className="font-medium capitalize">{profile.introvert_extrovert}</p>
+                  </div>
+                )}
+                {profile.morning_night_person && (
+                  <div className="bg-muted/30 rounded-lg p-4">
+                    <p className="text-sm text-muted-foreground">Daily Rhythm</p>
+                    <p className="font-medium capitalize">{profile.morning_night_person.replace(/_/g, " ")}</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -322,7 +574,7 @@ const AdminDatingProfile = () => {
                 { label: "Financial Philosophy", value: profile.financial_philosophy, description: "Their relationship with money" },
                 { label: "Current Curiosity", value: profile.current_curiosity, description: "What they're learning" },
                 { label: "Dealbreakers", value: profile.dealbreakers, description: "Non-negotiables" },
-                { label: "Future Goals", value: profile.future_goals, description: "Marriage & family plans" },
+                { label: "Future Goals", value: profile.future_goals, description: "Long-term vision" },
               ].filter(item => item.value).map((item, index) => (
                 <div key={index} className="bg-muted/20 rounded-xl p-5 hover:bg-muted/30 transition-colors">
                   <div className="flex items-start justify-between mb-2">
@@ -352,6 +604,122 @@ const AdminDatingProfile = () => {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="verification" className="space-y-6">
+          {/* Social Media Links */}
+          <Card className="border-border/50">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="font-display">Social Media Profiles</CardTitle>
+                  <CardDescription>Links provided by the applicant</CardDescription>
+                </div>
+                {getVerificationBadge(profile.social_verification_status)}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {hasSocialLinks ? (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {profile.linkedin_url && (
+                    <a
+                      href={profile.linkedin_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <Linkedin className="h-5 w-5 text-[#0077B5]" />
+                      <span className="flex-1 truncate">{profile.linkedin_url}</span>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                    </a>
+                  )}
+                  {profile.instagram_url && (
+                    <a
+                      href={profile.instagram_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <Instagram className="h-5 w-5 text-[#E4405F]" />
+                      <span className="flex-1 truncate">{profile.instagram_url}</span>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                    </a>
+                  )}
+                  {profile.facebook_url && (
+                    <a
+                      href={profile.facebook_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <Facebook className="h-5 w-5 text-[#1877F2]" />
+                      <span className="flex-1 truncate">{profile.facebook_url}</span>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                    </a>
+                  )}
+                  {profile.twitter_url && (
+                    <a
+                      href={profile.twitter_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <Twitter className="h-5 w-5" />
+                      <span className="flex-1 truncate">{profile.twitter_url}</span>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                    </a>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Shield className="h-12 w-12 mx-auto mb-4 opacity-30" />
+                  <p>No social media profiles provided</p>
+                </div>
+              )}
+
+              {hasSocialLinks && (
+                <div className="mt-6 pt-6 border-t border-border/50">
+                  <Button
+                    onClick={handleVerifySocial}
+                    disabled={isVerifying}
+                    className="gap-2 bg-dating-terracotta hover:bg-dating-terracotta/90"
+                  >
+                    {isVerifying ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Running OSINT Scan...
+                      </>
+                    ) : (
+                      <>
+                        <Shield className="h-4 w-4" />
+                        Run AI Verification Scan
+                      </>
+                    )}
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Uses AI to analyze social profiles for red flags and verify identity
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Verification Notes */}
+          {profile.social_verification_notes && (
+            <Card className="border-border/50">
+              <CardHeader>
+                <CardTitle className="font-display">Verification Report</CardTitle>
+                <CardDescription>AI-generated analysis of social profiles</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <pre className="whitespace-pre-wrap bg-muted/30 rounded-lg p-4 text-sm font-mono">
+                    {profile.social_verification_notes}
+                  </pre>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="matches" className="space-y-6">

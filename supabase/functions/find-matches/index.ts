@@ -24,6 +24,15 @@ interface DatingProfile {
   core_values: string | null;
   status: string;
   is_active: boolean;
+  // New fields
+  relationship_type: string | null;
+  wants_children: string | null;
+  has_children: boolean | null;
+  smoking_status: string | null;
+  drinking_status: string | null;
+  love_language: string | null;
+  attachment_style: string | null;
+  introvert_extrovert: string | null;
 }
 
 interface MatchResult {
@@ -68,7 +77,7 @@ serve(async (req) => {
       .from("dating_profiles")
       .select("*")
       .neq("id", profileId)
-      .eq("status", "approved")
+      .in("status", ["approved", "vetted"])
       .eq("is_active", true);
 
     // Filter by target's gender preference
@@ -139,6 +148,14 @@ Person A (${targetProfile.display_name}):
 - Age: ${targetProfile.age}
 - Location: ${targetProfile.location || "Not specified"}
 - Occupation: ${targetProfile.occupation || "Not specified"}
+- Relationship Type Seeking: ${targetProfile.relationship_type || "Not specified"}
+- Wants Children: ${targetProfile.wants_children || "Not specified"}
+- Has Children: ${targetProfile.has_children ? "Yes" : "No"}
+- Smoking: ${targetProfile.smoking_status || "Not specified"}
+- Drinking: ${targetProfile.drinking_status || "Not specified"}
+- Love Language: ${targetProfile.love_language || "Not specified"}
+- Attachment Style: ${targetProfile.attachment_style || "Not specified"}
+- Social Energy: ${targetProfile.introvert_extrovert || "Not specified"}
 - Conflict Resolution Style: ${targetProfile.conflict_resolution || "Not answered"}
 - What Emotional Connection Means: ${targetProfile.emotional_connection || "Not answered"}
 - Ideal Tuesday Night: ${targetProfile.tuesday_night_test || "Not answered"}
@@ -149,23 +166,35 @@ Person B (${candidate.display_name}):
 - Age: ${candidate.age}
 - Location: ${candidate.location || "Not specified"}
 - Occupation: ${candidate.occupation || "Not specified"}
+- Relationship Type Seeking: ${candidate.relationship_type || "Not specified"}
+- Wants Children: ${candidate.wants_children || "Not specified"}
+- Has Children: ${candidate.has_children ? "Yes" : "No"}
+- Smoking: ${candidate.smoking_status || "Not specified"}
+- Drinking: ${candidate.drinking_status || "Not specified"}
+- Love Language: ${candidate.love_language || "Not specified"}
+- Attachment Style: ${candidate.attachment_style || "Not specified"}
+- Social Energy: ${candidate.introvert_extrovert || "Not specified"}
 - Conflict Resolution Style: ${candidate.conflict_resolution || "Not answered"}
 - What Emotional Connection Means: ${candidate.emotional_connection || "Not answered"}
 - Ideal Tuesday Night: ${candidate.tuesday_night_test || "Not answered"}
 - Dealbreakers: ${candidate.dealbreakers || "None specified"}
 - Core Values: ${candidate.core_values || "Not answered"}
 
-Analyze their psychological compatibility considering:
-1. Values alignment - Do their core values complement each other?
-2. Communication/conflict style compatibility - Would they handle disagreements well together?
-3. Lifestyle preferences - Would their ideal evenings work together?
-4. Dealbreaker analysis - Are there any obvious conflicts?
+Analyze their compatibility considering:
+1. **Relationship Goals**: Are they looking for the same type of relationship?
+2. **Family Plans**: Are their views on children compatible?
+3. **Lifestyle Compatibility**: Do their smoking, drinking, and lifestyle habits align?
+4. **Values Alignment**: Do their core values complement each other?
+5. **Communication/Conflict Style**: Would they handle disagreements well together?
+6. **Emotional Style**: Are their love languages and attachment styles compatible?
+7. **Daily Life**: Would their ideal evenings work together? Introvert/extrovert balance?
+8. **Dealbreaker Analysis**: Are there any obvious conflicts?
 
 Return a JSON object with:
 - "score": A number from 0 to 100 representing compatibility percentage
 - "reason": A 2-3 sentence explanation of why they would or wouldn't be compatible
 
-Be realistic and honest in scoring. Most people are not highly compatible.`;
+Be realistic and honest in scoring. Most people are not highly compatible. Give heavy weight to dealbreakers, children preferences, and relationship type alignment.`;
 
         const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
