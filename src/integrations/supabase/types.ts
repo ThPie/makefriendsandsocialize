@@ -379,45 +379,72 @@ export type Database = {
       events: {
         Row: {
           capacity: number | null
+          city: string | null
+          country: string | null
           created_at: string
+          currency: string | null
           date: string
           description: string | null
           id: string
           image_url: string | null
+          is_featured: boolean | null
           location: string | null
+          registration_deadline: string | null
           status: string
+          tags: string[] | null
+          ticket_price: number | null
           tier: Database["public"]["Enums"]["membership_tier"]
           time: string | null
           title: string
           updated_at: string
+          venue_address: string | null
+          venue_name: string | null
         }
         Insert: {
           capacity?: number | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          currency?: string | null
           date: string
           description?: string | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean | null
           location?: string | null
+          registration_deadline?: string | null
           status?: string
+          tags?: string[] | null
+          ticket_price?: number | null
           tier?: Database["public"]["Enums"]["membership_tier"]
           time?: string | null
           title: string
           updated_at?: string
+          venue_address?: string | null
+          venue_name?: string | null
         }
         Update: {
           capacity?: number | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          currency?: string | null
           date?: string
           description?: string | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean | null
           location?: string | null
+          registration_deadline?: string | null
           status?: string
+          tags?: string[] | null
+          ticket_price?: number | null
           tier?: Database["public"]["Enums"]["membership_tier"]
           time?: string | null
           title?: string
           updated_at?: string
+          venue_address?: string | null
+          venue_name?: string | null
         }
         Relationships: []
       }
