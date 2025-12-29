@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { Loader2, Check, Camera, X } from 'lucide-react';
+import { PushNotificationToggle } from '@/components/portal/PushNotificationToggle';
 
 const INTERESTS = [
   'Art & Culture', 'Wine & Dining', 'Travel', 'Fashion', 'Architecture',
@@ -376,6 +377,9 @@ export default function PortalProfile() {
             </label>
           </CardContent>
         </Card>
+
+        {/* Push Notifications */}
+        <PushNotificationToggle />
 
         {/* Submit */}
         <div className="flex justify-end">
