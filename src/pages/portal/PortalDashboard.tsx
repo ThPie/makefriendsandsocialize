@@ -1,17 +1,71 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Users, Calendar, Heart, Crown, ArrowRight } from 'lucide-react';
+import { User, Users, Calendar, Heart, Crown, ArrowRight, Sparkles } from 'lucide-react';
 import { SubmitReview } from '@/components/portal/SubmitReview';
+import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
+import { BadgeDisplay } from '@/components/portal/BadgeDisplay';
+import { FeatureUnlockCard } from '@/components/portal/FeatureUnlockCard';
+import { OnboardingWizard } from '@/components/portal/OnboardingWizard';
+import { BadgeUnlockModal } from '@/components/portal/BadgeUnlockModal';
 
 export default function PortalDashboard() {
-  const { profile, membership, canAccessMatchmaking } = useAuth();
+  const { user, profile, membership, canAccessMatchmaking, refreshProfile } = useAuth();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [earnedBadges, setEarnedBadges] = useState<{ badge_type: string; earned_at: string }[]>([]);
+  const [newBadge, setNewBadge] = useState<{ name: string; icon: string; description: string; features?: string[] } | null>(null);
+
+  // Calculate completion percentage
+  const calculateCompletion = () => {
+    if (!profile) return 0;
+    let score = 0;
+    if (profile.first_name) score += 15;
+    if (profile.last_name) score += 15;
+    if (profile.date_of_birth) score += 15;
+    if (profile.avatar_urls?.length) score += 15;
+    if (profile.bio) score += 10;
+    if (profile.job_title) score += 10;
+    if (profile.industry) score += 10;
+    if (profile.interests?.length >= 2) score += 5;
+    if (profile.city) score += 5;
+    return score;
+  };
+
+  const completionPercentage = calculateCompletion();
+  const isProfileComplete = completionPercentage === 100;
+
+  // Fetch badges
+  useEffect(() => {
+    if (user) {
+      supabase
+        .from('member_badges')
+        .select('badge_type, earned_at')
+        .eq('user_id', user.id)
+        .then(({ data }) => {
+          if (data) setEarnedBadges(data);
+        });
+    }
+  }, [user]);
+
+  // Show onboarding for new users
+  useEffect(() => {
+    if (profile && !profile.onboarding_completed && completionPercentage < 50) {
+      setShowOnboarding(true);
+    }
+  }, [profile, completionPercentage]);
+
+  const handleOnboardingComplete = async () => {
+    setShowOnboarding(false);
+    await refreshProfile();
+  };
 
   const quickActions = [
     {
       title: 'Complete Your Profile',
-      description: 'Add photos and refine your style profile',
+      description: 'Add photos and details about yourself',
       icon: User,
       href: '/portal/profile',
       show: true,
@@ -47,6 +101,25 @@ export default function PortalDashboard() {
 
   return (
     <div className="space-y-8">
+      {/* Onboarding Wizard */}
+      <OnboardingWizard
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+        onComplete={handleOnboardingComplete}
+      />
+
+      {/* Badge Unlock Modal */}
+      {newBadge && (
+        <BadgeUnlockModal
+          isOpen={!!newBadge}
+          onClose={() => setNewBadge(null)}
+          badgeName={newBadge.name}
+          badgeIcon={newBadge.icon}
+          badgeDescription={newBadge.description}
+          unlockedFeatures={newBadge.features}
+        />
+      )}
+
       {/* Welcome Header */}
       <div>
         <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
@@ -80,6 +153,22 @@ export default function PortalDashboard() {
             </Button>
           </CardContent>
         </Card>
+      )}
+
+      {/* Profile Completion & Feature Unlocks */}
+      {profile && completionPercentage < 100 && (
+        <div className="grid gap-6 md:grid-cols-2">
+          <ProfileCompletionIndicator profile={profile} />
+          <FeatureUnlockCard 
+            completionPercentage={completionPercentage} 
+            isProfileComplete={isProfileComplete} 
+          />
+        </div>
+      )}
+
+      {/* Badges */}
+      {earnedBadges.length > 0 && (
+        <BadgeDisplay earnedBadges={earnedBadges} showAll={false} compact />
       )}
 
       {/* Quick Actions */}
@@ -126,62 +215,6 @@ export default function PortalDashboard() {
           </Card>
         ))}
       </div>
-
-      {/* Profile Completion */}
-      {profile && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-display text-xl">Profile Completion</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                  profile.avatar_urls?.length ? 'bg-primary' : 'bg-muted'
-                }`}>
-                  {profile.avatar_urls?.length ? (
-                    <span className="text-primary-foreground text-xs">✓</span>
-                  ) : null}
-                </div>
-                <span className={profile.avatar_urls?.length ? 'text-foreground' : 'text-muted-foreground'}>
-                  Profile photos uploaded
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                  profile.signature_style ? 'bg-primary' : 'bg-muted'
-                }`}>
-                  {profile.signature_style ? (
-                    <span className="text-primary-foreground text-xs">✓</span>
-                  ) : null}
-                </div>
-                <span className={profile.signature_style ? 'text-foreground' : 'text-muted-foreground'}>
-                  Signature style defined
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                  profile.bio ? 'bg-primary' : 'bg-muted'
-                }`}>
-                  {profile.bio ? (
-                    <span className="text-primary-foreground text-xs">✓</span>
-                  ) : null}
-                </div>
-                <span className={profile.bio ? 'text-foreground' : 'text-muted-foreground'}>
-                  Bio written
-                </span>
-              </div>
-            </div>
-            {(!profile.avatar_urls?.length || !profile.signature_style || !profile.bio) && (
-              <Button asChild variant="outline" className="mt-6">
-                <Link to="/portal/profile">
-                  Complete Your Profile
-                </Link>
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-      )}
 
       {/* Submit Review */}
       <SubmitReview />

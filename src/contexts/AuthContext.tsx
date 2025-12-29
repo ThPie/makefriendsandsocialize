@@ -11,10 +11,7 @@ interface Profile {
   first_name: string | null;
   last_name: string | null;
   bio: string | null;
-  signature_style: string | null;
-  favorite_brands: string[];
   avatar_urls: string[];
-  values_in_partner: string | null;
   interests: string[];
   is_visible: boolean;
   country: string | null;
@@ -23,6 +20,8 @@ interface Profile {
   job_title: string | null;
   industry: string | null;
   date_of_birth: string | null;
+  profile_completed_at: string | null;
+  onboarding_completed: boolean | null;
 }
 
 interface Membership {
