@@ -10,15 +10,17 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { LocationCombobox } from '@/components/ui/location-combobox';
+import { EventImageUpload } from '@/components/admin/EventImageUpload';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { 
   Calendar, MapPin, Users, Plus, Edit, Trash2, Loader2, 
-  Sparkles, Image, Copy, Star, DollarSign, Clock, Tag
+  Sparkles, Copy, Star, DollarSign, Clock, Tag, BarChart3
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface Event {
   id: string;
@@ -389,7 +391,7 @@ export default function AdminEvents() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -398,13 +400,21 @@ export default function AdminEvents() {
           <p className="text-muted-foreground mt-1">Manage all society events</p>
         </motion.div>
         
-        <Dialog open={isDialogOpen} onOpenChange={(open) => open ? setIsDialogOpen(true) : handleDialogClose()}>
-          <DialogTrigger asChild>
-            <AnimatedButton>
-              <Plus className="h-4 w-4 mr-2" />
-              Create Event
-            </AnimatedButton>
-          </DialogTrigger>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" asChild className="rounded-xl">
+            <Link to="/admin/event-analytics">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              View Analytics
+            </Link>
+          </Button>
+          
+          <Dialog open={isDialogOpen} onOpenChange={(open) => open ? setIsDialogOpen(true) : handleDialogClose()}>
+            <DialogTrigger asChild>
+              <AnimatedButton>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Event
+              </AnimatedButton>
+            </DialogTrigger>
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="font-display text-2xl">
@@ -459,45 +469,13 @@ export default function AdminEvents() {
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Event Image</h3>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="image_url">Image URL</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="image_url"
-                      value={form.image_url}
-                      onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-                      placeholder="https://..."
-                      className="rounded-xl flex-1"
-                    />
-                    <AnimatedButton
-                      type="button"
-                      variant="outline"
-                      onClick={handleGenerateImage}
-                      disabled={isGeneratingImage || !form.title}
-                    >
-                      {isGeneratingImage ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <>
-                          <Sparkles className="h-4 w-4 mr-2" />
-                          Generate
-                        </>
-                      )}
-                    </AnimatedButton>
-                  </div>
-                  {form.image_url && (
-                    <div className="mt-2 rounded-xl overflow-hidden border border-border">
-                      <img 
-                        src={form.image_url} 
-                        alt="Event preview" 
-                        className="w-full h-40 object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
+                <EventImageUpload
+                  value={form.image_url}
+                  onChange={(url) => setForm({ ...form, image_url: url })}
+                  onGenerateAI={handleGenerateImage}
+                  isGenerating={isGeneratingImage}
+                  disabled={isSubmitting}
+                />
               </div>
 
               {/* Date & Time Section */}
@@ -727,6 +705,7 @@ export default function AdminEvents() {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {/* Filter Tabs */}
