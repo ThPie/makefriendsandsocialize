@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { useTheme } from 'next-themes';
-import logoDark from '@/assets/logo.png';
-import logoLight from '@/assets/logo-light.png';
+import logo from '@/assets/logo-transparent.png';
 
 const navItems = [
   { label: 'Home', path: '/' },
@@ -18,15 +15,9 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-  const { resolvedTheme } = useTheme();
   
   const isHomePage = location.pathname === '/';
   const isTransparent = isHomePage && !isScrolled;
-  
-  // Use light logo when header is transparent (over video), themed logo when scrolled/inner pages
-  const logo = isTransparent 
-    ? logoDark 
-    : (resolvedTheme === 'dark' ? logoDark : logoLight);
 
   const [scrollDepth, setScrollDepth] = useState(0);
 
@@ -74,7 +65,7 @@ export const Header = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden flex-1 items-center justify-end gap-6 lg:flex">
+          <div className="hidden flex-1 items-center justify-end gap-6 lg:flex">
           <nav className="flex items-center gap-6">
             {navItems.map((item) => (
               <Link
@@ -90,17 +81,13 @@ export const Header = () => {
               </Link>
             ))}
           </nav>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <Button asChild>
-              <Link to="/membership">Request Membership</Link>
-            </Button>
-          </div>
+          <Button asChild>
+            <Link to="/membership">Request Membership</Link>
+          </Button>
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="flex items-center gap-2 lg:hidden">
-          <ThemeToggle />
+        <div className="flex items-center lg:hidden">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="flex items-center justify-center rounded-md p-3 text-foreground hover:bg-muted transition-colors min-w-[44px] min-h-[44px]"

@@ -27,7 +27,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
-import logo from '@/assets/logo-light.webp';
+import logo from '@/assets/logo-transparent.png';
 import { Home } from 'lucide-react';
 
 interface PortalLayoutProps {

@@ -31,7 +31,7 @@ import {
   Sparkles,
   TrendingUp,
 } from 'lucide-react';
-import logo from '@/assets/logo-light.webp';
+import logo from '@/assets/logo-transparent.png';
 import { Home } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -97,13 +97,22 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 <span className="text-xs text-muted-foreground">Admin</span>
               </div>
             </Link>
-            <Link
-              to="/"
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
-            >
-              <Home className="h-4 w-4" />
-              <span>Back to Website</span>
-            </Link>
+            <div className="flex flex-col gap-2">
+              <Link
+                to="/"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+              >
+                <Home className="h-4 w-4" />
+                <span>Back to Website</span>
+              </Link>
+              <Link
+                to="/portal"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/20 text-secondary-foreground hover:bg-secondary/30 transition-colors text-sm font-medium"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back to Portal</span>
+              </Link>
+            </div>
           </SidebarHeader>
 
           <SidebarContent className="p-4">
@@ -135,15 +144,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               </SidebarGroupContent>
             </SidebarGroup>
 
-            <div className="mt-6 pt-6 border-t border-border">
-              <Link
-                to="/portal"
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5" />
-                <span>Back to Portal</span>
-              </Link>
-            </div>
           </SidebarContent>
 
           <div className="p-4 mt-auto border-t border-border">
