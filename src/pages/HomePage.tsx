@@ -8,7 +8,6 @@ import { FAQSection } from '@/components/home/FAQSection';
 import { ContactFormSection } from '@/components/home/ContactFormSection';
 import { PricingSection } from '@/components/home/PricingSection';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
-import { EventChatbot } from '@/components/EventChatbot';
 
 const HomePage = () => {
   return (
@@ -23,7 +22,6 @@ const HomePage = () => {
       <PricingSection />
       <FAQSection />
       <ContactFormSection />
-      <EventChatbot />
     </main>
   );
 };

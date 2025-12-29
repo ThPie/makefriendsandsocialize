@@ -31,6 +31,7 @@ import {
   Sparkles,
   TrendingUp,
 } from 'lucide-react';
+import logo from '@/assets/logo.webp';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -88,13 +89,13 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       <div className="min-h-screen flex w-full bg-background">
         <Sidebar className="border-r border-border">
           <SidebarHeader className="p-6 border-b border-border">
-            <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-primary" />
-              <div>
-                <h1 className="font-display text-xl text-foreground">Admin</h1>
-                <p className="text-xs text-muted-foreground">Make Friends and Socialize</p>
+            <Link to="/" className="flex items-center gap-3">
+              <img src={logo} alt="Make Friends & Socialize" className="h-10 w-auto" />
+              <div className="flex items-center gap-1.5">
+                <Shield className="h-4 w-4 text-primary" />
+                <span className="text-xs text-muted-foreground">Admin</span>
               </div>
-            </div>
+            </Link>
           </SidebarHeader>
 
           <SidebarContent className="p-4">
@@ -152,7 +153,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <main className="flex-1 overflow-auto">
           <header className="sticky top-0 z-40 flex items-center h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden">
             <SidebarTrigger />
-            <span className="ml-4 font-display text-lg">Admin Dashboard</span>
+            <img src={logo} alt="Make Friends & Socialize" className="ml-3 h-8 w-auto" />
+            <Shield className="ml-2 h-4 w-4 text-primary" />
           </header>
 
           <div className="p-6 md:p-8 lg:p-10">
