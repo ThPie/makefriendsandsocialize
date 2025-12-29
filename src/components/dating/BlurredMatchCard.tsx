@@ -58,9 +58,9 @@ export const BlurredMatchCard = ({
   if (!profile) return null;
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return "bg-dating-terracotta/20 text-dating-terracotta border-dating-terracotta/30";
-    if (score >= 75) return "bg-dating-forest/20 text-dating-forest border-dating-forest/30";
-    return "bg-dating-blush/20 text-dating-blush border-dating-blush/30";
+    if (score >= 90) return "bg-primary/20 text-primary border-primary/30";
+    if (score >= 75) return "bg-primary/15 text-primary border-primary/25";
+    return "bg-muted text-muted-foreground border-border";
   };
 
   const getMeetingStatusText = () => {
@@ -109,13 +109,13 @@ export const BlurredMatchCard = ({
     <Card className={cn(
       "overflow-hidden transition-all duration-300",
       isRevealed 
-        ? "border-dating-forest shadow-lg shadow-dating-forest/10" 
-        : "border-dating-cream hover:shadow-md"
+        ? "border-primary shadow-lg shadow-primary/10" 
+        : "border-border hover:shadow-md"
     )}>
       <CardContent className="p-0">
         {/* Revealed celebration banner */}
         {isRevealed && (
-          <div className="bg-gradient-to-r from-dating-forest to-dating-forest/80 text-white px-4 py-3 flex items-center justify-center gap-2">
+          <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-4 py-3 flex items-center justify-center gap-2">
             <Sparkles className="h-5 w-5" />
             <span className="font-display">It's a Connection!</span>
             <Sparkles className="h-5 w-5" />
@@ -124,7 +124,7 @@ export const BlurredMatchCard = ({
 
         <div className="flex">
           {/* Photo Section */}
-          <div className="w-32 h-full min-h-[180px] relative flex-shrink-0 bg-dating-cream/30 overflow-hidden">
+          <div className="w-32 h-full min-h-[180px] relative flex-shrink-0 bg-muted/30 overflow-hidden">
             {profile.photo_url ? (
               <img
                 src={profile.photo_url}
@@ -139,15 +139,15 @@ export const BlurredMatchCard = ({
                 "w-full h-full flex items-center justify-center",
                 !isRevealed && "blur-md"
               )}>
-                <User className="h-12 w-12 text-dating-forest/30" />
+                <User className="h-12 w-12 text-primary/30" />
               </div>
             )}
             
             {/* Overlay for blurred state */}
             {!isRevealed && (
-              <div className="absolute inset-0 bg-dating-cream/40 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-full bg-dating-forest/20 flex items-center justify-center">
-                  <Heart className="h-8 w-8 text-dating-forest" />
+              <div className="absolute inset-0 bg-muted/40 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Heart className="h-8 w-8 text-primary" />
                 </div>
               </div>
             )}
@@ -186,8 +186,8 @@ export const BlurredMatchCard = ({
             </div>
 
             {/* Match Reason - Always Visible */}
-            <div className="bg-dating-forest/5 rounded-lg p-3 border border-dating-forest/10">
-              <p className="text-xs uppercase tracking-wide text-dating-forest/70 mb-1">Why you match</p>
+            <div className="bg-primary/5 rounded-xl p-3 border border-primary/10">
+              <p className="text-xs uppercase tracking-wide text-primary/70 mb-1">Why you match</p>
               <p className="text-sm text-foreground italic line-clamp-2">
                 "{match.match_reason}"
               </p>
@@ -205,7 +205,7 @@ export const BlurredMatchCard = ({
               {awaitingDecision ? (
                 <Button
                   size="sm"
-                  className="flex-1 bg-dating-terracotta hover:bg-dating-terracotta/90"
+                  className="flex-1"
                   onClick={onViewDetails}
                 >
                   <Heart className="h-4 w-4 mr-2" />
@@ -214,7 +214,7 @@ export const BlurredMatchCard = ({
               ) : canProposeDates || canRespondToDates ? (
                 <Button
                   size="sm"
-                  className="flex-1 bg-dating-forest hover:bg-dating-forest/90"
+                  className="flex-1"
                   onClick={onSchedule}
                 >
                   <Calendar className="h-4 w-4 mr-2" />
@@ -224,7 +224,7 @@ export const BlurredMatchCard = ({
                 <Button
                   size="sm"
                   variant="outline"
-                  className="flex-1 border-dating-forest text-dating-forest"
+                  className="flex-1"
                   onClick={onViewDetails}
                 >
                   <CheckCircle2 className="h-4 w-4 mr-2" />
@@ -233,7 +233,7 @@ export const BlurredMatchCard = ({
               ) : isRevealed ? (
                 <Button
                   size="sm"
-                  className="flex-1 bg-dating-forest hover:bg-dating-forest/90"
+                  className="flex-1"
                   onClick={onViewDetails}
                 >
                   View Full Profile
