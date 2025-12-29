@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Bell, Heart, Calendar, MessageCircle, Sparkles, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 import { formatDistanceToNow } from 'date-fns';
 
 interface Notification {
@@ -66,9 +65,16 @@ const getNotificationLink = (type: string, payload: Record<string, unknown>) => 
 };
 
 export function NotificationBell() {
-  const { user } = useAuth();
+  const [user, setUser] = useState<{ id: string } | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+
+  // Get user from supabase auth directly to avoid context issues during HMR
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+  }, []);
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
