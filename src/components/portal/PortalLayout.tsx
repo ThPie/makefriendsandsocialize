@@ -25,10 +25,11 @@ import {
   Loader2,
   Crown,
   Shield,
+  Home,
 } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
+import { PageTransition } from '@/components/ui/page-transition';
 import logo from '@/assets/logo-transparent.png';
-import { Home } from 'lucide-react';
 
 interface PortalLayoutProps {
   children: ReactNode;
@@ -203,7 +204,9 @@ export function PortalLayout({ children }: PortalLayoutProps) {
           </div>
 
           <div className="p-6 md:p-8 lg:p-10">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </div>
         </main>
       </div>

@@ -658,6 +658,7 @@ export type Database = {
           city: string | null
           country: string | null
           created_at: string
+          date_of_birth: string | null
           favorite_brands: string[] | null
           first_name: string | null
           id: string
@@ -678,6 +679,7 @@ export type Database = {
           city?: string | null
           country?: string | null
           created_at?: string
+          date_of_birth?: string | null
           favorite_brands?: string[] | null
           first_name?: string | null
           id: string
@@ -698,6 +700,7 @@ export type Database = {
           city?: string | null
           country?: string | null
           created_at?: string
+          date_of_birth?: string | null
           favorite_brands?: string[] | null
           first_name?: string | null
           id?: string

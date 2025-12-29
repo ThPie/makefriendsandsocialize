@@ -30,9 +30,10 @@ import {
   Quote,
   Sparkles,
   TrendingUp,
+  Home,
 } from 'lucide-react';
+import { PageTransition } from '@/components/ui/page-transition';
 import logo from '@/assets/logo-transparent.png';
-import { Home } from 'lucide-react';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -166,7 +167,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </header>
 
           <div className="p-6 md:p-8 lg:p-10">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </div>
         </main>
       </div>

@@ -20,6 +20,9 @@ interface Profile {
   country: string | null;
   state: string | null;
   city: string | null;
+  job_title: string | null;
+  industry: string | null;
+  date_of_birth: string | null;
 }
 
 interface Membership {
