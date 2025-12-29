@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { Loader2, Check, Camera, X } from 'lucide-react';
 import { PushNotificationToggle } from '@/components/portal/PushNotificationToggle';
+import { LocationCombobox } from '@/components/ui/location-combobox';
+import { COUNTRIES, getRegionsForCountry } from '@/lib/location-data';
 
 const INTERESTS = [
   'Art & Culture', 'Wine & Dining', 'Travel', 'Fashion', 'Architecture',
@@ -373,21 +375,42 @@ export default function PortalProfile() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="country">Country</Label>
-                <Input
-                  id="country"
-                  placeholder="United States"
+                <LocationCombobox
                   value={country}
-                  onChange={(e) => setCountry(e.target.value)}
+                  onValueChange={(value) => {
+                    setCountry(value);
+                    // Reset state when country changes
+                    if (value !== country) {
+                      setState('');
+                    }
+                  }}
+                  options={COUNTRIES}
+                  placeholder="Select country"
+                  searchPlaceholder="Search countries..."
+                  emptyMessage="No countries found."
+                  allowCustom={true}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="state">State / Province</Label>
-                <Input
-                  id="state"
-                  placeholder="California"
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                />
+                {getRegionsForCountry(country).length > 0 ? (
+                  <LocationCombobox
+                    value={state}
+                    onValueChange={setState}
+                    options={getRegionsForCountry(country)}
+                    placeholder="Select state"
+                    searchPlaceholder="Search states..."
+                    emptyMessage="No states found."
+                    allowCustom={true}
+                  />
+                ) : (
+                  <Input
+                    id="state"
+                    placeholder="State / Province"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                  />
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="city">City</Label>
