@@ -66,12 +66,12 @@ export function BadgeDisplay({ earnedBadges, showAll = true, compact = false }: 
   if (compact) {
     return (
       <TooltipProvider>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {displayBadges.map((badge) => (
             <Tooltip key={badge.type}>
               <TooltipTrigger asChild>
                 <div
-                  className={`text-2xl p-2 rounded-lg transition-all ${
+                  className={`text-2xl p-3 rounded-xl transition-all ${
                     badge.earned
                       ? 'bg-primary/10 cursor-pointer hover:scale-110'
                       : 'bg-muted opacity-40 grayscale'
@@ -99,20 +99,20 @@ export function BadgeDisplay({ earnedBadges, showAll = true, compact = false }: 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-display text-xl">Your Badges</CardTitle>
+        <CardTitle className="font-display font-light text-xl">Your Badges</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
           {displayBadges.map((badge) => (
             <div
               key={badge.type}
-              className={`flex flex-col items-center p-4 rounded-lg text-center transition-all ${
+              className={`flex flex-col items-center p-6 rounded-2xl text-center transition-all ${
                 badge.earned
                   ? 'bg-primary/10 border border-primary/20'
                   : 'bg-muted/50 opacity-50'
               }`}
             >
-              <span className={`text-3xl mb-2 ${!badge.earned && 'grayscale'}`}>
+              <span className={`text-3xl mb-3 ${!badge.earned && 'grayscale'}`}>
                 {badge.icon}
               </span>
               <span className="font-medium text-sm text-foreground">{badge.name}</span>

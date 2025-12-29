@@ -118,7 +118,7 @@ export default function PortalSlowDating() {
         return {
           label: 'Vetted',
           icon: CheckCircle2,
-          className: 'bg-dating-forest/10 text-dating-forest border-dating-forest/20',
+          className: 'bg-primary/10 text-primary border-primary/20',
           description: 'Your profile is approved and our matchmakers are finding your ideal connections.',
         };
       case 'pending':
@@ -126,7 +126,7 @@ export default function PortalSlowDating() {
         return {
           label: 'Under Review',
           icon: Clock,
-          className: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+          className: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
           description: 'Our team is carefully reviewing your profile. This typically takes 2-3 business days.',
         };
       case 'rejected':
@@ -165,25 +165,25 @@ export default function PortalSlowDating() {
   // No profile - show CTA to apply
   if (!profile) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-12">
         <div>
-          <h1 className="text-3xl font-display text-foreground mb-2">Slow Dating</h1>
+          <h1 className="text-3xl font-display font-light text-foreground mb-2">Slow Dating</h1>
           <p className="text-muted-foreground">Curated matchmaking for meaningful connections</p>
         </div>
 
-        <Card className="border-dating-forest/20 bg-gradient-to-br from-dating-cream/50 to-background">
-          <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-dating-forest/10 flex items-center justify-center mx-auto mb-6">
-              <Heart className="h-8 w-8 text-dating-forest" />
+        <Card className="border-border">
+          <CardContent className="p-12 text-center">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+              <Heart className="h-8 w-8 text-primary" />
             </div>
-            <h2 className="text-2xl font-display text-foreground mb-4">
+            <h2 className="text-2xl font-display font-light text-foreground mb-4">
               Join Our Slow Dating Community
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto mb-8">
               Experience a more intentional approach to dating. Our curators carefully review each profile 
               to create meaningful introductions based on shared values and genuine compatibility.
             </p>
-            <Button asChild size="lg" className="bg-dating-forest hover:bg-dating-forest/90">
+            <Button asChild size="lg">
               <Link to="/dating/apply">
                 <Sparkles className="mr-2 h-5 w-5" />
                 Apply Now
@@ -199,25 +199,25 @@ export default function PortalSlowDating() {
   const StatusIcon = statusConfig.icon;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       <div>
-        <h1 className="text-3xl font-display text-foreground mb-2">Slow Dating</h1>
+        <h1 className="text-3xl font-display font-light text-foreground mb-2">Slow Dating</h1>
         <p className="text-muted-foreground">Your curated matchmaking journey</p>
       </div>
 
       {/* Profile Status Card */}
-      <Card className="border-dating-forest/20">
+      <Card className="border-border">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg font-medium flex items-center gap-2">
-            <User className="h-5 w-5 text-dating-forest" />
+            <User className="h-5 w-5 text-primary" />
             Your Dating Profile
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-start gap-6">
-            <Avatar className="h-20 w-20 border-2 border-dating-cream">
+            <Avatar className="h-20 w-20 border-2 border-border">
               <AvatarImage src={profile.photo_url || undefined} alt={profile.display_name} />
-              <AvatarFallback className="bg-dating-forest/10 text-dating-forest text-xl">
+              <AvatarFallback className="bg-primary/10 text-primary text-xl">
                 {profile.display_name?.[0] || 'M'}
               </AvatarFallback>
             </Avatar>
@@ -252,14 +252,14 @@ export default function PortalSlowDating() {
       {/* Revealed Matches Section */}
       {revealedMatches.length > 0 && (
         <div>
-          <h2 className="text-xl font-display text-foreground mb-4 flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-dating-terracotta" />
+          <h2 className="text-xl font-display font-light text-foreground mb-6 flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-primary" />
             Your Connections
-            <Badge variant="secondary" className="ml-2 bg-dating-terracotta/10 text-dating-terracotta">
+            <Badge variant="secondary" className="ml-2 bg-primary/10 text-primary">
               {revealedMatches.length}
             </Badge>
           </h2>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             {revealedMatches.map((match) => (
               <BlurredMatchCard
                 key={match.id}
@@ -276,8 +276,8 @@ export default function PortalSlowDating() {
 
       {/* Active Matches Section */}
       <div>
-        <h2 className="text-xl font-display text-foreground mb-4 flex items-center gap-2">
-          <Heart className="h-5 w-5 text-dating-forest" />
+        <h2 className="text-xl font-display font-light text-foreground mb-6 flex items-center gap-2">
+          <Heart className="h-5 w-5 text-primary" />
           Active Matches
           {activeMatches.length > 0 && (
             <Badge variant="secondary" className="ml-2">
@@ -287,12 +287,12 @@ export default function PortalSlowDating() {
         </h2>
 
         {matchesLoading ? (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             <Skeleton className="h-48" />
             <Skeleton className="h-48" />
           </div>
         ) : activeMatches.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             {activeMatches.map((match) => (
               <BlurredMatchCard
                 key={match.id}
@@ -305,8 +305,8 @@ export default function PortalSlowDating() {
             ))}
           </div>
         ) : (
-          <Card className="border-dashed border-2 border-muted">
-            <CardContent className="py-12 text-center">
+          <Card className="border-dashed border-2 border-border">
+            <CardContent className="py-16 text-center">
               <Heart className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
               <h3 className="font-medium text-foreground mb-2">No Active Matches Yet</h3>
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">
@@ -322,10 +322,10 @@ export default function PortalSlowDating() {
       {/* Ended Matches Section */}
       {endedMatches.length > 0 && (
         <div>
-          <h2 className="text-lg font-medium text-muted-foreground mb-4">
+          <h2 className="text-lg font-medium text-muted-foreground mb-6">
             Past Matches
           </h2>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             {endedMatches.map((match) => (
               <BlurredMatchCard
                 key={match.id}

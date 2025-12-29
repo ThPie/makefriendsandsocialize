@@ -203,7 +203,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
             <NotificationBell />
           </div>
 
-          <div className="p-6 md:p-8 lg:p-10">
+          <div className="p-8 md:p-12 lg:p-16">
             <PageTransition>
               {children}
             </PageTransition>

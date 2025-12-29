@@ -100,7 +100,7 @@ export default function PortalDashboard() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       {/* Onboarding Wizard */}
       <OnboardingWizard
         isOpen={showOnboarding}
@@ -122,7 +122,7 @@ export default function PortalDashboard() {
 
       {/* Welcome Header */}
       <div>
-        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+        <h1 className="font-display font-light text-3xl md:text-4xl text-foreground mb-2">
           Welcome back, {profile?.first_name || 'Member'}
         </h1>
         <p className="text-muted-foreground">
@@ -132,10 +132,10 @@ export default function PortalDashboard() {
 
       {/* Upgrade Banner for Patrons */}
       {membership?.tier === 'patron' && (
-        <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
-          <CardContent className="flex flex-col md:flex-row items-center justify-between gap-4 p-6">
+        <Card className="border-primary/20">
+          <CardContent className="flex flex-col md:flex-row items-center justify-between gap-4 p-8">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-full bg-primary/20">
+              <div className="p-3 rounded-full bg-primary/10">
                 <Crown className="h-6 w-6 text-primary" />
               </div>
               <div>
@@ -157,7 +157,7 @@ export default function PortalDashboard() {
 
       {/* Profile Completion & Feature Unlocks */}
       {profile && completionPercentage < 100 && (
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-8 md:grid-cols-2">
           <ProfileCompletionIndicator profile={profile} />
           <FeatureUnlockCard 
             completionPercentage={completionPercentage} 
@@ -172,17 +172,17 @@ export default function PortalDashboard() {
       )}
 
       {/* Quick Actions */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {quickActions.filter(a => a.show).map((action) => (
           <Card 
             key={action.title}
-            className={`group hover-lift transition-all ${
+            className={`group hover-lift ${
               action.locked ? 'opacity-75' : ''
             }`}
           >
             <CardHeader>
               <div className="flex items-start justify-between">
-                <div className={`p-3 rounded-lg ${
+                <div className={`p-3 rounded-xl ${
                   action.locked ? 'bg-muted' : 'bg-primary/10'
                 }`}>
                   <action.icon className={`h-6 w-6 ${
@@ -193,12 +193,12 @@ export default function PortalDashboard() {
                   <Crown className="h-5 w-5 text-primary" />
                 )}
               </div>
-              <CardTitle className="font-display text-xl">
+              <CardTitle className="font-display font-light text-xl">
                 {action.title}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm mb-4">
+              <p className="text-muted-foreground text-sm mb-6">
                 {action.description}
               </p>
               <Button 
