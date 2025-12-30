@@ -157,18 +157,45 @@ export default function PortalEvents() {
           body: { eventId, userId: user!.id, action: 'rsvp' },
         });
       } else {
+        // First delete the RSVP - this will trigger promote_from_waitlist
         const { error } = await supabase
           .from('event_rsvps')
           .delete()
           .eq('event_id', eventId)
           .eq('user_id', user!.id);
         if (error) throw error;
+        
+        // Check if someone was promoted from waitlist and send them an email
+        // Wait a moment for the trigger to complete
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Find recently notified waitlist entry for this event
+        const { data: notifiedEntry } = await supabase
+          .from('event_waitlist')
+          .select('user_id, id')
+          .eq('event_id', eventId)
+          .eq('status', 'notified')
+          .order('notified_at', { ascending: false })
+          .limit(1)
+          .single();
+        
+        if (notifiedEntry) {
+          // Send waitlist promotion email
+          await supabase.functions.invoke('send-waitlist-notification', {
+            body: { 
+              userId: notifiedEntry.user_id, 
+              eventId, 
+              waitlistId: notifiedEntry.id 
+            },
+          });
+        }
       }
     },
     onSuccess: (_, { action }) => {
       queryClient.invalidateQueries({ queryKey: ['user-rsvps'] });
       queryClient.invalidateQueries({ queryKey: ['event-rsvp-counts'] });
       queryClient.invalidateQueries({ queryKey: ['waitlist-counts'] });
+      queryClient.invalidateQueries({ queryKey: ['user-waitlist'] });
       toast.success(action === 'rsvp' ? 'RSVP confirmed! We\'ll see you there.' : 'RSVP cancelled');
     },
     onError: (error: any) => {
