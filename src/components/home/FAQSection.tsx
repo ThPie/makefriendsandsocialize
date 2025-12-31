@@ -23,6 +23,14 @@ const faqs = [
     question: 'Can I bring a guest to events?',
     answer: 'Yes. Patron members may bring 1 guest, Fellow members 2 guests, and Founder members have unlimited guest privileges.',
   },
+  {
+    question: 'What cities do you operate in?',
+    answer: 'We currently host events in major metropolitan areas including New York, Los Angeles, London, and more. Check our events page for upcoming gatherings in your city.',
+  },
+  {
+    question: 'How do I cancel my membership?',
+    answer: 'You can cancel your membership anytime through your member portal. Your access will remain active until the end of your billing period.',
+  },
 ];
 
 export const FAQSection = () => {
