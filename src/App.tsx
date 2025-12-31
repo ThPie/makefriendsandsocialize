@@ -22,6 +22,7 @@ import PrivacyPage from "@/pages/PrivacyPage";
 import TermsPage from "@/pages/TermsPage";
 import CodeOfConductPage from "@/pages/CodeOfConductPage";
 import CookiesPage from "@/pages/CookiesPage";
+import FAQPage from "@/pages/FAQPage";
 import NotFound from "@/pages/NotFound";
 import AuthPage from "@/pages/AuthPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
@@ -76,6 +77,7 @@ const App = () => (
               <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
               <Route path="/rules" element={<Layout><CodeOfConductPage /></Layout>} />
               <Route path="/cookies" element={<Layout><CookiesPage /></Layout>} />
+              <Route path="/faq" element={<Layout><FAQPage /></Layout>} />
               <Route path="/slow-dating" element={<SlowDatingPage />} />
               
               {/* Auth routes */}
