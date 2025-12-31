@@ -67,11 +67,6 @@ export const MemberAvatars = ({ avatarUrls, memberCount, isLoading }: MemberAvat
             </Avatar>
           );
         })}
-        {remainingCount > 0 && (
-          <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/80 bg-primary text-primary-foreground text-xs font-bold shadow-lg">
-            +{remainingCount > 999 ? '999+' : remainingCount}
-          </div>
-        )}
       </div>
       <div className="flex flex-col">
         <span className="text-lg font-bold text-white drop-shadow-md">
