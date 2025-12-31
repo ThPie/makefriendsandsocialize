@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
 import chatbotAvatar from '@/assets/chatbot-avatar.png';
 
 interface Message {
@@ -10,42 +11,50 @@ interface Message {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/event-assistant`;
 
-// Context-aware greetings based on page location
-const getGreeting = (pathname: string): Message => {
+// Context-aware greetings based on page location and user
+const getGreeting = (pathname: string, userName?: string | null): Message => {
+  const personalName = userName ? `, ${userName}` : '';
+  
   if (pathname.startsWith('/portal')) {
     return {
       role: 'assistant',
-      content: "Hey there! 👋 I'm your member concierge. Need help with your profile, upcoming events, or finding connections? I'm here for you!",
+      content: `Hey${personalName}! 👋 I'm your member concierge. Need help with your profile, upcoming events, or finding connections? I'm here for you!`,
     };
   }
   if (pathname.startsWith('/admin')) {
     return {
       role: 'assistant',
-      content: "Hello Admin! I can help you navigate the dashboard, manage members, or answer questions about platform features.",
+      content: `Hello${personalName}! I can help you navigate the dashboard, manage members, or answer questions about platform features.`,
     };
   }
   if (pathname.startsWith('/events')) {
     return {
       role: 'assistant',
-      content: "Welcome! Looking for the perfect event? Tell me what interests you and I'll help you find curated gatherings that match your style.",
+      content: `Welcome${personalName}! Looking for the perfect event? Tell me what interests you and I'll help you find curated gatherings that match your style.`,
     };
   }
   if (pathname.startsWith('/slow-dating') || pathname.startsWith('/dating')) {
     return {
       role: 'assistant',
-      content: "Welcome to Slow Dating! 💕 I can answer questions about our matchmaking process, how dates work, or help you get started.",
+      content: `Welcome to Slow Dating${personalName}! 💕 I can answer questions about our matchmaking process, how dates work, or help you get started.`,
     };
   }
   if (pathname.startsWith('/membership')) {
     return {
       role: 'assistant',
-      content: "Thinking about joining? I can explain our membership tiers, benefits, and help you find the right fit for your lifestyle.",
+      content: `Hi${personalName}! Thinking about joining? I can explain our membership tiers, benefits, and help you find the right fit for your lifestyle.`,
+    };
+  }
+  if (pathname.startsWith('/faq')) {
+    return {
+      role: 'assistant',
+      content: `Hi${personalName}! 👋 Looking for answers? I can help you find what you need or answer any questions not covered in our FAQ.`,
     };
   }
   // Default public greeting
   return {
     role: 'assistant',
-    content: "Welcome to Make Friends and Socialize! I'm your assistant. How can I help you discover our community and events today?",
+    content: `Welcome to Make Friends and Socialize${personalName}! 👋 I'm here to help you discover our community. Have any questions about our events or membership?`,
   };
 };
 
@@ -62,8 +71,12 @@ const getChatbotConfig = (pathname: string) => {
 
 export const EventChatbot = () => {
   const location = useLocation();
+  const { user, profile } = useAuth();
+  const userName = profile?.first_name || null;
+  
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([getGreeting(location.pathname)]);
+  const [hasAutoOpened, setHasAutoOpened] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([getGreeting(location.pathname, userName)]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -71,16 +84,34 @@ export const EventChatbot = () => {
 
   const chatConfig = getChatbotConfig(location.pathname);
 
+  // Auto-open chat after a delay on first visit
+  useEffect(() => {
+    if (!hasAutoOpened) {
+      const timer = setTimeout(() => {
+        setIsOpen(true);
+        setHasAutoOpened(true);
+      }, 3000); // Pop up after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [hasAutoOpened]);
+
+  // Update greeting when user profile loads
+  useEffect(() => {
+    if (userName && messages.length === 1 && messages[0].role === 'assistant') {
+      setMessages([getGreeting(location.pathname, userName)]);
+    }
+  }, [userName]);
+
   // Reset messages when navigating to a different section
   useEffect(() => {
     const currentSection = location.pathname.split('/')[1];
     const lastSection = lastPathRef.current.split('/')[1];
     
     if (currentSection !== lastSection) {
-      setMessages([getGreeting(location.pathname)]);
+      setMessages([getGreeting(location.pathname, userName)]);
     }
     lastPathRef.current = location.pathname;
-  }, [location.pathname]);
+  }, [location.pathname, userName]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
