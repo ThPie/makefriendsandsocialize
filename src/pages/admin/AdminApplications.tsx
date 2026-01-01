@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { Loader2, Check, X, Eye, FileText, Shield, AlertTriangle } from 'lucide-react';
+import { Loader2, Check, X, Eye, FileText, Shield, AlertTriangle, Scan } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface SecurityReport {
@@ -44,6 +44,7 @@ export default function AdminApplications() {
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isScanning, setIsScanning] = useState(false);
 
   useEffect(() => {
     fetchApplications();
@@ -143,6 +144,64 @@ export default function AdminApplications() {
     setAdminNotes('');
     setIsProcessing(false);
     fetchApplications();
+  }
+
+  async function handleRunScan(app: Application) {
+    setIsScanning(true);
+    
+    try {
+      // Fetch profile data for this user
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('first_name, last_name, city, country, job_title, industry, bio')
+        .eq('id', app.user_id)
+        .single();
+
+      if (profileError) {
+        throw new Error('Failed to fetch profile data');
+      }
+
+      // Call the deep-osint-analysis edge function
+      const { data, error } = await supabase.functions.invoke('deep-osint-analysis', {
+        body: {
+          userId: app.user_id,
+          email: app.user_email || '',
+          firstName: profile?.first_name || '',
+          lastName: profile?.last_name || '',
+          city: profile?.city || '',
+          country: profile?.country || '',
+          jobTitle: profile?.job_title || '',
+          industry: profile?.industry || '',
+          bio: profile?.bio || '',
+          scanType: 'manual',
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success('Security scan completed');
+      fetchApplications();
+      
+      // Update the selected app with new security report
+      if (data?.report) {
+        setSelectedApp(prev => prev ? {
+          ...prev,
+          security_report: {
+            id: data.report.id,
+            status: data.report.status,
+            severity: data.report.severity,
+            red_flags: data.report.redFlags,
+          }
+        } : null);
+      }
+    } catch (error) {
+      console.error('Error running security scan:', error);
+      toast.error('Failed to run security scan');
+    } finally {
+      setIsScanning(false);
+    }
   }
 
   const pendingApps = applications.filter((a) => a.status === 'pending');
@@ -403,6 +462,74 @@ export default function AdminApplications() {
                   </div>
                 </div>
               )}
+
+              {/* Security Status Section */}
+              <div className="border border-border rounded-lg p-4 bg-muted/30">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    Security Status
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleRunScan(selectedApp)}
+                    disabled={isScanning}
+                  >
+                    {isScanning ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Scanning...
+                      </>
+                    ) : (
+                      <>
+                        <Scan className="h-4 w-4 mr-2" />
+                        Run Security Scan
+                      </>
+                    )}
+                  </Button>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Status:</span>
+                    {getSecurityBadge(selectedApp.security_report)}
+                  </div>
+                  
+                  {selectedApp.security_report?.severity && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">Severity:</span>
+                      <Badge variant="outline" className="capitalize">
+                        {selectedApp.security_report.severity}
+                      </Badge>
+                    </div>
+                  )}
+                  
+                  {selectedApp.security_report?.red_flags && selectedApp.security_report.red_flags.length > 0 && (
+                    <div>
+                      <span className="text-sm text-muted-foreground">Red Flags:</span>
+                      <ul className="mt-1 text-sm text-destructive list-disc list-inside">
+                        {selectedApp.security_report.red_flags.slice(0, 3).map((flag, i) => (
+                          <li key={i}>{flag}</li>
+                        ))}
+                        {selectedApp.security_report.red_flags.length > 3 && (
+                          <li className="text-muted-foreground">
+                            +{selectedApp.security_report.red_flags.length - 3} more
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {selectedApp.security_report?.id && (
+                    <Button variant="link" size="sm" className="p-0 h-auto" asChild>
+                      <Link to={`/admin/security?report=${selectedApp.security_report.id}`}>
+                        View Full Report →
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </div>
 
               <div>
                 <p className="text-sm text-muted-foreground mb-2">Admin Notes</p>
