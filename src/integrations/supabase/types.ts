@@ -665,6 +665,96 @@ export type Database = {
         }
         Relationships: []
       }
+      member_security_reports: {
+        Row: {
+          admin_decision: string | null
+          admin_notes: string | null
+          ai_recommendation:
+            | Database["public"]["Enums"]["security_recommendation"]
+            | null
+          created_at: string
+          findings: Json | null
+          id: string
+          identity_score: number | null
+          positive_signals: string[] | null
+          red_flags: string[] | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          risk_assessment: string | null
+          scan_type: Database["public"]["Enums"]["security_scan_type"]
+          scanned_at: string | null
+          severity: Database["public"]["Enums"]["security_severity"] | null
+          social_consistency_score: number | null
+          sources_checked: string[] | null
+          status: Database["public"]["Enums"]["security_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_decision?: string | null
+          admin_notes?: string | null
+          ai_recommendation?:
+            | Database["public"]["Enums"]["security_recommendation"]
+            | null
+          created_at?: string
+          findings?: Json | null
+          id?: string
+          identity_score?: number | null
+          positive_signals?: string[] | null
+          red_flags?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_assessment?: string | null
+          scan_type?: Database["public"]["Enums"]["security_scan_type"]
+          scanned_at?: string | null
+          severity?: Database["public"]["Enums"]["security_severity"] | null
+          social_consistency_score?: number | null
+          sources_checked?: string[] | null
+          status?: Database["public"]["Enums"]["security_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_decision?: string | null
+          admin_notes?: string | null
+          ai_recommendation?:
+            | Database["public"]["Enums"]["security_recommendation"]
+            | null
+          created_at?: string
+          findings?: Json | null
+          id?: string
+          identity_score?: number | null
+          positive_signals?: string[] | null
+          red_flags?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_assessment?: string | null
+          scan_type?: Database["public"]["Enums"]["security_scan_type"]
+          scanned_at?: string | null
+          severity?: Database["public"]["Enums"]["security_severity"] | null
+          social_consistency_score?: number | null
+          sources_checked?: string[] | null
+          status?: Database["public"]["Enums"]["security_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_security_reports_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_security_reports_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       memberships: {
         Row: {
           created_at: string
@@ -936,6 +1026,16 @@ export type Database = {
       connection_status: "pending" | "accepted" | "declined"
       membership_status: "pending" | "active" | "cancelled" | "expired"
       membership_tier: "patron" | "fellow" | "founder"
+      security_recommendation: "approve" | "investigate" | "suspend" | "remove"
+      security_scan_type: "automatic" | "manual" | "periodic"
+      security_severity: "low" | "medium" | "high" | "critical"
+      security_status:
+        | "pending"
+        | "clean"
+        | "flagged"
+        | "under_review"
+        | "cleared"
+        | "suspended"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1068,6 +1168,17 @@ export const Constants = {
       connection_status: ["pending", "accepted", "declined"],
       membership_status: ["pending", "active", "cancelled", "expired"],
       membership_tier: ["patron", "fellow", "founder"],
+      security_recommendation: ["approve", "investigate", "suspend", "remove"],
+      security_scan_type: ["automatic", "manual", "periodic"],
+      security_severity: ["low", "medium", "high", "critical"],
+      security_status: [
+        "pending",
+        "clean",
+        "flagged",
+        "under_review",
+        "cleared",
+        "suspended",
+      ],
     },
   },
 } as const
