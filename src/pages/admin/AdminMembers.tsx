@@ -18,9 +18,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Loader2, Search, Crown, User } from 'lucide-react';
+import { Loader2, Search, Crown, User, Shield } from 'lucide-react';
 import { format } from 'date-fns';
+import { ScanHistoryTimeline } from '@/components/admin/ScanHistoryTimeline';
 
 interface Member {
   id: string;
@@ -217,7 +219,7 @@ export default function AdminMembers() {
 
       {/* Member Detail Modal */}
       <Dialog open={!!selectedMember} onOpenChange={() => setSelectedMember(null)}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle className="font-display text-xl flex items-center gap-2">
               <User className="h-5 w-5" />
@@ -226,93 +228,109 @@ export default function AdminMembers() {
           </DialogHeader>
 
           {selectedMember && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={selectedMember.avatar_urls?.[0]} />
-                  <AvatarFallback className="bg-primary/10 text-primary text-xl">
-                    {selectedMember.first_name?.[0] || 'M'}
-                    {selectedMember.last_name?.[0] || ''}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-xl font-display text-foreground">
-                    {selectedMember.first_name || ''} {selectedMember.last_name || ''}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Member since {format(new Date(selectedMember.created_at), 'MMM d, yyyy')}
-                  </p>
-                </div>
-              </div>
+            <Tabs defaultValue="profile" className="flex-1 overflow-hidden flex flex-col">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="profile">Profile</TabsTrigger>
+                <TabsTrigger value="security" className="gap-2">
+                  <Shield className="h-4 w-4" />
+                  Security History
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="profile" className="flex-1 overflow-auto mt-4">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage src={selectedMember.avatar_urls?.[0]} />
+                      <AvatarFallback className="bg-primary/10 text-primary text-xl">
+                        {selectedMember.first_name?.[0] || 'M'}
+                        {selectedMember.last_name?.[0] || ''}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-xl font-display text-foreground">
+                        {selectedMember.first_name || ''} {selectedMember.last_name || ''}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Member since {format(new Date(selectedMember.created_at), 'MMM d, yyyy')}
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-muted-foreground">Current Status</p>
-                  <Badge
-                    variant={
-                      selectedMember.membership?.status === 'active'
-                        ? 'default'
-                        : 'secondary'
-                    }
-                  >
-                    {selectedMember.membership?.status || 'pending'}
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-muted-foreground">Profile Visibility</p>
-                  <Badge variant="outline">
-                    {selectedMember.is_visible ? 'Visible' : 'Hidden'}
-                  </Badge>
-                </div>
-              </div>
-
-              {selectedMember.bio && (
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Bio</p>
-                  <p className="text-foreground">{selectedMember.bio}</p>
-                </div>
-              )}
-
-              {selectedMember.interests && selectedMember.interests.length > 0 && (
-                <div>
-                  <p className="text-sm text-muted-foreground mb-2">Interests</p>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedMember.interests.map((interest) => (
-                      <Badge key={interest} variant="outline">
-                        {interest}
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">Current Status</p>
+                      <Badge
+                        variant={
+                          selectedMember.membership?.status === 'active'
+                            ? 'default'
+                            : 'secondary'
+                        }
+                      >
+                        {selectedMember.membership?.status || 'pending'}
                       </Badge>
-                    ))}
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Profile Visibility</p>
+                      <Badge variant="outline">
+                        {selectedMember.is_visible ? 'Visible' : 'Hidden'}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {selectedMember.bio && (
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Bio</p>
+                      <p className="text-foreground">{selectedMember.bio}</p>
+                    </div>
+                  )}
+
+                  {selectedMember.interests && selectedMember.interests.length > 0 && (
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">Interests</p>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedMember.interests.map((interest) => (
+                          <Badge key={interest} variant="outline">
+                            {interest}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="pt-4 border-t border-border">
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Change Membership Tier
+                    </p>
+                    <div className="flex gap-3">
+                      <Select
+                        value={selectedMember.membership?.tier || 'patron'}
+                        onValueChange={(value) =>
+                          updateMemberTier(
+                            selectedMember.id,
+                            value as 'patron' | 'fellow' | 'founder'
+                          )
+                        }
+                        disabled={isUpdating}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="patron">Patron</SelectItem>
+                          <SelectItem value="fellow">Fellow</SelectItem>
+                          <SelectItem value="founder">Founder</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
-              )}
-
-              <div className="pt-4 border-t border-border">
-                <p className="text-sm text-muted-foreground mb-2">
-                  Change Membership Tier
-                </p>
-                <div className="flex gap-3">
-                  <Select
-                    value={selectedMember.membership?.tier || 'patron'}
-                    onValueChange={(value) =>
-                      updateMemberTier(
-                        selectedMember.id,
-                        value as 'patron' | 'fellow' | 'founder'
-                      )
-                    }
-                    disabled={isUpdating}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="patron">Patron</SelectItem>
-                      <SelectItem value="fellow">Fellow</SelectItem>
-                      <SelectItem value="founder">Founder</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
+              </TabsContent>
+              
+              <TabsContent value="security" className="flex-1 overflow-auto mt-4">
+                <ScanHistoryTimeline userId={selectedMember.id} />
+              </TabsContent>
+            </Tabs>
           )}
         </DialogContent>
       </Dialog>
