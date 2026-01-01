@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.deep-osint-analysis]
 verify_jwt = true
+
+[functions.send-security-alert]
+verify_jwt = false

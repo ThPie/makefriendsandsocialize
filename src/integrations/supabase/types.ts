@@ -843,6 +843,7 @@ export type Database = {
           id: string
           industry: string | null
           interests: string[] | null
+          is_security_verified: boolean | null
           is_visible: boolean | null
           job_title: string | null
           last_name: string | null
@@ -853,6 +854,7 @@ export type Database = {
           terms_accepted_at: string | null
           updated_at: string
           values_in_partner: string | null
+          verified_at: string | null
         }
         Insert: {
           avatar_urls?: string[] | null
@@ -866,6 +868,7 @@ export type Database = {
           id: string
           industry?: string | null
           interests?: string[] | null
+          is_security_verified?: boolean | null
           is_visible?: boolean | null
           job_title?: string | null
           last_name?: string | null
@@ -876,6 +879,7 @@ export type Database = {
           terms_accepted_at?: string | null
           updated_at?: string
           values_in_partner?: string | null
+          verified_at?: string | null
         }
         Update: {
           avatar_urls?: string[] | null
@@ -889,6 +893,7 @@ export type Database = {
           id?: string
           industry?: string | null
           interests?: string[] | null
+          is_security_verified?: boolean | null
           is_visible?: boolean | null
           job_title?: string | null
           last_name?: string | null
@@ -899,6 +904,7 @@ export type Database = {
           terms_accepted_at?: string | null
           updated_at?: string
           values_in_partner?: string | null
+          verified_at?: string | null
         }
         Relationships: []
       }

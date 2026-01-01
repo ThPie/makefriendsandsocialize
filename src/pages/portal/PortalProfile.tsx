@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { Loader2, Check, Camera, X, Calendar } from 'lucide-react';
 import { PushNotificationToggle } from '@/components/portal/PushNotificationToggle';
 import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
+import { VerificationBadge } from '@/components/portal/VerificationBadge';
 import { LocationCombobox } from '@/components/ui/location-combobox';
 import { CityAutocomplete } from '@/components/ui/city-autocomplete';
 import { COUNTRIES, getRegionsForCountry } from '@/lib/location-data';
@@ -220,8 +221,13 @@ export default function PortalProfile() {
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2 flex items-center gap-2">
           My Profile
+          <VerificationBadge 
+            isVerified={profile?.is_security_verified || false} 
+            verifiedAt={profile?.verified_at}
+            size="lg"
+          />
         </h1>
         <p className="text-muted-foreground">
           Build your profile to connect with our community

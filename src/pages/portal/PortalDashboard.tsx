@@ -11,6 +11,7 @@ import { BadgeDisplay } from '@/components/portal/BadgeDisplay';
 import { FeatureUnlockCard } from '@/components/portal/FeatureUnlockCard';
 import { OnboardingWizard } from '@/components/portal/OnboardingWizard';
 import { BadgeUnlockModal } from '@/components/portal/BadgeUnlockModal';
+import { VerificationBadge } from '@/components/portal/VerificationBadge';
 
 export default function PortalDashboard() {
   const { user, profile, membership, canAccessMatchmaking, refreshProfile } = useAuth();
@@ -122,8 +123,13 @@ export default function PortalDashboard() {
 
       {/* Welcome Header */}
       <div>
-        <h1 className="font-display font-light text-3xl md:text-4xl text-foreground mb-2">
+        <h1 className="font-display font-light text-3xl md:text-4xl text-foreground mb-2 flex items-center gap-2">
           Welcome back, {profile?.first_name || 'Member'}
+          <VerificationBadge 
+            isVerified={profile?.is_security_verified || false} 
+            verifiedAt={profile?.verified_at}
+            size="lg"
+          />
         </h1>
         <p className="text-muted-foreground">
           Your exclusive access to Make Friends and Socialize

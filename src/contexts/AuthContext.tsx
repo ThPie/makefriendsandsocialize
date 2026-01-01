@@ -22,6 +22,8 @@ interface Profile {
   date_of_birth: string | null;
   profile_completed_at: string | null;
   onboarding_completed: boolean | null;
+  is_security_verified: boolean | null;
+  verified_at: string | null;
 }
 
 interface Membership {
