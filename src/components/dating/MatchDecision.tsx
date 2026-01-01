@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Heart, X, Sparkles } from 'lucide-react';
+import { Heart, X, Handshake } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -67,7 +67,7 @@ export const MatchDecision = ({
         setTimeout(() => fireCelebration(), 500);
         
         toast.success('Wonderful! You both felt a connection. Profiles revealed!', {
-          icon: <Sparkles className="h-5 w-5 text-dating-terracotta" />,
+          icon: <Handshake className="h-5 w-5 text-dating-terracotta" />,
           duration: 5000,
         });
       } else if (decision === 'accepted') {

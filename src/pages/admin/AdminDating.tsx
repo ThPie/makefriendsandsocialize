@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Search, User, Heart, Check, X, Eye, Sparkles, Users, Clock } from "lucide-react";
+import { Search, User, Heart, Check, X, Eye, UserSearch, Users, Clock } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface DatingProfile {
@@ -290,7 +290,7 @@ const AdminDating = () => {
                               navigate(`/admin/dating/${profile.id}`);
                             }}
                           >
-                            <Sparkles className="h-4 w-4 mr-1" />
+                            <UserSearch className="h-4 w-4 mr-1" />
                             Find Matches
                           </Button>
                         )}

@@ -13,7 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useConfetti } from '@/hooks/useConfetti';
-import { Sparkles, Upload, X } from 'lucide-react';
+import { Users, Upload, X } from 'lucide-react';
 
 const INTERESTS = [
   'Art & Culture', 'Music', 'Food & Wine', 'Travel', 'Technology',
@@ -177,7 +177,7 @@ export function OnboardingWizard({ isOpen, onClose, onComplete }: OnboardingWiza
     }
     
     fireConfetti();
-    toast.success('Welcome to The Gathering! 🎉');
+    toast.success('Welcome to Make Friends and Socialize! 🎉');
     onComplete();
   };
 
@@ -221,7 +221,7 @@ export function OnboardingWizard({ isOpen, onClose, onComplete }: OnboardingWiza
 
   const steps = [
     {
-      title: 'Welcome to The Gathering',
+      title: 'Welcome to Make Friends and Socialize',
       description: 'Let\'s set up your profile so you can connect with like-minded members',
       content: (
         <div className="flex flex-col items-center justify-center py-8 text-center">
@@ -290,7 +290,7 @@ export function OnboardingWizard({ isOpen, onClose, onComplete }: OnboardingWiza
             />
             {dateOfBirth && !validateAge() && (
               <p className="text-sm text-destructive">
-                You must be 21 or older to join The Gathering
+                You must be 21 or older to join Make Friends and Socialize
               </p>
             )}
           </div>
@@ -308,7 +308,7 @@ export function OnboardingWizard({ isOpen, onClose, onComplete }: OnboardingWiza
               id="bio"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Tell us about yourself, your passions, and what brings you to The Gathering..."
+              placeholder="Tell us about yourself, your passions, and what brings you to our community..."
               rows={4}
             />
             <p className="text-xs text-muted-foreground">

@@ -31,7 +31,7 @@ import {
   CheckCircle,
   XCircle,
   Users,
-  Sparkles,
+  Handshake,
   ArrowRight,
 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -244,7 +244,7 @@ export default function AdminMatches() {
                 <p className="text-sm text-muted-foreground">Mutual Matches</p>
                 <p className="text-2xl font-bold text-foreground">{mutualCount}</p>
               </div>
-              <Sparkles className="h-8 w-8 text-dating-terracotta" />
+              <Handshake className="h-8 w-8 text-dating-terracotta" />
             </div>
           </CardContent>
         </Card>

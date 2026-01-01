@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { User, Heart, Calendar, Clock, CheckCircle2, XCircle, Sparkles } from "lucide-react";
+import { User, Heart, Calendar, Clock, CheckCircle2, XCircle, PartyPopper } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DatingProfile {
@@ -116,9 +116,9 @@ export const BlurredMatchCard = ({
         {/* Revealed celebration banner */}
         {isRevealed && (
           <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-4 py-3 flex items-center justify-center gap-2">
-            <Sparkles className="h-5 w-5" />
+            <PartyPopper className="h-5 w-5" />
             <span className="font-display">It's a Connection!</span>
-            <Sparkles className="h-5 w-5" />
+            <Heart className="h-5 w-5" />
           </div>
         )}
 

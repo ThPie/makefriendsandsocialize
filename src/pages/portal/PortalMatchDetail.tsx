@@ -17,7 +17,7 @@ import {
   Briefcase, 
   Calendar,
   Clock,
-  Sparkles,
+  PartyPopper,
   Lock
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
@@ -200,9 +200,9 @@ export default function PortalMatchDetail() {
       {/* Revealed Banner */}
       {isRevealed && (
         <div className="bg-gradient-to-r from-dating-forest to-dating-forest/80 text-white rounded-lg p-6 flex items-center justify-center gap-3">
-          <Sparkles className="h-6 w-6" />
+          <PartyPopper className="h-6 w-6" />
           <span className="text-xl font-display">It's a Connection!</span>
-          <Sparkles className="h-6 w-6" />
+          <Heart className="h-6 w-6" />
         </div>
       )}
 

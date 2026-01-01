@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, Sparkles, Users, Shield, Clock, MessageCircle } from "lucide-react";
+import { Heart, Quote, Users, Shield, Clock, MessageCircle } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 
 const SlowDatingPage = () => {
@@ -170,7 +170,7 @@ const SlowDatingPage = () => {
                     "What's a fear you have about dating again?"
                   ].map((question, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <Sparkles className="h-5 w-5 text-dating-terracotta flex-shrink-0 mt-0.5" />
+                      <Quote className="h-5 w-5 text-dating-terracotta flex-shrink-0 mt-0.5" />
                       <p className="text-foreground italic">"{question}"</p>
                     </div>
                   ))}

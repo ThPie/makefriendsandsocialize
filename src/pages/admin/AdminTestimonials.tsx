@@ -30,7 +30,7 @@ import {
   Quote,
   Eye,
   EyeOff,
-  Sparkles,
+  Award,
 } from 'lucide-react';
 
 interface Testimonial {
@@ -369,7 +369,7 @@ export default function AdminTestimonials() {
                     </Badge>
                     {testimonial.is_featured && (
                       <Badge className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
-                        <Sparkles className="h-3 w-3 mr-1" />
+                        <Award className="h-3 w-3 mr-1" />
                         Featured
                       </Badge>
                     )}

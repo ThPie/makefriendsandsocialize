@@ -75,7 +75,7 @@ const handler = async (req: Request): Promise<Response> => {
         <body>
           <div class="container">
             <div class="header">
-              <div class="logo">The Gathering</div>
+              <div class="logo">Make Friends and Socialize</div>
             </div>
             <div class="content">
               <h1>Congratulations, ${firstName}! 🎉</h1>
@@ -95,7 +95,7 @@ const handler = async (req: Request): Promise<Response> => {
               <a href="https://the-gathering.lovable.app/portal/network" class="cta">Explore The Network →</a>
             </div>
             <div class="footer">
-              <p>The Gathering — Where meaningful connections begin</p>
+              <p>Make Friends and Socialize — Where meaningful connections begin</p>
             </div>
           </div>
         </body>
@@ -125,7 +125,7 @@ const handler = async (req: Request): Promise<Response> => {
         <body>
           <div class="container">
             <div class="header">
-              <div class="logo">The Gathering</div>
+              <div class="logo">Make Friends and Socialize</div>
             </div>
             <div class="content">
               <div class="badge-icon">🏆</div>
@@ -135,7 +135,7 @@ const handler = async (req: Request): Promise<Response> => {
               <a href="https://the-gathering.lovable.app/portal/dashboard" class="cta">View Your Badges →</a>
             </div>
             <div class="footer">
-              <p>The Gathering — Where meaningful connections begin</p>
+              <p>Make Friends and Socialize — Where meaningful connections begin</p>
             </div>
           </div>
         </body>
@@ -144,7 +144,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "The Gathering <onboarding@resend.dev>",
+      from: "Make Friends and Socialize <onboarding@resend.dev>",
       to: [userEmail],
       subject,
       html: htmlContent,

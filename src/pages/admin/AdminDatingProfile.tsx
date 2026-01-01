@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { MatchCard } from "@/components/dating/MatchCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
-  ArrowLeft, User, Heart, Sparkles, Check, X, Loader2, MapPin, Briefcase, Calendar,
+  ArrowLeft, User, Heart, Search, Check, X, Loader2, MapPin, Briefcase, Calendar,
   Shield, ExternalLink, AlertTriangle, CheckCircle2, HelpCircle, Linkedin, Instagram, Facebook, Twitter,
   Baby, Wine, Cigarette, Users
 } from "lucide-react";
@@ -742,7 +742,7 @@ const AdminDatingProfile = () => {
                     </>
                   ) : (
                     <>
-                      <Sparkles className="h-4 w-4" />
+                      <Search className="h-4 w-4" />
                       Find Matches
                     </>
                   )}
