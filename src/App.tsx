@@ -51,6 +51,7 @@ import AdminMatches from "@/pages/admin/AdminMatches";
 import AdminAnalytics from "@/pages/admin/AdminAnalytics";
 import AdminEventAnalytics from "@/pages/admin/AdminEventAnalytics";
 import AdminSecurityReports from "@/pages/admin/AdminSecurityReports";
+import AdminSecurityDashboard from "@/pages/admin/AdminSecurityDashboard";
 import DatingIntakePage from "@/pages/DatingIntakePage";
 import SlowDatingPage from "@/pages/SlowDatingPage";
 
@@ -107,6 +108,7 @@ const App = () => (
               <Route path="/admin/applications" element={<AdminLayout><AdminApplications /></AdminLayout>} />
               <Route path="/admin/members" element={<AdminLayout><AdminMembers /></AdminLayout>} />
               <Route path="/admin/security" element={<AdminLayout><AdminSecurityReports /></AdminLayout>} />
+              <Route path="/admin/security-dashboard" element={<AdminLayout><AdminSecurityDashboard /></AdminLayout>} />
               <Route path="/admin/dating" element={<AdminLayout><AdminDating /></AdminLayout>} />
               <Route path="/admin/dating/:id" element={<AdminLayout><AdminDatingProfile /></AdminLayout>} />
               <Route path="/admin/matches" element={<AdminLayout><AdminMatches /></AdminLayout>} />

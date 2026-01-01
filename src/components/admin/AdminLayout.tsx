@@ -45,6 +45,7 @@ const menuItems = [
   { title: 'Applications', url: '/admin/applications', icon: FileText },
   { title: 'Members', url: '/admin/members', icon: Users },
   { title: 'Security Reports', url: '/admin/security', icon: ShieldAlert },
+  { title: 'Security Dashboard', url: '/admin/security-dashboard', icon: Shield },
   { title: 'Slow Dating', url: '/admin/dating', icon: HeartHandshake },
   { title: 'Matches', url: '/admin/matches', icon: Heart },
   { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp },
