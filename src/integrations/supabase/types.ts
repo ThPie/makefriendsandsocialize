@@ -847,6 +847,7 @@ export type Database = {
           is_visible: boolean | null
           job_title: string | null
           last_name: string | null
+          last_scanned_at: string | null
           onboarding_completed: boolean | null
           profile_completed_at: string | null
           signature_style: string | null
@@ -872,6 +873,7 @@ export type Database = {
           is_visible?: boolean | null
           job_title?: string | null
           last_name?: string | null
+          last_scanned_at?: string | null
           onboarding_completed?: boolean | null
           profile_completed_at?: string | null
           signature_style?: string | null
@@ -897,6 +899,7 @@ export type Database = {
           is_visible?: boolean | null
           job_title?: string | null
           last_name?: string | null
+          last_scanned_at?: string | null
           onboarding_completed?: boolean | null
           profile_completed_at?: string | null
           signature_style?: string | null
