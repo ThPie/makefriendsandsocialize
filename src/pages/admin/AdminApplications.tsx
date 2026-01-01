@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,8 +13,15 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
-import { Loader2, Check, X, Eye, FileText } from 'lucide-react';
+import { Loader2, Check, X, Eye, FileText, Shield, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
+
+interface SecurityReport {
+  id: string;
+  status: string;
+  severity: string | null;
+  red_flags: string[] | null;
+}
 
 interface Application {
   id: string;
@@ -27,6 +35,7 @@ interface Application {
   style_description: string | null;
   values_in_partner: string | null;
   user_email?: string;
+  security_report?: SecurityReport | null;
 }
 
 export default function AdminApplications() {
@@ -51,7 +60,22 @@ export default function AdminApplications() {
       return;
     }
 
-    setApplications(data || []);
+    // Fetch security reports for each application
+    const applicationsWithReports = await Promise.all(
+      (data || []).map(async (app) => {
+        const { data: report } = await supabase
+          .from('member_security_reports')
+          .select('id, status, severity, red_flags')
+          .eq('user_id', app.user_id)
+          .order('scanned_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        
+        return { ...app, security_report: report };
+      })
+    );
+
+    setApplications(applicationsWithReports);
     setIsLoading(false);
   }
 
@@ -133,6 +157,36 @@ export default function AdminApplications() {
     );
   }
 
+  const getSecurityBadge = (report: SecurityReport | null | undefined) => {
+    if (!report) {
+      return <Badge variant="outline" className="text-muted-foreground">No Scan</Badge>;
+    }
+    
+    const severityColors: Record<string, string> = {
+      critical: 'bg-red-500/10 text-red-500 border-red-500/20',
+      high: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
+      medium: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
+      low: 'bg-green-500/10 text-green-500 border-green-500/20',
+    };
+    
+    const statusIcons: Record<string, JSX.Element> = {
+      clean: <Shield className="h-3 w-3 text-green-500" />,
+      flagged: <AlertTriangle className="h-3 w-3 text-red-500" />,
+      under_review: <AlertTriangle className="h-3 w-3 text-yellow-500" />,
+      pending: <Loader2 className="h-3 w-3 animate-spin" />,
+    };
+
+    return (
+      <Badge 
+        variant="outline" 
+        className={`gap-1 ${severityColors[report.severity || 'low'] || ''}`}
+      >
+        {statusIcons[report.status] || statusIcons.pending}
+        {report.status === 'clean' ? 'Clean' : report.status === 'flagged' ? 'Flagged' : report.status}
+      </Badge>
+    );
+  };
+
   const ApplicationRow = ({ app }: { app: Application }) => (
     <div className="flex items-center justify-between p-4 border-b border-border last:border-0">
       <div className="flex-1">
@@ -144,6 +198,14 @@ export default function AdminApplications() {
         </p>
       </div>
       <div className="flex items-center gap-2">
+        {getSecurityBadge(app.security_report)}
+        {app.security_report?.id && (
+          <Button variant="ghost" size="icon" asChild>
+            <Link to={`/admin/security?report=${app.security_report.id}`}>
+              <Shield className="h-4 w-4" />
+            </Link>
+          </Button>
+        )}
         <Badge
           variant={
             app.status === 'approved'

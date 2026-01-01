@@ -326,6 +326,37 @@ Provide your analysis in the following format:
 
     console.log('OSINT analysis complete. Report ID:', report.id);
 
+    // Send security alert email for critical/high severity
+    if (['critical', 'high'].includes(severity)) {
+      try {
+        console.log('Sending security alert for high/critical severity...');
+        const alertResponse = await fetch(`${supabaseUrl}/functions/v1/send-security-alert`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${supabaseServiceKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            reportId: report.id,
+            userId,
+            severity,
+            redFlags,
+            aiRecommendation,
+            riskAssessment,
+          }),
+        });
+        
+        if (!alertResponse.ok) {
+          console.error('Failed to send security alert:', await alertResponse.text());
+        } else {
+          console.log('Security alert sent successfully');
+        }
+      } catch (alertError) {
+        console.error('Error sending security alert:', alertError);
+        // Don't fail the whole request if alert fails
+      }
+    }
+
     return new Response(JSON.stringify({ 
       success: true, 
       report,
