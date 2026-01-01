@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Bell, Heart, Calendar, MessageCircle, Sparkles, X } from 'lucide-react';
+import { Bell, Heart, Calendar, MessageCircle, PartyPopper, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
@@ -28,7 +28,7 @@ const getNotificationIcon = (type: string) => {
     case 'decision_time':
       return <MessageCircle className="h-4 w-4 text-amber-500" />;
     case 'mutual_match':
-      return <Sparkles className="h-4 w-4 text-primary" />;
+      return <PartyPopper className="h-4 w-4 text-primary" />;
     case 'match_declined':
       return <X className="h-4 w-4 text-muted-foreground" />;
     default:

@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { 
   Calendar, MapPin, Users, Plus, Edit, Trash2, Loader2, 
-  Sparkles, Copy, Star, DollarSign, Clock, Tag, BarChart3
+  Wand2, Copy, Star, DollarSign, Clock, Tag, BarChart3
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -579,7 +579,7 @@ export default function AdminEvents() {
                     id="location"
                     value={form.location}
                     onChange={(e) => setForm({ ...form, location: e.target.value })}
-                    placeholder="e.g., The Gathering House, London"
+                    placeholder="e.g., The Community House, London"
                     className="rounded-xl"
                   />
                 </div>

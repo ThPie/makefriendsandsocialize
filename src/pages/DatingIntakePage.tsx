@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, User, Sparkles, ChevronRight, ChevronLeft, Check, Camera, Briefcase, Brain, Shield, Upload, Users, Cigarette, Wine, MapPin, Loader2 } from "lucide-react";
+import { Heart, User, ClipboardCheck, ChevronRight, ChevronLeft, Check, Camera, Briefcase, Brain, Shield, Upload, Users, Cigarette, Wine, MapPin, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
@@ -353,7 +353,7 @@ const DatingIntakePage = () => {
     { number: 4, title: "Daily Life", icon: Briefcase },
     { number: 5, title: "Deep Dive", icon: Brain },
     { number: 6, title: "Dealbreakers", icon: Shield },
-    { number: 7, title: "Review", icon: Sparkles },
+    { number: 7, title: "Review", icon: ClipboardCheck },
   ];
 
   // Show loading state while checking auth
@@ -1192,7 +1192,7 @@ const DatingIntakePage = () => {
               <>
                 <CardHeader className="bg-gradient-to-r from-dating-forest/5 to-transparent pb-6">
                   <CardTitle className="font-display text-2xl flex items-center gap-3">
-                    <Sparkles className="h-6 w-6 text-dating-terracotta" />
+                    <ClipboardCheck className="h-6 w-6 text-dating-terracotta" />
                     Review Your Profile
                   </CardTitle>
                   <CardDescription>

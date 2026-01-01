@@ -71,7 +71,7 @@ const getVettedEmailHtml = (displayName: string) => `
             <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
               <p style="color: #718096; font-size: 14px; margin: 0;">
                 With warmth,<br>
-                <strong>The Gathering Team</strong>
+                <strong>Make Friends and Socialize Team</strong>
               </p>
             </td>
           </tr>
@@ -149,7 +149,7 @@ const getNewMatchEmailHtml = (displayName: string, matchName: string, compatibil
             <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
               <p style="color: #718096; font-size: 14px; margin: 0;">
                 With warmth,<br>
-                <strong>The Gathering Team</strong>
+                <strong>Make Friends and Socialize Team</strong>
               </p>
             </td>
           </tr>
@@ -235,7 +235,7 @@ const getMeetingScheduledEmailHtml = (displayName: string, meetingDate: string, 
             <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
               <p style="color: #718096; font-size: 14px; margin: 0;">
                 With warmth,<br>
-                <strong>The Gathering Team</strong>
+                <strong>Make Friends and Socialize Team</strong>
               </p>
             </td>
           </tr>
@@ -310,7 +310,7 @@ const getDecisionTimeEmailHtml = (displayName: string, matchName: string) => `
             <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
               <p style="color: #718096; font-size: 14px; margin: 0;">
                 With warmth,<br>
-                <strong>The Gathering Team</strong>
+                <strong>Make Friends and Socialize Team</strong>
               </p>
             </td>
           </tr>
@@ -393,7 +393,7 @@ const getMutualMatchEmailHtml = (displayName: string, matchName: string, matchId
             <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
               <p style="color: #718096; font-size: 14px; margin: 0;">
                 Cheering you on,<br>
-                <strong>The Gathering Team</strong>
+                <strong>Make Friends and Socialize Team</strong>
               </p>
             </td>
           </tr>
@@ -468,7 +468,7 @@ const getMatchDeclinedEmailHtml = (displayName: string) => `
             <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
               <p style="color: #718096; font-size: 14px; margin: 0;">
                 With warmth,<br>
-                <strong>The Gathering Team</strong>
+                <strong>Make Friends and Socialize Team</strong>
               </p>
             </td>
           </tr>
@@ -552,7 +552,7 @@ const handler = async (req: Request): Promise<Response> => {
           case "dating_vetted":
             subject = "Welcome to Slow Dating - You've Been Approved! 💚";
             emailResult = await resend.emails.send({
-              from: "The Gathering <onboarding@resend.dev>",
+              from: "Make Friends and Socialize <onboarding@resend.dev>",
               to: [userEmail],
               subject,
               html: getVettedEmailHtml(displayName),
@@ -566,7 +566,7 @@ const handler = async (req: Request): Promise<Response> => {
 
             subject = "You Have a New Match! 💕";
             emailResult = await resend.emails.send({
-              from: "The Gathering <onboarding@resend.dev>",
+              from: "Make Friends and Socialize <onboarding@resend.dev>",
               to: [userEmail],
               subject,
               html: getNewMatchEmailHtml(displayName, matchName, compatibilityScore, matchReason),
@@ -579,7 +579,7 @@ const handler = async (req: Request): Promise<Response> => {
 
             subject = "Your Meeting is Confirmed! 📅";
             emailResult = await resend.emails.send({
-              from: "The Gathering <onboarding@resend.dev>",
+              from: "Make Friends and Socialize <onboarding@resend.dev>",
               to: [userEmail],
               subject,
               html: getMeetingScheduledEmailHtml(displayName, meetingDate, meetingTime),
@@ -591,7 +591,7 @@ const handler = async (req: Request): Promise<Response> => {
 
             subject = "How Did Your Meeting Go? 💭";
             emailResult = await resend.emails.send({
-              from: "The Gathering <onboarding@resend.dev>",
+              from: "Make Friends and Socialize <onboarding@resend.dev>",
               to: [userEmail],
               subject,
               html: getDecisionTimeEmailHtml(displayName, decisionMatchName),
@@ -604,7 +604,7 @@ const handler = async (req: Request): Promise<Response> => {
 
             subject = "🎉 It's a Connection!";
             emailResult = await resend.emails.send({
-              from: "The Gathering <onboarding@resend.dev>",
+              from: "Make Friends and Socialize <onboarding@resend.dev>",
               to: [userEmail],
               subject,
               html: getMutualMatchEmailHtml(displayName, mutualMatchName, matchId),
@@ -614,7 +614,7 @@ const handler = async (req: Request): Promise<Response> => {
           case "match_declined":
             subject = "Match Update";
             emailResult = await resend.emails.send({
-              from: "The Gathering <onboarding@resend.dev>",
+              from: "Make Friends and Socialize <onboarding@resend.dev>",
               to: [userEmail],
               subject,
               html: getMatchDeclinedEmailHtml(displayName),

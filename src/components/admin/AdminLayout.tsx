@@ -28,7 +28,7 @@ import {
   Settings,
   UserCog,
   Quote,
-  Sparkles,
+  HeartHandshake,
   TrendingUp,
   Home,
 } from 'lucide-react';
@@ -43,7 +43,7 @@ const menuItems = [
   { title: 'Overview', url: '/admin', icon: LayoutDashboard },
   { title: 'Applications', url: '/admin/applications', icon: FileText },
   { title: 'Members', url: '/admin/members', icon: Users },
-  { title: 'Slow Dating', url: '/admin/dating', icon: Sparkles },
+  { title: 'Slow Dating', url: '/admin/dating', icon: HeartHandshake },
   { title: 'Matches', url: '/admin/matches', icon: Heart },
   { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp },
   { title: 'Events', url: '/admin/events', icon: Calendar },

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Upload, X, Loader2, Image, Sparkles } from 'lucide-react';
+import { Upload, X, Loader2, Image, Wand2 } from 'lucide-react';
 
 interface EventImageUploadProps {
   value: string;
@@ -200,7 +200,7 @@ export function EventImageUpload({
                     {isGenerating ? (
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     ) : (
-                      <Sparkles className="h-4 w-4 mr-2" />
+                      <Wand2 className="h-4 w-4 mr-2" />
                     )}
                     Generate with AI
                   </Button>

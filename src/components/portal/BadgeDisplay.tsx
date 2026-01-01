@@ -16,7 +16,7 @@ export const BADGE_DEFINITIONS: Omit<Badge, 'id' | 'earned' | 'earnedAt'>[] = [
     type: 'newcomer',
     name: 'Newcomer',
     icon: '🌱',
-    description: 'Welcome to The Gathering!',
+    description: 'Welcome to our community!',
   },
   {
     type: 'picture_perfect',

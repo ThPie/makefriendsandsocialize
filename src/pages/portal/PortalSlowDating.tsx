@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Heart, Sparkles, Clock, CheckCircle2, XCircle, User } from 'lucide-react';
+import { Heart, Handshake, Clock, CheckCircle2, XCircle, User } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BlurredMatchCard } from '@/components/dating/BlurredMatchCard';
 
@@ -185,7 +185,7 @@ export default function PortalSlowDating() {
             </p>
             <Button asChild size="lg">
               <Link to="/dating/apply">
-                <Sparkles className="mr-2 h-5 w-5" />
+                <Heart className="mr-2 h-5 w-5" />
                 Apply Now
               </Link>
             </Button>
@@ -253,7 +253,7 @@ export default function PortalSlowDating() {
       {revealedMatches.length > 0 && (
         <div>
           <h2 className="text-xl font-display font-light text-foreground mb-6 flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
+            <Handshake className="h-5 w-5 text-primary" />
             Your Connections
             <Badge variant="secondary" className="ml-2 bg-primary/10 text-primary">
               {revealedMatches.length}
