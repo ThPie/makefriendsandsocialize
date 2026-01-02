@@ -565,11 +565,14 @@ export type Database = {
       }
       leads: {
         Row: {
+          audience_segment: string | null
           contacted_at: string | null
           converted_at: string | null
           created_at: string
           discovered_at: string
+          discovery_run_id: string | null
           id: string
+          is_automated: boolean | null
           lead_email: string | null
           lead_interests: string[] | null
           lead_location: string | null
@@ -584,11 +587,14 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          audience_segment?: string | null
           contacted_at?: string | null
           converted_at?: string | null
           created_at?: string
           discovered_at?: string
+          discovery_run_id?: string | null
           id?: string
+          is_automated?: boolean | null
           lead_email?: string | null
           lead_interests?: string[] | null
           lead_location?: string | null
@@ -603,11 +609,14 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          audience_segment?: string | null
           contacted_at?: string | null
           converted_at?: string | null
           created_at?: string
           discovered_at?: string
+          discovery_run_id?: string | null
           id?: string
+          is_automated?: boolean | null
           lead_email?: string | null
           lead_interests?: string[] | null
           lead_location?: string | null
