@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { 
   Search,
@@ -28,6 +29,8 @@ import {
   Target,
   RefreshCw,
   ExternalLink,
+  Bot,
+  Clock,
 } from 'lucide-react';
 
 type LeadStatus = 'new' | 'contacted' | 'converted' | 'dismissed';
@@ -48,7 +51,20 @@ interface Lead {
   discovered_at: string;
   contacted_at: string | null;
   converted_at: string | null;
+  audience_segment: string | null;
+  is_automated: boolean | null;
+  discovery_run_id: string | null;
 }
+
+const AUDIENCE_SEGMENTS: Record<string, { label: string; color: string }> = {
+  singles: { label: 'Singles', color: 'bg-pink-500/10 text-pink-500 border-pink-500/20' },
+  couples: { label: 'Couples', color: 'bg-purple-500/10 text-purple-500 border-purple-500/20' },
+  new_in_town: { label: 'New in Town', color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
+  professionals: { label: 'Professionals', color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' },
+  expats: { label: 'Expats', color: 'bg-amber-500/10 text-amber-500 border-amber-500/20' },
+  empty_nesters: { label: 'Empty Nesters', color: 'bg-teal-500/10 text-teal-500 border-teal-500/20' },
+  newly_single: { label: 'Newly Single', color: 'bg-rose-500/10 text-rose-500 border-rose-500/20' },
+};
 
 const statusConfig: Record<LeadStatus, { label: string; color: string; icon: typeof CheckCircle }> = {
   new: { label: 'New', color: 'bg-primary/10 text-primary', icon: Sparkles },
@@ -72,6 +88,7 @@ export default function AdminLeads() {
   const [targetKeywords, setTargetKeywords] = useState('looking for friends, new to city, social events');
   const [notes, setNotes] = useState('');
   const [activeTab, setActiveTab] = useState<LeadStatus | 'all'>('all');
+  const [segmentFilter, setSegmentFilter] = useState<string>('all');
   const queryClient = useQueryClient();
 
   // Fetch leads
@@ -194,9 +211,18 @@ export default function AdminLeads() {
 
   // Filter leads
   const filteredLeads = leads?.filter(lead => {
-    if (activeTab === 'all') return true;
-    return lead.status === activeTab;
+    const statusMatch = activeTab === 'all' || lead.status === activeTab;
+    const segmentMatch = segmentFilter === 'all' || lead.audience_segment === segmentFilter;
+    return statusMatch && segmentMatch;
   }) || [];
+
+  // Segment stats
+  const segmentStats = Object.keys(AUDIENCE_SEGMENTS).reduce((acc, key) => {
+    acc[key] = leads?.filter(l => l.audience_segment === key).length || 0;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const automatedCount = leads?.filter(l => l.is_automated).length || 0;
 
   // Stats
   const stats = {
@@ -345,6 +371,45 @@ export default function AdminLeads() {
         </Card>
       </div>
 
+      {/* Automation Stats */}
+      <Card className="bg-primary/5 border-primary/20">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <Bot className="h-5 w-5 text-primary" />
+              <div>
+                <p className="font-medium">Automated Discovery</p>
+                <p className="text-sm text-muted-foreground">
+                  Runs daily at 6:00 AM UTC • {automatedCount} leads discovered automatically
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Next run in ~24h</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Segment Filter */}
+      <div className="flex items-center gap-4 flex-wrap">
+        <span className="text-sm font-medium">Filter by Audience:</span>
+        <Select value={segmentFilter} onValueChange={setSegmentFilter}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="All Segments" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Segments ({stats.total})</SelectItem>
+            {Object.entries(AUDIENCE_SEGMENTS).map(([key, segment]) => (
+              <SelectItem key={key} value={key}>
+                {segment.label} ({segmentStats[key] || 0})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* Leads List */}
       <Card>
         <CardHeader>
@@ -400,7 +465,7 @@ export default function AdminLeads() {
                         <StatusIcon className="h-5 w-5" />
                       </div>
                       <div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <p className="font-medium">
                             {lead.lead_name || 'Anonymous Lead'}
                           </p>
@@ -410,6 +475,19 @@ export default function AdminLeads() {
                           >
                             {lead.source_platform}
                           </Badge>
+                          {lead.audience_segment && AUDIENCE_SEGMENTS[lead.audience_segment] && (
+                            <Badge 
+                              variant="outline" 
+                              className={AUDIENCE_SEGMENTS[lead.audience_segment].color}
+                            >
+                              {AUDIENCE_SEGMENTS[lead.audience_segment].label}
+                            </Badge>
+                          )}
+                          {lead.is_automated && (
+                            <Badge variant="secondary" className="text-xs">
+                              Auto
+                            </Badge>
+                          )}
                         </div>
                         <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                           {lead.lead_location && (

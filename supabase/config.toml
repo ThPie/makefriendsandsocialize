@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.find-leads]
 verify_jwt = true
+
+[functions.scheduled-lead-discovery]
+verify_jwt = false
