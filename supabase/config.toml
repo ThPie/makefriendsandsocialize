@@ -38,3 +38,6 @@ verify_jwt = false
 
 [functions.trigger-periodic-osint-scan]
 verify_jwt = false
+
+[functions.find-leads]
+verify_jwt = true

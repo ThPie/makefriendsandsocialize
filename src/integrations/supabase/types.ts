@@ -563,6 +563,66 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          contacted_at: string | null
+          converted_at: string | null
+          created_at: string
+          discovered_at: string
+          id: string
+          lead_email: string | null
+          lead_interests: string[] | null
+          lead_location: string | null
+          lead_name: string | null
+          notes: string | null
+          outreach_suggestion: string | null
+          raw_content: string | null
+          relevance_score: number | null
+          source_platform: string
+          source_url: string | null
+          status: Database["public"]["Enums"]["lead_status"]
+          updated_at: string
+        }
+        Insert: {
+          contacted_at?: string | null
+          converted_at?: string | null
+          created_at?: string
+          discovered_at?: string
+          id?: string
+          lead_email?: string | null
+          lead_interests?: string[] | null
+          lead_location?: string | null
+          lead_name?: string | null
+          notes?: string | null
+          outreach_suggestion?: string | null
+          raw_content?: string | null
+          relevance_score?: number | null
+          source_platform: string
+          source_url?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+        }
+        Update: {
+          contacted_at?: string | null
+          converted_at?: string | null
+          created_at?: string
+          discovered_at?: string
+          id?: string
+          lead_email?: string | null
+          lead_interests?: string[] | null
+          lead_location?: string | null
+          lead_name?: string | null
+          notes?: string | null
+          outreach_suggestion?: string | null
+          raw_content?: string | null
+          relevance_score?: number | null
+          source_platform?: string
+          source_url?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       meeting_proposals: {
         Row: {
           created_at: string | null
@@ -1033,6 +1093,7 @@ export type Database = {
       app_role: "admin" | "member"
       application_status: "pending" | "approved" | "rejected"
       connection_status: "pending" | "accepted" | "declined"
+      lead_status: "new" | "contacted" | "converted" | "dismissed"
       membership_status: "pending" | "active" | "cancelled" | "expired"
       membership_tier: "patron" | "fellow" | "founder"
       security_recommendation: "approve" | "investigate" | "suspend" | "remove"
@@ -1175,6 +1236,7 @@ export const Constants = {
       app_role: ["admin", "member"],
       application_status: ["pending", "approved", "rejected"],
       connection_status: ["pending", "accepted", "declined"],
+      lead_status: ["new", "contacted", "converted", "dismissed"],
       membership_status: ["pending", "active", "cancelled", "expired"],
       membership_tier: ["patron", "fellow", "founder"],
       security_recommendation: ["approve", "investigate", "suspend", "remove"],
