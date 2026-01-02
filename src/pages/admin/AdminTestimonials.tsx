@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -181,8 +180,7 @@ export default function AdminTestimonials() {
   const pendingCount = testimonials.filter((t) => !t.is_approved).length;
 
   return (
-    <AdminLayout>
-      <div className="space-y-6">
+    <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
@@ -443,7 +441,6 @@ export default function AdminTestimonials() {
             ))}
           </div>
         )}
-      </div>
-    </AdminLayout>
+    </div>
   );
 }
