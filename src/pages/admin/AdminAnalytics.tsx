@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import {
@@ -129,8 +128,7 @@ export default function AdminAnalytics() {
   ].filter(d => d.value > 0);
 
   return (
-    <AdminLayout>
-      <div className="space-y-8">
+    <div className="space-y-8">
         <div>
           <h1 className="font-display text-3xl text-foreground">Analytics</h1>
           <p className="text-muted-foreground mt-2">
@@ -299,7 +297,6 @@ export default function AdminAnalytics() {
             </CardContent>
           </Card>
         </div>
-      </div>
-    </AdminLayout>
+    </div>
   );
 }
