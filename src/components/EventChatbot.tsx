@@ -213,11 +213,12 @@ export const EventChatbot = () => {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button - improved for mobile */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-all duration-300 flex items-center justify-center group overflow-hidden"
-        aria-label="Open Assistant"
+        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 w-12 h-12 md:w-14 md:h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center group overflow-hidden touch-manipulation"
+        aria-label={isOpen ? "Close Assistant" : "Open Assistant"}
+        aria-expanded={isOpen}
       >
         <img
           src={chatbotAvatar}
@@ -228,9 +229,9 @@ export const EventChatbot = () => {
         />
       </button>
 
-      {/* Chat Window */}
+      {/* Chat Window - improved for mobile */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] h-[500px] max-h-[70vh] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-in">
+        <div className="fixed bottom-20 md:bottom-24 right-2 md:right-6 z-50 w-[calc(100vw-1rem)] md:w-[360px] max-w-[400px] h-[60vh] md:h-[500px] max-h-[70vh] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-in">
           {/* Header */}
           <div className="bg-primary text-primary-foreground p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-primary-foreground/20">
