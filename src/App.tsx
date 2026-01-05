@@ -54,6 +54,7 @@ import AdminEventAnalytics from "@/pages/admin/AdminEventAnalytics";
 import AdminSecurityReports from "@/pages/admin/AdminSecurityReports";
 import AdminSecurityDashboard from "@/pages/admin/AdminSecurityDashboard";
 import AdminLeads from "@/pages/admin/AdminLeads";
+import AdminReferrals from "@/pages/admin/AdminReferrals";
 import DatingIntakePage from "@/pages/DatingIntakePage";
 import SlowDatingPage from "@/pages/SlowDatingPage";
 
@@ -124,6 +125,7 @@ const App = () => (
               <Route path="/admin/content" element={<AdminLayout><AdminContent /></AdminLayout>} />
               <Route path="/admin/roles" element={<AdminLayout><AdminRoles /></AdminLayout>} />
               <Route path="/admin/settings" element={<AdminLayout><AdminSettings /></AdminLayout>} />
+              <Route path="/admin/referrals" element={<AdminLayout><AdminReferrals /></AdminLayout>} />
               
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>

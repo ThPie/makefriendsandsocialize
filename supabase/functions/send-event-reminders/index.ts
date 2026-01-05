@@ -76,7 +76,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from("event_rsvps")
         .select(`
           user_id,
-          profiles:user_id (first_name)
+          profiles:user_id (first_name, email_reminders_enabled, reminder_hours_before)
         `)
         .eq("event_id", event.id)
         .eq("status", "confirmed");
@@ -89,6 +89,14 @@ const handler = async (req: Request): Promise<Response> => {
       console.log(`Found ${rsvps?.length || 0} RSVPs for event ${event.title}`);
 
       for (const rsvp of (rsvps as unknown as RSVPWithProfile[]) || []) {
+        // Check if user has disabled email reminders
+        const userProfile = rsvp.profiles as any;
+        if (userProfile?.email_reminders_enabled === false) {
+          console.log(`User ${rsvp.user_id} has disabled email reminders`);
+          remindersSkipped++;
+          continue;
+        }
+
         // Check if reminder already sent
         const { data: existingReminder } = await supabase
           .from("event_reminders")

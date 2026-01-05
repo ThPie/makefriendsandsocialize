@@ -141,6 +141,22 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
+    // Send email notification
+    try {
+      await supabase.functions.invoke("send-referral-notification", {
+        body: {
+          referrer_id: referrer.id,
+          notification_type: "signup",
+          referral_count: newReferralCount,
+          reward_type: rewardType,
+        },
+      });
+      console.log(`Referral notification sent to ${referrer.id}`);
+    } catch (notifyError) {
+      console.error("Error sending referral notification:", notifyError);
+      // Don't throw, notification is not critical
+    }
+
     console.log(`Referral tracked successfully. Referrer: ${referrer.id}, New user: ${new_user_id}`);
 
     return new Response(
