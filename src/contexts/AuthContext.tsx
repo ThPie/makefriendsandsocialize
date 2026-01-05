@@ -24,6 +24,9 @@ interface Profile {
   onboarding_completed: boolean | null;
   is_security_verified: boolean | null;
   verified_at: string | null;
+  referral_code: string | null;
+  referred_by: string | null;
+  referral_count: number | null;
 }
 
 interface Membership {

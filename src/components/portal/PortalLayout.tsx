@@ -26,6 +26,7 @@ import {
   Crown,
   Shield,
   Home,
+  Gift,
 } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
 import { PageTransition } from '@/components/ui/page-transition';
@@ -42,6 +43,7 @@ const menuItems = [
   { title: 'Connections', url: '/portal/connections', icon: Heart },
   { title: 'Slow Dating', url: '/portal/slow-dating', icon: Heart },
   { title: 'Events', url: '/portal/events', icon: Calendar },
+  { title: 'Referrals', url: '/portal/referrals', icon: Gift },
 ];
 
 export function PortalLayout({ children }: PortalLayoutProps) {

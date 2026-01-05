@@ -42,6 +42,24 @@ export const BADGE_DEFINITIONS: Omit<Badge, 'id' | 'earned' | 'earnedAt'>[] = [
     icon: '🎯',
     description: '100% profile completion',
   },
+  {
+    type: 'connector',
+    name: 'Connector',
+    icon: '🤝',
+    description: '1 successful referral',
+  },
+  {
+    type: 'ambassador',
+    name: 'Ambassador',
+    icon: '🏆',
+    description: '5 successful referrals',
+  },
+  {
+    type: 'community_builder',
+    name: 'Community Builder',
+    icon: '👑',
+    description: '10 successful referrals',
+  },
 ];
 
 interface BadgeDisplayProps {
