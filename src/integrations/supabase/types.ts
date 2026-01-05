@@ -344,6 +344,47 @@ export type Database = {
         }
         Relationships: []
       }
+      event_reminders: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          event_id: string | null
+          id: string
+          reminder_type: string | null
+          sent_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          event_id?: string | null
+          id?: string
+          reminder_type?: string | null
+          sent_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          event_id?: string | null
+          id?: string
+          reminder_type?: string | null
+          sent_at?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_reminders_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_rsvps: {
         Row: {
           created_at: string
@@ -919,6 +960,9 @@ export type Database = {
           last_scanned_at: string | null
           onboarding_completed: boolean | null
           profile_completed_at: string | null
+          referral_code: string | null
+          referral_count: number | null
+          referred_by: string | null
           signature_style: string | null
           state: string | null
           terms_accepted_at: string | null
@@ -945,6 +989,9 @@ export type Database = {
           last_scanned_at?: string | null
           onboarding_completed?: boolean | null
           profile_completed_at?: string | null
+          referral_code?: string | null
+          referral_count?: number | null
+          referred_by?: string | null
           signature_style?: string | null
           state?: string | null
           terms_accepted_at?: string | null
@@ -971,6 +1018,9 @@ export type Database = {
           last_scanned_at?: string | null
           onboarding_completed?: boolean | null
           profile_completed_at?: string | null
+          referral_code?: string | null
+          referral_count?: number | null
+          referred_by?: string | null
           signature_style?: string | null
           state?: string | null
           terms_accepted_at?: string | null
@@ -978,7 +1028,15 @@ export type Database = {
           values_in_partner?: string | null
           verified_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       push_subscriptions: {
         Row: {
@@ -1009,6 +1067,66 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      referrals: {
+        Row: {
+          converted_at: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          referral_code: string
+          referred_email: string | null
+          referred_user_id: string | null
+          referrer_id: string
+          reward_claimed: boolean | null
+          reward_claimed_at: string | null
+          reward_type: string | null
+          status: string | null
+        }
+        Insert: {
+          converted_at?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          referral_code: string
+          referred_email?: string | null
+          referred_user_id?: string | null
+          referrer_id: string
+          reward_claimed?: boolean | null
+          reward_claimed_at?: string | null
+          reward_type?: string | null
+          status?: string | null
+        }
+        Update: {
+          converted_at?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          referral_code?: string
+          referred_email?: string | null
+          referred_user_id?: string | null
+          referrer_id?: string
+          reward_claimed?: boolean | null
+          reward_claimed_at?: string | null
+          reward_type?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_user_id_fkey"
+            columns: ["referred_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       testimonials: {
         Row: {

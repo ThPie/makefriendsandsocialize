@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,6 +40,7 @@ const defaultAvatars = [
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, signUp, signIn, isLoading } = useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [step, setStep] = useState(1);
@@ -50,6 +51,10 @@ export default function AuthPage() {
   const [memberCount, setMemberCount] = useState(928);
   const [avatarUrls, setAvatarUrls] = useState<string[]>(defaultAvatars);
   const [isLoadingStats, setIsLoadingStats] = useState(true);
+  
+  // Referral tracking
+  const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [referrerName, setReferrerName] = useState<string | null>(null);
   
   // Form state
   const [email, setEmail] = useState('');
@@ -63,6 +68,29 @@ export default function AuthPage() {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [industry, setIndustry] = useState('');
   const [jobTitle, setJobTitle] = useState('');
+
+  // Check for referral code in URL
+  useEffect(() => {
+    const ref = searchParams.get('ref');
+    if (ref) {
+      setReferralCode(ref.toUpperCase());
+      setMode('signup'); // Auto-switch to signup mode when coming from referral
+      
+      // Look up the referrer's name
+      const lookupReferrer = async () => {
+        const { data } = await supabase
+          .from('profiles')
+          .select('first_name')
+          .eq('referral_code', ref.toUpperCase())
+          .single();
+        
+        if (data?.first_name) {
+          setReferrerName(data.first_name);
+        }
+      };
+      lookupReferrer();
+    }
+  }, [searchParams]);
 
   // Fetch member stats from meetup_stats (same as Hero)
   useEffect(() => {
@@ -201,6 +229,20 @@ export default function AuthPage() {
           job_title: jobTitle,
           status: 'pending',
         });
+
+      // Track referral if present
+      if (referralCode) {
+        try {
+          await supabase.functions.invoke('track-referral', {
+            body: {
+              referral_code: referralCode,
+              new_user_id: session.user.id,
+            },
+          });
+        } catch (err) {
+          console.error('Failed to track referral:', err);
+        }
+      }
     }
 
     setIsSubmitting(false);
@@ -274,6 +316,15 @@ export default function AuthPage() {
                 <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10" />
               </Link>
 
+              {/* Referral Banner */}
+              {referralCode && referrerName && mode === 'signup' && (
+                <div className="mb-6 p-4 bg-primary/20 border border-primary/30 rounded-xl">
+                  <p className="text-sm text-white/90">
+                    🎉 <strong>{referrerName}</strong> invited you! Sign up to get <span className="text-primary font-semibold">10% off</span> your first month.
+                  </p>
+                </div>
+              )}
+
               {/* Header */}
               <div className="mb-8">
                 <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
@@ -282,7 +333,9 @@ export default function AuthPage() {
                 <p className="text-white/60">
                   {mode === 'signin' 
                     ? 'Welcome back! Please enter your details.'
-                    : 'Join our exclusive community today.'
+                    : referralCode 
+                      ? `You've been invited to join our exclusive community.`
+                      : 'Join our exclusive community today.'
                   }
                 </p>
               </div>
