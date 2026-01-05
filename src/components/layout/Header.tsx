@@ -101,26 +101,30 @@ export const Header = () => {
       </div>
 
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="absolute left-0 top-full w-full border-b border-border bg-background p-6 lg:hidden shadow-xl flex flex-col gap-4 animate-slide-in-from-top">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`text-lg font-medium text-left transition-colors min-h-[48px] flex items-center ${
-                location.pathname === item.path
-                  ? 'text-primary'
-                  : 'text-foreground hover:text-primary'
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <Button asChild className="w-full mt-2">
-            <Link to="/membership">Request Membership</Link>
-          </Button>
-        </div>
-      )}
+      <div 
+        className={`absolute left-0 top-full w-full border-b border-border bg-background lg:hidden shadow-xl flex flex-col gap-2 transition-all duration-300 overflow-hidden ${
+          isMenuOpen ? 'max-h-[400px] py-6 px-6 opacity-100' : 'max-h-0 py-0 px-6 opacity-0 pointer-events-none'
+        }`}
+        aria-hidden={!isMenuOpen}
+      >
+        {navItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`text-lg font-medium text-left transition-colors min-h-[48px] flex items-center px-2 rounded-lg ${
+              location.pathname === item.path
+                ? 'text-primary bg-primary/5'
+                : 'text-foreground hover:text-primary hover:bg-muted/50'
+            }`}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            {item.label}
+          </Link>
+        ))}
+        <Button asChild className="w-full mt-4">
+          <Link to="/membership">Request Membership</Link>
+        </Button>
+      </div>
     </header>
   );
 };

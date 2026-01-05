@@ -1,8 +1,17 @@
+# https://www.robotstxt.org/robotstxt.html
+# MakeFriends Social Club robots.txt
+
 User-agent: Googlebot
 Allow: /
+Disallow: /portal/
+Disallow: /admin/
+Disallow: /auth/
 
 User-agent: Bingbot
 Allow: /
+Disallow: /portal/
+Disallow: /admin/
+Disallow: /auth/
 
 User-agent: Twitterbot
 Allow: /
@@ -12,3 +21,12 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /portal/
+Disallow: /admin/
+Disallow: /auth/
+
+# Sitemap location
+Sitemap: https://makefriends.social/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

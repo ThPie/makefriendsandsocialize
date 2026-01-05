@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
-import { Calendar, MapPin, Users, Clock, Star, Image } from 'lucide-react';
+import { format, differenceInDays } from 'date-fns';
+import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus } from 'lucide-react';
+import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
 
 type SortOption = 'date-asc' | 'date-desc' | 'title-asc' | 'title-desc';
 type EventTab = 'upcoming' | 'past';
@@ -334,11 +335,24 @@ const EventsPage = () => {
                   </div>
 
                   {/* Content */}
-                  <div className="flex flex-col flex-1 p-6">
-                    <div className="flex justify-between items-start mb-2">
-                      <p className="text-primary text-sm font-bold uppercase tracking-wide">
-                        {format(new Date(event.date), 'MMMM d, yyyy')}
-                      </p>
+                  <div className="flex flex-col flex-1 p-4 md:p-6">
+                    <div className="flex flex-wrap justify-between items-start gap-2 mb-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                        <p className="text-primary text-sm font-bold uppercase tracking-wide">
+                          {format(new Date(event.date), 'MMMM d, yyyy')}
+                        </p>
+                        {activeTab === 'upcoming' && (() => {
+                          const daysUntil = differenceInDays(new Date(event.date), new Date());
+                          if (daysUntil <= 3 && daysUntil >= 0) {
+                            return (
+                              <Badge variant="destructive" className="text-xs">
+                                {daysUntil === 0 ? 'Today!' : daysUntil === 1 ? 'Tomorrow!' : `${daysUntil} days left`}
+                              </Badge>
+                            );
+                          }
+                          return null;
+                        })()}
+                      </div>
                       {rsvpStatus[event.id] && activeTab === 'upcoming' && (
                         <span className="flex items-center gap-1 text-emerald-400 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full">
                           <span className="material-symbols-outlined text-sm">check_circle</span>
@@ -374,35 +388,44 @@ const EventsPage = () => {
                       {event.capacity && (
                         <div className="flex items-center gap-2">
                           <Users className="h-4 w-4" />
-                          {event.capacity} spots
+                          <span className={event.capacity <= 10 ? 'text-amber-500 font-medium' : ''}>
+                            {event.capacity <= 5 
+                              ? `Only ${event.capacity} spots left!` 
+                              : event.capacity <= 10 
+                                ? `${event.capacity} spots remaining`
+                                : `${event.capacity} spots`
+                            }
+                          </span>
                         </div>
                       )}
                     </div>
 
-                    <div className="flex gap-3 mt-auto border-t border-border pt-4">
+                    <div className="flex flex-wrap gap-2 md:gap-3 mt-auto border-t border-border pt-4">
                       {activeTab === 'upcoming' ? (
                         <>
                           <AnimatedButton 
                             onClick={() => handleRSVP(event)}
                             variant={rsvpStatus[event.id] ? "outline" : "default"}
-                            className={`flex-1 ${rsvpStatus[event.id] ? 'border-destructive/50 text-destructive hover:bg-destructive/10' : ''}`}
+                            className={`flex-1 min-w-[100px] ${rsvpStatus[event.id] ? 'border-destructive/50 text-destructive hover:bg-destructive/10' : ''}`}
+                            aria-label={rsvpStatus[event.id] ? `Cancel RSVP for ${event.title}` : `RSVP for ${event.title}`}
                           >
                             {rsvpStatus[event.id] ? 'Cancel RSVP' : 'RSVP Now'}
                           </AnimatedButton>
+                          <AddToCalendarButton event={event} />
                           <Button variant="outline" asChild className="rounded-xl">
-                            <Link to={`/events/${event.id}`}>Details</Link>
+                            <Link to={`/events/${event.id}`} aria-label={`View details for ${event.title}`}>Details</Link>
                           </Button>
                         </>
                       ) : (
                         <>
                           <Button variant="outline" asChild className="flex-1 rounded-xl">
-                            <Link to={`/gallery?event=${event.id}`}>
+                            <Link to={`/gallery?event=${event.id}`} aria-label={`View gallery for ${event.title}`}>
                               <Image className="h-4 w-4 mr-2" />
-                              View Gallery
+                              <span className="hidden sm:inline">View </span>Gallery
                             </Link>
                           </Button>
                           <Button variant="outline" asChild className="rounded-xl">
-                            <Link to={`/events/${event.id}`}>Recap</Link>
+                            <Link to={`/events/${event.id}`} aria-label={`View recap for ${event.title}`}>Recap</Link>
                           </Button>
                         </>
                       )}

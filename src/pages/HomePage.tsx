@@ -8,15 +8,19 @@ import { FAQSection } from '@/components/home/FAQSection';
 import { ContactFormSection } from '@/components/home/ContactFormSection';
 import { PricingSection } from '@/components/home/PricingSection';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
+import { SocialProofBanner } from '@/components/home/SocialProofBanner';
+import { MemberBadgesShowcase } from '@/components/home/MemberBadgesShowcase';
 
 const HomePage = () => {
   return (
     <main className="flex flex-col">
       <Hero />
+      <SocialProofBanner />
       <WhyChooseSection />
       <EventSection />
       <BusinessEventsSection />
       <TestimonialsSection />
+      <MemberBadgesShowcase />
       <EthosSection />
       <SlowDatingSection />
       <PricingSection />
