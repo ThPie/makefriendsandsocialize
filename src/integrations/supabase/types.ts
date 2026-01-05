@@ -948,6 +948,7 @@ export type Database = {
           country: string | null
           created_at: string
           date_of_birth: string | null
+          email_reminders_enabled: boolean | null
           favorite_brands: string[] | null
           first_name: string | null
           id: string
@@ -958,11 +959,14 @@ export type Database = {
           job_title: string | null
           last_name: string | null
           last_scanned_at: string | null
+          marketing_emails_enabled: boolean | null
           onboarding_completed: boolean | null
           profile_completed_at: string | null
           referral_code: string | null
           referral_count: number | null
+          referral_notifications_enabled: boolean | null
           referred_by: string | null
+          reminder_hours_before: number | null
           signature_style: string | null
           state: string | null
           terms_accepted_at: string | null
@@ -977,6 +981,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           date_of_birth?: string | null
+          email_reminders_enabled?: boolean | null
           favorite_brands?: string[] | null
           first_name?: string | null
           id: string
@@ -987,11 +992,14 @@ export type Database = {
           job_title?: string | null
           last_name?: string | null
           last_scanned_at?: string | null
+          marketing_emails_enabled?: boolean | null
           onboarding_completed?: boolean | null
           profile_completed_at?: string | null
           referral_code?: string | null
           referral_count?: number | null
+          referral_notifications_enabled?: boolean | null
           referred_by?: string | null
+          reminder_hours_before?: number | null
           signature_style?: string | null
           state?: string | null
           terms_accepted_at?: string | null
@@ -1006,6 +1014,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           date_of_birth?: string | null
+          email_reminders_enabled?: boolean | null
           favorite_brands?: string[] | null
           first_name?: string | null
           id?: string
@@ -1016,11 +1025,14 @@ export type Database = {
           job_title?: string | null
           last_name?: string | null
           last_scanned_at?: string | null
+          marketing_emails_enabled?: boolean | null
           onboarding_completed?: boolean | null
           profile_completed_at?: string | null
           referral_code?: string | null
           referral_count?: number | null
+          referral_notifications_enabled?: boolean | null
           referred_by?: string | null
+          reminder_hours_before?: number | null
           signature_style?: string | null
           state?: string | null
           terms_accepted_at?: string | null

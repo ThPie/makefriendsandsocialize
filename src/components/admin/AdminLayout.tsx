@@ -33,6 +33,7 @@ import {
   TrendingUp,
   Home,
   Target,
+  Gift,
 } from 'lucide-react';
 import { PageTransition } from '@/components/ui/page-transition';
 import logo from '@/assets/logo-transparent.png';
@@ -45,6 +46,7 @@ const menuItems = [
   { title: 'Overview', url: '/admin', icon: LayoutDashboard },
   { title: 'Applications', url: '/admin/applications', icon: FileText },
   { title: 'Members', url: '/admin/members', icon: Users },
+  { title: 'Referrals', url: '/admin/referrals', icon: Gift },
   { title: 'Lead Generation', url: '/admin/leads', icon: Target },
   { title: 'Security Reports', url: '/admin/security', icon: ShieldAlert },
   { title: 'Security Dashboard', url: '/admin/security-dashboard', icon: Shield },

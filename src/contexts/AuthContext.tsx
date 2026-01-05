@@ -27,6 +27,10 @@ interface Profile {
   referral_code: string | null;
   referred_by: string | null;
   referral_count: number | null;
+  email_reminders_enabled: boolean | null;
+  reminder_hours_before: number | null;
+  referral_notifications_enabled: boolean | null;
+  marketing_emails_enabled: boolean | null;
 }
 
 interface Membership {

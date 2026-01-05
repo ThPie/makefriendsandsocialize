@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { Loader2, Check, Camera, X, Calendar } from 'lucide-react';
 import { PushNotificationToggle } from '@/components/portal/PushNotificationToggle';
+import { EmailPreferences } from '@/components/portal/EmailPreferences';
 import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
 import { VerificationBadge } from '@/components/portal/VerificationBadge';
 import { LocationCombobox } from '@/components/ui/location-combobox';
@@ -499,6 +500,9 @@ export default function PortalProfile() {
             </label>
           </CardContent>
         </Card>
+
+        {/* Email Preferences */}
+        <EmailPreferences />
 
         {/* Push Notifications */}
         <PushNotificationToggle />
