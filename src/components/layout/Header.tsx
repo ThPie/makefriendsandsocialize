@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Calendar, Info, Users, Mail } from 'lucide-react';
+import { Home, Calendar, Info, Users, Mail, Building2 } from 'lucide-react';
 import logo from '@/assets/logo-transparent.png';
 
 const navItems = [
   { label: 'Home', path: '/', icon: Home },
   { label: 'Events', path: '/events', icon: Calendar },
+  { label: 'Business', path: '/connected-circle', icon: Building2 },
   { label: 'About', path: '/about', icon: Info },
   { label: 'Membership', path: '/membership', icon: Users },
   { label: 'Contact', path: '/contact', icon: Mail },

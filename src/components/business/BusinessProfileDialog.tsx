@@ -1,6 +1,12 @@
-import { Building2, Globe, MapPin, Mail, ExternalLink, X } from "lucide-react";
+import { useState } from "react";
+import { Building2, Globe, MapPin, Mail, ExternalLink, Handshake, Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Dialog,
   DialogContent,
@@ -26,12 +32,66 @@ interface BusinessProfileDialogProps {
 }
 
 export function BusinessProfileDialog({ business, open, onOpenChange }: BusinessProfileDialogProps) {
+  const { user } = useAuth();
+  const [introMessage, setIntroMessage] = useState("");
+  const [showIntroForm, setShowIntroForm] = useState(false);
+
+  // Check if user already requested an introduction
+  const { data: existingRequest, refetch: refetchRequest } = useQuery({
+    queryKey: ['intro-request', business?.id, user?.id],
+    queryFn: async () => {
+      if (!business || !user) return null;
+      const { data, error } = await supabase
+        .from('business_introduction_requests')
+        .select('*')
+        .eq('business_id', business.id)
+        .eq('requester_id', user.id)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!business && !!user,
+  });
+
+  const requestIntroMutation = useMutation({
+    mutationFn: async () => {
+      if (!business || !user) throw new Error("Missing data");
+      const { error } = await supabase
+        .from('business_introduction_requests')
+        .insert({
+          business_id: business.id,
+          requester_id: user.id,
+          message: introMessage || null,
+        });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Introduction request sent! The business owner will be notified.");
+      setShowIntroForm(false);
+      setIntroMessage("");
+      refetchRequest();
+    },
+    onError: (error: any) => {
+      if (error.message?.includes('duplicate key')) {
+        toast.error("You've already requested an introduction to this business");
+      } else {
+        toast.error("Failed to send introduction request");
+      }
+    },
+  });
+
   if (!business) return null;
 
   const isFeatured = business.status === 'featured';
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(open) => {
+      onOpenChange(open);
+      if (!open) {
+        setShowIntroForm(false);
+        setIntroMessage("");
+      }
+    }}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-start gap-4">
@@ -131,6 +191,67 @@ export function BusinessProfileDialog({ business, open, onOpenChange }: Business
               </div>
             )}
           </div>
+
+          {/* Introduction Request Section */}
+          {user && (
+            <div className="border-t border-border pt-6">
+              {existingRequest ? (
+                <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">Introduction Requested</p>
+                    <p className="text-xs text-muted-foreground">
+                      Status: {existingRequest.status === 'pending' ? 'Pending response' : existingRequest.status}
+                    </p>
+                  </div>
+                </div>
+              ) : showIntroForm ? (
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-sm font-semibold text-foreground mb-2">Request Introduction</h4>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      Add a personal message to introduce yourself (optional)
+                    </p>
+                    <Textarea
+                      value={introMessage}
+                      onChange={(e) => setIntroMessage(e.target.value)}
+                      placeholder="Hi, I'm interested in learning more about your services..."
+                      rows={3}
+                      maxLength={500}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {introMessage.length}/500 characters
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={() => requestIntroMutation.mutate()}
+                      disabled={requestIntroMutation.isPending}
+                    >
+                      {requestIntroMutation.isPending ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <Handshake className="h-4 w-4 mr-2" />
+                      )}
+                      Send Request
+                    </Button>
+                    <Button variant="outline" onClick={() => setShowIntroForm(false)}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  onClick={() => setShowIntroForm(true)}
+                  className="w-full"
+                  variant="outline"
+                >
+                  <Handshake className="h-4 w-4 mr-2" />
+                  Request Introduction
+                </Button>
+              )}
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex gap-3 pt-4">

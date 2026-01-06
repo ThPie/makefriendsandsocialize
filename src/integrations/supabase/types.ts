@@ -89,6 +89,44 @@ export type Database = {
         }
         Relationships: []
       }
+      business_introduction_requests: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          message: string | null
+          requester_id: string
+          responded_at: string | null
+          status: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          requester_id: string
+          responded_at?: string | null
+          status?: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          requester_id?: string
+          responded_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_introduction_requests_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_profiles: {
         Row: {
           business_name: string
