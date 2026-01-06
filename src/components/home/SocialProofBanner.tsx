@@ -8,11 +8,11 @@ interface MeetupStats {
   member_count: number;
   rating: number | null;
   avatar_urls: string[] | null;
+  joined_this_week: number | null;
 }
 
 export const SocialProofBanner = () => {
   const [displayCount, setDisplayCount] = useState(0);
-  const [joinedThisWeek] = useState(Math.floor(Math.random() * 12) + 5); // Simulated for now
 
   // Fetch meetup stats
   const { data: stats } = useQuery({
@@ -20,7 +20,7 @@ export const SocialProofBanner = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('meetup_stats')
-        .select('member_count, rating, avatar_urls')
+        .select('member_count, rating, avatar_urls, joined_this_week')
         .order('last_updated', { ascending: false })
         .limit(1)
         .single();
@@ -30,6 +30,8 @@ export const SocialProofBanner = () => {
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
+
+  const joinedThisWeek = stats?.joined_this_week || 0;
 
   // Fetch upcoming events count
   const { data: eventsCount } = useQuery({
