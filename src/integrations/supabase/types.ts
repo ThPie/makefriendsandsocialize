@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      appeal_status_history: {
+        Row: {
+          admin_notes: string | null
+          appeal_id: string
+          changed_by: string | null
+          created_at: string
+          id: string
+          new_status: string
+          old_status: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          appeal_id: string
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_status: string
+          old_status?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          appeal_id?: string
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          new_status?: string
+          old_status?: string | null
+        }
+        Relationships: []
+      }
       application_waitlist: {
         Row: {
           admin_notes: string | null
