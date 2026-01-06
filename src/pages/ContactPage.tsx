@@ -1,7 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Mail, MapPin, Clock, Facebook, Instagram, MessageCircle, Users, Calendar, Shirt } from 'lucide-react';
+import { Mail, MapPin, Clock, Facebook, Instagram, MessageCircle, Users, Calendar, Shirt, Sparkles, ArrowRight, Send } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const contactInfo = [
   {
@@ -42,9 +43,32 @@ const faqs = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
+  },
+};
+
 const ContactPage = () => {
   const { toast } = useToast();
-  const { ref, isVisible } = useScrollAnimation();
+  const heroAnimation = useScrollAnimation();
+  const cardsAnimation = useScrollAnimation();
+  const formAnimation = useScrollAnimation();
+  const faqAnimation = useScrollAnimation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,36 +79,86 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="flex-grow flex flex-col items-center">
-      {/* Hero */}
-      <div className="w-full max-w-[1440px] mt-8 p-4">
+    <div className="flex-grow flex flex-col items-center bg-background">
+      {/* Hero Section */}
+      <section className="relative w-full min-h-[50vh] flex items-center justify-center overflow-hidden">
+        {/* Background */}
         <div 
-          className="flex min-h-[400px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-center justify-center p-4 relative overflow-hidden" 
-          style={{backgroundImage: 'linear-gradient(rgba(20, 57, 59, 0.6) 0%, rgba(20, 57, 59, 0.9) 100%), url("/images/contact-hero.jpg")'}}
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/20" />
-          <div className="flex flex-col gap-4 text-center relative z-10">
-            <h1 className="text-white text-4xl font-black leading-tight tracking-tight md:text-5xl font-display">Let's Connect</h1>
-            <p className="text-white/80 text-base font-normal leading-relaxed md:text-lg max-w-xl mx-auto">
-              Have questions about membership or events? We'd love to hear from you. Reach out and let's start a conversation.
-            </p>
-          </div>
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{backgroundImage: 'url("/images/contact-hero.jpg")'}}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
+        
+        {/* Floating Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-primary/10 blur-3xl"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 left-1/3 w-80 h-80 rounded-full bg-primary/5 blur-3xl"
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          />
         </div>
-      </div>
+
+        <div 
+          ref={heroAnimation.ref}
+          className={`relative z-10 container max-w-4xl text-center py-16 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-6"
+          >
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-foreground">Get In Touch</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-display text-5xl md:text-6xl text-foreground mb-4 leading-[1.1]"
+          >
+            Let's <span className="text-gradient">Connect</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="text-muted-foreground text-lg md:text-xl max-w-xl mx-auto"
+          >
+            Have questions about membership or events? We'd love to hear from you.
+          </motion.p>
+        </div>
+      </section>
 
       {/* Contact Info Cards */}
-      <div ref={ref} className="w-full max-w-[1440px] px-4 md:px-10 -mt-12 relative z-10">
-        <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 scroll-animate ${isVisible ? 'visible' : ''}`}>
-          {contactInfo.map((item, index) => (
-            <div 
+      <section 
+        ref={cardsAnimation.ref}
+        className={`w-full max-w-6xl px-4 -mt-8 relative z-10 scroll-animate ${cardsAnimation.isVisible ? 'visible' : ''}`}
+      >
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={cardsAnimation.isVisible ? "visible" : "hidden"}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"
+        >
+          {contactInfo.map((item) => (
+            <motion.div 
               key={item.label}
-              className={`group bg-card border border-border rounded-xl p-6 flex items-center gap-4 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+              variants={itemVariants}
+              className="group bg-card border border-border/50 rounded-2xl p-6 flex items-center gap-4 hover-lift"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary transition-all duration-300 group-hover:bg-primary/30 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]">
-                <item.icon className="w-5 h-5" strokeWidth={2} />
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/20">
+                <item.icon className="w-6 h-6" strokeWidth={1.5} />
               </div>
               <div>
-                <p className="text-muted-foreground text-sm">{item.label}</p>
+                <p className="text-muted-foreground text-sm mb-1">{item.label}</p>
                 {item.href ? (
                   <a href={item.href} className="text-foreground font-medium hover:text-primary transition-colors">
                     {item.value}
@@ -93,28 +167,39 @@ const ContactPage = () => {
                   <p className="text-foreground font-medium">{item.value}</p>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
-      </div>
+        </motion.div>
+      </section>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-16 px-4 md:px-10 w-full max-w-[1440px] mx-auto mb-20">
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-16 px-4 w-full max-w-6xl mx-auto mb-20">
         {/* Form */}
-        <div className={`scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <div className="bg-card border border-border rounded-xl p-6 md:p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary">
-                <MessageCircle className="w-5 h-5" strokeWidth={2} />
+        <div 
+          ref={formAnimation.ref}
+          className={`scroll-animate ${formAnimation.isVisible ? 'visible' : ''}`}
+        >
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={formAnimation.isVisible ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7 }}
+            className="bg-card border border-border/50 rounded-2xl p-8"
+          >
+            <div className="flex items-center gap-4 mb-8">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <MessageCircle className="w-6 h-6" strokeWidth={1.5} />
               </div>
-              <h2 className="text-foreground text-xl font-bold font-display">Send Us a Message</h2>
+              <div>
+                <h2 className="text-foreground text-2xl font-bold font-display">Send Us a Message</h2>
+                <p className="text-muted-foreground text-sm">We'll get back to you within 24 hours</p>
+              </div>
             </div>
-            <form className="space-y-5" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-sm font-medium leading-6 text-muted-foreground mb-2" htmlFor="full-name">Full Name</label>
+                  <label className="block text-sm font-medium text-foreground mb-2" htmlFor="full-name">Full Name</label>
                   <input 
-                    className="block w-full rounded-lg border-0 py-3 px-4 bg-muted text-foreground shadow-sm ring-1 ring-inset ring-border placeholder:text-muted-foreground focus:ring-2 focus:ring-inset focus:ring-primary text-sm transition-all duration-200" 
+                    className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200" 
                     id="full-name" 
                     name="full-name" 
                     type="text"
@@ -123,9 +208,9 @@ const ContactPage = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium leading-6 text-muted-foreground mb-2" htmlFor="email">Email Address</label>
+                  <label className="block text-sm font-medium text-foreground mb-2" htmlFor="email">Email Address</label>
                   <input 
-                    className="block w-full rounded-lg border-0 py-3 px-4 bg-muted text-foreground shadow-sm ring-1 ring-inset ring-border placeholder:text-muted-foreground focus:ring-2 focus:ring-inset focus:ring-primary text-sm transition-all duration-200" 
+                    className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200" 
                     id="email" 
                     name="email" 
                     type="email"
@@ -135,9 +220,9 @@ const ContactPage = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium leading-6 text-muted-foreground mb-2" htmlFor="inquiry-type">Inquiry Type</label>
+                <label className="block text-sm font-medium text-foreground mb-2" htmlFor="inquiry-type">Inquiry Type</label>
                 <select 
-                  className="block w-full rounded-lg border-0 py-3 px-4 bg-muted text-foreground shadow-sm ring-1 ring-inset ring-border focus:ring-2 focus:ring-inset focus:ring-primary text-sm transition-all duration-200" 
+                  className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200" 
                   id="inquiry-type" 
                   name="inquiry-type"
                 >
@@ -148,9 +233,9 @@ const ContactPage = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium leading-6 text-muted-foreground mb-2" htmlFor="message">Your Message</label>
+                <label className="block text-sm font-medium text-foreground mb-2" htmlFor="message">Your Message</label>
                 <textarea 
-                  className="block w-full rounded-lg border-0 py-3 px-4 bg-muted text-foreground shadow-sm ring-1 ring-inset ring-border placeholder:text-muted-foreground focus:ring-2 focus:ring-inset focus:ring-primary text-sm transition-all duration-200 resize-none" 
+                  className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200 resize-none" 
                   id="message" 
                   name="message" 
                   rows={5}
@@ -158,61 +243,82 @@ const ContactPage = () => {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full py-6 text-base font-semibold">Send Message</Button>
+              <Button type="submit" className="w-full py-6 text-base font-medium rounded-full group">
+                Send Message
+                <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
             </form>
-          </div>
+          </motion.div>
         </div>
 
         {/* FAQ & Social */}
-        <div className="space-y-8">
+        <div 
+          ref={faqAnimation.ref}
+          className={`space-y-8 scroll-animate ${faqAnimation.isVisible ? 'visible' : ''}`}
+        >
           {/* FAQ Section */}
-          <div className={`scroll-animate scroll-animate-delay-1 ${isVisible ? 'visible' : ''}`}>
-            <h2 className="text-foreground text-xl font-bold font-display mb-6">Common Questions</h2>
-            <div className="space-y-4">
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={faqAnimation.isVisible ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7 }}
+          >
+            <h2 className="text-foreground text-2xl font-bold font-display mb-6">Common Questions</h2>
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate={faqAnimation.isVisible ? "visible" : "hidden"}
+              className="space-y-4"
+            >
               {faqs.map((faq, index) => (
-                <div 
+                <motion.div 
                   key={index}
-                  className="group bg-card border border-border rounded-xl p-5 hover:border-primary/50 transition-all duration-300"
+                  variants={itemVariants}
+                  className="group bg-card border border-border/50 rounded-2xl p-5 hover-lift"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary flex-shrink-0 transition-all duration-300 group-hover:bg-primary/30">
-                      <faq.icon className="w-5 h-5" strokeWidth={2} />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary flex-shrink-0 transition-all duration-300 group-hover:bg-primary/20">
+                      <faq.icon className="w-5 h-5" strokeWidth={1.5} />
                     </div>
                     <div>
                       <h3 className="text-foreground font-semibold mb-2">{faq.question}</h3>
                       <p className="text-muted-foreground text-sm leading-relaxed">{faq.answer}</p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Social Links */}
-          <div className={`bg-card border border-border rounded-xl p-6 scroll-animate scroll-animate-delay-2 ${isVisible ? 'visible' : ''}`}>
-            <h2 className="text-foreground text-lg font-bold font-display mb-4">Follow Our Journey</h2>
-            <p className="text-muted-foreground text-sm mb-5">Stay connected with our community on social media for event updates and more.</p>
-            <div className="flex items-center gap-3">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={faqAnimation.isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-8"
+          >
+            <h2 className="text-foreground text-xl font-bold font-display mb-3">Follow Our Journey</h2>
+            <p className="text-muted-foreground text-sm mb-6">Stay connected with our community on social media for event updates and more.</p>
+            <div className="flex items-center gap-4">
               <a 
                 href="https://www.facebook.com/makefriendsandsocialize" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-lg hover:shadow-primary/30"
+                className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-card border border-border/50 text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/30"
               >
-                <Facebook className="w-5 h-5" strokeWidth={2} />
+                <Facebook className="w-6 h-6" strokeWidth={1.5} />
               </a>
               <a 
                 href="https://www.instagram.com/makefriendsandsocialize" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-lg hover:shadow-primary/30"
+                className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-card border border-border/50 text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/30"
               >
-                <Instagram className="w-5 h-5" strokeWidth={2} />
+                <Instagram className="w-6 h-6" strokeWidth={1.5} />
               </a>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
