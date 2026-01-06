@@ -19,26 +19,67 @@ export const PhotoGallerySection = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  const { data: photos, isLoading } = useQuery({
-    queryKey: ['featured-event-photos'],
+  const { data: galleryData, isLoading } = useQuery({
+    queryKey: ['homepage-gallery-photos'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First, get the most recent event that has photos
+      const { data: recentEventWithPhotos } = await supabase
+        .from('event_photos')
+        .select('event_id')
+        .not('event_id', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (recentEventWithPhotos && recentEventWithPhotos.length > 0) {
+        const eventId = recentEventWithPhotos[0].event_id;
+        
+        // Get event details
+        const { data: eventDetails } = await supabase
+          .from('events')
+          .select('title')
+          .eq('id', eventId)
+          .single();
+
+        // Fetch photos from that event (max 6)
+        const { data: eventPhotos, error } = await supabase
+          .from('event_photos')
+          .select('id, image_url, title, category')
+          .eq('event_id', eventId)
+          .order('display_order', { ascending: true })
+          .limit(6);
+
+        if (!error && eventPhotos && eventPhotos.length > 0) {
+          return {
+            photos: eventPhotos as EventPhoto[],
+            eventName: eventDetails?.title || null,
+          };
+        }
+      }
+
+      // Fallback: get featured photos if no recent event photos
+      const { data: featuredPhotos, error } = await supabase
         .from('event_photos')
         .select('id, image_url, title, category')
         .eq('is_featured', true)
         .order('display_order', { ascending: true })
-        .limit(8);
+        .limit(6);
 
       if (error) throw error;
-      return data as EventPhoto[];
+      return {
+        photos: (featuredPhotos || []) as EventPhoto[],
+        eventName: null,
+      };
     },
   });
 
-  const lightboxImages = photos?.map((p) => ({
+  const photos = galleryData?.photos || [];
+  const eventName = galleryData?.eventName;
+
+  const lightboxImages = photos.map((p) => ({
     url: p.image_url,
     title: p.title,
     category: p.category,
-  })) || [];
+  }));
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
@@ -59,29 +100,32 @@ export const PhotoGallerySection = () => {
             Moments from Our Gatherings
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Experience the warmth and elegance of our exclusive events through these captured moments.
+            {eventName 
+              ? `From our latest gathering: ${eventName}`
+              : 'Experience the warmth and elegance of our exclusive events through these captured moments.'
+            }
           </p>
         </div>
 
-        {/* Photo Grid - Masonry Style */}
+        {/* Photo Grid - 6 photos, 3 columns */}
         {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-            {Array.from({ length: 8 }).map((_, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
               <Skeleton
                 key={i}
-                className={`rounded-xl ${i % 3 === 0 ? 'aspect-[3/4]' : 'aspect-square'}`}
+                className={`rounded-xl ${i < 2 ? 'aspect-[4/5]' : 'aspect-square'}`}
               />
             ))}
           </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-            {photos?.map((photo, index) => (
+        ) : photos.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+            {photos.map((photo, index) => (
               <div
                 key={photo.id}
                 onClick={() => openLightbox(index)}
                 className={`group relative overflow-hidden rounded-xl cursor-pointer ${
-                  index % 3 === 0 ? 'aspect-[3/4]' : 'aspect-square'
-                } ${index === 0 || index === 3 ? 'md:row-span-2 md:aspect-[3/4]' : ''}`}
+                  index < 2 ? 'aspect-[4/5]' : 'aspect-square'
+                }`}
                 style={{
                   animationDelay: `${index * 0.1}s`,
                 }}
@@ -106,18 +150,24 @@ export const PhotoGallerySection = () => {
               </div>
             ))}
           </div>
+        ) : (
+          <div className="text-center py-12 text-muted-foreground">
+            No photos available yet.
+          </div>
         )}
 
         {/* View All Link */}
-        <div className="text-center mt-10">
-          <Link
-            to="/gallery"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors group"
-          >
-            View Full Gallery
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
+        {photos.length > 0 && (
+          <div className="text-center mt-10">
+            <Link
+              to="/gallery"
+              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors group"
+            >
+              View Full Gallery
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Lightbox */}
