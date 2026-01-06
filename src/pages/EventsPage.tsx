@@ -57,7 +57,7 @@ const EventsPage = () => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [sortOrder, setSortOrder] = useState<SortOption>('date-asc');
+  const [sortOrder, setSortOrder] = useState<SortOption>('date-desc');
   const [activeTab, setActiveTab] = useState<EventTab>('upcoming');
   const [rsvpStatus, setRsvpStatus] = useState<Record<string, boolean>>(() => {
     try {
@@ -79,7 +79,7 @@ const EventsPage = () => {
       let query = supabase
         .from('events')
         .select('*')
-        .order('date', { ascending: activeTab === 'upcoming' });
+        .order('date', { ascending: activeTab === 'upcoming' ? true : false });
 
       if (activeTab === 'upcoming') {
         query = query.gte('date', today).neq('status', 'past').neq('status', 'cancelled');
