@@ -1,18 +1,29 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Heart, Quote, Users, Shield, Clock, MessageCircle, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
+import { Heart, Quote, Users, Shield, Clock, MessageCircle, Sparkles, ArrowRight, CheckCircle, Star, HelpCircle, TrendingUp, Award } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
 import { motion } from "framer-motion";
 import { Picture } from "@/components/ui/picture";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import slowDatingImage from "@/assets/slow-dating.jpg";
 import slowDatingImageWebp from "@/assets/slow-dating.webp";
+import { useEffect, useState } from "react";
 
 const SlowDatingPage = () => {
   const heroAnimation = useScrollAnimation();
   const philosophyAnimation = useScrollAnimation();
   const processAnimation = useScrollAnimation();
   const valuesAnimation = useScrollAnimation();
+  const statsAnimation = useScrollAnimation();
+  const testimonialsAnimation = useScrollAnimation();
+  const faqAnimation = useScrollAnimation();
   const ctaAnimation = useScrollAnimation();
 
   const containerVariants = {
@@ -33,6 +44,91 @@ const SlowDatingPage = () => {
       y: 0,
       transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
     },
+  };
+
+  // Stats data
+  const stats = [
+    { value: 500, suffix: "+", label: "Successful Matches", icon: Heart },
+    { value: 2000, suffix: "+", label: "Active Members", icon: Users },
+    { value: 87, suffix: "%", label: "Success Rate", icon: TrendingUp },
+    { value: 15, suffix: "+", label: "Cities Served", icon: Award },
+  ];
+
+  // Testimonials data
+  const testimonials = [
+    {
+      quote: "Slow Dating helped me find someone who truly understands my values. We're getting married next spring.",
+      names: "Sarah & Michael",
+      location: "New York",
+      rating: 5,
+    },
+    {
+      quote: "After years of disappointing apps, this was a breath of fresh air. The human touch made all the difference.",
+      names: "Emma & David",
+      location: "London",
+      rating: 5,
+    },
+    {
+      quote: "The matchmaking team took the time to understand what I was really looking for. Found my partner in my second introduction.",
+      names: "Priya & James",
+      location: "San Francisco",
+      rating: 5,
+    },
+  ];
+
+  // FAQ data
+  const faqs = [
+    {
+      question: "Who is eligible for Slow Dating?",
+      answer: "Slow Dating is available to active members with Fellow or Founder tier memberships. Applicants must be at least 25 years old and genuinely seeking a meaningful, long-term relationship. Patron members can access Slow Dating by upgrading their membership."
+    },
+    {
+      question: "How long does the matching process take?",
+      answer: "Profile review typically takes 48-72 hours. After approval, your first curated match usually arrives within 2-4 weeks, depending on compatibility in your area. We prioritize quality over speed—great matches are worth waiting for."
+    },
+    {
+      question: "Is there an additional cost for Slow Dating?",
+      answer: "Slow Dating is included at no extra cost with Fellow and Founder memberships. Patron members can upgrade to Fellow tier to access this service, or inquire about our standalone Slow Dating subscription."
+    },
+    {
+      question: "How is my information protected?",
+      answer: "Your profile information is completely confidential. We only share relevant details with potential matches after mutual interest is established. Our team reviews all profiles before sharing, and you always have control over what information is revealed."
+    },
+    {
+      question: "How are matches selected?",
+      answer: "Our matchmaking team uses a combination of values alignment, lifestyle compatibility, relationship goals, and personal preferences. Unlike algorithms, we consider nuance and context—things that can't be captured in checkboxes."
+    },
+    {
+      question: "What if I don't connect with my match?",
+      answer: "That's completely normal. Not every introduction leads to a connection, and there's no pressure. We gather feedback after each introduction to refine future matches. Your next match will be informed by what you learned."
+    },
+  ];
+
+  // Animated counter component
+  const AnimatedStat = ({ value, suffix, label, icon: Icon, isVisible }: { value: number; suffix: string; label: string; icon: React.ElementType; isVisible: boolean }) => {
+    const [startCount, setStartCount] = useState(false);
+    const { count } = useAnimatedCounter(value, { duration: 2000, startOnMount: startCount });
+
+    useEffect(() => {
+      if (isVisible && !startCount) {
+        setStartCount(true);
+      }
+    }, [isVisible, startCount]);
+
+    return (
+      <motion.div
+        variants={itemVariants}
+        className="text-center p-6 bg-card border border-border/50 rounded-2xl hover-lift"
+      >
+        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+          <Icon className="h-6 w-6 text-primary" />
+        </div>
+        <div className="font-display text-4xl md:text-5xl text-foreground mb-2">
+          {count.toLocaleString()}{suffix}
+        </div>
+        <p className="text-muted-foreground text-sm">{label}</p>
+      </motion.div>
+    );
   };
 
   return (
@@ -150,6 +246,32 @@ const SlowDatingPage = () => {
               <div className="w-1 h-2 rounded-full bg-primary" />
             </motion.div>
           </motion.div>
+        </section>
+
+        {/* Stats Section */}
+        <section className="py-16 md:py-20 bg-secondary/30">
+          <div 
+            ref={statsAnimation.ref} 
+            className={`container max-w-6xl scroll-animate ${statsAnimation.isVisible ? 'visible' : ''}`}
+          >
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate={statsAnimation.isVisible ? "visible" : "hidden"}
+              className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+            >
+              {stats.map((stat, index) => (
+                <AnimatedStat
+                  key={index}
+                  value={stat.value}
+                  suffix={stat.suffix}
+                  label={stat.label}
+                  icon={stat.icon}
+                  isVisible={statsAnimation.isVisible}
+                />
+              ))}
+            </motion.div>
+          </div>
         </section>
 
         {/* Philosophy Section */}
@@ -274,8 +396,60 @@ const SlowDatingPage = () => {
           </div>
         </section>
 
-        {/* Values Section */}
+        {/* Testimonials Section */}
         <section className="py-24 md:py-32">
+          <div 
+            ref={testimonialsAnimation.ref} 
+            className={`container max-w-6xl scroll-animate ${testimonialsAnimation.isVisible ? 'visible' : ''}`}
+          >
+            <div className="text-center mb-16">
+              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Success Stories</p>
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+                Love Found Slowly
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Real stories from members who found meaningful connections through our curated approach.
+              </p>
+            </div>
+
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate={testimonialsAnimation.isVisible ? "visible" : "hidden"}
+              className="grid md:grid-cols-3 gap-6 lg:gap-8"
+            >
+              {testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  className="bg-card border border-border/50 rounded-2xl p-8 relative hover-lift"
+                >
+                  <Quote className="h-10 w-10 text-primary/20 absolute top-6 right-6" />
+                  <div className="flex gap-1 mb-6">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <p className="text-foreground text-lg leading-relaxed mb-6 italic">
+                    "{testimonial.quote}"
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Heart className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">{testimonial.names}</p>
+                      <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Values Section */}
+        <section className="py-24 md:py-32 bg-secondary/30">
           <div 
             ref={valuesAnimation.ref} 
             className={`container max-w-6xl scroll-animate ${valuesAnimation.isVisible ? 'visible' : ''}`}
@@ -306,7 +480,7 @@ const SlowDatingPage = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={valuesAnimation.isVisible ? { opacity: 1, x: 0 } : {}}
                       transition={{ duration: 0.5, delay: 0.1 * index }}
-                      className="flex items-start gap-4 p-4 rounded-xl bg-secondary/30 border border-border/30"
+                      className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border/30"
                     >
                       <Quote className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                       <p className="text-foreground italic leading-relaxed">"{question}"</p>
@@ -352,6 +526,51 @@ const SlowDatingPage = () => {
                 </div>
               </motion.div>
             </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-24 md:py-32">
+          <div 
+            ref={faqAnimation.ref} 
+            className={`container max-w-4xl scroll-animate ${faqAnimation.isVisible ? 'visible' : ''}`}
+          >
+            <div className="text-center mb-16">
+              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Common Questions</p>
+              <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
+                Slow Dating FAQ
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Everything you need to know about our curated matchmaking service.
+              </p>
+            </div>
+
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate={faqAnimation.isVisible ? "visible" : "hidden"}
+            >
+              <Accordion type="single" collapsible className="w-full space-y-3">
+                {faqs.map((faq, index) => (
+                  <motion.div key={index} variants={itemVariants}>
+                    <AccordionItem 
+                      value={`faq-${index}`}
+                      className="border border-border/50 rounded-xl px-6 bg-card hover:border-primary/30 transition-colors"
+                    >
+                      <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-5 gap-4">
+                        <div className="flex items-center gap-4">
+                          <HelpCircle className="h-5 w-5 text-primary flex-shrink-0" />
+                          {faq.question}
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground pb-5 leading-relaxed pl-9">
+                        {faq.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </motion.div>
+                ))}
+              </Accordion>
+            </motion.div>
           </div>
         </section>
 

@@ -7,7 +7,9 @@ import {
 } from '@/components/ui/accordion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles, HelpCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 const faqCategories = [
   {
@@ -129,71 +131,183 @@ const faqCategories = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
+  },
+};
+
 export default function FAQPage() {
+  const heroAnimation = useScrollAnimation();
+  const faqAnimation = useScrollAnimation();
+  const ctaAnimation = useScrollAnimation();
+
   useEffect(() => {
     document.title = 'FAQ | Make Friends and Socialize';
   }, []);
 
   return (
     <main className="min-h-screen bg-background">
-        {/* Hero Section */}
-        <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-gradient-to-b from-primary/5 to-background">
-          <div className="mx-auto max-w-4xl text-center">
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6">
-              Frequently Asked <span className="text-primary">Questions</span>
-            </h1>
-            <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
-              Everything you need to know about our community, membership, events, and more.
-            </p>
-          </div>
-        </section>
+      {/* Hero Section */}
+      <section className="relative w-full py-20 md:py-28 overflow-hidden">
+        {/* Floating Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            className="absolute top-1/3 right-1/4 w-64 h-64 rounded-full bg-primary/10 blur-3xl"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full bg-primary/5 blur-3xl"
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
 
-        {/* FAQ Categories */}
-        <section className="w-full px-6 py-12 md:px-10 md:py-16 lg:px-16 xl:px-20">
-          <div className="mx-auto max-w-4xl space-y-12">
-            {faqCategories.map((category, categoryIndex) => (
-              <div key={categoryIndex}>
-                <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground mb-6">
-                  {category.title}
-                </h2>
-                <Accordion type="single" collapsible className="w-full space-y-3">
-                  {category.faqs.map((faq, faqIndex) => (
-                    <AccordionItem 
-                      key={faqIndex} 
-                      value={`${categoryIndex}-${faqIndex}`}
-                      className="border border-border/50 rounded-xl px-6 bg-card"
-                    >
-                      <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-5">
+        <div 
+          ref={heroAnimation.ref}
+          className={`container max-w-4xl text-center relative z-10 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-6"
+          >
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-foreground">Help Center</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
+          >
+            Frequently Asked <span className="text-gradient">Questions</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto"
+          >
+            Everything you need to know about our community, membership, events, and more.
+          </motion.p>
+        </div>
+      </section>
+
+      {/* FAQ Categories */}
+      <section 
+        ref={faqAnimation.ref}
+        className={`w-full px-6 py-12 md:px-10 md:py-16 lg:px-16 xl:px-20 scroll-animate ${faqAnimation.isVisible ? 'visible' : ''}`}
+      >
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={faqAnimation.isVisible ? "visible" : "hidden"}
+          className="mx-auto max-w-4xl space-y-12"
+        >
+          {faqCategories.map((category, categoryIndex) => (
+            <motion.div key={categoryIndex} variants={itemVariants}>
+              <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground mb-6">
+                {category.title}
+              </h2>
+              <Accordion type="single" collapsible className="w-full space-y-3">
+                {category.faqs.map((faq, faqIndex) => (
+                  <AccordionItem 
+                    key={faqIndex} 
+                    value={`${categoryIndex}-${faqIndex}`}
+                    className="border border-border/50 rounded-xl px-6 bg-card hover:border-primary/30 transition-colors"
+                  >
+                    <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-5 gap-4">
+                      <div className="flex items-center gap-4">
+                        <HelpCircle className="h-5 w-5 text-primary flex-shrink-0" />
                         {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground pb-5 leading-relaxed">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </div>
-            ))}
-          </div>
-        </section>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-5 leading-relaxed pl-9">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
 
-        {/* Still Have Questions CTA */}
-        <section className="w-full px-6 py-16 md:px-10 md:py-20 lg:px-16 xl:px-20 bg-card">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground mb-4">
-              Still Have Questions?
-            </h2>
-            <p className="text-muted-foreground text-lg mb-8">
-              Our team is here to help. Reach out and we will get back to you within 24 hours.
-            </p>
-            <Link to="/contact">
-              <Button size="lg" className="rounded-full px-8">
+      {/* Still Have Questions CTA */}
+      <section className="py-24 md:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-secondary" />
+        <div className="absolute inset-0">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
+        </div>
+
+        <div 
+          ref={ctaAnimation.ref}
+          className={`container max-w-3xl text-center relative z-10 scroll-animate ${ctaAnimation.isVisible ? 'visible' : ''}`}
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={ctaAnimation.isVisible ? { scale: 1, opacity: 1 } : {}}
+            transition={{ duration: 0.5 }}
+            className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-8"
+          >
+            <HelpCircle className="h-10 w-10 text-primary" />
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={ctaAnimation.isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="font-display text-4xl md:text-5xl text-foreground mb-6"
+          >
+            Still Have Questions?
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={ctaAnimation.isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-muted-foreground text-lg md:text-xl mb-10 max-w-xl mx-auto"
+          >
+            Our team is here to help. Reach out and we'll get back to you within 24 hours.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={ctaAnimation.isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <Button
+              asChild
+              size="lg"
+              className="rounded-full px-12 min-h-[56px] text-lg font-medium group"
+            >
+              <Link to="/contact">
                 Contact Us
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </section>
-      </main>
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+    </main>
   );
 }
