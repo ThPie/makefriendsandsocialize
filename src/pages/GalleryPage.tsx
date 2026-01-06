@@ -3,7 +3,8 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Lightbox } from '@/components/ui/lightbox';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2 } from 'lucide-react';
+import { Loader2, LayoutGrid, Columns } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface EventPhoto {
   id: string;
@@ -15,11 +16,24 @@ interface EventPhoto {
 const categories = ['All Events', 'Galas', 'Seasonal Soirées', 'Cocktail Hours', 'Art & Wine', 'Networking', 'Workshops'];
 const PHOTOS_PER_PAGE = 12;
 
+type LayoutMode = 'grid' | 'masonry';
+
 const GalleryPage = () => {
   const [activeCategory, setActiveCategory] = useState('All Events');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('gallery-layout') as LayoutMode) || 'grid';
+    }
+    return 'grid';
+  });
   const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // Persist layout preference
+  useEffect(() => {
+    localStorage.setItem('gallery-layout', layoutMode);
+  }, [layoutMode]);
 
   const {
     data,
@@ -102,60 +116,126 @@ const GalleryPage = () => {
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex gap-3 p-3 overflow-x-auto no-scrollbar">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg px-4 cursor-pointer transition-colors ${
-                activeCategory === cat
-                  ? 'bg-primary text-primary-foreground font-medium'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
-              }`}
+        {/* Filters and Layout Toggle */}
+        <div className="flex items-center gap-3 p-3">
+          <div className="flex gap-3 overflow-x-auto no-scrollbar flex-1">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg px-4 cursor-pointer transition-colors ${
+                  activeCategory === cat
+                    ? 'bg-primary text-primary-foreground font-medium'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
+              >
+                <span className="text-sm font-medium leading-normal whitespace-nowrap">{cat}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Layout Toggle */}
+          <div className="flex items-center gap-1 border border-border rounded-lg p-1 shrink-0">
+            <Button
+              variant={layoutMode === 'grid' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-7 w-7"
+              onClick={() => setLayoutMode('grid')}
+              title="Grid layout"
             >
-              <span className="text-sm font-medium leading-normal whitespace-nowrap">{cat}</span>
-            </button>
-          ))}
+              <LayoutGrid className="w-4 h-4" />
+            </Button>
+            <Button
+              variant={layoutMode === 'masonry' ? 'secondary' : 'ghost'}
+              size="icon"
+              className="h-7 w-7"
+              onClick={() => setLayoutMode('masonry')}
+              title="Masonry layout"
+            >
+              <Columns className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
-        {/* Grid */}
+        {/* Grid / Masonry */}
         {isLoading ? (
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 p-4">
+          <div className={layoutMode === 'masonry' 
+            ? "columns-2 sm:columns-3 md:columns-4 gap-3 p-4" 
+            : "grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 p-4"
+          }>
             {Array.from({ length: 12 }).map((_, i) => (
-              <Skeleton key={i} className="aspect-[3/4] rounded-lg" />
+              <Skeleton 
+                key={i} 
+                className={layoutMode === 'masonry' 
+                  ? `rounded-lg mb-3 break-inside-avoid ${i % 3 === 0 ? 'h-64' : i % 3 === 1 ? 'h-48' : 'h-56'}` 
+                  : "aspect-[3/4] rounded-lg"
+                } 
+              />
             ))}
           </div>
         ) : photos.length > 0 ? (
           <>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 p-4">
-              {photos.map((photo, index) => (
-                <div 
-                  key={photo.id}
-                  onClick={() => openLightbox(index)}
-                  className="bg-cover bg-center flex flex-col gap-3 rounded-lg justify-end p-4 aspect-[3/4] group relative overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300"
-                  style={{ 
-                    backgroundImage: `url("${photo.image_url}")`,
-                    backgroundSize: 'cover',
-                  }}
-                >
-                  <img
-                    src={photo.image_url}
-                    alt={photo.title || 'Event photo'}
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300" />
-                  <p className="text-white text-base font-bold leading-tight w-full font-display relative z-10 drop-shadow-sm group-hover:-translate-y-1 transition-transform duration-300">
-                    {photo.title || 'Untitled'}
-                  </p>
-                  {photo.category && (
-                    <span className="text-white/70 text-xs relative z-10">{photo.category}</span>
-                  )}
-                </div>
-              ))}
-            </div>
+            {layoutMode === 'masonry' ? (
+              <div className="columns-2 sm:columns-3 md:columns-4 gap-3 p-4">
+                {photos.map((photo, index) => (
+                  <div 
+                    key={photo.id}
+                    onClick={() => openLightbox(index)}
+                    className="break-inside-avoid mb-3 group relative overflow-hidden rounded-lg cursor-pointer hover:shadow-xl transition-shadow duration-300"
+                  >
+                    <img
+                      src={photo.image_url}
+                      alt={photo.title || 'Event photo'}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-auto object-cover"
+                      onLoad={(e) => {
+                        (e.target as HTMLImageElement).style.opacity = '1';
+                      }}
+                      style={{ opacity: 0, transition: 'opacity 0.3s ease-in-out' }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <p className="text-white text-base font-bold leading-tight font-display drop-shadow-sm">
+                        {photo.title || 'Untitled'}
+                      </p>
+                      {photo.category && (
+                        <span className="text-white/70 text-xs">{photo.category}</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 p-4">
+                {photos.map((photo, index) => (
+                  <div 
+                    key={photo.id}
+                    onClick={() => openLightbox(index)}
+                    className="bg-cover bg-center flex flex-col gap-3 rounded-lg justify-end p-4 aspect-[3/4] group relative overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300"
+                    style={{ 
+                      backgroundImage: `url("${photo.image_url}")`,
+                      backgroundSize: 'cover',
+                    }}
+                  >
+                    <img
+                      src={photo.image_url}
+                      alt={photo.title || 'Event photo'}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300" />
+                    <p className="text-white text-base font-bold leading-tight w-full font-display relative z-10 drop-shadow-sm group-hover:-translate-y-1 transition-transform duration-300">
+                      {photo.title || 'Untitled'}
+                    </p>
+                    {photo.category && (
+                      <span className="text-white/70 text-xs relative z-10">{photo.category}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Load more sentinel */}
             <div ref={loadMoreRef} className="h-1" />
