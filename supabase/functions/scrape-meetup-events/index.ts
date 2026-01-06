@@ -28,7 +28,7 @@ serve(async (req) => {
     const pastEventsUrl = 'https://www.meetup.com/makefriendsandsocialize/events/?type=past';
     console.log('Scraping past events from:', pastEventsUrl);
 
-    // Use Firecrawl's JSON extraction with a schema for structured data
+    // Use Firecrawl's extract format with JSON schema
     const scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
       method: 'POST',
       headers: {
@@ -37,35 +37,32 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         url: pastEventsUrl,
-        formats: [
-          {
-            type: 'json',
-            schema: {
-              type: 'object',
-              properties: {
-                events: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      title: { type: 'string', description: 'The full event title/name' },
-                      date: { type: 'string', description: 'Event date in YYYY-MM-DD format' },
-                      time: { type: 'string', description: 'Event start time like "7:00 PM" or "19:00"' },
-                      location: { type: 'string', description: 'Full venue name and address' },
-                      attendees: { type: 'number', description: 'Number of people who attended' },
-                      imageUrl: { type: 'string', description: 'URL to the event cover image' },
-                    },
-                    required: ['title', 'date']
+        formats: ['extract', 'html'],
+        extract: {
+          schema: {
+            type: 'object',
+            properties: {
+              events: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    title: { type: 'string', description: 'The full event title/name' },
+                    date: { type: 'string', description: 'Event date in YYYY-MM-DD format' },
+                    time: { type: 'string', description: 'Event start time like "7:00 PM"' },
+                    location: { type: 'string', description: 'Full venue name and address' },
+                    attendees: { type: 'number', description: 'Number of people who attended' },
+                    imageUrl: { type: 'string', description: 'URL to the event cover image' },
                   },
-                  description: 'List of past events from the Meetup page'
-                }
-              },
-              required: ['events']
+                  required: ['title', 'date']
+                },
+                description: 'List of past events from the Meetup page'
+              }
             },
-            prompt: 'Extract all past events from this Meetup page. For each event, get the complete event title, the date it occurred (format as YYYY-MM-DD), the start time, the venue/location, number of attendees, and the event image URL. Only include actual events, not navigation links or page elements.'
+            required: ['events']
           },
-          'html'
-        ],
+          prompt: 'Extract all past events from this Meetup page. For each event, get the complete event title, the date it occurred (format as YYYY-MM-DD), the start time, the venue/location, number of attendees, and the event image URL. Only include actual events, not navigation links or page elements.'
+        },
         onlyMainContent: false,
         waitFor: 3000,
       }),
@@ -83,14 +80,14 @@ serve(async (req) => {
 
     console.log('Scrape successful, processing extracted data...');
 
-    // Get the JSON extracted data
-    const extractedJson = scrapeData.data?.json || scrapeData.json || {};
-    const extractedEvents = extractedJson.events || [];
+    // Get the extracted data
+    const extractedData = scrapeData.data?.extract || scrapeData.extract || {};
+    const extractedEvents = extractedData.events || [];
     const html = scrapeData.data?.html || scrapeData.html || '';
 
-    console.log('Extracted', extractedEvents.length, 'events from JSON extraction');
+    console.log('Extracted', extractedEvents.length, 'events');
 
-    // Extract additional image URLs from HTML as backup
+    // Extract image URLs from HTML as backup
     const eventImagePattern = /<img[^>]*src=["']([^"']*meetupstatic\.com\/photos\/event[^"']*)["'][^>]*>/gi;
     const eventImages: string[] = [];
     let imgMatch;
@@ -121,7 +118,6 @@ serve(async (req) => {
       // Validate and format date
       let eventDate = event.date;
       try {
-        // Try to parse various date formats
         const parsed = new Date(event.date);
         if (!isNaN(parsed.getTime())) {
           eventDate = parsed.toISOString().split('T')[0];
@@ -175,7 +171,7 @@ serve(async (req) => {
         .limit(1);
 
       const eventData = {
-        time: event.time || '19:00',
+        time: event.time || '7:00 PM',
         location: event.location || 'New York, NY',
         image_url: event.imageUrl,
         status: 'past',
@@ -185,7 +181,6 @@ serve(async (req) => {
       };
 
       if (existing && existing.length > 0) {
-        // Update existing event
         const { error } = await supabase
           .from('events')
           .update(eventData)
@@ -194,7 +189,6 @@ serve(async (req) => {
         if (!error) updatedCount++;
         else console.error('Error updating event:', error);
       } else {
-        // Insert new event
         const { error } = await supabase
           .from('events')
           .insert({
@@ -204,7 +198,7 @@ serve(async (req) => {
             tier: 'patron',
             city: 'New York',
             country: 'United States',
-            description: `Imported from Meetup. ${event.attendees ? event.attendees + ' attendees.' : ''}`,
+            description: event.attendees ? `${event.attendees} attendees` : 'Imported from Meetup',
           });
 
         if (error) {
@@ -215,7 +209,7 @@ serve(async (req) => {
       }
     }
 
-    console.log('Inserted', insertedCount, 'new events, updated', updatedCount, 'existing events');
+    console.log('Inserted', insertedCount, 'new events, updated', updatedCount);
 
     return new Response(
       JSON.stringify({
