@@ -726,6 +726,7 @@ export type Database = {
           avatar_urls: string[] | null
           created_at: string
           id: string
+          joined_this_week: number | null
           last_updated: string
           meetup_url: string | null
           member_count: number
@@ -735,6 +736,7 @@ export type Database = {
           avatar_urls?: string[] | null
           created_at?: string
           id?: string
+          joined_this_week?: number | null
           last_updated?: string
           meetup_url?: string | null
           member_count?: number
@@ -744,6 +746,7 @@ export type Database = {
           avatar_urls?: string[] | null
           created_at?: string
           id?: string
+          joined_this_week?: number | null
           last_updated?: string
           meetup_url?: string | null
           member_count?: number

@@ -82,7 +82,7 @@ export const Header = () => {
             ))}
           </nav>
           <Button asChild>
-            <Link to="/membership">Request Membership</Link>
+            <Link to="/membership">Apply to Join</Link>
           </Button>
         </div>
 
@@ -122,7 +122,7 @@ export const Header = () => {
           </Link>
         ))}
         <Button asChild className="w-full mt-4">
-          <Link to="/membership">Request Membership</Link>
+          <Link to="/membership">Apply to Join</Link>
         </Button>
       </div>
     </header>

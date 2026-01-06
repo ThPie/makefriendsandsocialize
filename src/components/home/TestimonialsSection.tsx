@@ -76,6 +76,7 @@ export const TestimonialsSection = () => {
   const getSourceBadge = (source: string) => {
     if (source === 'trustpilot') return 'Trustpilot';
     if (source === 'google') return 'Google';
+    if (source === 'meetup') return 'Meetup';
     return null;
   };
 

@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
-import { Resend } from "npm:resend@2.0.0";
+import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -27,10 +27,11 @@ const MILESTONES = [
 function getMilestoneInfo(count: number) {
   for (let i = MILESTONES.length - 1; i >= 0; i--) {
     if (count >= MILESTONES[i].count) {
+      const nextMilestone = MILESTONES[i].next;
       return {
         current: MILESTONES[i],
-        next: MILESTONES[i].next ? MILESTONES.find(m => m.count === MILESTONES[i].next) : null,
-        remaining: MILESTONES[i].next ? MILESTONES[i].next - count : 0,
+        next: nextMilestone ? MILESTONES.find(m => m.count === nextMilestone) : null,
+        remaining: nextMilestone ? nextMilestone - count : 0,
       };
     }
   }
