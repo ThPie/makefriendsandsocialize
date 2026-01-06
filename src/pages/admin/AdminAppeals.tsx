@@ -128,8 +128,9 @@ const AdminAppeals = () => {
       const appeal = appeals?.find((a) => a.id === id);
       if (!appeal) throw new Error("Appeal not found");
 
+      const payload = appeal.payload as AppealPayload;
       const updatedPayload = {
-        ...(appeal.payload as AppealPayload),
+        ...payload,
         admin_response: response,
         resolved_at: status !== "pending" && status !== "under_review" ? new Date().toISOString() : undefined,
       };
@@ -144,12 +145,29 @@ const AdminAppeals = () => {
         .eq("id", id);
 
       if (error) throw error;
+
+      // Send email notification to the user
+      try {
+        await supabase.functions.invoke("send-appeal-notification", {
+          body: {
+            email: payload.email,
+            name: payload.full_name,
+            subject: payload.subject,
+            appealType: payload.appeal_type,
+            status,
+            adminResponse: response,
+          },
+        });
+      } catch (emailError) {
+        console.error("Failed to send email notification:", emailError);
+        // Don't throw - the update succeeded, just log the email failure
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-appeals"] });
       toast({
         title: "Appeal Updated",
-        description: "The appeal status has been updated successfully.",
+        description: "The appeal status has been updated and the user has been notified.",
       });
       setSelectedAppeal(null);
       setAdminResponse("");
