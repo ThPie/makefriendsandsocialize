@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Settings, Users, Link, Star, Loader2, Save, RefreshCw } from 'lucide-react';
+import { Settings, Users, Link, Star, Loader2, Save, RefreshCw, Cloud, Calendar, MessageSquare } from 'lucide-react';
 
 interface MeetupStats {
   id: string;
@@ -20,6 +20,12 @@ export default function AdminSettings() {
   const [meetupStats, setMeetupStats] = useState<MeetupStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<{ lastSync: string | null; eventsCount: number; reviewsCount: number }>({
+    lastSync: null,
+    eventsCount: 0,
+    reviewsCount: 0
+  });
   const [form, setForm] = useState({
     member_count: '',
     meetup_url: '',
@@ -28,6 +34,7 @@ export default function AdminSettings() {
 
   useEffect(() => {
     fetchSettings();
+    fetchSyncStatus();
   }, []);
 
   const fetchSettings = async () => {
@@ -54,6 +61,66 @@ export default function AdminSettings() {
       toast.error('Failed to load settings');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchSyncStatus = async () => {
+    try {
+      // Get meetup events count
+      const { count: eventsCount } = await supabase
+        .from('events')
+        .select('*', { count: 'exact', head: true })
+        .eq('source', 'meetup');
+
+      // Get meetup reviews count
+      const { count: reviewsCount } = await supabase
+        .from('testimonials')
+        .select('*', { count: 'exact', head: true })
+        .eq('source', 'meetup');
+
+      // Get last updated from meetup_stats
+      const { data: stats } = await supabase
+        .from('meetup_stats')
+        .select('last_updated')
+        .limit(1)
+        .maybeSingle();
+
+      setSyncStatus({
+        lastSync: stats?.last_updated || null,
+        eventsCount: eventsCount || 0,
+        reviewsCount: reviewsCount || 0
+      });
+    } catch (error) {
+      console.error('Error fetching sync status:', error);
+    }
+  };
+
+  const handleSyncMeetup = async () => {
+    setIsSyncing(true);
+    toast.info('Starting Meetup sync...');
+
+    try {
+      // Call all three scrapers sequentially
+      const statsResult = await supabase.functions.invoke('scrape-meetup');
+      if (statsResult.error) throw new Error('Failed to sync stats: ' + statsResult.error.message);
+      toast.success('Member stats synced');
+
+      const reviewsResult = await supabase.functions.invoke('scrape-meetup-reviews');
+      if (reviewsResult.error) throw new Error('Failed to sync reviews: ' + reviewsResult.error.message);
+      toast.success('Reviews synced');
+
+      const eventsResult = await supabase.functions.invoke('scrape-meetup-events');
+      if (eventsResult.error) throw new Error('Failed to sync events: ' + eventsResult.error.message);
+      toast.success('Past events synced');
+
+      toast.success('Meetup data sync complete!');
+      fetchSettings();
+      fetchSyncStatus();
+    } catch (error) {
+      console.error('Sync error:', error);
+      toast.error(error instanceof Error ? error.message : 'Sync failed');
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -108,6 +175,65 @@ export default function AdminSettings() {
       </div>
 
       <div className="grid gap-6">
+        {/* Meetup Sync */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Cloud className="h-5 w-5" />
+              Meetup Data Sync
+            </CardTitle>
+            <CardDescription>
+              Sync member stats, reviews, and past events from Meetup
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-lg border border-border">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Members</span>
+                </div>
+                <p className="text-2xl font-bold">{meetupStats?.member_count?.toLocaleString() || '—'}</p>
+              </div>
+              <div className="p-4 rounded-lg border border-border">
+                <div className="flex items-center gap-2 mb-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Imported Events</span>
+                </div>
+                <p className="text-2xl font-bold">{syncStatus.eventsCount}</p>
+              </div>
+              <div className="p-4 rounded-lg border border-border">
+                <div className="flex items-center gap-2 mb-2">
+                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Imported Reviews</span>
+                </div>
+                <p className="text-2xl font-bold">{syncStatus.reviewsCount}</p>
+              </div>
+            </div>
+
+            {syncStatus.lastSync && (
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <RefreshCw className="h-3 w-3" />
+                Last synced: {new Date(syncStatus.lastSync).toLocaleString()}
+              </p>
+            )}
+
+            <Button onClick={handleSyncMeetup} disabled={isSyncing}>
+              {isSyncing ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Syncing...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Sync Now
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+
         {/* Meetup Stats */}
         <Card>
           <CardHeader>
