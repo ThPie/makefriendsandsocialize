@@ -58,6 +58,7 @@ import AdminReferrals from "@/pages/admin/AdminReferrals";
 import AdminPhotos from "@/pages/admin/AdminPhotos";
 import DatingIntakePage from "@/pages/DatingIntakePage";
 import SlowDatingPage from "@/pages/SlowDatingPage";
+import AppealPage from "@/pages/AppealPage";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,7 @@ const App = () => (
               <Route path="/cookies" element={<Layout><CookiesPage /></Layout>} />
               <Route path="/faq" element={<Layout><FAQPage /></Layout>} />
               <Route path="/slow-dating" element={<SlowDatingPage />} />
+              <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
               
               {/* Auth routes */}
               <Route path="/auth" element={<AuthPage />} />
