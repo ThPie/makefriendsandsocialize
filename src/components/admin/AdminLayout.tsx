@@ -55,6 +55,7 @@ const menuItems = [
   { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp },
   { title: 'Events', url: '/admin/events', icon: Calendar },
   { title: 'Event Analytics', url: '/admin/event-analytics', icon: TrendingUp },
+  { title: 'Photos', url: '/admin/photos', icon: Image },
   { title: 'Connections', url: '/admin/connections', icon: UserCog },
   { title: 'Testimonials', url: '/admin/testimonials', icon: Quote },
   { title: 'Content', url: '/admin/content', icon: Image },

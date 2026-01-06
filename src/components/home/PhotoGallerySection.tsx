@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Lightbox } from '@/components/ui/lightbox';
 import { ArrowRight } from 'lucide-react';
 
 interface EventPhoto {
@@ -14,6 +16,8 @@ interface EventPhoto {
 
 export const PhotoGallerySection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const { data: photos, isLoading } = useQuery({
     queryKey: ['featured-event-photos'],
@@ -29,6 +33,17 @@ export const PhotoGallerySection = () => {
       return data as EventPhoto[];
     },
   });
+
+  const lightboxImages = photos?.map((p) => ({
+    url: p.image_url,
+    title: p.title,
+    category: p.category,
+  })) || [];
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
 
   return (
     <section
@@ -63,6 +78,7 @@ export const PhotoGallerySection = () => {
             {photos?.map((photo, index) => (
               <div
                 key={photo.id}
+                onClick={() => openLightbox(index)}
                 className={`group relative overflow-hidden rounded-xl cursor-pointer ${
                   index % 3 === 0 ? 'aspect-[3/4]' : 'aspect-square'
                 } ${index === 0 || index === 3 ? 'md:row-span-2 md:aspect-[3/4]' : ''}`}
@@ -103,6 +119,14 @@ export const PhotoGallerySection = () => {
           </Link>
         </div>
       </div>
+
+      {/* Lightbox */}
+      <Lightbox
+        images={lightboxImages}
+        initialIndex={lightboxIndex}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+      />
     </section>
   );
 };

@@ -55,6 +55,7 @@ import AdminSecurityReports from "@/pages/admin/AdminSecurityReports";
 import AdminSecurityDashboard from "@/pages/admin/AdminSecurityDashboard";
 import AdminLeads from "@/pages/admin/AdminLeads";
 import AdminReferrals from "@/pages/admin/AdminReferrals";
+import AdminPhotos from "@/pages/admin/AdminPhotos";
 import DatingIntakePage from "@/pages/DatingIntakePage";
 import SlowDatingPage from "@/pages/SlowDatingPage";
 
@@ -120,6 +121,7 @@ const App = () => (
               <Route path="/admin/analytics" element={<AdminLayout><AdminAnalytics /></AdminLayout>} />
               <Route path="/admin/event-analytics" element={<AdminLayout><AdminEventAnalytics /></AdminLayout>} />
               <Route path="/admin/events" element={<AdminLayout><AdminEvents /></AdminLayout>} />
+              <Route path="/admin/photos" element={<AdminLayout><AdminPhotos /></AdminLayout>} />
               <Route path="/admin/connections" element={<AdminLayout><AdminConnections /></AdminLayout>} />
               <Route path="/admin/testimonials" element={<AdminLayout><AdminTestimonials /></AdminLayout>} />
               <Route path="/admin/content" element={<AdminLayout><AdminContent /></AdminLayout>} />
