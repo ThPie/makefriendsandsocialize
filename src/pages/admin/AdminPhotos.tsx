@@ -1,6 +1,18 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PhotoUpload } from '@/components/admin/PhotoUpload';
+import { Plus, Pencil, Trash2, Star, GripVertical, Camera, CheckSquare, Square, X } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   DndContext,
   closestCenter,
@@ -18,38 +30,6 @@ import {
   rectSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Skeleton } from '@/components/ui/skeleton';
-import { PhotoUpload } from '@/components/admin/PhotoUpload';
-import { Plus, GripVertical, Pencil, Trash2, Star, Camera } from 'lucide-react';
-import { toast } from 'sonner';
 
 interface EventPhoto {
   id: string;
@@ -61,26 +41,32 @@ interface EventPhoto {
   event_id: string | null;
 }
 
-const categories = [
+const CATEGORIES = [
   'Galas',
   'Seasonal Soirées',
   'Cocktail Hours',
   'Art & Wine',
   'Networking',
   'Workshops',
-  'Other',
 ];
 
-// Sortable photo card component
-const SortablePhotoCard = ({
-  photo,
-  onEdit,
-  onDelete,
-}: {
+interface SortablePhotoCardProps {
   photo: EventPhoto;
-  onEdit: (photo: EventPhoto) => void;
-  onDelete: (photo: EventPhoto) => void;
-}) => {
+  onEdit: () => void;
+  onDelete: () => void;
+  isSelectionMode: boolean;
+  isSelected: boolean;
+  onToggleSelect: () => void;
+}
+
+const SortablePhotoCard = ({ 
+  photo, 
+  onEdit, 
+  onDelete, 
+  isSelectionMode, 
+  isSelected,
+  onToggleSelect 
+}: SortablePhotoCardProps) => {
   const {
     attributes,
     listeners,
@@ -88,7 +74,7 @@ const SortablePhotoCard = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: photo.id });
+  } = useSortable({ id: photo.id, disabled: isSelectionMode });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -96,66 +82,100 @@ const SortablePhotoCard = ({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="group relative bg-card border border-border rounded-lg overflow-hidden"
-    >
-      {/* Drag handle */}
-      <div
-        {...attributes}
-        {...listeners}
-        className="absolute top-2 left-2 z-10 p-1.5 rounded bg-black/50 text-white cursor-grab opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        <GripVertical className="w-4 h-4" />
-      </div>
+  const handleClick = (e: React.MouseEvent) => {
+    if (isSelectionMode) {
+      e.stopPropagation();
+      onToggleSelect();
+    }
+  };
 
-      {/* Featured badge */}
-      {photo.is_featured && (
-        <div className="absolute top-2 right-2 z-10 p-1.5 rounded bg-primary text-primary-foreground">
-          <Star className="w-4 h-4 fill-current" />
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style}
+      onClick={handleClick}
+      className={`relative group aspect-square rounded-lg overflow-hidden border-2 transition-colors ${
+        isSelected ? 'border-primary ring-2 ring-primary/30' : 'border-transparent'
+      } ${isSelectionMode ? 'cursor-pointer' : ''}`}
+    >
+      <img
+        src={photo.image_url}
+        alt={photo.title || 'Event photo'}
+        className="w-full h-full object-cover"
+      />
+      
+      {/* Selection overlay */}
+      {isSelectionMode && (
+        <div className={`absolute inset-0 transition-colors ${isSelected ? 'bg-primary/20' : 'bg-transparent hover:bg-black/10'}`}>
+          <div className="absolute top-2 left-2">
+            {isSelected ? (
+              <CheckSquare className="w-6 h-6 text-primary drop-shadow-lg" />
+            ) : (
+              <Square className="w-6 h-6 text-white drop-shadow-lg" />
+            )}
+          </div>
         </div>
       )}
 
-      {/* Image */}
-      <div className="aspect-square relative overflow-hidden">
-        <img
-          src={photo.image_url}
-          alt={photo.title || 'Event photo'}
-          className="w-full h-full object-cover"
-        />
-        
-        {/* Hover overlay with actions */}
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => onEdit(photo)}
-          >
-            <Pencil className="w-4 h-4 mr-1" />
-            Edit
-          </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => onDelete(photo)}
-          >
-            <Trash2 className="w-4 h-4 mr-1" />
-            Delete
-          </Button>
+      {/* Featured badge */}
+      {photo.is_featured && (
+        <div className="absolute top-2 right-2">
+          <Badge className="bg-yellow-500/90 text-yellow-950 gap-1">
+            <Star className="w-3 h-3 fill-current" />
+            Featured
+          </Badge>
         </div>
-      </div>
+      )}
 
-      {/* Info */}
-      <div className="p-3">
-        <p className="font-medium text-sm truncate">
-          {photo.title || 'Untitled'}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {photo.category || 'No category'}
-        </p>
-      </div>
+      {/* Hover overlay (only in normal mode) */}
+      {!isSelectionMode && (
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+          {/* Drag handle */}
+          <div
+            {...listeners}
+            {...attributes}
+            className="absolute top-2 left-2 p-1.5 rounded bg-white/90 text-gray-700 cursor-grab active:cursor-grabbing"
+          >
+            <GripVertical className="w-4 h-4" />
+          </div>
+
+          {/* Actions */}
+          <div className="absolute bottom-2 right-2 flex gap-1">
+            <Button
+              size="icon"
+              variant="secondary"
+              className="h-8 w-8"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+            >
+              <Pencil className="w-4 h-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant="destructive"
+              className="h-8 w-8"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* Info */}
+          <div className="absolute bottom-2 left-2 text-white">
+            <p className="text-sm font-medium truncate max-w-[120px]">
+              {photo.title || 'Untitled'}
+            </p>
+            {photo.category && (
+              <p className="text-xs text-white/70">{photo.category}</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -166,6 +186,11 @@ const AdminPhotos = () => {
   const [editingPhoto, setEditingPhoto] = useState<EventPhoto | null>(null);
   const [deletingPhoto, setDeletingPhoto] = useState<EventPhoto | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  
+  // Multi-select state
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedPhotos, setSelectedPhotos] = useState<Set<string>>(new Set());
+  const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
 
   // Form state for add/edit
   const [formData, setFormData] = useState({
@@ -262,6 +287,43 @@ const AdminPhotos = () => {
     },
   });
 
+  // Bulk delete mutation
+  const bulkDeleteMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase.from('event_photos').delete().in('id', ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-event-photos'] });
+      queryClient.invalidateQueries({ queryKey: ['featured-event-photos'] });
+      setSelectedPhotos(new Set());
+      setIsSelectionMode(false);
+      setShowBulkDeleteDialog(false);
+      toast.success(`${selectedPhotos.size} photos deleted`);
+    },
+    onError: () => {
+      toast.error('Failed to delete photos');
+    },
+  });
+
+  // Bulk feature toggle mutation
+  const bulkFeatureMutation = useMutation({
+    mutationFn: async ({ ids, featured }: { ids: string[]; featured: boolean }) => {
+      const { error } = await supabase.from('event_photos').update({ is_featured: featured }).in('id', ids);
+      if (error) throw error;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['admin-event-photos'] });
+      queryClient.invalidateQueries({ queryKey: ['featured-event-photos'] });
+      setSelectedPhotos(new Set());
+      setIsSelectionMode(false);
+      toast.success(`${variables.ids.length} photos ${variables.featured ? 'featured' : 'unfeatured'}`);
+    },
+    onError: () => {
+      toast.error('Failed to update photos');
+    },
+  });
+
   // Reorder mutation
   const reorderMutation = useMutation({
     mutationFn: async (reorderedPhotos: { id: string; display_order: number }[]) => {
@@ -334,7 +396,43 @@ const AdminPhotos = () => {
     setEditingPhoto(photo);
   };
 
+  const togglePhotoSelection = (photoId: string) => {
+    setSelectedPhotos((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(photoId)) {
+        newSet.delete(photoId);
+      } else {
+        newSet.add(photoId);
+      }
+      return newSet;
+    });
+  };
+
+  const selectAll = () => {
+    if (photos) {
+      setSelectedPhotos(new Set(photos.map((p) => p.id)));
+    }
+  };
+
+  const deselectAll = () => {
+    setSelectedPhotos(new Set());
+  };
+
+  const exitSelectionMode = () => {
+    setIsSelectionMode(false);
+    setSelectedPhotos(new Set());
+  };
+
+  const handleBulkDelete = () => {
+    bulkDeleteMutation.mutate(Array.from(selectedPhotos));
+  };
+
+  const handleBulkFeature = (featured: boolean) => {
+    bulkFeatureMutation.mutate({ ids: Array.from(selectedPhotos), featured });
+  };
+
   const featuredCount = photos?.filter((p) => p.is_featured).length || 0;
+  const selectedCount = selectedPhotos.size;
 
   return (
     <div className="space-y-6">
@@ -351,111 +449,172 @@ const AdminPhotos = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <Select value={filterCategory} onValueChange={setFilterCategory}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="All Categories" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map((cat) => (
-                <SelectItem key={cat} value={cat}>
-                  {cat}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {!isSelectionMode ? (
+            <>
+              <Select value={filterCategory} onValueChange={setFilterCategory}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-          <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => resetForm()}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Photo
+              <Button variant="outline" onClick={() => setIsSelectionMode(true)}>
+                <CheckSquare className="w-4 h-4 mr-2" />
+                Select
               </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg">
-              <DialogHeader>
-                <DialogTitle>Add Photo</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <PhotoUpload
-                  onUpload={(url) => setFormData((prev) => ({ ...prev, image_url: url }))}
-                />
 
-                {formData.image_url && (
-                  <div className="rounded-lg overflow-hidden border border-border">
-                    <img
-                      src={formData.image_url}
-                      alt="Preview"
-                      className="w-full h-40 object-cover"
-                    />
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  <Label htmlFor="title">Title</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, title: e.target.value }))
-                    }
-                    placeholder="Photo title"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category</Label>
-                  <Select
-                    value={formData.category}
-                    onValueChange={(val) =>
-                      setFormData((prev) => ({ ...prev, category: val }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat} value={cat}>
-                          {cat}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="featured">Featured on Homepage</Label>
-                    <p className="text-xs text-muted-foreground">
-                      {featuredCount >= 8 && !formData.is_featured
-                        ? 'Max 8 featured photos reached'
-                        : 'Show on the homepage gallery'}
-                    </p>
-                  </div>
-                  <Switch
-                    id="featured"
-                    checked={formData.is_featured}
-                    onCheckedChange={(checked) =>
-                      setFormData((prev) => ({ ...prev, is_featured: checked }))
-                    }
-                    disabled={featuredCount >= 8 && !formData.is_featured}
-                  />
-                </div>
-
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsAddOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button onClick={handleAddPhoto} disabled={addMutation.isPending}>
+              <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={() => resetForm()}>
+                    <Plus className="w-4 h-4 mr-2" />
                     Add Photo
                   </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>Add Photo</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <PhotoUpload
+                      onUpload={(url) => setFormData((prev) => ({ ...prev, image_url: url }))}
+                    />
+
+                    {formData.image_url && (
+                      <div className="rounded-lg overflow-hidden border border-border">
+                        <img
+                          src={formData.image_url}
+                          alt="Preview"
+                          className="w-full h-40 object-cover"
+                        />
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      <Label htmlFor="title">Title</Label>
+                      <Input
+                        id="title"
+                        value={formData.title}
+                        onChange={(e) =>
+                          setFormData((prev) => ({ ...prev, title: e.target.value }))
+                        }
+                        placeholder="Photo title"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="category">Category</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(val) =>
+                          setFormData((prev) => ({ ...prev, category: val }))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {CATEGORIES.map((cat) => (
+                            <SelectItem key={cat} value={cat}>
+                              {cat}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="featured">Featured on Homepage</Label>
+                        <p className="text-xs text-muted-foreground">
+                          {featuredCount >= 8 && !formData.is_featured
+                            ? 'Max 8 featured photos reached'
+                            : 'Show on the homepage gallery'}
+                        </p>
+                      </div>
+                      <Switch
+                        id="featured"
+                        checked={formData.is_featured}
+                        onCheckedChange={(checked) =>
+                          setFormData((prev) => ({ ...prev, is_featured: checked }))
+                        }
+                        disabled={featuredCount >= 8 && !formData.is_featured}
+                      />
+                    </div>
+
+                    <div className="flex justify-end gap-2">
+                      <Button variant="outline" onClick={() => setIsAddOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleAddPhoto} disabled={addMutation.isPending}>
+                        Add Photo
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </>
+          ) : (
+            <>
+              <span className="text-sm text-muted-foreground">
+                {selectedCount} selected
+              </span>
+              <Button variant="outline" size="sm" onClick={selectAll}>
+                Select All
+              </Button>
+              <Button variant="outline" size="sm" onClick={deselectAll}>
+                Deselect All
+              </Button>
+              <Button variant="ghost" size="sm" onClick={exitSelectionMode}>
+                <X className="w-4 h-4 mr-1" />
+                Cancel
+              </Button>
+            </>
+          )}
         </div>
       </div>
+
+      {/* Bulk Action Bar */}
+      {isSelectionMode && selectedCount > 0 && (
+        <div className="flex items-center gap-3 p-4 bg-primary/5 border border-primary/20 rounded-lg">
+          <span className="text-sm font-medium">
+            {selectedCount} photo{selectedCount !== 1 ? 's' : ''} selected
+          </span>
+          <div className="flex-1" />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleBulkFeature(true)}
+            disabled={bulkFeatureMutation.isPending}
+          >
+            <Star className="w-4 h-4 mr-2" />
+            Feature Selected
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleBulkFeature(false)}
+            disabled={bulkFeatureMutation.isPending}
+          >
+            Unfeature Selected
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => setShowBulkDeleteDialog(true)}
+            disabled={bulkDeleteMutation.isPending}
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Delete Selected
+          </Button>
+        </div>
+      )}
 
       {/* Photo Grid */}
       {isLoading ? (
@@ -479,8 +638,11 @@ const AdminPhotos = () => {
                 <SortablePhotoCard
                   key={photo.id}
                   photo={photo}
-                  onEdit={openEditDialog}
-                  onDelete={setDeletingPhoto}
+                  onEdit={() => openEditDialog(photo)}
+                  onDelete={() => setDeletingPhoto(photo)}
+                  isSelectionMode={isSelectionMode}
+                  isSelected={selectedPhotos.has(photo.id)}
+                  onToggleSelect={() => togglePhotoSelection(photo.id)}
                 />
               ))}
             </div>
@@ -535,7 +697,7 @@ const AdminPhotos = () => {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((cat) => (
+                  {CATEGORIES.map((cat) => (
                     <SelectItem key={cat} value={cat}>
                       {cat}
                     </SelectItem>
@@ -591,6 +753,27 @@ const AdminPhotos = () => {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Delete Confirmation */}
+      <AlertDialog open={showBulkDeleteDialog} onOpenChange={setShowBulkDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {selectedCount} Photos</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete {selectedCount} photo{selectedCount !== 1 ? 's' : ''}? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete {selectedCount} Photos
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

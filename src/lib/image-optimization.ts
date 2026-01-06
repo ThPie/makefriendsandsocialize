@@ -5,6 +5,13 @@ export interface OptimizeOptions {
   format?: 'webp' | 'jpeg';
 }
 
+export interface CropArea {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 function loadImage(file: File): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -14,6 +21,94 @@ function loadImage(file: File): Promise<HTMLImageElement> {
     };
     img.onerror = reject;
     img.src = URL.createObjectURL(file);
+  });
+}
+
+function loadImageFromUrl(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+function getRotatedCanvas(
+  image: HTMLImageElement,
+  rotation: number
+): HTMLCanvasElement {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d')!;
+
+  const angleRad = (rotation * Math.PI) / 180;
+  const sin = Math.abs(Math.sin(angleRad));
+  const cos = Math.abs(Math.cos(angleRad));
+
+  // Calculate new dimensions after rotation
+  canvas.width = Math.floor(image.width * cos + image.height * sin);
+  canvas.height = Math.floor(image.width * sin + image.height * cos);
+
+  // Move to center and rotate
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.rotate(angleRad);
+  ctx.drawImage(image, -image.width / 2, -image.height / 2);
+
+  return canvas;
+}
+
+export async function cropImage(
+  imageUrl: string,
+  cropArea: CropArea,
+  rotation: number = 0
+): Promise<Blob> {
+  const image = await loadImageFromUrl(imageUrl);
+
+  // Get rotated image if needed
+  const sourceCanvas = rotation !== 0 ? getRotatedCanvas(image, rotation) : null;
+  const source = sourceCanvas || image;
+
+  // Create output canvas with crop dimensions
+  const canvas = document.createElement('canvas');
+  canvas.width = cropArea.width;
+  canvas.height = cropArea.height;
+
+  const ctx = canvas.getContext('2d')!;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  ctx.drawImage(
+    source,
+    cropArea.x,
+    cropArea.y,
+    cropArea.width,
+    cropArea.height,
+    0,
+    0,
+    cropArea.width,
+    cropArea.height
+  );
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          // Fallback to JPEG
+          canvas.toBlob(
+            (jpegBlob) => {
+              if (jpegBlob) resolve(jpegBlob);
+              else reject(new Error('Failed to crop image'));
+            },
+            'image/jpeg',
+            0.9
+          );
+        }
+      },
+      'image/webp',
+      0.9
+    );
   });
 }
 
@@ -82,6 +177,14 @@ export async function optimizeImage(
       quality
     );
   });
+}
+
+export async function optimizeBlob(
+  blob: Blob,
+  options: OptimizeOptions = {}
+): Promise<{ blob: Blob; width: number; height: number }> {
+  const file = new File([blob], 'cropped.webp', { type: blob.type });
+  return optimizeImage(file, options);
 }
 
 export function getOptimizedFileName(originalName: string, format: 'webp' | 'jpeg' = 'webp'): string {
