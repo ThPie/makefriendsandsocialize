@@ -510,6 +510,7 @@ export type Database = {
           is_featured: boolean | null
           location: string | null
           registration_deadline: string | null
+          source: string | null
           status: string
           tags: string[] | null
           ticket_price: number | null
@@ -533,6 +534,7 @@ export type Database = {
           is_featured?: boolean | null
           location?: string | null
           registration_deadline?: string | null
+          source?: string | null
           status?: string
           tags?: string[] | null
           ticket_price?: number | null
@@ -556,6 +558,7 @@ export type Database = {
           is_featured?: boolean | null
           location?: string | null
           registration_deadline?: string | null
+          source?: string | null
           status?: string
           tags?: string[] | null
           ticket_price?: number | null
