@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Checkbox } from '@/components/ui/checkbox';
 import { PhotoUpload } from '@/components/admin/PhotoUpload';
 import { Plus, Pencil, Trash2, Star, GripVertical, Camera, CheckSquare, Square, X } from 'lucide-react';
 import { toast } from 'sonner';
@@ -434,11 +435,32 @@ const AdminPhotos = () => {
   const featuredCount = photos?.filter((p) => p.is_featured).length || 0;
   const selectedCount = selectedPhotos.size;
 
+  const isAllSelected = photos && photos.length > 0 && selectedPhotos.size === photos.length;
+  const isIndeterminate = selectedPhotos.size > 0 && selectedPhotos.size < (photos?.length || 0);
+
+  const handleSelectAllChange = (checked: boolean | 'indeterminate') => {
+    if (checked === true || checked === 'indeterminate') {
+      selectAll();
+      setIsSelectionMode(true);
+    } else {
+      deselectAll();
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
+          {/* Select All Checkbox */}
+          <div className="flex items-center">
+            <Checkbox
+              id="select-all-photos"
+              checked={isIndeterminate ? 'indeterminate' : isAllSelected}
+              onCheckedChange={handleSelectAllChange}
+              className="h-5 w-5"
+            />
+          </div>
           <Camera className="w-8 h-8 text-primary" />
           <div>
             <h1 className="text-2xl font-bold font-display">Photo Gallery</h1>
