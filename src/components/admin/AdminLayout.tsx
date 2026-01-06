@@ -34,6 +34,7 @@ import {
   Home,
   Target,
   Gift,
+  Scale,
 } from 'lucide-react';
 import { PageTransition } from '@/components/ui/page-transition';
 import logo from '@/assets/logo-transparent.png';
@@ -46,6 +47,7 @@ const menuItems = [
   { title: 'Overview', url: '/admin', icon: LayoutDashboard },
   { title: 'Applications', url: '/admin/applications', icon: FileText },
   { title: 'Members', url: '/admin/members', icon: Users },
+  { title: 'Appeals', url: '/admin/appeals', icon: Scale },
   { title: 'Referrals', url: '/admin/referrals', icon: Gift },
   { title: 'Lead Generation', url: '/admin/leads', icon: Target },
   { title: 'Security Reports', url: '/admin/security', icon: ShieldAlert },
