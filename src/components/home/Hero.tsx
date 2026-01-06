@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { AdaptiveVideo } from '@/components/ui/adaptive-video';
+import { EventCountdown } from './EventCountdown';
 
 /**
  * Video quality sources for adaptive streaming
@@ -89,6 +90,11 @@ export const Hero = () => {
           <Button size="lg" asChild className="animate-fade-in mt-2" style={{ animationDelay: '0.15s' }}>
             <Link to="/membership">Start Your Application</Link>
           </Button>
+
+          {/* Event Countdown */}
+          <div className="mt-8">
+            <EventCountdown />
+          </div>
         </div>
       </div>
     </section>

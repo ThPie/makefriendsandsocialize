@@ -10,6 +10,7 @@ import { PricingSection } from '@/components/home/PricingSection';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { SocialProofBanner } from '@/components/home/SocialProofBanner';
 import { MemberBadgesShowcase } from '@/components/home/MemberBadgesShowcase';
+import { PhotoGallerySection } from '@/components/home/PhotoGallerySection';
 
 const HomePage = () => {
   return (
@@ -20,6 +21,7 @@ const HomePage = () => {
       <EventSection />
       <BusinessEventsSection />
       <TestimonialsSection />
+      <PhotoGallerySection />
       <MemberBadgesShowcase />
       <EthosSection />
       <SlowDatingSection />

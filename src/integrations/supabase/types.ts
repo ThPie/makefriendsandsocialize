@@ -344,6 +344,47 @@ export type Database = {
         }
         Relationships: []
       }
+      event_photos: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          display_order: number | null
+          event_id: string | null
+          id: string
+          image_url: string
+          is_featured: boolean | null
+          title: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          event_id?: string | null
+          id?: string
+          image_url: string
+          is_featured?: boolean | null
+          title?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          event_id?: string | null
+          id?: string
+          image_url?: string
+          is_featured?: boolean | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_photos_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_reminders: {
         Row: {
           created_at: string | null
@@ -730,6 +771,7 @@ export type Database = {
           last_updated: string
           meetup_url: string | null
           member_count: number
+          previous_member_count: number | null
           rating: number | null
         }
         Insert: {
@@ -740,6 +782,7 @@ export type Database = {
           last_updated?: string
           meetup_url?: string | null
           member_count?: number
+          previous_member_count?: number | null
           rating?: number | null
         }
         Update: {
@@ -750,6 +793,7 @@ export type Database = {
           last_updated?: string
           meetup_url?: string | null
           member_count?: number
+          previous_member_count?: number | null
           rating?: number | null
         }
         Relationships: []

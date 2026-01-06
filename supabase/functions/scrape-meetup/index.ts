@@ -194,16 +194,29 @@ serve(async (req) => {
     // Check if we have existing stats
     const { data: existingStats } = await supabase
       .from('meetup_stats')
-      .select('id')
+      .select('id, member_count, previous_member_count, joined_this_week')
       .limit(1);
+
+    // Calculate weekly growth
+    let joinedThisWeek = 0;
+    if (existingStats && existingStats.length > 0) {
+      const previousCount = existingStats[0].previous_member_count || existingStats[0].member_count;
+      const growth = memberCount - previousCount;
+      // Only update if there's positive growth, otherwise keep existing value
+      joinedThisWeek = growth > 0 ? growth : (existingStats[0].joined_this_week || 0);
+    }
+
+    console.log('Calculated joined_this_week:', joinedThisWeek);
 
     let result;
     if (existingStats && existingStats.length > 0) {
-      // Update existing record
+      // Update existing record - store current count as previous for next comparison
       result = await supabase
         .from('meetup_stats')
         .update({
           member_count: memberCount,
+          previous_member_count: existingStats[0].member_count, // Save old count for next diff
+          joined_this_week: joinedThisWeek,
           avatar_urls: finalAvatars,
           meetup_url: baseUrl,
           last_updated: new Date().toISOString(),
@@ -216,6 +229,8 @@ serve(async (req) => {
         .from('meetup_stats')
         .insert({
           member_count: memberCount,
+          previous_member_count: memberCount,
+          joined_this_week: 0,
           avatar_urls: finalAvatars,
           meetup_url: baseUrl,
         })
