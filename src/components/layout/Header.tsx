@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Home, Calendar, Info, Users, Mail } from 'lucide-react';
 import logo from '@/assets/logo-transparent.png';
 
 const navItems = [
-  { label: 'Home', path: '/' },
-  { label: 'Events', path: '/events' },
-  { label: 'About', path: '/about' },
-  { label: 'Membership', path: '/membership' },
-  { label: 'Contact', path: '/contact' },
+  { label: 'Home', path: '/', icon: Home },
+  { label: 'Events', path: '/events', icon: Calendar },
+  { label: 'About', path: '/about', icon: Info },
+  { label: 'Membership', path: '/membership', icon: Users },
+  { label: 'Contact', path: '/contact', icon: Mail },
 ];
 
 export const Header = () => {
@@ -24,7 +26,6 @@ export const Header = () => {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
-      // Calculate scroll depth for dynamic shadow (0-1, maxes out at 200px scroll)
       const depth = Math.min(window.scrollY / 200, 1);
       setScrollDepth(depth);
     };
@@ -38,6 +39,18 @@ export const Header = () => {
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
 
   return (
     <header 
@@ -65,7 +78,7 @@ export const Header = () => {
         </Link>
 
         {/* Desktop Navigation */}
-          <div className="hidden flex-1 items-center justify-end gap-6 lg:flex">
+        <div className="hidden flex-1 items-center justify-end gap-6 lg:flex">
           <nav className="flex items-center gap-6">
             {navItems.map((item) => (
               <Link
@@ -86,45 +99,117 @@ export const Header = () => {
           </Button>
         </div>
 
-        {/* Mobile Menu Button */}
-        <div className="flex items-center lg:hidden">
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center justify-center rounded-md p-3 text-foreground hover:bg-muted transition-colors min-w-[44px] min-h-[44px]"
-            aria-label="Toggle menu"
-          >
-            <span className="material-symbols-outlined">
-              {isMenuOpen ? 'close' : 'menu'}
-            </span>
-          </button>
-        </div>
+        {/* Mobile Menu Button - Animated Hamburger */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className={`relative flex items-center justify-center w-11 h-11 rounded-lg transition-colors lg:hidden ${
+            isTransparent ? 'text-white hover:bg-white/10' : 'text-foreground hover:bg-muted'
+          }`}
+          aria-label="Toggle menu"
+          aria-expanded={isMenuOpen}
+        >
+          <div className="w-6 h-5 flex flex-col justify-center items-center">
+            <span 
+              className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${
+                isMenuOpen ? 'rotate-45 translate-y-0.5' : '-translate-y-1.5'
+              }`}
+            />
+            <span 
+              className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${
+                isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100'
+              }`}
+            />
+            <span 
+              className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${
+                isMenuOpen ? '-rotate-45 -translate-y-0.5' : 'translate-y-1.5'
+              }`}
+            />
+          </div>
+        </button>
       </div>
 
-      {/* Mobile Menu */}
-      <div 
-        className={`absolute left-0 top-full w-full border-b border-border bg-background lg:hidden shadow-xl flex flex-col gap-2 transition-all duration-300 overflow-hidden ${
-          isMenuOpen ? 'max-h-[400px] py-6 px-6 opacity-100' : 'max-h-0 py-0 px-6 opacity-0 pointer-events-none'
-        }`}
-        aria-hidden={!isMenuOpen}
-      >
-        {navItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`text-lg font-medium text-left transition-colors min-h-[48px] flex items-center px-2 rounded-lg ${
-              location.pathname === item.path
-                ? 'text-primary bg-primary/5'
-                : 'text-foreground hover:text-primary hover:bg-muted/50'
-            }`}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {item.label}
-          </Link>
-        ))}
-        <Button asChild className="w-full mt-4">
-          <Link to="/membership">Apply to Join</Link>
-        </Button>
-      </div>
+      {/* Mobile Menu - Full Screen Slide Out */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div 
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setIsMenuOpen(false)}
+            />
+            
+            {/* Slide-out Panel */}
+            <motion.nav
+              className="fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-card border-r border-border z-50 flex flex-col lg:hidden shadow-2xl"
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+            >
+              {/* Header with Logo */}
+              <div className="p-6 border-b border-border">
+                <Link to="/" onClick={() => setIsMenuOpen(false)}>
+                  <img 
+                    src={logo} 
+                    alt="MakeFriends & Socialize" 
+                    className="h-12 w-auto object-contain"
+                  />
+                </Link>
+              </div>
+              
+              {/* Navigation Items */}
+              <div className="flex-1 overflow-y-auto py-6 px-4">
+                <nav className="space-y-1">
+                  {navItems.map((item, index) => (
+                    <motion.div
+                      key={item.path}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 + index * 0.05 }}
+                    >
+                      <Link
+                        to={item.path}
+                        className={`flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${
+                          location.pathname === item.path
+                            ? 'bg-primary/15 text-primary'
+                            : 'text-foreground hover:bg-muted hover:text-primary'
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <item.icon className={`w-5 h-5 ${
+                          location.pathname === item.path ? 'text-primary' : 'text-muted-foreground'
+                        }`} />
+                        <span>{item.label}</span>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </nav>
+              </div>
+              
+              {/* Footer with CTA */}
+              <motion.div 
+                className="p-6 border-t border-border"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Button asChild className="w-full rounded-xl py-6 text-base font-semibold">
+                  <Link to="/membership" onClick={() => setIsMenuOpen(false)}>
+                    Apply to Join
+                  </Link>
+                </Button>
+                <p className="text-center text-xs text-muted-foreground mt-4">
+                  Exclusive membership for professionals
+                </p>
+              </motion.div>
+            </motion.nav>
+          </>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
