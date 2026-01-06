@@ -6,6 +6,12 @@ verify_jwt = false
 [functions.scrape-meetup]
 verify_jwt = false
 
+[functions.scrape-meetup-reviews]
+verify_jwt = false
+
+[functions.scrape-meetup-events]
+verify_jwt = false
+
 [functions.find-matches]
 verify_jwt = false
 
