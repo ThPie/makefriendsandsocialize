@@ -14,7 +14,8 @@ import {
   Heart,
   Calendar,
   Mail,
-  RefreshCw
+  RefreshCw,
+  History
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/contexts/AuthContext";
+
+type StatusHistoryItem = {
+  id: string;
+  appeal_id: string;
+  old_status: string | null;
+  new_status: string;
+  admin_notes: string | null;
+  created_at: string;
+};
 
 type AppealPayload = {
   full_name: string;
@@ -81,6 +92,7 @@ const AdminAppeals = () => {
   const [newStatus, setNewStatus] = useState<string>("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const { data: appeals, isLoading, refetch } = useQuery({
     queryKey: ["admin-appeals", typeFilter, statusFilter],
@@ -123,11 +135,28 @@ const AdminAppeals = () => {
     },
   });
 
+  // Fetch status history for selected appeal
+  const { data: statusHistory } = useQuery({
+    queryKey: ["appeal-history", selectedAppeal?.id],
+    queryFn: async () => {
+      if (!selectedAppeal) return [];
+      const { data, error } = await supabase
+        .from("appeal_status_history")
+        .select("*")
+        .eq("appeal_id", selectedAppeal.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as StatusHistoryItem[];
+    },
+    enabled: !!selectedAppeal,
+  });
+
   const updateAppealMutation = useMutation({
     mutationFn: async ({ id, status, response }: { id: string; status: string; response: string }) => {
       const appeal = appeals?.find((a) => a.id === id);
       if (!appeal) throw new Error("Appeal not found");
 
+      const oldStatus = appeal.status;
       const payload = appeal.payload as AppealPayload;
       const updatedPayload = {
         ...payload,
@@ -135,6 +164,7 @@ const AdminAppeals = () => {
         resolved_at: status !== "pending" && status !== "under_review" ? new Date().toISOString() : undefined,
       };
 
+      // Update the appeal status
       const { error } = await supabase
         .from("notification_queue")
         .update({
@@ -145,6 +175,17 @@ const AdminAppeals = () => {
         .eq("id", id);
 
       if (error) throw error;
+
+      // Record status change in history
+      if (oldStatus !== status) {
+        await supabase.from("appeal_status_history").insert({
+          appeal_id: id,
+          old_status: oldStatus,
+          new_status: status,
+          changed_by: user?.id,
+          admin_notes: response,
+        });
+      }
 
       // Send email notification to the user
       try {
@@ -160,11 +201,11 @@ const AdminAppeals = () => {
         });
       } catch (emailError) {
         console.error("Failed to send email notification:", emailError);
-        // Don't throw - the update succeeded, just log the email failure
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-appeals"] });
+      queryClient.invalidateQueries({ queryKey: ["appeal-history"] });
       toast({
         title: "Appeal Updated",
         description: "The appeal status has been updated and the user has been notified.",
@@ -462,6 +503,56 @@ const AdminAppeals = () => {
                     <p className="mt-1 whitespace-pre-wrap bg-muted/50 p-4 rounded-lg text-sm">
                       {(selectedAppeal.payload as AppealPayload).supporting_info}
                     </p>
+                  </div>
+                )}
+
+                {/* Status History Timeline */}
+                {statusHistory && statusHistory.length > 0 && (
+                  <div className="border-t pt-4">
+                    <Label className="flex items-center gap-2 mb-3">
+                      <History className="w-4 h-4" />
+                      Status History
+                    </Label>
+                    <div className="space-y-3">
+                      {statusHistory.map((item, index) => (
+                        <div key={item.id} className="flex gap-3">
+                          <div className="flex flex-col items-center">
+                            <div className={`w-3 h-3 rounded-full ${
+                              item.new_status === "approved" ? "bg-green-500" :
+                              item.new_status === "denied" ? "bg-red-500" :
+                              item.new_status === "under_review" ? "bg-blue-500" :
+                              "bg-yellow-500"
+                            }`} />
+                            {index < statusHistory.length - 1 && (
+                              <div className="w-0.5 h-full bg-border flex-1 my-1" />
+                            )}
+                          </div>
+                          <div className="flex-1 pb-3">
+                            <div className="flex items-center gap-2">
+                              <Badge 
+                                variant="outline" 
+                                className={`capitalize text-xs ${statusColors[item.new_status] || ""}`}
+                              >
+                                {item.new_status.replace("_", " ")}
+                              </Badge>
+                              {item.old_status && (
+                                <span className="text-xs text-muted-foreground">
+                                  from {item.old_status.replace("_", " ")}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {format(new Date(item.created_at), "MMM d, yyyy 'at' h:mm a")}
+                            </p>
+                            {item.admin_notes && (
+                              <p className="text-sm text-muted-foreground mt-1 bg-muted/50 p-2 rounded">
+                                {item.admin_notes}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 

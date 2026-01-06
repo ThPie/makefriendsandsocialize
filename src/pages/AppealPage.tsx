@@ -120,10 +120,25 @@ const AppealPage = () => {
 
       if (error) throw error;
 
+      // Send confirmation email
+      try {
+        await supabase.functions.invoke("send-appeal-confirmation", {
+          body: {
+            email: data.email,
+            name: data.fullName,
+            subject: data.subject,
+            appealType: data.appealType,
+            referenceId: data.referenceId,
+          },
+        });
+      } catch (emailError) {
+        console.error("Failed to send confirmation email:", emailError);
+      }
+
       setIsSubmitted(true);
       toast({
         title: "Appeal Submitted",
-        description: "We've received your appeal and will review it within 5-7 business days.",
+        description: "We've received your appeal and sent you a confirmation email.",
       });
     } catch (error) {
       console.error("Error submitting appeal:", error);
