@@ -89,6 +89,57 @@ export type Database = {
         }
         Relationships: []
       }
+      business_profiles: {
+        Row: {
+          business_name: string
+          contact_email: string | null
+          created_at: string
+          description: string | null
+          id: string
+          industry: string | null
+          is_visible: boolean
+          location: string | null
+          logo_url: string | null
+          services: string[] | null
+          status: Database["public"]["Enums"]["business_status"]
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          business_name: string
+          contact_email?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry?: string | null
+          is_visible?: boolean
+          location?: string | null
+          logo_url?: string | null
+          services?: string[] | null
+          status?: Database["public"]["Enums"]["business_status"]
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          business_name?: string
+          contact_email?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          industry?: string | null
+          is_visible?: boolean
+          location?: string | null
+          logo_url?: string | null
+          services?: string[] | null
+          status?: Database["public"]["Enums"]["business_status"]
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       connections: {
         Row: {
           created_at: string
@@ -1311,6 +1362,7 @@ export type Database = {
     Enums: {
       app_role: "admin" | "member"
       application_status: "pending" | "approved" | "rejected"
+      business_status: "pending" | "approved" | "featured" | "rejected"
       connection_status: "pending" | "accepted" | "declined"
       lead_status: "new" | "contacted" | "converted" | "dismissed"
       membership_status: "pending" | "active" | "cancelled" | "expired"
@@ -1454,6 +1506,7 @@ export const Constants = {
     Enums: {
       app_role: ["admin", "member"],
       application_status: ["pending", "approved", "rejected"],
+      business_status: ["pending", "approved", "featured", "rejected"],
       connection_status: ["pending", "accepted", "declined"],
       lead_status: ["new", "contacted", "converted", "dismissed"],
       membership_status: ["pending", "active", "cancelled", "expired"],
