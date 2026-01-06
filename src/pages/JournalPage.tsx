@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { Sparkles, Search, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const articles = [
   { 
@@ -48,109 +51,205 @@ const articles = [
 
 const categories = ["All Posts", "Exclusive Events", "Member Spotlights", "Lifestyle", "Club News"];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
+  },
+};
+
 const JournalPage = () => {
   const [activeCategory, setActiveCategory] = useState("All Posts");
   const [searchQuery, setSearchQuery] = useState("");
+  const heroAnimation = useScrollAnimation();
+  const articlesAnimation = useScrollAnimation();
 
   const featuredArticle = articles.find(a => a.featured);
   const regularArticles = articles.filter(a => !a.featured);
 
   return (
-    <div className="flex-1 w-full flex flex-col items-center">
-      {/* Header */}
-      <div className="flex flex-wrap justify-between gap-3 p-4 w-full max-w-[1280px] mt-8">
-        <div className="flex min-w-72 flex-col gap-3">
-          <h1 className="text-foreground text-5xl font-black leading-tight tracking-tight font-display">The Journal</h1>
-          <p className="text-muted-foreground text-base font-normal leading-normal">Society Chronicles and Exclusive Updates</p>
-        </div>
-      </div>
-
-      {/* Search */}
-      <div className="px-4 py-3 w-full max-w-[1280px]">
-        <div className="flex w-full flex-1 items-stretch rounded-lg h-12">
-          <div className="text-muted-foreground flex bg-muted items-center justify-center pl-4 rounded-l-lg">
-            <span className="material-symbols-outlined">search</span>
-          </div>
-          <input 
-            className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-foreground focus:outline-0 focus:ring-primary border-none bg-muted focus:border-none h-full placeholder:text-muted-foreground px-4 rounded-l-none pl-2 text-base font-normal leading-normal transition-shadow focus:shadow-[0_0_0_2px_hsl(var(--primary))]" 
-            placeholder="Search articles..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+    <div className="flex-1 w-full flex flex-col items-center bg-background">
+      {/* Hero Section */}
+      <section className="relative w-full py-20 md:py-28 overflow-hidden">
+        {/* Floating Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-primary/10 blur-3xl"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full bg-primary/5 blur-3xl"
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
-      </div>
+
+        <div 
+          ref={heroAnimation.ref}
+          className={`container max-w-5xl relative z-10 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-6"
+          >
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-foreground">Stories & Updates</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-4 leading-[1.1]"
+          >
+            The <span className="text-gradient">Journal</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="text-muted-foreground text-lg md:text-xl max-w-xl mb-8"
+          >
+            Society Chronicles and Exclusive Updates
+          </motion.p>
+
+          {/* Search */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="relative max-w-md"
+          >
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <input 
+              className="w-full h-12 pl-12 pr-4 rounded-full bg-card border border-border/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all" 
+              placeholder="Search articles..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </motion.div>
+        </div>
+      </section>
 
       {/* Categories */}
-      <div className="flex gap-3 p-3 overflow-x-auto w-full max-w-[1280px] no-scrollbar">
-        {categories.map(cat => (
-          <button 
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full px-4 cursor-pointer transition-colors ${
-              activeCategory === cat 
-                ? 'bg-primary text-primary-foreground font-bold' 
-                : 'bg-muted text-muted-foreground hover:bg-primary/20'
-            }`}
-          >
-            <span className="text-sm font-medium leading-normal whitespace-nowrap">{cat}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Articles */}
-      <div className="grid grid-cols-1 gap-8 p-4 w-full max-w-[1280px]">
-        {/* Featured */}
-        {featuredArticle && (
-          <Link to={`/journal/${featuredArticle.id}`} className="group p-4 border border-border rounded-xl bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-2xl">
-            <div className="flex flex-col items-stretch justify-start rounded-lg md:flex-row md:items-start h-full">
-              <div className="w-full md:w-1/2 bg-center bg-no-repeat aspect-video bg-cover rounded-lg overflow-hidden">
-                <div className="w-full h-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style={{backgroundImage: `url("${featuredArticle.image}")`}} />
-              </div>
-              <div className="flex w-full md:w-1/2 min-w-72 grow flex-col items-stretch justify-center gap-2 py-4 md:px-6">
-                <p className="text-primary text-sm font-normal leading-normal">{featuredArticle.category}</p>
-                <p className="text-foreground text-2xl font-bold leading-tight tracking-tight font-display transition-colors group-hover:text-primary">{featuredArticle.title}</p>
-                <p className="text-muted-foreground text-base font-normal leading-normal">{featuredArticle.desc}</p>
-                <p className="text-muted-foreground/60 text-sm font-normal leading-normal mt-2">{featuredArticle.date}</p>
-              </div>
-            </div>
-          </Link>
-        )}
-
-        {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {regularArticles.map((article) => (
-            <Link key={article.id} to={`/journal/${article.id}`} className="group flex flex-col items-stretch justify-start rounded-xl overflow-hidden bg-card border border-border transition-all duration-300 hover:border-primary/50 hover:shadow-lg cursor-pointer">
-              <div className="w-full bg-center bg-no-repeat aspect-video bg-cover overflow-hidden">
-                <div className="w-full h-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style={{backgroundImage: `url("${article.image}")`}} />
-              </div>
-              <div className="flex w-full grow flex-col items-stretch justify-between gap-4 p-4">
-                <div className="flex flex-col gap-1">
-                  <p className="text-primary text-sm font-normal leading-normal">{article.category}</p>
-                  <p className="text-foreground text-lg font-bold leading-tight tracking-tight transition-colors group-hover:text-primary">{article.title}</p>
-                  <p className="text-muted-foreground text-base font-normal leading-normal mt-1">{article.desc}</p>
-                </div>
-                <div className="flex justify-between items-center mt-2">
-                  <p className="text-muted-foreground/60 text-sm font-normal leading-normal">{article.date}</p>
-                  <Button size="sm">Read More</Button>
-                </div>
-              </div>
-            </Link>
+      <section className="w-full max-w-5xl px-4 pb-8">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+          {categories.map(cat => (
+            <button 
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 cursor-pointer transition-all duration-300 ${
+                activeCategory === cat 
+                  ? 'bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/20' 
+                  : 'bg-card border border-border/50 text-muted-foreground hover:bg-secondary hover:border-primary/30'
+              }`}
+            >
+              <span className="text-sm font-medium leading-normal whitespace-nowrap">{cat}</span>
+            </button>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Pagination */}
-      <div className="flex justify-center items-center gap-2 p-4 mt-8 mb-20">
-        <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-transparent text-muted-foreground hover:bg-muted transition-colors">
-          <span className="material-symbols-outlined">chevron_left</span>
-        </button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">1</button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-transparent text-muted-foreground hover:bg-muted transition-colors">2</button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-transparent text-muted-foreground hover:bg-muted transition-colors">3</button>
-        <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-transparent text-muted-foreground hover:bg-muted transition-colors">
-          <span className="material-symbols-outlined">chevron_right</span>
-        </button>
-      </div>
+      {/* Articles */}
+      <section 
+        ref={articlesAnimation.ref}
+        className={`w-full max-w-5xl px-4 pb-20 scroll-animate ${articlesAnimation.isVisible ? 'visible' : ''}`}
+      >
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={articlesAnimation.isVisible ? "visible" : "hidden"}
+          className="grid grid-cols-1 gap-8"
+        >
+          {/* Featured */}
+          {featuredArticle && (
+            <motion.div variants={itemVariants}>
+              <Link to={`/journal/${featuredArticle.id}`} className="group block bg-card border border-border/50 rounded-2xl overflow-hidden hover-lift transition-all duration-300 hover:border-primary/50">
+                <div className="flex flex-col lg:flex-row">
+                  <div className="w-full lg:w-1/2 aspect-video lg:aspect-auto lg:min-h-[320px] overflow-hidden">
+                    <div 
+                      className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
+                      style={{backgroundImage: `url("${featuredArticle.image}")`}} 
+                    />
+                  </div>
+                  <div className="flex-1 p-8 flex flex-col justify-center">
+                    <span className="text-primary text-sm font-medium mb-3">{featuredArticle.category}</span>
+                    <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4 group-hover:text-primary transition-colors">
+                      {featuredArticle.title}
+                    </h2>
+                    <p className="text-muted-foreground leading-relaxed mb-4">{featuredArticle.desc}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground/60">{featuredArticle.date}</span>
+                      <span className="text-primary flex items-center gap-2 font-medium group-hover:gap-3 transition-all">
+                        Read More <ArrowRight className="h-4 w-4" />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          )}
+
+          {/* Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {regularArticles.map((article) => (
+              <motion.div key={article.id} variants={itemVariants}>
+                <Link to={`/journal/${article.id}`} className="group flex flex-col h-full bg-card border border-border/50 rounded-2xl overflow-hidden hover-lift transition-all duration-300 hover:border-primary/50">
+                  <div className="aspect-video overflow-hidden">
+                    <div 
+                      className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
+                      style={{backgroundImage: `url("${article.image}")`}} 
+                    />
+                  </div>
+                  <div className="flex-1 p-6 flex flex-col">
+                    <span className="text-primary text-sm font-medium mb-2">{article.category}</span>
+                    <h3 className="font-display text-xl text-foreground mb-3 group-hover:text-primary transition-colors">
+                      {article.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-1">{article.desc}</p>
+                    <div className="flex items-center justify-between mt-auto">
+                      <span className="text-sm text-muted-foreground/60">{article.date}</span>
+                      <Button size="sm" variant="ghost" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        Read More
+                      </Button>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Pagination */}
+        <div className="flex justify-center items-center gap-2 mt-12">
+          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full">
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <Button className="h-10 w-10 rounded-full">1</Button>
+          <Button variant="ghost" className="h-10 w-10 rounded-full">2</Button>
+          <Button variant="ghost" className="h-10 w-10 rounded-full">3</Button>
+          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full">
+            <ChevronRight className="h-5 w-5" />
+          </Button>
+        </div>
+      </section>
     </div>
   );
 };

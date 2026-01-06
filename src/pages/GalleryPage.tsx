@@ -3,8 +3,10 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Lightbox } from '@/components/ui/lightbox';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2, LayoutGrid, Columns } from 'lucide-react';
+import { Loader2, LayoutGrid, Columns, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 interface EventPhoto {
   id: string;
@@ -18,6 +20,27 @@ const PHOTOS_PER_PAGE = 12;
 
 type LayoutMode = 'grid' | 'masonry';
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as const },
+  },
+};
+
 const GalleryPage = () => {
   const [activeCategory, setActiveCategory] = useState('All Events');
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -29,6 +52,8 @@ const GalleryPage = () => {
     return 'grid';
   });
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const heroAnimation = useScrollAnimation();
+  const galleryAnimation = useScrollAnimation();
 
   // Persist layout preference
   useEffect(() => {
@@ -98,35 +123,75 @@ const GalleryPage = () => {
   };
 
   return (
-    <div className="flex-1 w-full flex flex-col items-center">
-      <div className="w-full max-w-[1440px]">
-        {/* Hero */}
-        <div className="px-4 py-3">
-          <div 
-            className="bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-lg min-h-80" 
-            style={{
-              backgroundImage: 'linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 25%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCvlDLnFAUBGIy5PJIrjxlFuYUiP-OgNIMHpQhXa40KTcIpzW72E3Zz1tM0FPuand9c5SsbE2sbV7A5ySDr87EXiASgXVbyqZ8ShWcyOjYV3jEH-IgtJ-S31IgOgCuqlihSprqSvQ22QtCMlkcfa8f1CGSU6DE-RYrQxg--WqM1w3z_JJRk9uf9aNNLnOR7xo9z1IOj8QgULeAvRvKv6VfUYiYpsqYVcvw2QDVIOB5q3zfAmA7xoEwZqOayWGo6PBlKRji2oquzDY9h")'
-            }}
-          >
-            <div className="flex p-6 md:p-8">
-              <h1 className="text-white tracking-tight text-4xl md:text-5xl font-bold font-display leading-tight drop-shadow-md">
-                Our Celebrated Moments
-              </h1>
-            </div>
-          </div>
+    <div className="flex-1 w-full flex flex-col items-center bg-background">
+      {/* Hero Section */}
+      <section className="relative w-full min-h-[50vh] flex items-center justify-center overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCvlDLnFAUBGIy5PJIrjxlFuYUiP-OgNIMHpQhXa40KTcIpzW72E3Zz1tM0FPuand9c5SsbE2sbV7A5ySDr87EXiASgXVbyqZ8ShWcyOjYV3jEH-IgtJ-S31IgOgCuqlihSprqSvQ22QtCMlkcfa8f1CGSU6DE-RYrQxg--WqM1w3z_JJRk9uf9aNNLnOR7xo9z1IOj8QgULeAvRvKv6VfUYiYpsqYVcvw2QDVIOB5q3zfAmA7xoEwZqOayWGo6PBlKRji2oquzDY9h")'
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
+        
+        {/* Floating Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            className="absolute top-1/3 right-1/4 w-64 h-64 rounded-full bg-primary/10 blur-3xl"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
         </div>
 
+        <div 
+          ref={heroAnimation.ref}
+          className={`relative z-10 container max-w-4xl text-center py-16 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-6"
+          >
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-sm font-medium text-foreground">Photo Gallery</span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="font-display text-5xl md:text-6xl text-foreground mb-4 leading-[1.1]"
+          >
+            Our Celebrated <span className="text-gradient">Moments</span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="text-muted-foreground text-lg max-w-xl mx-auto"
+          >
+            Explore the memories from our exclusive events and gatherings.
+          </motion.p>
+        </div>
+      </section>
+
+      <div className="w-full max-w-7xl px-4">
         {/* Filters and Layout Toggle */}
-        <div className="flex items-center gap-3 p-3">
-          <div className="flex gap-3 overflow-x-auto no-scrollbar flex-1">
+        <div 
+          ref={galleryAnimation.ref}
+          className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 py-6 scroll-animate ${galleryAnimation.isVisible ? 'visible' : ''}`}
+        >
+          <div className="flex gap-2 overflow-x-auto no-scrollbar flex-1 pb-2 sm:pb-0">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg px-4 cursor-pointer transition-colors ${
+                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 cursor-pointer transition-all duration-300 ${
                   activeCategory === cat
-                    ? 'bg-primary text-primary-foreground font-medium'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    ? 'bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/20'
+                    : 'bg-card border border-border/50 text-muted-foreground hover:bg-secondary hover:border-primary/30'
                 }`}
               >
                 <span className="text-sm font-medium leading-normal whitespace-nowrap">{cat}</span>
@@ -135,20 +200,20 @@ const GalleryPage = () => {
           </div>
 
           {/* Layout Toggle */}
-          <div className="flex items-center gap-1 border border-border rounded-lg p-1 shrink-0">
+          <div className="flex items-center gap-1 bg-card border border-border/50 rounded-full p-1 shrink-0">
             <Button
-              variant={layoutMode === 'grid' ? 'secondary' : 'ghost'}
+              variant={layoutMode === 'grid' ? 'default' : 'ghost'}
               size="icon"
-              className="h-7 w-7"
+              className="h-8 w-8 rounded-full"
               onClick={() => setLayoutMode('grid')}
               title="Grid layout"
             >
               <LayoutGrid className="w-4 h-4" />
             </Button>
             <Button
-              variant={layoutMode === 'masonry' ? 'secondary' : 'ghost'}
+              variant={layoutMode === 'masonry' ? 'default' : 'ghost'}
               size="icon"
-              className="h-7 w-7"
+              className="h-8 w-8 rounded-full"
               onClick={() => setLayoutMode('masonry')}
               title="Masonry layout"
             >
@@ -159,82 +224,98 @@ const GalleryPage = () => {
 
         {/* Grid / Masonry */}
         {isLoading ? (
-          <div className={layoutMode === 'masonry' 
-            ? "columns-2 sm:columns-3 md:columns-4 gap-3 p-4" 
-            : "grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 p-4"
-          }>
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className={layoutMode === 'masonry' 
+              ? "columns-2 sm:columns-3 md:columns-4 gap-4 py-4" 
+              : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4"
+            }
+          >
             {Array.from({ length: 12 }).map((_, i) => (
-              <Skeleton 
-                key={i} 
-                className={layoutMode === 'masonry' 
-                  ? `rounded-lg mb-3 break-inside-avoid ${i % 3 === 0 ? 'h-64' : i % 3 === 1 ? 'h-48' : 'h-56'}` 
-                  : "aspect-[3/4] rounded-lg"
-                } 
-              />
+              <motion.div key={i} variants={itemVariants}>
+                <Skeleton 
+                  className={layoutMode === 'masonry' 
+                    ? `rounded-2xl mb-4 break-inside-avoid ${i % 3 === 0 ? 'h-64' : i % 3 === 1 ? 'h-48' : 'h-56'}` 
+                    : "aspect-[3/4] rounded-2xl"
+                  } 
+                />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         ) : photos.length > 0 ? (
           <>
             {layoutMode === 'masonry' ? (
-              <div className="columns-2 sm:columns-3 md:columns-4 gap-3 p-4">
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="columns-2 sm:columns-3 md:columns-4 gap-4 py-4"
+              >
                 {photos.map((photo, index) => (
-                  <div 
+                  <motion.div 
                     key={photo.id}
+                    variants={itemVariants}
                     onClick={() => openLightbox(index)}
-                    className="break-inside-avoid mb-3 group relative overflow-hidden rounded-lg cursor-pointer hover:shadow-xl transition-shadow duration-300"
+                    className="break-inside-avoid mb-4 group relative overflow-hidden rounded-2xl cursor-pointer"
                   >
                     <img
                       src={photo.image_url}
                       alt={photo.title || 'Event photo'}
                       loading="lazy"
                       decoding="async"
-                      className="w-full h-auto object-cover"
+                      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
                       onLoad={(e) => {
                         (e.target as HTMLImageElement).style.opacity = '1';
                       }}
                       style={{ opacity: 0, transition: 'opacity 0.3s ease-in-out' }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <p className="text-white text-base font-bold leading-tight font-display drop-shadow-sm">
+                      <p className="text-foreground text-base font-bold leading-tight font-display drop-shadow-sm">
                         {photo.title || 'Untitled'}
                       </p>
                       {photo.category && (
-                        <span className="text-white/70 text-xs">{photo.category}</span>
+                        <span className="text-muted-foreground text-xs">{photo.category}</span>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             ) : (
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 p-4">
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4"
+              >
                 {photos.map((photo, index) => (
-                  <div 
+                  <motion.div 
                     key={photo.id}
+                    variants={itemVariants}
                     onClick={() => openLightbox(index)}
-                    className="bg-cover bg-center flex flex-col gap-3 rounded-lg justify-end p-4 aspect-[3/4] group relative overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300"
-                    style={{ 
-                      backgroundImage: `url("${photo.image_url}")`,
-                      backgroundSize: 'cover',
-                    }}
+                    className="group relative overflow-hidden rounded-2xl cursor-pointer aspect-[3/4]"
                   >
                     <img
                       src={photo.image_url}
                       alt={photo.title || 'Event photo'}
                       loading="lazy"
                       decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300" />
-                    <p className="text-white text-base font-bold leading-tight w-full font-display relative z-10 drop-shadow-sm group-hover:-translate-y-1 transition-transform duration-300">
-                      {photo.title || 'Untitled'}
-                    </p>
-                    {photo.category && (
-                      <span className="text-white/70 text-xs relative z-10">{photo.category}</span>
-                    )}
-                  </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <p className="text-foreground text-base font-bold leading-tight font-display drop-shadow-sm group-hover:-translate-y-1 transition-transform duration-300">
+                        {photo.title || 'Untitled'}
+                      </p>
+                      {photo.category && (
+                        <span className="text-muted-foreground text-xs">{photo.category}</span>
+                      )}
+                    </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             )}
 
             {/* Load more sentinel */}
