@@ -1,7 +1,8 @@
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Mail, MapPin, Clock, Facebook, Instagram, MessageCircle, Users, Calendar, Shirt, Sparkles, ArrowRight, Send } from 'lucide-react';
+import { Mail, MapPin, Clock, Facebook, Instagram, MessageCircle, Users, Calendar, Shirt, Sparkles, ArrowRight, Send, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const contactInfo = [
@@ -286,6 +287,30 @@ const ContactPage = () => {
                   </div>
                 </motion.div>
               ))}
+            </motion.div>
+
+            {/* Appeal Link */}
+            <motion.div
+              variants={itemVariants}
+              className="bg-card border border-border/50 rounded-2xl p-5 hover-lift"
+            >
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary flex-shrink-0">
+                  <FileText className="w-5 h-5" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-foreground font-semibold mb-2">Need to Submit an Appeal?</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed mb-3">
+                    If you believe a decision was made in error, you can submit an appeal for review.
+                  </p>
+                  <Link to="/appeal">
+                    <Button variant="outline" size="sm" className="group">
+                      Submit Appeal
+                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
 
