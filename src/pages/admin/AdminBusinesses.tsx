@@ -67,16 +67,43 @@ const AdminBusinesses = () => {
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status, is_visible }: { id: string; status: 'pending' | 'approved' | 'featured' | 'rejected'; is_visible: boolean }) => {
+    mutationFn: async ({ id, status, is_visible, business }: { id: string; status: 'pending' | 'approved' | 'featured' | 'rejected'; is_visible: boolean; business: BusinessProfile }) => {
       const { error } = await supabase
         .from('business_profiles')
         .update({ status, is_visible })
         .eq('id', id);
       if (error) throw error;
+
+      // Send notification email if status changed to approved, featured, or rejected
+      if (['approved', 'featured', 'rejected'].includes(status)) {
+        // Get user email from auth
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('first_name')
+          .eq('id', business.user_id)
+          .single();
+
+        // Get user email from auth.users via edge function
+        const email = business.contact_email;
+        if (email) {
+          try {
+            await supabase.functions.invoke('send-business-notification', {
+              body: {
+                email,
+                businessName: business.business_name,
+                status,
+                firstName: profile?.first_name,
+              },
+            });
+          } catch (e) {
+            console.error('Failed to send notification:', e);
+          }
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-businesses'] });
-      toast.success("Business status updated");
+      toast.success("Business status updated and notification sent");
     },
     onError: () => {
       toast.error("Failed to update status");
@@ -84,16 +111,16 @@ const AdminBusinesses = () => {
   });
 
   const handleApprove = (business: BusinessProfile) => {
-    updateStatusMutation.mutate({ id: business.id, status: 'approved', is_visible: true });
+    updateStatusMutation.mutate({ id: business.id, status: 'approved', is_visible: true, business });
   };
 
   const handleReject = (business: BusinessProfile) => {
-    updateStatusMutation.mutate({ id: business.id, status: 'rejected', is_visible: false });
+    updateStatusMutation.mutate({ id: business.id, status: 'rejected', is_visible: false, business });
   };
 
   const handleFeature = (business: BusinessProfile) => {
     const newStatus = business.status === 'featured' ? 'approved' : 'featured';
-    updateStatusMutation.mutate({ id: business.id, status: newStatus, is_visible: true });
+    updateStatusMutation.mutate({ id: business.id, status: newStatus, is_visible: true, business });
   };
 
   const filteredBusinesses = businesses?.filter(business => {

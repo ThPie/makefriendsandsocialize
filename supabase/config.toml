@@ -62,3 +62,9 @@ verify_jwt = true
 
 [functions.send-referral-notification]
 verify_jwt = false
+
+[functions.send-appeal-confirmation]
+verify_jwt = false
+
+[functions.send-business-notification]
+verify_jwt = false
