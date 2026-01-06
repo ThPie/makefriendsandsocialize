@@ -49,6 +49,7 @@ const menuItems = [
   { title: 'Members', url: '/admin/members', icon: Users },
   { title: 'Appeals', url: '/admin/appeals', icon: Scale },
   { title: 'Referrals', url: '/admin/referrals', icon: Gift },
+  { title: 'Businesses', url: '/admin/businesses', icon: Users },
   { title: 'Lead Generation', url: '/admin/leads', icon: Target },
   { title: 'Security Reports', url: '/admin/security', icon: ShieldAlert },
   { title: 'Security Dashboard', url: '/admin/security-dashboard', icon: Shield },

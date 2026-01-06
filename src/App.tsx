@@ -60,6 +60,10 @@ import AdminAppeals from "@/pages/admin/AdminAppeals";
 import DatingIntakePage from "@/pages/DatingIntakePage";
 import SlowDatingPage from "@/pages/SlowDatingPage";
 import AppealPage from "@/pages/AppealPage";
+import ConnectedCirclePage from "@/pages/ConnectedCirclePage";
+import ConnectedCircleDirectoryPage from "@/pages/ConnectedCircleDirectoryPage";
+import PortalBusiness from "@/pages/portal/PortalBusiness";
+import AdminBusinesses from "@/pages/admin/AdminBusinesses";
 
 const queryClient = new QueryClient();
 
@@ -89,6 +93,8 @@ const App = () => (
               <Route path="/cookies" element={<Layout><CookiesPage /></Layout>} />
               <Route path="/faq" element={<Layout><FAQPage /></Layout>} />
               <Route path="/slow-dating" element={<SlowDatingPage />} />
+              <Route path="/connected-circle" element={<ConnectedCirclePage />} />
+              <Route path="/connected-circle/directory" element={<ConnectedCircleDirectoryPage />} />
               <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
               
               {/* Auth routes */}
@@ -107,6 +113,7 @@ const App = () => (
               <Route path="/portal/match/:matchId" element={<PortalLayout><PortalMatchDetail /></PortalLayout>} />
               <Route path="/portal/events" element={<PortalLayout><PortalEvents /></PortalLayout>} />
               <Route path="/portal/referrals" element={<PortalLayout><PortalReferrals /></PortalLayout>} />
+              <Route path="/portal/business" element={<PortalLayout><PortalBusiness /></PortalLayout>} />
               
               {/* Dating intake route */}
               <Route path="/dating/apply" element={<Layout><DatingIntakePage /></Layout>} />
@@ -132,6 +139,7 @@ const App = () => (
               <Route path="/admin/settings" element={<AdminLayout><AdminSettings /></AdminLayout>} />
               <Route path="/admin/referrals" element={<AdminLayout><AdminReferrals /></AdminLayout>} />
               <Route path="/admin/appeals" element={<AdminLayout><AdminAppeals /></AdminLayout>} />
+              <Route path="/admin/businesses" element={<AdminLayout><AdminBusinesses /></AdminLayout>} />
               
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
