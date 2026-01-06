@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect, useRef } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Lightbox } from '@/components/ui/lightbox';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 interface EventPhoto {
   id: string;
@@ -13,34 +13,70 @@ interface EventPhoto {
 }
 
 const categories = ['All Events', 'Galas', 'Seasonal Soirées', 'Cocktail Hours', 'Art & Wine', 'Networking', 'Workshops'];
+const PHOTOS_PER_PAGE = 12;
 
 const GalleryPage = () => {
   const [activeCategory, setActiveCategory] = useState('All Events');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const { data: photos, isLoading } = useQuery({
-    queryKey: ['gallery-photos'],
-    queryFn: async () => {
-      const { data, error } = await supabase
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery({
+    queryKey: ['gallery-photos-infinite', activeCategory],
+    queryFn: async ({ pageParam = 0 }) => {
+      let query = supabase
         .from('event_photos')
         .select('id, image_url, title, category')
-        .order('display_order', { ascending: true });
+        .order('display_order', { ascending: true })
+        .range(pageParam, pageParam + PHOTOS_PER_PAGE - 1);
 
+      if (activeCategory !== 'All Events') {
+        query = query.eq('category', activeCategory);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
       return data as EventPhoto[];
     },
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length < PHOTOS_PER_PAGE) return undefined;
+      return allPages.flat().length;
+    },
+    initialPageParam: 0,
   });
 
-  const filteredPhotos = activeCategory === 'All Events'
-    ? photos
-    : photos?.filter((p) => p.category === activeCategory);
+  // Flatten all pages into a single array
+  const photos = data?.pages.flat() || [];
 
-  const lightboxImages = filteredPhotos?.map((p) => ({
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { rootMargin: '200px' }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const lightboxImages = photos.map((p) => ({
     url: p.image_url,
     title: p.title,
     category: p.category,
-  })) || [];
+  }));
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
@@ -90,41 +126,58 @@ const GalleryPage = () => {
               <Skeleton key={i} className="aspect-[3/4] rounded-lg" />
             ))}
           </div>
-        ) : filteredPhotos && filteredPhotos.length > 0 ? (
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 p-4">
-            {filteredPhotos.map((photo, index) => (
-              <div 
-                key={photo.id}
-                onClick={() => openLightbox(index)}
-                className="bg-cover bg-center flex flex-col gap-3 rounded-lg justify-end p-4 aspect-[3/4] group relative overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300"
-                style={{ backgroundImage: `url("${photo.image_url}")` }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300" />
-                <p className="text-white text-base font-bold leading-tight w-full font-display relative z-10 drop-shadow-sm group-hover:-translate-y-1 transition-transform duration-300">
-                  {photo.title || 'Untitled'}
-                </p>
-                {photo.category && (
-                  <span className="text-white/70 text-xs relative z-10">{photo.category}</span>
-                )}
+        ) : photos.length > 0 ? (
+          <>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-3 p-4">
+              {photos.map((photo, index) => (
+                <div 
+                  key={photo.id}
+                  onClick={() => openLightbox(index)}
+                  className="bg-cover bg-center flex flex-col gap-3 rounded-lg justify-end p-4 aspect-[3/4] group relative overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300"
+                  style={{ 
+                    backgroundImage: `url("${photo.image_url}")`,
+                    backgroundSize: 'cover',
+                  }}
+                >
+                  <img
+                    src={photo.image_url}
+                    alt={photo.title || 'Event photo'}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300" />
+                  <p className="text-white text-base font-bold leading-tight w-full font-display relative z-10 drop-shadow-sm group-hover:-translate-y-1 transition-transform duration-300">
+                    {photo.title || 'Untitled'}
+                  </p>
+                  {photo.category && (
+                    <span className="text-white/70 text-xs relative z-10">{photo.category}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Load more sentinel */}
+            <div ref={loadMoreRef} className="h-1" />
+
+            {/* Loading more indicator */}
+            {isFetchingNextPage && (
+              <div className="flex items-center justify-center p-8 gap-2 text-muted-foreground">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span className="text-sm">Loading more photos...</span>
               </div>
-            ))}
-          </div>
+            )}
+
+            {/* End of list */}
+            {!hasNextPage && photos.length > PHOTOS_PER_PAGE && (
+              <div className="text-center py-8 text-muted-foreground">
+                <p className="text-sm">You've seen all {photos.length} photos</p>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-16 text-muted-foreground">
             <p>No photos found in this category</p>
-          </div>
-        )}
-
-        {/* Pagination placeholder */}
-        {filteredPhotos && filteredPhotos.length > 0 && (
-          <div className="flex items-center justify-center p-8 gap-2">
-            <button className="flex size-10 items-center justify-center text-muted-foreground hover:bg-muted rounded-full transition-colors">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button className="text-sm font-bold leading-normal flex size-10 items-center justify-center text-primary-foreground bg-primary rounded-full">1</button>
-            <button className="flex size-10 items-center justify-center text-muted-foreground hover:bg-muted rounded-full transition-colors">
-              <ChevronRight className="w-5 h-5" />
-            </button>
           </div>
         )}
       </div>
