@@ -1,137 +1,220 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { format } from 'date-fns';
+import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
+import { 
+  ArrowLeft, Clock, MapPin, Users, DollarSign, Tag, 
+  Calendar, ExternalLink, CheckCircle2, Loader2
+} from 'lucide-react';
 
-interface EventData {
+interface Event {
   id: string;
   title: string;
+  description: string | null;
   date: string;
-  time: string;
-  image: string;
-  alt: string;
-  category: string;
-  description: string;
-  fullDescription: string;
-  location: string;
-  address: string;
-  dressCode: string;
+  time: string | null;
+  location: string | null;
+  image_url: string | null;
+  tier: string;
+  capacity: number | null;
+  status: string;
+  venue_name: string | null;
+  venue_address: string | null;
+  city: string | null;
+  country: string | null;
+  ticket_price: number | null;
+  currency: string | null;
+  registration_deadline: string | null;
+  is_featured: boolean | null;
+  tags: string[] | null;
+  source: string | null;
 }
-
-const eventsData: EventData[] = [
-  {
-    id: 'u1',
-    title: "Wine Tasting Masterclass",
-    date: "October 28, 2024",
-    time: "7:00 PM - 10:00 PM",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBABKxm-yuOt1CudcjJKgFqis7Su-sL8Od3yq21xX0kWeIXS8YzLCuTLoIzDcKDnBLYTsBBzTni78b5ozrxMLSDhfXnMiyQBfxRZPPomHokDCK5r2kkzJUVYz0lBg9jJjx3nxYnTMkzigcxzs3EGdGTllmMCEinDDQiZHpodJUGyTQBc0npyLLoKt8skjj9uxs2AzrZiA_0-fdX6tIsJDvvO_kIO3gp-kuIi4-X-pzw8YauJNqCILhz-mkOSBmXJF1ehj70aAKqoY3U",
-    alt: "Close-up of a wine glass being filled with red wine during a tasting",
-    category: "Dining",
-    description: "Join our sommelier for an intimate evening exploring rare vintages from Bordeaux and Tuscany. Includes paired canapés.",
-    fullDescription: "Join our sommelier for an intimate evening exploring rare vintages from Bordeaux and Tuscany. This exclusive masterclass will guide you through the art of wine appreciation, from understanding terroir to identifying subtle flavor profiles. The evening includes carefully paired canapés crafted by our in-house chef, complementing each wine selection. Limited to 20 guests to ensure a personalized experience.",
-    location: "The Cellar Room, Downtown",
-    address: "42 Vine Street, Downtown District",
-    dressCode: "Smart Casual"
-  },
-  {
-    id: 'u2',
-    title: "Charity Polo Match",
-    date: "November 05, 2024",
-    time: "2:00 PM - 6:00 PM",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB53EIUhRVxzrFSmiUn5a_FFQ7SYrEcaN04gN0NcJSPvQjg-lOGRRdfSqw-sJcQlqt7UwVEF_rQ6qzzPtqG_DUSHpvRQeZ56oXEynYWaHF6_nae8bywcnoImoS3ksHGbwy3rJwbg5gDfqxHNtBERdF7QJXD8jHA_L7SHnldmJkumQXa-Cii-jg0-F9S06UOqUF17wNDTNa72L7DHRhYeKzxNhv9zLmUVAr6GbRlxRiEAX3e7kOOtxHvEI8y-G",
-    alt: "Polo players in action on a green field",
-    category: "Sports",
-    description: "Experience the thrill of the sport of kings. All proceeds go to the Children's Arts Foundation. VIP tent access available.",
-    fullDescription: "Experience the thrill of the sport of kings at our annual charity polo match. Watch world-class players compete while enjoying champagne and hors d'oeuvres in our exclusive VIP tent. All proceeds benefit the Children's Arts Foundation, supporting arts education for underprivileged youth. The afternoon includes a best-dressed competition, silent auction, and networking opportunities with fellow members.",
-    location: "Greenfield Polo Club",
-    address: "1200 Equestrian Way, Greenfield",
-    dressCode: "Garden Party Attire"
-  },
-  {
-    id: 'u3',
-    title: "Modern Art Gallery Opening",
-    date: "November 12, 2024",
-    time: "6:00 PM - 9:00 PM",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCBEwh7892z_8-C0CE1ZbCMzsXtacvkMBagOtFMpteMAs5z7gi7hA2tEIEOqQ8j-YXIVfoT_FxPufpLwnwUXwE9uxP1xduBuekiNIHwI0qkfA7MSmhY3rMB4gojuBvoMAFli5lWXu8hBVqP-EKPpC4navu4ldWgUlc_lO9ze0QxoDCzNl_rl9cF4qiJS9EEppikOfF3HXEG-bgmKw4p3hvQ__MYY8OSUF5lRdC01xAGHBnuO6VV73nHPtFZtrEdH2tvzX8ESyDvPGeY",
-    alt: "People admiring abstract art in a gallery",
-    category: "Art & Culture",
-    description: "Be the first to view the 'Digital Horizons' exhibition. Meet the artists and enjoy champagne reception.",
-    fullDescription: "Be among the first to experience 'Digital Horizons,' a groundbreaking exhibition exploring the intersection of technology and traditional artistry. This exclusive opening night provides members with the opportunity to meet the featured artists, engage in guided tours, and acquire works before the public opening. Enjoy a champagne reception while surrounded by thought-provoking contemporary pieces.",
-    location: "Lumina Gallery",
-    address: "88 Arts Quarter, Museum District",
-    dressCode: "Cocktail Attire"
-  },
-  {
-    id: 'u4',
-    title: "Jazz & Cocktails Night",
-    date: "November 20, 2024",
-    time: "8:00 PM - 12:00 AM",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDWbcMhp9CnqCo04DRW5tfiu7EP13nNKERg0j0AfkB0PnVQU4VnGrjByU8E6edWXkH9LF9i8IFxbumVKxsvGa92zA2LjCoYozavuqstZNkXVAzjs_RgV8lCh6nOY6coth3yFvHlmzOGzwlSV2Z18ixJOWIdWUa-xR-AKaGKrI1lTRcEq5ykzkGVUKdS1djEtFmyNDpBQTmFjnsJkE3aVC0M_Nl1Vnx-xPkBiFzYRh1BAlTp0Cmsi0d4cw3lafg9NjhL76tYKNCEmktT",
-    alt: "Close up of a jazz saxophone player in a dimly lit club",
-    category: "Music",
-    description: "A relaxed evening featuring the smooth sounds of the Miles Quartet. Signature cocktails served throughout the night.",
-    fullDescription: "Immerse yourself in an evening of sophisticated jazz with the internationally acclaimed Miles Quartet. Our expert mixologists have crafted a special menu of signature cocktails inspired by the jazz era, each paired with the musical themes of the night. The intimate setting of Blue Note Lounge provides the perfect atmosphere for connection and conversation.",
-    location: "Blue Note Lounge",
-    address: "55 Melody Lane, Jazz District",
-    dressCode: "Smart Casual"
-  },
-  {
-    id: 'u5',
-    title: "Private Chef's Table Experience",
-    date: "December 01, 2024",
-    time: "7:30 PM - 11:00 PM",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCF49HGQJP65G_cdlImOjVm6qvRUqwV8NQjahyExBHe8E3qhGQL3BK_gIF6Wj_l3m33Jg8jJd4sXHw-GVS-KW555lSd5jrFYqvKO3HVx_xMzct_etrJphUpCZ2I0vbWzrPEZWzlW8NstikL5YbCT0OfUI4h7yNE3vEPub4Plzd9or04oo8MkEN3EOxrczMl3hTniCliktz2NqBl6WwD4pr99vSGX519763F6eS4TzbrJdEAZqdDtDHp_ynqghBLLBXIOXEhc3l7nApW",
-    alt: "Elegant plated dish in a fine dining setting",
-    category: "Dining",
-    description: "An exclusive 8-course tasting menu prepared by Michelin-starred Chef Laurent. Limited to 12 guests.",
-    fullDescription: "Experience culinary artistry at its finest with an exclusive 8-course tasting menu prepared by Michelin-starred Chef Laurent. This intimate dining experience, limited to just 12 guests, takes place in our private kitchen where you'll witness the creation of each course. Wine pairings selected by our sommelier complement each dish, while Chef Laurent shares the stories and inspirations behind his creations.",
-    location: "The Private Kitchen",
-    address: "12 Gourmet Lane, Culinary Quarter",
-    dressCode: "Black Tie Optional"
-  },
-  {
-    id: 'u6',
-    title: "Opera Under the Stars",
-    date: "December 15, 2024",
-    time: "7:00 PM - 10:30 PM",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBUmnH2qI1gvD_mZdcLDHKjyfpHGz9xjEkny_n0RAUYRhuzb6ng3auyHBL5xp6OFW3W8ltEyFKV-Htj0dd4A7A9REEppgteHr8MB5ho3G9q9BDL8xeTjchdk46vxXppq5EWxxA8VlwHiSACny_sSASNOI_MSJrqgrb3MQ6VyNogYb5A0NjFxOrg1bSFG-fOSwZkcb1OEPYEHUbllObXB0WOjSbU679BucMbxsiwiDqQeKn93Yk_PuGE3kqnNPpo-Ba5QHag7VPeZ8mN",
-    alt: "Outdoor opera performance with elegant staging",
-    category: "Music",
-    description: "Experience a magical evening of arias and duets in the gardens of Hartwell Estate. Black tie attire.",
-    fullDescription: "Experience a magical evening of world-class opera in the enchanting gardens of Hartwell Estate. Renowned sopranos and tenors will perform beloved arias and duets under a canopy of stars. The evening begins with a champagne reception on the terrace, followed by a seated performance with premium views. Formal attire adds to the elegance of this unforgettable cultural experience.",
-    location: "Hartwell Estate Gardens",
-    address: "1 Hartwell Drive, Estate District",
-    dressCode: "Black Tie"
-  }
-];
 
 const EventDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [rsvpStatus, setRsvpStatus] = useState<boolean>(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem('event_rsvpStatus') || '{}');
-      return stored[id || ''] || false;
-    } catch {
-      return false;
-    }
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [isRsvping, setIsRsvping] = useState(false);
+
+  // Fetch event details
+  const { data: event, isLoading: eventLoading } = useQuery({
+    queryKey: ['event', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) throw error;
+      return data as Event;
+    },
+    enabled: !!id,
   });
 
-  const event = eventsData.find(e => e.id === id);
+  // Fetch RSVP count
+  const { data: rsvpCount = 0 } = useQuery({
+    queryKey: ['event-rsvp-count', id],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('event_rsvps')
+        .select('*', { count: 'exact', head: true })
+        .eq('event_id', id)
+        .eq('status', 'confirmed');
+      
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!id,
+  });
 
-  useEffect(() => {
-    if (id) {
-      const stored = JSON.parse(localStorage.getItem('event_rsvpStatus') || '{}');
-      stored[id] = rsvpStatus;
-      localStorage.setItem('event_rsvpStatus', JSON.stringify(stored));
+  // Check user's RSVP status
+  const { data: userRsvp } = useQuery({
+    queryKey: ['user-rsvp', id, user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data, error } = await supabase
+        .from('event_rsvps')
+        .select('*')
+        .eq('event_id', id)
+        .eq('user_id', user.id)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      return data;
+    },
+    enabled: !!id && !!user,
+  });
+
+  const handleRSVP = async () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to RSVP for this event.",
+        variant: "destructive",
+      });
+      navigate('/auth');
+      return;
     }
-  }, [rsvpStatus, id]);
+
+    setIsRsvping(true);
+    try {
+      if (userRsvp) {
+        // Cancel RSVP
+        const { error } = await supabase
+          .from('event_rsvps')
+          .delete()
+          .eq('id', userRsvp.id);
+        
+        if (error) throw error;
+        toast({
+          title: "RSVP Cancelled",
+          description: `You've cancelled your RSVP for ${event?.title}`,
+        });
+      } else {
+        // Create RSVP
+        const { error } = await supabase
+          .from('event_rsvps')
+          .insert({
+            event_id: id,
+            user_id: user.id,
+            status: 'confirmed',
+          });
+        
+        if (error) throw error;
+        toast({
+          title: "RSVP Confirmed!",
+          description: `You're going to ${event?.title}`,
+        });
+      }
+      
+      queryClient.invalidateQueries({ queryKey: ['user-rsvp', id] });
+      queryClient.invalidateQueries({ queryKey: ['event-rsvp-count', id] });
+    } catch (error) {
+      console.error('RSVP error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update RSVP. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRsvping(false);
+    }
+  };
+
+  const formatTime = (time: string | null) => {
+    if (!time) return 'TBD';
+    try {
+      const [hours, minutes] = time.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes);
+      return format(date, 'h:mm a');
+    } catch {
+      return time;
+    }
+  };
+
+  const formatPrice = (price: number | null, currency: string | null) => {
+    if (!price || price === 0) return 'Free';
+    const curr = currency || 'USD';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: curr,
+    }).format(price);
+  };
+
+  const getTierBadgeColor = (tier: string) => {
+    switch (tier) {
+      case 'founder': return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+      case 'fellow': return 'bg-primary/10 text-primary border-primary/30';
+      default: return 'bg-muted text-muted-foreground border-border';
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'published':
+      case 'upcoming':
+        return <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30">Upcoming</Badge>;
+      case 'past':
+        return <Badge variant="secondary">Past Event</Badge>;
+      case 'cancelled':
+        return <Badge variant="destructive">Cancelled</Badge>;
+      default:
+        return null;
+    }
+  };
+
+  if (eventLoading) {
+    return (
+      <div className="flex-1 w-full flex flex-col">
+        <div className="relative w-full h-[50vh] md:h-[60vh]">
+          <Skeleton className="absolute inset-0" />
+        </div>
+        <div className="w-full max-w-4xl mx-auto px-6 -mt-20 relative z-10 pb-20">
+          <div className="bg-card rounded-2xl border border-border p-8 md:p-12 space-y-6">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!event) {
     return (
       <div className="flex-1 w-full flex flex-col items-center justify-center py-20">
-        <span className="material-symbols-outlined text-6xl text-muted-foreground mb-4">event_busy</span>
+        <Calendar className="h-16 w-16 text-muted-foreground mb-4" />
         <h1 className="text-2xl font-bold text-foreground mb-2">Event Not Found</h1>
         <p className="text-muted-foreground mb-6">The event you're looking for doesn't exist or has been removed.</p>
         <Button asChild>
@@ -141,15 +224,9 @@ const EventDetailPage = () => {
     );
   }
 
-  const handleRSVP = () => {
-    setRsvpStatus(prev => !prev);
-    toast({
-      title: rsvpStatus ? "RSVP Cancelled" : "RSVP Confirmed!",
-      description: rsvpStatus 
-        ? `You've cancelled your RSVP for ${event.title}`
-        : `You're going to ${event.title} on ${event.date}`,
-    });
-  };
+  const isPastEvent = new Date(event.date) < new Date();
+  const spotsLeft = event.capacity ? event.capacity - rsvpCount : null;
+  const isFull = spotsLeft !== null && spotsLeft <= 0;
 
   return (
     <div className="flex-1 w-full flex flex-col">
@@ -157,7 +234,11 @@ const EventDetailPage = () => {
       <section className="relative w-full h-[50vh] md:h-[60vh] overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url("${event.image}")` }}
+          style={{ 
+            backgroundImage: event.image_url 
+              ? `url("${event.image_url}")` 
+              : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)/0.5) 100%)'
+          }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         
@@ -168,16 +249,17 @@ const EventDetailPage = () => {
             onClick={() => navigate(-1)}
             className="bg-background/80 backdrop-blur-sm border-border hover:bg-background"
           >
-            <span className="material-symbols-outlined mr-2">arrow_back</span>
+            <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
         </div>
 
-        {/* Category Badge */}
-        <div className="absolute top-6 right-6 z-10">
-          <span className="bg-primary text-primary-foreground text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider">
-            {event.category}
-          </span>
+        {/* Status & Featured Badges */}
+        <div className="absolute top-6 right-6 z-10 flex gap-2">
+          {event.is_featured && (
+            <Badge className="bg-amber-500/90 text-white">⭐ Featured</Badge>
+          )}
+          {getStatusBadge(event.status)}
         </div>
       </section>
 
@@ -186,13 +268,28 @@ const EventDetailPage = () => {
         <div className="bg-card rounded-2xl border border-border shadow-xl p-8 md:p-12">
           {/* Header */}
           <div className="mb-8">
-            <p className="text-primary text-sm font-bold uppercase tracking-wide mb-3">{event.date}</p>
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <p className="text-primary text-sm font-bold uppercase tracking-wide">
+                {format(new Date(event.date), 'EEEE, MMMM d, yyyy')}
+              </p>
+              <Badge className={getTierBadgeColor(event.tier)}>
+                {event.tier.charAt(0).toUpperCase() + event.tier.slice(1)} Tier
+              </Badge>
+              {event.source === 'meetup' && (
+                <Badge variant="outline" className="text-xs">
+                  <ExternalLink className="h-3 w-3 mr-1" />
+                  Meetup
+                </Badge>
+              )}
+            </div>
+            
             <h1 className="text-foreground text-3xl md:text-4xl font-bold font-display leading-tight mb-4">
               {event.title}
             </h1>
-            {rsvpStatus && (
+            
+            {userRsvp && (
               <span className="inline-flex items-center gap-2 text-green-600 dark:text-green-400 text-sm font-bold bg-green-100 dark:bg-green-900/30 px-3 py-1.5 rounded-full">
-                <span className="material-symbols-outlined text-base">check_circle</span>
+                <CheckCircle2 className="h-4 w-4" />
                 You're Going
               </span>
             )}
@@ -201,54 +298,118 @@ const EventDetailPage = () => {
           {/* Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-6 bg-muted/50 rounded-xl">
             <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-primary">schedule</span>
+              <Clock className="h-5 w-5 text-primary mt-0.5" />
               <div>
                 <p className="text-sm text-muted-foreground">Time</p>
-                <p className="text-foreground font-medium">{event.time}</p>
+                <p className="text-foreground font-medium">{formatTime(event.time)}</p>
               </div>
             </div>
+            
             <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-primary">location_on</span>
+              <MapPin className="h-5 w-5 text-primary mt-0.5" />
               <div>
                 <p className="text-sm text-muted-foreground">Venue</p>
-                <p className="text-foreground font-medium">{event.location}</p>
-                <p className="text-sm text-muted-foreground">{event.address}</p>
+                <p className="text-foreground font-medium">{event.venue_name || event.location || 'TBD'}</p>
+                {event.venue_address && (
+                  <p className="text-sm text-muted-foreground">{event.venue_address}</p>
+                )}
+                {(event.city || event.country) && (
+                  <p className="text-sm text-muted-foreground">
+                    {[event.city, event.country].filter(Boolean).join(', ')}
+                  </p>
+                )}
               </div>
             </div>
+            
             <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-primary">checkroom</span>
-              <div>
-                <p className="text-sm text-muted-foreground">Dress Code</p>
-                <p className="text-foreground font-medium">{event.dressCode}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-primary">groups</span>
+              <Users className="h-5 w-5 text-primary mt-0.5" />
               <div>
                 <p className="text-sm text-muted-foreground">Attendance</p>
-                <p className="text-foreground font-medium">Members Only</p>
+                <p className="text-foreground font-medium">
+                  {rsvpCount} {rsvpCount === 1 ? 'person' : 'people'} going
+                </p>
+                {event.capacity && (
+                  <p className="text-sm text-muted-foreground">
+                    {spotsLeft !== null && spotsLeft > 0 
+                      ? `${spotsLeft} spots left`
+                      : isFull 
+                        ? 'Event is full'
+                        : `${event.capacity} capacity`
+                    }
+                  </p>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <DollarSign className="h-5 w-5 text-primary mt-0.5" />
+              <div>
+                <p className="text-sm text-muted-foreground">Price</p>
+                <p className="text-foreground font-medium">
+                  {formatPrice(event.ticket_price, event.currency)}
+                </p>
               </div>
             </div>
           </div>
+
+          {/* Tags */}
+          {event.tags && event.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-8">
+              <Tag className="h-4 w-4 text-muted-foreground" />
+              {event.tags.map((tag, index) => (
+                <Badge key={index} variant="outline" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
 
           {/* Description */}
           <div className="mb-10">
             <h2 className="text-foreground text-xl font-bold font-display mb-4">About This Event</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              {event.fullDescription}
-            </p>
+            <div className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+              {event.description || 'No description available.'}
+            </div>
           </div>
 
-          {/* RSVP Button */}
+          {/* Registration Deadline */}
+          {event.registration_deadline && (
+            <div className="mb-8 p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+              <p className="text-amber-400 text-sm font-medium">
+                <Calendar className="h-4 w-4 inline mr-2" />
+                Registration deadline: {format(new Date(event.registration_deadline), 'MMMM d, yyyy')}
+              </p>
+            </div>
+          )}
+
+          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button 
-              size="lg"
-              onClick={handleRSVP}
-              variant={rsvpStatus ? "outline" : "default"}
-              className={`flex-1 ${rsvpStatus ? 'border-destructive/50 text-destructive hover:bg-destructive/10' : ''}`}
-            >
-              {rsvpStatus ? 'Cancel RSVP' : 'Request Invitation'}
-            </Button>
+            {!isPastEvent && event.status !== 'cancelled' && (
+              <Button 
+                size="lg"
+                onClick={handleRSVP}
+                variant={userRsvp ? "outline" : "default"}
+                className={`flex-1 ${userRsvp ? 'border-destructive/50 text-destructive hover:bg-destructive/10' : ''}`}
+                disabled={isRsvping || (isFull && !userRsvp)}
+              >
+                {isRsvping ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : userRsvp ? (
+                  'Cancel RSVP'
+                ) : isFull ? (
+                  'Event Full'
+                ) : (
+                  'RSVP Now'
+                )}
+              </Button>
+            )}
+            
+            <AddToCalendarButton 
+              event={event} 
+              size="lg" 
+              className="flex-1 sm:flex-none"
+            />
+            
             <Button variant="outline" size="lg" asChild>
               <Link to="/contact">Have Questions?</Link>
             </Button>

@@ -71,3 +71,6 @@ verify_jwt = false
 
 [functions.sync-meetup-upcoming-events]
 verify_jwt = false
+
+[functions.scheduled-event-sync]
+verify_jwt = false
