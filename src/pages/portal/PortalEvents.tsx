@@ -152,6 +152,9 @@ export default function PortalEvents() {
           .insert({ event_id: eventId, user_id: user!.id, status: 'confirmed' });
         if (error) throw error;
         
+        // Increment rsvp_count
+        await supabase.rpc('increment_rsvp_count', { event_id: eventId });
+        
         // Call notification edge function
         await supabase.functions.invoke('send-rsvp-notification', {
           body: { eventId, userId: user!.id, action: 'rsvp' },
@@ -164,6 +167,9 @@ export default function PortalEvents() {
           .eq('event_id', eventId)
           .eq('user_id', user!.id);
         if (error) throw error;
+        
+        // Decrement rsvp_count
+        await supabase.rpc('decrement_rsvp_count', { event_id: eventId });
         
         // Check if someone was promoted from waitlist and send them an email
         // Wait a moment for the trigger to complete
