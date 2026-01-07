@@ -471,15 +471,23 @@ export default function AuthPage() {
           </div>
         </div>
 
-        {/* Right Side - Branded Panel */}
-        <div 
-          className="hidden lg:flex lg:w-1/2 relative flex-col justify-end p-12"
-          style={{
-            backgroundImage: `url(${contactHero})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
+        {/* Right Side - Video Panel */}
+        <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-end p-12 overflow-hidden">
+          {/* Video Background */}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            poster="/images/hero-poster.webp"
+          >
+            <source src="/videos/auth-chess.mp4" type="video/mp4" />
+          </video>
+          
+          {/* Subtle Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          
           <div className="relative z-10 flex flex-col items-start animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <h2 className="font-display text-4xl xl:text-5xl text-white mb-4 drop-shadow-lg">
               Welcome to<br />
