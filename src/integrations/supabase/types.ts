@@ -629,6 +629,7 @@ export type Database = {
           is_featured: boolean | null
           location: string | null
           registration_deadline: string | null
+          rsvp_count: number | null
           source: string | null
           status: string
           tags: string[] | null
@@ -653,6 +654,7 @@ export type Database = {
           is_featured?: boolean | null
           location?: string | null
           registration_deadline?: string | null
+          rsvp_count?: number | null
           source?: string | null
           status?: string
           tags?: string[] | null
@@ -677,6 +679,7 @@ export type Database = {
           is_featured?: boolean | null
           location?: string | null
           registration_deadline?: string | null
+          rsvp_count?: number | null
           source?: string | null
           status?: string
           tags?: string[] | null

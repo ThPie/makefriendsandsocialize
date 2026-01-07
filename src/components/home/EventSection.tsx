@@ -17,6 +17,7 @@ interface Event {
   capacity: number | null;
   city: string | null;
   venue_name: string | null;
+  rsvp_count: number | null;
 }
 
 interface EventCardProps {
@@ -59,12 +60,15 @@ const EventCard = ({ event, className = '' }: EventCardProps) => {
               {event.city && ` • ${event.city}`}
             </div>
           )}
-          {event.capacity && (
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              {event.capacity} spots available
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            {event.rsvp_count && event.rsvp_count > 0 
+              ? `${event.rsvp_count} attending`
+              : event.capacity 
+                ? `${event.capacity} spots`
+                : 'Open event'
+            }
+          </div>
         </div>
         <Link
           to={`/events/${event.id}`}
@@ -102,12 +106,12 @@ export const EventSection = () => {
       const today = new Date().toISOString().split('T')[0];
       const { data, error } = await supabase
         .from('events')
-        .select('id, title, date, time, location, description, image_url, capacity, city, venue_name')
+        .select('id, title, date, time, location, description, image_url, capacity, city, venue_name, rsvp_count')
         .gte('date', today)
         .neq('status', 'cancelled')
         .neq('status', 'past')
         .order('date', { ascending: true })
-        .limit(3);
+        .limit(6);
       
       if (error) throw error;
       return data as Event[];
