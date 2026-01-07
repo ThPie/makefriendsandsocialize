@@ -68,3 +68,6 @@ verify_jwt = false
 
 [functions.send-business-notification]
 verify_jwt = false
+
+[functions.sync-meetup-upcoming-events]
+verify_jwt = false
