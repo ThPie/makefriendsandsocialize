@@ -1383,6 +1383,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
       get_membership_tier: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["membership_tier"]
@@ -1399,6 +1400,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_rsvp_count: { Args: { event_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "member"
