@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { 
   Calendar, MapPin, Users, Plus, Edit, Trash2, Loader2, 
-  Wand2, Copy, Star, DollarSign, Clock, Tag, BarChart3
+  Wand2, Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -128,6 +128,7 @@ export default function AdminEvents() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
+  const [isSyncingMeetup, setIsSyncingMeetup] = useState(false);
 
   useEffect(() => {
     fetchEvents();
@@ -401,6 +402,37 @@ export default function AdminEvents() {
         </motion.div>
         
         <div className="flex items-center gap-3">
+          <Button 
+            variant="outline" 
+            className="rounded-xl"
+            onClick={async () => {
+              setIsSyncingMeetup(true);
+              try {
+                const { data, error } = await supabase.functions.invoke('sync-meetup-upcoming-events');
+                if (error) throw error;
+                if (data?.success) {
+                  toast.success(`Synced ${data.data.eventsInserted} new events, updated ${data.data.eventsUpdated}`);
+                  fetchEvents();
+                } else {
+                  throw new Error(data?.error || 'Sync failed');
+                }
+              } catch (error: any) {
+                console.error('Meetup sync error:', error);
+                toast.error(error.message || 'Failed to sync from Meetup');
+              } finally {
+                setIsSyncingMeetup(false);
+              }
+            }}
+            disabled={isSyncingMeetup}
+          >
+            {isSyncingMeetup ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4 mr-2" />
+            )}
+            Sync from Meetup
+          </Button>
+          
           <Button variant="outline" asChild className="rounded-xl">
             <Link to="/admin/event-analytics">
               <BarChart3 className="h-4 w-4 mr-2" />
