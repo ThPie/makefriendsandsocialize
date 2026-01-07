@@ -30,6 +30,7 @@ interface Event {
   city?: string | null;
   is_featured?: boolean | null;
   tags?: string[] | null;
+  rsvp_count?: number | null;
 }
 
 const EventSkeleton = () => (
@@ -385,19 +386,21 @@ const EventsPage = () => {
                           {event.city && <span className="text-muted-foreground/60">• {event.city}</span>}
                         </div>
                       )}
-                      {event.capacity && (
-                        <div className="flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          <span className={event.capacity <= 10 ? 'text-amber-500 font-medium' : ''}>
-                            {event.capacity <= 5 
-                              ? `Only ${event.capacity} spots left!` 
-                              : event.capacity <= 10 
-                                ? `${event.capacity} spots remaining`
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        <span className={event.capacity && event.capacity <= 10 ? 'text-amber-500 font-medium' : ''}>
+                          {event.rsvp_count && event.rsvp_count > 0 
+                            ? event.capacity 
+                              ? `${event.rsvp_count} / ${event.capacity} attending`
+                              : `${event.rsvp_count} attending`
+                            : event.capacity 
+                              ? event.capacity <= 5 
+                                ? `Only ${event.capacity} spots left!` 
                                 : `${event.capacity} spots`
-                            }
-                          </span>
-                        </div>
-                      )}
+                              : 'Open event'
+                          }
+                        </span>
+                      </div>
                     </div>
 
                     <div className="flex flex-wrap gap-2 md:gap-3 mt-auto border-t border-border pt-4">

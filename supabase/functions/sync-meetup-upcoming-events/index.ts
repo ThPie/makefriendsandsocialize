@@ -55,7 +55,7 @@ serve(async (req) => {
                     description: { type: 'string', description: 'Event description or summary text' },
                     imageUrl: { type: 'string', description: 'URL to the event cover image' },
                     price: { type: 'string', description: 'Ticket price if shown, e.g. "$50.00" or "Free"' },
-                    attendees: { type: 'number', description: 'Number of attendees or RSVPs if shown' },
+                    attendees: { type: 'number', description: 'Number of attendees or RSVPs shown, look for text like "47 attendees" or "23 going"' },
                   },
                   required: ['title']
                 },
@@ -114,6 +114,7 @@ serve(async (req) => {
       description: string | null;
       imageUrl: string | null;
       price: number | null;
+      rsvpCount: number | null;
     }
 
     // Helper function to parse various date formats
@@ -260,6 +261,7 @@ serve(async (req) => {
         description: event.description || null,
         imageUrl,
         price,
+        rsvpCount: event.attendees || null,
       });
     }
 
@@ -291,6 +293,7 @@ serve(async (req) => {
         tags: ['meetup', 'networking'],
         updated_at: new Date().toISOString(),
         description: event.description || 'Join us for this exciting networking event!',
+        rsvp_count: event.rsvpCount || 0,
       };
 
       if (existing && existing.length > 0) {
@@ -323,6 +326,63 @@ serve(async (req) => {
 
     console.log('Inserted', insertedCount, 'new events, updated', updatedCount);
 
+    // Generate AI images for Meetup events with meetupstatic images
+    let imagesGenerated = 0;
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+    
+    if (lovableApiKey) {
+      // Find events with meetupstatic images that need AI-generated images
+      const { data: meetupEvents } = await supabase
+        .from('events')
+        .select('id, title, description, image_url')
+        .eq('source', 'meetup')
+        .ilike('image_url', '%meetupstatic%')
+        .limit(5);
+
+      if (meetupEvents && meetupEvents.length > 0) {
+        console.log('Generating AI images for', meetupEvents.length, 'Meetup events');
+
+        for (const meetupEvent of meetupEvents) {
+          try {
+            const imagePrompt = `Elegant, sophisticated event photography for "${meetupEvent.title}". Premium networking event atmosphere with warm golden lighting, dark rich colors, upscale venue ambiance. No text, no words, no logos. Ultra high resolution, cinematic composition, luxury lifestyle aesthetic.`;
+
+            const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${lovableApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'google/gemini-2.5-flash-image-preview',
+                messages: [{ role: 'user', content: imagePrompt }],
+                modalities: ['image', 'text'],
+              }),
+            });
+
+            if (aiResponse.ok) {
+              const aiData = await aiResponse.json();
+              const generatedImageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+              if (generatedImageUrl) {
+                // Update the event with the AI-generated image
+                const { error: updateError } = await supabase
+                  .from('events')
+                  .update({ image_url: generatedImageUrl })
+                  .eq('id', meetupEvent.id);
+
+                if (!updateError) {
+                  imagesGenerated++;
+                  console.log('Generated AI image for:', meetupEvent.title);
+                }
+              }
+            }
+          } catch (imgError) {
+            console.error('Error generating image for', meetupEvent.title, imgError);
+          }
+        }
+      }
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -330,6 +390,7 @@ serve(async (req) => {
           eventsFound: validEvents.length,
           eventsInserted: insertedCount,
           eventsUpdated: updatedCount,
+          imagesGenerated,
           events: validEvents,
         },
       }),
