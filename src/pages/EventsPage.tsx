@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AnimatedButton } from '@/components/ui/animated-button';
 import { Button } from '@/components/ui/button';
@@ -55,6 +55,7 @@ const EventSkeleton = () => (
 );
 
 const EventsPage = () => {
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
@@ -102,6 +103,28 @@ const EventsPage = () => {
   useEffect(() => {
     localStorage.setItem('event_rsvpStatus', JSON.stringify(rsvpStatus));
   }, [rsvpStatus]);
+
+  // Subscribe to real-time updates on events table
+  useEffect(() => {
+    const channel = supabase
+      .channel('events-page-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'events'
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['events'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   const handleRSVP = (event: Event) => {
     const isCurrentlyRsvped = rsvpStatus[event.id];
