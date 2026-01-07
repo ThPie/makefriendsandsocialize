@@ -482,7 +482,7 @@ export default function AuthPage() {
             className="absolute inset-0 w-full h-full object-cover"
             poster="/images/hero-poster.webp"
           >
-            <source src="/videos/auth-gala.mp4" type="video/mp4" />
+            <source src="/videos/auth-chess.mp4" type="video/mp4" />
           </video>
           
           {/* Subtle Gradient Overlay */}
