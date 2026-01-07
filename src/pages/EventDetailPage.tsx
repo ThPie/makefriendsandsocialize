@@ -116,6 +116,10 @@ const EventDetailPage = () => {
           .eq('id', userRsvp.id);
         
         if (error) throw error;
+
+        // Decrement rsvp_count
+        await supabase.rpc('decrement_rsvp_count', { event_id: id });
+
         toast({
           title: "RSVP Cancelled",
           description: `You've cancelled your RSVP for ${event?.title}`,
@@ -131,6 +135,10 @@ const EventDetailPage = () => {
           });
         
         if (error) throw error;
+
+        // Increment rsvp_count
+        await supabase.rpc('increment_rsvp_count', { event_id: id });
+
         toast({
           title: "RSVP Confirmed!",
           description: `You're going to ${event?.title}`,
@@ -139,6 +147,7 @@ const EventDetailPage = () => {
       
       queryClient.invalidateQueries({ queryKey: ['user-rsvp', id] });
       queryClient.invalidateQueries({ queryKey: ['event-rsvp-count', id] });
+      queryClient.invalidateQueries({ queryKey: ['event', id] });
     } catch (error) {
       console.error('RSVP error:', error);
       toast({
