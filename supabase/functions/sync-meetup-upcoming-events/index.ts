@@ -37,7 +37,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         url: upcomingEventsUrl,
-        formats: ['extract', 'html'],
+        formats: ['extract', 'markdown', 'html'],
         extract: {
           schema: {
             type: 'object',
@@ -47,26 +47,27 @@ serve(async (req) => {
                 items: {
                   type: 'object',
                   properties: {
-                    title: { type: 'string', description: 'The full event title/name' },
-                    date: { type: 'string', description: 'Event date in YYYY-MM-DD format' },
-                    time: { type: 'string', description: 'Event start time like "6:00 PM" or "18:00"' },
+                    title: { type: 'string', description: 'The complete event title/name exactly as shown' },
+                    rawDate: { type: 'string', description: 'The date text exactly as shown on the page like "THU, JAN 23, 2026"' },
+                    time: { type: 'string', description: 'Event start time like "6:00 PM MST"' },
                     location: { type: 'string', description: 'Full venue name and address' },
-                    venueName: { type: 'string', description: 'Just the venue name' },
-                    description: { type: 'string', description: 'Event description or summary' },
+                    venueName: { type: 'string', description: 'Just the venue name like "HAVN at Salt Lake Crossing"' },
+                    description: { type: 'string', description: 'Event description or summary text' },
                     imageUrl: { type: 'string', description: 'URL to the event cover image' },
-                    price: { type: 'string', description: 'Ticket price if any, e.g. "$50" or "Free"' },
+                    price: { type: 'string', description: 'Ticket price if shown, e.g. "$50.00" or "Free"' },
+                    attendees: { type: 'number', description: 'Number of attendees or RSVPs if shown' },
                   },
-                  required: ['title', 'date']
+                  required: ['title']
                 },
-                description: 'List of upcoming events from the Meetup page'
+                description: 'All upcoming events listed on this Meetup group events page'
               }
             },
             required: ['events']
           },
-          prompt: 'Extract all upcoming events from this Meetup page. For each event, get the complete event title, the scheduled date (format as YYYY-MM-DD), the start time, the venue/location, venue name, description, event image URL, and ticket price. Focus on future events only.'
+          prompt: 'This is a Meetup group events page. Extract ALL upcoming events shown. For each event card, get: 1) The full event title, 2) The date shown (e.g. "THU, JAN 23, 2026"), 3) The time (e.g. "6:00 PM MST"), 4) The venue name and location, 5) Any description text, 6) The event image URL, 7) The ticket price if shown. Look for event cards that show upcoming gatherings.'
         },
         onlyMainContent: false,
-        waitFor: 3000,
+        waitFor: 5000,
       }),
     });
 
@@ -86,11 +87,13 @@ serve(async (req) => {
     const extractedData = scrapeData.data?.extract || scrapeData.extract || {};
     const extractedEvents = extractedData.events || [];
     const html = scrapeData.data?.html || scrapeData.html || '';
+    const markdown = scrapeData.data?.markdown || scrapeData.markdown || '';
 
-    console.log('Extracted', extractedEvents.length, 'events');
+    console.log('Raw extracted events:', JSON.stringify(extractedEvents, null, 2));
+    console.log('Markdown preview:', markdown.substring(0, 1000));
 
     // Extract image URLs from HTML as backup
-    const eventImagePattern = /<img[^>]*src=["']([^"']*meetupstatic\.com\/photos\/event[^"']*)["'][^>]*>/gi;
+    const eventImagePattern = /<img[^>]*src=["']([^"']*(?:meetupstatic\.com|secure\.meetupstatic\.com)[^"']*(?:event|photo)[^"']*)["'][^>]*>/gi;
     const eventImages: string[] = [];
     let imgMatch;
     while ((imgMatch = eventImagePattern.exec(html)) !== null && eventImages.length < 30) {
@@ -100,6 +103,7 @@ serve(async (req) => {
         eventImages.push(url);
       }
     }
+    console.log('Found', eventImages.length, 'images in HTML');
 
     interface ParsedEvent {
       title: string;
@@ -112,30 +116,97 @@ serve(async (req) => {
       price: number | null;
     }
 
+    // Helper function to parse various date formats
+    const parseEventDate = (dateStr: string): string | null => {
+      if (!dateStr) return null;
+      
+      // Already in YYYY-MM-DD format
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        return dateStr;
+      }
+      
+      // Parse formats like "THU, JAN 23, 2026" or "January 23, 2026" or "FRI, JAN 23"
+      const months: { [key: string]: string } = {
+        'JAN': '01', 'JANUARY': '01',
+        'FEB': '02', 'FEBRUARY': '02',
+        'MAR': '03', 'MARCH': '03',
+        'APR': '04', 'APRIL': '04',
+        'MAY': '05',
+        'JUN': '06', 'JUNE': '06',
+        'JUL': '07', 'JULY': '07',
+        'AUG': '08', 'AUGUST': '08',
+        'SEP': '09', 'SEPTEMBER': '09',
+        'OCT': '10', 'OCTOBER': '10',
+        'NOV': '11', 'NOVEMBER': '11',
+        'DEC': '12', 'DECEMBER': '12',
+      };
+      
+      const upper = dateStr.toUpperCase();
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().getMonth() + 1;
+      
+      for (const [monthName, monthNum] of Object.entries(months)) {
+        if (upper.includes(monthName)) {
+          const dayMatch = dateStr.match(/(\d{1,2})/);
+          const yearMatch = dateStr.match(/(\d{4})/);
+          
+          if (dayMatch) {
+            const day = dayMatch[1].padStart(2, '0');
+            const monthNumber = parseInt(monthNum);
+            
+            // If year is specified, use it; otherwise infer from current date
+            let year = yearMatch ? parseInt(yearMatch[1]) : currentYear;
+            
+            // If no year specified and the month is before current month, assume next year
+            if (!yearMatch && monthNumber < currentMonth) {
+              year = currentYear + 1;
+            }
+            
+            return `${year}-${monthNum}-${day}`;
+          }
+        }
+      }
+      
+      // Try native Date parsing as fallback
+      try {
+        const parsed = new Date(dateStr);
+        if (!isNaN(parsed.getTime())) {
+          return parsed.toISOString().split('T')[0];
+        }
+      } catch {
+        // Continue
+      }
+      
+      return null;
+    };
+
     // Process and validate extracted events
     const validEvents: ParsedEvent[] = [];
     let imageIndex = 0;
     const today = new Date().toISOString().split('T')[0];
 
+    console.log('Processing', extractedEvents.length, 'extracted events');
+
     for (const event of extractedEvents) {
-      if (!event.title || !event.date) continue;
+      if (!event.title) {
+        console.log('Skipping event without title');
+        continue;
+      }
       
-      // Validate and format date
-      let eventDate = event.date;
-      try {
-        const parsed = new Date(event.date);
-        if (!isNaN(parsed.getTime())) {
-          eventDate = parsed.toISOString().split('T')[0];
-        }
-      } catch {
-        // Keep original if parsing fails
+      // Parse date from rawDate or date field
+      const dateStr = event.rawDate || event.date || '';
+      const eventDate = parseEventDate(dateStr);
+      
+      if (!eventDate) {
+        console.log('Could not parse date for event:', event.title, 'raw:', dateStr);
+        continue;
       }
 
-      // Skip if date is invalid format
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate)) continue;
-
       // Skip past events
-      if (eventDate < today) continue;
+      if (eventDate < today) {
+        console.log('Skipping past event:', event.title, eventDate);
+        continue;
+      }
 
       // Clean title
       const title = event.title.trim();
@@ -177,6 +248,8 @@ serve(async (req) => {
           formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}`;
         }
       }
+
+      console.log('Valid event found:', title, eventDate);
 
       validEvents.push({
         title,
