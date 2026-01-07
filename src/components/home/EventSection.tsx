@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Calendar, MapPin, Users } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface Event {
   id: string;
@@ -98,6 +99,7 @@ const EventCardSkeleton = () => (
 
 export const EventSection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const queryClient = useQueryClient();
 
   // Fetch upcoming events from database
   const { data: events = [], isLoading } = useQuery({
@@ -117,6 +119,28 @@ export const EventSection = () => {
       return data as Event[];
     },
   });
+
+  // Subscribe to real-time updates on events table
+  useEffect(() => {
+    const channel = supabase
+      .channel('home-events-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'events'
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['home-upcoming-events'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="events">
