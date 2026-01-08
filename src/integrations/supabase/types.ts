@@ -291,6 +291,7 @@ export type Database = {
       }
       dating_profiles: {
         Row: {
+          accountability_reflection: string | null
           age: number
           age_range_max: number
           age_range_min: number
@@ -298,24 +299,32 @@ export type Database = {
           attachment_style: string | null
           been_married: boolean | null
           bio: string | null
+          career_ambition: string | null
           children_details: string | null
+          communication_style: string | null
           conflict_resolution: string | null
           core_values: string | null
           created_at: string | null
           current_curiosity: string | null
           dealbreakers: string | null
+          debt_status: string | null
           defining_enough: string | null
           diet_preference: string | null
           display_name: string
           drinking_status: string | null
           drug_use: string | null
           emotional_connection: string | null
+          ex_admiration: string | null
           exercise_frequency: string | null
           facebook_url: string | null
+          family_involvement_expectation: string | null
+          family_relationship: string | null
           financial_philosophy: string | null
           friendship_benchmark: string | null
           future_goals: string | null
           gender: string
+          geographic_flexibility: string | null
+          growth_work: string | null
           has_children: boolean | null
           id: string
           instagram_url: string | null
@@ -328,17 +337,26 @@ export type Database = {
           marriage_timeline: string | null
           morning_night_person: string | null
           occupation: string | null
+          past_relationship_learning: string | null
           photo_url: string | null
+          political_issues: string[] | null
           politics_stance: string | null
+          raise_children_faith: string | null
           relationship_type: string | null
           religion_stance: string | null
+          religious_practice: string | null
+          repair_attempt_response: string | null
+          screen_time_habits: string | null
           search_radius: number | null
           smoking_status: string | null
           social_verification_notes: string | null
           social_verification_status: string | null
           status: string
+          stress_response: string | null
           support_style: string | null
           target_gender: string
+          ten_year_vision: string | null
+          trust_fidelity_views: string | null
           tuesday_night_test: string | null
           twitter_url: string | null
           unpopular_opinion: string | null
@@ -348,6 +366,7 @@ export type Database = {
           wants_children: string | null
         }
         Insert: {
+          accountability_reflection?: string | null
           age: number
           age_range_max?: number
           age_range_min?: number
@@ -355,24 +374,32 @@ export type Database = {
           attachment_style?: string | null
           been_married?: boolean | null
           bio?: string | null
+          career_ambition?: string | null
           children_details?: string | null
+          communication_style?: string | null
           conflict_resolution?: string | null
           core_values?: string | null
           created_at?: string | null
           current_curiosity?: string | null
           dealbreakers?: string | null
+          debt_status?: string | null
           defining_enough?: string | null
           diet_preference?: string | null
           display_name: string
           drinking_status?: string | null
           drug_use?: string | null
           emotional_connection?: string | null
+          ex_admiration?: string | null
           exercise_frequency?: string | null
           facebook_url?: string | null
+          family_involvement_expectation?: string | null
+          family_relationship?: string | null
           financial_philosophy?: string | null
           friendship_benchmark?: string | null
           future_goals?: string | null
           gender: string
+          geographic_flexibility?: string | null
+          growth_work?: string | null
           has_children?: boolean | null
           id?: string
           instagram_url?: string | null
@@ -385,17 +412,26 @@ export type Database = {
           marriage_timeline?: string | null
           morning_night_person?: string | null
           occupation?: string | null
+          past_relationship_learning?: string | null
           photo_url?: string | null
+          political_issues?: string[] | null
           politics_stance?: string | null
+          raise_children_faith?: string | null
           relationship_type?: string | null
           religion_stance?: string | null
+          religious_practice?: string | null
+          repair_attempt_response?: string | null
+          screen_time_habits?: string | null
           search_radius?: number | null
           smoking_status?: string | null
           social_verification_notes?: string | null
           social_verification_status?: string | null
           status?: string
+          stress_response?: string | null
           support_style?: string | null
           target_gender: string
+          ten_year_vision?: string | null
+          trust_fidelity_views?: string | null
           tuesday_night_test?: string | null
           twitter_url?: string | null
           unpopular_opinion?: string | null
@@ -405,6 +441,7 @@ export type Database = {
           wants_children?: string | null
         }
         Update: {
+          accountability_reflection?: string | null
           age?: number
           age_range_max?: number
           age_range_min?: number
@@ -412,24 +449,32 @@ export type Database = {
           attachment_style?: string | null
           been_married?: boolean | null
           bio?: string | null
+          career_ambition?: string | null
           children_details?: string | null
+          communication_style?: string | null
           conflict_resolution?: string | null
           core_values?: string | null
           created_at?: string | null
           current_curiosity?: string | null
           dealbreakers?: string | null
+          debt_status?: string | null
           defining_enough?: string | null
           diet_preference?: string | null
           display_name?: string
           drinking_status?: string | null
           drug_use?: string | null
           emotional_connection?: string | null
+          ex_admiration?: string | null
           exercise_frequency?: string | null
           facebook_url?: string | null
+          family_involvement_expectation?: string | null
+          family_relationship?: string | null
           financial_philosophy?: string | null
           friendship_benchmark?: string | null
           future_goals?: string | null
           gender?: string
+          geographic_flexibility?: string | null
+          growth_work?: string | null
           has_children?: boolean | null
           id?: string
           instagram_url?: string | null
@@ -442,17 +487,26 @@ export type Database = {
           marriage_timeline?: string | null
           morning_night_person?: string | null
           occupation?: string | null
+          past_relationship_learning?: string | null
           photo_url?: string | null
+          political_issues?: string[] | null
           politics_stance?: string | null
+          raise_children_faith?: string | null
           relationship_type?: string | null
           religion_stance?: string | null
+          religious_practice?: string | null
+          repair_attempt_response?: string | null
+          screen_time_habits?: string | null
           search_radius?: number | null
           smoking_status?: string | null
           social_verification_notes?: string | null
           social_verification_status?: string | null
           status?: string
+          stress_response?: string | null
           support_style?: string | null
           target_gender?: string
+          ten_year_vision?: string | null
+          trust_fidelity_views?: string | null
           tuesday_night_test?: string | null
           twitter_url?: string | null
           unpopular_opinion?: string | null
