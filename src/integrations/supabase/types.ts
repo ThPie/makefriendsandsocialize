@@ -304,6 +304,7 @@ export type Database = {
           communication_style: string | null
           conflict_resolution: string | null
           core_values: string | null
+          core_values_ranked: string[] | null
           created_at: string | null
           current_curiosity: string | null
           dealbreakers: string | null
@@ -379,6 +380,7 @@ export type Database = {
           communication_style?: string | null
           conflict_resolution?: string | null
           core_values?: string | null
+          core_values_ranked?: string[] | null
           created_at?: string | null
           current_curiosity?: string | null
           dealbreakers?: string | null
@@ -454,6 +456,7 @@ export type Database = {
           communication_style?: string | null
           conflict_resolution?: string | null
           core_values?: string | null
+          core_values_ranked?: string[] | null
           created_at?: string | null
           current_curiosity?: string | null
           dealbreakers?: string | null
