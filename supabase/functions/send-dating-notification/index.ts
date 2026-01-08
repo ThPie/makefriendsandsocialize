@@ -480,6 +480,159 @@ const getMatchDeclinedEmailHtml = (displayName: string) => `
 </html>
 `;
 
+const getDatesProposedEmailHtml = (displayName: string, proposerName: string) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #FAF7F2; font-family: Georgia, serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #FAF7F2; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #C65D3B; padding: 40px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: normal;">New Date Proposals!</h1>
+              <p style="color: #FFE4D6; margin: 10px 0 0 0; font-size: 16px;">📅 ${proposerName} wants to meet</p>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px;">
+              <p style="color: #2D3748; font-size: 18px; line-height: 1.6; margin: 0 0 20px 0;">
+                Exciting news, ${displayName}!
+              </p>
+              <p style="color: #4A5568; font-size: 16px; line-height: 1.8; margin: 0 0 20px 0;">
+                <strong>${proposerName}</strong> has proposed some dates to meet! Log in to review their suggested times and select one that works for you.
+              </p>
+              
+              <!-- Info Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F7FAFC; border-radius: 8px; margin: 20px 0; border-left: 4px solid #1B4332;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <p style="color: #4A5568; font-size: 14px; line-height: 1.6; margin: 0;">
+                      <strong>Tip:</strong> Review the proposed dates and accept one that fits your schedule. If none work, you can suggest alternatives.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-top: 20px;">
+                    <a href="${SITE_URL}/portal/slow-dating" 
+                       style="display: inline-block; background-color: #1B4332; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 6px; font-size: 16px;">
+                      View Date Proposals
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
+              <p style="color: #718096; font-size: 14px; margin: 0;">
+                With warmth,<br>
+                <strong>Make Friends and Socialize Team</strong>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+const getDateAcceptedEmailHtml = (displayName: string, accepterName: string, meetingDate: string, meetingTime: string) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #FAF7F2; font-family: Georgia, serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #FAF7F2; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #1B4332; padding: 40px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: normal;">Your Date is Confirmed!</h1>
+              <p style="color: #A3C9A8; margin: 10px 0 0 0; font-size: 16px;">🎉 ${accepterName} accepted your date</p>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding: 40px;">
+              <p style="color: #2D3748; font-size: 18px; line-height: 1.6; margin: 0 0 20px 0;">
+                Wonderful news, ${displayName}!
+              </p>
+              <p style="color: #4A5568; font-size: 16px; line-height: 1.8; margin: 0 0 20px 0;">
+                <strong>${accepterName}</strong> has accepted one of your proposed dates! Your meeting is now confirmed.
+              </p>
+              
+              <!-- Meeting Details Card -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1B4332; border-radius: 8px; margin: 20px 0;">
+                <tr>
+                  <td style="padding: 24px; text-align: center;">
+                    <p style="color: #A3C9A8; font-size: 14px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
+                      Meeting Date
+                    </p>
+                    <p style="color: #ffffff; font-size: 24px; margin: 0 0 16px 0; font-weight: bold;">
+                      ${meetingDate}
+                    </p>
+                    <p style="color: #A3C9A8; font-size: 14px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
+                      Time Slot
+                    </p>
+                    <p style="color: #ffffff; font-size: 18px; margin: 0;">
+                      ${meetingTime}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-top: 20px;">
+                    <a href="${SITE_URL}/portal/slow-dating" 
+                       style="display: inline-block; background-color: #C65D3B; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 6px; font-size: 16px;">
+                      View Match Details
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #F7FAFC; padding: 30px; text-align: center; border-top: 1px solid #E2E8F0;">
+              <p style="color: #718096; font-size: 14px; margin: 0;">
+                With warmth,<br>
+                <strong>Make Friends and Socialize Team</strong>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
 const getTimeLabel = (timeValue: string): string => {
   const labels: Record<string, string> = {
     morning: 'Morning (10 AM - 12 PM)',
@@ -545,18 +698,34 @@ const handler = async (req: Request): Promise<Response> => {
         const userEmail = userData.user.email;
         const displayName = notification.payload?.display_name || "Member";
 
+        // Fetch dating profile to check notification preferences
+        const { data: datingProfile } = await supabaseClient
+          .from("dating_profiles")
+          .select("email_notifications_enabled, push_notifications_enabled, phone_number, sms_notifications_enabled")
+          .eq("user_id", notification.user_id)
+          .single();
+
+        const emailEnabled = datingProfile?.email_notifications_enabled !== false;
+        const pushEnabled = datingProfile?.push_notifications_enabled !== false;
+
         let emailResult;
         let subject = "";
+        let pushTitle = "";
+        let pushBody = "";
 
         switch (notification.notification_type) {
           case "dating_vetted":
             subject = "Welcome to Slow Dating - You've Been Approved! 💚";
-            emailResult = await resend.emails.send({
-              from: "Make Friends and Socialize <onboarding@resend.dev>",
-              to: [userEmail],
-              subject,
-              html: getVettedEmailHtml(displayName),
-            });
+            pushTitle = "Profile Approved! 💚";
+            pushBody = "Your dating profile has been approved. Start meeting your matches!";
+            if (emailEnabled) {
+              emailResult = await resend.emails.send({
+                from: "Make Friends and Socialize <onboarding@resend.dev>",
+                to: [userEmail],
+                subject,
+                html: getVettedEmailHtml(displayName),
+              });
+            }
             break;
 
           case "new_match":
@@ -565,12 +734,16 @@ const handler = async (req: Request): Promise<Response> => {
             const matchReason = notification.payload?.match_reason || "A promising connection";
 
             subject = "You Have a New Match! 💕";
-            emailResult = await resend.emails.send({
-              from: "Make Friends and Socialize <onboarding@resend.dev>",
-              to: [userEmail],
-              subject,
-              html: getNewMatchEmailHtml(displayName, matchName, compatibilityScore, matchReason),
-            });
+            pushTitle = "New Match! 💕";
+            pushBody = `You've been matched with ${matchName}. Check it out!`;
+            if (emailEnabled) {
+              emailResult = await resend.emails.send({
+                from: "Make Friends and Socialize <onboarding@resend.dev>",
+                to: [userEmail],
+                subject,
+                html: getNewMatchEmailHtml(displayName, matchName, compatibilityScore, matchReason),
+              });
+            }
             break;
 
           case "meeting_scheduled":
@@ -578,24 +751,32 @@ const handler = async (req: Request): Promise<Response> => {
             const meetingTime = getTimeLabel(notification.payload?.meeting_time || "afternoon");
 
             subject = "Your Meeting is Confirmed! 📅";
-            emailResult = await resend.emails.send({
-              from: "Make Friends and Socialize <onboarding@resend.dev>",
-              to: [userEmail],
-              subject,
-              html: getMeetingScheduledEmailHtml(displayName, meetingDate, meetingTime),
-            });
+            pushTitle = "Meeting Confirmed! 📅";
+            pushBody = `Your meeting is scheduled for ${meetingDate}`;
+            if (emailEnabled) {
+              emailResult = await resend.emails.send({
+                from: "Make Friends and Socialize <onboarding@resend.dev>",
+                to: [userEmail],
+                subject,
+                html: getMeetingScheduledEmailHtml(displayName, meetingDate, meetingTime),
+              });
+            }
             break;
 
           case "decision_time":
             const decisionMatchName = notification.payload?.match_display_name || "your match";
 
             subject = "How Did Your Meeting Go? 💭";
-            emailResult = await resend.emails.send({
-              from: "Make Friends and Socialize <onboarding@resend.dev>",
-              to: [userEmail],
-              subject,
-              html: getDecisionTimeEmailHtml(displayName, decisionMatchName),
-            });
+            pushTitle = "Decision Time 💭";
+            pushBody = "How did your meeting go? Share your decision now.";
+            if (emailEnabled) {
+              emailResult = await resend.emails.send({
+                from: "Make Friends and Socialize <onboarding@resend.dev>",
+                to: [userEmail],
+                subject,
+                html: getDecisionTimeEmailHtml(displayName, decisionMatchName),
+              });
+            }
             break;
 
           case "mutual_match":
@@ -603,22 +784,64 @@ const handler = async (req: Request): Promise<Response> => {
             const matchId = notification.payload?.match_id || "";
 
             subject = "🎉 It's a Connection!";
-            emailResult = await resend.emails.send({
-              from: "Make Friends and Socialize <onboarding@resend.dev>",
-              to: [userEmail],
-              subject,
-              html: getMutualMatchEmailHtml(displayName, mutualMatchName, matchId),
-            });
+            pushTitle = "It's a Connection! 🎉";
+            pushBody = `You and ${mutualMatchName} both want to continue!`;
+            if (emailEnabled) {
+              emailResult = await resend.emails.send({
+                from: "Make Friends and Socialize <onboarding@resend.dev>",
+                to: [userEmail],
+                subject,
+                html: getMutualMatchEmailHtml(displayName, mutualMatchName, matchId),
+              });
+            }
             break;
 
           case "match_declined":
             subject = "Match Update";
-            emailResult = await resend.emails.send({
-              from: "Make Friends and Socialize <onboarding@resend.dev>",
-              to: [userEmail],
-              subject,
-              html: getMatchDeclinedEmailHtml(displayName),
-            });
+            pushTitle = "Match Update";
+            pushBody = "We have an update about your recent match.";
+            if (emailEnabled) {
+              emailResult = await resend.emails.send({
+                from: "Make Friends and Socialize <onboarding@resend.dev>",
+                to: [userEmail],
+                subject,
+                html: getMatchDeclinedEmailHtml(displayName),
+              });
+            }
+            break;
+
+          case "dates_proposed":
+            const proposerName = notification.payload?.proposer_display_name || "Your match";
+
+            subject = "Your Match Has Proposed Dates! 📅";
+            pushTitle = "New Date Proposals! 📅";
+            pushBody = `${proposerName} wants to schedule a meeting!`;
+            if (emailEnabled) {
+              emailResult = await resend.emails.send({
+                from: "Make Friends and Socialize <onboarding@resend.dev>",
+                to: [userEmail],
+                subject,
+                html: getDatesProposedEmailHtml(displayName, proposerName),
+              });
+            }
+            break;
+
+          case "date_accepted":
+            const accepterName = notification.payload?.accepter_display_name || "Your match";
+            const acceptedDate = notification.payload?.meeting_date || "TBD";
+            const acceptedTime = getTimeLabel(notification.payload?.meeting_time || "afternoon");
+
+            subject = "Your Date is Confirmed! 🎉";
+            pushTitle = "Date Confirmed! 🎉";
+            pushBody = `${accepterName} accepted your date for ${acceptedDate}!`;
+            if (emailEnabled) {
+              emailResult = await resend.emails.send({
+                from: "Make Friends and Socialize <onboarding@resend.dev>",
+                to: [userEmail],
+                subject,
+                html: getDateAcceptedEmailHtml(displayName, accepterName, acceptedDate, acceptedTime),
+              });
+            }
             break;
 
           default:
@@ -627,6 +850,24 @@ const handler = async (req: Request): Promise<Response> => {
         }
 
         console.log("Email sent successfully:", emailResult);
+
+        // Send push notification if enabled
+        if (pushEnabled && pushTitle && pushBody) {
+          try {
+            await supabaseClient.functions.invoke("send-push-notification", {
+              body: {
+                user_id: notification.user_id,
+                title: pushTitle,
+                body: pushBody,
+                data: { url: "/portal/slow-dating" },
+                tag: notification.notification_type,
+              },
+            });
+            console.log("Push notification sent successfully");
+          } catch (pushError) {
+            console.error("Error sending push notification:", pushError);
+          }
+        }
 
         // Update notification status
         await supabaseClient

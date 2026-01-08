@@ -320,6 +320,7 @@ export type Database = {
           display_name: string
           drinking_status: string | null
           drug_use: string | null
+          email_notifications_enabled: boolean | null
           emotional_connection: string | null
           ex_admiration: string | null
           exercise_frequency: string | null
@@ -349,9 +350,11 @@ export type Database = {
           past_relationship_learning: string | null
           paused_at: string | null
           paused_reason: string | null
+          phone_number: string | null
           photo_url: string | null
           political_issues: string[] | null
           politics_stance: string | null
+          push_notifications_enabled: boolean | null
           raise_children_faith: string | null
           relationship_type: string | null
           religion_stance: string | null
@@ -360,6 +363,7 @@ export type Database = {
           screen_time_habits: string | null
           search_radius: number | null
           smoking_status: string | null
+          sms_notifications_enabled: boolean | null
           social_verification_notes: string | null
           social_verification_status: string | null
           status: string
@@ -403,6 +407,7 @@ export type Database = {
           display_name: string
           drinking_status?: string | null
           drug_use?: string | null
+          email_notifications_enabled?: boolean | null
           emotional_connection?: string | null
           ex_admiration?: string | null
           exercise_frequency?: string | null
@@ -432,9 +437,11 @@ export type Database = {
           past_relationship_learning?: string | null
           paused_at?: string | null
           paused_reason?: string | null
+          phone_number?: string | null
           photo_url?: string | null
           political_issues?: string[] | null
           politics_stance?: string | null
+          push_notifications_enabled?: boolean | null
           raise_children_faith?: string | null
           relationship_type?: string | null
           religion_stance?: string | null
@@ -443,6 +450,7 @@ export type Database = {
           screen_time_habits?: string | null
           search_radius?: number | null
           smoking_status?: string | null
+          sms_notifications_enabled?: boolean | null
           social_verification_notes?: string | null
           social_verification_status?: string | null
           status?: string
@@ -486,6 +494,7 @@ export type Database = {
           display_name?: string
           drinking_status?: string | null
           drug_use?: string | null
+          email_notifications_enabled?: boolean | null
           emotional_connection?: string | null
           ex_admiration?: string | null
           exercise_frequency?: string | null
@@ -515,9 +524,11 @@ export type Database = {
           past_relationship_learning?: string | null
           paused_at?: string | null
           paused_reason?: string | null
+          phone_number?: string | null
           photo_url?: string | null
           political_issues?: string[] | null
           politics_stance?: string | null
+          push_notifications_enabled?: boolean | null
           raise_children_faith?: string | null
           relationship_type?: string | null
           religion_stance?: string | null
@@ -526,6 +537,7 @@ export type Database = {
           screen_time_habits?: string | null
           search_radius?: number | null
           smoking_status?: string | null
+          sms_notifications_enabled?: boolean | null
           social_verification_notes?: string | null
           social_verification_status?: string | null
           status?: string
