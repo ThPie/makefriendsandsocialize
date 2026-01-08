@@ -292,6 +292,47 @@ export type Database = {
           },
         ]
       }
+      dating_meeting_reminders: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          id: string
+          meeting_proposal_id: string
+          reminder_type: string
+          sent_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          meeting_proposal_id: string
+          reminder_type?: string
+          sent_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          meeting_proposal_id?: string
+          reminder_type?: string
+          sent_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_meeting_reminders_meeting_proposal_id_fkey"
+            columns: ["meeting_proposal_id"]
+            isOneToOne: false
+            referencedRelation: "meeting_proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dating_profiles: {
         Row: {
           accountability_reflection: string | null

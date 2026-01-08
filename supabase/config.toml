@@ -80,3 +80,9 @@ verify_jwt = false
 
 [functions.preprocess-dating-profile]
 verify_jwt = false
+
+[functions.send-sms]
+verify_jwt = false
+
+[functions.send-dating-reminders]
+verify_jwt = false
