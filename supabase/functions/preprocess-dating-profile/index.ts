@@ -40,28 +40,59 @@ serve(async (req) => {
   }
 
   try {
-    const { profileId } = await req.json();
-
-    if (!profileId) {
-      throw new Error("profileId is required");
-    }
+    const body = await req.json();
+    const { profileId, batchAll } = body;
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get the profile
-    const { data: profile, error: profileError } = await supabase
-      .from("dating_profiles")
-      .select("*")
-      .eq("id", profileId)
-      .single();
+    let profilesToProcess = [];
 
-    if (profileError || !profile) {
-      throw new Error("Profile not found");
+    if (batchAll) {
+      // Get all profiles that haven't been preprocessed or need reprocessing
+      const { data: profiles, error } = await supabase
+        .from("dating_profiles")
+        .select("*")
+        .in("status", ["vetted", "approved", "new", "pending"])
+        .or("last_preprocessed_at.is.null,last_preprocessed_at.lt." + new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+
+      if (error) throw error;
+      profilesToProcess = profiles || [];
+      console.log(`Batch processing ${profilesToProcess.length} profiles`);
+    } else if (profileId) {
+      const { data: profile, error: profileError } = await supabase
+        .from("dating_profiles")
+        .select("*")
+        .eq("id", profileId)
+        .single();
+
+      if (profileError || !profile) {
+        throw new Error("Profile not found");
+      }
+      profilesToProcess = [profile];
+    } else {
+      throw new Error("profileId or batchAll is required");
     }
 
-    console.log(`Pre-processing profile for: ${profile.display_name}`);
+    if (profilesToProcess.length === 0) {
+      return new Response(
+        JSON.stringify({ success: true, message: "No profiles to process", processed: 0 }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
+    }
+
+    let processedCount = 0;
+    const errors: string[] = [];
+
+    for (const profile of profilesToProcess) {
+      try {
+        console.log(`Pre-processing profile for: ${profile.display_name}`);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -174,13 +205,23 @@ Return a JSON object with these four keys. Be conservative in scoring - only rat
       throw new Error("Failed to save normalized data");
     }
 
-    console.log(`Successfully pre-processed profile: ${profile.display_name}`);
+        processedCount++;
+        console.log(`Successfully pre-processed profile: ${profile.display_name}`);
+      } catch (profileError) {
+        console.error(`Error processing ${profile.display_name}:`, profileError);
+        errors.push(`${profile.display_name}: ${profileError instanceof Error ? profileError.message : "Unknown error"}`);
+      }
+    }
 
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: "Profile pre-processed successfully",
-        dimensions: normalized.compatibility_dimensions
+        message: batchAll 
+          ? `Processed ${processedCount} of ${profilesToProcess.length} profiles`
+          : "Profile pre-processed successfully",
+        processed: processedCount,
+        total: profilesToProcess.length,
+        errors: errors.length > 0 ? errors : undefined
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );

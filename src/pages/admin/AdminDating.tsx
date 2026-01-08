@@ -7,8 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Search, User, Heart, Check, X, Eye, UserSearch, Users, Clock, RefreshCw } from "lucide-react";
+import { Search, User, Heart, Check, X, Eye, UserSearch, Users, Clock, RefreshCw, Sparkles, Activity } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { formatDistanceToNow } from "date-fns";
 
 interface DatingProfile {
   id: string;
@@ -43,6 +44,29 @@ const AdminDating = () => {
       
       if (error) throw error;
       return data as DatingProfile[];
+    },
+  });
+
+  // Get matching stats - latest match and total count
+  const { data: matchingStats } = useQuery({
+    queryKey: ["matching-stats"],
+    queryFn: async () => {
+      const [latestMatch, totalMatches] = await Promise.all([
+        supabase
+          .from("dating_matches")
+          .select("created_at, compatibility_score")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single(),
+        supabase
+          .from("dating_matches")
+          .select("id", { count: "exact", head: true })
+      ]);
+      
+      return {
+        lastRunAt: latestMatch.data?.created_at || null,
+        totalMatches: totalMatches.count || 0
+      };
     },
   });
 
@@ -90,6 +114,30 @@ const AdminDating = () => {
     },
   });
 
+  const preprocessMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke('preprocess-dating-profile', {
+        body: { batchAll: true }
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["dating-profiles"] });
+      toast({ 
+        title: "Preprocessing Complete",
+        description: `Processed ${data?.processed || 0} of ${data?.total || 0} profiles.`
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Preprocessing failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const filteredProfiles = profiles?.filter((profile) => {
     const matchesSearch = profile.display_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       profile.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -123,20 +171,59 @@ const AdminDating = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="font-display text-3xl text-foreground">Slow Dating</h1>
           <p className="text-muted-foreground">Manage dating profiles and curate matches</p>
         </div>
-        <Button
-          onClick={() => runMatchingMutation.mutate()}
-          disabled={runMatchingMutation.isPending || stats.vetted === 0}
-          className="bg-pink-500 hover:bg-pink-600"
-        >
-          <RefreshCw className={`h-4 w-4 mr-2 ${runMatchingMutation.isPending ? 'animate-spin' : ''}`} />
-          {runMatchingMutation.isPending ? 'Running...' : 'Re-run Matching'}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => preprocessMutation.mutate()}
+            disabled={preprocessMutation.isPending || stats.total === 0}
+          >
+            <Sparkles className={`h-4 w-4 mr-2 ${preprocessMutation.isPending ? 'animate-pulse' : ''}`} />
+            {preprocessMutation.isPending ? 'Processing...' : 'Preprocess All'}
+          </Button>
+          <Button
+            onClick={() => runMatchingMutation.mutate()}
+            disabled={runMatchingMutation.isPending || stats.vetted === 0}
+            className="bg-pink-500 hover:bg-pink-600"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${runMatchingMutation.isPending ? 'animate-spin' : ''}`} />
+            {runMatchingMutation.isPending ? 'Running...' : 'Re-run Matching'}
+          </Button>
+        </div>
       </div>
+
+      {/* Matching Stats Banner */}
+      {matchingStats && (
+        <Card className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 border-pink-500/20">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-pink-500/20 flex items-center justify-center">
+                  <Activity className="h-5 w-5 text-pink-500" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Last Matching Run</p>
+                  <p className="font-medium">
+                    {matchingStats.lastRunAt 
+                      ? formatDistanceToNow(new Date(matchingStats.lastRunAt), { addSuffix: true })
+                      : 'Never run'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6">
+                <div className="text-center">
+                  <p className="text-2xl font-display font-bold text-pink-500">{matchingStats.totalMatches}</p>
+                  <p className="text-xs text-muted-foreground">Total Matches Created</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-4">
