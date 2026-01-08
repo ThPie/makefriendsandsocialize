@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import { MessageCircle } from 'lucide-react';
 import chatbotAvatar from '@/assets/chatbot-avatar.png';
 
 interface Message {
@@ -84,16 +85,7 @@ export const EventChatbot = () => {
 
   const chatConfig = getChatbotConfig(location.pathname);
 
-  // Auto-open chat after a delay on first visit
-  useEffect(() => {
-    if (!hasAutoOpened) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-        setHasAutoOpened(true);
-      }, 3000); // Pop up after 3 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [hasAutoOpened]);
+  // Removed auto-open behavior - users will click to open
 
   // Update greeting when user profile loads
   useEffect(() => {
@@ -216,17 +208,11 @@ export const EventChatbot = () => {
       {/* Floating Button - improved for mobile */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 w-12 h-12 md:w-14 md:h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center group overflow-hidden touch-manipulation"
+        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 w-12 h-12 md:w-14 md:h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center group touch-manipulation"
         aria-label={isOpen ? "Close Assistant" : "Open Assistant"}
         aria-expanded={isOpen}
       >
-        <img
-          src={chatbotAvatar}
-          alt="Assistant avatar"
-          className="h-full w-full object-cover"
-          loading="lazy"
-          decoding="async"
-        />
+        <MessageCircle className="h-6 w-6 md:h-7 md:w-7" />
       </button>
 
       {/* Chat Window - improved for mobile */}

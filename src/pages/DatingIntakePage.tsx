@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,9 +11,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, User, ClipboardCheck, ChevronRight, ChevronLeft, Check, Camera, Briefcase, Brain, Shield, Upload, Users, Cigarette, Wine, MapPin, Loader2 } from "lucide-react";
+import { Heart, User, ClipboardCheck, ChevronRight, ChevronLeft, Check, Camera, Briefcase, Brain, Shield, Upload, Users, Cigarette, Wine, MapPin, Loader2, AlertCircle, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { VoiceBioRecorder } from "@/components/dating/VoiceBioRecorder";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface FormData {
   display_name: string;
@@ -115,15 +117,54 @@ const initialFormData: FormData = {
   search_radius: 25,
 };
 
+const DRAFT_STORAGE_KEY = "dating_application_draft";
+
 const DatingIntakePage = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [hasDraft, setHasDraft] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, profile, isLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Load draft from localStorage on mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
+    if (savedDraft) {
+      try {
+        const { step: savedStep, formData: savedFormData } = JSON.parse(savedDraft);
+        setStep(savedStep || 1);
+        setFormData(prev => ({ ...prev, ...savedFormData }));
+        setHasDraft(true);
+      } catch (e) {
+        console.error("Failed to parse draft:", e);
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+      }
+    }
+  }, []);
+
+  // Save draft to localStorage on changes
+  const saveDraft = useCallback(() => {
+    const draft = { step, formData };
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
+  }, [step, formData]);
+
+  useEffect(() => {
+    if (formData.display_name || step > 1) {
+      saveDraft();
+    }
+  }, [formData, step, saveDraft]);
+
+  const clearDraft = () => {
+    localStorage.removeItem(DRAFT_STORAGE_KEY);
+    setFormData(initialFormData);
+    setStep(1);
+    setHasDraft(false);
+    toast({ title: "Draft cleared", description: "Your application draft has been deleted." });
+  };
 
   // Auth guard: redirect if not logged in or profile incomplete
   useEffect(() => {
@@ -149,8 +190,8 @@ const DatingIntakePage = () => {
       return;
     }
 
-    // Pre-fill location from profile
-    if (profile) {
+    // Pre-fill location from profile only if not already set from draft
+    if (profile && !formData.location) {
       const locationParts = [profile.city, profile.state, profile.country].filter(Boolean);
       if (locationParts.length > 0) {
         setFormData(prev => ({
@@ -216,6 +257,10 @@ const DatingIntakePage = () => {
           toast({ title: "Age Requirement", description: "You must be at least 21 years old.", variant: "destructive" });
           return false;
         }
+        if (!formData.photo_url) {
+          toast({ title: "Photo Required", description: "Please upload a profile photo to continue.", variant: "destructive" });
+          return false;
+        }
         return true;
       case 2:
         if (!formData.wants_children) {
@@ -271,7 +316,7 @@ const DatingIntakePage = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from("dating_profiles").insert({
+      const { data: insertedProfile, error } = await supabase.from("dating_profiles").insert({
         user_id: user.id,
         display_name: formData.display_name,
         age: formData.age,
@@ -324,9 +369,26 @@ const DatingIntakePage = () => {
         future_goals: formData.future_goals || null,
         search_radius: formData.search_radius,
         status: "pending",
-      });
+      }).select().single();
 
       if (error) throw error;
+
+      // Clear the draft after successful submission
+      localStorage.removeItem(DRAFT_STORAGE_KEY);
+
+      // Trigger automatic social media verification in the background
+      if (insertedProfile && (formData.linkedin_url || formData.instagram_url || formData.facebook_url || formData.twitter_url)) {
+        toast({
+          title: "Verifying social profiles...",
+          description: "Your social media links are being verified in the background.",
+        });
+        
+        supabase.functions.invoke("verify-social-profiles", {
+          body: { profileId: insertedProfile.id }
+        }).catch((err) => {
+          console.error("Social verification error:", err);
+        });
+      }
 
       toast({
         title: "Application Submitted!",
@@ -385,6 +447,25 @@ const DatingIntakePage = () => {
           </p>
         </div>
 
+        {/* Draft Banner */}
+        {hasDraft && step === 1 && (
+          <Alert className="mb-6 bg-dating-terracotta/10 border-dating-terracotta/30">
+            <AlertCircle className="h-4 w-4 text-dating-terracotta" />
+            <AlertDescription className="flex items-center justify-between">
+              <span className="text-foreground">You have a saved draft. Continue where you left off!</span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={clearDraft}
+                className="gap-1 text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="h-3 w-3" />
+                Clear Draft
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Progress Steps */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4 overflow-x-auto pb-2">
@@ -430,9 +511,9 @@ const DatingIntakePage = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-8 pt-6">
-                  {/* Photo Upload */}
+                  {/* Photo Upload - Required */}
                   <div className="flex flex-col items-center gap-4">
-                    <Avatar className="h-32 w-32 border-4 border-dating-terracotta/20">
+                    <Avatar className={`h-32 w-32 border-4 ${formData.photo_url ? 'border-green-500/40' : 'border-dating-terracotta/20'}`}>
                       <AvatarImage src={formData.photo_url} />
                       <AvatarFallback className="bg-dating-terracotta/10 text-dating-terracotta text-3xl">
                         {formData.display_name ? formData.display_name[0] : <Camera className="h-10 w-10" />}
@@ -447,16 +528,19 @@ const DatingIntakePage = () => {
                     />
                     <Button
                       type="button"
-                      variant="outline"
+                      variant={formData.photo_url ? "outline" : "default"}
                       size="sm"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isUploading}
                       className="gap-2"
                     >
                       <Upload className="h-4 w-4" />
-                      {isUploading ? "Uploading..." : "Upload Photo"}
+                      {isUploading ? "Uploading..." : formData.photo_url ? "Change Photo" : "Upload Photo *"}
                     </Button>
-                    <p className="text-xs text-muted-foreground">Optional • Max 5MB</p>
+                    <p className="text-xs text-muted-foreground">Required for verification • Max 5MB</p>
+                    {!formData.photo_url && (
+                      <p className="text-xs text-dating-terracotta">A photo is required to proceed</p>
+                    )}
                   </div>
 
                   <div className="grid gap-6 md:grid-cols-2">
@@ -530,7 +614,21 @@ const DatingIntakePage = () => {
                   </div>
 
                   <div className="space-y-4">
-                    <Label>Age Range: {formData.age_range_min} - {formData.age_range_max}</Label>
+                    <div className="flex items-center justify-between">
+                      <Label>Preferred Age Range</Label>
+                      <div className="flex items-center gap-2">
+                        <span className="bg-dating-terracotta/20 text-dating-terracotta px-2 py-1 rounded text-sm font-medium">
+                          {formData.age_range_min}
+                        </span>
+                        <span className="text-muted-foreground">to</span>
+                        <span className="bg-dating-terracotta/20 text-dating-terracotta px-2 py-1 rounded text-sm font-medium">
+                          {formData.age_range_max}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Drag both handles to set your preferred age range
+                    </p>
                     <div className="px-2">
                       <Slider
                         value={[formData.age_range_min, formData.age_range_max]}
@@ -543,6 +641,10 @@ const DatingIntakePage = () => {
                         step={1}
                         className="py-4"
                       />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>18</span>
+                        <span>80</span>
+                      </div>
                     </div>
                   </div>
 
@@ -604,12 +706,18 @@ const DatingIntakePage = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="bio">Short Bio</Label>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="bio">Short Bio</Label>
+                      <VoiceBioRecorder 
+                        currentBio={formData.bio} 
+                        onBioUpdate={(bio) => updateField("bio", bio)} 
+                      />
+                    </div>
                     <Textarea
                       id="bio"
                       value={formData.bio}
                       onChange={(e) => updateField("bio", e.target.value)}
-                      placeholder="A few sentences about yourself..."
+                      placeholder="A few sentences about yourself... or use the microphone to record!"
                       className="min-h-[80px] bg-background/50"
                     />
                   </div>
