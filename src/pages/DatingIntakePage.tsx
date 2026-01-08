@@ -246,6 +246,121 @@ const DatingIntakePage = () => {
     }
   };
 
+  // === ADAPTIVE HELPERS ===
+  
+  // Check if user is looking for serious relationship
+  const isSeekingSerious = () => {
+    return ["serious", "marriage", "open"].includes(formData.relationship_type);
+  };
+
+  // Check if user is casual only
+  const isCasualOnly = () => {
+    return formData.relationship_type === "casual";
+  };
+
+  // Get dynamic children question options
+  const getWantsChildrenOptions = () => {
+    if (formData.has_children) {
+      return [
+        { value: "more", label: "Yes, I'd like more children" },
+        { value: "done", label: "No, I'm content with my family" },
+        { value: "open", label: "Open to it with the right person" },
+      ];
+    }
+    return [
+      { value: "yes", label: "Yes, I want children" },
+      { value: "no", label: "No, I don't want children" },
+      { value: "open", label: "Open to it" },
+    ];
+  };
+
+  // Get dynamic marriage timeline label
+  const getMarriageTimelineLabel = () => {
+    if (formData.been_married) {
+      return "When do you see yourself getting remarried?";
+    }
+    return "When do you see yourself getting married?";
+  };
+
+  // Get dynamic Tuesday night prompt
+  const getTuesdayNightPrompt = () => {
+    if (formData.has_children) {
+      return "It's a random Tuesday evening, the kids are asleep, and you have the night to yourself. What does your ideal evening look like?";
+    }
+    return "It's a random Tuesday evening, work is done, and you have no plans. What does your ideal night look like?";
+  };
+
+  // Get dynamic financial philosophy prompt
+  const getFinancialPrompt = () => {
+    if (formData.has_children && isSeekingSerious()) {
+      return "If you received an unexpected $5,000 bonus tomorrow, how would you think about using it for yourself and your family?";
+    }
+    if (isSeekingSerious()) {
+      return "If you received an unexpected $5,000 bonus tomorrow, what would you do with it? This reveals your relationship with money.";
+    }
+    return "If you received an unexpected $5,000 bonus tomorrow, what would you do with it?";
+  };
+
+  // Get dynamic current curiosity prompt
+  const getCurrentCuriosityPrompt = () => {
+    if (formData.occupation) {
+      return `Outside of your work in ${formData.occupation}, what topic or hobby are you currently geeking out on or learning about?`;
+    }
+    return "What topic or hobby are you currently geeking out on or learning about?";
+  };
+
+  // Get dynamic conflict resolution prompt
+  const getConflictPrompt = () => {
+    if (formData.been_married) {
+      return "Reflecting on your past relationships, how do you typically handle conflict or misunderstandings?";
+    }
+    return "How do you typically handle conflict or misunderstandings in a relationship?";
+  };
+
+  // Get dynamic vulnerability prompt
+  const getVulnerabilityPrompt = () => {
+    if (formData.been_married && formData.has_children) {
+      return "What's a fear or insecurity you have about dating again as a parent that you're willing to admit?";
+    }
+    if (formData.been_married) {
+      return "What's a fear or insecurity you have about dating again after your previous marriage that you're willing to admit?";
+    }
+    if (formData.has_children) {
+      return "What's a fear or insecurity you have about dating as a parent that you're willing to admit?";
+    }
+    return "What is a fear or insecurity you have about dating that you're willing to admit?";
+  };
+
+  // Get dynamic dealbreakers prompt
+  const getDealbreakersPrompt = () => {
+    if (formData.has_children) {
+      return "What are your top 3 dating dealbreakers? Consider what matters for you and your family.";
+    }
+    return "What are your top 3 dating dealbreakers? Be specific and honest.";
+  };
+
+  // Get dynamic future goals prompt
+  const getFutureGoalsPrompt = () => {
+    if (formData.relationship_type === "marriage") {
+      return "What are you building toward together with your future partner? Where do you see your life in 5 years?";
+    }
+    if (formData.relationship_type === "serious") {
+      return "Where do you see yourself in 5 years? What kind of partnership are you hoping to build?";
+    }
+    if (isCasualOnly()) {
+      return "What's on your horizon? What are you excited about in the next few years?";
+    }
+    return "Where do you see yourself in 5 years? What are you building toward?";
+  };
+
+  // Get drug use prompt (sensitive based on drinking status)
+  const getDrugUsePrompt = () => {
+    if (formData.drinking_status === "sober") {
+      return "We understand this may be sensitive given your recovery journey. Your answer is completely confidential.";
+    }
+    return "We ask this to ensure compatibility. Your answer is confidential.";
+  };
+
   const validateStep = (stepNumber: number) => {
     switch (stepNumber) {
       case 1:
@@ -267,6 +382,7 @@ const DatingIntakePage = () => {
           toast({ title: "Missing Information", description: "Please answer the children question.", variant: "destructive" });
           return false;
         }
+        // Marriage timeline only required for serious/marriage-minded folks
         return true;
       case 3:
         if (!formData.smoking_status || !formData.drinking_status) {
@@ -790,26 +906,30 @@ const DatingIntakePage = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-8 pt-6">
-                  <div className="space-y-4">
-                    <Label className="text-base">Have you been married before?</Label>
-                    <RadioGroup
-                      value={formData.been_married ? "yes" : "no"}
-                      onValueChange={(value) => updateField("been_married", value === "yes")}
-                      className="flex gap-6"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="yes" id="married-yes" />
-                        <Label htmlFor="married-yes" className="font-normal">Yes</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="no" id="married-no" />
-                        <Label htmlFor="married-no" className="font-normal">No</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
+                  {/* Only show marriage questions if seeking serious relationship */}
+                  {isSeekingSerious() && (
+                    <div className="space-y-4 animate-fade-in">
+                      <Label className="text-base">Have you been married before?</Label>
+                      <RadioGroup
+                        value={formData.been_married ? "yes" : "no"}
+                        onValueChange={(value) => updateField("been_married", value === "yes")}
+                        className="flex gap-6"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="yes" id="married-yes" />
+                          <Label htmlFor="married-yes" className="font-normal">Yes</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="no" id="married-no" />
+                          <Label htmlFor="married-no" className="font-normal">No</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  )}
 
-                  {formData.been_married && (
-                    <div className="space-y-2">
+                  {/* Marriage history - only if been married */}
+                  {isSeekingSerious() && formData.been_married && (
+                    <div className="space-y-2 animate-fade-in">
                       <Label htmlFor="marriage_history">Brief context (optional)</Label>
                       <Textarea
                         id="marriage_history"
@@ -839,8 +959,9 @@ const DatingIntakePage = () => {
                     </RadioGroup>
                   </div>
 
+                  {/* Children details - only if has children */}
                   {formData.has_children && (
-                    <div className="space-y-2">
+                    <div className="space-y-2 animate-fade-in">
                       <Label htmlFor="children_details">Tell us about your children</Label>
                       <Textarea
                         id="children_details"
@@ -852,37 +973,43 @@ const DatingIntakePage = () => {
                     </div>
                   )}
 
-                  <div className="space-y-3">
-                    <Label>Do you want children? *</Label>
+                  {/* Adaptive children question */}
+                  <div className="space-y-3 animate-fade-in">
+                    <Label>
+                      {formData.has_children ? "Do you want more children? *" : "Do you want children? *"}
+                    </Label>
                     <Select value={formData.wants_children} onValueChange={(value) => updateField("wants_children", value)}>
                       <SelectTrigger className="bg-background/50">
                         <SelectValue placeholder="Select your preference" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="yes">Yes, I want children</SelectItem>
-                        <SelectItem value="no">No, I don't want children</SelectItem>
-                        <SelectItem value="open">Open to it</SelectItem>
-                        <SelectItem value="already_have">Already have children, may want more</SelectItem>
-                        <SelectItem value="done">Already have children, done having kids</SelectItem>
+                        {getWantsChildrenOptions().map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  <div className="space-y-3">
-                    <Label>When do you see yourself getting married?</Label>
-                    <Select value={formData.marriage_timeline} onValueChange={(value) => updateField("marriage_timeline", value)}>
-                      <SelectTrigger className="bg-background/50">
-                        <SelectValue placeholder="Select timeline" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1-2_years">Within 1-2 years</SelectItem>
-                        <SelectItem value="3-5_years">3-5 years</SelectItem>
-                        <SelectItem value="someday">Someday, no rush</SelectItem>
-                        <SelectItem value="not_sure">Not sure</SelectItem>
-                        <SelectItem value="not_interested">Not interested in marriage</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {/* Marriage timeline - only show for serious/marriage-minded, not casual */}
+                  {isSeekingSerious() && (
+                    <div className="space-y-3 animate-fade-in">
+                      <Label>{getMarriageTimelineLabel()}</Label>
+                      <Select value={formData.marriage_timeline} onValueChange={(value) => updateField("marriage_timeline", value)}>
+                        <SelectTrigger className="bg-background/50">
+                          <SelectValue placeholder="Select timeline" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1-2_years">Within 1-2 years</SelectItem>
+                          <SelectItem value="3-5_years">3-5 years</SelectItem>
+                          <SelectItem value="someday">Someday, no rush</SelectItem>
+                          <SelectItem value="not_sure">Not sure yet</SelectItem>
+                          <SelectItem value="not_interested">Not interested in marriage</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </CardContent>
               </>
             )}
@@ -930,10 +1057,11 @@ const DatingIntakePage = () => {
                     </Select>
                   </div>
 
-                  <div className="space-y-3">
+                  {/* Adaptive drug use question */}
+                  <div className="space-y-3 animate-fade-in">
                     <Label htmlFor="drug_use">Recreational drug use</Label>
                     <p className="text-sm text-muted-foreground">
-                      We ask this to ensure compatibility. Your answer is confidential.
+                      {getDrugUsePrompt()}
                     </p>
                     <Textarea
                       id="drug_use"
@@ -994,13 +1122,13 @@ const DatingIntakePage = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-8 pt-6">
+                  {/* Adaptive Tuesday Night Test */}
                   <div className="space-y-3">
                     <Label htmlFor="tuesday_night_test" className="text-base">
                       The Tuesday Night Test *
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      It's a random Tuesday evening, work is done, and you have no plans. 
-                      What does your ideal night look like?
+                      {getTuesdayNightPrompt()}
                     </p>
                     <Textarea
                       id="tuesday_night_test"
@@ -1011,28 +1139,32 @@ const DatingIntakePage = () => {
                     />
                   </div>
 
-                  <div className="space-y-3">
-                    <Label htmlFor="financial_philosophy" className="text-base">
-                      Financial Philosophy
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      If you received an unexpected $5,000 bonus tomorrow, what would you do with it?
-                    </p>
-                    <Textarea
-                      id="financial_philosophy"
-                      value={formData.financial_philosophy}
-                      onChange={(e) => updateField("financial_philosophy", e.target.value)}
-                      placeholder="This reveals your relationship with money..."
-                      className="min-h-[100px] bg-background/50"
-                    />
-                  </div>
+                  {/* Adaptive Financial Philosophy - only for serious daters */}
+                  {isSeekingSerious() && (
+                    <div className="space-y-3 animate-fade-in">
+                      <Label htmlFor="financial_philosophy" className="text-base">
+                        Financial Philosophy
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        {getFinancialPrompt()}
+                      </p>
+                      <Textarea
+                        id="financial_philosophy"
+                        value={formData.financial_philosophy}
+                        onChange={(e) => updateField("financial_philosophy", e.target.value)}
+                        placeholder="This reveals your relationship with money..."
+                        className="min-h-[100px] bg-background/50"
+                      />
+                    </div>
+                  )}
 
+                  {/* Adaptive Current Curiosity */}
                   <div className="space-y-3">
                     <Label htmlFor="current_curiosity" className="text-base">
                       Current Curiosity
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      What topic or hobby are you currently geeking out on or learning about?
+                      {getCurrentCuriosityPrompt()}
                     </p>
                     <Textarea
                       id="current_curiosity"
@@ -1059,12 +1191,13 @@ const DatingIntakePage = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-8 pt-6">
+                  {/* Adaptive Conflict Resolution */}
                   <div className="space-y-3">
                     <Label htmlFor="conflict_resolution" className="text-base">
                       Conflict Resolution *
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      How do you typically handle conflict or misunderstandings in a relationship?
+                      {getConflictPrompt()}
                     </p>
                     <Textarea
                       id="conflict_resolution"
@@ -1136,13 +1269,18 @@ const DatingIntakePage = () => {
                     </div>
                   </div>
 
+                  {/* Adaptive Support Style */}
                   <div className="space-y-3">
                     <Label htmlFor="support_style" className="text-base">
                       Support Style
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      When you're stressed or having a bad day, do you prefer space to process alone, 
-                      or do you prefer to vent and be comforted immediately?
+                      {formData.introvert_extrovert === "introvert" 
+                        ? "As someone who leans introverted, when you're stressed or having a bad day, do you prefer space to process alone, or do you still want company?"
+                        : formData.introvert_extrovert === "extrovert"
+                        ? "As someone who leans extroverted, when you're stressed, do you prefer to vent and be comforted immediately, or do you sometimes need space too?"
+                        : "When you're stressed or having a bad day, do you prefer space to process alone, or do you prefer to vent and be comforted immediately?"
+                      }
                     </p>
                     <Textarea
                       id="support_style"
@@ -1153,12 +1291,13 @@ const DatingIntakePage = () => {
                     />
                   </div>
 
+                  {/* Adaptive Vulnerability Check */}
                   <div className="space-y-3">
                     <Label htmlFor="vulnerability_check" className="text-base">
                       Vulnerability Check
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      What is a fear or insecurity you have about dating again that you're willing to admit?
+                      {getVulnerabilityPrompt()}
                     </p>
                     <Textarea
                       id="vulnerability_check"
@@ -1188,7 +1327,10 @@ const DatingIntakePage = () => {
                   <div className="space-y-3">
                     <Label>Attachment Style (optional)</Label>
                     <p className="text-sm text-muted-foreground">
-                      If you know your attachment style, select it below.
+                      {formData.been_married 
+                        ? "Based on your past relationship experiences, what attachment style resonates with you?"
+                        : "If you know your attachment style, select it below."
+                      }
                     </p>
                     <Select value={formData.attachment_style} onValueChange={(value) => updateField("attachment_style", value)}>
                       <SelectTrigger className="bg-background/50">
@@ -1220,12 +1362,13 @@ const DatingIntakePage = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-8 pt-6">
+                  {/* Adaptive Dealbreakers */}
                   <div className="space-y-3">
                     <Label htmlFor="dealbreakers" className="text-base">
                       Dealbreakers *
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      What are your top 3 dating dealbreakers? Be specific and honest.
+                      {getDealbreakersPrompt()}
                     </p>
                     <Textarea
                       id="dealbreakers"
@@ -1236,12 +1379,16 @@ const DatingIntakePage = () => {
                     />
                   </div>
 
+                  {/* Political views - less emphasis for casual */}
                   <div className="space-y-3">
                     <Label htmlFor="politics_stance" className="text-base">
-                      Political Views
+                      Political Views {isCasualOnly() && "(optional)"}
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      How important is political alignment in a partner?
+                      {isCasualOnly() 
+                        ? "If it matters to you, how important is political alignment?"
+                        : "How important is political alignment in a partner?"
+                      }
                     </p>
                     <Select value={formData.politics_stance} onValueChange={(value) => updateField("politics_stance", value)}>
                       <SelectTrigger className="bg-background/50">
@@ -1256,12 +1403,16 @@ const DatingIntakePage = () => {
                     </Select>
                   </div>
 
+                  {/* Religious views - less emphasis for casual */}
                   <div className="space-y-3">
                     <Label htmlFor="religion_stance" className="text-base">
-                      Religious/Spiritual Views
+                      Religious/Spiritual Views {isCasualOnly() && "(optional)"}
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      How important is religious or spiritual alignment?
+                      {isCasualOnly()
+                        ? "If it matters to you, how important is religious or spiritual alignment?"
+                        : "How important is religious or spiritual alignment?"
+                      }
                     </p>
                     <Select value={formData.religion_stance} onValueChange={(value) => updateField("religion_stance", value)}>
                       <SelectTrigger className="bg-background/50">
@@ -1276,18 +1427,22 @@ const DatingIntakePage = () => {
                     </Select>
                   </div>
 
+                  {/* Adaptive Future Goals */}
                   <div className="space-y-3">
                     <Label htmlFor="future_goals" className="text-base">
-                      Future Goals
+                      {isCasualOnly() ? "What's Ahead" : "Future Goals"}
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      Where do you see yourself in 5 years? What are you building toward?
+                      {getFutureGoalsPrompt()}
                     </p>
                     <Textarea
                       id="future_goals"
                       value={formData.future_goals}
                       onChange={(e) => updateField("future_goals", e.target.value)}
-                      placeholder="Be honest about what you're looking for in the long term..."
+                      placeholder={isCasualOnly() 
+                        ? "What are you excited about in life right now..."
+                        : "Be honest about what you're looking for in the long term..."
+                      }
                       className="min-h-[100px] bg-background/50"
                     />
                   </div>
@@ -1332,7 +1487,7 @@ const DatingIntakePage = () => {
                     </div>
                   </div>
 
-                  {/* Key Info Summary */}
+                  {/* Key Info Summary - only show fields that were answered */}
                   <div className="grid gap-3 md:grid-cols-2">
                     {formData.wants_children && (
                       <div className="bg-muted/20 rounded-lg p-3">
@@ -1358,16 +1513,23 @@ const DatingIntakePage = () => {
                         <p className="text-sm font-medium capitalize">{formData.love_language.replace(/_/g, " ")}</p>
                       </div>
                     )}
+                    {isSeekingSerious() && formData.marriage_timeline && (
+                      <div className="bg-muted/20 rounded-lg p-3">
+                        <p className="text-xs text-muted-foreground mb-1">Marriage Timeline</p>
+                        <p className="text-sm font-medium capitalize">{formData.marriage_timeline.replace(/_/g, " ")}</p>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Answers Summary */}
+                  {/* Answers Summary - only show filled answers */}
                   <div className="space-y-4">
                     {[
                       { label: "Tuesday Night Test", value: formData.tuesday_night_test },
                       { label: "Conflict Resolution", value: formData.conflict_resolution },
                       { label: "Core Values", value: formData.core_values },
                       { label: "Dealbreakers", value: formData.dealbreakers },
-                    ].map((item, index) => item.value && (
+                      isSeekingSerious() ? { label: "Future Goals", value: formData.future_goals } : null,
+                    ].filter(Boolean).map((item, index) => item && item.value && (
                       <div key={index} className="bg-muted/20 rounded-lg p-4">
                         <p className="text-sm font-medium text-dating-terracotta mb-1">{item.label}</p>
                         <p className="text-sm text-muted-foreground">{item.value}</p>
