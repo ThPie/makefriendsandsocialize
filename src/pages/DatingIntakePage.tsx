@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, User, ClipboardCheck, ChevronRight, ChevronLeft, Check, Camera, Briefcase, Brain, Shield, Upload, Users, Cigarette, Wine, MapPin, Loader2, AlertCircle, Trash2, Sparkles } from "lucide-react";
+import { Heart, User, ClipboardCheck, ChevronRight, ChevronLeft, Check, Camera, Briefcase, Brain, Shield, Upload, Users, Cigarette, Wine, MapPin, Loader2, AlertCircle, Trash2, Sparkles, Bell, Phone, Mail, Smartphone } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { VoiceBioRecorder } from "@/components/dating/VoiceBioRecorder";
@@ -95,6 +95,11 @@ interface FormData {
   growth_work: string;
   // Search radius
   search_radius: number;
+  // Notification preferences
+  phone_number: string;
+  email_notifications_enabled: boolean;
+  push_notifications_enabled: boolean;
+  sms_notifications_enabled: boolean;
 }
 
 const initialFormData: FormData = {
@@ -160,6 +165,10 @@ const initialFormData: FormData = {
   ex_admiration: "",
   growth_work: "",
   search_radius: 25,
+  phone_number: "",
+  email_notifications_enabled: true,
+  push_notifications_enabled: true,
+  sms_notifications_enabled: false,
 };
 
 const DRAFT_STORAGE_KEY = "dating_application_draft";
@@ -473,7 +482,7 @@ const DatingIntakePage = () => {
 
   const handleNext = () => {
     if (!validateStep(step)) return;
-    setStep((prev) => Math.min(prev + 1, 7));
+    setStep((prev) => Math.min(prev + 1, 8));
   };
 
   const handleBack = () => {
@@ -569,6 +578,11 @@ const DatingIntakePage = () => {
         growth_work: formData.growth_work || null,
         // Other
         search_radius: formData.search_radius,
+        // Notification preferences
+        phone_number: formData.phone_number || null,
+        email_notifications_enabled: formData.email_notifications_enabled,
+        push_notifications_enabled: formData.push_notifications_enabled,
+        sms_notifications_enabled: formData.sms_notifications_enabled,
         status: "pending",
       }).select().single();
 
@@ -625,7 +639,8 @@ const DatingIntakePage = () => {
     { number: 4, title: "Daily Life", icon: Briefcase },
     { number: 5, title: "Deep Dive", icon: Brain },
     { number: 6, title: "Dealbreakers", icon: Shield },
-    { number: 7, title: "Review", icon: ClipboardCheck },
+    { number: 7, title: "Notifications", icon: Bell },
+    { number: 8, title: "Review", icon: ClipboardCheck },
   ];
 
   // Show loading state while checking auth
@@ -1947,8 +1962,132 @@ const DatingIntakePage = () => {
               </>
             )}
 
-            {/* Step 7: Review */}
+            {/* Step 7: Notification Preferences */}
             {step === 7 && (
+              <>
+                <CardHeader className="bg-gradient-to-r from-dating-forest/5 to-transparent pb-6">
+                  <CardTitle className="font-display text-2xl flex items-center gap-3">
+                    <Bell className="h-6 w-6 text-dating-terracotta" />
+                    Stay Connected
+                  </CardTitle>
+                  <CardDescription>
+                    Choose how you'd like to hear about matches and scheduled dates. All preferences are optional.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6 pt-6">
+                  {/* Explanation */}
+                  <div className="bg-dating-forest/5 border border-dating-forest/20 rounded-xl p-4">
+                    <p className="text-sm text-foreground leading-relaxed">
+                      <strong>We'll notify you about:</strong>
+                    </p>
+                    <ul className="text-sm text-muted-foreground mt-2 space-y-1">
+                      <li>• New matches selected for you</li>
+                      <li>• When your match proposes dates</li>
+                      <li>• Confirmed meeting reminders</li>
+                      <li>• Post-meeting decisions</li>
+                    </ul>
+                    <p className="text-xs text-muted-foreground mt-3 italic">
+                      Your information is never shared. You can update these preferences anytime.
+                    </p>
+                  </div>
+
+                  {/* Email Notifications */}
+                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-dating-terracotta/10 rounded-full">
+                        <Mail className="h-5 w-5 text-dating-terracotta" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">Email Notifications</p>
+                        <p className="text-sm text-muted-foreground">Receive updates in your inbox</p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant={formData.email_notifications_enabled ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => updateField("email_notifications_enabled", !formData.email_notifications_enabled)}
+                      className={formData.email_notifications_enabled ? "bg-dating-forest hover:bg-dating-forest/90" : ""}
+                    >
+                      {formData.email_notifications_enabled ? "On" : "Off"}
+                    </Button>
+                  </div>
+
+                  {/* Push Notifications */}
+                  <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-dating-terracotta/10 rounded-full">
+                        <Bell className="h-5 w-5 text-dating-terracotta" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">Push Notifications</p>
+                        <p className="text-sm text-muted-foreground">Get instant browser notifications</p>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant={formData.push_notifications_enabled ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => updateField("push_notifications_enabled", !formData.push_notifications_enabled)}
+                      className={formData.push_notifications_enabled ? "bg-dating-forest hover:bg-dating-forest/90" : ""}
+                    >
+                      {formData.push_notifications_enabled ? "On" : "Off"}
+                    </Button>
+                  </div>
+
+                  {/* SMS Notifications */}
+                  <div className="space-y-4 p-4 bg-muted/30 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-dating-terracotta/10 rounded-full">
+                          <Smartphone className="h-5 w-5 text-dating-terracotta" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground">Text Message Reminders</p>
+                          <p className="text-sm text-muted-foreground">Get SMS for important updates (optional)</p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant={formData.sms_notifications_enabled ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => updateField("sms_notifications_enabled", !formData.sms_notifications_enabled)}
+                        className={formData.sms_notifications_enabled ? "bg-dating-forest hover:bg-dating-forest/90" : ""}
+                        disabled={!formData.phone_number}
+                      >
+                        {formData.sms_notifications_enabled ? "On" : "Off"}
+                      </Button>
+                    </div>
+
+                    <div className="space-y-2 pl-12">
+                      <Label htmlFor="phone_number" className="text-sm">Phone Number (optional)</Label>
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="phone_number"
+                          type="tel"
+                          value={formData.phone_number}
+                          onChange={(e) => {
+                            updateField("phone_number", e.target.value);
+                            if (!e.target.value) {
+                              updateField("sms_notifications_enabled", false);
+                            }
+                          }}
+                          placeholder="+1 (555) 123-4567"
+                          className="bg-background/50"
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        We'll only text you about scheduled dates and time-sensitive updates.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </>
+            )}
+
+            {/* Step 8: Review */}
+            {step === 8 && (
               <>
                 <CardHeader className="bg-gradient-to-r from-dating-forest/5 to-transparent pb-6">
                   <CardTitle className="font-display text-2xl flex items-center gap-3">
@@ -2057,7 +2196,7 @@ const DatingIntakePage = () => {
               Back
             </Button>
             
-            {step < 7 ? (
+            {step < 8 ? (
               <Button onClick={handleNext} className="gap-2 bg-dating-terracotta hover:bg-dating-terracotta/90">
                 Next
                 <ChevronRight className="h-4 w-4" />
