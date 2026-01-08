@@ -35,9 +35,19 @@ const CORE_VALUES_MAP: Record<string, { label: string; icon: string }> = {
   fun: { label: "Fun & Enjoyment", icon: "🎉" },
 };
 
+interface MatchDimensions {
+  communication?: number;
+  values?: number;
+  goals?: number;
+  lifestyle?: number;
+  red_flags?: number;
+  gottman_score?: number;
+}
+
 interface CompatibilityBreakdownProps {
   compatibilityScore: number;
   matchReason: string;
+  matchDimensions?: MatchDimensions | null;
   myValues?: string[] | null;
   theirValues?: string[] | null;
   myCommunicationStyle?: string | null;
@@ -52,6 +62,7 @@ interface CompatibilityBreakdownProps {
 export const CompatibilityBreakdown = ({
   compatibilityScore,
   matchReason,
+  matchDimensions,
   myValues = [],
   theirValues = [],
   myCommunicationStyle,
@@ -118,23 +129,29 @@ export const CompatibilityBreakdown = ({
     return 70; // One leans in, one needs space - workable
   };
 
-  const communicationScore = getCommunicationScore();
-  const repairScore = getRepairScore();
+  // Use AI-computed dimensions if available, otherwise fall back to calculated scores
+  const communicationScore = matchDimensions?.communication ?? getCommunicationScore();
+  const repairScore = matchDimensions?.red_flags ?? getRepairScore();
   const stressScore = getStressScore();
+  const valuesScoreAI = matchDimensions?.values;
+  const goalsScore = matchDimensions?.goals;
+  const lifestyleScore = matchDimensions?.lifestyle;
 
-  // Calculate Gottman Score (weighted average of relationship predictors)
-  const gottmanFactors = [
-    { score: repairScore, weight: 3 },
-    { score: communicationScore, weight: 2 },
-    { score: stressScore, weight: 2 },
-  ].filter(f => f.score !== null);
+  // Calculate Gottman Score from AI dimensions or compute locally
+  const gottmanScore = matchDimensions?.gottman_score ?? ((): number | null => {
+    const gottmanFactors = [
+      { score: repairScore, weight: 3 },
+      { score: communicationScore, weight: 2 },
+      { score: stressScore, weight: 2 },
+    ].filter(f => f.score !== null);
 
-  const gottmanScore = gottmanFactors.length > 0
-    ? Math.round(
-        gottmanFactors.reduce((acc, f) => acc + (f.score || 0) * f.weight, 0) /
-        gottmanFactors.reduce((acc, f) => acc + f.weight, 0)
-      )
-    : null;
+    return gottmanFactors.length > 0
+      ? Math.round(
+          gottmanFactors.reduce((acc, f) => acc + (f.score || 0) * f.weight, 0) /
+          gottmanFactors.reduce((acc, f) => acc + f.weight, 0)
+        )
+      : null;
+  })();
 
   const getScoreColor = (score: number) => {
     if (score >= 85) return "text-green-600";
@@ -181,6 +198,35 @@ export const CompatibilityBreakdown = ({
             <p className="text-xs text-muted-foreground mt-2">
               Based on 50+ years of relationship research predicting long-term success
             </p>
+          </div>
+        )}
+
+        {/* AI-Computed Dimensions (if available) */}
+        {matchDimensions && (goalsScore || lifestyleScore || valuesScoreAI) && (
+          <div className="space-y-3 p-3 bg-gradient-to-r from-dating-forest/5 to-dating-terracotta/5 rounded-lg border border-dating-forest/10">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-4 w-4 text-dating-terracotta" />
+              <span className="font-medium text-sm">AI Compatibility Analysis</span>
+            </div>
+            
+            {valuesScoreAI !== undefined && (
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Core Values</span>
+                <span className={cn("font-semibold", getScoreColor(valuesScoreAI))}>{valuesScoreAI}%</span>
+              </div>
+            )}
+            {goalsScore !== undefined && (
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Relationship Goals</span>
+                <span className={cn("font-semibold", getScoreColor(goalsScore))}>{goalsScore}%</span>
+              </div>
+            )}
+            {lifestyleScore !== undefined && (
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Lifestyle Fit</span>
+                <span className={cn("font-semibold", getScoreColor(lifestyleScore))}>{lifestyleScore}%</span>
+              </div>
+            )}
           </div>
         )}
 

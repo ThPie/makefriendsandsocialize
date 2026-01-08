@@ -591,6 +591,15 @@ const DatingIntakePage = () => {
         });
       }
 
+      // Pre-process profile for AI matching optimization
+      if (insertedProfile) {
+        supabase.functions.invoke("preprocess-dating-profile", {
+          body: { profileId: insertedProfile.id }
+        }).catch((err) => {
+          console.error("Profile preprocessing error:", err);
+        });
+      }
+
       toast({
         title: "Application Submitted!",
         description: "Your dating profile has been submitted for review. We'll be in touch soon.",

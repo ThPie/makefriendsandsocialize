@@ -229,6 +229,7 @@ export type Database = {
           compatibility_score: number
           created_at: string | null
           id: string
+          match_dimensions: Json | null
           match_reason: string
           meeting_date: string | null
           meeting_status: string | null
@@ -245,6 +246,7 @@ export type Database = {
           compatibility_score: number
           created_at?: string | null
           id?: string
+          match_dimensions?: Json | null
           match_reason: string
           meeting_date?: string | null
           meeting_status?: string | null
@@ -261,6 +263,7 @@ export type Database = {
           compatibility_score?: number
           created_at?: string | null
           id?: string
+          match_dimensions?: Json | null
           match_reason?: string
           meeting_date?: string | null
           meeting_status?: string | null
@@ -302,7 +305,10 @@ export type Database = {
           career_ambition: string | null
           children_details: string | null
           communication_style: string | null
+          compatibility_dimensions: Json | null
           conflict_resolution: string | null
+          conflict_style_normalized: Json | null
+          connection_style_normalized: Json | null
           core_values: string | null
           core_values_ranked: string[] | null
           created_at: string | null
@@ -331,6 +337,8 @@ export type Database = {
           instagram_url: string | null
           introvert_extrovert: string | null
           is_active: boolean | null
+          last_preprocessed_at: string | null
+          lifestyle_normalized: Json | null
           linkedin_url: string | null
           location: string | null
           love_language: string | null
@@ -378,7 +386,10 @@ export type Database = {
           career_ambition?: string | null
           children_details?: string | null
           communication_style?: string | null
+          compatibility_dimensions?: Json | null
           conflict_resolution?: string | null
+          conflict_style_normalized?: Json | null
+          connection_style_normalized?: Json | null
           core_values?: string | null
           core_values_ranked?: string[] | null
           created_at?: string | null
@@ -407,6 +418,8 @@ export type Database = {
           instagram_url?: string | null
           introvert_extrovert?: string | null
           is_active?: boolean | null
+          last_preprocessed_at?: string | null
+          lifestyle_normalized?: Json | null
           linkedin_url?: string | null
           location?: string | null
           love_language?: string | null
@@ -454,7 +467,10 @@ export type Database = {
           career_ambition?: string | null
           children_details?: string | null
           communication_style?: string | null
+          compatibility_dimensions?: Json | null
           conflict_resolution?: string | null
+          conflict_style_normalized?: Json | null
+          connection_style_normalized?: Json | null
           core_values?: string | null
           core_values_ranked?: string[] | null
           created_at?: string | null
@@ -483,6 +499,8 @@ export type Database = {
           instagram_url?: string | null
           introvert_extrovert?: string | null
           is_active?: boolean | null
+          last_preprocessed_at?: string | null
+          lifestyle_normalized?: Json | null
           linkedin_url?: string | null
           location?: string | null
           love_language?: string | null

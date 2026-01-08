@@ -51,6 +51,13 @@ interface MatchResult {
   score: number;
   reason: string;
   gottmanScore?: number;
+  dimensions?: {
+    communication: number;
+    values: number;
+    goals: number;
+    lifestyle: number;
+    redFlags: number;
+  };
 }
 
 serve(async (req) => {
@@ -283,12 +290,13 @@ Deep Dive:
 - Unresolved trust trauma → flag for review, -5 points
 - Past relationship learning shows growth → +5 points
 
-Return a JSON object with:
-- "score": A number from 0 to 100 representing overall compatibility
-- "gottman_score": A number from 0 to 100 for communication/repair compatibility specifically
-- "reason": A 2-3 sentence explanation focusing on their strongest compatibility factors AND any concerns
+Be realistic. Most people are NOT highly compatible. A 60%+ match meets our threshold for introduction. Prioritize communication patterns and core values over surface-level traits.
 
-Be realistic. Most people are NOT highly compatible. A 65%+ match is genuinely promising. Prioritize communication patterns and core values over surface-level traits.`;
+Return JSON with:
+- "score": 0-100 overall compatibility
+- "gottman_score": 0-100 for communication/repair specifically
+- "dimensions": { "communication": 0-100, "values": 0-100, "goals": 0-100, "lifestyle": 0-100, "red_flags": 0-100 }
+- "reason": 2-3 sentence explanation`;
 
         const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
@@ -297,7 +305,7 @@ Be realistic. Most people are NOT highly compatible. A 65%+ match is genuinely p
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "google/gemini-2.5-flash",
+            model: "google/gemini-2.5-pro",
             messages: [
               { role: "system", content: "You are an expert matchmaker using Gottman Institute research. Always respond with valid JSON only." },
               { role: "user", content: prompt },
@@ -320,16 +328,30 @@ Be realistic. Most people are NOT highly compatible. A 65%+ match is genuinely p
             const score = parseInt(parsed.score) || 0;
             const gottmanScore = parseInt(parsed.gottman_score) || score;
             const reason = parsed.reason || "Compatibility analysis unavailable";
+            const dimensions = parsed.dimensions || {
+              communication: gottmanScore,
+              values: score,
+              goals: score,
+              lifestyle: score,
+              red_flags: 80
+            };
 
             console.log(`${candidate.display_name}: ${score}% (Gottman: ${gottmanScore}%) - ${reason}`);
 
-            // Increased threshold to 65% for higher quality matches
-            if (score >= 65) {
+            // 60% threshold - provides foundation, real connection happens in person
+            if (score >= 60) {
               matchResults.push({
                 candidateId: candidate.id,
                 score,
                 gottmanScore,
                 reason,
+                dimensions: {
+                  communication: parseInt(dimensions.communication) || gottmanScore,
+                  values: parseInt(dimensions.values) || score,
+                  goals: parseInt(dimensions.goals) || score,
+                  lifestyle: parseInt(dimensions.lifestyle) || score,
+                  redFlags: parseInt(dimensions.red_flags) || 80,
+                },
               });
             }
           } catch (parseError) {
@@ -341,7 +363,7 @@ Be realistic. Most people are NOT highly compatible. A 65%+ match is genuinely p
       }
     }
 
-    console.log(`Found ${matchResults.length} matches with score >= 65%`);
+    console.log(`Found ${matchResults.length} matches with score >= 60%`);
 
     // Store matches in database
     for (const match of matchResults) {
@@ -352,6 +374,15 @@ Be realistic. Most people are NOT highly compatible. A 65%+ match is genuinely p
         .or(`and(user_a_id.eq.${profileId},user_b_id.eq.${match.candidateId}),and(user_a_id.eq.${match.candidateId},user_b_id.eq.${profileId})`)
         .maybeSingle();
 
+      const matchDimensions = {
+        communication: match.dimensions?.communication || match.gottmanScore || match.score,
+        values: match.dimensions?.values || match.score,
+        goals: match.dimensions?.goals || match.score,
+        lifestyle: match.dimensions?.lifestyle || match.score,
+        red_flags: match.dimensions?.redFlags || 80,
+        gottman_score: match.gottmanScore || match.score,
+      };
+
       if (existingMatch) {
         // Update existing match
         await supabase
@@ -359,6 +390,7 @@ Be realistic. Most people are NOT highly compatible. A 65%+ match is genuinely p
           .update({
             compatibility_score: match.score,
             match_reason: match.reason,
+            match_dimensions: matchDimensions,
             updated_at: new Date().toISOString(),
           })
           .eq("id", existingMatch.id);
@@ -369,6 +401,7 @@ Be realistic. Most people are NOT highly compatible. A 65%+ match is genuinely p
           user_b_id: match.candidateId,
           compatibility_score: match.score,
           match_reason: match.reason,
+          match_dimensions: matchDimensions,
           status: "pending",
         });
       }

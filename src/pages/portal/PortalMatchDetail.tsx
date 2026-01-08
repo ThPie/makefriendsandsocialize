@@ -42,10 +42,20 @@ interface DatingProfile {
   repair_attempt_response: string | null;
 }
 
+interface MatchDimensions {
+  communication?: number;
+  values?: number;
+  goals?: number;
+  lifestyle?: number;
+  red_flags?: number;
+  gottman_score?: number;
+}
+
 interface Match {
   id: string;
   compatibility_score: number;
   match_reason: string;
+  match_dimensions: MatchDimensions | null;
   status: string;
   meeting_status: string;
   meeting_date: string | null;
@@ -299,6 +309,7 @@ export default function PortalMatchDetail() {
               <CompatibilityBreakdown
                 compatibilityScore={match.compatibility_score}
                 matchReason={match.match_reason}
+                matchDimensions={match.match_dimensions}
                 myValues={myProfile.core_values_ranked}
                 theirValues={matchedProfile.core_values_ranked}
                 myCommunicationStyle={myProfile.communication_style}
