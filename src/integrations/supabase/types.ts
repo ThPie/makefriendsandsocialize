@@ -223,6 +223,50 @@ export type Database = {
           },
         ]
       }
+      date_confirmation_requests: {
+        Row: {
+          confirmation_token: string
+          confirmed_at: string | null
+          created_at: string | null
+          expires_at: string
+          id: string
+          meeting_proposal_id: string
+          response_notes: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          confirmation_token: string
+          confirmed_at?: string | null
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          meeting_proposal_id: string
+          response_notes?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          confirmation_token?: string
+          confirmed_at?: string | null
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          meeting_proposal_id?: string
+          response_notes?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "date_confirmation_requests_meeting_proposal_id_fkey"
+            columns: ["meeting_proposal_id"]
+            isOneToOne: false
+            referencedRelation: "meeting_proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dating_matches: {
         Row: {
           admin_notes: string | null
@@ -1245,6 +1289,80 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      notification_throttle_log: {
+        Row: {
+          bundled_count: number
+          created_at: string | null
+          id: string
+          last_notification_at: string | null
+          notification_date: string
+          notifications_sent: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bundled_count?: number
+          created_at?: string | null
+          id?: string
+          last_notification_at?: string | null
+          notification_date?: string
+          notifications_sent?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bundled_count?: number
+          created_at?: string | null
+          id?: string
+          last_notification_at?: string | null
+          notification_date?: string
+          notifications_sent?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pending_notification_bundle: {
+        Row: {
+          bundled_into: string | null
+          created_at: string | null
+          id: string
+          notification_type: string
+          payload: Json
+          priority: number
+          processed_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bundled_into?: string | null
+          created_at?: string | null
+          id?: string
+          notification_type: string
+          payload?: Json
+          priority?: number
+          processed_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bundled_into?: string | null
+          created_at?: string | null
+          id?: string
+          notification_type?: string
+          payload?: Json
+          priority?: number
+          processed_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_notification_bundle_bundled_into_fkey"
+            columns: ["bundled_into"]
+            isOneToOne: false
+            referencedRelation: "notification_queue"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
