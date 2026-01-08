@@ -5,7 +5,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DateScheduler } from '@/components/dating/DateScheduler';
 import { MatchDecision } from '@/components/dating/MatchDecision';
@@ -237,7 +236,7 @@ export default function PortalMatchDetail() {
       )}>
         <CardContent className="p-0">
           <div className="md:flex">
-            {/* Photo */}
+            {/* Photo - Heavy blur before reveal */}
             <div className="md:w-1/3 min-h-[300px] relative bg-dating-cream/30">
               {matchedProfile.photo_url ? (
                 <img
@@ -245,7 +244,7 @@ export default function PortalMatchDetail() {
                   alt={isRevealed ? matchedProfile.display_name : 'Your Match'}
                   className={cn(
                     "w-full h-full object-cover",
-                    !isRevealed && "blur-2xl scale-110"
+                    !isRevealed && "blur-3xl scale-125"
                   )}
                 />
               ) : (
@@ -255,7 +254,7 @@ export default function PortalMatchDetail() {
               )}
               
               {!isRevealed && (
-                <div className="absolute inset-0 bg-dating-cream/40 flex items-center justify-center">
+                <div className="absolute inset-0 bg-dating-cream/50 flex items-center justify-center">
                   <div className="text-center">
                     <div className="w-20 h-20 rounded-full bg-dating-forest/20 flex items-center justify-center mx-auto mb-3">
                       <Lock className="h-10 w-10 text-dating-forest" />
@@ -268,7 +267,7 @@ export default function PortalMatchDetail() {
               )}
             </div>
 
-            {/* Info */}
+            {/* Info - Show age always, hide name/location/occupation before reveal */}
             <div className="md:w-2/3 p-6 space-y-4">
               <div className="flex items-start justify-between">
                 <div>
@@ -296,7 +295,12 @@ export default function PortalMatchDetail() {
                   ) : (
                     <>
                       <h1 className="text-2xl font-display text-foreground">Your Match</h1>
-                      <p className="text-muted-foreground">Complete the journey to reveal</p>
+                      <p className="text-muted-foreground mt-1">
+                        {matchedProfile.age} years old
+                      </p>
+                      <p className="text-sm text-muted-foreground/70 mt-1">
+                        Complete the journey to reveal full profile
+                      </p>
                     </>
                   )}
                 </div>
@@ -305,7 +309,7 @@ export default function PortalMatchDetail() {
                 </Badge>
               </div>
 
-              {/* Compatibility Breakdown */}
+              {/* Compatibility Breakdown - Always visible */}
               <CompatibilityBreakdown
                 compatibilityScore={match.compatibility_score}
                 matchReason={match.match_reason}

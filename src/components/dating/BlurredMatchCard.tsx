@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { User, Heart, Calendar, Clock, CheckCircle2, XCircle, PartyPopper } from "lucide-react";
+import { User, Heart, Calendar, Clock, CheckCircle2, XCircle, PartyPopper, MessageCircle, Target, Sparkles, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DatingProfile {
@@ -15,10 +15,18 @@ interface DatingProfile {
   bio: string | null;
 }
 
+interface MatchDimensions {
+  communication?: number;
+  values?: number;
+  goals?: number;
+  lifestyle?: number;
+}
+
 interface Match {
   id: string;
   compatibility_score: number;
   match_reason: string;
+  match_dimensions?: MatchDimensions | null;
   status: string;
   meeting_status: string;
   meeting_date: string | null;
@@ -63,6 +71,12 @@ export const BlurredMatchCard = ({
     return "bg-muted text-muted-foreground border-border";
   };
 
+  const getDimensionScoreColor = (score: number) => {
+    if (score >= 85) return "text-green-600";
+    if (score >= 70) return "text-amber-600";
+    return "text-muted-foreground";
+  };
+
   const getMeetingStatusText = () => {
     switch (match.meeting_status) {
       case 'pending_woman':
@@ -105,6 +119,9 @@ export const BlurredMatchCard = ({
     );
   }
 
+  // Get dimensional scores
+  const dimensions = match.match_dimensions;
+
   return (
     <Card className={cn(
       "overflow-hidden transition-all duration-300",
@@ -123,21 +140,21 @@ export const BlurredMatchCard = ({
         )}
 
         <div className="flex">
-          {/* Photo Section */}
-          <div className="w-32 h-full min-h-[180px] relative flex-shrink-0 bg-muted/30 overflow-hidden">
+          {/* Photo Section - Much heavier blur before reveal */}
+          <div className="w-32 h-full min-h-[200px] relative flex-shrink-0 bg-muted/30 overflow-hidden">
             {profile.photo_url ? (
               <img
                 src={profile.photo_url}
                 alt="Match"
                 className={cn(
                   "w-full h-full object-cover transition-all duration-500",
-                  !isRevealed && "blur-xl scale-110"
+                  !isRevealed && "blur-3xl scale-125"
                 )}
               />
             ) : (
               <div className={cn(
                 "w-full h-full flex items-center justify-center",
-                !isRevealed && "blur-md"
+                !isRevealed && "blur-2xl"
               )}>
                 <User className="h-12 w-12 text-primary/30" />
               </div>
@@ -145,7 +162,7 @@ export const BlurredMatchCard = ({
             
             {/* Overlay for blurred state */}
             {!isRevealed && (
-              <div className="absolute inset-0 bg-muted/40 flex items-center justify-center">
+              <div className="absolute inset-0 bg-muted/50 flex items-center justify-center">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
                   <Heart className="h-8 w-8 text-primary" />
                 </div>
@@ -155,7 +172,7 @@ export const BlurredMatchCard = ({
 
           {/* Info Section */}
           <div className="flex-1 p-4 space-y-3">
-            {/* Header */}
+            {/* Header - Show age always, hide name/location before reveal */}
             <div className="flex items-start justify-between">
               <div>
                 {isRevealed ? (
@@ -173,7 +190,10 @@ export const BlurredMatchCard = ({
                     <h3 className="font-display text-lg text-foreground">
                       Your Match
                     </h3>
-                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                    <p className="text-sm text-muted-foreground">
+                      {profile.age} years old
+                    </p>
+                    <p className="text-xs text-muted-foreground/70 flex items-center gap-1 mt-1">
                       {getMeetingStatusIcon()}
                       {getMeetingStatusText()}
                     </p>
@@ -184,6 +204,48 @@ export const BlurredMatchCard = ({
                 {match.compatibility_score}%
               </Badge>
             </div>
+
+            {/* Dimensional Scores - Always visible */}
+            {dimensions && (
+              <div className="grid grid-cols-2 gap-2">
+                {dimensions.communication !== undefined && (
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <MessageCircle className="h-3 w-3 text-blue-500" />
+                    <span className="text-muted-foreground">Comm:</span>
+                    <span className={cn("font-semibold", getDimensionScoreColor(dimensions.communication))}>
+                      {dimensions.communication}%
+                    </span>
+                  </div>
+                )}
+                {dimensions.values !== undefined && (
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Heart className="h-3 w-3 text-red-500" />
+                    <span className="text-muted-foreground">Values:</span>
+                    <span className={cn("font-semibold", getDimensionScoreColor(dimensions.values))}>
+                      {dimensions.values}%
+                    </span>
+                  </div>
+                )}
+                {dimensions.goals !== undefined && (
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Target className="h-3 w-3 text-purple-500" />
+                    <span className="text-muted-foreground">Goals:</span>
+                    <span className={cn("font-semibold", getDimensionScoreColor(dimensions.goals))}>
+                      {dimensions.goals}%
+                    </span>
+                  </div>
+                )}
+                {dimensions.lifestyle !== undefined && (
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Home className="h-3 w-3 text-green-500" />
+                    <span className="text-muted-foreground">Lifestyle:</span>
+                    <span className={cn("font-semibold", getDimensionScoreColor(dimensions.lifestyle))}>
+                      {dimensions.lifestyle}%
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Match Reason - Always Visible */}
             <div className="bg-primary/5 rounded-xl p-3 border border-primary/10">

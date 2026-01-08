@@ -347,6 +347,8 @@ export type Database = {
           morning_night_person: string | null
           occupation: string | null
           past_relationship_learning: string | null
+          paused_at: string | null
+          paused_reason: string | null
           photo_url: string | null
           political_issues: string[] | null
           politics_stance: string | null
@@ -428,6 +430,8 @@ export type Database = {
           morning_night_person?: string | null
           occupation?: string | null
           past_relationship_learning?: string | null
+          paused_at?: string | null
+          paused_reason?: string | null
           photo_url?: string | null
           political_issues?: string[] | null
           politics_stance?: string | null
@@ -509,6 +513,8 @@ export type Database = {
           morning_night_person?: string | null
           occupation?: string | null
           past_relationship_learning?: string | null
+          paused_at?: string | null
+          paused_reason?: string | null
           photo_url?: string | null
           political_issues?: string[] | null
           politics_stance?: string | null

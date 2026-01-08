@@ -49,7 +49,8 @@ export const MatchDecision = ({
         newStatus = 'declined';
       }
 
-      const { error } = await supabase
+      // First update the match
+      const { error: matchError } = await supabase
         .from('dating_matches')
         .update({
           [updateField]: decision,
@@ -57,7 +58,35 @@ export const MatchDecision = ({
         })
         .eq('id', matchId);
 
-      if (error) throw error;
+      if (matchError) throw matchError;
+
+      // If mutual_yes, pause BOTH profiles
+      if (newStatus === 'mutual_yes') {
+        // Get both profile IDs from the match
+        const { data: matchData, error: fetchError } = await supabase
+          .from('dating_matches')
+          .select('user_a_id, user_b_id')
+          .eq('id', matchId)
+          .single();
+
+        if (fetchError) throw fetchError;
+
+        // Pause both profiles
+        const { error: pauseError } = await supabase
+          .from('dating_profiles')
+          .update({
+            is_active: false,
+            paused_reason: 'matched',
+            paused_at: new Date().toISOString(),
+          })
+          .in('id', [matchData.user_a_id, matchData.user_b_id]);
+
+        if (pauseError) {
+          console.error('Error pausing profiles:', pauseError);
+          // Don't throw - the match decision already succeeded
+        }
+      }
+
       return { decision, newStatus };
     },
     onSuccess: ({ decision, newStatus }) => {
@@ -66,9 +95,9 @@ export const MatchDecision = ({
         fireCelebration();
         setTimeout(() => fireCelebration(), 500);
         
-        toast.success('Wonderful! You both felt a connection. Profiles revealed!', {
+        toast.success('Wonderful! You both felt a connection. Profiles revealed! Your dating profiles are now paused.', {
           icon: <Handshake className="h-5 w-5 text-dating-terracotta" />,
-          duration: 5000,
+          duration: 6000,
         });
       } else if (decision === 'accepted') {
         toast.success('Your response has been recorded');
@@ -76,6 +105,8 @@ export const MatchDecision = ({
         toast.info('Thank you for your honesty');
       }
       queryClient.invalidateQueries({ queryKey: ['my-dating-matches'] });
+      queryClient.invalidateQueries({ queryKey: ['my-dating-profile'] });
+      queryClient.invalidateQueries({ queryKey: ['match-detail', matchId] });
       onClose();
     },
     onError: (error) => {

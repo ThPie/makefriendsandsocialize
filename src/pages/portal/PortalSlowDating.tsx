@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -6,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Heart, Handshake, Clock, CheckCircle2, XCircle, User } from 'lucide-react';
+import { Heart, Handshake, Clock, CheckCircle2, XCircle, User, Pause, Play } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BlurredMatchCard } from '@/components/dating/BlurredMatchCard';
+import { ReactivationModal } from '@/components/dating/ReactivationModal';
 
 interface DatingProfile {
   id: string;
@@ -20,12 +22,21 @@ interface DatingProfile {
   gender: string;
   location: string | null;
   created_at: string;
+  is_active: boolean | null;
+  paused_reason: string | null;
+  paused_at: string | null;
 }
 
 interface Match {
   id: string;
   compatibility_score: number;
   match_reason: string;
+  match_dimensions?: {
+    communication?: number;
+    values?: number;
+    goals?: number;
+    lifestyle?: number;
+  } | null;
   status: string;
   meeting_status: string;
   meeting_date: string | null;
@@ -50,6 +61,7 @@ interface Match {
 export default function PortalSlowDating() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [showReactivationModal, setShowReactivationModal] = useState(false);
 
   // Fetch user's dating profile
   const { data: profile, isLoading: profileLoading } = useQuery({
@@ -147,6 +159,7 @@ export default function PortalSlowDating() {
   };
 
   const isWoman = profile?.gender?.toLowerCase() === 'female' || profile?.gender?.toLowerCase() === 'woman';
+  const isPaused = profile?.is_active === false && profile?.paused_reason === 'matched';
 
   // Categorize matches
   const activeMatches = matches?.filter(m => m.status !== 'declined' && m.status !== 'mutual_yes') || [];
@@ -205,6 +218,35 @@ export default function PortalSlowDating() {
         <p className="text-muted-foreground">Your curated matchmaking journey</p>
       </div>
 
+      {/* Paused Banner */}
+      {isPaused && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="py-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                  <Pause className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-foreground">Your profile is paused</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Congratulations on your connection! Your profile is hidden from new matches while you explore this connection.
+                  </p>
+                </div>
+              </div>
+              <Button
+                onClick={() => setShowReactivationModal(true)}
+                variant="outline"
+                className="shrink-0"
+              >
+                <Play className="h-4 w-4 mr-2" />
+                Resume Dating
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Profile Status Card */}
       <Card className="border-border">
         <CardHeader className="pb-4">
@@ -230,13 +272,23 @@ export default function PortalSlowDating() {
                 </p>
               </div>
 
-              <Badge variant="outline" className={statusConfig.className}>
-                <StatusIcon className="h-3.5 w-3.5 mr-1" />
-                {statusConfig.label}
-              </Badge>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="outline" className={statusConfig.className}>
+                  <StatusIcon className="h-3.5 w-3.5 mr-1" />
+                  {statusConfig.label}
+                </Badge>
+                {isPaused && (
+                  <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20">
+                    <Pause className="h-3.5 w-3.5 mr-1" />
+                    Paused
+                  </Badge>
+                )}
+              </div>
 
               <p className="text-sm text-muted-foreground">
-                {statusConfig.description}
+                {isPaused
+                  ? "Your profile is currently hidden from matching. Resume when you're ready to explore new connections."
+                  : statusConfig.description}
               </p>
             </div>
 
@@ -310,7 +362,9 @@ export default function PortalSlowDating() {
               <Heart className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
               <h3 className="font-medium text-foreground mb-2">No Active Matches Yet</h3>
               <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                {profile.status === 'vetted'
+                {isPaused
+                  ? "Your profile is paused. Resume dating to receive new matches."
+                  : profile.status === 'vetted'
                   ? "Our matchmakers are carefully reviewing profiles to find your ideal connections. We'll notify you when we find a match!"
                   : "Once your profile is approved, our matchmakers will begin finding compatible matches for you."}
               </p>
@@ -338,6 +392,15 @@ export default function PortalSlowDating() {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Reactivation Modal */}
+      {profile && (
+        <ReactivationModal
+          open={showReactivationModal}
+          onOpenChange={setShowReactivationModal}
+          profileId={profile.id}
+        />
       )}
     </div>
   );
