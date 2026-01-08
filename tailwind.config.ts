@@ -61,6 +61,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Dating section colors
+        dating: {
+          terracotta: "hsl(15 70% 50%)",
+          forest: "hsl(160 35% 15%)",
+          cream: "hsl(45 30% 90%)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
