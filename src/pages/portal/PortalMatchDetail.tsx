@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DateScheduler } from '@/components/dating/DateScheduler';
 import { MatchDecision } from '@/components/dating/MatchDecision';
+import { CompatibilityBreakdown } from '@/components/dating/CompatibilityBreakdown';
 import { 
   ArrowLeft, 
   Heart, 
@@ -35,6 +36,10 @@ interface DatingProfile {
   location: string | null;
   occupation: string | null;
   bio: string | null;
+  core_values_ranked: string[] | null;
+  communication_style: string | null;
+  stress_response: string | null;
+  repair_attempt_response: string | null;
 }
 
 interface Match {
@@ -290,13 +295,20 @@ export default function PortalMatchDetail() {
                 </Badge>
               </div>
 
-              {/* Match Reason - Always Visible */}
-              <div className="bg-dating-forest/5 rounded-lg p-4 border border-dating-forest/10">
-                <h3 className="text-sm uppercase tracking-wide text-dating-forest/70 mb-2">
-                  Why You Match
-                </h3>
-                <p className="text-foreground italic">"{match.match_reason}"</p>
-              </div>
+              {/* Compatibility Breakdown */}
+              <CompatibilityBreakdown
+                compatibilityScore={match.compatibility_score}
+                matchReason={match.match_reason}
+                myValues={myProfile.core_values_ranked}
+                theirValues={matchedProfile.core_values_ranked}
+                myCommunicationStyle={myProfile.communication_style}
+                theirCommunicationStyle={matchedProfile.communication_style}
+                myStressResponse={myProfile.stress_response}
+                theirStressResponse={matchedProfile.stress_response}
+                myRepairResponse={myProfile.repair_attempt_response}
+                theirRepairResponse={matchedProfile.repair_attempt_response}
+                className="mt-4"
+              />
 
               {/* Bio - Only when revealed */}
               {isRevealed && matchedProfile.bio && (
