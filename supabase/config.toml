@@ -86,3 +86,12 @@ verify_jwt = false
 
 [functions.send-dating-reminders]
 verify_jwt = false
+
+[functions.notification-throttle]
+verify_jwt = false
+
+[functions.process-notification-bundles]
+verify_jwt = false
+
+[functions.handle-date-confirmation]
+verify_jwt = false

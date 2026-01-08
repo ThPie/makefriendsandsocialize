@@ -64,6 +64,7 @@ import ConnectedCirclePage from "@/pages/ConnectedCirclePage";
 import ConnectedCircleDirectoryPage from "@/pages/ConnectedCircleDirectoryPage";
 import PortalBusiness from "@/pages/portal/PortalBusiness";
 import AdminBusinesses from "@/pages/admin/AdminBusinesses";
+import DateConfirmationPage from "@/pages/DateConfirmationPage";
 
 const queryClient = new QueryClient();
 
@@ -102,7 +103,9 @@ const App = () => (
               <Route path="/auth/waiting" element={<AuthWaitingPage />} />
               <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
-              <Route path="/auth/waiting" element={<AuthWaitingPage />} />
+              
+              {/* Date confirmation (public route with token) */}
+              <Route path="/confirm-date/:token" element={<DateConfirmationPage />} />
               
               {/* Portal routes with portal layout */}
               <Route path="/portal" element={<PortalLayout><PortalDashboard /></PortalLayout>} />
