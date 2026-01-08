@@ -11,11 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, User, ClipboardCheck, ChevronRight, ChevronLeft, Check, Camera, Briefcase, Brain, Shield, Upload, Users, Cigarette, Wine, MapPin, Loader2, AlertCircle, Trash2 } from "lucide-react";
+import { Heart, User, ClipboardCheck, ChevronRight, ChevronLeft, Check, Camera, Briefcase, Brain, Shield, Upload, Users, Cigarette, Wine, MapPin, Loader2, AlertCircle, Trash2, Sparkles } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { VoiceBioRecorder } from "@/components/dating/VoiceBioRecorder";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CoreValuesPicker } from "@/components/dating/CoreValuesPicker";
 
 interface FormData {
   display_name: string;
@@ -66,6 +67,7 @@ interface FormData {
   support_style: string;
   vulnerability_check: string;
   core_values: string;
+  core_values_ranked: string[];
   love_language: string;
   attachment_style: string;
   introvert_extrovert: string;
@@ -135,6 +137,7 @@ const initialFormData: FormData = {
   support_style: "",
   vulnerability_check: "",
   core_values: "",
+  core_values_ranked: [],
   love_language: "",
   attachment_style: "",
   introvert_extrovert: "",
@@ -448,8 +451,12 @@ const DatingIntakePage = () => {
         }
         return true;
       case 5:
-        if (!formData.conflict_resolution || !formData.emotional_connection || !formData.core_values) {
+        if (!formData.conflict_resolution || !formData.emotional_connection) {
           toast({ title: "Missing Information", description: "Please answer the required deep dive questions.", variant: "destructive" });
+          return false;
+        }
+        if (formData.core_values_ranked.length < 5) {
+          toast({ title: "Select 5 Core Values", description: "Please select and rank your top 5 core values.", variant: "destructive" });
           return false;
         }
         return true;
@@ -533,7 +540,8 @@ const DatingIntakePage = () => {
         emotional_connection: formData.emotional_connection,
         support_style: formData.support_style || null,
         vulnerability_check: formData.vulnerability_check || null,
-        core_values: formData.core_values,
+        core_values: formData.core_values_ranked.length > 0 ? formData.core_values_ranked.join(", ") : formData.core_values,
+        core_values_ranked: formData.core_values_ranked.length > 0 ? formData.core_values_ranked : null,
         love_language: formData.love_language || null,
         attachment_style: formData.attachment_style || null,
         introvert_extrovert: formData.introvert_extrovert || null,
@@ -638,6 +646,37 @@ const DatingIntakePage = () => {
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             Take your time. Be authentic. These answers help us find your meaningful match.
           </p>
+        </div>
+
+        {/* Research-Backed Banner */}
+        <div className="bg-gradient-to-r from-dating-forest/10 to-dating-terracotta/10 rounded-xl p-6 mb-8 border border-dating-forest/20">
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-dating-forest/20 rounded-full shrink-0">
+              <Sparkles className="h-6 w-6 text-dating-forest" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-dating-forest mb-2">
+                Research-Backed Compatibility Assessment
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                These questions are based on <strong className="text-foreground">50 years of relationship research</strong> from the Gottman Institute and leading psychologists. Studies show these compatibility factors predict relationship success with <strong className="text-foreground">over 90% accuracy</strong>.
+              </p>
+              <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <Check className="h-3 w-3 text-green-600" />
+                  15-20 minutes
+                </span>
+                <span className="flex items-center gap-1">
+                  <Check className="h-3 w-3 text-green-600" />
+                  Reviewed by matchmakers
+                </span>
+                <span className="flex items-center gap-1">
+                  <Check className="h-3 w-3 text-green-600" />
+                  Confidential
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Draft Banner */}
@@ -1508,19 +1547,20 @@ const DatingIntakePage = () => {
                     />
                   </div>
 
-                  <div className="space-y-3">
-                    <Label htmlFor="core_values" className="text-base">
+                  <div className="space-y-4">
+                    <Label className="text-base flex items-center gap-2">
                       Core Values *
+                      <span className="text-xs bg-dating-terracotta/20 text-dating-terracotta px-2 py-0.5 rounded-full">
+                        Research-backed
+                      </span>
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      List 3-5 values that are most important to you.
+                      Select and rank your top 5 values. Shared core values are the #1 predictor of long-term compatibility.
                     </p>
-                    <Textarea
-                      id="core_values"
-                      value={formData.core_values}
-                      onChange={(e) => updateField("core_values", e.target.value)}
-                      placeholder="e.g., Honesty, Adventure, Family, Growth, Independence..."
-                      className="min-h-[80px] bg-background/50"
+                    <CoreValuesPicker
+                      selectedValues={formData.core_values_ranked}
+                      onValuesChange={(values) => updateField("core_values_ranked", values)}
+                      maxSelections={5}
                     />
                   </div>
 

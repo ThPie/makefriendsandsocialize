@@ -22,9 +22,10 @@ interface DatingProfile {
   tuesday_night_test: string | null;
   dealbreakers: string | null;
   core_values: string | null;
+  core_values_ranked: string[] | null;
   status: string;
   is_active: boolean;
-  // New fields
+  // Relationship fields
   relationship_type: string | null;
   wants_children: string | null;
   has_children: boolean | null;
@@ -34,12 +35,22 @@ interface DatingProfile {
   attachment_style: string | null;
   introvert_extrovert: string | null;
   search_radius: number | null;
+  // Gottman-inspired fields
+  communication_style: string | null;
+  repair_attempt_response: string | null;
+  stress_response: string | null;
+  past_relationship_learning: string | null;
+  trust_fidelity_views: string | null;
+  accountability_reflection: string | null;
+  family_relationship: string | null;
+  family_involvement_expectation: string | null;
 }
 
 interface MatchResult {
   candidateId: string;
   score: number;
   reason: string;
+  gottmanScore?: number;
 }
 
 serve(async (req) => {
@@ -140,62 +151,144 @@ serve(async (req) => {
 
     const matchResults: MatchResult[] = [];
 
+    // Helper function to calculate shared core values
+    const getSharedValues = (a: string[] | null, b: string[] | null): string[] => {
+      if (!a || !b) return [];
+      return a.filter(v => b.includes(v));
+    };
+
     // Process candidates in batches to avoid rate limits
     for (const candidate of reciprocalCandidates) {
       try {
-        const prompt = `You are a professional matchmaker analyzing compatibility between two dating profiles.
+        const sharedValues = getSharedValues(
+          targetProfile.core_values_ranked,
+          candidate.core_values_ranked
+        );
+        
+        const prompt = `You are an expert matchmaker using Gottman Institute research and 50 years of relationship science to analyze compatibility.
 
-Person A (${targetProfile.display_name}):
+**PERSON A: ${targetProfile.display_name}**
+Basic Info:
 - Age: ${targetProfile.age}
 - Location: ${targetProfile.location || "Not specified"}
 - Occupation: ${targetProfile.occupation || "Not specified"}
-- Relationship Type Seeking: ${targetProfile.relationship_type || "Not specified"}
+- Relationship Goal: ${targetProfile.relationship_type || "Not specified"}
+
+Family & Future:
 - Wants Children: ${targetProfile.wants_children || "Not specified"}
 - Has Children: ${targetProfile.has_children ? "Yes" : "No"}
+- Family Relationship: ${targetProfile.family_relationship || "Not specified"}
+- In-Law Expectations: ${targetProfile.family_involvement_expectation || "Not specified"}
+
+Lifestyle:
 - Smoking: ${targetProfile.smoking_status || "Not specified"}
 - Drinking: ${targetProfile.drinking_status || "Not specified"}
+
+Personality:
 - Love Language: ${targetProfile.love_language || "Not specified"}
 - Attachment Style: ${targetProfile.attachment_style || "Not specified"}
 - Social Energy: ${targetProfile.introvert_extrovert || "Not specified"}
-- Conflict Resolution Style: ${targetProfile.conflict_resolution || "Not answered"}
-- What Emotional Connection Means: ${targetProfile.emotional_connection || "Not answered"}
-- Ideal Tuesday Night: ${targetProfile.tuesday_night_test || "Not answered"}
-- Dealbreakers: ${targetProfile.dealbreakers || "None specified"}
-- Core Values: ${targetProfile.core_values || "Not answered"}
 
-Person B (${candidate.display_name}):
+**GOTTMAN-INSPIRED FACTORS (Critical for long-term success):**
+- Communication Style: ${targetProfile.communication_style || "Not specified"}
+- Repair Attempt Response: ${targetProfile.repair_attempt_response || "Not specified"}
+- Stress Response: ${targetProfile.stress_response || "Not specified"}
+- Past Relationship Learning: ${targetProfile.past_relationship_learning || "Not specified"}
+- Trust/Fidelity Views: ${targetProfile.trust_fidelity_views || "Not specified"}
+- Accountability Reflection: ${targetProfile.accountability_reflection || "Not specified"}
+
+Core Values (Ranked): ${targetProfile.core_values_ranked?.join(", ") || targetProfile.core_values || "Not specified"}
+
+Deep Dive:
+- Conflict Resolution: ${targetProfile.conflict_resolution || "Not specified"}
+- Emotional Connection: ${targetProfile.emotional_connection || "Not specified"}
+- Ideal Tuesday Night: ${targetProfile.tuesday_night_test || "Not specified"}
+- Dealbreakers: ${targetProfile.dealbreakers || "None specified"}
+
+---
+
+**PERSON B: ${candidate.display_name}**
+Basic Info:
 - Age: ${candidate.age}
 - Location: ${candidate.location || "Not specified"}
 - Occupation: ${candidate.occupation || "Not specified"}
-- Relationship Type Seeking: ${candidate.relationship_type || "Not specified"}
+- Relationship Goal: ${candidate.relationship_type || "Not specified"}
+
+Family & Future:
 - Wants Children: ${candidate.wants_children || "Not specified"}
 - Has Children: ${candidate.has_children ? "Yes" : "No"}
+- Family Relationship: ${candidate.family_relationship || "Not specified"}
+- In-Law Expectations: ${candidate.family_involvement_expectation || "Not specified"}
+
+Lifestyle:
 - Smoking: ${candidate.smoking_status || "Not specified"}
 - Drinking: ${candidate.drinking_status || "Not specified"}
+
+Personality:
 - Love Language: ${candidate.love_language || "Not specified"}
 - Attachment Style: ${candidate.attachment_style || "Not specified"}
 - Social Energy: ${candidate.introvert_extrovert || "Not specified"}
-- Conflict Resolution Style: ${candidate.conflict_resolution || "Not answered"}
-- What Emotional Connection Means: ${candidate.emotional_connection || "Not answered"}
-- Ideal Tuesday Night: ${candidate.tuesday_night_test || "Not answered"}
-- Dealbreakers: ${candidate.dealbreakers || "None specified"}
-- Core Values: ${candidate.core_values || "Not answered"}
 
-Analyze their compatibility considering:
-1. **Relationship Goals**: Are they looking for the same type of relationship?
-2. **Family Plans**: Are their views on children compatible?
-3. **Lifestyle Compatibility**: Do their smoking, drinking, and lifestyle habits align?
-4. **Values Alignment**: Do their core values complement each other?
-5. **Communication/Conflict Style**: Would they handle disagreements well together?
-6. **Emotional Style**: Are their love languages and attachment styles compatible?
-7. **Daily Life**: Would their ideal evenings work together? Introvert/extrovert balance?
-8. **Dealbreaker Analysis**: Are there any obvious conflicts?
+**GOTTMAN-INSPIRED FACTORS (Critical for long-term success):**
+- Communication Style: ${candidate.communication_style || "Not specified"}
+- Repair Attempt Response: ${candidate.repair_attempt_response || "Not specified"}
+- Stress Response: ${candidate.stress_response || "Not specified"}
+- Past Relationship Learning: ${candidate.past_relationship_learning || "Not specified"}
+- Trust/Fidelity Views: ${candidate.trust_fidelity_views || "Not specified"}
+- Accountability Reflection: ${candidate.accountability_reflection || "Not specified"}
+
+Core Values (Ranked): ${candidate.core_values_ranked?.join(", ") || candidate.core_values || "Not specified"}
+
+Deep Dive:
+- Conflict Resolution: ${candidate.conflict_resolution || "Not specified"}
+- Emotional Connection: ${candidate.emotional_connection || "Not specified"}
+- Ideal Tuesday Night: ${candidate.tuesday_night_test || "Not specified"}
+- Dealbreakers: ${candidate.dealbreakers || "None specified"}
+
+---
+
+**SHARED CORE VALUES: ${sharedValues.length > 0 ? sharedValues.join(", ") : "None identified"}**
+
+---
+
+**SCORING GUIDE (Weight these heavily):**
+
+**COMMUNICATION & REPAIR (Gottman's #1 predictor) - 25% of score:**
+- Both accept repair attempts readily → +25 points
+- One resistant to repair attempts → -15 points (major red flag)
+- Complementary communication styles → +10 points
+- Both "shut down" or both "explode" → -10 points (conflict escalation pattern)
+
+**STRESS RESPONSE COMPATIBILITY - 15% of score:**
+- Both lean on partner → +15 (high interdependence)
+- One needs space, one leans in → +8 (complementary if they understand each other)
+- Both withdraw → -5 (isolation pattern risk)
+
+**CORE VALUES ALIGNMENT - 20% of score:**
+- 3+ shared values in top 5 → +20 points
+- #1 value matches → +5 bonus
+- 0 shared values → -15 points (fundamental incompatibility)
+
+**RELATIONSHIP GOALS & FAMILY - 20% of score:**
+- Same relationship goals → +15 points
+- Children preferences aligned → +10 points
+- Family involvement expectations match → +5 points
+
+**LIFESTYLE & PERSONALITY - 10% of score:**
+- Compatible attachment styles → +10 points
+- Lifestyle habits align → +5 points
+
+**RED FLAG DETECTION - 10% of score:**
+- Accountability reflection shows blame pattern → -15 points
+- Unresolved trust trauma → flag for review, -5 points
+- Past relationship learning shows growth → +5 points
 
 Return a JSON object with:
-- "score": A number from 0 to 100 representing compatibility percentage
-- "reason": A 2-3 sentence explanation of why they would or wouldn't be compatible
+- "score": A number from 0 to 100 representing overall compatibility
+- "gottman_score": A number from 0 to 100 for communication/repair compatibility specifically
+- "reason": A 2-3 sentence explanation focusing on their strongest compatibility factors AND any concerns
 
-Be realistic and honest in scoring. Most people are not highly compatible. Give heavy weight to dealbreakers, children preferences, and relationship type alignment.`;
+Be realistic. Most people are NOT highly compatible. A 65%+ match is genuinely promising. Prioritize communication patterns and core values over surface-level traits.`;
 
         const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
@@ -206,7 +299,7 @@ Be realistic and honest in scoring. Most people are not highly compatible. Give 
           body: JSON.stringify({
             model: "google/gemini-2.5-flash",
             messages: [
-              { role: "system", content: "You are a professional matchmaker AI. Always respond with valid JSON only." },
+              { role: "system", content: "You are an expert matchmaker using Gottman Institute research. Always respond with valid JSON only." },
               { role: "user", content: prompt },
             ],
             response_format: { type: "json_object" },
@@ -225,15 +318,17 @@ Be realistic and honest in scoring. Most people are not highly compatible. Give 
           try {
             const parsed = JSON.parse(content);
             const score = parseInt(parsed.score) || 0;
+            const gottmanScore = parseInt(parsed.gottman_score) || score;
             const reason = parsed.reason || "Compatibility analysis unavailable";
 
-            console.log(`${candidate.display_name}: ${score}% - ${reason}`);
+            console.log(`${candidate.display_name}: ${score}% (Gottman: ${gottmanScore}%) - ${reason}`);
 
-            // Only include matches with 60% or higher
-            if (score >= 60) {
+            // Increased threshold to 65% for higher quality matches
+            if (score >= 65) {
               matchResults.push({
                 candidateId: candidate.id,
                 score,
+                gottmanScore,
                 reason,
               });
             }
@@ -246,7 +341,7 @@ Be realistic and honest in scoring. Most people are not highly compatible. Give 
       }
     }
 
-    console.log(`Found ${matchResults.length} matches with score >= 60%`);
+    console.log(`Found ${matchResults.length} matches with score >= 65%`);
 
     // Store matches in database
     for (const match of matchResults) {
