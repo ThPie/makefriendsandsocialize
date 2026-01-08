@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Search, User, Heart, Check, X, Eye, UserSearch, Users, Clock } from "lucide-react";
+import { Search, User, Heart, Check, X, Eye, UserSearch, Users, Clock, RefreshCw } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface DatingProfile {
@@ -68,6 +68,28 @@ const AdminDating = () => {
     },
   });
 
+  const runMatchingMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke('find-matches');
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["dating-profiles"] });
+      toast({ 
+        title: "Matching Complete",
+        description: `Found ${data?.matchesCreated || 0} new matches from ${data?.profilesProcessed || 0} profiles.`
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Matching failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const filteredProfiles = profiles?.filter((profile) => {
     const matchesSearch = profile.display_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       profile.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -101,9 +123,19 @@ const AdminDating = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-3xl text-foreground">Slow Dating</h1>
-        <p className="text-muted-foreground">Manage dating profiles and curate matches</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-3xl text-foreground">Slow Dating</h1>
+          <p className="text-muted-foreground">Manage dating profiles and curate matches</p>
+        </div>
+        <Button
+          onClick={() => runMatchingMutation.mutate()}
+          disabled={runMatchingMutation.isPending || stats.vetted === 0}
+          className="bg-pink-500 hover:bg-pink-600"
+        >
+          <RefreshCw className={`h-4 w-4 mr-2 ${runMatchingMutation.isPending ? 'animate-spin' : ''}`} />
+          {runMatchingMutation.isPending ? 'Running...' : 'Re-run Matching'}
+        </Button>
       </div>
 
       {/* Stats */}
