@@ -7,10 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Heart, Handshake, Clock, CheckCircle2, XCircle, User, Pause, Play } from 'lucide-react';
+import { Heart, Handshake, Clock, CheckCircle2, XCircle, User, Pause, Play, Settings } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BlurredMatchCard } from '@/components/dating/BlurredMatchCard';
 import { ReactivationModal } from '@/components/dating/ReactivationModal';
+import { DatingNotificationPreferences } from '@/components/portal/DatingNotificationPreferences';
 
 interface DatingProfile {
   id: string;
@@ -393,6 +394,15 @@ export default function PortalSlowDating() {
           </div>
         </div>
       )}
+
+      {/* Notification Preferences */}
+      <div>
+        <h2 className="text-xl font-display font-light text-foreground mb-6 flex items-center gap-2">
+          <Settings className="h-5 w-5 text-primary" />
+          Settings
+        </h2>
+        <DatingNotificationPreferences />
+      </div>
 
       {/* Reactivation Modal */}
       {profile && (

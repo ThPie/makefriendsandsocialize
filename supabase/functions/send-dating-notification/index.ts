@@ -707,8 +707,11 @@ const handler = async (req: Request): Promise<Response> => {
 
         const emailEnabled = datingProfile?.email_notifications_enabled !== false;
         const pushEnabled = datingProfile?.push_notifications_enabled !== false;
+        const smsEnabled = datingProfile?.sms_notifications_enabled === true && !!datingProfile?.phone_number;
+        const phoneNumber = datingProfile?.phone_number;
 
         let emailResult;
+        let smsMessage = "";
         let subject = "";
         let pushTitle = "";
         let pushBody = "";
@@ -718,6 +721,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "Welcome to Slow Dating - You've Been Approved! 💚";
             pushTitle = "Profile Approved! 💚";
             pushBody = "Your dating profile has been approved. Start meeting your matches!";
+            smsMessage = "💚 Your dating profile has been approved! Log in to start meeting your matches.";
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: "Make Friends and Socialize <onboarding@resend.dev>",
@@ -736,6 +740,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "You Have a New Match! 💕";
             pushTitle = "New Match! 💕";
             pushBody = `You've been matched with ${matchName}. Check it out!`;
+            smsMessage = `💕 You have a new match! Log in to see your ${compatibilityScore}% compatibility with ${matchName}.`;
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: "Make Friends and Socialize <onboarding@resend.dev>",
@@ -753,6 +758,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "Your Meeting is Confirmed! 📅";
             pushTitle = "Meeting Confirmed! 📅";
             pushBody = `Your meeting is scheduled for ${meetingDate}`;
+            smsMessage = `📅 Your date is confirmed for ${meetingDate} (${meetingTime.split(' ')[0]}). Good luck!`;
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: "Make Friends and Socialize <onboarding@resend.dev>",
@@ -769,6 +775,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "How Did Your Meeting Go? 💭";
             pushTitle = "Decision Time 💭";
             pushBody = "How did your meeting go? Share your decision now.";
+            smsMessage = "💭 How did your date go? Log in to share your decision.";
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: "Make Friends and Socialize <onboarding@resend.dev>",
@@ -786,6 +793,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "🎉 It's a Connection!";
             pushTitle = "It's a Connection! 🎉";
             pushBody = `You and ${mutualMatchName} both want to continue!`;
+            smsMessage = `🎉 It's a match! You and ${mutualMatchName} both said yes. Full profile now revealed!`;
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: "Make Friends and Socialize <onboarding@resend.dev>",
@@ -800,6 +808,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "Match Update";
             pushTitle = "Match Update";
             pushBody = "We have an update about your recent match.";
+            smsMessage = "We have an update about your recent match. Log in to learn more.";
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: "Make Friends and Socialize <onboarding@resend.dev>",
@@ -816,6 +825,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "Your Match Has Proposed Dates! 📅";
             pushTitle = "New Date Proposals! 📅";
             pushBody = `${proposerName} wants to schedule a meeting!`;
+            smsMessage = `📅 ${proposerName} has proposed dates to meet! Log in to review and accept.`;
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: "Make Friends and Socialize <onboarding@resend.dev>",
@@ -834,6 +844,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "Your Date is Confirmed! 🎉";
             pushTitle = "Date Confirmed! 🎉";
             pushBody = `${accepterName} accepted your date for ${acceptedDate}!`;
+            smsMessage = `✅ Your date is confirmed! ${accepterName} accepted for ${acceptedDate}.`;
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: "Make Friends and Socialize <onboarding@resend.dev>",
@@ -866,6 +877,21 @@ const handler = async (req: Request): Promise<Response> => {
             console.log("Push notification sent successfully");
           } catch (pushError) {
             console.error("Error sending push notification:", pushError);
+          }
+        }
+
+        // Send SMS notification if enabled
+        if (smsEnabled && phoneNumber && smsMessage) {
+          try {
+            await supabaseClient.functions.invoke("send-sms", {
+              body: {
+                to: phoneNumber,
+                message: smsMessage,
+              },
+            });
+            console.log("SMS notification sent successfully");
+          } catch (smsError) {
+            console.error("Error sending SMS notification:", smsError);
           }
         }
 
