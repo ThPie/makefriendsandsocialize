@@ -293,7 +293,7 @@ export const EventChatbot = () => {
         <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex flex-col items-end gap-3">
           {/* Speech Bubble with typing/message */}
           {showTeaser && (
-            <div className="relative bg-card/95 backdrop-blur-sm border border-border rounded-2xl p-4 max-w-[280px] shadow-2xl animate-fade-in">
+            <div className="relative bg-gradient-to-br from-secondary via-card to-accent/80 backdrop-blur-sm border border-primary/20 rounded-2xl p-4 max-w-[280px] shadow-2xl animate-fade-in">
               {/* Dismiss button */}
               <button 
                 onClick={handleDismissTeaser}
@@ -326,14 +326,18 @@ export const EventChatbot = () => {
               )}
               
               {/* Speech bubble tail */}
-              <div className="absolute -bottom-2 right-6 w-4 h-4 bg-card/95 border-r border-b border-border rotate-45" />
+              <div className="absolute -bottom-2 right-6 w-4 h-4 bg-accent/80 border-r border-b border-primary/20 rotate-45" />
             </div>
           )}
           
           {/* Floating Avatar Button with notification badge */}
           <button 
             onClick={handleAvatarClick}
-            className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-border hover:border-primary shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation"
+            className={`relative w-14 h-14 rounded-full overflow-hidden border-2 shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation ${
+              unreadCount > 0 
+                ? 'border-primary shadow-[0_0_20px_hsl(45_80%_55%/0.4)] animate-pulse' 
+                : 'border-border hover:border-primary'
+            }`}
             aria-label="Open chat assistant"
           >
             <img 
@@ -346,7 +350,7 @@ export const EventChatbot = () => {
             
             {/* Notification Badge */}
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-destructive text-destructive-foreground text-xs font-bold rounded-full flex items-center justify-center px-1 animate-pulse shadow-lg">
+              <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center px-1 shadow-lg">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             )}
