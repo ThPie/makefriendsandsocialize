@@ -178,6 +178,59 @@ export type Database = {
         }
         Relationships: []
       }
+      business_verification_reports: {
+        Row: {
+          ai_recommendation: string | null
+          business_id: string
+          created_at: string
+          findings: Json | null
+          id: string
+          positive_signals: string[] | null
+          red_flags: string[] | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          sources_checked: string[] | null
+          status: string
+          verification_score: number | null
+        }
+        Insert: {
+          ai_recommendation?: string | null
+          business_id: string
+          created_at?: string
+          findings?: Json | null
+          id?: string
+          positive_signals?: string[] | null
+          red_flags?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sources_checked?: string[] | null
+          status?: string
+          verification_score?: number | null
+        }
+        Update: {
+          ai_recommendation?: string | null
+          business_id?: string
+          created_at?: string
+          findings?: Json | null
+          id?: string
+          positive_signals?: string[] | null
+          red_flags?: string[] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          sources_checked?: string[] | null
+          status?: string
+          verification_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_verification_reports_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: true
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connections: {
         Row: {
           created_at: string
@@ -727,6 +780,8 @@ export type Database = {
         Row: {
           created_at: string
           event_id: string
+          guest_count: number | null
+          guest_names: string[] | null
           id: string
           status: string
           user_id: string
@@ -734,6 +789,8 @@ export type Database = {
         Insert: {
           created_at?: string
           event_id: string
+          guest_count?: number | null
+          guest_names?: string[] | null
           id?: string
           status?: string
           user_id: string
@@ -741,6 +798,8 @@ export type Database = {
         Update: {
           created_at?: string
           event_id?: string
+          guest_count?: number | null
+          guest_names?: string[] | null
           id?: string
           status?: string
           user_id?: string
@@ -1017,6 +1076,87 @@ export type Database = {
         }
         Relationships: []
       }
+      match_reveal_purchases: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          purchase_type: string
+          purchased_at: string
+          reveals_total: number
+          reveals_used: number
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          purchase_type: string
+          purchased_at?: string
+          reveals_total?: number
+          reveals_used?: number
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          purchase_type?: string
+          purchased_at?: string
+          reveals_total?: number
+          reveals_used?: number
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      match_reveals: {
+        Row: {
+          id: string
+          match_id: string
+          purchase_id: string | null
+          revealed_at: string
+          revealed_via: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          match_id: string
+          purchase_id?: string | null
+          revealed_at?: string
+          revealed_via: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          match_id?: string
+          purchase_id?: string | null
+          revealed_at?: string
+          revealed_via?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_reveals_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "dating_matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_reveals_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "match_reveal_purchases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meeting_proposals: {
         Row: {
           created_at: string | null
@@ -1214,6 +1354,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      membership_trials: {
+        Row: {
+          converted_at: string | null
+          created_at: string
+          ends_at: string
+          id: string
+          started_at: string
+          stripe_subscription_id: string | null
+          tier: string
+          user_id: string
+        }
+        Insert: {
+          converted_at?: string | null
+          created_at?: string
+          ends_at?: string
+          id?: string
+          started_at?: string
+          stripe_subscription_id?: string | null
+          tier: string
+          user_id: string
+        }
+        Update: {
+          converted_at?: string | null
+          created_at?: string
+          ends_at?: string
+          id?: string
+          started_at?: string
+          stripe_subscription_id?: string | null
+          tier?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       memberships: {
         Row: {
@@ -1635,7 +1808,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_reveal_match: { Args: { _user_id: string }; Returns: boolean }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
+      get_available_reveals: { Args: { _user_id: string }; Returns: number }
       get_membership_tier: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["membership_tier"]
@@ -1653,6 +1828,10 @@ export type Database = {
         Returns: boolean
       }
       increment_rsvp_count: { Args: { event_id: string }; Returns: undefined }
+      use_reveal_credit: {
+        Args: { _match_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "member"
