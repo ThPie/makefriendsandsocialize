@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Building2, Globe, MapPin, Mail, Upload, Loader2, CheckCircle, Clock, XCircle, Plus, X, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
+import { BusinessVerificationStatus } from "@/components/business/BusinessVerificationStatus";
 
 const PortalBusiness = () => {
   const { user, membership } = useAuth();
@@ -36,18 +37,18 @@ const PortalBusiness = () => {
   });
 
   const [formData, setFormData] = useState({
-    business_name: businessProfile?.business_name || "",
-    description: businessProfile?.description || "",
-    industry: businessProfile?.industry || "",
-    website: businessProfile?.website || "",
-    contact_email: businessProfile?.contact_email || "",
-    location: businessProfile?.location || "",
-    services: businessProfile?.services || [] as string[],
-    logo_url: businessProfile?.logo_url || "",
+    business_name: "",
+    description: "",
+    industry: "",
+    website: "",
+    contact_email: "",
+    location: "",
+    services: [] as string[],
+    logo_url: "",
   });
 
   // Update form data when business profile loads
-  useState(() => {
+  useEffect(() => {
     if (businessProfile) {
       setFormData({
         business_name: businessProfile.business_name || "",
@@ -60,7 +61,7 @@ const PortalBusiness = () => {
         logo_url: businessProfile.logo_url || "",
       });
     }
-  });
+  }, [businessProfile]);
 
   const saveMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -219,6 +220,14 @@ const PortalBusiness = () => {
           </Button>
         </div>
       ) : null}
+
+      {/* Verification Status */}
+      {businessProfile && (
+        <BusinessVerificationStatus 
+          businessId={businessProfile.id} 
+          className="mb-8"
+        />
+      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-8">
