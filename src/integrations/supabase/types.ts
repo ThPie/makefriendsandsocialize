@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action_type: string
+          admin_user_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          resource_id: string | null
+          resource_type: string
+        }
+        Insert: {
+          action_type: string
+          admin_user_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          resource_id?: string | null
+          resource_type: string
+        }
+        Update: {
+          action_type?: string
+          admin_user_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          resource_id?: string | null
+          resource_type?: string
+        }
+        Relationships: []
+      }
       appeal_status_history: {
         Row: {
           admin_notes: string | null
@@ -1810,6 +1843,23 @@ export type Database = {
     Functions: {
       can_reveal_match: { Args: { _user_id: string }; Returns: boolean }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
+      get_application_safe: {
+        Args: { _application_id: string }
+        Returns: {
+          admin_notes: string
+          favorite_brands: string[]
+          id: string
+          industry: string
+          interests: string[]
+          job_title: string
+          reviewed_at: string
+          status: Database["public"]["Enums"]["application_status"]
+          style_description: string
+          submitted_at: string
+          user_id: string
+          values_in_partner: string
+        }[]
+      }
       get_available_reveals: { Args: { _user_id: string }; Returns: number }
       get_matched_profile_safe: {
         Args: { _dating_profile_id: string }
@@ -1853,6 +1903,15 @@ export type Database = {
       is_matched_with: {
         Args: { _other_dating_profile_id: string; _user_id: string }
         Returns: boolean
+      }
+      log_admin_access: {
+        Args: {
+          _action_type: string
+          _details?: Json
+          _resource_id?: string
+          _resource_type: string
+        }
+        Returns: undefined
       }
       use_reveal_credit: {
         Args: { _match_id: string; _user_id: string }
