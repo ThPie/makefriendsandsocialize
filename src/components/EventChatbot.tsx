@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { MessageCircle } from 'lucide-react';
-import chatbotAvatar from '@/assets/chatbot-avatar.png';
+import { X, Volume2, VolumeX, Send } from 'lucide-react';
+import chatbotAvatar from '@/assets/chatbot-avatar.webp';
+import { useChatSound } from '@/hooks/useChatSound';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -11,8 +12,35 @@ interface Message {
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/event-assistant`;
+const TEASER_DISMISSED_KEY = 'chatbot-teaser-dismissed';
 
-// Context-aware greetings based on page location and user
+// Short teaser messages for the bubble
+const getTeaserMessage = (pathname: string): string => {
+  if (pathname.startsWith('/portal')) {
+    return "Need help with your membership?";
+  }
+  if (pathname.startsWith('/admin')) {
+    return "Need dashboard assistance?";
+  }
+  if (pathname.startsWith('/events')) {
+    return "Looking for the perfect event?";
+  }
+  if (pathname.startsWith('/slow-dating') || pathname.startsWith('/dating')) {
+    return "Questions about Slow Dating?";
+  }
+  if (pathname.startsWith('/membership')) {
+    return "Thinking about joining us?";
+  }
+  if (pathname.startsWith('/connected-circle')) {
+    return "Explore our business network?";
+  }
+  if (pathname.startsWith('/faq')) {
+    return "Can't find your answer?";
+  }
+  return "Want to learn more about our community?";
+};
+
+// Full greetings for the chat window
 const getGreeting = (pathname: string, userName?: string | null): Message => {
   const personalName = userName ? `, ${userName}` : '';
   
@@ -52,14 +80,12 @@ const getGreeting = (pathname: string, userName?: string | null): Message => {
       content: `Hi${personalName}! 👋 Looking for answers? I can help you find what you need or answer any questions not covered in our FAQ.`,
     };
   }
-  // Default public greeting
   return {
     role: 'assistant',
     content: `Welcome to Make Friends and Socialize${personalName}! 👋 I'm here to help you discover our community. Have any questions about our events or membership?`,
   };
 };
 
-// Context-aware chatbot config
 const getChatbotConfig = (pathname: string) => {
   if (pathname.startsWith('/portal')) {
     return { title: 'Member Concierge', subtitle: 'Here to help you' };
@@ -72,27 +98,46 @@ const getChatbotConfig = (pathname: string) => {
 
 export const EventChatbot = () => {
   const location = useLocation();
-  const { user, profile } = useAuth();
+  const { profile } = useAuth();
   const userName = profile?.first_name || null;
   
-  const [isOpen, setIsOpen] = useState(false);
-  const [hasAutoOpened, setHasAutoOpened] = useState(false);
+  // Chat states
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showTeaser, setShowTeaser] = useState(() => {
+    return sessionStorage.getItem(TEASER_DISMISSED_KEY) !== 'true';
+  });
+  const [isTypingTeaser, setIsTypingTeaser] = useState(true);
+  const [teaserMessage, setTeaserMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([getGreeting(location.pathname, userName)]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastPathRef = useRef(location.pathname);
-
+  const prevMessagesLengthRef = useRef(messages.length);
+  
+  const { isMuted, toggleMute, playMessageSound } = useChatSound();
   const chatConfig = getChatbotConfig(location.pathname);
 
-  // Removed auto-open behavior - users will click to open
+  // Typing animation effect for teaser
+  useEffect(() => {
+    if (showTeaser && sessionStorage.getItem(TEASER_DISMISSED_KEY) !== 'true') {
+      setIsTypingTeaser(true);
+      const timer = setTimeout(() => {
+        setIsTypingTeaser(false);
+        setTeaserMessage(getTeaserMessage(location.pathname));
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showTeaser, location.pathname]);
 
   // Update greeting when user profile loads
   useEffect(() => {
     if (userName && messages.length === 1 && messages[0].role === 'assistant') {
       setMessages([getGreeting(location.pathname, userName)]);
     }
-  }, [userName]);
+  }, [userName, location.pathname, messages]);
 
   // Reset messages when navigating to a different section
   useEffect(() => {
@@ -101,9 +146,33 @@ export const EventChatbot = () => {
     
     if (currentSection !== lastSection) {
       setMessages([getGreeting(location.pathname, userName)]);
+      // Reset teaser for new section if not dismissed
+      if (sessionStorage.getItem(TEASER_DISMISSED_KEY) !== 'true') {
+        setShowTeaser(true);
+        setIsTypingTeaser(true);
+      }
     }
     lastPathRef.current = location.pathname;
   }, [location.pathname, userName]);
+
+  // Play sound and increment badge on new assistant message when closed
+  useEffect(() => {
+    if (messages.length > prevMessagesLengthRef.current) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage?.role === 'assistant' && !isExpanded) {
+        playMessageSound();
+        setUnreadCount(prev => prev + 1);
+      }
+    }
+    prevMessagesLengthRef.current = messages.length;
+  }, [messages, isExpanded, playMessageSound]);
+
+  // Clear unread count when opening chat
+  useEffect(() => {
+    if (isExpanded) {
+      setUnreadCount(0);
+    }
+  }, [isExpanded]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -112,6 +181,20 @@ export const EventChatbot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const handleDismissTeaser = useCallback(() => {
+    sessionStorage.setItem(TEASER_DISMISSED_KEY, 'true');
+    setShowTeaser(false);
+  }, []);
+
+  const handleAvatarClick = useCallback(() => {
+    setIsExpanded(true);
+    setShowTeaser(false);
+  }, []);
+
+  const handleCloseChat = useCallback(() => {
+    setIsExpanded(false);
+  }, []);
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
@@ -167,7 +250,7 @@ export const EventChatbot = () => {
               assistantContent += content;
               setMessages((prev) => {
                 const last = prev[prev.length - 1];
-                if (last?.role === 'assistant' && prev.length > messages.length) {
+                if (last?.role === 'assistant' && prev.length > newMessages.length) {
                   return prev.map((m, i) =>
                     i === prev.length - 1 ? { ...m, content: assistantContent } : m
                   );
@@ -205,19 +288,75 @@ export const EventChatbot = () => {
 
   return (
     <>
-      {/* Floating Button - improved for mobile */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 w-12 h-12 md:w-14 md:h-14 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center group touch-manipulation"
-        aria-label={isOpen ? "Close Assistant" : "Open Assistant"}
-        aria-expanded={isOpen}
-      >
-        <MessageCircle className="h-6 w-6 md:h-7 md:w-7" />
-      </button>
+      {/* Collapsed/Teaser State */}
+      {!isExpanded && (
+        <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex flex-col items-end gap-3">
+          {/* Speech Bubble with typing/message */}
+          {showTeaser && (
+            <div className="relative bg-zinc-900/95 backdrop-blur-sm border border-zinc-700/50 rounded-2xl p-4 max-w-[280px] shadow-2xl animate-fade-in">
+              {/* Dismiss button */}
+              <button 
+                onClick={handleDismissTeaser}
+                className="absolute top-2 right-2 text-zinc-500 hover:text-zinc-300 transition-colors p-1"
+                aria-label="Dismiss"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+              
+              {/* Content: typing dots or message */}
+              {isTypingTeaser ? (
+                <div className="flex items-center gap-1.5 py-1 pr-4">
+                  <span 
+                    className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" 
+                    style={{ animationDelay: '0ms' }} 
+                  />
+                  <span 
+                    className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" 
+                    style={{ animationDelay: '150ms' }} 
+                  />
+                  <span 
+                    className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" 
+                    style={{ animationDelay: '300ms' }} 
+                  />
+                </div>
+              ) : (
+                <p className="text-zinc-100 text-sm leading-relaxed pr-4 animate-fade-in">
+                  {teaserMessage}
+                </p>
+              )}
+              
+              {/* Speech bubble tail */}
+              <div className="absolute -bottom-2 right-6 w-4 h-4 bg-zinc-900/95 border-r border-b border-zinc-700/50 rotate-45" />
+            </div>
+          )}
+          
+          {/* Floating Avatar Button with notification badge */}
+          <button 
+            onClick={handleAvatarClick}
+            className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-zinc-700 hover:border-primary shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation"
+            aria-label="Open chat assistant"
+          >
+            <img 
+              src={chatbotAvatar} 
+              alt="Assistant" 
+              className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+            
+            {/* Notification Badge */}
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-destructive text-destructive-foreground text-xs font-bold rounded-full flex items-center justify-center px-1 animate-pulse shadow-lg">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </button>
+        </div>
+      )}
 
-      {/* Chat Window - improved for mobile */}
-      {isOpen && (
-        <div className="fixed bottom-20 md:bottom-24 right-2 md:right-6 z-50 w-[calc(100vw-1rem)] md:w-[360px] max-w-[400px] h-[60vh] md:h-[500px] max-h-[70vh] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-in">
+      {/* Expanded Chat Window */}
+      {isExpanded && (
+        <div className="fixed bottom-4 right-2 md:bottom-6 md:right-6 z-50 w-[calc(100vw-1rem)] md:w-[360px] max-w-[400px] h-[60vh] md:h-[500px] max-h-[70vh] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-in">
           {/* Header */}
           <div className="bg-primary text-primary-foreground p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-primary-foreground/20">
@@ -229,10 +368,28 @@ export const EventChatbot = () => {
                 decoding="async"
               />
             </div>
-            <div>
+            <div className="flex-1">
               <h3 className="font-bold font-display text-lg">{chatConfig.title}</h3>
               <p className="text-xs opacity-80">{chatConfig.subtitle}</p>
             </div>
+            
+            {/* Sound Toggle */}
+            <button
+              onClick={toggleMute}
+              className="p-1.5 rounded-full hover:bg-primary-foreground/20 transition-colors"
+              aria-label={isMuted ? "Unmute sounds" : "Mute sounds"}
+            >
+              {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            </button>
+            
+            {/* Close Button */}
+            <button
+              onClick={handleCloseChat}
+              className="p-1.5 rounded-full hover:bg-primary-foreground/20 transition-colors"
+              aria-label="Close chat"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
 
           {/* Messages */}
@@ -294,7 +451,7 @@ export const EventChatbot = () => {
                 size="icon"
                 className="rounded-full w-10 h-10"
               >
-                <span className="material-symbols-outlined text-lg">send</span>
+                <Send className="h-4 w-4" />
               </Button>
             </div>
           </div>
