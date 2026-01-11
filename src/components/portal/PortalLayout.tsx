@@ -43,7 +43,7 @@ const menuItems = [
   { title: 'My Profile', url: '/portal/profile', icon: User },
   { title: 'The Network', url: '/portal/network', icon: Users },
   { title: 'Connections', url: '/portal/connections', icon: Heart },
-  { title: 'Slow Dating', url: '/portal/slow-dating', icon: Heart },
+  { title: 'Intentional Connections', url: '/portal/slow-dating', icon: Heart },
   { title: 'My Business', url: '/portal/business', icon: Users },
   { title: 'Events', url: '/portal/events', icon: Calendar },
   { title: 'Referrals', url: '/portal/referrals', icon: Gift },

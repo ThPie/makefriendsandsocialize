@@ -53,7 +53,7 @@ const menuItems = [
   { title: 'Lead Generation', url: '/admin/leads', icon: Target },
   { title: 'Security Reports', url: '/admin/security', icon: ShieldAlert },
   { title: 'Security Dashboard', url: '/admin/security-dashboard', icon: Shield },
-  { title: 'Slow Dating', url: '/admin/dating', icon: HeartHandshake },
+  { title: 'Introductions', url: '/admin/dating', icon: HeartHandshake },
   { title: 'Matches', url: '/admin/matches', icon: Heart },
   { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp },
   { title: 'Events', url: '/admin/events', icon: Calendar },

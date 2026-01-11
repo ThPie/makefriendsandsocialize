@@ -23,10 +23,10 @@ const contextConfig: Record<FeatureContext, {
   tier: 'member' | 'fellow';
 }> = {
   dating: {
-    title: 'Unlock Unlimited Match Reveals',
-    description: 'Get unlimited access to reveal your matches and find your perfect connection.',
+    title: 'Unlock Unlimited Connection Reveals',
+    description: 'Get unlimited access to reveal your connections and discover meaningful introductions.',
     icon: Heart,
-    benefits: ['Unlimited match reveals', 'Priority matchmaking', 'Slow dating event access'],
+    benefits: ['Unlimited connection reveals', 'Priority introductions', 'Members-only gatherings'],
     tier: 'member',
   },
   network: {
@@ -54,7 +54,7 @@ const contextConfig: Record<FeatureContext, {
     title: 'Upgrade Your Membership',
     description: 'Unlock exclusive features and get more from your membership.',
     icon: Sparkles,
-    benefits: ['Unlimited match reveals', 'Network access', 'Event discounts'],
+    benefits: ['Unlimited connection reveals', 'Network access', 'Event discounts'],
     tier: 'member',
   },
 };

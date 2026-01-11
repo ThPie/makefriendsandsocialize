@@ -30,16 +30,16 @@ export function useMatchReveal() {
         await checkSubscription();
         
         if (data.revealed_via === 'purchase' && data.remaining_credits !== undefined) {
-          toast.success(`Match revealed! ${data.remaining_credits} reveals remaining.`);
+          toast.success(`Connection revealed! ${data.remaining_credits} reveals remaining.`);
         } else {
-          toast.success('Match revealed!');
+          toast.success('Connection revealed!');
         }
       }
 
       return data;
     } catch (err) {
-      console.error('Error revealing match:', err);
-      toast.error('Failed to reveal match');
+      console.error('Error revealing connection:', err);
+      toast.error('Failed to reveal connection');
       return { success: false, error: err instanceof Error ? err.message : 'Unknown error' };
     } finally {
       setIsRevealing(false);

@@ -150,7 +150,7 @@ const MembershipPage = () => {
   const processSteps = [
     { step: 1, title: 'Choose Your Plan', desc: 'Select the membership tier that best fits your needs.', icon: Briefcase },
     { step: 2, title: 'Start Free Trial', desc: 'Try Member or Fellow free for 7 days. Cancel anytime.', icon: Zap },
-    { step: 3, title: 'Unlock Everything', desc: 'Get full access to events, matches, and the Connected Circle.', icon: Crown },
+    { step: 3, title: 'Unlock Everything', desc: 'Get full access to events, connections, and the Connected Circle.', icon: Crown },
   ];
 
   return (
@@ -208,7 +208,7 @@ const MembershipPage = () => {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
           >
-            Unlock exclusive events, unlimited match reveals, and the Connected Circle business directory.
+            Unlock exclusive events, unlimited connection reveals, and the Connected Circle business directory.
           </motion.p>
 
           <motion.div
@@ -316,6 +316,10 @@ const MembershipPage = () => {
             <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
               Choose Your Experience
             </h2>
+            <p className="text-foreground/80 text-base italic max-w-2xl mx-auto mb-6 border-l-2 border-primary pl-4 text-left">
+              Make Friends & Socialize is a private social club — not a dating app.
+              We create intentional connections through curated events, community, and introductions.
+            </p>
             <p className="text-muted-foreground text-lg mb-8">
               Select the tier that best aligns with your vision. Start with a 7-day free trial.
             </p>
@@ -455,6 +459,13 @@ const MembershipPage = () => {
                       </div>
                     ))}
                   </div>
+
+                  {/* Fellow exclusivity note */}
+                  {tier.id === 'fellow' && (
+                    <p className="text-xs text-muted-foreground mt-4 text-center italic">
+                      Fellow membership is limited and subject to availability.
+                    </p>
+                  )}
                 </motion.div>
               );
             })}
@@ -563,6 +574,16 @@ const MembershipPage = () => {
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </motion.div>
+
+          {/* Brand anchor */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={ctaAnimation.isVisible ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="text-sm text-muted-foreground mt-8 italic"
+          >
+            We don't swipe. We connect — intentionally.
+          </motion.p>
         </div>
       </section>
     </div>

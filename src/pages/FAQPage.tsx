@@ -67,23 +67,23 @@ const faqCategories = [
     ],
   },
   {
-    title: 'Slow Dating',
+    title: 'Curated Introductions',
     faqs: [
       {
-        question: 'What is Slow Dating?',
-        answer: 'Slow Dating is our exclusive matchmaking service for members seeking meaningful romantic connections. Unlike traditional dating apps, we focus on quality over quantity, carefully curating matches based on compatibility, values, and relationship goals.',
+        question: 'What are Curated Introductions?',
+        answer: 'Curated Introductions is our intentional approach to meaningful connection. Unlike swiping apps, we focus on quality over quantity, carefully selecting connections based on compatibility, values, and relationship goals — whether romantic or professional.',
       },
       {
-        question: 'How does the matching process work?',
-        answer: 'After completing your dating profile, our team reviews and approves it. We then use a combination of algorithmic matching and human curation to identify compatible members. When matched, you will receive a detailed profile of your match along with our compatibility assessment.',
+        question: 'How does the introduction process work?',
+        answer: 'After completing your Connection Profile, our team reviews and approves it. We then use a combination of AI-assisted matching and human curation to identify compatible members. When introduced, you will receive a detailed profile along with our compatibility assessment.',
       },
       {
-        question: 'Is there an additional cost for Slow Dating?',
-        answer: 'Slow Dating is included with Fellow and Founder memberships at no additional cost. Patron members can access Slow Dating by upgrading their membership or through a separate Slow Dating subscription.',
+        question: 'Is there an additional cost for Curated Introductions?',
+        answer: 'Curated Introductions are included with Member and Fellow memberships at no additional cost. Explorer members can reveal individual connections for $10 each, or upgrade to unlock unlimited reveals.',
       },
       {
-        question: 'How many matches will I receive?',
-        answer: 'We focus on quality matches rather than quantity. You will typically receive one carefully curated match at a time, allowing you to fully explore each connection before moving on. Match frequency depends on compatibility with other members in your area.',
+        question: 'How many introductions will I receive?',
+        answer: 'We focus on quality introductions rather than quantity. You will typically receive one carefully curated connection at a time, allowing you to fully explore each introduction before moving on. Frequency depends on compatibility with other members in your area.',
       },
     ],
   },
