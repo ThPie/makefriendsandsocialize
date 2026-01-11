@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { Loader2, Check, Camera, X, Calendar } from 'lucide-react';
-import { PushNotificationToggle } from '@/components/portal/PushNotificationToggle';
+import { PushNotificationSettings } from '@/components/portal/PushNotificationSettings';
 import { EmailPreferences } from '@/components/portal/EmailPreferences';
 import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
 import { VerificationBadge } from '@/components/portal/VerificationBadge';
@@ -505,7 +505,7 @@ export default function PortalProfile() {
         <EmailPreferences />
 
         {/* Push Notifications */}
-        <PushNotificationToggle />
+        <PushNotificationSettings />
 
         {/* Submit */}
         <div className="flex justify-end">
