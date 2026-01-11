@@ -19,7 +19,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.send-push-notification]
-verify_jwt = true
+verify_jwt = false
 
 [functions.verify-social-profiles]
 verify_jwt = false
@@ -94,4 +94,10 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.handle-date-confirmation]
+verify_jwt = false
+
+[functions.test-push-notification]
+verify_jwt = true
+
+[functions.send-appeal-notification]
 verify_jwt = false
