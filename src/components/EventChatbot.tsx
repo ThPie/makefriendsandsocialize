@@ -293,11 +293,11 @@ export const EventChatbot = () => {
         <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex flex-col items-end gap-3">
           {/* Speech Bubble with typing/message */}
           {showTeaser && (
-            <div className="relative bg-zinc-900/95 backdrop-blur-sm border border-zinc-700/50 rounded-2xl p-4 max-w-[280px] shadow-2xl animate-fade-in">
+            <div className="relative bg-card/95 backdrop-blur-sm border border-border rounded-2xl p-4 max-w-[280px] shadow-2xl animate-fade-in">
               {/* Dismiss button */}
               <button 
                 onClick={handleDismissTeaser}
-                className="absolute top-2 right-2 text-zinc-500 hover:text-zinc-300 transition-colors p-1"
+                className="absolute top-2 right-2 text-muted-foreground hover:text-foreground transition-colors p-1"
                 aria-label="Dismiss"
               >
                 <X className="h-3.5 w-3.5" />
@@ -307,33 +307,33 @@ export const EventChatbot = () => {
               {isTypingTeaser ? (
                 <div className="flex items-center gap-1.5 py-1 pr-4">
                   <span 
-                    className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" 
+                    className="w-2 h-2 bg-primary rounded-full animate-bounce" 
                     style={{ animationDelay: '0ms' }} 
                   />
                   <span 
-                    className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" 
+                    className="w-2 h-2 bg-primary rounded-full animate-bounce" 
                     style={{ animationDelay: '150ms' }} 
                   />
                   <span 
-                    className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" 
+                    className="w-2 h-2 bg-primary rounded-full animate-bounce" 
                     style={{ animationDelay: '300ms' }} 
                   />
                 </div>
               ) : (
-                <p className="text-zinc-100 text-sm leading-relaxed pr-4 animate-fade-in">
+                <p className="text-foreground text-sm leading-relaxed pr-4 animate-fade-in">
                   {teaserMessage}
                 </p>
               )}
               
               {/* Speech bubble tail */}
-              <div className="absolute -bottom-2 right-6 w-4 h-4 bg-zinc-900/95 border-r border-b border-zinc-700/50 rotate-45" />
+              <div className="absolute -bottom-2 right-6 w-4 h-4 bg-card/95 border-r border-b border-border rotate-45" />
             </div>
           )}
           
           {/* Floating Avatar Button with notification badge */}
           <button 
             onClick={handleAvatarClick}
-            className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-zinc-700 hover:border-primary shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation"
+            className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-border hover:border-primary shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation"
             aria-label="Open chat assistant"
           >
             <img 
