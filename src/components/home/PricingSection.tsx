@@ -14,9 +14,9 @@ const tiers = [
     features: [
       'Browse all events',
       'Purchase event tickets',
-      'Create dating profile',
-      'AI-powered matching',
-      '$10 per match reveal',
+      'Create a Connection Profile',
+      'AI-assisted curated introductions',
+      '$10 per connection reveal',
     ],
     cta: 'Get Started',
     href: '/auth',
@@ -26,14 +26,14 @@ const tiers = [
   },
   {
     name: 'Member',
-    description: 'For serious connectors',
+    description: 'For intentional connectors',
     price: '$59',
     period: '/month',
     annualPrice: '$499/year (save 30%)',
     features: [
-      'Unlimited match reveals',
+      'Unlimited connection reveals',
       '20% off paid events',
-      'Free Members-only events',
+      'Complimentary members-only gatherings',
       'Connected Circle access',
       'Member badge',
       'Priority support',
@@ -54,11 +54,11 @@ const tiers = [
     features: [
       'Everything in Member',
       '30% off paid events',
-      '+1 guest for ALL events',
-      'List your business in Circle',
-      'Featured in newsletter',
-      'Priority matching',
-      'Exclusive Fellow dinners',
+      'Bring one guest to all events',
+      'List your business in the Circle',
+      'Featured in the community newsletter',
+      'Priority introductions',
+      'Invitation-only Fellow dinners & experiences',
     ],
     cta: 'Start Free Trial',
     href: '/membership',
@@ -66,6 +66,7 @@ const tiers = [
     popular: false,
     icon: Crown,
     trial: '7-day free trial',
+    exclusivityNote: 'Limited availability',
   },
 ];
 
@@ -83,6 +84,10 @@ export const PricingSection = () => {
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
             Choose Your <span className="text-primary">Experience</span>
           </h2>
+          <p className="text-foreground/80 text-base italic max-w-2xl mx-auto mb-4 border-l-2 border-primary pl-4 text-left">
+            Make Friends & Socialize is a private social club — not a dating app.
+            We create intentional connections through curated events, community, and introductions.
+          </p>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Start free and upgrade when you're ready to unlock the full community experience.
           </p>
@@ -158,6 +163,13 @@ export const PricingSection = () => {
                 >
                   <Link to={tier.href}>{tier.cta}</Link>
                 </Button>
+
+                {/* Exclusivity note for Fellow */}
+                {tier.exclusivityNote && (
+                  <p className="text-xs text-muted-foreground mt-3 text-center italic">
+                    {tier.exclusivityNote}
+                  </p>
+                )}
               </div>
             );
           })}

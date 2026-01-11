@@ -42,7 +42,7 @@ export const SlowDatingSection = () => {
             </p>
             <div className="flex flex-wrap gap-4">
               <Button asChild size="lg" className="rounded-full px-8 min-h-[48px] bg-dating-terracotta hover:bg-dating-terracotta/90 text-white">
-                <Link to="/slow-dating">Discover Slow Dating</Link>
+                <Link to="/slow-dating">Discover Connections</Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="rounded-full px-8 min-h-[48px]">
                 <Link to="/dating/apply">Apply Now</Link>

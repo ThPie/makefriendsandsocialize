@@ -28,11 +28,11 @@ const sections = [
   },
   {
     icon: Heart,
-    title: 'Dating Event Guidelines',
-    description: 'Special rules for romantic connection events',
+    title: 'Connection Event Guidelines',
+    description: 'Special rules for intentional connection events',
     items: [
       'Approach interactions with genuine intentions',
-      'Accept rejection gracefully and move on',
+      'Accept boundaries gracefully and move on',
       'No pressure or aggressive pursuit of connections',
       'Exchange contact info only with mutual consent',
       'Report any uncomfortable situations immediately',
