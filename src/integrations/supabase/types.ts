@@ -1828,6 +1828,10 @@ export type Database = {
         Returns: boolean
       }
       increment_rsvp_count: { Args: { event_id: string }; Returns: undefined }
+      is_connected_with: {
+        Args: { _other_user_id: string; _user_id: string }
+        Returns: boolean
+      }
       use_reveal_credit: {
         Args: { _match_id: string; _user_id: string }
         Returns: boolean
