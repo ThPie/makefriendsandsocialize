@@ -1,0 +1,114 @@
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe@18.5.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+// Price IDs for reveal purchases
+const PRICE_IDS = {
+  SINGLE_REVEAL: "price_1SoDmA00I3YCY0De2l1K4gAA",
+  PACK_3_REVEAL: "price_1SoDmP00I3YCY0De8ZVDSdOu",
+};
+
+const logStep = (step: string, details?: any) => {
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
+  console.log(`[CREATE-REVEAL-CHECKOUT] ${step}${detailsStr}`);
+};
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+  );
+
+  try {
+    logStep("Function started");
+
+    // Get request body
+    const { pack_type, match_id } = await req.json();
+    logStep("Request params", { pack_type, match_id });
+
+    // Authenticate user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) throw new Error("No authorization header provided");
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
+    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    
+    const user = userData.user;
+    if (!user?.email) throw new Error("User not authenticated or email not available");
+    logStep("User authenticated", { userId: user.id, email: user.email });
+
+    // Determine price ID
+    let priceId: string;
+    if (pack_type === "single") {
+      priceId = PRICE_IDS.SINGLE_REVEAL;
+    } else if (pack_type === "pack_3") {
+      priceId = PRICE_IDS.PACK_3_REVEAL;
+    } else {
+      throw new Error("Invalid pack type specified");
+    }
+    logStep("Selected price", { priceId });
+
+    // Initialize Stripe
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+      apiVersion: "2025-08-27.basil",
+    });
+
+    // Check if customer exists
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    let customerId: string | undefined;
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id;
+      logStep("Found existing customer", { customerId });
+    }
+
+    // Create checkout session
+    const origin = req.headers.get("origin") || "https://lovable.dev";
+    
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      customer_email: customerId ? undefined : user.email,
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: match_id 
+        ? `${origin}/portal/slow-dating/match/${match_id}?reveal_success=true`
+        : `${origin}/portal/slow-dating?reveal_success=true`,
+      cancel_url: match_id
+        ? `${origin}/portal/slow-dating/match/${match_id}?reveal_cancelled=true`
+        : `${origin}/portal/slow-dating?reveal_cancelled=true`,
+      metadata: {
+        user_id: user.id,
+        pack_type,
+        match_id: match_id || "",
+      },
+    });
+
+    logStep("Checkout session created", { sessionId: session.id });
+
+    return new Response(JSON.stringify({ url: session.url }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logStep("ERROR", { message: errorMessage });
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+    });
+  }
+});

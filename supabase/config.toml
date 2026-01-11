@@ -104,3 +104,21 @@ verify_jwt = false
 
 [functions.send-2hour-meeting-reminders]
 verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.create-subscription-checkout]
+verify_jwt = false
+
+[functions.create-reveal-checkout]
+verify_jwt = false
+
+[functions.customer-portal]
+verify_jwt = false
+
+[functions.check-subscription]
+verify_jwt = false
+
+[functions.reveal-match]
+verify_jwt = false
