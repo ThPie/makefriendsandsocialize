@@ -184,9 +184,7 @@ export default function PortalSlowDating() {
   const handleRevealSuccess = () => {
     setRevealModalOpen(false);
     setSelectedMatchForReveal(null);
-    // Refetch matches after reveal
   };
-  const endedMatches = matches?.filter(m => m.status === 'declined') || [];
 
   if (profileLoading) {
     return (
@@ -237,11 +235,11 @@ export default function PortalSlowDating() {
     <div className="space-y-12">
       {/* Match Reveal Modal */}
       <MatchRevealModal
-        open={revealModalOpen}
-        onOpenChange={setRevealModalOpen}
+        isOpen={revealModalOpen}
+        onClose={() => setRevealModalOpen(false)}
         matchId={selectedMatchForReveal?.id || ''}
         compatibilityScore={selectedMatchForReveal?.score || 0}
-        onSuccess={handleRevealSuccess}
+        onRevealSuccess={handleRevealSuccess}
       />
 
       <div>
