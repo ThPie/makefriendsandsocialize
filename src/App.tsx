@@ -10,6 +10,9 @@ import { Layout } from "@/components/layout/Layout";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { EventChatbot } from "@/components/EventChatbot";
+import { InstallPromptBanner } from "@/components/pwa/InstallPromptBanner";
+import { OfflineIndicator } from "@/components/pwa/OfflineIndicator";
+import { UpdateAvailable } from "@/components/pwa/UpdateAvailable";
 import HomePage from "@/pages/HomePage";
 import EventsPage from "@/pages/EventsPage";
 import EventDetailPage from "@/pages/EventDetailPage";
@@ -65,6 +68,7 @@ import ConnectedCircleDirectoryPage from "@/pages/ConnectedCircleDirectoryPage";
 import PortalBusiness from "@/pages/portal/PortalBusiness";
 import AdminBusinesses from "@/pages/admin/AdminBusinesses";
 import DateConfirmationPage from "@/pages/DateConfirmationPage";
+import InstallPage from "@/pages/InstallPage";
 
 const queryClient = new QueryClient();
 
@@ -97,6 +101,7 @@ const App = () => (
               <Route path="/connected-circle" element={<ConnectedCirclePage />} />
               <Route path="/connected-circle/directory" element={<ConnectedCircleDirectoryPage />} />
               <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
+              <Route path="/install" element={<Layout><InstallPage /></Layout>} />
               
               {/* Auth routes */}
               <Route path="/auth" element={<AuthPage />} />
@@ -149,6 +154,10 @@ const App = () => (
             {/* Global Chatbot - available on all pages */}
             <EventChatbot />
           </BrowserRouter>
+          {/* PWA Components */}
+          <InstallPromptBanner />
+          <OfflineIndicator />
+          <UpdateAvailable />
         </TooltipProvider>
       </AuthProvider>
     </ThemeProvider>

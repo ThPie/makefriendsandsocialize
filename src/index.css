@@ -183,4 +183,9 @@
   .scroll-scale.visible {
     @apply opacity-100 scale-100;
   }
+
+  /* PWA slow spin animation */
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
 }
