@@ -24,7 +24,40 @@ interface RSVPWithProfile {
   user_id: string;
   profiles: {
     first_name: string | null;
+    email_reminders_enabled: boolean | null;
   } | null;
+}
+
+// Send push notification helper
+async function sendPushNotification(
+  supabase: any,
+  userId: string,
+  title: string,
+  body: string,
+  data: Record<string, string>
+): Promise<boolean> {
+  try {
+    const { error } = await supabase.functions.invoke('send-push-notification', {
+      body: {
+        user_id: userId,
+        title,
+        body,
+        tag: 'event-reminder',
+        data,
+      }
+    });
+    
+    if (error) {
+      console.error(`Push notification failed for user ${userId}:`, error);
+      return false;
+    }
+    
+    console.log(`Push notification sent to user ${userId}`);
+    return true;
+  } catch (err) {
+    console.error(`Push notification error for user ${userId}:`, err);
+    return false;
+  }
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -67,6 +100,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     let remindersSent = 0;
     let remindersSkipped = 0;
+    let pushNotificationsSent = 0;
 
     for (const event of upcomingEvents as EventWithRSVPs[]) {
       console.log(`Processing event: ${event.title} (${event.id})`);
@@ -76,7 +110,7 @@ const handler = async (req: Request): Promise<Response> => {
         .from("event_rsvps")
         .select(`
           user_id,
-          profiles:user_id (first_name, email_reminders_enabled, reminder_hours_before)
+          profiles:user_id (first_name, email_reminders_enabled)
         `)
         .eq("event_id", event.id)
         .eq("status", "confirmed");
@@ -89,14 +123,6 @@ const handler = async (req: Request): Promise<Response> => {
       console.log(`Found ${rsvps?.length || 0} RSVPs for event ${event.title}`);
 
       for (const rsvp of (rsvps as unknown as RSVPWithProfile[]) || []) {
-        // Check if user has disabled email reminders
-        const userProfile = rsvp.profiles as any;
-        if (userProfile?.email_reminders_enabled === false) {
-          console.log(`User ${rsvp.user_id} has disabled email reminders`);
-          remindersSkipped++;
-          continue;
-        }
-
         // Check if reminder already sent
         const { data: existingReminder } = await supabase
           .from("event_reminders")
@@ -151,6 +177,39 @@ const handler = async (req: Request): Promise<Response> => {
 
         if (insertError) {
           console.error(`Error creating reminder record:`, insertError);
+          continue;
+        }
+
+        // Send push notification first (faster, more likely to be seen)
+        const pushSent = await sendPushNotification(
+          supabase,
+          rsvp.user_id,
+          `🎉 ${event.title} is Tomorrow!`,
+          `Don't forget - ${eventLocation} at ${eventTime}`,
+          { 
+            url: `/events/${event.id}`,
+            eventId: event.id,
+            venueAddress: eventAddress
+          }
+        );
+        
+        if (pushSent) {
+          pushNotificationsSent++;
+        }
+
+        // Check if user has disabled email reminders
+        const userProfile = rsvp.profiles as { email_reminders_enabled?: boolean | null };
+        if (userProfile?.email_reminders_enabled === false) {
+          console.log(`User ${rsvp.user_id} has disabled email reminders, skipping email`);
+          
+          // Still mark as sent if push was successful
+          if (pushSent) {
+            await supabase
+              .from("event_reminders")
+              .update({ status: "sent", sent_at: new Date().toISOString() })
+              .eq("id", reminderRecord.id);
+            remindersSent++;
+          }
           continue;
         }
 
@@ -257,34 +316,37 @@ const handler = async (req: Request): Promise<Response> => {
             .eq("id", reminderRecord.id);
 
           remindersSent++;
-        } catch (emailError: any) {
+        } catch (emailError: unknown) {
+          const errorMessage = emailError instanceof Error ? emailError.message : 'Unknown error';
           console.error(`Error sending email to ${userEmail}:`, emailError);
           
           // Update reminder status to failed
           await supabase
             .from("event_reminders")
-            .update({ status: "failed", error_message: emailError.message })
+            .update({ status: "failed", error_message: errorMessage })
             .eq("id", reminderRecord.id);
         }
       }
     }
 
-    console.log(`Reminder job complete. Sent: ${remindersSent}, Skipped: ${remindersSkipped}`);
+    console.log(`Reminder job complete. Sent: ${remindersSent}, Skipped: ${remindersSkipped}, Push: ${pushNotificationsSent}`);
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         remindersSent, 
         remindersSkipped,
+        pushNotificationsSent,
         message: `Processed ${upcomingEvents.length} events` 
       }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error("Error in send-event-reminders:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
