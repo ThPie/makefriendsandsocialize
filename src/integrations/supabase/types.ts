@@ -1811,6 +1811,24 @@ export type Database = {
       can_reveal_match: { Args: { _user_id: string }; Returns: boolean }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
       get_available_reveals: { Args: { _user_id: string }; Returns: number }
+      get_matched_profile_safe: {
+        Args: { _dating_profile_id: string }
+        Returns: {
+          age: number
+          attachment_style: string
+          bio: string
+          core_values: string
+          display_name: string
+          future_goals: string
+          gender: string
+          id: string
+          introvert_extrovert: string
+          location: string
+          love_language: string
+          occupation: string
+          photo_url: string
+        }[]
+      }
       get_membership_tier: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["membership_tier"]
@@ -1830,6 +1848,10 @@ export type Database = {
       increment_rsvp_count: { Args: { event_id: string }; Returns: undefined }
       is_connected_with: {
         Args: { _other_user_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_matched_with: {
+        Args: { _other_dating_profile_id: string; _user_id: string }
         Returns: boolean
       }
       use_reveal_credit: {
