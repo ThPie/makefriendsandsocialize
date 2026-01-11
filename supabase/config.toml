@@ -122,3 +122,6 @@ verify_jwt = false
 
 [functions.reveal-match]
 verify_jwt = false
+
+[functions.verify-business-profile]
+verify_jwt = false
