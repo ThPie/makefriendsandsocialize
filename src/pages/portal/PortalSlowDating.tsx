@@ -10,8 +10,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Heart, Handshake, Clock, CheckCircle2, XCircle, User, Pause, Play, Settings } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BlurredMatchCard } from '@/components/dating/BlurredMatchCard';
+import { MatchRevealModal } from '@/components/dating/MatchRevealModal';
 import { ReactivationModal } from '@/components/dating/ReactivationModal';
 import { DatingNotificationPreferences } from '@/components/portal/DatingNotificationPreferences';
+import { UpgradePromptCard } from '@/components/portal/UpgradePromptCard';
+import { useMatchReveal } from '@/hooks/useMatchReveal';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface DatingProfile {
   id: string;
@@ -63,6 +67,11 @@ export default function PortalSlowDating() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showReactivationModal, setShowReactivationModal] = useState(false);
+  const [revealModalOpen, setRevealModalOpen] = useState(false);
+  const [selectedMatchForReveal, setSelectedMatchForReveal] = useState<{ id: string; score: number } | null>(null);
+  
+  const { availableReveals, hasUnlimitedReveals, canReveal } = useMatchReveal();
+  const { subscription } = useSubscription();
 
   // Fetch user's dating profile
   const { data: profile, isLoading: profileLoading } = useQuery({
@@ -167,6 +176,18 @@ export default function PortalSlowDating() {
   const revealedMatches = matches?.filter(m => m.status === 'mutual_yes') || [];
   const endedMatches = matches?.filter(m => m.status === 'declined') || [];
 
+  const handleRevealClick = (match: { id: string; compatibility_score: number }) => {
+    setSelectedMatchForReveal({ id: match.id, score: match.compatibility_score });
+    setRevealModalOpen(true);
+  };
+
+  const handleRevealSuccess = () => {
+    setRevealModalOpen(false);
+    setSelectedMatchForReveal(null);
+    // Refetch matches after reveal
+  };
+  const endedMatches = matches?.filter(m => m.status === 'declined') || [];
+
   if (profileLoading) {
     return (
       <div className="space-y-8">
@@ -214,10 +235,24 @@ export default function PortalSlowDating() {
 
   return (
     <div className="space-y-12">
+      {/* Match Reveal Modal */}
+      <MatchRevealModal
+        open={revealModalOpen}
+        onOpenChange={setRevealModalOpen}
+        matchId={selectedMatchForReveal?.id || ''}
+        compatibilityScore={selectedMatchForReveal?.score || 0}
+        onSuccess={handleRevealSuccess}
+      />
+
       <div>
         <h1 className="text-3xl font-display font-light text-foreground mb-2">Slow Dating</h1>
         <p className="text-muted-foreground">Your curated matchmaking journey</p>
       </div>
+
+      {/* Upgrade Prompt for Free Users */}
+      {(!subscription?.subscribed || subscription?.tier === 'explorer') && !subscription?.is_trialing && (
+        <UpgradePromptCard variant="compact" context="dating" />
+      )}
 
       {/* Paused Banner */}
       {isPaused && (
@@ -321,6 +356,9 @@ export default function PortalSlowDating() {
                 isWoman={isWoman}
                 onSchedule={() => navigate(`/portal/match/${match.id}`)}
                 onViewDetails={() => navigate(`/portal/match/${match.id}`)}
+                availableReveals={availableReveals}
+                hasUnlimitedReveals={hasUnlimitedReveals}
+                canReveal={canReveal}
               />
             ))}
           </div>
@@ -354,6 +392,10 @@ export default function PortalSlowDating() {
                 isWoman={isWoman}
                 onSchedule={() => navigate(`/portal/match/${match.id}`)}
                 onViewDetails={() => navigate(`/portal/match/${match.id}`)}
+                onReveal={() => handleRevealClick(match)}
+                availableReveals={availableReveals}
+                hasUnlimitedReveals={hasUnlimitedReveals}
+                canReveal={canReveal}
               />
             ))}
           </div>
@@ -389,6 +431,9 @@ export default function PortalSlowDating() {
                 isWoman={isWoman}
                 onSchedule={() => {}}
                 onViewDetails={() => navigate(`/portal/match/${match.id}`)}
+                availableReveals={availableReveals}
+                hasUnlimitedReveals={hasUnlimitedReveals}
+                canReveal={canReveal}
               />
             ))}
           </div>

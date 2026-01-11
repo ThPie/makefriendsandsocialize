@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { User, Heart, Calendar, Clock, CheckCircle2, XCircle, PartyPopper, MessageCircle, Target, Sparkles, Home } from "lucide-react";
+import { User, Heart, Calendar, Clock, CheckCircle2, XCircle, PartyPopper, MessageCircle, Target, Sparkles, Home, Lock, Eye, Infinity } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface DatingProfile {
@@ -43,7 +43,11 @@ interface BlurredMatchCardProps {
   currentProfileId: string;
   onSchedule: () => void;
   onViewDetails: () => void;
+  onReveal?: () => void;
   isWoman: boolean;
+  availableReveals?: number;
+  hasUnlimitedReveals?: boolean;
+  canReveal?: boolean;
 }
 
 export const BlurredMatchCard = ({ 
@@ -51,7 +55,11 @@ export const BlurredMatchCard = ({
   currentProfileId, 
   onSchedule, 
   onViewDetails,
-  isWoman 
+  onReveal,
+  isWoman,
+  availableReveals = 0,
+  hasUnlimitedReveals = false,
+  canReveal = false,
 }: BlurredMatchCardProps) => {
   const profile = match.matched_profile;
   const isRevealed = match.status === 'mutual_yes';
@@ -164,7 +172,7 @@ export const BlurredMatchCard = ({
             {!isRevealed && (
               <div className="absolute inset-0 bg-muted/50 flex items-center justify-center">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Heart className="h-8 w-8 text-primary" />
+                  <Lock className="h-8 w-8 text-primary" />
                 </div>
               </div>
             )}
@@ -262,6 +270,23 @@ export const BlurredMatchCard = ({
               </p>
             )}
 
+            {/* Reveal Credits Badge - For non-revealed matches */}
+            {!isRevealed && (hasUnlimitedReveals || availableReveals > 0) && (
+              <div className="flex items-center gap-2">
+                {hasUnlimitedReveals ? (
+                  <Badge variant="outline" className="text-xs bg-primary/5 text-primary border-primary/20">
+                    <Infinity className="h-3 w-3 mr-1" />
+                    Unlimited Reveals
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="text-xs bg-amber-500/5 text-amber-600 border-amber-500/20">
+                    <Eye className="h-3 w-3 mr-1" />
+                    {availableReveals} reveal{availableReveals !== 1 ? 's' : ''} left
+                  </Badge>
+                )}
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="flex gap-2 pt-1">
               {awaitingDecision ? (
@@ -299,6 +324,15 @@ export const BlurredMatchCard = ({
                   onClick={onViewDetails}
                 >
                   View Full Profile
+                </Button>
+              ) : onReveal ? (
+                <Button
+                  size="sm"
+                  className="flex-1"
+                  onClick={onReveal}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  Reveal Match
                 </Button>
               ) : (
                 <Button

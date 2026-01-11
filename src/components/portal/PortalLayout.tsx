@@ -1,6 +1,7 @@
 import { ReactNode, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +30,7 @@ import {
   Gift,
 } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
+import { TrialCountdownBanner } from './TrialCountdownBanner';
 import { PageTransition } from '@/components/ui/page-transition';
 import logo from '@/assets/logo-transparent.png';
 
@@ -51,6 +53,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, profile, membership, applicationStatus, isLoading, isAdmin, signOut } = useAuth();
+  const { subscription } = useSubscription();
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -207,6 +210,9 @@ export function PortalLayout({ children }: PortalLayoutProps) {
           </div>
 
           <div className="p-8 md:p-12 lg:p-16">
+            {/* Trial Countdown Banner */}
+            <TrialCountdownBanner />
+            
             <PageTransition>
               {children}
             </PageTransition>

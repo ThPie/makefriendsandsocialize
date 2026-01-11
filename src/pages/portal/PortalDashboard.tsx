@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,9 +13,11 @@ import { FeatureUnlockCard } from '@/components/portal/FeatureUnlockCard';
 import { OnboardingWizard } from '@/components/portal/OnboardingWizard';
 import { BadgeUnlockModal } from '@/components/portal/BadgeUnlockModal';
 import { VerificationBadge } from '@/components/portal/VerificationBadge';
+import { UpgradePromptCard } from '@/components/portal/UpgradePromptCard';
 
 export default function PortalDashboard() {
   const { user, profile, membership, canAccessMatchmaking, refreshProfile } = useAuth();
+  const { subscription, isLoading: subscriptionLoading } = useSubscription();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [earnedBadges, setEarnedBadges] = useState<{ badge_type: string; earned_at: string }[]>([]);
   const [newBadge, setNewBadge] = useState<{ name: string; icon: string; description: string; features?: string[] } | null>(null);
@@ -136,8 +139,13 @@ export default function PortalDashboard() {
         </p>
       </div>
 
-      {/* Upgrade Banner for Patrons */}
-      {membership?.tier === 'patron' && (
+      {/* Upgrade Banner for Free Users */}
+      {(!subscription?.subscribed || subscription?.tier === 'explorer') && !subscription?.is_trialing && (
+        <UpgradePromptCard variant="compact" context="general" />
+      )}
+
+      {/* Upgrade Banner for Patrons - Legacy */}
+      {membership?.tier === 'patron' && subscription?.subscribed && (
         <Card className="border-primary/20">
           <CardContent className="flex flex-col md:flex-row items-center justify-between gap-4 p-8">
             <div className="flex items-center gap-4">
