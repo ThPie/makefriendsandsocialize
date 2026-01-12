@@ -906,18 +906,18 @@ const handler = async (req: Request): Promise<Response> => {
 
         results.push({ id: notification.id, status: "sent" });
       } catch (emailError: any) {
-        console.error("Error sending email:", emailError);
+        console.error("Error sending email:", { message: emailError?.message, name: emailError?.name });
 
         // Update notification with error
         await supabaseClient
           .from("notification_queue")
           .update({
             status: "failed",
-            error_message: emailError.message,
+            error_message: emailError?.message || "Unknown error",
           })
           .eq("id", notification.id);
 
-        results.push({ id: notification.id, status: "failed", error: emailError.message });
+        results.push({ id: notification.id, status: "failed", error: emailError?.message || "Unknown error" });
       }
     }
 
@@ -929,9 +929,9 @@ const handler = async (req: Request): Promise<Response> => {
       }
     );
   } catch (error: any) {
-    console.error("Error in send-dating-notification:", error);
+    console.error("Error in send-dating-notification:", { message: error?.message, name: error?.name });
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: error?.message || "Unknown error" }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

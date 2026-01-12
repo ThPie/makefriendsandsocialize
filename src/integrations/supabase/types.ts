@@ -736,7 +736,6 @@ export type Database = {
           emotional_connection: string | null
           ex_admiration: string | null
           exercise_frequency: string | null
-          facebook_url: string | null
           family_involvement_expectation: string | null
           family_relationship: string | null
           financial_philosophy: string | null
@@ -747,12 +746,10 @@ export type Database = {
           growth_work: string | null
           has_children: boolean | null
           id: string
-          instagram_url: string | null
           introvert_extrovert: string | null
           is_active: boolean | null
           last_preprocessed_at: string | null
           lifestyle_normalized: Json | null
-          linkedin_url: string | null
           location: string | null
           love_language: string | null
           marriage_history: string | null
@@ -762,7 +759,6 @@ export type Database = {
           past_relationship_learning: string | null
           paused_at: string | null
           paused_reason: string | null
-          phone_number: string | null
           photo_url: string | null
           political_issues: string[] | null
           politics_stance: string | null
@@ -785,7 +781,6 @@ export type Database = {
           ten_year_vision: string | null
           trust_fidelity_views: string | null
           tuesday_night_test: string | null
-          twitter_url: string | null
           unpopular_opinion: string | null
           updated_at: string | null
           user_id: string
@@ -823,7 +818,6 @@ export type Database = {
           emotional_connection?: string | null
           ex_admiration?: string | null
           exercise_frequency?: string | null
-          facebook_url?: string | null
           family_involvement_expectation?: string | null
           family_relationship?: string | null
           financial_philosophy?: string | null
@@ -834,12 +828,10 @@ export type Database = {
           growth_work?: string | null
           has_children?: boolean | null
           id?: string
-          instagram_url?: string | null
           introvert_extrovert?: string | null
           is_active?: boolean | null
           last_preprocessed_at?: string | null
           lifestyle_normalized?: Json | null
-          linkedin_url?: string | null
           location?: string | null
           love_language?: string | null
           marriage_history?: string | null
@@ -849,7 +841,6 @@ export type Database = {
           past_relationship_learning?: string | null
           paused_at?: string | null
           paused_reason?: string | null
-          phone_number?: string | null
           photo_url?: string | null
           political_issues?: string[] | null
           politics_stance?: string | null
@@ -872,7 +863,6 @@ export type Database = {
           ten_year_vision?: string | null
           trust_fidelity_views?: string | null
           tuesday_night_test?: string | null
-          twitter_url?: string | null
           unpopular_opinion?: string | null
           updated_at?: string | null
           user_id: string
@@ -910,7 +900,6 @@ export type Database = {
           emotional_connection?: string | null
           ex_admiration?: string | null
           exercise_frequency?: string | null
-          facebook_url?: string | null
           family_involvement_expectation?: string | null
           family_relationship?: string | null
           financial_philosophy?: string | null
@@ -921,12 +910,10 @@ export type Database = {
           growth_work?: string | null
           has_children?: boolean | null
           id?: string
-          instagram_url?: string | null
           introvert_extrovert?: string | null
           is_active?: boolean | null
           last_preprocessed_at?: string | null
           lifestyle_normalized?: Json | null
-          linkedin_url?: string | null
           location?: string | null
           love_language?: string | null
           marriage_history?: string | null
@@ -936,7 +923,6 @@ export type Database = {
           past_relationship_learning?: string | null
           paused_at?: string | null
           paused_reason?: string | null
-          phone_number?: string | null
           photo_url?: string | null
           political_issues?: string[] | null
           politics_stance?: string | null
@@ -959,7 +945,6 @@ export type Database = {
           ten_year_vision?: string | null
           trust_fidelity_views?: string | null
           tuesday_night_test?: string | null
-          twitter_url?: string | null
           unpopular_opinion?: string | null
           updated_at?: string | null
           user_id?: string
@@ -2098,6 +2083,7 @@ export type Database = {
         }[]
       }
       cleanup_expired_mfa_sessions: { Args: never; Returns: undefined }
+      cleanup_old_leads: { Args: never; Returns: number }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
       get_application_contact_safe: {
@@ -2125,6 +2111,17 @@ export type Database = {
         }[]
       }
       get_available_reveals: { Args: { _user_id: string }; Returns: number }
+      get_connected_profile_limited: {
+        Args: { _profile_id: string }
+        Returns: {
+          avatar_urls: string[]
+          city: string
+          first_name: string
+          id: string
+          industry: string
+          job_title: string
+        }[]
+      }
       get_dating_profile_sensitive_data: {
         Args: { _dating_profile_id: string }
         Returns: {

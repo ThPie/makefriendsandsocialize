@@ -43,11 +43,7 @@ interface DatingProfile {
   status: string;
   is_active: boolean;
   created_at: string;
-  // New fields
-  linkedin_url: string | null;
-  instagram_url: string | null;
-  facebook_url: string | null;
-  twitter_url: string | null;
+  // Social URLs are now stored encrypted in dating_profile_sensitive_data table
   social_verification_status: string | null;
   social_verification_notes: string | null;
   relationship_type: string | null;
@@ -98,6 +94,23 @@ const AdminDatingProfile = () => {
       
       if (error) throw error;
       return data as DatingProfile | null;
+    },
+    enabled: !!id,
+  });
+
+  // Fetch sensitive data separately from encrypted table (admin-only access)
+  const { data: sensitiveData } = useQuery({
+    queryKey: ["dating-profile-sensitive", id],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_dating_profile_sensitive_data', {
+        _dating_profile_id: id
+      });
+      
+      if (error) {
+        console.error("Error fetching sensitive data:", { message: error.message });
+        return null;
+      }
+      return data?.[0] as { phone_number: string | null; linkedin_url: string | null; instagram_url: string | null; facebook_url: string | null; twitter_url: string | null } | null;
     },
     enabled: !!id,
   });
@@ -268,7 +281,7 @@ const AdminDatingProfile = () => {
   };
 
   const isVetted = profile?.status === "vetted" || profile?.status === "approved";
-  const hasSocialLinks = profile?.linkedin_url || profile?.instagram_url || profile?.facebook_url || profile?.twitter_url;
+  const hasSocialLinks = sensitiveData?.linkedin_url || sensitiveData?.instagram_url || sensitiveData?.facebook_url || sensitiveData?.twitter_url;
 
   if (profileLoading) {
     return (
@@ -621,51 +634,51 @@ const AdminDatingProfile = () => {
             <CardContent>
               {hasSocialLinks ? (
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {profile.linkedin_url && (
+                  {sensitiveData?.linkedin_url && (
                     <a
-                      href={profile.linkedin_url}
+                      href={sensitiveData.linkedin_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <Linkedin className="h-5 w-5 text-[#0077B5]" />
-                      <span className="flex-1 truncate">{profile.linkedin_url}</span>
+                      <span className="flex-1 truncate">{sensitiveData.linkedin_url}</span>
                       <ExternalLink className="h-4 w-4 text-muted-foreground" />
                     </a>
                   )}
-                  {profile.instagram_url && (
+                  {sensitiveData?.instagram_url && (
                     <a
-                      href={profile.instagram_url}
+                      href={sensitiveData.instagram_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <Instagram className="h-5 w-5 text-[#E4405F]" />
-                      <span className="flex-1 truncate">{profile.instagram_url}</span>
+                      <span className="flex-1 truncate">{sensitiveData.instagram_url}</span>
                       <ExternalLink className="h-4 w-4 text-muted-foreground" />
                     </a>
                   )}
-                  {profile.facebook_url && (
+                  {sensitiveData?.facebook_url && (
                     <a
-                      href={profile.facebook_url}
+                      href={sensitiveData.facebook_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <Facebook className="h-5 w-5 text-[#1877F2]" />
-                      <span className="flex-1 truncate">{profile.facebook_url}</span>
+                      <span className="flex-1 truncate">{sensitiveData.facebook_url}</span>
                       <ExternalLink className="h-4 w-4 text-muted-foreground" />
                     </a>
                   )}
-                  {profile.twitter_url && (
+                  {sensitiveData?.twitter_url && (
                     <a
-                      href={profile.twitter_url}
+                      href={sensitiveData.twitter_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
                     >
                       <Twitter className="h-5 w-5" />
-                      <span className="flex-1 truncate">{profile.twitter_url}</span>
+                      <span className="flex-1 truncate">{sensitiveData.twitter_url}</span>
                       <ExternalLink className="h-4 w-4 text-muted-foreground" />
                     </a>
                   )}
