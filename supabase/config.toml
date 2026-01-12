@@ -125,3 +125,6 @@ verify_jwt = false
 
 [functions.verify-business-profile]
 verify_jwt = false
+
+[functions.send-admin-access-alert]
+verify_jwt = false
