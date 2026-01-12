@@ -285,7 +285,7 @@ export default function AuthPage() {
           >
             <source src="/videos/auth-chess.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/95 via-[hsl(180,50%,12%)]/90 to-[hsl(180,55%,15%)]/85" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/70 via-[hsl(180,50%,12%)]/60 to-[hsl(180,55%,15%)]/50" />
           <FloatingParticles count={15} />
         </div>
 
