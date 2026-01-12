@@ -85,8 +85,7 @@ const ContactPage = () => {
       <section className="relative w-full min-h-[50vh] flex items-center justify-center overflow-hidden">
         {/* Background */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{backgroundImage: 'url("/images/contact-hero.jpg")'}}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-muted"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
         

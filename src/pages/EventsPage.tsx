@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { format, differenceInDays } from 'date-fns';
-import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2 } from 'lucide-react';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
 
 type SortOption = 'date-asc' | 'date-desc' | 'title-asc' | 'title-desc';
@@ -213,14 +213,14 @@ const EventsPage = () => {
               className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
               aria-label="Grid View"
             >
-              <span className="material-symbols-outlined">grid_view</span>
+              <Grid className="h-5 w-5" />
             </button>
             <button 
               onClick={() => setViewMode('list')}
               className={`p-2.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
               aria-label="List View"
             >
-              <span className="material-symbols-outlined">view_list</span>
+              <List className="h-5 w-5" />
             </button>
           </div>
         </motion.div>
@@ -254,7 +254,7 @@ const EventsPage = () => {
         >
           {/* Search */}
           <div className="w-full lg:w-96 relative">
-            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">search</span>
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <input 
               type="text" 
               placeholder="Search events, locations..." 
@@ -294,7 +294,7 @@ const EventsPage = () => {
                 <option value="title-asc">Title: A-Z</option>
                 <option value="title-desc">Title: Z-A</option>
               </select>
-              <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none text-lg">sort</span>
+              <ArrowUpDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             </div>
           </div>
         </motion.div>
@@ -379,7 +379,7 @@ const EventsPage = () => {
                       </div>
                       {rsvpStatus[event.id] && activeTab === 'upcoming' && (
                         <span className="flex items-center gap-1 text-emerald-400 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full">
-                          <span className="material-symbols-outlined text-sm">check_circle</span>
+                          <CheckCircle2 className="h-3.5 w-3.5" />
                           Going
                         </span>
                       )}

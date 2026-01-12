@@ -406,10 +406,12 @@ const TheGentlemenPage = () => {
                     className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200"
                   >
                     <option value="">Select your tier</option>
-                    <option value="explorer">Explorer</option>
                     <option value="member">Member</option>
                     <option value="fellow">Fellow</option>
                   </select>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    The Gentlemen is available to Member and Fellow tier members only.
+                  </p>
                 </div>
 
                 <div className="flex items-start gap-3">

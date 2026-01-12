@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -61,6 +62,7 @@ interface CircleApplication {
 
 const AdminCircles = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [circleFilter, setCircleFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -96,6 +98,7 @@ const AdminCircles = () => {
           status,
           admin_notes: notes || null,
           reviewed_at: new Date().toISOString(),
+          reviewed_by: user?.id || null,
         })
         .eq("id", id);
 
