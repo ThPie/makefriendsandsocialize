@@ -47,6 +47,99 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_mfa_sessions: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          ip_address: string | null
+          session_token: string | null
+          user_agent: string | null
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          session_token?: string | null
+          user_agent?: string | null
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          session_token?: string | null
+          user_agent?: string | null
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
+      admin_mfa_status: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_mfa_verified_at: string | null
+          mfa_enabled: boolean | null
+          mfa_required_since: string | null
+          totp_secret_encrypted: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_mfa_verified_at?: string | null
+          mfa_enabled?: boolean | null
+          mfa_required_since?: string | null
+          totp_secret_encrypted?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_mfa_verified_at?: string | null
+          mfa_enabled?: boolean | null
+          mfa_required_since?: string | null
+          totp_secret_encrypted?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      admin_rate_limits: {
+        Row: {
+          admin_user_id: string
+          created_at: string | null
+          endpoint: string
+          id: string
+          request_count: number | null
+          window_start: string | null
+        }
+        Insert: {
+          admin_user_id: string
+          created_at?: string | null
+          endpoint: string
+          id?: string
+          request_count?: number | null
+          window_start?: string | null
+        }
+        Update: {
+          admin_user_id?: string
+          created_at?: string | null
+          endpoint?: string
+          id?: string
+          request_count?: number | null
+          window_start?: string | null
+        }
+        Relationships: []
+      }
       appeal_status_history: {
         Row: {
           admin_notes: string | null
@@ -459,6 +552,53 @@ export type Database = {
             columns: ["meeting_proposal_id"]
             isOneToOne: false
             referencedRelation: "meeting_proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dating_profile_sensitive_data: {
+        Row: {
+          created_at: string | null
+          dating_profile_id: string
+          encryption_key_id: string | null
+          facebook_url_encrypted: string | null
+          id: string
+          instagram_url_encrypted: string | null
+          linkedin_url_encrypted: string | null
+          phone_number_encrypted: string | null
+          twitter_url_encrypted: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dating_profile_id: string
+          encryption_key_id?: string | null
+          facebook_url_encrypted?: string | null
+          id?: string
+          instagram_url_encrypted?: string | null
+          linkedin_url_encrypted?: string | null
+          phone_number_encrypted?: string | null
+          twitter_url_encrypted?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dating_profile_id?: string
+          encryption_key_id?: string | null
+          facebook_url_encrypted?: string | null
+          id?: string
+          instagram_url_encrypted?: string | null
+          linkedin_url_encrypted?: string | null
+          phone_number_encrypted?: string | null
+          twitter_url_encrypted?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_profile_sensitive_data_dating_profile_id_fkey"
+            columns: ["dating_profile_id"]
+            isOneToOne: true
+            referencedRelation: "dating_profiles"
             referencedColumns: ["id"]
           },
         ]
