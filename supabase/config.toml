@@ -134,3 +134,6 @@ verify_jwt = false
 
 [functions.admin-rate-limiter]
 verify_jwt = false
+
+[functions.encrypt-sensitive-data]
+verify_jwt = true
