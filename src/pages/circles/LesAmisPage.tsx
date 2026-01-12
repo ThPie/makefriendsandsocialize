@@ -97,13 +97,14 @@ const LesAmisPage = () => {
         improvement_goals: formData.improvementGoals,
         comfortable_speaking: formData.comfortableSpeaking === "yes",
         membership_tier: formData.membershipTier as "explorer" | "member" | "fellow",
+        status: "approved", // Les Amis is open to all - auto-approve
       });
 
       if (error) throw error;
 
       toast({
-        title: "Application Submitted",
-        description: "Thanks — we'll review and follow up with next steps.",
+        title: "Welcome to Les Amis!",
+        description: "You'll receive updates about upcoming French conversation meetups.",
       });
 
       setFormData({
@@ -345,6 +346,37 @@ const LesAmisPage = () => {
                     <option value="advanced">Advanced</option>
                     <option value="native">Native Speaker</option>
                   </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Are you comfortable speaking French in a group setting? *
+                  </label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="comfortableSpeaking"
+                        value="yes"
+                        checked={formData.comfortableSpeaking === "yes"}
+                        onChange={(e) => setFormData({ ...formData, comfortableSpeaking: e.target.value })}
+                        className="h-4 w-4 border-border text-primary focus:ring-primary/50"
+                        required
+                      />
+                      <span className="text-sm text-foreground">Yes</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="comfortableSpeaking"
+                        value="no"
+                        checked={formData.comfortableSpeaking === "no"}
+                        onChange={(e) => setFormData({ ...formData, comfortableSpeaking: e.target.value })}
+                        className="h-4 w-4 border-border text-primary focus:ring-primary/50"
+                      />
+                      <span className="text-sm text-foreground">No, but I'm willing to try</span>
+                    </label>
+                  </div>
                 </div>
 
                 <div>
