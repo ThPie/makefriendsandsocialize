@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -35,8 +35,11 @@ import {
   Target,
   Gift,
   Scale,
+  Lock,
 } from 'lucide-react';
 import { PageTransition } from '@/components/ui/page-transition';
+import { MFAGuard } from './MFAGuard';
+import { RateLimitIndicator } from './RateLimitIndicator';
 import logo from '@/assets/logo-transparent.png';
 
 interface AdminLayoutProps {
@@ -44,32 +47,55 @@ interface AdminLayoutProps {
 }
 
 const menuItems = [
-  { title: 'Overview', url: '/admin', icon: LayoutDashboard },
-  { title: 'Applications', url: '/admin/applications', icon: FileText },
-  { title: 'Members', url: '/admin/members', icon: Users },
-  { title: 'Appeals', url: '/admin/appeals', icon: Scale },
-  { title: 'Referrals', url: '/admin/referrals', icon: Gift },
-  { title: 'Businesses', url: '/admin/businesses', icon: Users },
-  { title: 'Lead Generation', url: '/admin/leads', icon: Target },
-  { title: 'Security Reports', url: '/admin/security', icon: ShieldAlert },
-  { title: 'Security Dashboard', url: '/admin/security-dashboard', icon: Shield },
-  { title: 'Introductions', url: '/admin/dating', icon: HeartHandshake },
-  { title: 'Matches', url: '/admin/matches', icon: Heart },
-  { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp },
-  { title: 'Events', url: '/admin/events', icon: Calendar },
-  { title: 'Event Analytics', url: '/admin/event-analytics', icon: TrendingUp },
-  { title: 'Photos', url: '/admin/photos', icon: Image },
-  { title: 'Connections', url: '/admin/connections', icon: UserCog },
-  { title: 'Testimonials', url: '/admin/testimonials', icon: Quote },
-  { title: 'Content', url: '/admin/content', icon: Image },
-  { title: 'Roles', url: '/admin/roles', icon: Shield },
-  { title: 'Settings', url: '/admin/settings', icon: Settings },
+  { title: 'Overview', url: '/admin', icon: LayoutDashboard, sensitive: false, endpoint: null },
+  { title: 'Applications', url: '/admin/applications', icon: FileText, sensitive: true, endpoint: 'applications' },
+  { title: 'Members', url: '/admin/members', icon: Users, sensitive: true, endpoint: 'members' },
+  { title: 'Appeals', url: '/admin/appeals', icon: Scale, sensitive: true, endpoint: 'applications' },
+  { title: 'Referrals', url: '/admin/referrals', icon: Gift, sensitive: false, endpoint: null },
+  { title: 'Businesses', url: '/admin/businesses', icon: Users, sensitive: false, endpoint: null },
+  { title: 'Lead Generation', url: '/admin/leads', icon: Target, sensitive: false, endpoint: null },
+  { title: 'Security Reports', url: '/admin/security', icon: ShieldAlert, sensitive: true, endpoint: 'security' },
+  { title: 'Security Dashboard', url: '/admin/security-dashboard', icon: Shield, sensitive: true, endpoint: 'security' },
+  { title: 'Introductions', url: '/admin/dating', icon: HeartHandshake, sensitive: true, endpoint: 'dating' },
+  { title: 'Matches', url: '/admin/matches', icon: Heart, sensitive: true, endpoint: 'dating' },
+  { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp, sensitive: false, endpoint: null },
+  { title: 'Events', url: '/admin/events', icon: Calendar, sensitive: false, endpoint: null },
+  { title: 'Event Analytics', url: '/admin/event-analytics', icon: TrendingUp, sensitive: false, endpoint: null },
+  { title: 'Photos', url: '/admin/photos', icon: Image, sensitive: false, endpoint: null },
+  { title: 'Connections', url: '/admin/connections', icon: UserCog, sensitive: false, endpoint: null },
+  { title: 'Testimonials', url: '/admin/testimonials', icon: Quote, sensitive: false, endpoint: null },
+  { title: 'Content', url: '/admin/content', icon: Image, sensitive: false, endpoint: null },
+  { title: 'Roles', url: '/admin/roles', icon: Shield, sensitive: true, endpoint: 'security' },
+  { title: 'Settings', url: '/admin/settings', icon: Settings, sensitive: false, endpoint: null },
+];
+
+// Routes that require MFA verification
+const SENSITIVE_ROUTES = [
+  '/admin/applications',
+  '/admin/members',
+  '/admin/appeals',
+  '/admin/security',
+  '/admin/security-dashboard',
+  '/admin/dating',
+  '/admin/matches',
+  '/admin/roles',
 ];
 
 export function AdminLayout({ children }: AdminLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isAdmin, isLoading, signOut } = useAuth();
+
+  // Determine if current page requires MFA
+  const requiresMFA = useMemo(() => {
+    return SENSITIVE_ROUTES.some(route => location.pathname.startsWith(route));
+  }, [location.pathname]);
+
+  // Determine current endpoint for rate limiting
+  const currentEndpoint = useMemo(() => {
+    const currentItem = menuItems.find(item => location.pathname.startsWith(item.url) && item.url !== '/admin');
+    return currentItem?.endpoint || null;
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -135,6 +161,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   {menuItems.map((item) => {
                     const isActive = location.pathname === item.url;
                     
+                    const isSensitive = item.sensitive;
+                    
                     return (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
@@ -147,7 +175,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                             }`}
                           >
                             <item.icon className="h-5 w-5" />
-                            <span>{item.title}</span>
+                            <span className="flex-1">{item.title}</span>
+                            {isSensitive && <Lock className="h-3 w-3 text-muted-foreground" />}
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -160,6 +189,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </SidebarContent>
 
           <div className="p-4 mt-auto border-t border-border">
+            {currentEndpoint && (
+              <div className="mb-3 px-2">
+                <RateLimitIndicator endpoint={currentEndpoint} compact />
+              </div>
+            )}
             <Button
               variant="ghost"
               onClick={handleSignOut}
@@ -180,7 +214,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
           <div className="p-6 md:p-8 lg:p-10">
             <PageTransition>
-              {children}
+              <MFAGuard requireMFA={requiresMFA}>
+                {children}
+              </MFAGuard>
             </PageTransition>
           </div>
         </main>

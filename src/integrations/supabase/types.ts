@@ -1982,7 +1982,31 @@ export type Database = {
     }
     Functions: {
       can_reveal_match: { Args: { _user_id: string }; Returns: boolean }
+      check_admin_mfa_verified: { Args: { _user_id: string }; Returns: boolean }
+      check_admin_rate_limit: {
+        Args: {
+          _admin_id: string
+          _endpoint: string
+          _max_requests?: number
+          _window_minutes?: number
+        }
+        Returns: {
+          allowed: boolean
+          remaining_requests: number
+          reset_at: string
+        }[]
+      }
+      cleanup_expired_mfa_sessions: { Args: never; Returns: undefined }
+      cleanup_old_rate_limits: { Args: never; Returns: undefined }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
+      decrypt_sensitive_field: {
+        Args: { _ciphertext: string; _key?: string }
+        Returns: string
+      }
+      encrypt_sensitive_field: {
+        Args: { _key?: string; _plaintext: string }
+        Returns: string
+      }
       get_application_safe: {
         Args: { _application_id: string }
         Returns: {
@@ -2001,6 +2025,16 @@ export type Database = {
         }[]
       }
       get_available_reveals: { Args: { _user_id: string }; Returns: number }
+      get_dating_profile_sensitive_data: {
+        Args: { _dating_profile_id: string }
+        Returns: {
+          facebook_url: string
+          instagram_url: string
+          linkedin_url: string
+          phone_number: string
+          twitter_url: string
+        }[]
+      }
       get_matched_profile_safe: {
         Args: { _dating_profile_id: string }
         Returns: {
@@ -2035,6 +2069,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_admin_rate_limit: {
+        Args: { _admin_id: string; _endpoint: string }
+        Returns: undefined
+      }
       increment_rsvp_count: { Args: { event_id: string }; Returns: undefined }
       is_connected_with: {
         Args: { _other_user_id: string; _user_id: string }
@@ -2052,6 +2090,17 @@ export type Database = {
           _resource_type: string
         }
         Returns: undefined
+      }
+      save_dating_profile_sensitive_data: {
+        Args: {
+          _dating_profile_id: string
+          _facebook_url?: string
+          _instagram_url?: string
+          _linkedin_url?: string
+          _phone_number?: string
+          _twitter_url?: string
+        }
+        Returns: boolean
       }
       use_reveal_credit: {
         Args: { _match_id: string; _user_id: string }

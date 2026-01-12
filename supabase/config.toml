@@ -128,3 +128,9 @@ verify_jwt = false
 
 [functions.send-admin-access-alert]
 verify_jwt = false
+
+[functions.verify-admin-mfa]
+verify_jwt = false
+
+[functions.admin-rate-limiter]
+verify_jwt = false
