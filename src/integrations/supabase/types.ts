@@ -2065,14 +2065,6 @@ export type Database = {
       cleanup_expired_mfa_sessions: { Args: never; Returns: undefined }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
-      decrypt_sensitive_field: {
-        Args: { _ciphertext: string; _key?: string }
-        Returns: string
-      }
-      encrypt_sensitive_field: {
-        Args: { _key?: string; _plaintext: string }
-        Returns: string
-      }
       get_application_safe: {
         Args: { _application_id: string }
         Returns: {
