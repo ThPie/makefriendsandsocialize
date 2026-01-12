@@ -357,6 +357,72 @@ export type Database = {
           },
         ]
       }
+      circle_applications: {
+        Row: {
+          admin_notes: string | null
+          circle_name: string
+          comfortable_speaking: boolean | null
+          created_at: string | null
+          dress_code_commitment: boolean | null
+          email: string
+          french_level: string | null
+          full_name: string
+          id: string
+          improvement_goals: string | null
+          instagram_linkedin: string | null
+          membership_tier: string
+          reason_to_join: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          style_preference: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          circle_name: string
+          comfortable_speaking?: boolean | null
+          created_at?: string | null
+          dress_code_commitment?: boolean | null
+          email: string
+          french_level?: string | null
+          full_name: string
+          id?: string
+          improvement_goals?: string | null
+          instagram_linkedin?: string | null
+          membership_tier: string
+          reason_to_join?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          style_preference?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          circle_name?: string
+          comfortable_speaking?: boolean | null
+          created_at?: string | null
+          dress_code_commitment?: boolean | null
+          email?: string
+          french_level?: string | null
+          full_name?: string
+          id?: string
+          improvement_goals?: string | null
+          instagram_linkedin?: string | null
+          membership_tier?: string
+          reason_to_join?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          style_preference?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       connections: {
         Row: {
           created_at: string

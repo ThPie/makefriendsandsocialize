@@ -69,6 +69,9 @@ import PortalBusiness from "@/pages/portal/PortalBusiness";
 import AdminBusinesses from "@/pages/admin/AdminBusinesses";
 import DateConfirmationPage from "@/pages/DateConfirmationPage";
 import InstallPage from "@/pages/InstallPage";
+import CirclesPage from "@/pages/CirclesPage";
+import TheGentlemenPage from "@/pages/circles/TheGentlemenPage";
+import LesAmisPage from "@/pages/circles/LesAmisPage";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +103,9 @@ const App = () => (
               <Route path="/slow-dating" element={<SlowDatingPage />} />
               <Route path="/connected-circle" element={<ConnectedCirclePage />} />
               <Route path="/connected-circle/directory" element={<ConnectedCircleDirectoryPage />} />
+              <Route path="/circles" element={<CirclesPage />} />
+              <Route path="/circles/the-gentlemen" element={<TheGentlemenPage />} />
+              <Route path="/circles/les-amis" element={<LesAmisPage />} />
               <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
               <Route path="/install" element={<Layout><InstallPage /></Layout>} />
               
