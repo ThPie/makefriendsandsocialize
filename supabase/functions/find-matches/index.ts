@@ -355,11 +355,11 @@ Return JSON with:
               });
             }
           } catch (parseError) {
-            console.error(`Failed to parse AI response for ${candidate.id}:`, parseError);
+            console.error(`Failed to parse AI response for ${candidate.id}:`, { message: (parseError as Error).message });
           }
         }
       } catch (aiError) {
-        console.error(`AI analysis failed for candidate ${candidate.id}:`, aiError);
+        console.error(`AI analysis failed for candidate ${candidate.id}:`, { message: (aiError as Error).message });
       }
     }
 
@@ -415,7 +415,7 @@ Return JSON with:
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
-    console.error("Error in find-matches function:", error);
+    console.error("Error in find-matches function:", { message: (error as Error).message, name: (error as Error).name });
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

@@ -139,7 +139,7 @@ serve(async (req) => {
           }
         }
       } catch (error) {
-        console.error('Perplexity search error:', error);
+        console.error('Perplexity search error:', { message: (error as Error).message, name: (error as Error).name });
         findings.perplexityError = error instanceof Error ? error.message : 'Unknown error';
       }
     }
@@ -205,7 +205,7 @@ serve(async (req) => {
           socialConsistencyScore += 10;
         }
       } catch (error) {
-        console.error('Firecrawl error:', error);
+        console.error('Firecrawl error:', { message: (error as Error).message, name: (error as Error).name });
         findings.firecrawlError = error instanceof Error ? error.message : 'Unknown error';
       }
     }
@@ -278,7 +278,7 @@ Provide your analysis in the following format:
           }
         }
       } catch (error) {
-        console.error('AI analysis error:', error);
+        console.error('AI analysis error:', { message: (error as Error).message, name: (error as Error).name });
         findings.aiError = error instanceof Error ? error.message : 'Unknown error';
       }
     }
@@ -374,7 +374,7 @@ Provide your analysis in the following format:
     });
 
   } catch (error) {
-    console.error('OSINT analysis error:', error);
+    console.error('OSINT analysis error:', { message: (error as Error).message, name: (error as Error).name });
     return new Response(JSON.stringify({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 
