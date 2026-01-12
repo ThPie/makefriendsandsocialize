@@ -49,13 +49,15 @@ const CirclesPage = () => {
       icon: Crown,
       tags: ["Dress Code: Tailored", "Selective", "Monthly / Curated"],
       path: "/circles/the-gentlemen",
+      isFree: false,
     },
     {
       title: "Les Amis",
       description: "A French-speaking social circle for conversation, culture, and connection—no classroom vibe.",
       icon: MessageCircle,
-      tags: ["French Conversation", "Monthly", "All levels welcome"],
+      tags: ["French Conversation", "Monthly", "All levels welcome", "Free for All"],
       path: "/circles/les-amis",
+      isFree: true,
     },
   ];
 
@@ -89,21 +91,21 @@ const CirclesPage = () => {
   const tiers = [
     {
       name: "Explorer",
-      description: "Can view Circles and attend public events; no Circle access",
-      features: ["Browse Circle pages", "Attend public events", "View community"],
-      canApply: false,
+      description: "Free access to Les Amis; can view selective Circles",
+      features: ["Free access to Les Amis", "Browse Circle pages", "Attend public events"],
+      canApply: true,
     },
     {
       name: "Member",
-      description: "Can apply to 1 Circle (approval required)",
-      features: ["Apply to 1 Circle", "Attend Circle events", "Connect with members"],
+      description: "Les Amis + apply to The Gentlemen (approval required)",
+      features: ["Les Amis access", "Apply to The Gentlemen", "Attend Circle events"],
       canApply: true,
       highlight: true,
     },
     {
       name: "Fellow",
-      description: "Apply to multiple Circles + priority consideration + invitation-only experiences",
-      features: ["Apply to multiple Circles", "Priority consideration", "Invitation-only experiences"],
+      description: "All Circles + priority consideration + invitation-only experiences",
+      features: ["Priority for The Gentlemen", "Invitation-only experiences", "All Circle benefits"],
       canApply: true,
     },
   ];
@@ -220,8 +222,13 @@ const CirclesPage = () => {
                 <motion.div
                   key={circle.title}
                   variants={itemVariants}
-                  className="group bg-card border border-border/50 rounded-2xl p-8 hover-lift"
+                  className="group bg-card border border-border/50 rounded-2xl p-8 hover-lift relative"
                 >
+                  {circle.isFree && (
+                    <Badge className="absolute top-4 right-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">
+                      Free for All
+                    </Badge>
+                  )}
                   <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 transition-colors group-hover:bg-primary/20">
                     <circle.icon className="h-7 w-7 text-primary" />
                   </div>
@@ -232,7 +239,10 @@ const CirclesPage = () => {
                       <Badge 
                         key={tag} 
                         variant="secondary" 
-                        className="bg-secondary/50 text-foreground/80 border-border/50"
+                        className={tag === "Free for All" 
+                          ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20"
+                          : "bg-secondary/50 text-foreground/80 border-border/50"
+                        }
                       >
                         {tag}
                       </Badge>

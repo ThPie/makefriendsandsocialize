@@ -12,6 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useEffect, useState } from "react";
+import heroImage from "@/assets/business-hero.jpg";
 
 const ConnectedCirclePage = () => {
   const heroAnimation = useScrollAnimation();
@@ -135,8 +136,15 @@ const ConnectedCirclePage = () => {
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-          {/* Background Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-background" />
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <img 
+              src={heroImage} 
+              alt="Professional business networking" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
+          </div>
           
           {/* Floating Decorative Elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -145,26 +153,6 @@ const ConnectedCirclePage = () => {
               animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
               transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             />
-            <motion.div
-              className="absolute bottom-1/4 left-1/3 w-96 h-96 rounded-full bg-primary/5 blur-3xl"
-              animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            />
-            {/* Floating Icons */}
-            <motion.div
-              className="absolute top-1/3 right-1/5 opacity-10"
-              animate={{ y: [0, -20, 0], rotate: [0, 10, 0] }}
-              transition={{ duration: 6, repeat: Infinity }}
-            >
-              <Building2 className="w-24 h-24 text-primary" />
-            </motion.div>
-            <motion.div
-              className="absolute bottom-1/3 right-1/3 opacity-10"
-              animate={{ y: [0, 20, 0], rotate: [0, -10, 0] }}
-              transition={{ duration: 8, repeat: Infinity }}
-            >
-              <Network className="w-32 h-32 text-primary" />
-            </motion.div>
           </div>
 
           <div 
@@ -176,28 +164,28 @@ const ConnectedCirclePage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8"
+                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2.5 mb-8"
               >
                 <Sparkles className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">Business Networking Reimagined</span>
+                <span className="text-sm font-medium text-white">Business Networking Reimagined</span>
               </motion.div>
 
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
+                className="font-display text-5xl md:text-6xl lg:text-7xl text-white mb-6 leading-[1.1]"
               >
                 The Connected
                 <br />
-                <span className="text-gradient">Circle</span>
+                <span className="text-primary">Circle</span>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                className="text-muted-foreground text-lg md:text-xl max-w-xl mb-10 leading-relaxed"
+                className="text-white/80 text-lg md:text-xl max-w-xl mb-10 leading-relaxed"
               >
                 Where business relationships thrive. An exclusive directory of verified 
                 member businesses, creating opportunities for meaningful professional 

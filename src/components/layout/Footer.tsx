@@ -147,6 +147,12 @@ export const Footer = () => {
           
           {/* Links */}
           <div className="flex flex-wrap justify-center gap-6">
+            <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Home
+            </Link>
+            <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              About
+            </Link>
             <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               Contact
             </Link>
