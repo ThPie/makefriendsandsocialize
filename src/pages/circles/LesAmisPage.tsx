@@ -275,7 +275,7 @@ const LesAmisPage = () => {
           </div>
         </section>
 
-        {/* Application Form */}
+        {/* Registration Form */}
         <section id="apply" className="py-24 md:py-32">
           <div 
             ref={formAnimation.ref} 
@@ -284,8 +284,11 @@ const LesAmisPage = () => {
             <div className="text-center mb-12">
               <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Join Us</p>
               <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-                Apply to Les Amis
+                Join Les Amis
               </h2>
+              <p className="text-muted-foreground text-lg max-w-lg mx-auto">
+                Register to receive updates about upcoming French conversation meetups.
+              </p>
             </div>
 
             <motion.div
@@ -346,33 +349,16 @@ const LesAmisPage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2" htmlFor="improvementGoals">
-                    What would you like to improve or gain from this circle?
+                    What would you like to gain from this circle? (Optional)
                   </label>
                   <textarea
                     id="improvementGoals"
-                    rows={4}
+                    rows={3}
                     value={formData.improvementGoals}
                     onChange={(e) => setFormData({ ...formData, improvementGoals: e.target.value })}
                     className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200 resize-none"
                     placeholder="Conversational fluency, cultural connection, making friends..."
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2" htmlFor="comfortableSpeaking">
-                    Are you comfortable speaking in a group setting? *
-                  </label>
-                  <select
-                    id="comfortableSpeaking"
-                    required
-                    value={formData.comfortableSpeaking}
-                    onChange={(e) => setFormData({ ...formData, comfortableSpeaking: e.target.value })}
-                    className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200"
-                  >
-                    <option value="">Select an option</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No, but I'm willing to try</option>
-                  </select>
                 </div>
 
                 <div>
@@ -401,11 +387,11 @@ const LesAmisPage = () => {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Submitting...
+                      Joining...
                     </>
                   ) : (
                     <>
-                      Submit Application
+                      Join Circle
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </>
                   )}
