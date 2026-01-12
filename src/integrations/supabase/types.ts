@@ -357,6 +357,41 @@ export type Database = {
           },
         ]
       }
+      circle_application_contacts: {
+        Row: {
+          application_id: string
+          created_at: string | null
+          email_encrypted: string
+          id: string
+          instagram_linkedin_encrypted: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          application_id: string
+          created_at?: string | null
+          email_encrypted: string
+          id?: string
+          instagram_linkedin_encrypted?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          application_id?: string
+          created_at?: string | null
+          email_encrypted?: string
+          id?: string
+          instagram_linkedin_encrypted?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "circle_application_contacts_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: true
+            referencedRelation: "circle_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       circle_applications: {
         Row: {
           admin_notes: string | null
@@ -2065,6 +2100,13 @@ export type Database = {
       cleanup_expired_mfa_sessions: { Args: never; Returns: undefined }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
+      get_application_contact_safe: {
+        Args: { _application_id: string }
+        Returns: {
+          email: string
+          instagram_linkedin: string
+        }[]
+      }
       get_application_safe: {
         Args: { _application_id: string }
         Returns: {
