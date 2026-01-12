@@ -20,6 +20,7 @@ import {
   ArrowLeft,
   Loader2
 } from "lucide-react";
+import heroImage from "@/assets/gentlemen-hero.jpg";
 
 const TheGentlemenPage = () => {
   const { toast } = useToast();
@@ -143,21 +144,14 @@ const TheGentlemenPage = () => {
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative min-h-[70vh] flex items-center overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-secondary/50 via-background to-background" />
-          
-          {/* Floating Elements */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <motion.div
-              className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-primary/5 blur-3xl"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <img 
+              src={heroImage} 
+              alt="Gentlemen's lounge atmosphere" 
+              className="w-full h-full object-cover"
             />
-            <motion.div
-              className="absolute bottom-1/4 left-1/3 w-96 h-96 rounded-full bg-primary/5 blur-3xl"
-              animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
           </div>
 
           <div 
@@ -166,7 +160,7 @@ const TheGentlemenPage = () => {
           >
             <Link 
               to="/circles" 
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8"
+              className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors mb-8"
             >
               <ArrowLeft className="h-4 w-4" />
               <span className="text-sm">Back to Circles</span>
@@ -176,26 +170,26 @@ const TheGentlemenPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2.5 mb-8"
             >
               <Sparkles className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Selective Circle</span>
+              <span className="text-sm font-medium text-white">Selective Circle</span>
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
+              className="font-display text-5xl md:text-6xl lg:text-7xl text-white mb-6 leading-[1.1]"
             >
-              The <span className="text-gradient">Gentlemen</span>
+              The <span className="text-primary">Gentlemen</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+              className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
             >
               Timeless style. Refined spaces. Meaningful conversation.
             </motion.p>
