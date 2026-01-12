@@ -225,11 +225,20 @@ const ContactPage = () => {
                   className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200" 
                   id="inquiry-type" 
                   name="inquiry-type"
+                  required
                 >
-                  <option>Membership Questions</option>
-                  <option>Event Information</option>
-                  <option>Partnership Opportunities</option>
-                  <option>General Inquiry</option>
+                  <option value="">Select an inquiry type...</option>
+                  <option value="membership">Membership Questions</option>
+                  <option value="events">Event Information</option>
+                  <option value="private-events">Private Events & Bookings</option>
+                  <option value="slow-dating">Slow Dating Program</option>
+                  <option value="circles">Connected Circles</option>
+                  <option value="business">Business Membership</option>
+                  <option value="partnership">Partnership Opportunities</option>
+                  <option value="sponsorship">Sponsorship Inquiries</option>
+                  <option value="media">Media & Press</option>
+                  <option value="feedback">Feedback & Suggestions</option>
+                  <option value="general">General Inquiry</option>
                 </select>
               </div>
               <div>
