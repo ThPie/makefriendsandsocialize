@@ -273,15 +273,18 @@ export default function AuthPage() {
   if (step === 1) {
     return (
       <div className="min-h-screen flex relative">
-        {/* Background Image for Mobile/Tablet */}
-        <div 
-          className="absolute inset-0 lg:hidden"
-          style={{
-            backgroundImage: `url(${contactHero})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
+        {/* Background Video for Mobile/Tablet */}
+        <div className="absolute inset-0 lg:hidden">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            poster="/images/hero-poster.webp"
+          >
+            <source src="/videos/auth-chess.mp4" type="video/mp4" />
+          </video>
           <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/95 via-[hsl(180,50%,12%)]/90 to-[hsl(180,55%,15%)]/85" />
           <FloatingParticles count={15} />
         </div>
