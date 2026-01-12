@@ -60,6 +60,7 @@ import AdminLeads from "@/pages/admin/AdminLeads";
 import AdminReferrals from "@/pages/admin/AdminReferrals";
 import AdminPhotos from "@/pages/admin/AdminPhotos";
 import AdminAppeals from "@/pages/admin/AdminAppeals";
+import AdminCircles from "@/pages/admin/AdminCircles";
 import DatingIntakePage from "@/pages/DatingIntakePage";
 import SlowDatingPage from "@/pages/SlowDatingPage";
 import AppealPage from "@/pages/AppealPage";
@@ -153,6 +154,7 @@ const App = () => (
               <Route path="/admin/settings" element={<AdminLayout><AdminSettings /></AdminLayout>} />
               <Route path="/admin/referrals" element={<AdminLayout><AdminReferrals /></AdminLayout>} />
               <Route path="/admin/appeals" element={<AdminLayout><AdminAppeals /></AdminLayout>} />
+              <Route path="/admin/circles" element={<AdminLayout><AdminCircles /></AdminLayout>} />
               <Route path="/admin/businesses" element={<AdminLayout><AdminBusinesses /></AdminLayout>} />
               
               <Route path="*" element={<Layout><NotFound /></Layout>} />

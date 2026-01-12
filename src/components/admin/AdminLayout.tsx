@@ -49,6 +49,7 @@ interface AdminLayoutProps {
 const menuItems = [
   { title: 'Overview', url: '/admin', icon: LayoutDashboard, sensitive: false, endpoint: null },
   { title: 'Applications', url: '/admin/applications', icon: FileText, sensitive: true, endpoint: 'applications' },
+  { title: 'Circle Applications', url: '/admin/circles', icon: Users, sensitive: false, endpoint: null },
   { title: 'Members', url: '/admin/members', icon: Users, sensitive: true, endpoint: 'members' },
   { title: 'Appeals', url: '/admin/appeals', icon: Scale, sensitive: true, endpoint: 'applications' },
   { title: 'Referrals', url: '/admin/referrals', icon: Gift, sensitive: false, endpoint: null },
