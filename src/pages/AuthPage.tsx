@@ -313,7 +313,7 @@ export default function AuthPage() {
           
           {/* Glassmorphism Form Container */}
           <div className="relative z-10 max-w-md mx-auto w-full">
-            <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl animate-fade-in">
+            <div className="bg-white/[0.03] lg:backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl animate-fade-in">
               {/* Logo */}
               <Link to="/" className="inline-block mb-10">
                 <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10" />
