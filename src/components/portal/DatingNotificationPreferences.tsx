@@ -34,7 +34,7 @@ export function DatingNotificationPreferences() {
 
       const { data, error } = await supabase
         .from('dating_profiles')
-        .select('email_notifications_enabled, push_notifications_enabled, sms_notifications_enabled, phone_number')
+        .select('email_notifications_enabled, push_notifications_enabled, sms_notifications_enabled')
         .eq('user_id', user.id)
         .single();
 
@@ -48,7 +48,7 @@ export function DatingNotificationPreferences() {
           email_notifications_enabled: data.email_notifications_enabled ?? true,
           push_notifications_enabled: data.push_notifications_enabled ?? true,
           sms_notifications_enabled: data.sms_notifications_enabled ?? false,
-          phone_number: data.phone_number,
+          phone_number: null, // Phone is stored in sensitive_data table
         });
       }
       setIsLoading(false);
@@ -90,7 +90,6 @@ export function DatingNotificationPreferences() {
         email_notifications_enabled: preferences.email_notifications_enabled,
         push_notifications_enabled: preferences.push_notifications_enabled,
         sms_notifications_enabled: preferences.sms_notifications_enabled,
-        phone_number: preferences.phone_number,
       })
       .eq('user_id', user.id);
 
