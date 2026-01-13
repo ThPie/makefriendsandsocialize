@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Sparkles, Search, ArrowRight, ChevronLeft, ChevronRight, Clock, User } from 'lucide-react';
+import { Sparkles, Search, ArrowRight, ChevronLeft, ChevronRight, Clock, Loader2, CheckCircle } from 'lucide-react';
 import { blogArticles, blogCategories } from '@/data/blogArticles';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -29,6 +31,9 @@ const itemVariants = {
 const JournalPage = () => {
   const [activeCategory, setActiveCategory] = useState("All Posts");
   const [searchQuery, setSearchQuery] = useState("");
+  const [email, setEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const heroAnimation = useScrollAnimation();
   const articlesAnimation = useScrollAnimation();
 
@@ -50,6 +55,46 @@ const JournalPage = () => {
     
     return filtered;
   }, [activeCategory, searchQuery]);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email.trim()) {
+      toast.error('Please enter your email address');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    setIsSubscribing(true);
+    
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .insert({ email: email.toLowerCase().trim(), source: 'blog' });
+      
+      if (error) {
+        if (error.code === '23505') {
+          toast.info('You are already subscribed!');
+          setIsSubscribed(true);
+        } else {
+          throw error;
+        }
+      } else {
+        setIsSubscribed(true);
+        toast.success('Successfully subscribed to the newsletter!');
+      }
+    } catch (error) {
+      console.error('Subscription error:', error);
+      toast.error('Failed to subscribe. Please try again.');
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
 
   const featuredArticle = filteredArticles.find(a => a.featured);
   const regularArticles = filteredArticles.filter(a => !a.featured);
@@ -284,16 +329,42 @@ const JournalPage = () => {
           <p className="text-muted-foreground mb-8">
             Get weekly insights on building meaningful connections, delivered to your inbox.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input 
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 h-12 px-4 rounded-full bg-background border border-border/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
-            <Button className="h-12 px-6 rounded-full">
-              Subscribe
-            </Button>
-          </div>
+          
+          {isSubscribed ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="flex items-center justify-center gap-3 text-primary"
+            >
+              <CheckCircle className="h-6 w-6" />
+              <span className="text-lg font-medium">You're subscribed! Check your inbox soon.</span>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <input 
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isSubscribing}
+                className="flex-1 h-12 px-4 rounded-full bg-background border border-border/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50"
+              />
+              <Button 
+                type="submit" 
+                className="h-12 px-6 rounded-full"
+                disabled={isSubscribing}
+              >
+                {isSubscribing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Subscribing...
+                  </>
+                ) : (
+                  'Subscribe'
+                )}
+              </Button>
+            </form>
+          )}
         </div>
       </section>
     </div>
