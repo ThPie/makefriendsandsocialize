@@ -5,8 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Users, Mail, Building2, Crown, Globe } from 'lucide-react';
 import logo from '@/assets/logo-transparent.png';
 
+import { BookOpen } from 'lucide-react';
+
 const navItems = [
   { label: 'Events', path: '/events', icon: Calendar },
+  { label: 'Journal', path: '/journal', icon: BookOpen },
   { label: 'Business', path: '/connected-circle', icon: Building2 },
   { label: 'The Gentlemen', path: '/circles/the-gentlemen', icon: Crown },
   { label: 'Les Amis', path: '/circles/les-amis', icon: Globe },
