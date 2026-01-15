@@ -13,8 +13,7 @@ import {
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { toast } from 'sonner';
 import { Picture } from '@/components/ui/picture';
-import contactHero from '@/assets/contact-hero.jpg';
-import contactHeroWebp from '@/assets/contact-hero.webp';
+import contactHero from '@/assets/contact-hero.webp';
 
 export const ContactFormSection = () => {
   const { ref, isVisible } = useScrollAnimation();
@@ -46,14 +45,11 @@ export const ContactFormSection = () => {
           <div 
             className={`relative hidden lg:block scroll-animate ${isVisible ? 'visible' : ''}`}
           >
-            <Picture
+            <img
               src={contactHero}
-              webpSrc={contactHeroWebp}
               alt="Contact hero background"
-              sizes="50vw"
-              className="absolute inset-0 w-full h-full"
-              imgClassName="w-full h-full object-cover"
-              priority={false}
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
             <div className="relative z-10 flex flex-col justify-end h-full p-10 xl:p-14">
