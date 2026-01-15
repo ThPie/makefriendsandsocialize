@@ -1,81 +1,25 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Lightbox } from '@/components/ui/lightbox';
 import { ArrowRight } from 'lucide-react';
 
-interface EventPhoto {
-  id: string;
-  image_url: string;
-  title: string | null;
-  category: string | null;
-}
+// Static gallery photos from real events
+const galleryPhotos = [
+  { id: '1', image_url: '/images/gallery/event-1.jpg', title: 'Cheers at the Lounge', category: 'Social' },
+  { id: '2', image_url: '/images/gallery/event-2.jpg', title: 'Elegant Attire', category: 'Members' },
+  { id: '3', image_url: '/images/gallery/event-3.jpg', title: 'Great Conversations', category: 'Social' },
+  { id: '4', image_url: '/images/gallery/event-4.jpg', title: 'Black Tie Evening', category: 'Events' },
+  { id: '5', image_url: '/images/gallery/event-5.jpg', title: 'Fireside Chat', category: 'Social' },
+  { id: '6', image_url: '/images/gallery/event-6.jpg', title: 'Networking Night', category: 'Events' },
+];
 
 export const PhotoGallerySection = () => {
   const { ref, isVisible } = useScrollAnimation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  const { data: galleryData, isLoading } = useQuery({
-    queryKey: ['homepage-gallery-photos'],
-    queryFn: async () => {
-      // First, get the most recent event that has photos
-      const { data: recentEventWithPhotos } = await supabase
-        .from('event_photos')
-        .select('event_id')
-        .not('event_id', 'is', null)
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-      if (recentEventWithPhotos && recentEventWithPhotos.length > 0) {
-        const eventId = recentEventWithPhotos[0].event_id;
-        
-        // Get event details
-        const { data: eventDetails } = await supabase
-          .from('events')
-          .select('title')
-          .eq('id', eventId)
-          .single();
-
-        // Fetch photos from that event (max 6)
-        const { data: eventPhotos, error } = await supabase
-          .from('event_photos')
-          .select('id, image_url, title, category')
-          .eq('event_id', eventId)
-          .order('display_order', { ascending: true })
-          .limit(6);
-
-        if (!error && eventPhotos && eventPhotos.length > 0) {
-          return {
-            photos: eventPhotos as EventPhoto[],
-            eventName: eventDetails?.title || null,
-          };
-        }
-      }
-
-      // Fallback: get featured photos if no recent event photos
-      const { data: featuredPhotos, error } = await supabase
-        .from('event_photos')
-        .select('id, image_url, title, category')
-        .eq('is_featured', true)
-        .order('display_order', { ascending: true })
-        .limit(6);
-
-      if (error) throw error;
-      return {
-        photos: (featuredPhotos || []) as EventPhoto[],
-        eventName: null,
-      };
-    },
-  });
-
-  const photos = galleryData?.photos || [];
-  const eventName = galleryData?.eventName;
-
-  const lightboxImages = photos.map((p) => ({
+  const lightboxImages = galleryPhotos.map((p) => ({
     url: p.image_url,
     title: p.title,
     category: p.category,
@@ -100,74 +44,54 @@ export const PhotoGallerySection = () => {
             Moments from Our Gatherings
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            {eventName 
-              ? `From our latest gathering: ${eventName}`
-              : 'Experience the warmth and elegance of our exclusive events through these captured moments.'
-            }
+            Experience the warmth and elegance of our exclusive events through these captured moments.
           </p>
         </div>
 
         {/* Photo Grid - 6 photos, 3 columns */}
-        {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton
-                key={i}
-                className={`rounded-xl ${i < 2 ? 'aspect-[4/5]' : 'aspect-square'}`}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+          {galleryPhotos.map((photo, index) => (
+            <div
+              key={photo.id}
+              onClick={() => openLightbox(index)}
+              className={`group relative overflow-hidden rounded-xl cursor-pointer ${
+                index < 2 ? 'aspect-[4/5]' : 'aspect-square'
+              }`}
+              style={{
+                animationDelay: `${index * 0.1}s`,
+              }}
+            >
+              <img
+                src={photo.image_url}
+                alt={photo.title || 'Event photo'}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                loading="lazy"
               />
-            ))}
-          </div>
-        ) : photos.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-            {photos.map((photo, index) => (
-              <div
-                key={photo.id}
-                onClick={() => openLightbox(index)}
-                className={`group relative overflow-hidden rounded-xl cursor-pointer ${
-                  index < 2 ? 'aspect-[4/5]' : 'aspect-square'
-                }`}
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                }}
-              >
-                <img
-                  src={photo.image_url}
-                  alt={photo.title || 'Event photo'}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  loading="lazy"
-                />
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                {/* Title */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <p className="text-white font-display font-semibold text-sm md:text-base drop-shadow-lg">
-                    {photo.title}
-                  </p>
-                  {photo.category && (
-                    <span className="text-white/70 text-xs">{photo.category}</span>
-                  )}
-                </div>
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* Title */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <p className="text-white font-display font-semibold text-sm md:text-base drop-shadow-lg">
+                  {photo.title}
+                </p>
+                {photo.category && (
+                  <span className="text-white/70 text-xs">{photo.category}</span>
+                )}
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 text-muted-foreground">
-            No photos available yet.
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
 
         {/* View All Link */}
-        {photos.length > 0 && (
-          <div className="text-center mt-10">
-            <Link
-              to="/gallery"
-              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors group"
-            >
-              View Full Gallery
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-        )}
+        <div className="text-center mt-10">
+          <Link
+            to="/gallery"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors group"
+          >
+            View Full Gallery
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
       </div>
 
       {/* Lightbox */}
