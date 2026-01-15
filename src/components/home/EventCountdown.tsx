@@ -38,7 +38,8 @@ export const EventCountdown = () => {
         .from('events')
         .select('id, title, date, time')
         .gte('date', today)
-        .not('status', 'in', '("cancelled","past")')
+        .neq('status', 'cancelled')
+        .neq('status', 'past')
         .order('date', { ascending: true })
         .limit(1)
         .single();

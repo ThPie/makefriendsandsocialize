@@ -4,6 +4,7 @@ import { Heart, Quote, Users, Shield, Clock, MessageCircle, Sparkles, ArrowRight
 import { Layout } from "@/components/layout/Layout";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
+import { useSiteStats } from "@/hooks/useSiteStats";
 import { motion } from "framer-motion";
 import { Picture } from "@/components/ui/picture";
 import {
@@ -25,6 +26,9 @@ const SlowDatingPage = () => {
   const faqAnimation = useScrollAnimation();
   const ctaAnimation = useScrollAnimation();
 
+  // Get real member count from shared hook
+  const { data: siteStats } = useSiteStats();
+  const realMemberCount = siteStats?.memberCount || 0;
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -45,10 +49,10 @@ const SlowDatingPage = () => {
     },
   };
 
-  // Stats data
+  // Stats data - use real member count where applicable
   const stats = [
     { value: 500, suffix: "+", label: "Successful Matches", icon: Heart },
-    { value: 2000, suffix: "+", label: "Active Members", icon: Users },
+    { value: realMemberCount || 500, suffix: "+", label: "Active Members", icon: Users },
     { value: 87, suffix: "%", label: "Success Rate", icon: TrendingUp },
     { value: 15, suffix: "+", label: "Cities Served", icon: Award },
   ];

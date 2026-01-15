@@ -2154,6 +2154,7 @@ export type Database = {
       cleanup_old_leads: { Args: never; Returns: number }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
+      get_active_member_count: { Args: never; Returns: number }
       get_application_contact_safe: {
         Args: { _application_id: string }
         Returns: {
@@ -2226,6 +2227,7 @@ export type Database = {
         Args: { p_event_id: string }
         Returns: number
       }
+      get_upcoming_events_count: { Args: never; Returns: number }
       has_active_membership: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {

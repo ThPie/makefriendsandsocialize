@@ -1,66 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { Users, TrendingUp, Calendar, Star } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-interface MeetupStats {
-  member_count: number;
-  rating: number | null;
-  avatar_urls: string[] | null;
-  joined_this_week: number | null;
-}
+import { useSiteStats } from '@/hooks/useSiteStats';
 
 export const SocialProofBanner = () => {
   const [displayCount, setDisplayCount] = useState(0);
   const [failedAvatars, setFailedAvatars] = useState<Set<number>>(new Set());
 
-  // Fetch meetup stats
-  const { data: stats, isError: statsError } = useQuery({
-    queryKey: ['meetup-stats'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('meetup_stats')
-        .select('member_count, rating, avatar_urls, joined_this_week')
-        .order('last_updated', { ascending: false })
-        .limit(1)
-        .single();
-      
-      if (error) {
-        console.error('[SocialProofBanner] Stats query error:', error);
-        throw error;
-      }
-      return data as MeetupStats;
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    retry: 2,
-  });
-
-  const joinedThisWeek = stats?.joined_this_week || 0;
-
-  // Fetch upcoming events count
-  const { data: eventsCount, isError: eventsError } = useQuery({
-    queryKey: ['upcoming-events-count'],
-    queryFn: async () => {
-      const today = new Date().toISOString().split('T')[0];
-      const { count, error } = await supabase
-        .from('events')
-        .select('*', { count: 'exact', head: true })
-        .gte('date', today)
-        .neq('status', 'cancelled');
-      
-      if (error) {
-        console.error('[SocialProofBanner] Events count error:', error);
-        throw error;
-      }
-      return count || 0;
-    },
-    retry: 2,
-  });
+  // Use single source of truth for all stats
+  const { data: stats, isError: statsError } = useSiteStats();
 
   // Animated counter effect
   useEffect(() => {
-    const targetCount = stats?.member_count || 1200;
+    const targetCount = stats?.memberCount || 0;
+    if (targetCount === 0) return;
+    
     const duration = 2000;
     const steps = 60;
     const increment = targetCount / steps;
@@ -77,7 +31,7 @@ export const SocialProofBanner = () => {
     }, duration / steps);
 
     return () => clearInterval(timer);
-  }, [stats?.member_count]);
+  }, [stats?.memberCount]);
 
   // Handle avatar load errors
   const handleAvatarError = (index: number) => {
@@ -88,14 +42,15 @@ export const SocialProofBanner = () => {
   if (statsError) {
     console.error('[SocialProofBanner] Failed to load stats');
   }
-  if (eventsError) {
-    console.error('[SocialProofBanner] Failed to load events count');
-  }
+
+  // Only show events count if there are events
+  const eventsCount = stats?.upcomingEventsCount || 0;
+  const joinedThisWeek = stats?.joinedThisWeek || 0;
 
   const proofItems = [
     {
       icon: Users,
-      value: displayCount.toLocaleString() + '+',
+      value: displayCount > 0 ? displayCount.toLocaleString() + '+' : '—',
       label: 'Active Members',
       color: 'text-primary',
     },
@@ -105,12 +60,13 @@ export const SocialProofBanner = () => {
       label: 'Joined This Week',
       color: 'text-emerald-500',
     },
-    {
+    // Only show events if there are any
+    ...(eventsCount > 0 ? [{
       icon: Calendar,
-      value: eventsCount?.toString() || '8',
+      value: eventsCount.toString(),
       label: 'Upcoming Events',
       color: 'text-amber-500',
-    },
+    }] : []),
     {
       icon: Star,
       value: stats?.rating?.toFixed(1) || '4.9',
@@ -120,12 +76,15 @@ export const SocialProofBanner = () => {
   ];
 
   // Filter out avatars that failed to load
-  const validAvatars = (stats?.avatar_urls || []).filter((_, index) => !failedAvatars.has(index));
+  const validAvatars = (stats?.avatarUrls || []).filter((_, index) => !failedAvatars.has(index));
+
+  // Dynamic grid columns based on number of items
+  const gridCols = proofItems.length === 3 ? 'grid-cols-3' : 'grid-cols-2 md:grid-cols-4';
 
   return (
     <div className="w-full bg-card/50 backdrop-blur-sm border-y border-border py-6 overflow-hidden">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        <div className={`grid ${gridCols} gap-6 md:gap-8`}>
           <AnimatePresence>
             {proofItems.map((item, index) => (
               <motion.div
@@ -155,8 +114,8 @@ export const SocialProofBanner = () => {
             transition={{ delay: 0.5 }}
             className="mt-6 pt-6 border-t border-border flex flex-col md:flex-row items-center justify-center gap-3"
           >
-            <div className="flex -space-x-3">
-              {stats?.avatar_urls?.slice(0, 5).map((url, index) => (
+          <div className="flex -space-x-3">
+              {stats?.avatarUrls?.slice(0, 5).map((url, index) => (
                 <div
                   key={index}
                   className={`w-8 h-8 rounded-full border-2 border-background overflow-hidden bg-muted ${failedAvatars.has(index) ? 'hidden' : ''}`}
@@ -174,7 +133,7 @@ export const SocialProofBanner = () => {
                 </div>
               ))}
               <div className="w-8 h-8 rounded-full border-2 border-background bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
-                +{Math.max(0, (stats?.member_count || 0) - 5)}
+                +{Math.max(0, (stats?.memberCount || 0) - 5)}
               </div>
             </div>
             <p className="text-sm text-muted-foreground">
