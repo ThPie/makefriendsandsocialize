@@ -242,6 +242,10 @@ export default function PortalMatchDetail() {
                 <img
                   src={matchedProfile.photo_url}
                   alt={isRevealed ? matchedProfile.display_name : 'Your Match'}
+                  width={300}
+                  height={300}
+                  loading="lazy"
+                  decoding="async"
                   className={cn(
                     "w-full h-full object-cover",
                     !isRevealed && "blur-3xl scale-125"

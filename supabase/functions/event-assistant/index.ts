@@ -1,9 +1,14 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Rate limit: 100 requests per 15 minutes per IP
+const MAX_REQUESTS = 100;
+const WINDOW_MINUTES = 15;
 
 const eventsContext = `
 You are the Event Assistant for Make Friends and Socialize, an exclusive membership club. You help members discover and learn about our curated events.
@@ -29,12 +34,95 @@ Guidelines:
 - Encourage RSVPs for events that match their interests
 `;
 
+/**
+ * Check rate limit for the given IP and endpoint
+ */
+async function checkRateLimit(supabase: any, ipAddress: string, endpoint: string): Promise<{ allowed: boolean; remaining: number; resetAt: string | null }> {
+  try {
+    const { data, error } = await supabase.rpc('check_api_rate_limit', {
+      _ip_address: ipAddress,
+      _endpoint: endpoint,
+      _max_requests: MAX_REQUESTS,
+      _window_minutes: WINDOW_MINUTES
+    });
+
+    if (error) {
+      console.error('Rate limit check error:', error);
+      // On error, allow the request
+      return { allowed: true, remaining: MAX_REQUESTS, resetAt: null };
+    }
+
+    const status = data?.[0] || { allowed: true, remaining_requests: MAX_REQUESTS, reset_at: null };
+    return { 
+      allowed: status.allowed, 
+      remaining: status.remaining_requests, 
+      resetAt: status.reset_at 
+    };
+  } catch (err) {
+    console.error('Rate limit check failed:', err);
+    return { allowed: true, remaining: MAX_REQUESTS, resetAt: null };
+  }
+}
+
+/**
+ * Increment rate limit counter
+ */
+async function incrementRateLimit(supabase: any, ipAddress: string, endpoint: string): Promise<void> {
+  try {
+    await supabase.rpc('increment_api_rate_limit', {
+      _ip_address: ipAddress,
+      _endpoint: endpoint
+    });
+  } catch (err) {
+    console.error('Rate limit increment failed:', err);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Initialize Supabase client for rate limiting
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Get IP address
+    const ipAddress = 
+      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      req.headers.get('cf-connecting-ip') ||
+      req.headers.get('x-real-ip') ||
+      'unknown';
+
+    // Check rate limit
+    const rateLimit = await checkRateLimit(supabase, ipAddress, 'event-assistant');
+    
+    if (!rateLimit.allowed) {
+      console.warn(`Rate limit exceeded for IP ${ipAddress} on event-assistant`);
+      return new Response(
+        JSON.stringify({ 
+          error: "Rate limit exceeded. Please try again later.",
+          resetAt: rateLimit.resetAt
+        }), 
+        {
+          status: 429,
+          headers: { 
+            ...corsHeaders, 
+            "Content-Type": "application/json",
+            "X-RateLimit-Limit": MAX_REQUESTS.toString(),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": rateLimit.resetAt || "",
+            "Retry-After": "900"
+          },
+        }
+      );
+    }
+
+    // Increment rate limit counter
+    await incrementRateLimit(supabase, ipAddress, 'event-assistant');
+
     const { messages } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
@@ -80,7 +168,12 @@ serve(async (req) => {
     }
 
     return new Response(response.body, {
-      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+      headers: { 
+        ...corsHeaders, 
+        "Content-Type": "text/event-stream",
+        "X-RateLimit-Limit": MAX_REQUESTS.toString(),
+        "X-RateLimit-Remaining": rateLimit.remaining.toString()
+      },
     });
   } catch (error) {
     console.error("Event assistant error:", error);

@@ -140,6 +140,33 @@ export type Database = {
         }
         Relationships: []
       }
+      api_rate_limits: {
+        Row: {
+          created_at: string | null
+          endpoint: string
+          id: string
+          ip_address: string
+          request_count: number | null
+          window_start: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          endpoint: string
+          id?: string
+          ip_address: string
+          request_count?: number | null
+          window_start?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          endpoint?: string
+          id?: string
+          ip_address?: string
+          request_count?: number | null
+          window_start?: string | null
+        }
+        Relationships: []
+      }
       appeal_status_history: {
         Row: {
           admin_notes: string | null
@@ -2109,7 +2136,21 @@ export type Database = {
           reset_at: string
         }[]
       }
+      check_api_rate_limit: {
+        Args: {
+          _endpoint: string
+          _ip_address: string
+          _max_requests?: number
+          _window_minutes?: number
+        }
+        Returns: {
+          allowed: boolean
+          remaining_requests: number
+          reset_at: string
+        }[]
+      }
       cleanup_expired_mfa_sessions: { Args: never; Returns: undefined }
+      cleanup_old_api_rate_limits: { Args: never; Returns: number }
       cleanup_old_leads: { Args: never; Returns: number }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
@@ -2195,6 +2236,10 @@ export type Database = {
       }
       increment_admin_rate_limit: {
         Args: { _admin_id: string; _endpoint: string }
+        Returns: undefined
+      }
+      increment_api_rate_limit: {
+        Args: { _endpoint: string; _ip_address: string }
         Returns: undefined
       }
       increment_rsvp_count: { Args: { event_id: string }; Returns: undefined }
