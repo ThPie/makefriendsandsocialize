@@ -1809,6 +1809,39 @@ export type Database = {
         }
         Relationships: []
       }
+      oauth_rate_limits: {
+        Row: {
+          attempt_count: number | null
+          created_at: string | null
+          failed_attempts: number | null
+          id: string
+          ip_address: string
+          last_attempt_at: string | null
+          requires_captcha: boolean | null
+          window_hour: string
+        }
+        Insert: {
+          attempt_count?: number | null
+          created_at?: string | null
+          failed_attempts?: number | null
+          id?: string
+          ip_address: string
+          last_attempt_at?: string | null
+          requires_captcha?: boolean | null
+          window_hour: string
+        }
+        Update: {
+          attempt_count?: number | null
+          created_at?: string | null
+          failed_attempts?: number | null
+          id?: string
+          ip_address?: string
+          last_attempt_at?: string | null
+          requires_captcha?: boolean | null
+          window_hour?: string
+        }
+        Relationships: []
+      }
       pending_notification_bundle: {
         Row: {
           bundled_into: string | null
@@ -2116,6 +2149,57 @@ export type Database = {
         }
         Relationships: []
       }
+      user_sessions: {
+        Row: {
+          browser: string | null
+          created_at: string | null
+          device_name: string | null
+          device_type: string | null
+          expires_at: string
+          id: string
+          ip_address: string | null
+          is_current: boolean | null
+          last_active_at: string | null
+          os: string | null
+          remember_me: boolean | null
+          session_token: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          browser?: string | null
+          created_at?: string | null
+          device_name?: string | null
+          device_type?: string | null
+          expires_at: string
+          id?: string
+          ip_address?: string | null
+          is_current?: boolean | null
+          last_active_at?: string | null
+          os?: string | null
+          remember_me?: boolean | null
+          session_token: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          browser?: string | null
+          created_at?: string | null
+          device_name?: string | null
+          device_type?: string | null
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          is_current?: boolean | null
+          last_active_at?: string | null
+          os?: string | null
+          remember_me?: boolean | null
+          session_token?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -2149,10 +2233,35 @@ export type Database = {
           reset_at: string
         }[]
       }
+      check_oauth_rate_limit: {
+        Args: { _ip_address: string }
+        Returns: {
+          allowed: boolean
+          remaining_attempts: number
+          requires_captcha: boolean
+          reset_at: string
+        }[]
+      }
       cleanup_expired_mfa_sessions: { Args: never; Returns: undefined }
+      cleanup_expired_sessions: { Args: never; Returns: number }
       cleanup_old_api_rate_limits: { Args: never; Returns: number }
       cleanup_old_leads: { Args: never; Returns: number }
+      cleanup_old_oauth_rate_limits: { Args: never; Returns: number }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
+      create_user_session: {
+        Args: {
+          _browser: string
+          _device_name: string
+          _device_type: string
+          _ip_address: string
+          _os: string
+          _remember_me?: boolean
+          _session_token: string
+          _user_agent: string
+          _user_id: string
+        }
+        Returns: string
+      }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
       get_active_member_count: { Args: never; Returns: number }
       get_application_contact_safe: {
@@ -2244,6 +2353,10 @@ export type Database = {
         Args: { _endpoint: string; _ip_address: string }
         Returns: undefined
       }
+      increment_oauth_attempt: {
+        Args: { _ip_address: string; _is_failure?: boolean }
+        Returns: undefined
+      }
       increment_rsvp_count: { Args: { event_id: string }; Returns: undefined }
       is_connected_with: {
         Args: { _other_user_id: string; _user_id: string }
@@ -2262,6 +2375,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      revoke_user_session: { Args: { _session_id: string }; Returns: boolean }
       save_dating_profile_sensitive_data: {
         Args: {
           _dating_profile_id: string
@@ -2272,6 +2386,10 @@ export type Database = {
           _twitter_url?: string
         }
         Returns: boolean
+      }
+      update_session_activity: {
+        Args: { _session_token: string }
+        Returns: undefined
       }
       use_reveal_credit: {
         Args: { _match_id: string; _user_id: string }

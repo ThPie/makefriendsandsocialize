@@ -9,13 +9,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useSiteStats } from '@/hooks/useSiteStats';
-import { ArrowLeft, ArrowRight, Check, Loader2, Mail, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Loader2, Mail, User, AlertTriangle } from 'lucide-react';
 import { z } from 'zod';
 import { MemberAvatars } from '@/components/home/MemberAvatars';
 import { FloatingParticles } from '@/components/ui/floating-particles';
 import { BrandedLoader } from '@/components/ui/branded-loader';
 import { PasswordInput, validatePassword } from '@/components/ui/password-input';
 import { ValidatedInput } from '@/components/ui/validated-input';
+import { SimpleCaptcha } from '@/components/auth/SimpleCaptcha';
+import { useOAuthRateLimit } from '@/hooks/useOAuthRateLimit';
+import { useSessionManager } from '@/hooks/useSessionManager';
 import logoWhite from '@/assets/logo-white.png';
 
 // Enhanced email validation
@@ -61,6 +64,12 @@ export default function AuthPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  
+  // OAuth rate limiting
+  const { checkRateLimit, recordAttempt, rateLimitInfo, isRateLimited, requiresCaptcha } = useOAuthRateLimit();
+  const { createSession } = useSessionManager();
+  
   // Use shared site stats hook for consistent data
   const { data: siteStats, isLoading: isLoadingStats } = useSiteStats();
   const memberCount = siteStats?.memberCount || 0;
@@ -250,19 +259,34 @@ export default function AuthPage() {
   const handleStep1Submit = async () => {
     if (!validateStep1()) return;
 
+    // Check CAPTCHA if required
+    if (requiresCaptcha && !captchaVerified) {
+      toast.error('Please complete the security check first');
+      return;
+    }
+
     if (mode === 'signin') {
       setIsSubmitting(true);
+      
+      // Record login attempt for rate limiting
+      await recordAttempt(false);
+      
       const { error } = await signIn(email, password);
-      setIsSubmitting(false);
       
       if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          toast.error('Invalid email or password');
-        } else {
-          toast.error(error.message);
-        }
+        // Record failed attempt
+        await recordAttempt(true);
+        setIsSubmitting(false);
+        
+        // Prevent account enumeration - use generic error message
+        toast.error('Invalid email or password. Please check your credentials and try again.');
         return;
       }
+      
+      // Create session with remember me preference
+      await createSession(rememberMe);
+      
+      setIsSubmitting(false);
       navigate('/portal');
     } else {
       setStep(2);
@@ -358,7 +382,26 @@ export default function AuthPage() {
   };
 
   const handleGoogleSignIn = async () => {
+    // Check rate limit first
+    const rateLimit = await checkRateLimit();
+    
+    if (!rateLimit.allowed) {
+      const resetTime = rateLimit.resetAt ? new Date(rateLimit.resetAt).toLocaleTimeString() : 'soon';
+      toast.error(`Too many sign-in attempts. Please try again after ${resetTime}.`);
+      return;
+    }
+    
+    // Check CAPTCHA if required
+    if (rateLimit.requiresCaptcha && !captchaVerified) {
+      toast.error('Please complete the security check first');
+      return;
+    }
+    
     setIsGoogleLoading(true);
+    
+    // Record the OAuth attempt
+    await recordAttempt(false);
+    
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -368,6 +411,9 @@ export default function AuthPage() {
       });
       
       if (error) {
+        // Record as failed attempt
+        await recordAttempt(true);
+        
         if (error.message.includes('provider is not enabled') || error.message.includes('Provider not found')) {
           toast.error('Google sign-in is not configured. Please use email/password or contact support.');
         } else if (error.message.includes('popup_closed_by_user') || error.message.includes('popup')) {
@@ -377,12 +423,13 @@ export default function AuthPage() {
         } else if (error.message.includes('network') || error.message.includes('fetch')) {
           toast.error('Network error. Please check your connection and try again.');
         } else {
-          toast.error(`Google sign-in failed: ${error.message}`);
+          toast.error('Sign-in failed. Please try again.');
         }
         setIsGoogleLoading(false);
       }
       // On success, page will redirect, so no need to reset loading
     } catch (err) {
+      await recordAttempt(true);
       toast.error('An unexpected error occurred. Please try again.');
       setIsGoogleLoading(false);
     }
@@ -571,6 +618,24 @@ export default function AuthPage() {
                   </div>
                 )}
 
+                {/* Rate Limit Warning */}
+                {isRateLimited && (
+                  <div className="flex items-center gap-2 p-3 bg-destructive/20 border border-destructive/30 rounded-lg text-destructive text-sm">
+                    <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                    <span>
+                      Too many attempts. Please try again {rateLimitInfo?.resetAt ? `after ${new Date(rateLimitInfo.resetAt).toLocaleTimeString()}` : 'later'}.
+                    </span>
+                  </div>
+                )}
+
+                {/* CAPTCHA - shown after 3 failed attempts */}
+                {requiresCaptcha && !isRateLimited && (
+                  <SimpleCaptcha 
+                    onVerify={setCaptchaVerified} 
+                    disabled={isSubmitting || isGoogleLoading}
+                  />
+                )}
+
                 {/* Divider */}
                 <div className="relative my-6">
                   <div className="absolute inset-0 flex items-center">
@@ -586,7 +651,7 @@ export default function AuthPage() {
                   type="button"
                   variant="outline"
                   onClick={handleGoogleSignIn}
-                  disabled={isGoogleLoading || isSubmitting}
+                  disabled={isGoogleLoading || isSubmitting || isRateLimited || (requiresCaptcha && !captchaVerified)}
                   className="w-full bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white disabled:opacity-50"
                 >
                   {isGoogleLoading ? (
@@ -621,7 +686,7 @@ export default function AuthPage() {
 
                 <Button
                   onClick={handleStep1Submit}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isRateLimited || (requiresCaptcha && !captchaVerified)}
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
                   size="lg"
                 >
