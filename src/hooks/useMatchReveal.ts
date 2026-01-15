@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useSubscription } from './useSubscription';
 import { toast } from 'sonner';
+import { TEST_MODE } from '@/contexts/AuthContext';
 
 export function useMatchReveal() {
   const { subscription, checkSubscription, hasUnlimitedReveals } = useSubscription();
@@ -19,6 +20,13 @@ export function useMatchReveal() {
     setIsRevealing(true);
 
     try {
+      // In test mode, simulate successful reveal
+      if (TEST_MODE) {
+        console.log('[TEST MODE] Would reveal match:', matchId);
+        toast.success('Connection revealed! (Test Mode)');
+        return { success: true, revealed_via: 'membership' };
+      }
+
       const { data, error } = await supabase.functions.invoke('reveal-match', {
         body: { match_id: matchId },
       });
@@ -47,6 +55,11 @@ export function useMatchReveal() {
   }, [canReveal, hasUnlimitedReveals, checkSubscription]);
 
   const openRevealCheckout = async (packType: 'single' | 'pack_3', matchId?: string) => {
+    if (TEST_MODE) {
+      console.log('[TEST MODE] Would open reveal checkout:', { packType, matchId });
+      return;
+    }
+
     try {
       const { data, error } = await supabase.functions.invoke('create-reveal-checkout', {
         body: { pack_type: packType, match_id: matchId },
