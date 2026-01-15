@@ -29,7 +29,7 @@ interface EventCardProps {
 const EventCard = ({ event, className = '' }: EventCardProps) => {
   return (
     <div className={`flex flex-col gap-4 rounded-xl bg-card group hover:shadow-elegant transition-all duration-500 border border-border hover:border-primary/30 hover:-translate-y-2 overflow-hidden ${className}`}>
-      <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
+      <div className="relative w-full aspect-[16/9] overflow-hidden bg-muted">
         {event.image_url ? (
           <img
             src={event.image_url}
@@ -87,7 +87,7 @@ const EventCard = ({ event, className = '' }: EventCardProps) => {
 
 const EventCardSkeleton = () => (
   <div className="flex flex-col gap-4 rounded-xl bg-card border border-border overflow-hidden">
-    <Skeleton className="w-full aspect-[4/3]" />
+    <Skeleton className="w-full aspect-[16/9]" />
     <div className="flex flex-col gap-3 p-4 pt-0">
       <Skeleton className="h-6 w-3/4 mt-4" />
       <Skeleton className="h-4 w-1/2" />
