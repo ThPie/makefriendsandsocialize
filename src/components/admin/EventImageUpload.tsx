@@ -4,21 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Upload, X, Loader2, Image, Wand2 } from 'lucide-react';
+import { Upload, X, Loader2, Image } from 'lucide-react';
 
 interface EventImageUploadProps {
   value: string;
   onChange: (url: string) => void;
-  onGenerateAI?: () => void;
-  isGenerating?: boolean;
   disabled?: boolean;
 }
 
 export function EventImageUpload({
   value,
   onChange,
-  onGenerateAI,
-  isGenerating,
   disabled
 }: EventImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
@@ -178,34 +174,16 @@ export function EventImageUpload({
                   PNG, JPG, WebP up to 5MB
                 </p>
               </div>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={disabled}
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Image
-                </Button>
-                {onGenerateAI && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={onGenerateAI}
-                    disabled={isGenerating || disabled}
-                  >
-                    {isGenerating ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                      <Wand2 className="h-4 w-4 mr-2" />
-                    )}
-                    Generate with AI
-                  </Button>
-                )}
-              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={disabled}
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                Upload Image
+              </Button>
             </div>
           )}
         </div>

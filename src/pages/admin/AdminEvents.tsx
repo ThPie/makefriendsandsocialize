@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { 
   Calendar, MapPin, Users, Plus, Edit, Trash2, Loader2, 
-  Wand2, Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw
+  Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -126,7 +126,6 @@ export default function AdminEvents() {
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [form, setForm] = useState<EventForm>(initialForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
   const [isSyncingMeetup, setIsSyncingMeetup] = useState(false);
 
@@ -160,44 +159,6 @@ export default function AdminEvents() {
       toast.error('Failed to load events');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleGenerateImage = async () => {
-    if (!form.title) {
-      toast.error('Please enter a title first');
-      return;
-    }
-
-    setIsGeneratingImage(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-event-image', {
-        body: {
-          title: form.title,
-          description: form.description,
-          eventType: form.tags,
-        },
-      });
-
-      if (error) throw error;
-
-      if (data?.imageUrl) {
-        setForm({ ...form, image_url: data.imageUrl });
-        toast.success('Image generated successfully!');
-      } else {
-        throw new Error('No image returned');
-      }
-    } catch (error: any) {
-      console.error('Error generating image:', error);
-      if (error.message?.includes('429')) {
-        toast.error('Rate limit exceeded. Please try again later.');
-      } else if (error.message?.includes('402')) {
-        toast.error('API credits exhausted. Please add credits.');
-      } else {
-        toast.error('Failed to generate image');
-      }
-    } finally {
-      setIsGeneratingImage(false);
     }
   };
 
@@ -504,8 +465,6 @@ export default function AdminEvents() {
                 <EventImageUpload
                   value={form.image_url}
                   onChange={(url) => setForm({ ...form, image_url: url })}
-                  onGenerateAI={handleGenerateImage}
-                  isGenerating={isGeneratingImage}
                   disabled={isSubmitting}
                 />
               </div>
