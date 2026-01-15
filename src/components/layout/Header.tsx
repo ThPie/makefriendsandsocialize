@@ -58,10 +58,10 @@ export const Header = () => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 w-full border-b transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
         isTransparent 
-          ? 'border-transparent bg-gradient-to-b from-black/50 via-black/25 to-transparent' 
-          : 'border-border bg-background/95 backdrop-blur-md'
+          ? 'bg-gradient-to-b from-black/50 via-black/25 to-transparent' 
+          : 'border-b border-border bg-background/95 backdrop-blur-md'
       }`}
       style={{
         boxShadow: isTransparent 

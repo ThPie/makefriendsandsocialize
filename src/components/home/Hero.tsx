@@ -18,10 +18,9 @@ export const Hero = () => {
       <div className="absolute inset-0 bg-black">
         <AdaptiveVideo
           qualitySources={videoQualitySources}
-          poster="/images/hero-poster.webp"
           loop={true}
-          preloadStrategy="auto"
-          showPosterOnSlowConnection={true}
+          preloadStrategy="metadata"
+          showPosterOnSlowConnection={false}
           className="h-full w-full"
         />
         {/* Black Gradient Overlay */}
@@ -36,7 +35,7 @@ export const Hero = () => {
       >
         <div className="mx-auto flex max-w-[900px] flex-col items-center gap-8 animate-fade-in">
           <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-lg">
-            A Private Social Club for <span className="text-gradient">Authentic Connections</span>
+            A Private Social Club for <span className="text-gradient font-display italic">Authentic Connections</span>
           </h1>
           <p className="max-w-2xl text-lg font-normal leading-relaxed text-white/90 md:text-xl drop-shadow-md">
             Weekly curated events. Vetted members. Genuine friendships—all through your membership.

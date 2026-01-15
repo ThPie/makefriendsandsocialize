@@ -8,7 +8,6 @@ const EventSection = lazy(() => import('@/components/home/EventSection').then(m 
 const BusinessEventsSection = lazy(() => import('@/components/home/BusinessEventsSection').then(m => ({ default: m.BusinessEventsSection })));
 const TestimonialsSection = lazy(() => import('@/components/home/TestimonialsSection').then(m => ({ default: m.TestimonialsSection })));
 const PhotoGallerySection = lazy(() => import('@/components/home/PhotoGallerySection').then(m => ({ default: m.PhotoGallerySection })));
-const MemberBadgesShowcase = lazy(() => import('@/components/home/MemberBadgesShowcase').then(m => ({ default: m.MemberBadgesShowcase })));
 const EthosSection = lazy(() => import('@/components/home/EthosSection').then(m => ({ default: m.EthosSection })));
 const SlowDatingSection = lazy(() => import('@/components/home/SlowDatingSection').then(m => ({ default: m.SlowDatingSection })));
 const PricingSection = lazy(() => import('@/components/home/PricingSection').then(m => ({ default: m.PricingSection })));
@@ -43,9 +42,6 @@ const HomePage = () => {
       </Suspense>
       <Suspense fallback={<SectionSkeleton />}>
         <PhotoGallerySection />
-      </Suspense>
-      <Suspense fallback={<SectionSkeleton />}>
-        <MemberBadgesShowcase />
       </Suspense>
       <Suspense fallback={<SectionSkeleton />}>
         <EthosSection />
