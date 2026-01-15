@@ -335,17 +335,17 @@ export default function AdminTestimonials() {
                 key={testimonial.id}
                 className="bg-card border border-border rounded-xl p-6 space-y-4"
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
                     {testimonial.image_url ? (
                       <img
                         src={testimonial.image_url}
                         alt={testimonial.name}
-                        className="w-12 h-12 rounded-full object-cover"
+                        className="w-16 h-16 rounded-full object-cover ring-2 ring-primary/20"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary font-semibold">
+                      <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-primary/20">
+                        <span className="text-primary font-semibold text-xl">
                           {testimonial.name.charAt(0)}
                         </span>
                       </div>
@@ -355,10 +355,20 @@ export default function AdminTestimonials() {
                       {testimonial.role && (
                         <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                       )}
+                      {testimonial.image_url && (
+                        <a 
+                          href={testimonial.image_url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-xs text-primary hover:underline"
+                        >
+                          View full photo
+                        </a>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <Badge
                       variant={testimonial.source === 'internal' ? 'secondary' : 'outline'}
                       className="capitalize"

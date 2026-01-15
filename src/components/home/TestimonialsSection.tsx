@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Quote, Star, MessageSquarePlus, Send, Loader2 } from 'lucide-react';
+import { Quote, Star, MessageSquarePlus, Send, Loader2, ImagePlus, X } from 'lucide-react';
 import { getUnsplashUrl, getUnsplashSrcSet, getSizesForLayout } from '@/lib/responsive-images';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
 interface Testimonial {
@@ -18,6 +19,147 @@ interface Testimonial {
   rating: number | null;
   source: string;
 }
+
+interface ReviewFormData {
+  name: string;
+  role: string;
+  quote: string;
+  rating: number;
+}
+
+interface ReviewFormProps {
+  formData: ReviewFormData;
+  setFormData: React.Dispatch<React.SetStateAction<ReviewFormData>>;
+  onSubmit: (e: React.FormEvent) => void;
+  onCancel: () => void;
+  isSubmitting: boolean;
+  isVisible: boolean;
+  imageFile: File | null;
+  imagePreview: string | null;
+  onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onImageRemove: () => void;
+}
+
+const ReviewForm = ({
+  formData,
+  setFormData,
+  onSubmit,
+  onCancel,
+  isSubmitting,
+  isVisible,
+  imageFile,
+  imagePreview,
+  onImageChange,
+  onImageRemove,
+}: ReviewFormProps) => (
+  <div className={`bg-card rounded-2xl p-6 md:p-8 border border-border/50 max-w-xl mx-auto scroll-animate ${isVisible ? 'visible' : ''}`}>
+    <h3 className="font-display text-xl font-semibold text-foreground mb-4 text-center">
+      Share Your Experience
+    </h3>
+    <form onSubmit={onSubmit} className="space-y-4">
+      <div>
+        <Input
+          placeholder="Your name *"
+          value={formData.name}
+          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+          required
+        />
+      </div>
+      <div>
+        <Input
+          placeholder="Your title (optional)"
+          value={formData.role}
+          onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value }))}
+        />
+      </div>
+      <div>
+        <Textarea
+          placeholder="Tell us about your experience *"
+          value={formData.quote}
+          onChange={(e) => setFormData(prev => ({ ...prev, quote: e.target.value }))}
+          required
+          rows={4}
+        />
+      </div>
+      
+      {/* Photo Upload */}
+      <div className="space-y-2">
+        <Label className="text-sm text-muted-foreground">Add your photo (optional)</Label>
+        {imagePreview ? (
+          <div className="relative inline-block">
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="w-20 h-20 rounded-full object-cover ring-2 ring-primary/20"
+            />
+            <button
+              type="button"
+              onClick={onImageRemove}
+              className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90 transition-colors"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </div>
+        ) : (
+          <label className="flex items-center gap-2 cursor-pointer text-muted-foreground hover:text-primary transition-colors">
+            <div className="w-20 h-20 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center hover:border-primary/50 transition-colors">
+              <ImagePlus className="h-6 w-6" />
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={onImageChange}
+              className="hidden"
+            />
+            <span className="text-sm">Upload photo</span>
+          </label>
+        )}
+      </div>
+      
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-muted-foreground">Rating:</span>
+        <div className="flex gap-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <button
+              key={star}
+              type="button"
+              onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
+              className="p-0.5"
+            >
+              <Star
+                className={`h-5 w-5 transition-colors ${
+                  star <= formData.rating
+                    ? 'text-yellow-500 fill-yellow-500'
+                    : 'text-muted-foreground/30 hover:text-yellow-400'
+                }`}
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="flex gap-3 pt-2">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          className="flex-1"
+        >
+          Cancel
+        </Button>
+        <Button type="submit" disabled={isSubmitting} className="flex-1">
+          {isSubmitting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <>
+              <Send className="h-4 w-4 mr-2" />
+              Submit
+            </>
+          )}
+        </Button>
+      </div>
+    </form>
+  </div>
+);
 
 export const TestimonialsSection = () => {
   const { ref, isVisible } = useScrollAnimation();
@@ -55,12 +197,35 @@ export const TestimonialsSection = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ReviewFormData>({
     name: '',
     role: '',
     quote: '',
     rating: 5
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image must be less than 5MB');
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageRemove = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,11 +236,38 @@ export const TestimonialsSection = () => {
 
     setIsSubmitting(true);
     try {
+      let imageUrl: string | null = null;
+
+      // Upload image if provided
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `reviews/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('testimonial-photos')
+          .upload(filePath, imageFile);
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          toast.error('Failed to upload image');
+          setIsSubmitting(false);
+          return;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from('testimonial-photos')
+          .getPublicUrl(filePath);
+
+        imageUrl = publicUrlData.publicUrl;
+      }
+
       const { error } = await supabase.from('testimonials').insert({
         name: formData.name.trim(),
         role: formData.role.trim() || null,
         quote: formData.quote.trim(),
         rating: formData.rating,
+        image_url: imageUrl,
         source: 'public',
         is_approved: false,
         is_featured: false
@@ -85,6 +277,8 @@ export const TestimonialsSection = () => {
 
       toast.success('Thank you! Your review will be visible after approval.');
       setFormData({ name: '', role: '', quote: '', rating: 5 });
+      setImageFile(null);
+      setImagePreview(null);
       setShowForm(false);
     } catch (error) {
       console.error('Error submitting review:', error);
@@ -94,80 +288,11 @@ export const TestimonialsSection = () => {
     }
   };
 
-  const ReviewForm = () => (
-    <div className={`bg-card rounded-2xl p-6 md:p-8 border border-border/50 max-w-xl mx-auto scroll-animate ${isVisible ? 'visible' : ''}`}>
-      <h3 className="font-display text-xl font-semibold text-foreground mb-4 text-center">
-        Share Your Experience
-      </h3>
-      <form onSubmit={handleSubmitReview} className="space-y-4">
-        <div>
-          <Input
-            placeholder="Your name *"
-            value={formData.name}
-            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-            required
-          />
-        </div>
-        <div>
-          <Input
-            placeholder="Your title (optional)"
-            value={formData.role}
-            onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value }))}
-          />
-        </div>
-        <div>
-          <Textarea
-            placeholder="Tell us about your experience *"
-            value={formData.quote}
-            onChange={(e) => setFormData(prev => ({ ...prev, quote: e.target.value }))}
-            required
-            rows={4}
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Rating:</span>
-          <div className="flex gap-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                type="button"
-                onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
-                className="p-0.5"
-              >
-                <Star
-                  className={`h-5 w-5 transition-colors ${
-                    star <= formData.rating
-                      ? 'text-yellow-500 fill-yellow-500'
-                      : 'text-muted-foreground/30 hover:text-yellow-400'
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="flex gap-3 pt-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setShowForm(false)}
-            className="flex-1"
-          >
-            Cancel
-          </Button>
-          <Button type="submit" disabled={isSubmitting} className="flex-1">
-            {isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <>
-                <Send className="h-4 w-4 mr-2" />
-                Submit
-              </>
-            )}
-          </Button>
-        </div>
-      </form>
-    </div>
-  );
+  const handleCancel = () => {
+    setShowForm(false);
+    setImageFile(null);
+    setImagePreview(null);
+  };
 
   // No testimonials yet - show CTA and form
   if (testimonials.length === 0) {
@@ -186,7 +311,18 @@ export const TestimonialsSection = () => {
             </p>
           </div>
           {showForm ? (
-            <ReviewForm />
+            <ReviewForm
+              formData={formData}
+              setFormData={setFormData}
+              onSubmit={handleSubmitReview}
+              onCancel={handleCancel}
+              isSubmitting={isSubmitting}
+              isVisible={isVisible}
+              imageFile={imageFile}
+              imagePreview={imagePreview}
+              onImageChange={handleImageChange}
+              onImageRemove={handleImageRemove}
+            />
           ) : (
             <div className="text-center">
               <Button size="lg" className="rounded-full px-8" onClick={() => setShowForm(true)}>
@@ -295,7 +431,18 @@ export const TestimonialsSection = () => {
         {/* Leave a Review CTA */}
         <div className={`text-center mt-12 scroll-animate scroll-animate-delay-3 ${isVisible ? 'visible' : ''}`}>
           {showForm ? (
-            <ReviewForm />
+            <ReviewForm
+              formData={formData}
+              setFormData={setFormData}
+              onSubmit={handleSubmitReview}
+              onCancel={handleCancel}
+              isSubmitting={isSubmitting}
+              isVisible={isVisible}
+              imageFile={imageFile}
+              imagePreview={imagePreview}
+              onImageChange={handleImageChange}
+              onImageRemove={handleImageRemove}
+            />
           ) : (
             <Button variant="outline" size="lg" className="rounded-full px-8" onClick={() => setShowForm(true)}>
               <MessageSquarePlus className="h-5 w-5 mr-2" />

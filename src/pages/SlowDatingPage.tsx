@@ -12,7 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import slowDatingImage from "@/assets/slow-dating.webp";
+import slowDatingImage from "@/assets/slow-dating.jpg";
 import { useEffect, useState } from "react";
 
 const SlowDatingPage = () => {

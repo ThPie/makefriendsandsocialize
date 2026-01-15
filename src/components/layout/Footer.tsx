@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import logo from '@/assets/logo-transparent.png';
-import havnLogo from '@/assets/havn-logo.webp';
-import maisonPierreLogo from '@/assets/maison-pierre-logo.webp';
+import havnLogo from '@/assets/havn-logo.png';
+import maisonPierreLogo from '@/assets/maison-pierre-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
