@@ -1,39 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Quote, Star } from 'lucide-react';
+import { Quote, Star, MessageSquarePlus } from 'lucide-react';
 import { getUnsplashUrl, getUnsplashSrcSet, getSizesForLayout } from '@/lib/responsive-images';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
-
-const fallbackTestimonials = [
-  {
-    id: '1',
-    quote: "MakeFriends has completely transformed my social life. I've made genuine friendships that I know will last a lifetime.",
-    name: 'Alexandra Chen',
-    role: 'Fellow Member',
-    image_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
-    rating: 5,
-    source: 'internal',
-  },
-  {
-    id: '2',
-    quote: "Every event is impeccably curated. The attention to detail and the quality of connections I've made here are unmatched.",
-    name: 'Marcus Williams',
-    role: 'Founder Member',
-    image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d',
-    rating: 5,
-    source: 'internal',
-  },
-  {
-    id: '3',
-    quote: "As someone new to the city, this community welcomed me with open arms. Now I have a network of incredible people I can call friends.",
-    name: 'Sophie Laurent',
-    role: 'Patron Member',
-    image_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80',
-    rating: 5,
-    source: 'internal',
-  },
-];
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 interface Testimonial {
   id: string;
@@ -48,7 +20,7 @@ interface Testimonial {
 export const TestimonialsSection = () => {
   const { ref, isVisible } = useScrollAnimation();
   const avatarSizes = getSizesForLayout('avatar');
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(fallbackTestimonials);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -62,7 +34,7 @@ export const TestimonialsSection = () => {
           .limit(3);
 
         if (error) throw error;
-        if (data && data.length > 0) {
+        if (data) {
           setTestimonials(data);
         }
       } catch (error) {
@@ -78,6 +50,33 @@ export const TestimonialsSection = () => {
     if (source === 'google') return 'Google';
     return null;
   };
+
+  // No testimonials yet - show CTA
+  if (testimonials.length === 0) {
+    return (
+      <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="testimonials">
+        <div ref={ref} className="mx-auto max-w-7xl">
+          <div className={`text-center scroll-animate ${isVisible ? 'visible' : ''}`}>
+            <span className="inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-4">
+              Testimonials
+            </span>
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
+              What Our <span className="text-primary">Members</span> Say
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
+              Be the first to share your experience with our community.
+            </p>
+            <Button asChild size="lg" className="rounded-full px-8">
+              <Link to="/portal/profile" className="inline-flex items-center gap-2">
+                <MessageSquarePlus className="h-5 w-5" />
+                Leave a Review
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="testimonials">
@@ -169,6 +168,16 @@ export const TestimonialsSection = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* Leave a Review CTA */}
+        <div className={`text-center mt-12 scroll-animate scroll-animate-delay-3 ${isVisible ? 'visible' : ''}`}>
+          <Button asChild variant="outline" size="lg" className="rounded-full px-8">
+            <Link to="/portal/profile" className="inline-flex items-center gap-2">
+              <MessageSquarePlus className="h-5 w-5" />
+              Share Your Experience
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

@@ -97,12 +97,7 @@ const EventDetailPage = () => {
 
   const handleRSVP = async () => {
     if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to RSVP for this event.",
-        variant: "destructive",
-      });
-      navigate('/auth');
+      navigate('/auth', { state: { returnTo: `/events/${id}` } });
       return;
     }
 
