@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -9,16 +9,28 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useSiteStats } from '@/hooks/useSiteStats';
-import { ArrowLeft, ArrowRight, Check, Loader2, Mail, Lock, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Loader2, Mail, User } from 'lucide-react';
 import { z } from 'zod';
 import { MemberAvatars } from '@/components/home/MemberAvatars';
 import { FloatingParticles } from '@/components/ui/floating-particles';
 import { BrandedLoader } from '@/components/ui/branded-loader';
-import contactHero from '@/assets/contact-hero.webp';
+import { PasswordInput, validatePassword } from '@/components/ui/password-input';
+import { ValidatedInput } from '@/components/ui/validated-input';
 import logoWhite from '@/assets/logo-white.png';
 
-const emailSchema = z.string().email('Please enter a valid email address');
-const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
+// Enhanced email validation
+const emailSchema = z.string()
+  .trim()
+  .min(1, 'Email is required')
+  .email('Please enter a valid email address')
+  .max(255, 'Email must be less than 255 characters');
+
+// Enhanced password validation schema
+const passwordSchema = z.string()
+  .min(8, 'Password must be at least 8 characters')
+  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  .regex(/[0-9]/, 'Password must contain at least one number')
+  .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character');
 
 const INTERESTS = [
   'Arts & Culture', 'Fine Dining & Wine', 'Travel & Adventure', 'Entrepreneurship',
@@ -70,6 +82,88 @@ export default function AuthPage() {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [industry, setIndustry] = useState('');
   const [jobTitle, setJobTitle] = useState('');
+  
+  // Real-time validation errors
+  const [emailError, setEmailError] = useState<string | undefined>();
+  const [passwordError, setPasswordError] = useState<string | undefined>();
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string | undefined>();
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
+
+  // Real-time email validation
+  const validateEmail = useCallback((value: string) => {
+    if (!value) {
+      setEmailError('Email is required');
+      return false;
+    }
+    try {
+      emailSchema.parse(value);
+      setEmailError(undefined);
+      return true;
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setEmailError(err.errors[0].message);
+      }
+      return false;
+    }
+  }, []);
+
+  // Real-time password validation
+  const validatePasswordField = useCallback((value: string) => {
+    const { isValid, errors } = validatePassword(value);
+    if (!isValid && value.length > 0) {
+      setPasswordError(errors[0]);
+      return false;
+    }
+    setPasswordError(undefined);
+    return true;
+  }, []);
+
+  // Real-time confirm password validation
+  const validateConfirmPassword = useCallback((value: string) => {
+    if (value !== password) {
+      setConfirmPasswordError('Passwords do not match');
+      return false;
+    }
+    setConfirmPasswordError(undefined);
+    return true;
+  }, [password]);
+
+  // Update email with validation
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    if (emailTouched) {
+      validateEmail(value);
+    }
+  };
+
+  // Update password with validation
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPassword(value);
+    if (passwordTouched && mode === 'signup') {
+      validatePasswordField(value);
+    }
+    // Also validate confirm password when password changes
+    if (confirmPasswordTouched && confirmPassword) {
+      if (value !== confirmPassword) {
+        setConfirmPasswordError('Passwords do not match');
+      } else {
+        setConfirmPasswordError(undefined);
+      }
+    }
+  };
+
+  // Update confirm password with validation
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setConfirmPassword(value);
+    if (confirmPasswordTouched) {
+      validateConfirmPassword(value);
+    }
+  };
 
   // Check for referral code in URL
   useEffect(() => {
@@ -103,20 +197,54 @@ export default function AuthPage() {
   }, [user, isLoading, navigate]);
 
   const validateStep1 = () => {
+    // Mark all fields as touched to show errors
+    setEmailTouched(true);
+    setPasswordTouched(true);
+    if (mode === 'signup') {
+      setConfirmPasswordTouched(true);
+    }
+    
+    // Validate email
+    let isValid = true;
     try {
       emailSchema.parse(email);
-      passwordSchema.parse(password);
-      if (mode === 'signup' && password !== confirmPassword) {
-        toast.error('Passwords do not match');
-        return false;
-      }
-      return true;
+      setEmailError(undefined);
     } catch (err) {
       if (err instanceof z.ZodError) {
+        setEmailError(err.errors[0].message);
         toast.error(err.errors[0].message);
       }
-      return false;
+      isValid = false;
     }
+    
+    // For signup, validate password strength
+    if (mode === 'signup') {
+      const { isValid: passwordValid, errors } = validatePassword(password);
+      if (!passwordValid) {
+        setPasswordError(errors[0]);
+        if (isValid) toast.error(errors[0]); // Only show if email was valid
+        isValid = false;
+      } else {
+        setPasswordError(undefined);
+      }
+      
+      // Validate confirm password
+      if (password !== confirmPassword) {
+        setConfirmPasswordError('Passwords do not match');
+        if (isValid) toast.error('Passwords do not match');
+        isValid = false;
+      } else {
+        setConfirmPasswordError(undefined);
+      }
+    } else {
+      // For signin, just check password isn't empty
+      if (password.length < 1) {
+        toast.error('Password is required');
+        isValid = false;
+      }
+    }
+    
+    return isValid;
   };
 
   const handleStep1Submit = async () => {
@@ -342,64 +470,72 @@ export default function AuthPage() {
               <div className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-white/90">Email Address</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10 focus:border-primary/50 focus:ring-primary/20"
-                    />
-                  </div>
+                  <ValidatedInput
+                    id="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={handleEmailChange}
+                    onBlur={() => {
+                      setEmailTouched(true);
+                      validateEmail(email);
+                    }}
+                    error={emailTouched ? emailError : undefined}
+                    success={emailTouched && !emailError && email.length > 0}
+                    icon={<Mail className="h-5 w-5 text-white/40" />}
+                    autoComplete="email"
+                    inputMode="email"
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-white/90">Password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10 focus:border-primary/50 focus:ring-primary/20"
-                    />
-                  </div>
+                  <PasswordInput
+                    id="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    onBlur={() => {
+                      setPasswordTouched(true);
+                      if (mode === 'signup') {
+                        validatePasswordField(password);
+                      }
+                    }}
+                    showStrengthIndicator={mode === 'signup'}
+                    error={passwordTouched && mode === 'signup' ? passwordError : undefined}
+                    autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                  />
                 </div>
 
                 {mode === 'signup' && (
                   <>
                     <div className="space-y-2">
                       <Label htmlFor="confirmPassword" className="text-white/90">Confirm Password</Label>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
-                        <Input
-                          id="confirmPassword"
-                          type="password"
-                          placeholder="••••••••"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10 focus:border-primary/50 focus:ring-primary/20"
-                        />
-                      </div>
+                      <PasswordInput
+                        id="confirmPassword"
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={handleConfirmPasswordChange}
+                        onBlur={() => {
+                          setConfirmPasswordTouched(true);
+                          validateConfirmPassword(confirmPassword);
+                        }}
+                        error={confirmPasswordTouched ? confirmPasswordError : undefined}
+                        autoComplete="new-password"
+                      />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="firstName" className="text-white/90">First Name</Label>
-                        <div className="relative">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
-                          <Input
-                            id="firstName"
-                            placeholder="James"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            className="bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10 focus:border-primary/50 focus:ring-primary/20"
-                          />
-                        </div>
+                        <ValidatedInput
+                          id="firstName"
+                          placeholder="James"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          icon={<User className="h-5 w-5 text-white/40" />}
+                          autoComplete="given-name"
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="lastName" className="text-white/90">Last Name</Label>
@@ -409,6 +545,7 @@ export default function AuthPage() {
                           value={lastName}
                           onChange={(e) => setLastName(e.target.value)}
                           className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
+                          autoComplete="family-name"
                         />
                       </div>
                     </div>
