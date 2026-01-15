@@ -326,62 +326,8 @@ serve(async (req) => {
 
     console.log('Inserted', insertedCount, 'new events, updated', updatedCount);
 
-    // Generate AI images for Meetup events with meetupstatic images
-    let imagesGenerated = 0;
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
-    
-    if (lovableApiKey) {
-      // Find events with meetupstatic images that need AI-generated images
-      const { data: meetupEvents } = await supabase
-        .from('events')
-        .select('id, title, description, image_url')
-        .eq('source', 'meetup')
-        .ilike('image_url', '%meetupstatic%')
-        .limit(5);
-
-      if (meetupEvents && meetupEvents.length > 0) {
-        console.log('Generating AI images for', meetupEvents.length, 'Meetup events');
-
-        for (const meetupEvent of meetupEvents) {
-          try {
-            const imagePrompt = `Elegant, sophisticated event photography for "${meetupEvent.title}". Premium networking event atmosphere with warm golden lighting, dark rich colors, upscale venue ambiance. No text, no words, no logos. Ultra high resolution, cinematic composition, luxury lifestyle aesthetic.`;
-
-            const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${lovableApiKey}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                model: 'google/gemini-2.5-flash-image-preview',
-                messages: [{ role: 'user', content: imagePrompt }],
-                modalities: ['image', 'text'],
-              }),
-            });
-
-            if (aiResponse.ok) {
-              const aiData = await aiResponse.json();
-              const generatedImageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-
-              if (generatedImageUrl) {
-                // Update the event with the AI-generated image
-                const { error: updateError } = await supabase
-                  .from('events')
-                  .update({ image_url: generatedImageUrl })
-                  .eq('id', meetupEvent.id);
-
-                if (!updateError) {
-                  imagesGenerated++;
-                  console.log('Generated AI image for:', meetupEvent.title);
-                }
-              }
-            }
-          } catch (imgError) {
-            console.error('Error generating image for', meetupEvent.title, imgError);
-          }
-        }
-      }
-    }
+    // Keep original Meetup images - no AI generation
+    console.log('Using original Meetup event images');
 
     return new Response(
       JSON.stringify({
@@ -390,7 +336,6 @@ serve(async (req) => {
           eventsFound: validEvents.length,
           eventsInserted: insertedCount,
           eventsUpdated: updatedCount,
-          imagesGenerated,
           events: validEvents,
         },
       }),

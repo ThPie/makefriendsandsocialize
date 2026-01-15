@@ -36,7 +36,7 @@ export const SlowDatingSection = () => {
               This exclusive service is a benefit of your membership, 
               available through personal consultation with our concierge team.
             </p>
-            <Button asChild size="lg" className="rounded-full px-8 min-h-[48px] bg-dating-terracotta hover:bg-dating-terracotta/90 text-white">
+            <Button asChild size="default" className="rounded-full px-6">
               <Link to="/dating/apply">Apply Now</Link>
             </Button>
           </div>
