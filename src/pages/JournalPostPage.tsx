@@ -1,13 +1,34 @@
+import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, Calendar, Share2, Link as LinkIcon, Mail, Twitter, Linkedin } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Share2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { blogArticles } from '@/data/blogArticles';
-import { toast } from 'sonner';
+import { SocialShareButtons } from '@/components/blog/SocialShareButtons';
+import { BlogLikeBookmark } from '@/components/blog/BlogLikeBookmark';
+import { BlogCommentsSection } from '@/components/blog/BlogCommentsSection';
+import { supabase } from '@/integrations/supabase/client';
 
 const JournalPostPage = () => {
   const { id } = useParams<{ id: string }>();
   const article = blogArticles.find(a => a.id === id);
+
+  // Track page view
+  useEffect(() => {
+    if (id) {
+      // Increment view count if article exists in database
+      // This is a soft increment - won't fail if article doesn't exist in DB
+      const incrementView = async () => {
+        try {
+          await supabase.rpc('increment_post_view_count', { _post_id: id });
+        } catch (error) {
+          // Silently fail for static articles not in DB
+        }
+      };
+      incrementView();
+    }
+  }, [id]);
   
   if (!article) {
     return (
@@ -23,27 +44,6 @@ const JournalPostPage = () => {
   const relatedArticles = blogArticles
     .filter(a => a.id !== article.id && a.category === article.category)
     .slice(0, 2);
-
-  const handleShare = async (type: 'copy' | 'email' | 'twitter' | 'linkedin') => {
-    const url = window.location.href;
-    const title = article.title;
-    
-    switch (type) {
-      case 'copy':
-        await navigator.clipboard.writeText(url);
-        toast.success('Link copied to clipboard!');
-        break;
-      case 'email':
-        window.open(`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`);
-        break;
-      case 'twitter':
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`);
-        break;
-      case 'linkedin':
-        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`);
-        break;
-    }
-  };
 
   return (
     <div className="flex-1 w-full flex flex-col items-center px-4 md:px-10 py-12 animate-fade-in">
@@ -187,46 +187,28 @@ const JournalPostPage = () => {
           ))}
         </motion.div>
 
-        {/* Share */}
+        {/* Like, Bookmark & Share */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="flex flex-col sm:flex-row justify-center items-center gap-6 mt-12 pt-8 border-t border-border"
+          className="mt-12 pt-8 border-t border-border"
         >
-          <h3 className="text-foreground font-display text-xl flex items-center gap-2">
-            <Share2 className="h-5 w-5" />
-            Share This Story
-          </h3>
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => handleShare('copy')}
-              className="flex items-center justify-center size-12 bg-transparent border border-primary/40 rounded-full text-primary/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
-              aria-label="Copy link"
-            >
-              <LinkIcon className="h-5 w-5" />
-            </button>
-            <button 
-              onClick={() => handleShare('email')}
-              className="flex items-center justify-center size-12 bg-transparent border border-primary/40 rounded-full text-primary/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
-              aria-label="Share via email"
-            >
-              <Mail className="h-5 w-5" />
-            </button>
-            <button 
-              onClick={() => handleShare('twitter')}
-              className="flex items-center justify-center size-12 bg-transparent border border-primary/40 rounded-full text-primary/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
-              aria-label="Share on Twitter"
-            >
-              <Twitter className="h-5 w-5" />
-            </button>
-            <button 
-              onClick={() => handleShare('linkedin')}
-              className="flex items-center justify-center size-12 bg-transparent border border-primary/40 rounded-full text-primary/70 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
-              aria-label="Share on LinkedIn"
-            >
-              <Linkedin className="h-5 w-5" />
-            </button>
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+            {/* Like & Bookmark */}
+            <BlogLikeBookmark postId={id!} />
+            
+            {/* Share */}
+            <div className="flex items-center gap-4">
+              <span className="text-muted-foreground text-sm flex items-center gap-1">
+                <Share2 className="h-4 w-4" />
+                Share
+              </span>
+              <SocialShareButtons 
+                title={article.title} 
+                excerpt={article.excerpt}
+              />
+            </div>
           </div>
         </motion.div>
 
@@ -253,6 +235,17 @@ const JournalPostPage = () => {
             </div>
           </div>
         </motion.div>
+
+        {/* Comments Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-12"
+        >
+          <Separator className="mb-8" />
+          <BlogCommentsSection postId={id!} />
+        </motion.div>
       </article>
 
       {/* Related Posts */}
@@ -260,7 +253,7 @@ const JournalPostPage = () => {
         <motion.section 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
+          transition={{ delay: 0.65 }}
           className="mt-20 w-full max-w-5xl px-4"
         >
           <h2 className="text-3xl font-display font-bold text-foreground text-center mb-10">
