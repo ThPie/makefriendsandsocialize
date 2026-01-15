@@ -2,8 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { X, Volume2, VolumeX, Send } from 'lucide-react';
-import chatbotAvatar from '@/assets/chatbot-avatar.webp';
+import { X, Volume2, VolumeX, Send, MessageCircle } from 'lucide-react';
 import { useChatSound } from '@/hooks/useChatSound';
 
 interface Message {
@@ -330,27 +329,21 @@ export const EventChatbot = () => {
             </div>
           )}
           
-          {/* Floating Avatar Button with notification badge */}
+          {/* Floating Chat Button with notification badge */}
           <button 
             onClick={handleAvatarClick}
-            className={`relative w-14 h-14 rounded-full overflow-hidden border-2 shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation ${
+            className={`relative w-14 h-14 rounded-full flex items-center justify-center border-2 shadow-xl transition-all duration-300 hover:scale-105 touch-manipulation bg-primary ${
               unreadCount > 0 
                 ? 'border-primary shadow-[0_0_20px_hsl(45_80%_55%/0.4)] animate-pulse' 
-                : 'border-border hover:border-primary'
+                : 'border-primary hover:border-primary-foreground/20'
             }`}
             aria-label="Open chat assistant"
           >
-            <img 
-              src={chatbotAvatar} 
-              alt="Assistant" 
-              className="w-full h-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+            <MessageCircle className="h-6 w-6 text-primary-foreground" />
             
             {/* Notification Badge */}
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center px-1 shadow-lg">
+              <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-destructive text-destructive-foreground text-xs font-bold rounded-full flex items-center justify-center px-1 shadow-lg">
                 {unreadCount > 9 ? '9+' : unreadCount}
               </span>
             )}
@@ -363,14 +356,8 @@ export const EventChatbot = () => {
         <div className="fixed bottom-4 right-2 md:bottom-6 md:right-6 z-50 w-[calc(100vw-1rem)] md:w-[360px] max-w-[400px] h-[60vh] md:h-[500px] max-h-[70vh] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-in">
           {/* Header */}
           <div className="bg-primary text-primary-foreground p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden border border-primary-foreground/20">
-              <img
-                src={chatbotAvatar}
-                alt="Assistant avatar"
-                className="h-full w-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary-foreground/10 border border-primary-foreground/20">
+              <MessageCircle className="h-5 w-5" />
             </div>
             <div className="flex-1">
               <h3 className="font-bold font-display text-lg">{chatConfig.title}</h3>

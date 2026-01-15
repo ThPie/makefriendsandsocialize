@@ -135,11 +135,17 @@ export const ContactFormSection = () => {
                     <SelectValue placeholder="What can we help you with? *" />
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border">
-                    <SelectItem value="membership">Membership Inquiry</SelectItem>
+                    <SelectItem value="membership">Membership Questions</SelectItem>
                     <SelectItem value="events">Event Information</SelectItem>
                     <SelectItem value="private-events">Private Events & Bookings</SelectItem>
+                    <SelectItem value="slow-dating">Slow Dating Program</SelectItem>
+                    <SelectItem value="circles">Connected Circles</SelectItem>
+                    <SelectItem value="business">Business Membership</SelectItem>
                     <SelectItem value="partnership">Partnership Opportunities</SelectItem>
-                    <SelectItem value="general">General Question</SelectItem>
+                    <SelectItem value="sponsorship">Sponsorship Inquiries</SelectItem>
+                    <SelectItem value="media">Media & Press</SelectItem>
+                    <SelectItem value="feedback">Feedback & Suggestions</SelectItem>
+                    <SelectItem value="general">General Inquiry</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -38,7 +38,7 @@ export const Hero = () => {
             A Private Social Club for <span className="text-gradient font-display italic">Authentic Connections</span>
           </h1>
           <p className="max-w-2xl text-lg font-normal leading-relaxed text-white/90 md:text-xl drop-shadow-md">
-            Weekly curated events. Vetted members. Genuine friendships—all through your membership.
+            Weekly curated events. Vetted members. Genuine friendships.
           </p>
 
           <Button size="lg" asChild className="animate-fade-in mt-2" style={{ animationDelay: '0.15s' }}>

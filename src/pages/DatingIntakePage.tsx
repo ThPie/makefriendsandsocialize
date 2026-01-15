@@ -225,11 +225,6 @@ const DatingIntakePage = () => {
     if (isLoading) return;
     
     if (!user) {
-      toast({ 
-        title: "Sign In Required", 
-        description: "Please sign in to access the dating application.", 
-        variant: "destructive" 
-      });
       navigate("/auth", { state: { returnTo: "/dating/apply" } });
       return;
     }
