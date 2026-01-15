@@ -7,6 +7,10 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Rate limit: 100 requests per 15 minutes per IP
+const MAX_REQUESTS = 100;
+const WINDOW_MINUTES = 15;
+
 // Price IDs mapping
 const PRICE_IDS = {
   MEMBER_MONTHLY: "price_1SoDkp00I3YCY0DeDrniU1d6",
@@ -20,6 +24,49 @@ const logStep = (step: string, details?: any) => {
   console.log(`[CREATE-SUBSCRIPTION-CHECKOUT] ${step}${detailsStr}`);
 };
 
+/**
+ * Check rate limit for the given IP and endpoint
+ */
+async function checkRateLimit(supabase: any, ipAddress: string, endpoint: string): Promise<{ allowed: boolean; remaining: number; resetAt: string | null }> {
+  try {
+    const { data, error } = await supabase.rpc('check_api_rate_limit', {
+      _ip_address: ipAddress,
+      _endpoint: endpoint,
+      _max_requests: MAX_REQUESTS,
+      _window_minutes: WINDOW_MINUTES
+    });
+
+    if (error) {
+      console.error('Rate limit check error:', error);
+      return { allowed: true, remaining: MAX_REQUESTS, resetAt: null };
+    }
+
+    const status = data?.[0] || { allowed: true, remaining_requests: MAX_REQUESTS, reset_at: null };
+    return { 
+      allowed: status.allowed, 
+      remaining: status.remaining_requests, 
+      resetAt: status.reset_at 
+    };
+  } catch (err) {
+    console.error('Rate limit check failed:', err);
+    return { allowed: true, remaining: MAX_REQUESTS, resetAt: null };
+  }
+}
+
+/**
+ * Increment rate limit counter
+ */
+async function incrementRateLimit(supabase: any, ipAddress: string, endpoint: string): Promise<void> {
+  try {
+    await supabase.rpc('increment_api_rate_limit', {
+      _ip_address: ipAddress,
+      _endpoint: endpoint
+    });
+  } catch (err) {
+    console.error('Rate limit increment failed:', err);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -30,8 +77,45 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_ANON_KEY") ?? ""
   );
 
+  const supabaseAdmin = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } }
+  );
+
   try {
     logStep("Function started");
+
+    // Get IP address for rate limiting
+    const ipAddress = 
+      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      req.headers.get('cf-connecting-ip') ||
+      req.headers.get('x-real-ip') ||
+      'unknown';
+
+    // Check rate limit
+    const rateLimit = await checkRateLimit(supabaseAdmin, ipAddress, 'create-subscription-checkout');
+    
+    if (!rateLimit.allowed) {
+      logStep("Rate limit exceeded", { ip: ipAddress });
+      return new Response(
+        JSON.stringify({ 
+          error: "Rate limit exceeded. Please try again later.",
+          resetAt: rateLimit.resetAt
+        }), 
+        {
+          status: 429,
+          headers: { 
+            ...corsHeaders, 
+            "Content-Type": "application/json",
+            "Retry-After": "900"
+          },
+        }
+      );
+    }
+
+    // Increment rate limit counter
+    await incrementRateLimit(supabaseAdmin, ipAddress, 'create-subscription-checkout');
 
     // Get request body
     const { tier, billing_period, trial = false } = await req.json();
@@ -97,12 +181,6 @@ serve(async (req) => {
 
     // Add trial if requested and user hasn't had a trial before
     if (trial) {
-      const supabaseAdmin = createClient(
-        Deno.env.get("SUPABASE_URL") ?? "",
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-        { auth: { persistSession: false } }
-      );
-
       const { data: existingTrial } = await supabaseAdmin
         .from("membership_trials")
         .select("id")

@@ -40,6 +40,10 @@ export function BusinessCard({ business, onClick }: BusinessCardProps) {
           <img
             src={business.logo_url}
             alt={business.business_name}
+            width={64}
+            height={64}
+            loading="lazy"
+            decoding="async"
             className="w-16 h-16 rounded-xl object-contain bg-muted"
           />
         ) : (

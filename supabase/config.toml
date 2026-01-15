@@ -137,3 +137,6 @@ verify_jwt = false
 
 [functions.encrypt-sensitive-data]
 verify_jwt = true
+
+[functions.api-rate-limiter]
+verify_jwt = false

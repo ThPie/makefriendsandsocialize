@@ -164,8 +164,11 @@ export const SocialProofBanner = () => {
                   <img
                     src={url}
                     alt="Member avatar"
+                    width={32}
+                    height={32}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    decoding="async"
                     onError={() => handleAvatarError(index)}
                   />
                 </div>
