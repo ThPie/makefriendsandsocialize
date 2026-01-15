@@ -41,6 +41,7 @@ import PortalEvents from "@/pages/portal/PortalEvents";
 import PortalSlowDating from "@/pages/portal/PortalSlowDating";
 import PortalMatchDetail from "@/pages/portal/PortalMatchDetail";
 import PortalReferrals from "@/pages/portal/PortalReferrals";
+import PortalBilling from "@/pages/portal/PortalBilling";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminApplications from "@/pages/admin/AdminApplications";
 import AdminMembers from "@/pages/admin/AdminMembers";
@@ -129,6 +130,7 @@ const App = () => (
               <Route path="/portal/slow-dating" element={<PortalLayout><PortalSlowDating /></PortalLayout>} />
               <Route path="/portal/match/:matchId" element={<PortalLayout><PortalMatchDetail /></PortalLayout>} />
               <Route path="/portal/events" element={<PortalLayout><PortalEvents /></PortalLayout>} />
+              <Route path="/portal/billing" element={<PortalLayout><PortalBilling /></PortalLayout>} />
               <Route path="/portal/referrals" element={<PortalLayout><PortalReferrals /></PortalLayout>} />
               <Route path="/portal/business" element={<PortalLayout><PortalBusiness /></PortalLayout>} />
               

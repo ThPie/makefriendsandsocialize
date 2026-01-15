@@ -140,6 +140,45 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_name: string
+          event_properties: Json | null
+          id: string
+          ip_hash: string | null
+          page_url: string | null
+          referrer: string | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_name: string
+          event_properties?: Json | null
+          id?: string
+          ip_hash?: string | null
+          page_url?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_name?: string
+          event_properties?: Json | null
+          id?: string
+          ip_hash?: string | null
+          page_url?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       api_rate_limits: {
         Row: {
           created_at: string | null
@@ -1109,6 +1148,53 @@ export type Database = {
         }
         Relationships: []
       }
+      dunning_retry_log: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          executed_at: string | null
+          id: string
+          membership_id: string | null
+          retry_number: number
+          scheduled_at: string
+          status: string | null
+          stripe_invoice_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          executed_at?: string | null
+          id?: string
+          membership_id?: string | null
+          retry_number: number
+          scheduled_at: string
+          status?: string | null
+          stripe_invoice_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          executed_at?: string | null
+          id?: string
+          membership_id?: string | null
+          retry_number?: number
+          scheduled_at?: string
+          status?: string | null
+          stripe_invoice_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dunning_retry_log_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "memberships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_photos: {
         Row: {
           category: string | null
@@ -1382,6 +1468,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      invoice_history: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string | null
+          description: string | null
+          hosted_invoice_url: string | null
+          id: string
+          invoice_number: string | null
+          paid_at: string | null
+          pdf_url: string | null
+          period_end: string | null
+          period_start: string | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_invoice_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          hosted_invoice_url?: string | null
+          id?: string
+          invoice_number?: string | null
+          paid_at?: string | null
+          pdf_url?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_invoice_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          hosted_invoice_url?: string | null
+          id?: string
+          invoice_number?: string | null
+          paid_at?: string | null
+          pdf_url?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_invoice_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       journal_posts: {
         Row: {
@@ -1821,8 +1964,12 @@ export type Database = {
       memberships: {
         Row: {
           created_at: string
+          dunning_status: string | null
           expires_at: string | null
+          failed_payment_count: number | null
           id: string
+          last_payment_attempt_at: string | null
+          last_payment_error: string | null
           started_at: string | null
           status: Database["public"]["Enums"]["membership_status"]
           stripe_customer_id: string | null
@@ -1833,8 +1980,12 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          dunning_status?: string | null
           expires_at?: string | null
+          failed_payment_count?: number | null
           id?: string
+          last_payment_attempt_at?: string | null
+          last_payment_error?: string | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["membership_status"]
           stripe_customer_id?: string | null
@@ -1845,8 +1996,12 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          dunning_status?: string | null
           expires_at?: string | null
+          failed_payment_count?: number | null
           id?: string
+          last_payment_attempt_at?: string | null
+          last_payment_error?: string | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["membership_status"]
           stripe_customer_id?: string | null
