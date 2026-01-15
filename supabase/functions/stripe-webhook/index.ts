@@ -22,8 +22,28 @@ const PRICE_IDS = {
   PACK_3_REVEAL: "price_1SoDmP00I3YCY0De8ZVDSdOu",
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
+// Sanitize sensitive data before logging
+function sanitizeForLogs(obj: Record<string, unknown>): Record<string, unknown> {
+  const sensitiveFields = ['email', 'customer_email', 'payment_method', 'card', 'bank_account', 'name', 'address'];
+  const sanitized: Record<string, unknown> = {};
+  
+  for (const [key, value] of Object.entries(obj)) {
+    if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
+      sanitized[key] = '[REDACTED]';
+    } else if (typeof value === 'object' && value !== null) {
+      sanitized[key] = sanitizeForLogs(value as Record<string, unknown>);
+    } else {
+      sanitized[key] = value;
+    }
+  }
+  
+  return sanitized;
+}
+
+// Safe logging function - only logs IDs and types, not sensitive data
+const logStep = (step: string, details?: { type?: string; id?: string; status?: string; error?: string }) => {
+  const safeDetails = details ? sanitizeForLogs(details as Record<string, unknown>) : undefined;
+  const detailsStr = safeDetails ? ` - ${JSON.stringify(safeDetails)}` : "";
   console.log(`[STRIPE-WEBHOOK] ${step}${detailsStr}`);
 };
 
@@ -54,6 +74,7 @@ serve(async (req) => {
     return new Response(`Webhook Error: ${errorMessage}`, { status: 400 });
   }
 
+  // Only log event type and ID, never the full payload
   logStep("Event received", { type: event.type, id: event.id });
 
   try {
@@ -102,7 +123,7 @@ serve(async (req) => {
 });
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  logStep("Processing checkout.session.completed", { sessionId: session.id, mode: session.mode });
+  logStep("Processing checkout.session.completed", { id: session.id });
 
   const customerEmail = session.customer_email || session.customer_details?.email;
   if (!customerEmail) {
@@ -110,7 +131,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return;
   }
 
-  // Find user by email
+  // Find user by email (email is not logged)
   const { data: userData, error: userError } = await supabaseAdmin.auth.admin.listUsers();
   if (userError) {
     logStep("Error fetching users", { error: userError.message });
@@ -119,7 +140,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
   const user = userData.users.find(u => u.email === customerEmail);
   if (!user) {
-    logStep("User not found for email", { email: customerEmail });
+    logStep("User not found");
     return;
   }
 
@@ -130,10 +151,10 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
     if (priceId === PRICE_IDS.SINGLE_REVEAL) {
       await createRevealPurchase(user.id, "single", 1, session.id);
-      logStep("Created single reveal purchase", { userId: user.id });
+      logStep("Created single reveal purchase");
     } else if (priceId === PRICE_IDS.PACK_3_REVEAL) {
       await createRevealPurchase(user.id, "pack_3", 3, session.id);
-      logStep("Created 3-pack reveal purchase", { userId: user.id });
+      logStep("Created 3-pack reveal purchase");
     }
     return;
   }
@@ -147,7 +168,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 
 async function handleSubscriptionChange(subscription: Stripe.Subscription) {
   logStep("Processing subscription change", { 
-    subscriptionId: subscription.id, 
+    id: subscription.id, 
     status: subscription.status 
   });
 
@@ -165,7 +186,7 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
   const user = userData?.users.find(u => u.email === customerEmail);
 
   if (!user) {
-    logStep("User not found for email", { email: customerEmail });
+    logStep("User not found");
     return;
   }
 
@@ -209,11 +230,11 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
       .eq("user_id", user.id);
   }
 
-  logStep("Membership updated successfully", { userId: user.id, tier, status: membershipStatus });
+  logStep("Membership updated successfully", { status: membershipStatus });
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
-  logStep("Processing subscription deletion", { subscriptionId: subscription.id });
+  logStep("Processing subscription deletion", { id: subscription.id });
 
   const customerId = subscription.customer as string;
   const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
@@ -229,7 +250,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const user = userData?.users.find(u => u.email === customerEmail);
 
   if (!user) {
-    logStep("User not found for email", { email: customerEmail });
+    logStep("User not found");
     return;
   }
 
@@ -248,16 +269,16 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     return;
   }
 
-  logStep("Membership cancelled, downgraded to free tier", { userId: user.id });
+  logStep("Membership cancelled, downgraded to free tier");
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  logStep("Payment succeeded", { invoiceId: invoice.id });
+  logStep("Payment succeeded", { id: invoice.id });
   // Additional logic like sending confirmation emails could go here
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  logStep("Payment failed", { invoiceId: invoice.id });
+  logStep("Payment failed", { id: invoice.id });
   // Notify user about payment failure, could queue a notification
 }
 

@@ -1,73 +1,206 @@
-# Welcome to your Lovable project
+# Social Club Platform
 
-## Project info
+A modern, full-featured social club and networking platform built with React, TypeScript, and Supabase.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🚀 Live Demo
 
-## How can I edit this code?
+- **Preview**: [Preview URL](https://id-preview--c4cc7ef9-b4c3-4c97-8cd0-fc758a50847e.lovable.app)
+- **Production**: [Production URL](https://makefriendsandsocializecom.lovable.app)
 
-There are several ways of editing your application.
+## ✨ Features
 
-**Use Lovable**
+### Core Features
+- **Member Portal** - Dashboard, profile management, connections
+- **Events System** - RSVP, waitlists, calendar integration
+- **Slow Dating** - Curated matchmaking with compatibility scoring
+- **Business Directory** - Professional networking and introductions
+- **Connected Circles** - Exclusive community groups
+- **Journal/Blog** - Content with likes, comments, bookmarks
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### Technical Features
+- **Authentication** - Email/password with MFA for admins
+- **Payments** - Stripe integration for subscriptions and one-time purchases
+- **Notifications** - Email (Resend), SMS (Twilio), Push (Web Push API)
+- **Analytics** - Google Analytics, custom event tracking
+- **Error Tracking** - Sentry integration
+- **PWA Support** - Installable, offline capable
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠 Tech Stack
 
-**Use your preferred IDE**
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: Tailwind CSS, shadcn/ui, Framer Motion
+- **Backend**: Supabase (PostgreSQL, Auth, Edge Functions, Storage)
+- **Payments**: Stripe
+- **Email**: Resend
+- **SMS**: Twilio
+- **Monitoring**: Sentry, UptimeRobot
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 📁 Project Structure
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+```
+├── src/
+│   ├── components/      # React components
+│   │   ├── admin/       # Admin dashboard components
+│   │   ├── auth/        # Authentication components
+│   │   ├── dating/      # Slow dating features
+│   │   ├── home/        # Landing page sections
+│   │   ├── layout/      # Header, Footer, Layout
+│   │   ├── portal/      # Member portal components
+│   │   └── ui/          # shadcn/ui components
+│   ├── contexts/        # React contexts (Auth)
+│   ├── hooks/           # Custom React hooks
+│   ├── lib/             # Utility functions
+│   ├── pages/           # Page components
+│   └── integrations/    # External service clients
+├── supabase/
+│   ├── functions/       # Edge functions
+│   ├── migrations/      # Database migrations
+│   └── seed.sql         # Test data
+├── docs/                # Documentation
+├── e2e/                 # Playwright E2E tests
+└── public/              # Static assets
+```
 
-Follow these steps:
+## 🚀 Getting Started
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+### Prerequisites
+
+- Node.js 18+
+- npm or bun
+
+### Installation
+
+```bash
+# Clone the repository
 git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Environment Variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+See [docs/ENVIRONMENT_SETUP.md](docs/ENVIRONMENT_SETUP.md) for complete setup instructions.
 
-**Use GitHub Codespaces**
+Required variables:
+- `VITE_SUPABASE_URL` - Auto-configured
+- `VITE_SUPABASE_PUBLISHABLE_KEY` - Auto-configured
+- `RESEND_API_KEY` - Email service
+- `STRIPE_SECRET_KEY` - Payment processing
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🧪 Testing
 
-## What technologies are used for this project?
+### Unit Tests (Vitest)
 
-This project is built with:
+```bash
+# Run tests
+npm run test
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+# Watch mode
+npm run test -- --watch
 
-## How can I deploy this project?
+# Coverage report
+npm run test -- --coverage
+```
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### E2E Tests (Playwright)
 
-## Can I connect a custom domain to my Lovable project?
+```bash
+# Install browsers
+npx playwright install
 
-Yes, you can!
+# Run tests
+npx playwright test
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+# With UI
+npx playwright test --ui
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📦 Deployment
+
+### Deploy to Production
+
+1. In Lovable, click **Share** → **Publish**
+2. Connect custom domain in Project Settings → Domains
+
+### Deployment Checklist
+
+See [docs/DEPLOYMENT_CHECKLIST.md](docs/DEPLOYMENT_CHECKLIST.md) for complete steps including:
+- Environment variables setup
+- CDN configuration (Cloudflare)
+- Monitoring setup (UptimeRobot, Sentry)
+- Load testing with k6
+
+## 🗄 Database
+
+### Migrations
+
+Database schema is managed through Supabase migrations in `supabase/migrations/`.
+
+### Seed Data
+
+```bash
+# Apply seed data for testing
+# Run supabase/seed.sql in Supabase SQL editor
+```
+
+### Key Tables
+
+| Table | Description |
+|-------|-------------|
+| `profiles` | User profiles and preferences |
+| `memberships` | Subscription status and tiers |
+| `events` | Event listings |
+| `event_rsvps` | Event registrations |
+| `dating_profiles` | Slow dating profiles |
+| `dating_matches` | Match records |
+| `connections` | Member connections |
+
+## 📚 Documentation
+
+- [Environment Setup](docs/ENVIRONMENT_SETUP.md)
+- [Deployment Checklist](docs/DEPLOYMENT_CHECKLIST.md)
+- [Monitoring Guide](docs/MONITORING.md)
+- [Email Setup](docs/EMAIL_SETUP.md)
+- [Architecture Overview](docs/ARCHITECTURE_400K.md)
+
+## 🔒 Security
+
+- Row Level Security (RLS) on all tables
+- MFA required for admin access
+- Rate limiting on sensitive endpoints
+- Encrypted sensitive data storage
+- CORS properly configured
+- Webhook signature verification
+
+## 📊 Monitoring
+
+### Error Tracking
+Sentry captures and reports frontend and backend errors.
+
+### Uptime Monitoring
+UptimeRobot monitors key endpoints with 5-minute intervals.
+
+### Analytics
+- Google Analytics 4 for user behavior
+- Custom analytics_events table for business metrics
+
+## 🤝 Contributing
+
+1. Create a feature branch
+2. Make changes with tests
+3. Submit pull request
+
+## 📝 License
+
+Private - All rights reserved
+
+## 🆘 Support
+
+For issues or questions:
+- Check documentation in `/docs`
+- Contact: support@yourplatform.com
