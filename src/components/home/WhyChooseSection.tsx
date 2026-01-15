@@ -39,11 +39,11 @@ export const WhyChooseSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-6 px-6 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible scrollbar-hide">
           {features.map((feature, index) => (
             <div
               key={index}
-              className={`group bg-card rounded-2xl p-8 shadow-elegant border border-border/50 transition-all duration-500 card-animate scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''} text-center`}
+              className={`snap-center shrink-0 w-[85vw] sm:w-[70vw] md:w-auto group bg-card rounded-2xl p-8 shadow-elegant border border-border/50 transition-all duration-500 card-animate scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''} text-center`}
             >
               <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors mx-auto">
                 <feature.icon className="w-7 h-7 text-primary" />

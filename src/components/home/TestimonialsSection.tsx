@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Quote, Star, MessageSquarePlus } from 'lucide-react';
+import { Quote, Star, MessageSquarePlus, Send, Loader2 } from 'lucide-react';
 import { getUnsplashUrl, getUnsplashSrcSet, getSizesForLayout } from '@/lib/responsive-images';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
 
 interface Testimonial {
   id: string;
@@ -51,12 +53,128 @@ export const TestimonialsSection = () => {
     return null;
   };
 
-  // No testimonials yet - show CTA
+  const [showForm, setShowForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    role: '',
+    quote: '',
+    rating: 5
+  });
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name.trim() || !formData.quote.trim()) {
+      toast.error('Please fill in your name and review');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.from('testimonials').insert({
+        name: formData.name.trim(),
+        role: formData.role.trim() || null,
+        quote: formData.quote.trim(),
+        rating: formData.rating,
+        source: 'public',
+        is_approved: false,
+        is_featured: false
+      });
+
+      if (error) throw error;
+
+      toast.success('Thank you! Your review will be visible after approval.');
+      setFormData({ name: '', role: '', quote: '', rating: 5 });
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      toast.error('Failed to submit review. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const ReviewForm = () => (
+    <div className={`bg-card rounded-2xl p-6 md:p-8 border border-border/50 max-w-xl mx-auto scroll-animate ${isVisible ? 'visible' : ''}`}>
+      <h3 className="font-display text-xl font-semibold text-foreground mb-4 text-center">
+        Share Your Experience
+      </h3>
+      <form onSubmit={handleSubmitReview} className="space-y-4">
+        <div>
+          <Input
+            placeholder="Your name *"
+            value={formData.name}
+            onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+            required
+          />
+        </div>
+        <div>
+          <Input
+            placeholder="Your title (optional)"
+            value={formData.role}
+            onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value }))}
+          />
+        </div>
+        <div>
+          <Textarea
+            placeholder="Tell us about your experience *"
+            value={formData.quote}
+            onChange={(e) => setFormData(prev => ({ ...prev, quote: e.target.value }))}
+            required
+            rows={4}
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Rating:</span>
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
+                className="p-0.5"
+              >
+                <Star
+                  className={`h-5 w-5 transition-colors ${
+                    star <= formData.rating
+                      ? 'text-yellow-500 fill-yellow-500'
+                      : 'text-muted-foreground/30 hover:text-yellow-400'
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex gap-3 pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setShowForm(false)}
+            className="flex-1"
+          >
+            Cancel
+          </Button>
+          <Button type="submit" disabled={isSubmitting} className="flex-1">
+            {isSubmitting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <Send className="h-4 w-4 mr-2" />
+                Submit
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+
+  // No testimonials yet - show CTA and form
   if (testimonials.length === 0) {
     return (
       <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="testimonials">
         <div ref={ref} className="mx-auto max-w-7xl">
-          <div className={`text-center scroll-animate ${isVisible ? 'visible' : ''}`}>
+          <div className={`text-center mb-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
             <span className="inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-4">
               Testimonials
             </span>
@@ -66,13 +184,17 @@ export const TestimonialsSection = () => {
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
               Be the first to share your experience with our community.
             </p>
-            <Button asChild size="lg" className="rounded-full px-8">
-              <Link to="/portal/profile" className="inline-flex items-center gap-2">
-                <MessageSquarePlus className="h-5 w-5" />
-                Leave a Review
-              </Link>
-            </Button>
           </div>
+          {showForm ? (
+            <ReviewForm />
+          ) : (
+            <div className="text-center">
+              <Button size="lg" className="rounded-full px-8" onClick={() => setShowForm(true)}>
+                <MessageSquarePlus className="h-5 w-5 mr-2" />
+                Leave a Review
+              </Button>
+            </div>
+          )}
         </div>
       </section>
     );
@@ -172,12 +294,14 @@ export const TestimonialsSection = () => {
 
         {/* Leave a Review CTA */}
         <div className={`text-center mt-12 scroll-animate scroll-animate-delay-3 ${isVisible ? 'visible' : ''}`}>
-          <Button asChild variant="outline" size="lg" className="rounded-full px-8">
-            <Link to="/portal/profile" className="inline-flex items-center gap-2">
-              <MessageSquarePlus className="h-5 w-5" />
+          {showForm ? (
+            <ReviewForm />
+          ) : (
+            <Button variant="outline" size="lg" className="rounded-full px-8" onClick={() => setShowForm(true)}>
+              <MessageSquarePlus className="h-5 w-5 mr-2" />
               Share Your Experience
-            </Link>
-          </Button>
+            </Button>
+          )}
         </div>
       </div>
     </section>

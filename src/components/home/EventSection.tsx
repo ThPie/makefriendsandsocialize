@@ -153,23 +153,24 @@ export const EventSection = () => {
             From intimate dinners to grand galas—experience gatherings designed to inspire.
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-6 px-6 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible scrollbar-hide">
           {isLoading ? (
             <>
-              <EventCardSkeleton />
-              <EventCardSkeleton />
-              <EventCardSkeleton />
+              <div className="snap-center shrink-0 w-[85vw] md:w-auto"><EventCardSkeleton /></div>
+              <div className="snap-center shrink-0 w-[85vw] md:w-auto"><EventCardSkeleton /></div>
+              <div className="snap-center shrink-0 w-[85vw] md:w-auto"><EventCardSkeleton /></div>
             </>
           ) : events.length > 0 ? (
             events.map((event, index) => (
-              <EventCard 
-                key={event.id} 
-                event={event} 
-                className={`scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
-              />
+              <div key={event.id} className="snap-center shrink-0 w-[85vw] md:w-auto">
+                <EventCard 
+                  event={event} 
+                  className={`scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+                />
+              </div>
             ))
           ) : (
-            <div className="col-span-full text-center py-12 text-muted-foreground">
+            <div className="w-full text-center py-12 text-muted-foreground">
               <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>No upcoming events at the moment. Check back soon!</p>
             </div>
