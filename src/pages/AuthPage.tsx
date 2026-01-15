@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { useSiteStats } from '@/hooks/useSiteStats';
 import { ArrowLeft, ArrowRight, Check, Loader2, Mail, Lock, User } from 'lucide-react';
 import { z } from 'zod';
 import { MemberAvatars } from '@/components/home/MemberAvatars';
@@ -48,10 +49,10 @@ export default function AuthPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  // Member stats state
-  const [memberCount, setMemberCount] = useState(928);
-  const [avatarUrls, setAvatarUrls] = useState<string[]>(defaultAvatars);
-  const [isLoadingStats, setIsLoadingStats] = useState(true);
+  // Use shared site stats hook for consistent data
+  const { data: siteStats, isLoading: isLoadingStats } = useSiteStats();
+  const memberCount = siteStats?.memberCount || 0;
+  const avatarUrls = siteStats?.avatarUrls?.length ? siteStats.avatarUrls : defaultAvatars;
   
   // Referral tracking
   const [referralCode, setReferralCode] = useState<string | null>(null);
@@ -93,45 +94,7 @@ export default function AuthPage() {
     }
   }, [searchParams]);
 
-  // Fetch member stats from meetup_stats (same as Hero)
-  useEffect(() => {
-    const fetchMemberStats = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('meetup_stats')
-          .select('member_count, avatar_urls')
-          .order('last_updated', { ascending: false })
-          .limit(1)
-          .single();
-        
-        if (error) throw error;
-        
-        if (data) {
-          setMemberCount(data.member_count || 928);
-          
-          if (data.avatar_urls && data.avatar_urls.length > 0) {
-            const memberPhotos = data.avatar_urls.filter((url: string) => 
-              url.includes('member_') || 
-              url.includes('photos.meetupstatic.com') ||
-              url.includes('secure.meetupstatic.com/photos/member')
-            );
-            
-            const photosToUse = memberPhotos.length >= 5 ? memberPhotos : data.avatar_urls;
-            const uniquePhotos = [...new Set(photosToUse)];
-            const shuffled = uniquePhotos.sort(() => Math.random() - 0.5);
-            
-            setAvatarUrls(shuffled.length > 0 ? shuffled : defaultAvatars);
-          }
-        }
-      } catch (err) {
-        console.error('Error fetching member stats:', err);
-      } finally {
-        setIsLoadingStats(false);
-      }
-    };
-    
-    fetchMemberStats();
-  }, []);
+  // Removed: member stats are now fetched via useSiteStats hook
 
   useEffect(() => {
     if (user && !isLoading) {
