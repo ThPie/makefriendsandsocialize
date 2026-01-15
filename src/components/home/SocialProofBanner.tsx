@@ -13,9 +13,10 @@ interface MeetupStats {
 
 export const SocialProofBanner = () => {
   const [displayCount, setDisplayCount] = useState(0);
+  const [failedAvatars, setFailedAvatars] = useState<Set<number>>(new Set());
 
   // Fetch meetup stats
-  const { data: stats } = useQuery({
+  const { data: stats, isError: statsError } = useQuery({
     queryKey: ['meetup-stats'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -25,16 +26,20 @@ export const SocialProofBanner = () => {
         .limit(1)
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('[SocialProofBanner] Stats query error:', error);
+        throw error;
+      }
       return data as MeetupStats;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 2,
   });
 
   const joinedThisWeek = stats?.joined_this_week || 0;
 
   // Fetch upcoming events count
-  const { data: eventsCount } = useQuery({
+  const { data: eventsCount, isError: eventsError } = useQuery({
     queryKey: ['upcoming-events-count'],
     queryFn: async () => {
       const today = new Date().toISOString().split('T')[0];
@@ -44,9 +49,13 @@ export const SocialProofBanner = () => {
         .gte('date', today)
         .neq('status', 'cancelled');
       
-      if (error) throw error;
+      if (error) {
+        console.error('[SocialProofBanner] Events count error:', error);
+        throw error;
+      }
       return count || 0;
     },
+    retry: 2,
   });
 
   // Animated counter effect
@@ -69,6 +78,19 @@ export const SocialProofBanner = () => {
 
     return () => clearInterval(timer);
   }, [stats?.member_count]);
+
+  // Handle avatar load errors
+  const handleAvatarError = (index: number) => {
+    setFailedAvatars(prev => new Set(prev).add(index));
+  };
+
+  // Log errors for debugging
+  if (statsError) {
+    console.error('[SocialProofBanner] Failed to load stats');
+  }
+  if (eventsError) {
+    console.error('[SocialProofBanner] Failed to load events count');
+  }
 
   const proofItems = [
     {
@@ -97,6 +119,9 @@ export const SocialProofBanner = () => {
     },
   ];
 
+  // Filter out avatars that failed to load
+  const validAvatars = (stats?.avatar_urls || []).filter((_, index) => !failedAvatars.has(index));
+
   return (
     <div className="w-full bg-card/50 backdrop-blur-sm border-y border-border py-6 overflow-hidden">
       <div className="mx-auto max-w-7xl px-6 md:px-10">
@@ -122,8 +147,8 @@ export const SocialProofBanner = () => {
           </AnimatePresence>
         </div>
 
-        {/* Recent Members Strip */}
-        {stats?.avatar_urls && stats.avatar_urls.length > 0 && (
+        {/* Recent Members Strip - Show if we have valid avatars */}
+        {validAvatars.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -131,21 +156,22 @@ export const SocialProofBanner = () => {
             className="mt-6 pt-6 border-t border-border flex flex-col md:flex-row items-center justify-center gap-3"
           >
             <div className="flex -space-x-3">
-              {stats.avatar_urls.slice(0, 5).map((url, index) => (
+              {stats?.avatar_urls?.slice(0, 5).map((url, index) => (
                 <div
                   key={index}
-                  className="w-8 h-8 rounded-full border-2 border-background overflow-hidden bg-muted"
+                  className={`w-8 h-8 rounded-full border-2 border-background overflow-hidden bg-muted ${failedAvatars.has(index) ? 'hidden' : ''}`}
                 >
                   <img
                     src={url}
                     alt="Member avatar"
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    onError={() => handleAvatarError(index)}
                   />
                 </div>
               ))}
               <div className="w-8 h-8 rounded-full border-2 border-background bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
-                +{Math.max(0, (stats.member_count || 0) - 5)}
+                +{Math.max(0, (stats?.member_count || 0) - 5)}
               </div>
             </div>
             <p className="text-sm text-muted-foreground">

@@ -1,74 +1,29 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import { AdaptiveVideo } from '@/components/ui/adaptive-video';
 import { EventCountdown } from './EventCountdown';
 
 /**
- * Video quality sources for adaptive streaming
- * Each video has both low (720p) and high (1080p) quality versions
- * Currently using same files - replace with actual quality variants when available
+ * Single looping hero video - no rotation
  */
 const videoQualitySources = [
-  {
-    id: 1,
-    low: '/videos/hero-1.mp4',  // TODO: Replace with hero-1-720p.mp4
-    high: '/videos/hero-1.mp4', // TODO: Replace with hero-1-1080p.mp4
-  },
-  {
-    id: 2,
-    low: '/videos/hero-2.mp4',
-    high: '/videos/hero-2.mp4',
-  },
-  {
-    id: 3,
-    low: '/videos/hero-3.mp4',
-    high: '/videos/hero-3.mp4',
-  },
-  {
-    id: 4,
-    low: '/videos/hero-4.mp4',
-    high: '/videos/hero-4.mp4',
-  },
+  { quality: 'low' as const, src: '/videos/hero-1.mp4', type: 'video/mp4' },
+  { quality: 'high' as const, src: '/videos/hero-1.mp4', type: 'video/mp4' },
 ];
 
 export const Hero = () => {
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
-  const handleVideoEnd = () => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentVideoIndex((prev) => (prev + 1) % videoQualitySources.length);
-      setIsTransitioning(false);
-    }, 300);
-  };
-
-  // Get quality sources for current video
-  const currentQualitySources = [
-    { quality: 'low' as const, src: videoQualitySources[currentVideoIndex].low, type: 'video/mp4' },
-    { quality: 'high' as const, src: videoQualitySources[currentVideoIndex].high, type: 'video/mp4' },
-  ];
-
   return (
     <section className="relative w-full overflow-hidden">
-      {/* Video Background */}
+      {/* Video Background - Single looping video */}
       <div className="absolute inset-0 bg-black">
-        <div
-          key={currentVideoIndex}
-          className={`h-full w-full transition-opacity duration-300 ${
-            isTransitioning ? 'opacity-0' : 'opacity-100'
-          }`}
-        >
-          <AdaptiveVideo
-            qualitySources={currentQualitySources}
-            poster="/images/hero-poster.webp"
-            onVideoEnd={handleVideoEnd}
-            preloadStrategy={currentVideoIndex === 0 ? 'auto' : 'metadata'}
-            showPosterOnSlowConnection={true}
-            className="h-full w-full"
-          />
-        </div>
+        <AdaptiveVideo
+          qualitySources={videoQualitySources}
+          poster="/images/hero-poster.webp"
+          loop={true}
+          preloadStrategy="auto"
+          showPosterOnSlowConnection={true}
+          className="h-full w-full"
+        />
         {/* Black Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60" />
       </div>

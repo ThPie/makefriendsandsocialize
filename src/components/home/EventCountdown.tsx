@@ -30,7 +30,7 @@ const CountdownUnit = ({ value, label }: { value: number; label: string }) => (
 export const EventCountdown = () => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  const { data: nextEvent } = useQuery({
+  const { data: nextEvent, isError, error } = useQuery({
     queryKey: ['next-event-countdown'],
     queryFn: async () => {
       const today = new Date().toISOString().split('T')[0];
@@ -43,10 +43,14 @@ export const EventCountdown = () => {
         .limit(1)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('[EventCountdown] Query error:', error);
+        throw error;
+      }
       return data as NextEvent;
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    retry: 2,
   });
 
   useEffect(() => {
@@ -87,6 +91,12 @@ export const EventCountdown = () => {
 
     return () => clearInterval(interval);
   }, [nextEvent]);
+
+  // Log errors for debugging but don't show error UI - just hide countdown
+  if (isError) {
+    console.error('[EventCountdown] Failed to load event:', error);
+    return null;
+  }
 
   if (!nextEvent) return null;
 

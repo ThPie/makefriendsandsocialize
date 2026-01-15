@@ -81,9 +81,9 @@ export const Header = () => {
           />
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden flex-1 items-center justify-end gap-6 lg:flex">
-          <nav className="flex items-center gap-6">
+        {/* Desktop Navigation - xl breakpoint for better tablet support */}
+        <div className="hidden flex-1 items-center justify-end gap-4 xl:flex">
+          <nav className="flex items-center gap-4">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -106,7 +106,7 @@ export const Header = () => {
         {/* Mobile Menu Button - Animated Hamburger */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className={`relative flex items-center justify-center w-11 h-11 rounded-lg transition-colors lg:hidden ${
+          className={`relative flex items-center justify-center w-11 h-11 rounded-lg transition-colors xl:hidden ${
             isTransparent ? 'text-white hover:bg-white/10' : 'text-foreground hover:bg-muted'
           }`}
           aria-label="Toggle menu"
@@ -138,7 +138,7 @@ export const Header = () => {
           <>
             {/* Backdrop */}
             <motion.div 
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 xl:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -148,7 +148,7 @@ export const Header = () => {
             
             {/* Slide-out Panel */}
             <motion.nav
-              className="fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-card border-r border-border z-50 flex flex-col lg:hidden shadow-2xl"
+              className="fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-card border-r border-border z-50 flex flex-col xl:hidden shadow-2xl"
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
