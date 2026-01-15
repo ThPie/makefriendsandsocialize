@@ -2,9 +2,6 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
-// TEST MODE: Set to true to bypass authentication for testing matchmaking
-export const TEST_MODE = true;
-
 type MembershipTier = 'patron' | 'fellow' | 'founder' | null;
 type MembershipStatus = 'pending' | 'active' | 'cancelled' | 'expired' | null;
 type ApplicationStatus = 'pending' | 'approved' | 'rejected' | null;
@@ -58,57 +55,14 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock data for test mode
-const TEST_USER: User = {
-  id: 'test-user-id-123',
-  email: 'test@example.com',
-  aud: 'authenticated',
-  role: 'authenticated',
-  created_at: new Date().toISOString(),
-  app_metadata: {},
-  user_metadata: {},
-} as User;
-
-const TEST_PROFILE: Profile = {
-  id: 'test-user-id-123',
-  first_name: 'Test',
-  last_name: 'User',
-  bio: 'Test user for matchmaking',
-  avatar_urls: [],
-  interests: ['dating', 'networking'],
-  is_visible: true,
-  country: 'USA',
-  state: 'CA',
-  city: 'San Francisco',
-  job_title: 'Software Engineer',
-  industry: 'Technology',
-  date_of_birth: '1990-01-01',
-  profile_completed_at: new Date().toISOString(),
-  onboarding_completed: true,
-  is_security_verified: true,
-  verified_at: new Date().toISOString(),
-  referral_code: 'TEST123',
-  referred_by: null,
-  referral_count: 0,
-  email_reminders_enabled: true,
-  reminder_hours_before: 24,
-  referral_notifications_enabled: true,
-  marketing_emails_enabled: true,
-};
-
-const TEST_MEMBERSHIP: Membership = {
-  tier: 'founder',
-  status: 'active',
-};
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(TEST_MODE ? TEST_USER : null);
-  const [session, setSession] = useState<Session | null>(TEST_MODE ? { user: TEST_USER } as Session : null);
-  const [profile, setProfile] = useState<Profile | null>(TEST_MODE ? TEST_PROFILE : null);
-  const [membership, setMembership] = useState<Membership | null>(TEST_MODE ? TEST_MEMBERSHIP : null);
-  const [applicationStatus, setApplicationStatus] = useState<ApplicationStatus>(TEST_MODE ? 'approved' : null);
-  const [isLoading, setIsLoading] = useState(TEST_MODE ? false : true);
-  const [isAdmin, setIsAdmin] = useState(TEST_MODE ? true : false);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [membership, setMembership] = useState<Membership | null>(null);
+  const [applicationStatus, setApplicationStatus] = useState<ApplicationStatus>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchUserData = async (userId: string) => {
     // Fetch profile
@@ -156,11 +110,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // Skip auth setup in test mode
-    if (TEST_MODE) {
-      return;
-    }
-
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
