@@ -26,7 +26,7 @@ export const SlowDatingSection = () => {
           <div className={`flex flex-col justify-center scroll-animate scroll-animate-delay-2 ${isVisible ? 'visible' : ''}`}>
             <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-4">A Member Privilege</p>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-6 leading-tight">
-              Curated <span className="text-gradient">Introductions</span>
+              Slow <span className="text-gradient">Dating</span>
             </h2>
             <p className="text-muted-foreground text-base md:text-lg mb-6 leading-relaxed">
               The Club facilitates meaningful connections between members who share values and interests. 

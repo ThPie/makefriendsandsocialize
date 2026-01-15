@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Settings, Users, Link, Star, Loader2, Save, RefreshCw, Cloud, Calendar, MessageSquare } from 'lucide-react';
+import { Settings, Users, Link, Star, Loader2, Save, RefreshCw, Cloud, Calendar } from 'lucide-react';
 
 interface MeetupStats {
   id: string;
@@ -21,10 +21,9 @@ export default function AdminSettings() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [syncStatus, setSyncStatus] = useState<{ lastSync: string | null; eventsCount: number; reviewsCount: number }>({
+  const [syncStatus, setSyncStatus] = useState<{ lastSync: string | null; eventsCount: number }>({
     lastSync: null,
-    eventsCount: 0,
-    reviewsCount: 0
+    eventsCount: 0
   });
   const [form, setForm] = useState({
     member_count: '',
@@ -72,12 +71,6 @@ export default function AdminSettings() {
         .select('*', { count: 'exact', head: true })
         .eq('source', 'meetup');
 
-      // Get meetup reviews count
-      const { count: reviewsCount } = await supabase
-        .from('testimonials')
-        .select('*', { count: 'exact', head: true })
-        .eq('source', 'meetup');
-
       // Get last updated from meetup_stats
       const { data: stats } = await supabase
         .from('meetup_stats')
@@ -87,8 +80,7 @@ export default function AdminSettings() {
 
       setSyncStatus({
         lastSync: stats?.last_updated || null,
-        eventsCount: eventsCount || 0,
-        reviewsCount: reviewsCount || 0
+        eventsCount: eventsCount || 0
       });
     } catch (error) {
       console.error('Error fetching sync status:', error);
@@ -100,14 +92,10 @@ export default function AdminSettings() {
     toast.info('Starting Meetup sync...');
 
     try {
-      // Call all three scrapers sequentially
+      // Call stats and events scrapers (no more reviews scraper)
       const statsResult = await supabase.functions.invoke('scrape-meetup');
       if (statsResult.error) throw new Error('Failed to sync stats: ' + statsResult.error.message);
       toast.success('Member stats synced');
-
-      const reviewsResult = await supabase.functions.invoke('scrape-meetup-reviews');
-      if (reviewsResult.error) throw new Error('Failed to sync reviews: ' + reviewsResult.error.message);
-      toast.success('Reviews synced');
 
       const eventsResult = await supabase.functions.invoke('scrape-meetup-events');
       if (eventsResult.error) throw new Error('Failed to sync events: ' + eventsResult.error.message);
@@ -187,7 +175,7 @@ export default function AdminSettings() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-2 gap-4">
               <div className="p-4 rounded-lg border border-border">
                 <div className="flex items-center gap-2 mb-2">
                   <Users className="h-4 w-4 text-muted-foreground" />
@@ -201,13 +189,6 @@ export default function AdminSettings() {
                   <span className="text-sm font-medium">Imported Events</span>
                 </div>
                 <p className="text-2xl font-bold">{syncStatus.eventsCount}</p>
-              </div>
-              <div className="p-4 rounded-lg border border-border">
-                <div className="flex items-center gap-2 mb-2">
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">Imported Reviews</span>
-                </div>
-                <p className="text-2xl font-bold">{syncStatus.reviewsCount}</p>
               </div>
             </div>
 
