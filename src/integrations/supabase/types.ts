@@ -283,6 +283,8 @@ export type Database = {
       business_profiles: {
         Row: {
           business_name: string
+          category: string | null
+          connection_count: number | null
           contact_email: string | null
           created_at: string
           description: string | null
@@ -299,6 +301,8 @@ export type Database = {
         }
         Insert: {
           business_name: string
+          category?: string | null
+          connection_count?: number | null
           contact_email?: string | null
           created_at?: string
           description?: string | null
@@ -315,6 +319,8 @@ export type Database = {
         }
         Update: {
           business_name?: string
+          category?: string | null
+          connection_count?: number | null
           contact_email?: string | null
           created_at?: string
           description?: string | null
@@ -1163,6 +1169,7 @@ export type Database = {
           updated_at: string
           venue_address: string | null
           venue_name: string | null
+          waitlist_enabled: boolean | null
         }
         Insert: {
           capacity?: number | null
@@ -1188,6 +1195,7 @@ export type Database = {
           updated_at?: string
           venue_address?: string | null
           venue_name?: string | null
+          waitlist_enabled?: boolean | null
         }
         Update: {
           capacity?: number | null
@@ -1213,6 +1221,7 @@ export type Database = {
           updated_at?: string
           venue_address?: string | null
           venue_name?: string | null
+          waitlist_enabled?: boolean | null
         }
         Relationships: []
       }
@@ -2263,6 +2272,10 @@ export type Database = {
         Returns: string
       }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
+      event_has_available_spots: {
+        Args: { p_event_id: string }
+        Returns: boolean
+      }
       get_active_member_count: { Args: never; Returns: number }
       get_application_contact_safe: {
         Args: { _application_id: string }

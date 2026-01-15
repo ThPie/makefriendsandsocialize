@@ -411,18 +411,31 @@ const EventsPage = () => {
                       )}
                       <div className="flex items-center gap-2">
                         <Users className="h-4 w-4" />
-                        <span className={event.capacity && event.capacity <= 10 ? 'text-amber-500 font-medium' : ''}>
-                          {event.rsvp_count && event.rsvp_count > 0 
-                            ? event.capacity 
-                              ? `${event.rsvp_count} / ${event.capacity} attending`
-                              : `${event.rsvp_count} attending`
-                            : event.capacity 
-                              ? event.capacity <= 5 
-                                ? `Only ${event.capacity} spots left!` 
-                                : `${event.capacity} spots`
-                              : 'Open event'
+                        {(() => {
+                          const attending = event.rsvp_count || 0;
+                          const cap = event.capacity;
+                          const spotsLeft = cap ? cap - attending : null;
+                          const isFull = cap !== null && attending >= cap;
+                          
+                          if (isFull) {
+                            return (
+                              <span className="text-destructive font-medium">
+                                Sold Out • Waitlist Available
+                              </span>
+                            );
                           }
-                        </span>
+                          if (spotsLeft !== null && spotsLeft <= 5) {
+                            return (
+                              <span className="text-amber-500 font-medium">
+                                Only {spotsLeft} spot{spotsLeft !== 1 ? 's' : ''} left!
+                              </span>
+                            );
+                          }
+                          if (cap) {
+                            return <span>{attending} / {cap} attending</span>;
+                          }
+                          return <span>Open event</span>;
+                        })()}
                       </div>
                     </div>
 
