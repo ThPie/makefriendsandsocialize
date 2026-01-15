@@ -10,6 +10,7 @@ interface BusinessCardProps {
     logo_url: string | null;
     description: string | null;
     industry: string | null;
+    category?: string | null;
     location: string | null;
     website: string | null;
     services: string[] | null;
@@ -55,9 +56,16 @@ export function BusinessCard({ business, onClick }: BusinessCardProps) {
           <h3 className="font-display text-xl text-foreground truncate group-hover:text-primary transition-colors">
             {business.business_name}
           </h3>
-          {business.industry && (
-            <p className="text-sm text-muted-foreground">{business.industry}</p>
-          )}
+          <div className="flex items-center gap-2 flex-wrap">
+            {business.category && (
+              <Badge variant="outline" className="text-xs">
+                {business.category}
+              </Badge>
+            )}
+            {business.industry && (
+              <span className="text-sm text-muted-foreground">{business.industry}</span>
+            )}
+          </div>
         </div>
       </div>
 

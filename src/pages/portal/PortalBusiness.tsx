@@ -11,6 +11,24 @@ import { toast } from "sonner";
 import { Building2, Globe, MapPin, Mail, Upload, Loader2, CheckCircle, Clock, XCircle, Plus, X, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BusinessVerificationStatus } from "@/components/business/BusinessVerificationStatus";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const BUSINESS_CATEGORIES = [
+  'Technology',
+  'Finance',
+  'Fashion',
+  'Health',
+  'Food & Beverage',
+  'Professional Services',
+  'Real Estate',
+  'Other'
+];
 
 const PortalBusiness = () => {
   const { user, membership } = useAuth();
@@ -40,6 +58,7 @@ const PortalBusiness = () => {
     business_name: "",
     description: "",
     industry: "",
+    category: "Other",
     website: "",
     contact_email: "",
     location: "",
@@ -54,6 +73,7 @@ const PortalBusiness = () => {
         business_name: businessProfile.business_name || "",
         description: businessProfile.description || "",
         industry: businessProfile.industry || "",
+        category: businessProfile.category || "Other",
         website: businessProfile.website || "",
         contact_email: businessProfile.contact_email || "",
         location: businessProfile.location || "",
@@ -296,6 +316,24 @@ const PortalBusiness = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
                 placeholder="e.g., Technology, Consulting, Design"
               />
+            </div>
+            <div>
+              <Label htmlFor="category">Category *</Label>
+              <Select 
+                value={formData.category} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+              >
+                <SelectTrigger id="category">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BUSINESS_CATEGORIES.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label htmlFor="description">Description</Label>

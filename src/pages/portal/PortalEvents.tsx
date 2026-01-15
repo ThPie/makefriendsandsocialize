@@ -398,14 +398,43 @@ export default function PortalEvents() {
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="h-4 w-4" />
-                      <span>
-                        {attending} / {event.capacity || '∞'} attending
-                        {waitlistCount > 0 && (
-                          <span className="text-amber-600 ml-2">
-                            ({waitlistCount} on waitlist)
+                      {(() => {
+                        const spotsLeft = event.capacity ? event.capacity - attending : null;
+                        if (isFull) {
+                          return (
+                            <span className="text-destructive font-medium">
+                              Sold Out
+                              {waitlistCount > 0 && (
+                                <span className="text-amber-600 ml-2">
+                                  ({waitlistCount} on waitlist)
+                                </span>
+                              )}
+                            </span>
+                          );
+                        }
+                        if (spotsLeft !== null && spotsLeft <= 5) {
+                          return (
+                            <span className="text-amber-500 font-medium">
+                              {spotsLeft} spot{spotsLeft !== 1 ? 's' : ''} left!
+                              {waitlistCount > 0 && (
+                                <span className="text-muted-foreground ml-2">
+                                  ({waitlistCount} on waitlist)
+                                </span>
+                              )}
+                            </span>
+                          );
+                        }
+                        return (
+                          <span>
+                            {attending} / {event.capacity || '∞'} attending
+                            {waitlistCount > 0 && (
+                              <span className="text-amber-600 ml-2">
+                                ({waitlistCount} on waitlist)
+                              </span>
+                            )}
                           </span>
-                        )}
-                      </span>
+                        );
+                      })()}
                     </div>
                   </div>
 
