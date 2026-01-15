@@ -2,8 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Picture } from '@/components/ui/picture';
-import slowDatingImage from '@/assets/slow-dating.jpg';
-import slowDatingImageWebp from '@/assets/slow-dating.webp';
+import slowDatingImage from '@/assets/slow-dating.webp';
 
 export const SlowDatingSection = () => {
   const { ref, isVisible } = useScrollAnimation();
@@ -14,14 +13,11 @@ export const SlowDatingSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Image */}
           <div className={`relative overflow-hidden rounded-2xl aspect-[4/3] lg:aspect-square scroll-animate ${isVisible ? 'visible' : ''}`}>
-            <Picture
+            <img
               src={slowDatingImage}
-              webpSrc={slowDatingImageWebp}
               alt="Elegant couple enjoying a sophisticated moment"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="w-full h-full"
-              imgClassName="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-              priority={false}
+              className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-secondary/30 to-transparent pointer-events-none" />
           </div>

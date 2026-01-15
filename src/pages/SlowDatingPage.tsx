@@ -12,8 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import slowDatingImage from "@/assets/slow-dating.jpg";
-import slowDatingImageWebp from "@/assets/slow-dating.webp";
+import slowDatingImage from "@/assets/slow-dating.webp";
 import { useEffect, useState } from "react";
 
 const SlowDatingPage = () => {
@@ -138,14 +137,11 @@ const SlowDatingPage = () => {
         <section className="relative min-h-[90vh] flex items-center overflow-hidden">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0">
-            <Picture
+            <img
               src={slowDatingImage}
-              webpSrc={slowDatingImageWebp}
               alt="Elegant couple enjoying a sophisticated moment"
-              sizes="100vw"
-              className="w-full h-full"
-              imgClassName="w-full h-full object-cover"
-              priority={true}
+              className="w-full h-full object-cover"
+              loading="eager"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/60" />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
