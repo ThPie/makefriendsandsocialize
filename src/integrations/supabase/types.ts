@@ -242,6 +242,102 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_bookmarks: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_bookmarks_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "journal_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_approved: boolean | null
+          post_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_approved?: boolean | null
+          post_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_approved?: boolean | null
+          post_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "journal_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blog_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "journal_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_introduction_requests: {
         Row: {
           business_id: string
@@ -389,6 +485,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      cache_metadata: {
+        Row: {
+          cache_data: Json
+          cache_key: string
+          created_at: string
+          expires_at: string
+          id: string
+          ttl_seconds: number
+        }
+        Insert: {
+          cache_data: Json
+          cache_key: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          ttl_seconds?: number
+        }
+        Update: {
+          cache_data?: Json
+          cache_key?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          ttl_seconds?: number
+        }
+        Relationships: []
       }
       circle_application_contacts: {
         Row: {
@@ -1263,6 +1386,7 @@ export type Database = {
       journal_posts: {
         Row: {
           author_id: string | null
+          category: string | null
           content: string | null
           cover_image: string | null
           created_at: string
@@ -1270,12 +1394,16 @@ export type Database = {
           id: string
           is_published: boolean
           published_at: string | null
+          reading_time_minutes: number | null
           slug: string
+          tags: string[] | null
           title: string
           updated_at: string
+          view_count: number | null
         }
         Insert: {
           author_id?: string | null
+          category?: string | null
           content?: string | null
           cover_image?: string | null
           created_at?: string
@@ -1283,12 +1411,16 @@ export type Database = {
           id?: string
           is_published?: boolean
           published_at?: string | null
+          reading_time_minutes?: number | null
           slug: string
+          tags?: string[] | null
           title: string
           updated_at?: string
+          view_count?: number | null
         }
         Update: {
           author_id?: string | null
+          category?: string | null
           content?: string | null
           cover_image?: string | null
           created_at?: string
@@ -1296,9 +1428,12 @@ export type Database = {
           id?: string
           is_published?: boolean
           published_at?: string | null
+          reading_time_minutes?: number | null
           slug?: string
+          tags?: string[] | null
           title?: string
           updated_at?: string
+          view_count?: number | null
         }
         Relationships: []
       }
@@ -2214,6 +2349,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_reading_time: { Args: { _content: string }; Returns: number }
       can_reveal_match: { Args: { _user_id: string }; Returns: boolean }
       check_admin_mfa_verified: { Args: { _user_id: string }; Returns: boolean }
       check_admin_rate_limit: {
@@ -2251,6 +2387,7 @@ export type Database = {
           reset_at: string
         }[]
       }
+      cleanup_expired_cache: { Args: never; Returns: number }
       cleanup_expired_mfa_sessions: { Args: never; Returns: undefined }
       cleanup_expired_sessions: { Args: never; Returns: number }
       cleanup_old_api_rate_limits: { Args: never; Returns: number }
@@ -2302,6 +2439,7 @@ export type Database = {
         }[]
       }
       get_available_reveals: { Args: { _user_id: string }; Returns: number }
+      get_cached_data: { Args: { _cache_key: string }; Returns: Json }
       get_connected_profile_limited: {
         Args: { _profile_id: string }
         Returns: {
@@ -2370,6 +2508,10 @@ export type Database = {
         Args: { _ip_address: string; _is_failure?: boolean }
         Returns: undefined
       }
+      increment_post_view_count: {
+        Args: { _post_id: string }
+        Returns: undefined
+      }
       increment_rsvp_count: { Args: { event_id: string }; Returns: undefined }
       is_connected_with: {
         Args: { _other_user_id: string; _user_id: string }
@@ -2399,6 +2541,10 @@ export type Database = {
           _twitter_url?: string
         }
         Returns: boolean
+      }
+      set_cached_data: {
+        Args: { _cache_key: string; _data: Json; _ttl_seconds?: number }
+        Returns: undefined
       }
       update_session_activity: {
         Args: { _session_token: string }
