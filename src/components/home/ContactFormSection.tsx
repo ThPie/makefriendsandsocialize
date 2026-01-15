@@ -13,7 +13,7 @@ import {
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { toast } from 'sonner';
 import { Picture } from '@/components/ui/picture';
-import contactHero from '@/assets/contact-hero.webp';
+import contactHero from '@/assets/contact-hero.jpg';
 
 export const ContactFormSection = () => {
   const { ref, isVisible } = useScrollAnimation();

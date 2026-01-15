@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2, Mail, CheckCircle } from 'lucide-react';
 import { z } from 'zod';
-import logoLight from '@/assets/logo-light.webp';
+import logoLight from '@/assets/logo-light.png';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 

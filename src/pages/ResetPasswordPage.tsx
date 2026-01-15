@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2, Lock, CheckCircle } from 'lucide-react';
 import { z } from 'zod';
-import logoLight from '@/assets/logo-light.webp';
+import logoLight from '@/assets/logo-light.png';
 
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
 
