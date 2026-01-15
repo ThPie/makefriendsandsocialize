@@ -200,14 +200,12 @@ const TheGentlemenPage = () => {
               transition={{ duration: 0.7, delay: 0.3 }}
             >
               <Button
-                asChild
                 size="lg"
                 className="rounded-full px-8 min-h-[52px] text-base font-medium group"
+                onClick={() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                <a href="#apply">
-                  Apply to The Gentlemen
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </a>
+                Apply to The Gentlemen
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </motion.div>
           </div>

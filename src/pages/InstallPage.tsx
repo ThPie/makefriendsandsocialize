@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Download, Smartphone, Monitor, Check, Share, MoreVertical, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { usePWA } from '@/hooks/usePWA';
 
@@ -171,9 +172,9 @@ export default function InstallPage() {
         >
           <p className="text-sm text-muted-foreground">
             Having trouble installing?{' '}
-            <a href="/contact" className="text-primary hover:underline">
+            <Link to="/contact" className="text-primary hover:underline">
               Contact support
-            </a>
+            </Link>
           </p>
         </motion.div>
       </div>
