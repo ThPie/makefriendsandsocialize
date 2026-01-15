@@ -1,8 +1,16 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { registerSW } from 'virtual:pwa-register';
+import { initSentry } from './lib/sentry';
+import { initAnalytics } from './lib/analytics';
 import App from "./App.tsx";
 import "./index.css";
+
+// Initialize Sentry for error tracking
+initSentry();
+
+// Initialize analytics (GA4)
+initAnalytics();
 
 // Register service worker with auto-update
 const updateSW = registerSW({
