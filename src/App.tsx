@@ -29,6 +29,7 @@ import CookiesPage from "@/pages/CookiesPage";
 import FAQPage from "@/pages/FAQPage";
 import NotFound from "@/pages/NotFound";
 import AuthPage from "@/pages/AuthPage";
+import AuthCallbackPage from "@/pages/AuthCallbackPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import AuthWaitingPage from "@/pages/AuthWaitingPage";
@@ -112,6 +113,7 @@ const App = () => (
               
               {/* Auth routes */}
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/auth/callback" element={<AuthCallbackPage />} />
               <Route path="/auth/waiting" element={<AuthWaitingPage />} />
               <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
