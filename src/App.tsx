@@ -9,7 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { Layout } from "@/components/layout/Layout";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { EventChatbot } from "@/components/EventChatbot";
+
 import { InstallPromptBanner } from "@/components/pwa/InstallPromptBanner";
 import { OfflineIndicator } from "@/components/pwa/OfflineIndicator";
 import { UpdateAvailable } from "@/components/pwa/UpdateAvailable";
@@ -163,8 +163,6 @@ const App = () => (
               
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
-            {/* Global Chatbot - available on all pages */}
-            <EventChatbot />
           </BrowserRouter>
           {/* PWA Components */}
           <InstallPromptBanner />

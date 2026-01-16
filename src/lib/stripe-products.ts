@@ -17,13 +17,13 @@ export const STRIPE_PRODUCTS = {
   FELLOW_MONTHLY: {
     product_id: 'prod_TllIG7YVUIoMZT',
     price_id: 'price_1SoDli00I3YCY0DeVOlNtHl7',
-    price: 139,
+    price: 89.99,
     interval: 'month' as const,
   },
   FELLOW_ANNUAL: {
     product_id: 'prod_TllIZTrST3Zu37',
     price_id: 'price_1SoDlv00I3YCY0De33VrYzjX',
-    price: 1199,
+    price: 899,
     interval: 'year' as const,
   },
   SINGLE_REVEAL: {
@@ -39,7 +39,7 @@ export const STRIPE_PRODUCTS = {
 } as const;
 
 // UI tier names mapped to database tier values
-// Database: patron = Explorer (free), fellow = Member ($59), founder = Fellow ($139)
+// Database: patron = Explorer (free), fellow = Member ($59), founder = Fellow (€89.99)
 export const TIER_MAPPING = {
   UI_TO_DB: {
     explorer: 'patron',
@@ -96,9 +96,9 @@ export const TIER_BENEFITS = {
   fellow: {
     name: 'Fellow',
     description: 'The ultimate experience',
-    monthlyPrice: 139,
-    annualPrice: 1199,
-    annualSavings: '28%',
+    monthlyPrice: 89.99,
+    annualPrice: 899,
+    annualSavings: '17%',
     features: [
       'Everything in Member',
       '30% off paid events',

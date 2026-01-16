@@ -144,8 +144,8 @@ export default function PortalDashboard() {
         <UpgradePromptCard variant="compact" context="general" />
       )}
 
-      {/* Upgrade Banner for Patrons - Legacy */}
-      {membership?.tier === 'patron' && subscription?.subscribed && (
+      {/* Upgrade Banner for Explorer users */}
+      {membership?.tier === 'patron' && (
         <Card className="border-primary/20">
           <CardContent className="flex flex-col md:flex-row items-center justify-between gap-4 p-8">
             <div className="flex items-center gap-4">
@@ -155,7 +155,7 @@ export default function PortalDashboard() {
               <div>
                 <h3 className="font-display text-xl text-foreground">Unlock The Network</h3>
                 <p className="text-muted-foreground text-sm">
-                  Upgrade to Fellow membership to access curated introductions
+                  Upgrade to Member or Fellow to access curated introductions and exclusive events
                 </p>
               </div>
             </div>
