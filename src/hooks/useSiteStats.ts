@@ -11,20 +11,12 @@ interface SiteStats {
 
 /**
  * Single source of truth for site-wide statistics.
- * Uses database functions to get accurate counts from actual data.
+ * Prioritizes Meetup stats for member count and avatars.
  */
 export const useSiteStats = () => {
   return useQuery({
     queryKey: ['site-stats'],
     queryFn: async (): Promise<SiteStats> => {
-      // Get active member count from profiles table
-      const { data: memberCountData, error: memberError } = await supabase
-        .rpc('get_active_member_count');
-      
-      if (memberError) {
-        console.error('[useSiteStats] Member count error:', memberError);
-      }
-
       // Get upcoming events count using database function
       const { data: eventsCountData, error: eventsError } = await supabase
         .rpc('get_upcoming_events_count');
@@ -33,10 +25,10 @@ export const useSiteStats = () => {
         console.error('[useSiteStats] Events count error:', eventsError);
       }
 
-      // Get additional stats from meetup_stats for avatars and rating
+      // Get stats from meetup_stats - this is the primary source for member count and avatars
       const { data: meetupStats, error: meetupError } = await supabase
         .from('meetup_stats')
-        .select('rating, avatar_urls, joined_this_week')
+        .select('member_count, rating, avatar_urls, joined_this_week')
         .order('last_updated', { ascending: false })
         .limit(1)
         .single();
@@ -45,8 +37,18 @@ export const useSiteStats = () => {
         console.error('[useSiteStats] Meetup stats error:', meetupError);
       }
 
+      // Use Meetup member count as primary source (real community size)
+      // Fall back to profiles count only if Meetup data is unavailable
+      let memberCount = meetupStats?.member_count || 0;
+      
+      if (!memberCount) {
+        const { data: profileCount } = await supabase
+          .rpc('get_active_member_count');
+        memberCount = profileCount || 0;
+      }
+
       return {
-        memberCount: memberCountData || 0,
+        memberCount,
         upcomingEventsCount: eventsCountData || 0,
         rating: meetupStats?.rating || null,
         joinedThisWeek: meetupStats?.joined_this_week || 0,
