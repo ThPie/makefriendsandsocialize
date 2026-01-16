@@ -115,16 +115,16 @@ export const SocialProofBanner = () => {
             className="mt-6 pt-6 border-t border-border flex flex-col md:flex-row items-center justify-center gap-3"
           >
           <div className="flex -space-x-3">
-              {stats?.avatarUrls?.slice(0, 5).map((url, index) => (
+            {stats?.avatarUrls?.slice(0, 5).map((url, index) => (
                 <div
                   key={index}
-                  className={`w-8 h-8 rounded-full border-2 border-background overflow-hidden bg-muted ${failedAvatars.has(index) ? 'hidden' : ''}`}
+                  className={`w-11 h-11 rounded-full border-2 border-background overflow-hidden bg-muted ${failedAvatars.has(index) ? 'hidden' : ''}`}
                 >
                   <img
                     src={url}
                     alt="Member avatar"
-                    width={32}
-                    height={32}
+                    width={44}
+                    height={44}
                     className="w-full h-full object-cover"
                     loading="lazy"
                     decoding="async"
@@ -132,7 +132,7 @@ export const SocialProofBanner = () => {
                   />
                 </div>
               ))}
-              <div className="w-8 h-8 rounded-full border-2 border-background bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
+              <div className="w-11 h-11 rounded-full border-2 border-background bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
                 +{Math.max(0, (stats?.memberCount || 0) - 5)}
               </div>
             </div>
