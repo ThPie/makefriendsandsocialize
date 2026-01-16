@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import logo from '@/assets/logo-transparent.png';
-import havnLogo from '@/assets/havn-logo.png';
-import maisonPierreLogo from '@/assets/maison-pierre-logo.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
@@ -83,54 +81,6 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Partners & Brands Section */}
-        <div className="mx-auto max-w-7xl mb-12 pb-12 border-b border-border">
-          <div className="flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-16">
-            {/* HAVN - Venue Partner */}
-            <div className="flex flex-col items-center text-center group">
-              <p className="text-muted-foreground/60 text-xs mb-4">Our Venue Partner</p>
-              <a 
-                href="https://joinhavn.com/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="h-10 w-28 flex items-center justify-center mb-4"
-              >
-                <img
-                  src={havnLogo}
-                  alt="HAVN"
-                  loading="lazy"
-                  decoding="async"
-                  className="max-h-full max-w-full object-contain filter brightness-0 invert opacity-70 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
-                />
-              </a>
-              <p className="text-muted-foreground text-sm max-w-xs">
-                A design-forward coworking space for founders, creatives, and builders.
-              </p>
-            </div>
-            
-            {/* The Maison Pierre - In-house Brand */}
-            <div className="flex flex-col items-center text-center group">
-              <p className="text-muted-foreground/60 text-xs mb-4">Our In-House Brand</p>
-              <a 
-                href="https://themaisonpierre.com/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="h-10 w-28 flex items-center justify-center mb-4"
-              >
-                <img
-                  src={maisonPierreLogo}
-                  alt="The Maison Pierre"
-                  loading="lazy"
-                  decoding="async"
-                  className="max-h-full max-w-full object-contain opacity-80 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
-                />
-              </a>
-              <p className="text-muted-foreground text-sm max-w-xs">
-                Timeless elegance in bespoke tailoring—where clothing becomes an extension of self.
-              </p>
-            </div>
-          </div>
-        </div>
 
         {/* Footer Links */}
         <div className="mx-auto max-w-7xl flex flex-col items-center justify-between gap-6 md:flex-row">

@@ -35,7 +35,6 @@ const cookieTypes = [
       'Remember your preferences',
       'Customize content based on interests',
       'Social media integration',
-      'Chat and support features',
     ],
     required: false,
   },
