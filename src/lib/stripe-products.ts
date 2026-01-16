@@ -39,7 +39,7 @@ export const STRIPE_PRODUCTS = {
 } as const;
 
 // UI tier names mapped to database tier values
-// Database: patron = Explorer (free), fellow = Member ($59), founder = Fellow (€89.99)
+// Database: patron = Explorer (free), fellow = Member ($59), founder = Fellow ($89.99)
 export const TIER_MAPPING = {
   UI_TO_DB: {
     explorer: 'patron',
