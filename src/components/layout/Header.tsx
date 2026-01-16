@@ -146,12 +146,12 @@ export const Header = () => {
               onClick={() => setIsMenuOpen(false)}
             />
             
-            {/* Slide-out Panel */}
+            {/* Slide-out Panel - Opens from Right */}
             <motion.nav
-              className="fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-card border-r border-border z-50 flex flex-col xl:hidden shadow-2xl"
-              initial={{ x: '-100%' }}
+              className="fixed inset-y-0 right-0 w-[85%] max-w-[320px] bg-card border-l border-border z-50 flex flex-col xl:hidden shadow-2xl"
+              initial={{ x: '100%' }}
               animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
+              exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
             >
               {/* Header with Logo */}

@@ -10,9 +10,6 @@ import { Layout } from "@/components/layout/Layout";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 
-import { InstallPromptBanner } from "@/components/pwa/InstallPromptBanner";
-import { OfflineIndicator } from "@/components/pwa/OfflineIndicator";
-import { UpdateAvailable } from "@/components/pwa/UpdateAvailable";
 import HomePage from "@/pages/HomePage";
 import EventsPage from "@/pages/EventsPage";
 import EventDetailPage from "@/pages/EventDetailPage";
@@ -71,7 +68,6 @@ import ConnectedCircleDirectoryPage from "@/pages/ConnectedCircleDirectoryPage";
 import PortalBusiness from "@/pages/portal/PortalBusiness";
 import AdminBusinesses from "@/pages/admin/AdminBusinesses";
 import DateConfirmationPage from "@/pages/DateConfirmationPage";
-import InstallPage from "@/pages/InstallPage";
 import CirclesPage from "@/pages/CirclesPage";
 import TheGentlemenPage from "@/pages/circles/TheGentlemenPage";
 import LesAmisPage from "@/pages/circles/LesAmisPage";
@@ -110,7 +106,6 @@ const App = () => (
               <Route path="/circles/the-gentlemen" element={<TheGentlemenPage />} />
               <Route path="/circles/les-amis" element={<LesAmisPage />} />
               <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
-              <Route path="/install" element={<Layout><InstallPage /></Layout>} />
               
               {/* Auth routes */}
               <Route path="/auth" element={<AuthPage />} />
@@ -164,10 +159,6 @@ const App = () => (
               <Route path="*" element={<Layout><NotFound /></Layout>} />
             </Routes>
           </BrowserRouter>
-          {/* PWA Components */}
-          <InstallPromptBanner />
-          <OfflineIndicator />
-          <UpdateAvailable />
         </TooltipProvider>
       </AuthProvider>
     </ThemeProvider>

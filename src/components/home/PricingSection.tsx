@@ -48,9 +48,9 @@ const tiers = [
   {
     name: 'Fellow',
     description: 'The ultimate experience',
-    price: '€89.99',
+    price: '$89.99',
     period: '/month',
-    annualPrice: '€899/year (save 17%)',
+    annualPrice: '$899/year (save 17%)',
     features: [
       'Everything in Member',
       '30% off paid events',
