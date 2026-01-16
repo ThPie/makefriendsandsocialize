@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Users, Mail, Building2, Crown, Globe } from 'lucide-react';
+import { Calendar, Users, Mail, Building2, Crown, Globe, BookOpen, Quote } from 'lucide-react';
 import logo from '@/assets/logo-transparent.png';
-
-import { BookOpen } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const navItems = [
   { label: 'Events', path: '/events', icon: Calendar },
@@ -20,6 +19,7 @@ const navItems = [
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [dailyQuote, setDailyQuote] = useState<string | null>(null);
   const location = useLocation();
   
   const isHomePage = location.pathname === '/';
@@ -56,6 +56,32 @@ export const Header = () => {
     };
   }, [isMenuOpen]);
 
+  // Fetch daily quote
+  useEffect(() => {
+    const fetchDailyQuote = async () => {
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        const { data, error } = await supabase
+          .from('daily_quotes')
+          .select('quote_text')
+          .eq('quote_date', today)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error fetching daily quote:', error);
+          return;
+        }
+
+        if (data) {
+          setDailyQuote(data.quote_text);
+        }
+      } catch (error) {
+        console.error('Error fetching daily quote:', error);
+      }
+    };
+
+    fetchDailyQuote();
+  }, []);
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
@@ -194,12 +220,29 @@ export const Header = () => {
                 </nav>
               </div>
               
+              {/* Daily Quote Section */}
+              {dailyQuote && (
+                <motion.div 
+                  className="px-6 py-4 border-t border-border bg-secondary/30"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.35 }}
+                >
+                  <div className="flex items-start gap-2">
+                    <Quote className="w-4 h-4 text-primary/60 flex-shrink-0 mt-0.5" />
+                    <p className="font-serif italic text-sm text-muted-foreground leading-relaxed">
+                      {dailyQuote}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+
               {/* Footer with CTA */}
               <motion.div 
                 className="p-6 border-t border-border"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.4 }}
               >
                 <Button asChild className="w-full rounded-xl py-6 text-base font-semibold">
                   <Link to="/membership" onClick={() => setIsMenuOpen(false)}>
