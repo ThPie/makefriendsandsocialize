@@ -698,6 +698,27 @@ export type Database = {
           },
         ]
       }
+      daily_quotes: {
+        Row: {
+          created_at: string
+          id: string
+          quote_date: string
+          quote_text: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          quote_date: string
+          quote_text: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          quote_date?: string
+          quote_text?: string
+        }
+        Relationships: []
+      }
       date_confirmation_requests: {
         Row: {
           confirmation_token: string
