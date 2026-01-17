@@ -27,17 +27,39 @@ export const Header = () => {
 
   const [scrollDepth, setScrollDepth] = useState(0);
 
+  // Debounced scroll handler to prevent flickering
   useEffect(() => {
+    let rafId: number;
+    let lastScrollY = window.scrollY;
+    
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-      const depth = Math.min(window.scrollY / 200, 1);
-      setScrollDepth(depth);
+      // Cancel any pending animation frame
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+      
+      rafId = requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
+        // Only update if scroll position changed significantly (debounce threshold)
+        if (Math.abs(currentScrollY - lastScrollY) > 5 || currentScrollY <= 20) {
+          setIsScrolled(currentScrollY > 20);
+          const depth = Math.min(currentScrollY / 200, 1);
+          setScrollDepth(depth);
+          lastScrollY = currentScrollY;
+        }
+      });
     };
 
+    // Initial check
     handleScroll();
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -132,8 +154,10 @@ export const Header = () => {
         {/* Mobile Menu Button - Animated Hamburger */}
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className={`relative flex items-center justify-center w-11 h-11 rounded-lg transition-colors xl:hidden ${
-            isTransparent ? 'text-white hover:bg-white/10' : 'text-foreground hover:bg-muted'
+          className={`relative z-50 flex items-center justify-center w-11 h-11 rounded-lg transition-colors xl:hidden pointer-events-auto ${
+            isTransparent 
+              ? 'text-white hover:bg-white/10 bg-black/20 backdrop-blur-sm' 
+              : 'text-foreground hover:bg-muted bg-background/80'
           }`}
           aria-label="Toggle menu"
           aria-expanded={isMenuOpen}

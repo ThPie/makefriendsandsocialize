@@ -1,15 +1,16 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { AnimatedButton } from '@/components/ui/animated-button';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { format, differenceInDays } from 'date-fns';
-import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2 } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2, ExternalLink } from 'lucide-react';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
 
 type SortOption = 'date-asc' | 'date-desc' | 'title-asc' | 'title-desc';
@@ -31,6 +32,8 @@ interface Event {
   is_featured?: boolean | null;
   tags?: string[] | null;
   rsvp_count?: number | null;
+  source?: string | null;
+  external_url?: string | null;
 }
 
 const EventSkeleton = () => (
@@ -56,18 +59,13 @@ const EventSkeleton = () => (
 
 const EventsPage = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [sortOrder, setSortOrder] = useState<SortOption>('date-desc');
   const [activeTab, setActiveTab] = useState<EventTab>('upcoming');
-  const [rsvpStatus, setRsvpStatus] = useState<Record<string, boolean>>(() => {
-    try {
-      return JSON.parse(localStorage.getItem('event_rsvpStatus') || '{}');
-    } catch {
-      return {};
-    }
-  });
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const categories = ["All", "Dining", "Sports", "Art & Culture", "Music", "Networking"];
@@ -100,10 +98,6 @@ const EventsPage = () => {
     },
   });
 
-  useEffect(() => {
-    localStorage.setItem('event_rsvpStatus', JSON.stringify(rsvpStatus));
-  }, [rsvpStatus]);
-
   // Subscribe to real-time updates on events table
   useEffect(() => {
     const channel = supabase
@@ -126,15 +120,44 @@ const EventsPage = () => {
     };
   }, [queryClient]);
 
+  // Check if event is external (Meetup)
+  const isExternalEvent = (event: Event) => {
+    return event.source === 'meetup' || event.external_url;
+  };
+
+  // Get the Meetup URL for an event
+  const getMeetupUrl = (event: Event) => {
+    if (event.external_url) return event.external_url;
+    // Fallback: construct URL based on event title
+    return 'https://www.meetup.com/makefriendsandsocialize/events/';
+  };
+
   const handleRSVP = (event: Event) => {
-    const isCurrentlyRsvped = rsvpStatus[event.id];
-    setRsvpStatus(prev => ({ ...prev, [event.id]: !prev[event.id] }));
+    // For external events (Meetup), redirect to Meetup
+    if (isExternalEvent(event)) {
+      window.open(getMeetupUrl(event), '_blank', 'noopener,noreferrer');
+      toast({
+        title: "Redirecting to Meetup",
+        description: "Complete your RSVP on Meetup.com",
+      });
+      return;
+    }
     
+    // For internal events, require authentication
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to RSVP for this event.",
+      });
+      navigate('/auth?returnTo=/portal/events');
+      return;
+    }
+    
+    // Redirect to portal events for proper RSVP handling
+    navigate('/portal/events');
     toast({
-      title: isCurrentlyRsvped ? "RSVP Cancelled" : "RSVP Confirmed!",
-      description: isCurrentlyRsvped 
-        ? `You've cancelled your RSVP for ${event.title}`
-        : `You're going to ${event.title}`,
+      title: "Complete your RSVP",
+      description: "Use the member portal to manage your event RSVPs.",
     });
   };
 
@@ -377,10 +400,10 @@ const EventsPage = () => {
                           return null;
                         })()}
                       </div>
-                      {rsvpStatus[event.id] && activeTab === 'upcoming' && (
-                        <span className="flex items-center gap-1 text-emerald-400 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded-full">
-                          <CheckCircle2 className="h-3.5 w-3.5" />
-                          Going
+                      {isExternalEvent(event) && (
+                        <span className="flex items-center gap-1 text-blue-400 text-xs font-bold bg-blue-500/10 px-2 py-1 rounded-full">
+                          <ExternalLink className="h-3.5 w-3.5" />
+                          Meetup
                         </span>
                       )}
                     </div>
@@ -444,11 +467,18 @@ const EventsPage = () => {
                         <>
                           <AnimatedButton 
                             onClick={() => handleRSVP(event)}
-                            variant={rsvpStatus[event.id] ? "outline" : "default"}
-                            className={`flex-1 min-w-[100px] ${rsvpStatus[event.id] ? 'border-destructive/50 text-destructive hover:bg-destructive/10' : ''}`}
-                            aria-label={rsvpStatus[event.id] ? `Cancel RSVP for ${event.title}` : `RSVP for ${event.title}`}
+                            variant={isExternalEvent(event) ? "outline" : "default"}
+                            className={`flex-1 min-w-[100px] ${isExternalEvent(event) ? 'border-blue-500/50 text-blue-500 hover:bg-blue-500/10' : ''}`}
+                            aria-label={isExternalEvent(event) ? `RSVP on Meetup for ${event.title}` : `RSVP for ${event.title}`}
                           >
-                            {rsvpStatus[event.id] ? 'Cancel RSVP' : 'RSVP Now'}
+                            {isExternalEvent(event) ? (
+                              <>
+                                <ExternalLink className="h-4 w-4 mr-2" />
+                                RSVP on Meetup
+                              </>
+                            ) : (
+                              'RSVP Now'
+                            )}
                           </AnimatedButton>
                           <AddToCalendarButton event={event} />
                           <Button variant="outline" asChild className="rounded-xl">

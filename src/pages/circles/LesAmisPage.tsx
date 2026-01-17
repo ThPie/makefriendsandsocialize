@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/layout/Layout";
@@ -18,13 +18,15 @@ import {
   Music,
   Users,
   ArrowLeft,
-  Loader2
+  Loader2,
+  LogIn
 } from "lucide-react";
 import heroImage from "@/assets/les-amis-hero.jpg";
 
 const LesAmisPage = () => {
   const { toast } = useToast();
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, profile } = useAuth();
   const heroAnimation = useScrollAnimation();
   const whatIsAnimation = useScrollAnimation();
   const expectAnimation = useScrollAnimation();
@@ -39,6 +41,17 @@ const LesAmisPage = () => {
     comfortableSpeaking: "",
     membershipTier: "",
   });
+
+  // Pre-fill form with user data when logged in
+  useEffect(() => {
+    if (user && profile) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: [profile.first_name, profile.last_name].filter(Boolean).join(' ') || prev.fullName,
+        email: user.email || prev.email,
+      }));
+    }
+  }, [user, profile]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -85,11 +98,23 @@ const LesAmisPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Require authentication
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in or create an account to join Les Amis.",
+        variant: "destructive",
+      });
+      navigate('/auth?returnTo=/circles/les-amis');
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
       const { error } = await supabase.from("circle_applications").insert({
-        user_id: user?.id || null,
+        user_id: user.id,
         circle_name: "les-amis",
         full_name: formData.fullName,
         email: formData.email,
