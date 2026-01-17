@@ -46,7 +46,7 @@ interface AuthContextType {
   applicationStatus: ApplicationStatus;
   isLoading: boolean;
   isAdmin: boolean;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string) => Promise<{ error: Error | null; user?: User | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -147,14 +147,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (email: string, password: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: redirectUrl
       }
     });
-    return { error: error as Error | null };
+    
+    // Log for debugging (remove in production)
+    if (data?.user) {
+      console.log('User created successfully:', data.user.id);
+    } else if (!error) {
+      console.log('Signup response without user:', data);
+    }
+    
+    return { error: error as Error | null, user: data?.user };
   };
 
   const signIn = async (email: string, password: string) => {
@@ -219,7 +227,7 @@ export function useAuth() {
       applicationStatus: null,
       isLoading: true,
       isAdmin: false,
-      signUp: async () => ({ error: new Error('Auth not ready') }),
+      signUp: async () => ({ error: new Error('Auth not ready'), user: null }),
       signIn: async () => ({ error: new Error('Auth not ready') }),
       signOut: async () => {},
       refreshProfile: async () => {},
