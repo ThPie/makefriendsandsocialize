@@ -1,12 +1,18 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const logStep = (step: string, details?: any) => {
+// Input validation schema
+const RequestSchema = z.object({
+  match_id: z.string().uuid("match_id must be a valid UUID"),
+});
+
+const logStep = (step: string, details?: Record<string, unknown>) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
   console.log(`[REVEAL-MATCH] ${step}${detailsStr}`);
 };
@@ -30,20 +36,55 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { match_id } = await req.json();
-    if (!match_id) throw new Error("match_id is required");
-    logStep("Match ID", { match_id });
+    // Parse and validate input
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON body" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
+
+    const parseResult = RequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      const errorMessage = parseResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      logStep("Validation failed", { errors: errorMessage });
+      return new Response(
+        JSON.stringify({ error: `Invalid input: ${errorMessage}` }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
+
+    const { match_id } = parseResult.data;
+    logStep("Match ID validated", { match_id });
 
     // Authenticate user
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "No authorization header provided" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
 
     const token = authHeader.replace("Bearer ", "");
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    if (userError) {
+      return new Response(
+        JSON.stringify({ error: `Authentication error: ${userError.message}` }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
     
     const user = userData.user;
-    if (!user) throw new Error("User not authenticated");
+    if (!user) {
+      return new Response(
+        JSON.stringify({ error: "User not authenticated" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
     logStep("User authenticated", { userId: user.id });
 
     // Check if already revealed

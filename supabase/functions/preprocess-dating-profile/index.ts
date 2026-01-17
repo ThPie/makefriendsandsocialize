@@ -1,10 +1,20 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Input validation schema
+const RequestSchema = z.object({
+  profileId: z.string().uuid("profileId must be a valid UUID").optional(),
+  batchAll: z.boolean().optional(),
+}).refine(
+  (data) => data.profileId || data.batchAll,
+  { message: "Either profileId or batchAll must be provided" }
+);
 
 interface NormalizedConflictStyle {
   primary_style: "collaborative" | "avoidant" | "competitive" | "accommodating" | "compromising" | "unknown";
@@ -40,14 +50,34 @@ serve(async (req) => {
   }
 
   try {
-    const body = await req.json();
-    const { profileId, batchAll } = body;
+    // Parse and validate input
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON body" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const parseResult = RequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      const errorMessage = parseResult.error.errors.map(e => e.message).join(', ');
+      console.error("Validation failed:", errorMessage);
+      return new Response(
+        JSON.stringify({ error: `Invalid input: ${errorMessage}` }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { profileId, batchAll } = parseResult.data;
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    let profilesToProcess = [];
+    let profilesToProcess: Array<Record<string, unknown>> = [];
 
     if (batchAll) {
       // Get all profiles that haven't been preprocessed or need reprocessing
@@ -68,11 +98,12 @@ serve(async (req) => {
         .single();
 
       if (profileError || !profile) {
-        throw new Error("Profile not found");
+        return new Response(
+          JSON.stringify({ error: "Profile not found" }),
+          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
       profilesToProcess = [profile];
-    } else {
-      throw new Error("profileId or batchAll is required");
     }
 
     if (profilesToProcess.length === 0) {
@@ -94,12 +125,7 @@ serve(async (req) => {
       try {
         console.log(`Pre-processing profile for: ${profile.display_name}`);
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
-
-    const prompt = `You are a relationship psychology expert. Analyze this dating profile and normalize the free-text answers into structured categories.
+        const prompt = `You are a relationship psychology expert. Analyze this dating profile and normalize the free-text answers into structured categories.
 
 **PROFILE DATA:**
 - Communication Style: ${profile.communication_style || "Not specified"}
@@ -113,7 +139,7 @@ serve(async (req) => {
 - Attachment Style: ${profile.attachment_style || "Not specified"}
 - Tuesday Night Test: ${profile.tuesday_night_test || "Not specified"}
 - Financial Philosophy: ${profile.financial_philosophy || "Not specified"}
-- Core Values Ranked: ${profile.core_values_ranked?.join(", ") || profile.core_values || "Not specified"}
+- Core Values Ranked: ${(profile.core_values_ranked as string[])?.join(", ") || profile.core_values || "Not specified"}
 - Accountability Reflection: ${profile.accountability_reflection || "Not specified"}
 - Past Relationship Learning: ${profile.past_relationship_learning || "Not specified"}
 - Trust/Fidelity Views: ${profile.trust_fidelity_views || "Not specified"}
@@ -146,64 +172,64 @@ serve(async (req) => {
 
 Return a JSON object with these four keys. Be conservative in scoring - only rate high if there's clear evidence.`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { 
-            role: "system", 
-            content: "You are a relationship psychology expert. Analyze profiles and return structured JSON only." 
+        const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            "Content-Type": "application/json",
           },
-          { role: "user", content: prompt },
-        ],
-        response_format: { type: "json_object" },
-      }),
-    });
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash",
+            messages: [
+              { 
+                role: "system", 
+                content: "You are a relationship psychology expert. Analyze profiles and return structured JSON only." 
+              },
+              { role: "user", content: prompt },
+            ],
+            response_format: { type: "json_object" },
+          }),
+        });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("AI API error:", errorText);
-      throw new Error("Failed to analyze profile with AI");
-    }
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("AI API error:", errorText);
+          throw new Error("Failed to analyze profile with AI");
+        }
 
-    const aiResult = await response.json();
-    const content = aiResult.choices?.[0]?.message?.content;
+        const aiResult = await response.json();
+        const content = aiResult.choices?.[0]?.message?.content;
 
-    if (!content) {
-      throw new Error("No response from AI");
-    }
+        if (!content) {
+          throw new Error("No response from AI");
+        }
 
-    let normalized;
-    try {
-      normalized = JSON.parse(content);
-    } catch (parseError) {
-      console.error("Failed to parse AI response:", content);
-      throw new Error("Invalid AI response format");
-    }
+        let normalized;
+        try {
+          normalized = JSON.parse(content);
+        } catch (parseError) {
+          console.error("Failed to parse AI response:", content);
+          throw new Error("Invalid AI response format");
+        }
 
-    console.log("Normalized data:", JSON.stringify(normalized, null, 2));
+        console.log("Normalized data:", JSON.stringify(normalized, null, 2));
 
-    // Update the profile with normalized data
-    const { error: updateError } = await supabase
-      .from("dating_profiles")
-      .update({
-        conflict_style_normalized: normalized.conflict_style_normalized || null,
-        connection_style_normalized: normalized.connection_style_normalized || null,
-        lifestyle_normalized: normalized.lifestyle_normalized || null,
-        compatibility_dimensions: normalized.compatibility_dimensions || null,
-        last_preprocessed_at: new Date().toISOString(),
-      })
-      .eq("id", profileId);
+        // Update the profile with normalized data
+        const { error: updateError } = await supabase
+          .from("dating_profiles")
+          .update({
+            conflict_style_normalized: normalized.conflict_style_normalized || null,
+            connection_style_normalized: normalized.connection_style_normalized || null,
+            lifestyle_normalized: normalized.lifestyle_normalized || null,
+            compatibility_dimensions: normalized.compatibility_dimensions || null,
+            last_preprocessed_at: new Date().toISOString(),
+          })
+          .eq("id", profile.id);
 
-    if (updateError) {
-      console.error("Failed to update profile:", updateError);
-      throw new Error("Failed to save normalized data");
-    }
+        if (updateError) {
+          console.error("Failed to update profile:", updateError);
+          throw new Error("Failed to save normalized data");
+        }
 
         processedCount++;
         console.log(`Successfully pre-processed profile: ${profile.display_name}`);
