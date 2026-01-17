@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -9,12 +10,20 @@ const corsHeaders = {
 
 const SITE_URL = 'https://qzqomqctuqldexnxgmlh.lovableproject.com';
 
-interface ConfirmationRequest {
-  token: string;
-  action: 'confirm' | 'reschedule' | 'cancel' | 'get';
-  newDates?: Array<{ date: string; time: string }>;
-  reason?: string;
-}
+// Input validation schemas
+const NewDateSchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "date must be in YYYY-MM-DD format"),
+  time: z.string().regex(/^\d{2}:\d{2}$/, "time must be in HH:MM format"),
+});
+
+const RequestSchema = z.object({
+  token: z.string().min(1, "token is required").max(500, "token too long"),
+  action: z.enum(['confirm', 'reschedule', 'cancel', 'get'], {
+    errorMap: () => ({ message: "action must be one of: confirm, reschedule, cancel, get" })
+  }),
+  newDates: z.array(NewDateSchema).max(5, "maximum 5 new dates allowed").optional(),
+  reason: z.string().max(500, "reason must be less than 500 characters").optional(),
+});
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') {
@@ -29,14 +38,28 @@ const handler = async (req: Request): Promise<Response> => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
-    const { token, action, newDates, reason }: ConfirmationRequest = await req.json();
-
-    if (!token) {
-      return new Response(JSON.stringify({ error: 'Token is required' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    // Parse and validate input
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Invalid JSON body' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
+
+    const parseResult = RequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      const errorMessage = parseResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      console.error("Validation failed:", errorMessage);
+      return new Response(
+        JSON.stringify({ error: `Invalid input: ${errorMessage}` }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { token, action, newDates, reason } = parseResult.data;
 
     // Get the confirmation request
     const { data: confirmationRequest, error: fetchError } = await supabase

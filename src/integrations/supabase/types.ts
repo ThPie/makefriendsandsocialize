@@ -2525,7 +2525,54 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      user_sessions_safe: {
+        Row: {
+          browser: string | null
+          created_at: string | null
+          device_name: string | null
+          device_type: string | null
+          expires_at: string | null
+          id: string | null
+          ip_address: string | null
+          is_current: boolean | null
+          last_active_at: string | null
+          os: string | null
+          remember_me: boolean | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          created_at?: string | null
+          device_name?: string | null
+          device_type?: string | null
+          expires_at?: string | null
+          id?: string | null
+          ip_address?: string | null
+          is_current?: boolean | null
+          last_active_at?: string | null
+          os?: string | null
+          remember_me?: boolean | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          created_at?: string | null
+          device_name?: string | null
+          device_type?: string | null
+          expires_at?: string | null
+          id?: string | null
+          ip_address?: string | null
+          is_current?: boolean | null
+          last_active_at?: string | null
+          os?: string | null
+          remember_me?: boolean | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       calculate_reading_time: { Args: { _content: string }; Returns: number }
@@ -2588,6 +2635,8 @@ export type Database = {
         Returns: string
       }
       decrement_rsvp_count: { Args: { event_id: string }; Returns: undefined }
+      decrypt_sensitive_field: { Args: { _encrypted: string }; Returns: string }
+      encrypt_sensitive_field: { Args: { _value: string }; Returns: string }
       event_has_available_spots: {
         Args: { p_event_id: string }
         Returns: boolean

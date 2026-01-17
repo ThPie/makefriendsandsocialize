@@ -1,10 +1,16 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Input validation schema
+const RequestSchema = z.object({
+  profileId: z.string().uuid("profileId must be a valid UUID"),
+});
 
 interface DatingProfile {
   id: string;
@@ -67,11 +73,28 @@ serve(async (req) => {
   }
 
   try {
-    const { profileId } = await req.json();
-
-    if (!profileId) {
-      throw new Error("profileId is required");
+    // Parse and validate input
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON body" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
+
+    const parseResult = RequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      const errorMessage = parseResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      console.error("Validation failed:", errorMessage);
+      return new Response(
+        JSON.stringify({ error: `Invalid input: ${errorMessage}` }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { profileId } = parseResult.data;
 
     // Initialize Supabase client with service role
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -86,7 +109,10 @@ serve(async (req) => {
       .single();
 
     if (profileError || !targetProfile) {
-      throw new Error("Profile not found");
+      return new Response(
+        JSON.stringify({ error: "Profile not found" }),
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     console.log(`Finding matches for: ${targetProfile.display_name}`);
