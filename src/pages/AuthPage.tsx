@@ -307,68 +307,129 @@ export default function AuthPage() {
     
     setIsSubmitting(true);
     
-    const { error: signUpError } = await signUp(email, password);
-    
-    if (signUpError) {
-      setIsSubmitting(false);
-      if (signUpError.message.includes('already registered')) {
-        toast.error('This email is already registered. Please sign in instead.');
-        setMode('signin');
-        setStep(1);
-      } else {
-        toast.error(signUpError.message);
-      }
-      return;
-    }
-
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (session?.user) {
-      await supabase
-        .from('profiles')
-        .update({
-          first_name: firstName,
-          last_name: lastName,
-          signature_style: signatureStyle,
-          favorite_brands: selectedBrands,
-          values_in_partner: valuesInPartner,
-          interests: selectedInterests,
-          industry,
-          job_title: jobTitle,
-          terms_accepted_at: new Date().toISOString(),
-        })
-        .eq('id', session.user.id);
-
-      await supabase
-        .from('application_waitlist')
-        .insert({
-          user_id: session.user.id,
-          style_description: signatureStyle,
-          favorite_brands: selectedBrands,
-          values_in_partner: valuesInPartner,
-          interests: selectedInterests,
-          industry,
-          job_title: jobTitle,
-          status: 'pending',
-        });
-
-      // Track referral if present
-      if (referralCode) {
-        try {
-          await supabase.functions.invoke('track-referral', {
-            body: {
-              referral_code: referralCode,
-              new_user_id: session.user.id,
-            },
-          });
-        } catch (err) {
-          console.error('Failed to track referral:', err);
+    try {
+      const { error: signUpError, data: signUpData } = await signUp(email, password);
+      
+      if (signUpError) {
+        // Handle specific error cases with user-friendly messages
+        const errorMessage = signUpError.message?.toLowerCase() || '';
+        
+        if (errorMessage.includes('already registered') || errorMessage.includes('user already exists')) {
+          toast.error('This email is already registered. Please sign in instead.');
+          setMode('signin');
+          setStep(1);
+          setIsSubmitting(false);
+          return;
         }
+        
+        if (errorMessage.includes('invalid api key') || errorMessage.includes('api key')) {
+          // This is likely an email service configuration issue, not a user error
+          console.error('Email service configuration error:', signUpError);
+          toast.error('Account creation temporarily unavailable. Please try again in a few minutes or contact support.');
+          setIsSubmitting(false);
+          return;
+        }
+        
+        if (errorMessage.includes('rate limit') || errorMessage.includes('too many')) {
+          toast.error('Too many signup attempts. Please wait a few minutes and try again.');
+          setIsSubmitting(false);
+          return;
+        }
+        
+        if (errorMessage.includes('signups not allowed') || errorMessage.includes('signup disabled')) {
+          toast.error('New registrations are temporarily disabled. Please try again later or contact support.');
+          setIsSubmitting(false);
+          return;
+        }
+        
+        if (errorMessage.includes('email') && errorMessage.includes('invalid')) {
+          toast.error('Please enter a valid email address.');
+          setIsSubmitting(false);
+          return;
+        }
+        
+        // Generic fallback for unknown errors
+        console.error('Signup error:', signUpError);
+        toast.error('Unable to create account. Please check your information and try again.');
+        setIsSubmitting(false);
+        return;
       }
-    }
 
-    setIsSubmitting(false);
-    navigate('/auth/waiting');
+      // Wait briefly for session to be established
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.user) {
+        // Update profile with onboarding data
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            first_name: firstName,
+            last_name: lastName,
+            signature_style: signatureStyle,
+            favorite_brands: selectedBrands,
+            values_in_partner: valuesInPartner,
+            interests: selectedInterests,
+            industry,
+            job_title: jobTitle,
+            terms_accepted_at: new Date().toISOString(),
+          })
+          .eq('id', session.user.id);
+
+        if (profileError) {
+          console.error('Profile update error:', profileError);
+          // Continue anyway - profile can be updated later
+        }
+
+        // Add to waitlist
+        const { error: waitlistError } = await supabase
+          .from('application_waitlist')
+          .insert({
+            user_id: session.user.id,
+            style_description: signatureStyle,
+            favorite_brands: selectedBrands,
+            values_in_partner: valuesInPartner,
+            interests: selectedInterests,
+            industry,
+            job_title: jobTitle,
+            status: 'pending',
+          });
+
+        if (waitlistError) {
+          console.error('Waitlist insert error:', waitlistError);
+          // Continue anyway - user is registered
+        }
+
+        // Track referral if present
+        if (referralCode) {
+          try {
+            await supabase.functions.invoke('track-referral', {
+              body: {
+                referral_code: referralCode,
+                new_user_id: session.user.id,
+              },
+            });
+          } catch (err) {
+            console.error('Failed to track referral:', err);
+            // Non-critical, continue
+          }
+        }
+        
+        setIsSubmitting(false);
+        navigate('/auth/waiting');
+      } else {
+        // No session but no error - might need email confirmation
+        console.log('Signup completed, awaiting email confirmation');
+        setIsSubmitting(false);
+        toast.success('Account created! Please check your email to verify your account.');
+        navigate('/auth/waiting');
+      }
+    } catch (err) {
+      console.error('Unexpected signup error:', err);
+      toast.error('An unexpected error occurred. Please try again.');
+      setIsSubmitting(false);
+    }
   };
 
   const toggleMotivation = (motivation: string) => {
