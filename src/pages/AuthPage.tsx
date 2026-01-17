@@ -308,9 +308,10 @@ export default function AuthPage() {
     setIsSubmitting(true);
     
     try {
-      const { error: signUpError, data: signUpData } = await signUp(email, password);
+      const signUpResult = await signUp(email, password);
       
-      if (signUpError) {
+      if (signUpResult.error) {
+        const signUpError = signUpResult.error;
         // Handle specific error cases with user-friendly messages
         const errorMessage = signUpError.message?.toLowerCase() || '';
         
