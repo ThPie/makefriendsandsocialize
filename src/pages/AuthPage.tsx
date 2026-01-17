@@ -199,11 +199,17 @@ export default function AuthPage() {
 
   // Removed: member stats are now fetched via useSiteStats hook
 
+  // Handle redirect after login
   useEffect(() => {
     if (user && !isLoading) {
-      navigate('/portal');
+      const returnTo = searchParams.get('returnTo');
+      if (returnTo && returnTo.startsWith('/')) {
+        navigate(returnTo);
+      } else {
+        navigate('/portal');
+      }
     }
-  }, [user, isLoading, navigate]);
+  }, [user, isLoading, navigate, searchParams]);
 
   const validateStep1 = () => {
     // Mark all fields as touched to show errors

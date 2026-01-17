@@ -1383,6 +1383,7 @@ export type Database = {
           currency: string | null
           date: string
           description: string | null
+          external_url: string | null
           id: string
           image_url: string | null
           is_featured: boolean | null
@@ -1409,6 +1410,7 @@ export type Database = {
           currency?: string | null
           date: string
           description?: string | null
+          external_url?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
@@ -1435,6 +1437,7 @@ export type Database = {
           currency?: string | null
           date?: string
           description?: string | null
+          external_url?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null

@@ -115,7 +115,17 @@ serve(async (req) => {
       imageUrl: string | null;
       price: number | null;
       rsvpCount: number | null;
+      externalUrl: string | null;
     }
+
+    // Helper function to normalize title for deduplication
+    const normalizeTitle = (title: string): string => {
+      return title
+        .toLowerCase()
+        .replace(/[^\w\s]/g, '') // Remove special characters
+        .replace(/\s+/g, ' ')    // Normalize whitespace
+        .trim();
+    };
 
     // Helper function to parse various date formats
     const parseEventDate = (dateStr: string): string | null => {
@@ -252,6 +262,9 @@ serve(async (req) => {
 
       console.log('Valid event found:', title, eventDate);
 
+      // Construct external URL for Meetup event
+      const externalUrl = `https://www.meetup.com/makefriendsandsocialize/events/`;
+
       validEvents.push({
         title,
         date: eventDate,
@@ -262,24 +275,81 @@ serve(async (req) => {
         imageUrl,
         price,
         rsvpCount: event.attendees || null,
+        externalUrl,
       });
     }
 
     console.log('Validated', validEvents.length, 'upcoming events');
 
-    // Store events in database
+    // Store events in database with improved deduplication
     const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
     let insertedCount = 0;
     let updatedCount = 0;
 
+    // Track normalized titles we've processed to avoid duplicates
+    const processedEvents = new Set<string>();
+
+    // Get all existing meetup events to check for deletions
+    const { data: existingMeetupEvents } = await supabase
+      .from('events')
+      .select('id, title, date')
+      .eq('source', 'meetup')
+      .gte('date', today);
+
+    const scrapedEventKeys = new Set(
+      validEvents.map(e => `${normalizeTitle(e.title)}|${e.date}`)
+    );
+
+    // Mark events that are no longer on Meetup as cancelled
+    if (existingMeetupEvents) {
+      for (const existing of existingMeetupEvents) {
+        const existingKey = `${normalizeTitle(existing.title)}|${existing.date}`;
+        if (!scrapedEventKeys.has(existingKey)) {
+          console.log('Event no longer on Meetup, marking as cancelled:', existing.title);
+          await supabase
+            .from('events')
+            .update({ status: 'cancelled', updated_at: new Date().toISOString() })
+            .eq('id', existing.id);
+        }
+      }
+    }
+
     for (const event of validEvents) {
-      // Check if event already exists by title and date
+      const normalizedTitle = normalizeTitle(event.title);
+      const eventKey = `${normalizedTitle}|${event.date}`;
+
+      // Skip if we've already processed this event
+      if (processedEvents.has(eventKey)) {
+        console.log('Skipping duplicate:', event.title);
+        continue;
+      }
+      processedEvents.add(eventKey);
+
+      // Check if event already exists by normalized title and date
       const { data: existing } = await supabase
         .from('events')
         .select('id')
-        .eq('title', event.title)
         .eq('date', event.date)
-        .limit(1);
+        .eq('source', 'meetup')
+        .limit(10);
+
+      // Find matching event by normalized title
+      let matchingEvent = null;
+      if (existing) {
+        for (const e of existing) {
+          // We need to fetch the title to compare
+          const { data: eventData } = await supabase
+            .from('events')
+            .select('title')
+            .eq('id', e.id)
+            .single();
+          
+          if (eventData && normalizeTitle(eventData.title) === normalizedTitle) {
+            matchingEvent = e;
+            break;
+          }
+        }
+      }
 
       const eventData = {
         time: event.time || '18:00',
@@ -288,6 +358,7 @@ serve(async (req) => {
         image_url: event.imageUrl,
         status: 'published',
         source: 'meetup',
+        external_url: event.externalUrl,
         ticket_price: event.price || 0,
         currency: 'USD',
         tags: ['meetup', 'networking'],
@@ -296,11 +367,11 @@ serve(async (req) => {
         rsvp_count: event.rsvpCount || 0,
       };
 
-      if (existing && existing.length > 0) {
+      if (matchingEvent) {
         const { error } = await supabase
           .from('events')
           .update(eventData)
-          .eq('id', existing[0].id);
+          .eq('id', matchingEvent.id);
 
         if (!error) updatedCount++;
         else console.error('Error updating event:', error);

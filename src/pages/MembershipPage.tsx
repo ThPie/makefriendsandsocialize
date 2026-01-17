@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -44,6 +44,7 @@ const itemVariants = {
 };
 
 const MembershipPage = () => {
+  const navigate = useNavigate();
   const heroAnimation = useScrollAnimation();
   const legacyAnimation = useScrollAnimation();
   const tiersAnimation = useScrollAnimation();
@@ -57,7 +58,7 @@ const MembershipPage = () => {
 
   const handleStartTrial = async (tier: 'member' | 'fellow') => {
     if (!user) {
-      toast.error('Please sign in to start a trial');
+      navigate('/auth?returnTo=/membership');
       return;
     }
     
@@ -73,7 +74,7 @@ const MembershipPage = () => {
 
   const handleSubscribe = async (tier: 'member' | 'fellow') => {
     if (!user) {
-      toast.error('Please sign in to subscribe');
+      navigate('/auth?returnTo=/membership');
       return;
     }
     
