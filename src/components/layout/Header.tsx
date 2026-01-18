@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Users, Mail, Building2, Crown, Globe, BookOpen, Quote } from 'lucide-react';
+import { Calendar, Users, Mail, Building2, Crown, Globe, BookOpen, Quote, User } from 'lucide-react';
 import logo from '@/assets/logo-transparent.png';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const navItems = [
   { label: 'Events', path: '/events', icon: Calendar },
@@ -21,11 +23,39 @@ export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [dailyQuote, setDailyQuote] = useState<string | null>(null);
   const location = useLocation();
+  const { user, profile } = useAuth();
   
   const isHomePage = location.pathname === '/';
   const isTransparent = isHomePage && !isScrolled;
 
   const [scrollDepth, setScrollDepth] = useState(0);
+  
+  // Get user initials for avatar fallback
+  const getUserInitials = () => {
+    if (profile?.first_name || profile?.last_name) {
+      const first = profile.first_name?.[0] || '';
+      const last = profile.last_name?.[0] || '';
+      return (first + last).toUpperCase() || 'U';
+    }
+    if (user?.email) {
+      return user.email[0].toUpperCase();
+    }
+    return 'U';
+  };
+  
+  const getFullName = () => {
+    if (profile?.first_name || profile?.last_name) {
+      return [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+    }
+    return null;
+  };
+  
+  const getAvatarUrl = () => {
+    if (profile?.avatar_urls && profile.avatar_urls.length > 0) {
+      return profile.avatar_urls[0];
+    }
+    return undefined;
+  };
 
   // Debounced scroll handler to prevent flickering
   useEffect(() => {
@@ -146,9 +176,26 @@ export const Header = () => {
               </Link>
             ))}
           </nav>
-          <Button asChild>
-            <Link to="/membership">Apply to Join</Link>
-          </Button>
+          
+          {/* Profile Avatar or Apply Button */}
+          {user ? (
+            <Link 
+              to="/portal" 
+              className="ml-2 transition-transform hover:scale-105"
+              title="Go to your profile"
+            >
+              <Avatar className="h-10 w-10 border-2 border-primary/30 hover:border-primary transition-colors">
+                <AvatarImage src={getAvatarUrl()} alt={getFullName() || 'Profile'} />
+                <AvatarFallback className="bg-primary/20 text-primary font-medium">
+                  {getUserInitials()}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+          ) : (
+            <Button asChild>
+              <Link to="/membership">Apply to Join</Link>
+            </Button>
+          )}
         </div>
 
         {/* Mobile Menu Button - Animated Hamburger */}
@@ -215,6 +262,38 @@ export const Header = () => {
                 </Link>
               </div>
               
+              {/* Profile Section for logged in users */}
+              {user && (
+                <motion.div 
+                  className="px-6 py-4 border-b border-border"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <Link 
+                    to="/portal" 
+                    className="flex items-center gap-3 p-3 rounded-xl bg-primary/10 hover:bg-primary/15 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Avatar className="h-12 w-12 border-2 border-primary/30">
+                      <AvatarImage src={getAvatarUrl()} alt={getFullName() || 'Profile'} />
+                      <AvatarFallback className="bg-primary/20 text-primary font-medium">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-foreground truncate">
+                        {getFullName() || 'Your Profile'}
+                      </p>
+                      <p className="text-sm text-muted-foreground truncate">
+                        View your dashboard
+                      </p>
+                    </div>
+                    <User className="w-5 h-5 text-primary" />
+                  </Link>
+                </motion.div>
+              )}
+
               {/* Navigation Items */}
               <div className="flex-1 overflow-y-auto py-6 px-4">
                 <nav className="space-y-1">
