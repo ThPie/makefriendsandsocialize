@@ -7,6 +7,7 @@ import logo from '@/assets/logo-transparent.png';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 const navItems = [
   { label: 'Events', path: '/events', icon: Calendar },
@@ -160,7 +161,7 @@ export const Header = () => {
         </Link>
 
         {/* Desktop Navigation - xl breakpoint for better tablet support */}
-        <div className="hidden flex-1 items-center justify-end gap-4 xl:flex">
+        <div className="hidden flex-1 items-center justify-end gap-3 xl:flex">
           <nav className="flex items-center gap-4">
             {navItems.map((item) => (
               <Link
@@ -176,6 +177,9 @@ export const Header = () => {
               </Link>
             ))}
           </nav>
+          
+          {/* Theme Toggle */}
+          <ThemeToggle isTransparent={isTransparent} />
           
           {/* Profile Avatar or Apply Button */}
           {user ? (
@@ -251,8 +255,8 @@ export const Header = () => {
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
             >
-              {/* Header with Logo */}
-              <div className="p-6 border-b border-border">
+              {/* Header with Logo and Theme Toggle */}
+              <div className="p-6 border-b border-border flex items-center justify-between">
                 <Link to="/" onClick={() => setIsMenuOpen(false)}>
                   <img 
                     src={logo} 
@@ -260,6 +264,7 @@ export const Header = () => {
                     className="h-12 w-auto object-contain"
                   />
                 </Link>
+                <ThemeToggle />
               </div>
               
               {/* Profile Section for logged in users */}
