@@ -3,7 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Users, Mail, Building2, Crown, Globe, BookOpen, Quote, User } from 'lucide-react';
-import logo from '@/assets/logo-transparent.png';
+import { useTheme } from 'next-themes';
+import logoLight from '@/assets/logo-transparent.png';
+import logoDark from '@/assets/logo-dark.png';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -23,13 +25,23 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [dailyQuote, setDailyQuote] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
   const location = useLocation();
   const { user, profile } = useAuth();
+  const { resolvedTheme } = useTheme();
   
   const isHomePage = location.pathname === '/';
   const isTransparent = isHomePage && !isScrolled;
+  
+  // Use light logo for dark theme OR transparent header, dark logo for light theme
+  const currentLogo = !mounted || resolvedTheme === 'dark' || isTransparent ? logoLight : logoDark;
 
   const [scrollDepth, setScrollDepth] = useState(0);
+  
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   // Get user initials for avatar fallback
   const getUserInitials = () => {
@@ -152,7 +164,7 @@ export const Header = () => {
         {/* Logo */}
         <Link to="/" className="flex items-center">
           <img 
-            src={logo} 
+            src={currentLogo} 
             alt="MakeFriends & Socialize" 
             className={`w-auto object-contain transition-all duration-300 ${
               isTransparent ? 'h-14 md:h-16' : 'h-10 md:h-12'
@@ -259,7 +271,7 @@ export const Header = () => {
               <div className="p-6 border-b border-border flex items-center justify-between">
                 <Link to="/" onClick={() => setIsMenuOpen(false)}>
                   <img 
-                    src={logo} 
+                    src={mounted && resolvedTheme === 'light' ? logoDark : logoLight} 
                     alt="MakeFriends & Socialize" 
                     className="h-12 w-auto object-contain"
                   />
