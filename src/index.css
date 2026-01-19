@@ -18,8 +18,54 @@
     transition: opacity 300ms ease-out, transform 300ms ease-out;
   }
 
+  /* Light Theme - Elegant Cream & Forest */
+  :root {
+    --background: 45 30% 96%;
+    --foreground: 155 25% 15%;
+
+    --card: 45 25% 98%;
+    --card-foreground: 155 25% 15%;
+
+    --popover: 45 25% 98%;
+    --popover-foreground: 155 25% 15%;
+
+    /* Warm Elegant Gold Accent */
+    --primary: 43 55% 45%;
+    --primary-foreground: 45 30% 98%;
+
+    /* Forest Secondary */
+    --secondary: 155 15% 90%;
+    --secondary-foreground: 155 25% 20%;
+
+    --muted: 155 10% 92%;
+    --muted-foreground: 155 15% 40%;
+
+    --accent: 155 12% 88%;
+    --accent-foreground: 155 25% 15%;
+
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 155 12% 85%;
+    --input: 155 12% 85%;
+    --ring: 43 55% 45%;
+
+    /* Radius */
+    --radius: 0.75rem;
+
+    /* Sidebar - Light theme */
+    --sidebar-background: 45 25% 97%;
+    --sidebar-foreground: 155 25% 15%;
+    --sidebar-primary: 43 55% 45%;
+    --sidebar-primary-foreground: 45 30% 98%;
+    --sidebar-accent: 155 10% 92%;
+    --sidebar-accent-foreground: 155 25% 15%;
+    --sidebar-border: 155 12% 85%;
+    --sidebar-ring: 43 55% 45%;
+  }
+
+  /* Dark Theme - Premium Vintage Forest Green */
   .dark {
-    /* Premium Vintage Forest Green Theme - Aged Paper Aesthetic */
     --background: 155 25% 12%;
     --foreground: 43 35% 78%;
 
