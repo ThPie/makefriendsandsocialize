@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import logo from '@/assets/logo-transparent.png';
+import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
+import logoLight from '@/assets/logo-transparent.png';
+import logoDark from '@/assets/logo-dark.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
@@ -32,6 +34,14 @@ const LinkedInIcon = ({ className }: { className?: string }) => (
 export const Footer = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  const currentLogo = mounted && resolvedTheme === 'light' ? logoDark : logoLight;
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,7 +97,7 @@ export const Footer = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <img 
-              src={logo} 
+              src={currentLogo} 
               alt="Make Friends and Socialize" 
               loading="lazy"
               decoding="async"
