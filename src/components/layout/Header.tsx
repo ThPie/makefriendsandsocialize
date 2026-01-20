@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { useCapacitor } from '@/hooks/useCapacitor';
 
 const navItems = [
   { label: 'Events', path: '/events', icon: Calendar },
@@ -29,6 +30,7 @@ export const Header = () => {
   const location = useLocation();
   const { user, profile } = useAuth();
   const { resolvedTheme } = useTheme();
+  const { isNative, isIOS } = useCapacitor();
   
   const isHomePage = location.pathname === '/';
   const isTransparent = isHomePage && !isScrolled;
@@ -155,6 +157,8 @@ export const Header = () => {
           : 'border-b border-border bg-background/95 backdrop-blur-md'
       }`}
       style={{
+        // Add safe area padding for iOS notch/dynamic island in native apps
+        paddingTop: isNative && isIOS ? 'env(safe-area-inset-top)' : undefined,
         boxShadow: isTransparent 
           ? 'none' 
           : `0 ${4 + scrollDepth * 8}px ${12 + scrollDepth * 20}px -${4 - scrollDepth * 2}px hsl(var(--foreground) / ${0.05 + scrollDepth * 0.1})`
