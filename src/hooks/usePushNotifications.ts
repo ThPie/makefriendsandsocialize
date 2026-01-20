@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { Capacitor } from '@capacitor/core';
+
+// Check if running in native app context
+const isNativePlatform = Capacitor.isNativePlatform();
 
 // VAPID public key - this should match your VAPID_PUBLIC_KEY secret
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
@@ -30,6 +34,14 @@ export function usePushNotifications() {
 
   // Check if push notifications are supported
   useEffect(() => {
+    // For native apps, we'll handle push differently in Phase 3
+    // For now, mark as not supported on native until Phase 3 implementation
+    if (isNativePlatform) {
+      setIsSupported(false);
+      setIsLoading(false);
+      return;
+    }
+    
     const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
     setIsSupported(supported);
     

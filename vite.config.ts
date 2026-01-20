@@ -11,7 +11,13 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     chunkSizeWarningLimit: 3000,
+    // Ensure assets use relative paths for Capacitor
+    assetsDir: 'assets',
+    // Generate sourcemaps for debugging native issues
+    sourcemap: mode === 'development',
   },
+  // Base path for Capacitor (relative paths for native app compatibility)
+  base: './',
   plugins: [
     react(),
     mode === "development" && componentTagger(),
