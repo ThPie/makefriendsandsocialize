@@ -26,6 +26,7 @@ import CodeOfConductPage from "@/pages/CodeOfConductPage";
 import CookiesPage from "@/pages/CookiesPage";
 import FAQPage from "@/pages/FAQPage";
 import NotFound from "@/pages/NotFound";
+import BusinessDirectoryPage from "@/pages/BusinessDirectoryPage";
 import AuthPage from "@/pages/AuthPage";
 import AuthCallbackPage from "@/pages/AuthCallbackPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
@@ -118,6 +119,7 @@ const MainRoutes = () => (
     <Route path="/slow-dating" element={<SlowDatingPage />} />
     <Route path="/connected-circle" element={<ConnectedCirclePage />} />
     <Route path="/connected-circle/directory" element={<ConnectedCircleDirectoryPage />} />
+    <Route path="/business" element={<Layout><BusinessDirectoryPage /></Layout>} />
     <Route path="/circles" element={<CirclesPage />} />
     <Route path="/circles/the-gentlemen" element={<TheGentlemenPage />} />
     <Route path="/circles/les-amis" element={<LesAmisPage />} />
