@@ -1,5 +1,6 @@
 /**
- * Subdomain detection utilities for handling slowdating.makefriendsandsocialize.com
+ * Subdomain detection and redirect utilities
+ * Handles slowdating.makefriendsandsocialize.com and www-to-root redirects
  */
 
 export function getCurrentSubdomain(): string | null {
