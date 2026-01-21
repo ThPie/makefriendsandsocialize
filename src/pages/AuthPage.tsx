@@ -315,7 +315,15 @@ export default function AuthPage() {
         // Handle specific error cases with user-friendly messages
         const errorMessage = signUpError.message?.toLowerCase() || '';
         
-        if (errorMessage.includes('already registered') || errorMessage.includes('user already exists')) {
+        // Check for duplicate email - Supabase returns various messages for this
+        if (errorMessage.includes('already registered') || 
+            errorMessage.includes('user already exists') ||
+            errorMessage.includes('already been registered') ||
+            errorMessage.includes('email already') ||
+            errorMessage.includes('duplicate') ||
+            errorMessage.includes('unique constraint') ||
+            // Supabase often returns a generic 422 error for existing users
+            (signUpError as any)?.status === 422) {
           toast.error('This email is already registered. Please sign in instead.');
           setMode('signin');
           setStep(1);
