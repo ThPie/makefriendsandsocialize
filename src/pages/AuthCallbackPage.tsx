@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,48 +9,110 @@ export default function AuthCallbackPage() {
   const location = useLocation();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search]);
-
   useEffect(() => {
-    const error = params.get("error");
-    const errorDescription = params.get("error_description");
-
-    if (error) {
-      const msg = errorDescription ? decodeURIComponent(errorDescription) : error;
-      setErrorMsg(msg);
-      toast.error("Google sign-in failed", { description: msg });
-      return;
-    }
-
-    const code = params.get("code");
-    if (!code) {
-      const msg = "Missing OAuth code. Please try signing in again.";
-      setErrorMsg(msg);
-      toast.error(msg);
-      return;
-    }
-
     let cancelled = false;
 
-    (async () => {
-      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+    const handleAuthCallback = async () => {
+      // Check for errors in query params (OAuth error responses)
+      const params = new URLSearchParams(location.search);
+      const error = params.get("error");
+      const errorDescription = params.get("error_description");
 
-      if (cancelled) return;
-
-      if (exchangeError) {
-        const msg = exchangeError.message || "Failed to complete sign-in.";
+      if (error) {
+        const msg = errorDescription ? decodeURIComponent(errorDescription) : error;
         setErrorMsg(msg);
-        toast.error("Could not finish sign-in", { description: msg });
+        toast.error("Google sign-in failed", { description: msg });
         return;
       }
 
-      navigate("/portal", { replace: true });
-    })();
+      // Check for authorization code in query params (PKCE flow)
+      const code = params.get("code");
+      
+      if (code) {
+        // Exchange authorization code for session
+        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+
+        if (cancelled) return;
+
+        if (exchangeError) {
+          const msg = exchangeError.message || "Failed to complete sign-in.";
+          setErrorMsg(msg);
+          toast.error("Could not finish sign-in", { description: msg });
+          return;
+        }
+
+        // Successfully exchanged code, redirect to portal
+        navigate("/portal", { replace: true });
+        return;
+      }
+
+      // Check for tokens in hash fragment (implicit flow)
+      // Supabase client automatically handles hash fragments on initialization
+      // We just need to wait for the session to be established
+      const hashParams = new URLSearchParams(location.hash.substring(1));
+      const accessToken = hashParams.get("access_token");
+      
+      if (accessToken) {
+        // Hash contains tokens - Supabase client should handle this automatically
+        // Wait a moment for the auth state to update, then check session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (cancelled) return;
+
+        if (sessionError) {
+          const msg = sessionError.message || "Failed to establish session.";
+          setErrorMsg(msg);
+          toast.error("Could not finish sign-in", { description: msg });
+          return;
+        }
+
+        if (session) {
+          navigate("/portal", { replace: true });
+          return;
+        }
+
+        // If no session yet, set up a listener to wait for it
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+          if (session && !cancelled) {
+            subscription.unsubscribe();
+            navigate("/portal", { replace: true });
+          }
+        });
+
+        // Timeout after 10 seconds
+        setTimeout(() => {
+          if (!cancelled) {
+            subscription.unsubscribe();
+            setErrorMsg("Authentication timed out. Please try again.");
+            toast.error("Authentication timed out");
+          }
+        }, 10000);
+
+        return;
+      }
+
+      // No code or tokens found - check if there's already a session
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (cancelled) return;
+
+      if (session) {
+        navigate("/portal", { replace: true });
+        return;
+      }
+
+      // No authentication data found
+      const msg = "Missing authentication data. Please try signing in again.";
+      setErrorMsg(msg);
+      toast.error(msg);
+    };
+
+    handleAuthCallback();
 
     return () => {
       cancelled = true;
     };
-  }, [navigate, params]);
+  }, [navigate, location.search, location.hash]);
 
   if (errorMsg) {
     return (
