@@ -2,8 +2,16 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { initSentry } from './lib/sentry';
 import { initAnalytics } from './lib/analytics';
+import { redirectWwwToRoot } from './lib/subdomain-utils';
 import App from "./App.tsx";
 import "./index.css";
+
+// Redirect www to root domain before app initialization
+// This prevents CDN caching issues between subdomains
+if (redirectWwwToRoot()) {
+  // Stop execution if redirecting - page will reload on root domain
+  throw new Error('Redirecting to root domain');
+}
 
 // Initialize Sentry for error tracking
 initSentry();
