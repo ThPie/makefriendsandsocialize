@@ -5,6 +5,10 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  define: {
+    BUILD_TIMESTAMP: JSON.stringify(new Date().toISOString()),
+    APP_VERSION: JSON.stringify('1.0.0'),
+  },
   server: {
     host: "::",
     port: 8080,

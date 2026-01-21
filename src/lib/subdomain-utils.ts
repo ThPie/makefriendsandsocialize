@@ -30,6 +30,29 @@ export function isSlowDatingSubdomain(): boolean {
   return getCurrentSubdomain() === 'slowdating';
 }
 
+/**
+ * Redirects www subdomain to root domain to prevent CDN caching issues.
+ * Returns true if a redirect was triggered, false otherwise.
+ */
+export function redirectWwwToRoot(): boolean {
+  const hostname = window.location.hostname;
+  
+  // Only run in production (not localhost or lovable.app preview)
+  if (hostname === 'localhost' || hostname.includes('lovable.app')) {
+    return false;
+  }
+  
+  // Check if currently on www subdomain
+  if (hostname.startsWith('www.')) {
+    const rootDomain = hostname.replace('www.', '');
+    const newUrl = `https://${rootDomain}${window.location.pathname}${window.location.search}${window.location.hash}`;
+    window.location.replace(newUrl); // Use replace() to avoid back-button loop
+    return true;
+  }
+  
+  return false;
+}
+
 export function getSubdomainBaseUrl(subdomain: string): string {
   // In development, use query param
   if (window.location.hostname === 'localhost' || window.location.hostname.includes('lovable.app')) {

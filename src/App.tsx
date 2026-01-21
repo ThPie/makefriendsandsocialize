@@ -75,6 +75,7 @@ import DateConfirmationPage from "@/pages/DateConfirmationPage";
 import CirclesPage from "@/pages/CirclesPage";
 import TheGentlemenPage from "@/pages/circles/TheGentlemenPage";
 import LesAmisPage from "@/pages/circles/LesAmisPage";
+import HealthCheckPage from "@/pages/HealthCheckPage";
 
 const queryClient = new QueryClient();
 
@@ -125,6 +126,9 @@ const MainRoutes = () => (
     <Route path="/circles/the-gentlemen" element={<TheGentlemenPage />} />
     <Route path="/circles/les-amis" element={<LesAmisPage />} />
     <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
+    
+    {/* Health check endpoint for deployment verification */}
+    <Route path="/health" element={<HealthCheckPage />} />
     
     {/* Dev testing route for subdomain landing page */}
     <Route path="/dev/slowdating-landing" element={<SlowDatingLandingPage />} />
