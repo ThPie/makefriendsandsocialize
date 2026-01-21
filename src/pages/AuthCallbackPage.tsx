@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { BrandedLoader } from "@/components/ui/branded-loader";
+import { AuthErrorCard } from "@/components/auth/AuthErrorCard";
 
 export default function AuthCallbackPage() {
   const navigate = useNavigate();
@@ -114,30 +115,22 @@ export default function AuthCallbackPage() {
     };
   }, [navigate, location.search, location.hash]);
 
+  const handleRetryWithEmail = () => {
+    navigate("/auth", { replace: true });
+  };
+
   if (errorMsg) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-6">
-        <div className="max-w-md w-full rounded-xl border border-border bg-card p-6">
-          <h1 className="text-xl font-semibold text-foreground">Sign-in failed</h1>
-          <p className="mt-2 text-sm text-muted-foreground">{errorMsg}</p>
-          <div className="mt-6 flex gap-3">
-            <Link
-              to="/auth"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-            >
-              Back to sign in
-            </Link>
-            <Link
-              to="/"
-              className="inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground"
-            >
-              Home
-            </Link>
-          </div>
-        </div>
-      </div>
+      <AuthErrorCard
+        title="Sign-in failed"
+        message={errorMsg}
+        showRetryWithEmail={true}
+        onRetryWithEmail={handleRetryWithEmail}
+        showSignInButton={false}
+        showHomeButton={true}
+      />
     );
   }
 
-  return <BrandedLoader />;
+  return <BrandedLoader message="Completing sign-in..." />;
 }
