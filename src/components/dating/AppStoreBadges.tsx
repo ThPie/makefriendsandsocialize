@@ -1,5 +1,5 @@
 import { APP_STORE_URLS } from '@/lib/deep-link-handler';
-import appStoreBadge from '@/assets/app-store-badge.png';
+import appStoreBadge from '@/assets/app-store-badge.svg';
 import googlePlayBadge from '@/assets/google-play-badge.png';
 
 interface AppStoreBadgesProps {
