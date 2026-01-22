@@ -6,6 +6,7 @@ import logoDark from '@/assets/logo-dark.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InlineFeedback } from '@/components/ui/inline-feedback';
+import { AppStoreBadges } from '@/components/dating/AppStoreBadges';
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -194,6 +195,9 @@ export const Footer = () => {
               <LinkedInIcon className="h-5 w-5" />
             </a>
           </div>
+
+          {/* App Store Badges */}
+          <AppStoreBadges comingSoon={true} className="mt-4 md:mt-0" />
         </div>
 
         {/* Copyright */}
