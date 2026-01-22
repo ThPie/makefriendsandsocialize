@@ -102,6 +102,8 @@ export default function AuthPage() {
   const [emailTouched, setEmailTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
   const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
+  const [isCheckingPassword, setIsCheckingPassword] = useState(false);
+  const [passwordServerError, setPasswordServerError] = useState<string | null>(null);
   
   // Inline form feedback (replaces toast notifications)
   const [formError, setFormError] = useState<string | null>(null);
@@ -306,6 +308,31 @@ export default function AuthPage() {
         setFormError('Passwords do not match');
         return;
       }
+
+      // Server-side password check for breached/weak passwords
+      setIsCheckingPassword(true);
+      setIsSubmitting(true);
+      try {
+        const { data, error } = await supabase.functions.invoke('check-password-strength', {
+          body: { password },
+        });
+
+        if (error) {
+          console.error('Password check error:', error);
+          // Don't block signup on API errors, just log and continue
+        } else if (data && !data.isSecure) {
+          setFormError(data.reason || 'Please choose a stronger password');
+          setPasswordServerError(data.reason);
+          setIsSubmitting(false);
+          setIsCheckingPassword(false);
+          return;
+        }
+      } catch (err) {
+        console.error('Error checking password:', err);
+        // Continue if the check fails
+      }
+      setIsCheckingPassword(false);
+      setIsSubmitting(false);
     }
 
     if (mode === 'signin') {
