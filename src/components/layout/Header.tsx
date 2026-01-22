@@ -255,7 +255,8 @@ export const Header = () => {
           <>
             {/* Backdrop */}
             <motion.div 
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 xl:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm xl:hidden"
+              style={{ zIndex: 9998 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -265,7 +266,8 @@ export const Header = () => {
             
             {/* Slide-out Panel - Opens from Right */}
             <motion.nav
-              className="fixed inset-y-0 right-0 w-[85%] max-w-[320px] bg-card border-l border-border z-50 flex flex-col xl:hidden shadow-2xl"
+              className="fixed inset-y-0 right-0 w-[85%] max-w-[320px] bg-card border-l border-border flex flex-col xl:hidden shadow-2xl overflow-hidden"
+              style={{ zIndex: 9999 }}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
