@@ -22,7 +22,7 @@ export default function AuthCallbackPage() {
       if (error) {
         const msg = errorDescription ? decodeURIComponent(errorDescription) : error;
         setErrorMsg(msg);
-        toast.error("Google sign-in failed", { description: msg });
+        toast.error("Sign-in failed", { description: msg });
         return;
       }
 

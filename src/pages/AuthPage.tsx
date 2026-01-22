@@ -17,7 +17,7 @@ import { BrandedLoader } from '@/components/ui/branded-loader';
 import { PasswordInput, validatePassword } from '@/components/ui/password-input';
 import { ValidatedInput } from '@/components/ui/validated-input';
 import { SimpleCaptcha } from '@/components/auth/SimpleCaptcha';
-import { useOAuthRateLimit } from '@/hooks/useOAuthRateLimit';
+import { useAuthRateLimit } from '@/hooks/useAuthRateLimit';
 import { useSessionManager } from '@/hooks/useSessionManager';
 import logoWhite from '@/assets/logo-white.png';
 
@@ -66,8 +66,8 @@ export default function AuthPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [captchaVerified, setCaptchaVerified] = useState(false);
   
-  // OAuth rate limiting
-  const { checkRateLimit, recordAttempt, rateLimitInfo, isRateLimited, requiresCaptcha } = useOAuthRateLimit();
+  // Auth rate limiting
+  const { recordAttempt, rateLimitInfo, isRateLimited, requiresCaptcha } = useAuthRateLimit();
   const { createSession } = useSessionManager();
   
   // Use shared site stats hook for consistent data
