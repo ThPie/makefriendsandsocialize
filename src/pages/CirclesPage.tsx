@@ -17,10 +17,10 @@ import {
 } from "lucide-react";
 
 const CirclesPage = () => {
-  const heroAnimation = useScrollAnimation();
-  const circlesAnimation = useScrollAnimation();
-  const howItWorksAnimation = useScrollAnimation();
-  const membershipAnimation = useScrollAnimation();
+  const heroAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const circlesAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const howItWorksAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const membershipAnimation = useScrollAnimation({ rootMargin: '100px' });
 
   const containerVariants = {
     hidden: { opacity: 0 },

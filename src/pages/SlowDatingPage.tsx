@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { forwardRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Heart, Quote, Users, Shield, Clock, MessageCircle, Sparkles, ArrowRight, CheckCircle, Star, HelpCircle, TrendingUp, Award } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
@@ -14,17 +15,16 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import slowDatingImage from "@/assets/slow-dating.jpg";
-import { useEffect, useState } from "react";
 
 const SlowDatingPage = () => {
-  const heroAnimation = useScrollAnimation();
-  const philosophyAnimation = useScrollAnimation();
-  const processAnimation = useScrollAnimation();
-  const valuesAnimation = useScrollAnimation();
-  const statsAnimation = useScrollAnimation();
-  const testimonialsAnimation = useScrollAnimation();
-  const faqAnimation = useScrollAnimation();
-  const ctaAnimation = useScrollAnimation();
+  const heroAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const philosophyAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const processAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const valuesAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const statsAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const testimonialsAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const faqAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const ctaAnimation = useScrollAnimation({ rootMargin: '100px' });
 
   // Get real member count from shared hook
   const { data: siteStats } = useSiteStats();

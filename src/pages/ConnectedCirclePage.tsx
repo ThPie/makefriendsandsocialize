@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { forwardRef, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Quote, Users, Shield, Globe, MessageCircle, Sparkles, ArrowRight, CheckCircle, Star, HelpCircle, TrendingUp, Award, Building2, Handshake, Network } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
@@ -11,18 +12,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useEffect, useState } from "react";
 import heroImage from "@/assets/business-hero.jpg";
 
 const ConnectedCirclePage = () => {
-  const heroAnimation = useScrollAnimation();
-  const philosophyAnimation = useScrollAnimation();
-  const processAnimation = useScrollAnimation();
-  const valuesAnimation = useScrollAnimation();
-  const statsAnimation = useScrollAnimation();
-  const benefitsAnimation = useScrollAnimation();
-  const faqAnimation = useScrollAnimation();
-  const ctaAnimation = useScrollAnimation();
+  const heroAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const philosophyAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const processAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const valuesAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const statsAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const benefitsAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const faqAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const ctaAnimation = useScrollAnimation({ rootMargin: '100px' });
 
   const containerVariants = {
     hidden: { opacity: 0 },
