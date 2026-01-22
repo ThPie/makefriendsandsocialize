@@ -3,26 +3,57 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Phone, ArrowRight, ArrowLeft, AlertCircle, Mail, CheckCircle } from 'lucide-react';
+import { Loader2, Phone, ArrowRight, ArrowLeft, AlertCircle, Mail, CheckCircle, ChevronDown } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
-// Country code mapping based on timezone/locale
-const COUNTRY_CODES: Record<string, string> = {
-  US: '+1', CA: '+1', GB: '+44', UK: '+44', AU: '+61', NZ: '+64',
-  DE: '+49', FR: '+33', IT: '+39', ES: '+34', NL: '+31', BE: '+32',
-  AT: '+43', CH: '+41', SE: '+46', NO: '+47', DK: '+45', FI: '+358',
-  IE: '+353', PT: '+351', PL: '+48', CZ: '+420', HU: '+36', RO: '+40',
-  GR: '+30', TR: '+90', RU: '+7', UA: '+380', IN: '+91', PK: '+92',
-  BD: '+880', CN: '+86', JP: '+81', KR: '+82', HK: '+852', SG: '+65',
-  MY: '+60', TH: '+66', VN: '+84', ID: '+62', PH: '+63', TW: '+886',
-  AE: '+971', SA: '+966', IL: '+972', EG: '+20', ZA: '+27', NG: '+234',
-  KE: '+254', GH: '+233', MX: '+52', BR: '+55', AR: '+54', CO: '+57',
-  CL: '+56', PE: '+51', VE: '+58',
-};
+// Country data with flags (emoji), dial codes, and formatting patterns
+const COUNTRIES = [
+  { code: 'US', name: 'United States', dialCode: '+1', flag: '🇺🇸', format: '(XXX) XXX-XXXX' },
+  { code: 'CA', name: 'Canada', dialCode: '+1', flag: '🇨🇦', format: '(XXX) XXX-XXXX' },
+  { code: 'GB', name: 'United Kingdom', dialCode: '+44', flag: '🇬🇧', format: 'XXXX XXXXXX' },
+  { code: 'AU', name: 'Australia', dialCode: '+61', flag: '🇦🇺', format: 'XXX XXX XXX' },
+  { code: 'NZ', name: 'New Zealand', dialCode: '+64', flag: '🇳🇿', format: 'XX XXX XXXX' },
+  { code: 'DE', name: 'Germany', dialCode: '+49', flag: '🇩🇪', format: 'XXXX XXXXXXX' },
+  { code: 'FR', name: 'France', dialCode: '+33', flag: '🇫🇷', format: 'X XX XX XX XX' },
+  { code: 'IT', name: 'Italy', dialCode: '+39', flag: '🇮🇹', format: 'XXX XXXXXXX' },
+  { code: 'ES', name: 'Spain', dialCode: '+34', flag: '🇪🇸', format: 'XXX XXX XXX' },
+  { code: 'NL', name: 'Netherlands', dialCode: '+31', flag: '🇳🇱', format: 'X XXXXXXXX' },
+  { code: 'BE', name: 'Belgium', dialCode: '+32', flag: '🇧🇪', format: 'XXX XX XX XX' },
+  { code: 'AT', name: 'Austria', dialCode: '+43', flag: '🇦🇹', format: 'XXX XXXXXXX' },
+  { code: 'CH', name: 'Switzerland', dialCode: '+41', flag: '🇨🇭', format: 'XX XXX XX XX' },
+  { code: 'SE', name: 'Sweden', dialCode: '+46', flag: '🇸🇪', format: 'XX XXX XX XX' },
+  { code: 'NO', name: 'Norway', dialCode: '+47', flag: '🇳🇴', format: 'XXX XX XXX' },
+  { code: 'DK', name: 'Denmark', dialCode: '+45', flag: '🇩🇰', format: 'XX XX XX XX' },
+  { code: 'FI', name: 'Finland', dialCode: '+358', flag: '🇫🇮', format: 'XX XXX XXXX' },
+  { code: 'IE', name: 'Ireland', dialCode: '+353', flag: '🇮🇪', format: 'XX XXX XXXX' },
+  { code: 'PT', name: 'Portugal', dialCode: '+351', flag: '🇵🇹', format: 'XXX XXX XXX' },
+  { code: 'PL', name: 'Poland', dialCode: '+48', flag: '🇵🇱', format: 'XXX XXX XXX' },
+  { code: 'IN', name: 'India', dialCode: '+91', flag: '🇮🇳', format: 'XXXXX XXXXX' },
+  { code: 'JP', name: 'Japan', dialCode: '+81', flag: '🇯🇵', format: 'XX XXXX XXXX' },
+  { code: 'KR', name: 'South Korea', dialCode: '+82', flag: '🇰🇷', format: 'XX XXXX XXXX' },
+  { code: 'CN', name: 'China', dialCode: '+86', flag: '🇨🇳', format: 'XXX XXXX XXXX' },
+  { code: 'HK', name: 'Hong Kong', dialCode: '+852', flag: '🇭🇰', format: 'XXXX XXXX' },
+  { code: 'SG', name: 'Singapore', dialCode: '+65', flag: '🇸🇬', format: 'XXXX XXXX' },
+  { code: 'AE', name: 'UAE', dialCode: '+971', flag: '🇦🇪', format: 'XX XXX XXXX' },
+  { code: 'SA', name: 'Saudi Arabia', dialCode: '+966', flag: '🇸🇦', format: 'XX XXX XXXX' },
+  { code: 'IL', name: 'Israel', dialCode: '+972', flag: '🇮🇱', format: 'XX XXX XXXX' },
+  { code: 'ZA', name: 'South Africa', dialCode: '+27', flag: '🇿🇦', format: 'XX XXX XXXX' },
+  { code: 'MX', name: 'Mexico', dialCode: '+52', flag: '🇲🇽', format: 'XX XXXX XXXX' },
+  { code: 'BR', name: 'Brazil', dialCode: '+55', flag: '🇧🇷', format: 'XX XXXXX XXXX' },
+  { code: 'AR', name: 'Argentina', dialCode: '+54', flag: '🇦🇷', format: 'XX XXXX XXXX' },
+  { code: 'CO', name: 'Colombia', dialCode: '+57', flag: '🇨🇴', format: 'XXX XXX XXXX' },
+  { code: 'CL', name: 'Chile', dialCode: '+56', flag: '🇨🇱', format: 'X XXXX XXXX' },
+];
 
 const getDefaultCountryCode = (): string => {
   try {
-    // Try to detect country from timezone
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const timezoneToCountry: Record<string, string> = {
       'America/New_York': 'US', 'America/Los_Angeles': 'US', 'America/Chicago': 'US',
@@ -38,22 +69,45 @@ const getDefaultCountryCode = (): string => {
     };
     
     const country = timezoneToCountry[timezone];
-    if (country && COUNTRY_CODES[country]) {
-      return COUNTRY_CODES[country];
-    }
+    if (country) return country;
     
     // Fallback: try navigator.language
     const locale = navigator.language || (navigator as any).userLanguage || '';
     const countryFromLocale = locale.split('-')[1]?.toUpperCase();
-    if (countryFromLocale && COUNTRY_CODES[countryFromLocale]) {
-      return COUNTRY_CODES[countryFromLocale];
+    if (countryFromLocale && COUNTRIES.find(c => c.code === countryFromLocale)) {
+      return countryFromLocale;
     }
     
-    // Default to US
-    return '+1';
+    return 'US';
   } catch {
-    return '+1';
+    return 'US';
   }
+};
+
+// Format phone number for display based on country format
+const formatPhoneDisplay = (digits: string, countryCode: string): string => {
+  const country = COUNTRIES.find(c => c.code === countryCode);
+  if (!country) return digits;
+  
+  const formatPattern = country.format;
+  let result = '';
+  let digitIndex = 0;
+  
+  for (let i = 0; i < formatPattern.length && digitIndex < digits.length; i++) {
+    if (formatPattern[i] === 'X') {
+      result += digits[digitIndex];
+      digitIndex++;
+    } else {
+      result += formatPattern[i];
+    }
+  }
+  
+  // Add remaining digits if pattern is exhausted
+  if (digitIndex < digits.length) {
+    result += digits.slice(digitIndex);
+  }
+  
+  return result;
 };
 
 interface PhoneOTPLoginProps {
@@ -63,63 +117,73 @@ interface PhoneOTPLoginProps {
 }
 
 export function PhoneOTPLogin({ onSuccess, onSwitchToEmail, disabled }: PhoneOTPLoginProps) {
-  const [phone, setPhone] = useState('');
+  const [phoneDigits, setPhoneDigits] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('US');
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Set default country code on mount
+  const country = COUNTRIES.find(c => c.code === selectedCountry) || COUNTRIES[0];
+
+  // Set default country on mount
   useEffect(() => {
     const defaultCode = getDefaultCountryCode();
-    setPhone(defaultCode + ' ');
+    setSelectedCountry(defaultCode);
   }, []);
 
   // Clear error/success when user starts typing
-  const handlePhoneChangeWithClear = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(null);
     setSuccessMessage(null);
-    handlePhoneChange(e);
+    
+    // Extract only digits from input
+    const input = e.target.value;
+    const digits = input.replace(/\D/g, '');
+    
+    // Limit to reasonable phone length (15 digits max per E.164)
+    if (digits.length <= 15) {
+      setPhoneDigits(digits);
+    }
   };
 
-  const formatPhoneNumber = (value: string) => {
-    // Remove all non-digit characters except +
-    const cleaned = value.replace(/[^\d+]/g, '');
-    return cleaned;
+  const handleCountryChange = (code: string) => {
+    setSelectedCountry(code);
+    setError(null);
   };
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhoneNumber(e.target.value);
-    setPhone(formatted);
+  const getFullPhoneNumber = (): string => {
+    return `${country.dialCode}${phoneDigits}`;
   };
 
-  const validatePhoneNumber = (phoneNumber: string): boolean => {
-    // Basic E.164 format validation
-    const phoneRegex = /^\+?[1-9]\d{6,14}$/;
-    const cleanNumber = phoneNumber.replace(/[\s-]/g, '');
-    return phoneRegex.test(cleanNumber);
+  const validatePhoneNumber = (): boolean => {
+    // Check minimum length (at least 6 digits for shortest valid numbers)
+    if (phoneDigits.length < 6) {
+      setError('Please enter a valid phone number');
+      return false;
+    }
+    // Check maximum length (15 digits max for E.164)
+    if (phoneDigits.length > 15) {
+      setError('Phone number is too long');
+      return false;
+    }
+    return true;
   };
 
   const handleSendOTP = async () => {
     setError(null);
     
-    if (!phone) {
+    if (!phoneDigits) {
       setError('Please enter your phone number');
       return;
     }
 
-    // Ensure phone number has country code
-    let formattedPhone = phone;
-    if (!formattedPhone.startsWith('+')) {
-      formattedPhone = '+1' + formattedPhone; // Default to US
-    }
-
-    if (!validatePhoneNumber(formattedPhone)) {
-      setError('Please enter a valid phone number with country code (e.g., +1 234 567 8900)');
+    if (!validatePhoneNumber()) {
       return;
     }
 
+    const formattedPhone = getFullPhoneNumber();
     setIsLoading(true);
 
     try {
@@ -130,7 +194,6 @@ export function PhoneOTPLogin({ onSuccess, onSwitchToEmail, disabled }: PhoneOTP
       if (otpError) {
         console.error('OTP send error:', otpError);
         
-        // Parse error message for specific cases
         const errorMsg = otpError.message.toLowerCase();
         
         if (errorMsg.includes('rate limit') || errorMsg.includes('too many')) {
@@ -167,11 +230,7 @@ export function PhoneOTPLogin({ onSuccess, onSwitchToEmail, disabled }: PhoneOTP
       return;
     }
 
-    let formattedPhone = phone;
-    if (!formattedPhone.startsWith('+')) {
-      formattedPhone = '+1' + formattedPhone;
-    }
-
+    const formattedPhone = getFullPhoneNumber();
     setIsLoading(true);
 
     try {
@@ -222,6 +281,8 @@ export function PhoneOTPLogin({ onSuccess, onSwitchToEmail, disabled }: PhoneOTP
     setSuccessMessage(null);
   };
 
+  const displayPhone = formatPhoneDisplay(phoneDigits, selectedCountry);
+
   if (step === 'otp') {
     return (
       <div className="space-y-5">
@@ -235,7 +296,7 @@ export function PhoneOTPLogin({ onSuccess, onSwitchToEmail, disabled }: PhoneOTP
 
         <div className="text-center space-y-2">
           <p className="text-white/90">Enter the 6-digit code sent to</p>
-          <p className="text-primary font-medium">{phone.startsWith('+') ? phone : '+1' + phone}</p>
+          <p className="text-primary font-medium">{country.flag} {country.dialCode} {displayPhone}</p>
         </div>
 
         <div className="flex justify-center">
@@ -313,22 +374,47 @@ export function PhoneOTPLogin({ onSuccess, onSwitchToEmail, disabled }: PhoneOTP
     <div className="space-y-5">
       <div className="space-y-2">
         <Label htmlFor="phone" className="text-white/90">Phone Number</Label>
-        <div className="relative">
-          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40" />
-          <Input
-            id="phone"
-            type="tel"
-            placeholder="+1 234 567 8900"
-            value={phone}
-            onChange={handlePhoneChangeWithClear}
-            disabled={isLoading || disabled}
-            className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
-            autoComplete="tel"
-            inputMode="tel"
-          />
+        <div className="flex gap-2">
+          {/* Country Selector */}
+          <Select value={selectedCountry} onValueChange={handleCountryChange}>
+            <SelectTrigger className="w-[100px] bg-white/5 border-white/10 text-white">
+              <SelectValue>
+                <span className="flex items-center gap-1.5">
+                  <span className="text-lg">{country.flag}</span>
+                  <span className="text-sm">{country.dialCode}</span>
+                </span>
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent className="max-h-[300px] bg-background border-border">
+              {COUNTRIES.map((c) => (
+                <SelectItem key={c.code} value={c.code} className="cursor-pointer">
+                  <span className="flex items-center gap-2">
+                    <span className="text-lg">{c.flag}</span>
+                    <span>{c.name}</span>
+                    <span className="text-muted-foreground ml-auto">{c.dialCode}</span>
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          
+          {/* Phone Input */}
+          <div className="relative flex-1">
+            <Input
+              id="phone"
+              type="tel"
+              placeholder={country.format.replace(/X/g, '0')}
+              value={displayPhone}
+              onChange={handlePhoneInput}
+              disabled={isLoading || disabled}
+              className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
+              autoComplete="tel"
+              inputMode="tel"
+            />
+          </div>
         </div>
         <p className="text-xs text-white/40">
-          Include country code (e.g., +1 for US)
+          We'll send you a verification code via SMS
         </p>
       </div>
 
@@ -360,7 +446,7 @@ export function PhoneOTPLogin({ onSuccess, onSwitchToEmail, disabled }: PhoneOTP
 
       <Button
         onClick={handleSendOTP}
-        disabled={isLoading || !phone || disabled}
+        disabled={isLoading || !phoneDigits || disabled}
         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
         size="lg"
       >

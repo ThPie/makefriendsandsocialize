@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { InlineFeedback } from '@/components/ui/inline-feedback';
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -79,7 +79,7 @@ const itemVariants = {
 const AppealPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const { toast } = useToast();
+  const [formFeedback, setFormFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const { user } = useAuth();
 
   const {
@@ -99,6 +99,7 @@ const AppealPage = () => {
 
   const onSubmit = async (data: AppealFormData) => {
     setIsSubmitting(true);
+    setFormFeedback(null);
     
     try {
       // Insert appeal into notification_queue for admin review
@@ -136,16 +137,11 @@ const AppealPage = () => {
       }
 
       setIsSubmitted(true);
-      toast({
-        title: "Appeal Submitted",
-        description: "We've received your appeal and sent you a confirmation email.",
-      });
     } catch (error) {
       console.error("Error submitting appeal:", error);
-      toast({
-        title: "Submission Failed",
-        description: "There was an error submitting your appeal. Please try again.",
-        variant: "destructive",
+      setFormFeedback({
+        type: 'error',
+        message: "There was an error submitting your appeal. Please try again.",
       });
     } finally {
       setIsSubmitting(false);

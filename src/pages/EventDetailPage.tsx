@@ -2,7 +2,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useToast } from '@/hooks/use-toast';
+import { InlineFeedback } from '@/components/ui/inline-feedback';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -41,10 +41,10 @@ interface Event {
 const EventDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [isRsvping, setIsRsvping] = useState(false);
+  const [rsvpFeedback, setRsvpFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // Fetch event details
   const { data: event, isLoading: eventLoading } = useQuery({
@@ -116,10 +116,11 @@ const EventDetailPage = () => {
         // Decrement rsvp_count
         await supabase.rpc('decrement_rsvp_count', { event_id: id });
 
-        toast({
-          title: "RSVP Cancelled",
-          description: `You've cancelled your RSVP for ${event?.title}`,
+        setRsvpFeedback({
+          type: 'success',
+          message: `You've cancelled your RSVP for ${event?.title}`,
         });
+        setTimeout(() => setRsvpFeedback(null), 5000);
       } else {
         // Create RSVP
         const { error } = await supabase
@@ -135,10 +136,11 @@ const EventDetailPage = () => {
         // Increment rsvp_count
         await supabase.rpc('increment_rsvp_count', { event_id: id });
 
-        toast({
-          title: "RSVP Confirmed!",
-          description: `You're going to ${event?.title}`,
+        setRsvpFeedback({
+          type: 'success',
+          message: `You're going to ${event?.title}!`,
         });
+        setTimeout(() => setRsvpFeedback(null), 5000);
       }
       
       queryClient.invalidateQueries({ queryKey: ['user-rsvp', id] });
@@ -146,10 +148,9 @@ const EventDetailPage = () => {
       queryClient.invalidateQueries({ queryKey: ['event', id] });
     } catch (error) {
       console.error('RSVP error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update RSVP. Please try again.",
-        variant: "destructive",
+      setRsvpFeedback({
+        type: 'error',
+        message: "Failed to update RSVP. Please try again.",
       });
     } finally {
       setIsRsvping(false);

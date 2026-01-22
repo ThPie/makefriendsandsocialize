@@ -1,9 +1,8 @@
 import { useState, useCallback } from "react";
 import { useScribe, CommitStrategy } from "@elevenlabs/react";
 import { Button } from "@/components/ui/button";
-import { Mic, MicOff, Loader2 } from "lucide-react";
+import { Mic, MicOff, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 
 interface VoiceBioRecorderProps {
   currentBio: string;
@@ -12,7 +11,7 @@ interface VoiceBioRecorderProps {
 
 export const VoiceBioRecorder = ({ currentBio, onBioUpdate }: VoiceBioRecorderProps) => {
   const [isConnecting, setIsConnecting] = useState(false);
-  const { toast } = useToast();
+  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const scribe = useScribe({
     modelId: "scribe_v2_realtime",
@@ -31,6 +30,7 @@ export const VoiceBioRecorder = ({ currentBio, onBioUpdate }: VoiceBioRecorderPr
 
   const handleStart = useCallback(async () => {
     setIsConnecting(true);
+    setStatus(null);
     try {
       // Request microphone permission
       await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -51,65 +51,87 @@ export const VoiceBioRecorder = ({ currentBio, onBioUpdate }: VoiceBioRecorderPr
         },
       });
 
-      toast({
-        title: "Recording started",
-        description: "Speak naturally and your words will be transcribed.",
+      setStatus({
+        type: 'success',
+        message: 'Recording started. Speak naturally.',
       });
+      
+      // Auto-dismiss success after 3 seconds
+      setTimeout(() => setStatus(null), 3000);
     } catch (error: any) {
       console.error("Failed to start recording:", error);
-      toast({
-        variant: "destructive",
-        title: "Recording failed",
-        description: error.message || "Could not start recording. Please check microphone permissions.",
+      setStatus({
+        type: 'error',
+        message: error.message || "Could not start recording. Please check microphone permissions.",
       });
     } finally {
       setIsConnecting(false);
     }
-  }, [scribe, toast, currentBio]);
+  }, [scribe, currentBio]);
 
   const handleStop = useCallback(async () => {
     scribe.disconnect();
-    toast({
-      title: "Recording stopped",
-      description: "Your voice has been transcribed.",
+    setStatus({
+      type: 'success',
+      message: 'Recording stopped. Your voice has been transcribed.',
     });
-  }, [scribe, toast]);
+    
+    // Auto-dismiss after 3 seconds
+    setTimeout(() => setStatus(null), 3000);
+  }, [scribe]);
 
   return (
-    <div className="flex items-center gap-2">
-      {scribe.isConnected ? (
-        <Button
-          type="button"
-          variant="destructive"
-          size="sm"
-          onClick={handleStop}
-          className="gap-2"
-        >
-          <MicOff className="h-4 w-4" />
-          Stop Recording
-        </Button>
-      ) : (
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={handleStart}
-          disabled={isConnecting}
-          className="gap-2"
-        >
-          {isConnecting ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        {scribe.isConnected ? (
+          <Button
+            type="button"
+            variant="destructive"
+            size="sm"
+            onClick={handleStop}
+            className="gap-2"
+          >
+            <MicOff className="h-4 w-4" />
+            Stop Recording
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleStart}
+            disabled={isConnecting}
+            className="gap-2"
+          >
+            {isConnecting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Mic className="h-4 w-4" />
+            )}
+            {isConnecting ? "Connecting..." : "Record Bio"}
+          </Button>
+        )}
+        {scribe.isConnected && (
+          <span className="text-sm text-dating-terracotta animate-pulse flex items-center gap-1">
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+            Recording...
+          </span>
+        )}
+      </div>
+      
+      {status && (
+        <div className={`flex items-start gap-2 p-2 rounded-lg text-xs ${
+          status.type === 'success' 
+            ? 'bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400' 
+            : 'bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400'
+        }`}>
+          {status.type === 'success' ? (
+            <CheckCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
           ) : (
-            <Mic className="h-4 w-4" />
+            <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
           )}
-          {isConnecting ? "Connecting..." : "Record Bio"}
-        </Button>
-      )}
-      {scribe.isConnected && (
-        <span className="text-sm text-dating-terracotta animate-pulse flex items-center gap-1">
-          <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-          Recording...
-        </span>
+          <span>{status.message}</span>
+        </div>
       )}
     </div>
   );
