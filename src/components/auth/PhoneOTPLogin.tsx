@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,6 +6,56 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, Phone, ArrowRight, ArrowLeft } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+
+// Country code mapping based on timezone/locale
+const COUNTRY_CODES: Record<string, string> = {
+  US: '+1', CA: '+1', GB: '+44', UK: '+44', AU: '+61', NZ: '+64',
+  DE: '+49', FR: '+33', IT: '+39', ES: '+34', NL: '+31', BE: '+32',
+  AT: '+43', CH: '+41', SE: '+46', NO: '+47', DK: '+45', FI: '+358',
+  IE: '+353', PT: '+351', PL: '+48', CZ: '+420', HU: '+36', RO: '+40',
+  GR: '+30', TR: '+90', RU: '+7', UA: '+380', IN: '+91', PK: '+92',
+  BD: '+880', CN: '+86', JP: '+81', KR: '+82', HK: '+852', SG: '+65',
+  MY: '+60', TH: '+66', VN: '+84', ID: '+62', PH: '+63', TW: '+886',
+  AE: '+971', SA: '+966', IL: '+972', EG: '+20', ZA: '+27', NG: '+234',
+  KE: '+254', GH: '+233', MX: '+52', BR: '+55', AR: '+54', CO: '+57',
+  CL: '+56', PE: '+51', VE: '+58',
+};
+
+const getDefaultCountryCode = (): string => {
+  try {
+    // Try to detect country from timezone
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const timezoneToCountry: Record<string, string> = {
+      'America/New_York': 'US', 'America/Los_Angeles': 'US', 'America/Chicago': 'US',
+      'America/Denver': 'US', 'America/Phoenix': 'US', 'America/Anchorage': 'US',
+      'Pacific/Honolulu': 'US', 'America/Toronto': 'CA', 'America/Vancouver': 'CA',
+      'Europe/London': 'GB', 'Europe/Paris': 'FR', 'Europe/Berlin': 'DE',
+      'Europe/Rome': 'IT', 'Europe/Madrid': 'ES', 'Europe/Amsterdam': 'NL',
+      'Australia/Sydney': 'AU', 'Australia/Melbourne': 'AU', 'Pacific/Auckland': 'NZ',
+      'Asia/Tokyo': 'JP', 'Asia/Seoul': 'KR', 'Asia/Shanghai': 'CN',
+      'Asia/Hong_Kong': 'HK', 'Asia/Singapore': 'SG', 'Asia/Kolkata': 'IN',
+      'Asia/Dubai': 'AE', 'Africa/Johannesburg': 'ZA', 'America/Sao_Paulo': 'BR',
+      'America/Mexico_City': 'MX', 'America/Buenos_Aires': 'AR',
+    };
+    
+    const country = timezoneToCountry[timezone];
+    if (country && COUNTRY_CODES[country]) {
+      return COUNTRY_CODES[country];
+    }
+    
+    // Fallback: try navigator.language
+    const locale = navigator.language || (navigator as any).userLanguage || '';
+    const countryFromLocale = locale.split('-')[1]?.toUpperCase();
+    if (countryFromLocale && COUNTRY_CODES[countryFromLocale]) {
+      return COUNTRY_CODES[countryFromLocale];
+    }
+    
+    // Default to US
+    return '+1';
+  } catch {
+    return '+1';
+  }
+};
 
 interface PhoneOTPLoginProps {
   onSuccess?: () => void;
@@ -17,6 +67,12 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Set default country code on mount
+  useEffect(() => {
+    const defaultCode = getDefaultCountryCode();
+    setPhone(defaultCode + ' ');
+  }, []);
 
   const formatPhoneNumber = (value: string) => {
     // Remove all non-digit characters except +
