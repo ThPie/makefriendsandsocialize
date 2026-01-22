@@ -27,10 +27,10 @@ const LesAmisPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user, profile } = useAuth();
-  const heroAnimation = useScrollAnimation();
-  const whatIsAnimation = useScrollAnimation();
-  const expectAnimation = useScrollAnimation();
-  const formAnimation = useScrollAnimation();
+  const heroAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const whatIsAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const expectAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const formAnimation = useScrollAnimation({ rootMargin: '100px' });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
