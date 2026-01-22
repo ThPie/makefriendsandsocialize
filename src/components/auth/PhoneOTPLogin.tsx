@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Loader2, Phone, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Loader2, Phone, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
 // Country code mapping based on timezone/locale
@@ -67,12 +67,19 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Set default country code on mount
   useEffect(() => {
     const defaultCode = getDefaultCountryCode();
     setPhone(defaultCode + ' ');
   }, []);
+
+  // Clear error when user starts typing
+  const handlePhoneChangeWithClear = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
+    handlePhoneChange(e);
+  };
 
   const formatPhoneNumber = (value: string) => {
     // Remove all non-digit characters except +
@@ -93,8 +100,10 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
   };
 
   const handleSendOTP = async () => {
+    setError(null);
+    
     if (!phone) {
-      toast.error('Please enter your phone number');
+      setError('Please enter your phone number');
       return;
     }
 
@@ -105,43 +114,54 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
     }
 
     if (!validatePhoneNumber(formattedPhone)) {
-      toast.error('Please enter a valid phone number with country code (e.g., +1234567890)');
+      setError('Please enter a valid phone number with country code (e.g., +1 234 567 8900)');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error: otpError } = await supabase.auth.signInWithOtp({
         phone: formattedPhone,
       });
 
-      if (error) {
-        console.error('OTP send error:', error);
-        if (error.message.includes('rate limit')) {
-          toast.error('Too many attempts. Please wait a few minutes and try again.');
-        } else if (error.message.includes('invalid')) {
-          toast.error('Invalid phone number. Please check and try again.');
+      if (otpError) {
+        console.error('OTP send error:', otpError);
+        
+        // Parse error message for specific cases
+        const errorMsg = otpError.message.toLowerCase();
+        
+        if (errorMsg.includes('rate limit') || errorMsg.includes('too many')) {
+          setError('Too many attempts. Please wait a few minutes before trying again.');
+        } else if (errorMsg.includes('invalid') || errorMsg.includes('not valid')) {
+          setError('Invalid phone number format. Please check and try again.');
+        } else if (errorMsg.includes('not found') || errorMsg.includes('no user')) {
+          setError('No account found with this phone number. Please sign up first or use email login.');
+        } else if (errorMsg.includes('provider') || errorMsg.includes('sms') || errorMsg.includes('twilio') || errorMsg.includes('configuration')) {
+          setError('SMS service is temporarily unavailable. Please try signing in with email instead.');
         } else {
-          toast.error('Failed to send verification code. Please try again.');
+          setError('Unable to send verification code. Please try again or use email login.');
         }
         setIsLoading(false);
         return;
       }
 
       toast.success('Verification code sent!');
+      setError(null);
       setStep('otp');
     } catch (err) {
       console.error('Unexpected OTP error:', err);
-      toast.error('An unexpected error occurred. Please try again.');
+      setError('An unexpected error occurred. Please try again or use email login.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleVerifyOTP = async () => {
+    setError(null);
+    
     if (otp.length !== 6) {
-      toast.error('Please enter the complete 6-digit code');
+      setError('Please enter the complete 6-digit code');
       return;
     }
 
@@ -153,20 +173,22 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.verifyOtp({
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
         phone: formattedPhone,
         token: otp,
         type: 'sms',
       });
 
-      if (error) {
-        console.error('OTP verification error:', error);
-        if (error.message.includes('expired')) {
-          toast.error('Code expired. Please request a new one.');
-        } else if (error.message.includes('invalid')) {
-          toast.error('Invalid code. Please check and try again.');
+      if (verifyError) {
+        console.error('OTP verification error:', verifyError);
+        const errorMsg = verifyError.message.toLowerCase();
+        
+        if (errorMsg.includes('expired')) {
+          setError('Code expired. Please request a new one.');
+        } else if (errorMsg.includes('invalid') || errorMsg.includes('incorrect')) {
+          setError('Invalid code. Please check and try again.');
         } else {
-          toast.error('Verification failed. Please try again.');
+          setError('Verification failed. Please try again.');
         }
         setIsLoading(false);
         return;
@@ -178,7 +200,7 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
       }
     } catch (err) {
       console.error('Unexpected verification error:', err);
-      toast.error('An unexpected error occurred. Please try again.');
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -186,17 +208,21 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
 
   const handleResendOTP = async () => {
     setOtp('');
+    setError(null);
     await handleSendOTP();
+  };
+
+  const handleBackToPhone = () => {
+    setStep('phone');
+    setOtp('');
+    setError(null);
   };
 
   if (step === 'otp') {
     return (
       <div className="space-y-5">
         <button
-          onClick={() => {
-            setStep('phone');
-            setOtp('');
-          }}
+          onClick={handleBackToPhone}
           className="flex items-center gap-1 text-sm text-white/60 hover:text-white transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -225,6 +251,13 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
             </InputOTPGroup>
           </InputOTP>
         </div>
+
+        {error && (
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
         <Button
           onClick={handleVerifyOTP}
@@ -264,7 +297,7 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
             type="tel"
             placeholder="+1 234 567 8900"
             value={phone}
-            onChange={handlePhoneChange}
+            onChange={handlePhoneChangeWithClear}
             disabled={isLoading || disabled}
             className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
             autoComplete="tel"
@@ -275,6 +308,13 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
           Include country code (e.g., +1 for US)
         </p>
       </div>
+
+      {error && (
+        <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+          <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
 
       <Button
         onClick={handleSendOTP}
