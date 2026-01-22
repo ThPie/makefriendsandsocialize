@@ -16,7 +16,7 @@ interface PasswordRequirement {
 }
 
 const requirements: PasswordRequirement[] = [
-  { label: 'At least 8 characters', test: (p) => p.length >= 8 },
+  { label: 'At least 10 characters', test: (p) => p.length >= 10 },
   { label: 'One uppercase letter', test: (p) => /[A-Z]/.test(p) },
   { label: 'One number', test: (p) => /[0-9]/.test(p) },
   { label: 'One special character', test: (p) => /[!@#$%^&*(),.?":{}|<>]/.test(p) },
