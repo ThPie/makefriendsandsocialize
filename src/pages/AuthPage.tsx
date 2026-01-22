@@ -35,6 +35,12 @@ const INTERESTS = [
   'Technology & Innovation', 'Sports & Fitness'
 ];
 
+const INDUSTRIES = [
+  'Technology', 'Finance', 'Healthcare', 'Real Estate', 'Media & Entertainment',
+  'Consulting', 'Legal', 'Education', 'Hospitality', 'Retail',
+  'Manufacturing', 'Non-Profit', 'Government', 'Other'
+];
+
 const MOTIVATIONS = [
   'Networking', 'New Friendships', 'Dating & Romance', 'Business Connections',
   'Cultural Events', 'Personal Growth', 'Exclusive Experiences', 'Like-minded Community'
@@ -331,19 +337,29 @@ export default function AuthPage() {
         const signUpError = signUpResult.error;
         // Handle specific error cases with user-friendly messages
         const errorMessage = signUpError.message?.toLowerCase() || '';
+        const errorStatus = (signUpError as any)?.status;
         
-        // Check for duplicate email - Supabase returns various messages for this
+        // Check for duplicate email - only if message explicitly indicates it
+        // Don't assume 422 means duplicate - it could be password validation or other issues
         if (errorMessage.includes('already registered') || 
             errorMessage.includes('user already exists') ||
             errorMessage.includes('already been registered') ||
             errorMessage.includes('email already') ||
             errorMessage.includes('duplicate') ||
-            errorMessage.includes('unique constraint') ||
-            // Supabase often returns a generic 422 error for existing users
-            (signUpError as any)?.status === 422) {
+            errorMessage.includes('unique constraint')) {
           setFormError('This email is already registered. Please sign in instead.');
           setMode('signin');
           setStep(1);
+          setIsSubmitting(false);
+          return;
+        }
+        
+        // Handle 422 separately - could be password validation or other validation errors
+        if (errorStatus === 422) {
+          // Show actual error message or a helpful generic one
+          const friendlyMessage = signUpError.message || 'Please check your email and password meet the requirements.';
+          setFormError(friendlyMessage);
+          setStep(1); // Go back to credentials step to show the error
           setIsSubmitting(false);
           return;
         }
@@ -352,31 +368,36 @@ export default function AuthPage() {
           // This is likely an email service configuration issue, not a user error
           console.error('Email service configuration error:', signUpError);
           setFormError('Account creation temporarily unavailable. Please try again in a few minutes or contact support.');
+          setStep(1);
           setIsSubmitting(false);
           return;
         }
         
         if (errorMessage.includes('rate limit') || errorMessage.includes('too many')) {
           setFormError('Too many signup attempts. Please wait a few minutes and try again.');
+          setStep(1);
           setIsSubmitting(false);
           return;
         }
         
         if (errorMessage.includes('signups not allowed') || errorMessage.includes('signup disabled')) {
           setFormError('New registrations are temporarily disabled. Please try again later or contact support.');
+          setStep(1);
           setIsSubmitting(false);
           return;
         }
         
         if (errorMessage.includes('email') && errorMessage.includes('invalid')) {
           setFormError('Please enter a valid email address.');
+          setStep(1);
           setIsSubmitting(false);
           return;
         }
         
-        // Generic fallback for unknown errors
+        // Generic fallback for unknown errors - always go back to Step 1
         console.error('Signup error:', signUpError);
         setFormError('Unable to create account. Please check your information and try again.');
+        setStep(1);
         setIsSubmitting(false);
         return;
       }
@@ -866,27 +887,35 @@ export default function AuthPage() {
                 <p className="text-white/50 text-sm mt-1">Tell us a bit about yourself</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="industry" className="text-white/90">Industry</Label>
-                  <Input
-                    id="industry"
-                    placeholder="e.g. Finance, Technology, Media"
-                    value={industry}
-                    onChange={(e) => setIndustry(e.target.value)}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
-                  />
+              <div className="space-y-3">
+                <Label className="text-white/90">Industry</Label>
+                <div className="flex flex-wrap gap-2">
+                  {INDUSTRIES.map((ind) => (
+                    <button
+                      key={ind}
+                      onClick={() => setIndustry(ind)}
+                      className={`px-4 py-2 rounded-full text-sm border transition-all duration-200 ${
+                        industry === ind
+                          ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25'
+                          : 'bg-white/5 text-white/80 border-white/10 hover:border-white/30 hover:bg-white/10'
+                      }`}
+                    >
+                      {ind}
+                      {industry === ind && <Check className="inline ml-1.5 h-3 w-3" />}
+                    </button>
+                  ))}
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="jobTitle" className="text-white/90">Job Title</Label>
-                  <Input
-                    id="jobTitle"
-                    placeholder="e.g. Creative Director, Founder"
-                    value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
-                  />
-                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="jobTitle" className="text-white/90">Job Title</Label>
+                <Input
+                  id="jobTitle"
+                  placeholder="e.g. Creative Director, Founder"
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
+                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
+                />
               </div>
 
               <div className="space-y-2">
