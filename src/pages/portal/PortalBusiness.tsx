@@ -191,8 +191,8 @@ const PortalBusiness = () => {
           Upgrade Required
         </h1>
         <p className="text-muted-foreground mb-8">
-          The Connected Circle is available to Fellow and Founder members.
-          Upgrade your membership to list your business.
+          The Founders Circle is available to Fellow and Founder members.
+          Upgrade your membership to list your company.
         </p>
         <Button asChild>
           <Link to="/membership">Upgrade Membership</Link>
@@ -215,11 +215,11 @@ const PortalBusiness = () => {
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-display text-3xl text-foreground mb-2">My Business</h1>
+            <h1 className="font-display text-3xl text-foreground mb-2">Founder Profile</h1>
             <p className="text-muted-foreground">
               {businessProfile 
-                ? "Manage your business listing in The Connected Circle"
-                : "Create your business listing for The Connected Circle"}
+                ? "Manage your company listing in The Founders Circle"
+                : "Create your company listing for The Founders Circle"}
             </p>
           </div>
           {businessProfile && getStatusBadge(businessProfile.status)}
@@ -231,10 +231,10 @@ const PortalBusiness = () => {
         <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-8 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <CheckCircle className="h-5 w-5 text-primary" />
-            <span className="text-sm text-foreground">Your business is live in the directory!</span>
+            <span className="text-sm text-foreground">Your company is live in the directory!</span>
           </div>
           <Button variant="outline" size="sm" asChild>
-            <Link to="/connected-circle/directory">
+            <Link to="/founders-circle/directory">
               View Directory <ExternalLink className="h-3 w-3 ml-2" />
             </Link>
           </Button>

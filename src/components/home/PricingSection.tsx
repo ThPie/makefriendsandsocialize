@@ -34,7 +34,7 @@ const tiers = [
       'Unlimited connection reveals',
       '20% off paid events',
       'Complimentary members-only gatherings',
-      'Connected Circle access',
+      'Founders Circle access',
       'Member badge',
       'Priority support',
     ],

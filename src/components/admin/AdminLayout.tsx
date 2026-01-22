@@ -53,7 +53,7 @@ const menuItems = [
   { title: 'Members', url: '/admin/members', icon: Users, sensitive: true, endpoint: 'members' },
   { title: 'Appeals', url: '/admin/appeals', icon: Scale, sensitive: true, endpoint: 'applications' },
   { title: 'Referrals', url: '/admin/referrals', icon: Gift, sensitive: true, endpoint: 'referrals' },
-  { title: 'Businesses', url: '/admin/businesses', icon: Users, sensitive: true, endpoint: 'businesses' },
+  { title: 'Founder Companies', url: '/admin/businesses', icon: Users, sensitive: true, endpoint: 'businesses' },
   { title: 'Lead Generation', url: '/admin/leads', icon: Target, sensitive: true, endpoint: 'leads' },
   { title: 'Security Reports', url: '/admin/security', icon: ShieldAlert, sensitive: true, endpoint: 'security' },
   { title: 'Security Dashboard', url: '/admin/security-dashboard', icon: Shield, sensitive: true, endpoint: 'security' },

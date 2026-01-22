@@ -159,8 +159,8 @@ const ConnectedCircleDirectoryPage = () => {
               Member Access Required
             </h1>
             <p className="text-muted-foreground mb-8">
-              The Connected Circle directory is available exclusively to our members.
-              Sign in or apply for membership to access our business network.
+              The Founders Circle directory is available exclusively to our members.
+              Sign in or apply for membership to access our founder network.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild>
@@ -191,7 +191,7 @@ const ConnectedCircleDirectoryPage = () => {
               className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-6"
             >
               <Building2 className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Member Directory</span>
+              <span className="text-sm font-medium text-foreground">Founders Directory</span>
             </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
@@ -199,7 +199,7 @@ const ConnectedCircleDirectoryPage = () => {
               transition={{ delay: 0.1 }}
               className="font-display text-4xl md:text-5xl text-foreground mb-4"
             >
-              The Connected Circle
+              The Founders Circle
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -207,7 +207,7 @@ const ConnectedCircleDirectoryPage = () => {
               transition={{ delay: 0.2 }}
               className="text-muted-foreground text-lg max-w-2xl mx-auto"
             >
-              Discover and connect with verified member businesses across industries
+              Discover and connect with verified founder-led companies across industries
             </motion.p>
           </div>
 
@@ -320,11 +320,11 @@ const ConnectedCircleDirectoryPage = () => {
             </div>
           ) : filteredBusinesses && filteredBusinesses.length > 0 ? (
             <div className="space-y-12">
-              {/* Featured Businesses */}
+              {/* Featured Companies */}
               {featuredBusinesses.length > 0 && (
                 <section>
                   <h2 className="font-display text-2xl text-foreground mb-6">
-                    Featured Businesses
+                    Featured Companies
                   </h2>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {featuredBusinesses.map((business, index) => (
@@ -344,11 +344,11 @@ const ConnectedCircleDirectoryPage = () => {
                 </section>
               )}
 
-              {/* All Businesses */}
+              {/* All Companies */}
               {regularBusinesses.length > 0 && (
                 <section>
                   <h2 className="font-display text-2xl text-foreground mb-6">
-                    {featuredBusinesses.length > 0 ? "All Businesses" : "Directory"}
+                    {featuredBusinesses.length > 0 ? "All Companies" : "Directory"}
                     <span className="text-muted-foreground font-normal text-lg ml-2">
                       ({regularBusinesses.length})
                     </span>
