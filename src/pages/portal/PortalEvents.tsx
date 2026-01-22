@@ -15,6 +15,7 @@ import { Calendar, MapPin, Clock, Crown, Users, ArrowRight, Clock3, AlertCircle 
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { parseLocalDate } from '@/lib/date-utils';
 
 interface Event {
   id: string;
@@ -302,7 +303,7 @@ export default function PortalEvents() {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-GB', {
+    return parseLocalDate(dateStr).toLocaleDateString('en-GB', {
       weekday: 'long',
       day: 'numeric',
       month: 'long',

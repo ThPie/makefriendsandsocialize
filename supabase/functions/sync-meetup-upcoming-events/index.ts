@@ -289,12 +289,21 @@ serve(async (req) => {
     // Track normalized titles we've processed to avoid duplicates
     const processedEvents = new Set<string>();
 
-    // Get all existing meetup events to check for deletions
+    // Get all existing meetup events to check for deletions - include titles for efficient matching
     const { data: existingMeetupEvents } = await supabase
       .from('events')
       .select('id, title, date')
       .eq('source', 'meetup')
       .gte('date', today);
+
+    // Build a map of existing events by normalized key for O(1) lookup
+    const existingEventsMap = new Map<string, { id: string; title: string; date: string }>();
+    if (existingMeetupEvents) {
+      for (const existing of existingMeetupEvents) {
+        const key = `${normalizeTitle(existing.title)}|${existing.date}`;
+        existingEventsMap.set(key, existing);
+      }
+    }
 
     const scrapedEventKeys = new Set(
       validEvents.map(e => `${normalizeTitle(e.title)}|${e.date}`)
@@ -318,38 +327,15 @@ serve(async (req) => {
       const normalizedTitle = normalizeTitle(event.title);
       const eventKey = `${normalizedTitle}|${event.date}`;
 
-      // Skip if we've already processed this event
+      // Skip if we've already processed this event in this sync batch
       if (processedEvents.has(eventKey)) {
-        console.log('Skipping duplicate:', event.title);
+        console.log('Skipping duplicate in batch:', event.title);
         continue;
       }
       processedEvents.add(eventKey);
 
-      // Check if event already exists by normalized title and date
-      const { data: existing } = await supabase
-        .from('events')
-        .select('id')
-        .eq('date', event.date)
-        .eq('source', 'meetup')
-        .limit(10);
-
-      // Find matching event by normalized title
-      let matchingEvent = null;
-      if (existing) {
-        for (const e of existing) {
-          // We need to fetch the title to compare
-          const { data: eventData } = await supabase
-            .from('events')
-            .select('title')
-            .eq('id', e.id)
-            .single();
-          
-          if (eventData && normalizeTitle(eventData.title) === normalizedTitle) {
-            matchingEvent = e;
-            break;
-          }
-        }
-      }
+      // Use the pre-built map for O(1) lookup instead of querying DB for each event
+      const matchingEvent = existingEventsMap.get(eventKey);
 
       const eventData = {
         time: event.time || '18:00',

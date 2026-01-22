@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { format, differenceInDays } from 'date-fns';
 import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2, ExternalLink } from 'lucide-react';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
+import { parseLocalDate } from '@/lib/date-utils';
 
 type SortOption = 'date-asc' | 'date-desc' | 'title-asc' | 'title-desc';
 type EventTab = 'upcoming' | 'past';
@@ -386,10 +387,10 @@ const EventsPage = () => {
                     <div className="flex flex-wrap justify-between items-start gap-2 mb-2">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                         <p className="text-primary text-sm font-bold uppercase tracking-wide">
-                          {format(new Date(event.date), 'MMMM d, yyyy')}
+                          {format(parseLocalDate(event.date), 'MMMM d, yyyy')}
                         </p>
                         {activeTab === 'upcoming' && (() => {
-                          const daysUntil = differenceInDays(new Date(event.date), new Date());
+                          const daysUntil = differenceInDays(parseLocalDate(event.date), new Date());
                           if (daysUntil <= 3 && daysUntil >= 0) {
                             return (
                               <Badge variant="destructive" className="text-xs">
