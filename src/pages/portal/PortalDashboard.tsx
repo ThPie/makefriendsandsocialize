@@ -14,6 +14,7 @@ import { OnboardingWizard } from '@/components/portal/OnboardingWizard';
 import { BadgeUnlockModal } from '@/components/portal/BadgeUnlockModal';
 import { VerificationBadge } from '@/components/portal/VerificationBadge';
 import { UpgradePromptCard } from '@/components/portal/UpgradePromptCard';
+import { EmailVerificationBanner } from '@/components/portal/EmailVerificationBanner';
 
 export default function PortalDashboard() {
   const { user, profile, membership, canAccessMatchmaking, refreshProfile } = useAuth();
@@ -105,6 +106,9 @@ export default function PortalDashboard() {
 
   return (
     <div className="space-y-12">
+      {/* Email Verification Banner */}
+      <EmailVerificationBanner />
+
       {/* Onboarding Wizard */}
       <OnboardingWizard
         isOpen={showOnboarding}
