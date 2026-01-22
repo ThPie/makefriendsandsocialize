@@ -137,7 +137,7 @@ export const SocialProofBanner = () => {
               </div>
             </div>
             <p className="text-sm text-muted-foreground">
-              <span className="text-foreground font-medium">{joinedThisWeek} people</span> joined this week
+              <span className="text-foreground font-medium">{joinedThisWeek} {joinedThisWeek === 1 ? 'person' : 'people'}</span> joined this week
             </p>
           </motion.div>
         )}

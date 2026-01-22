@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
+import { parseLocalDate } from '@/lib/date-utils';
 import { 
   ArrowLeft, Clock, MapPin, Users, DollarSign, Tag, 
   Calendar, ExternalLink, CheckCircle2, Loader2
@@ -228,7 +229,7 @@ const EventDetailPage = () => {
     );
   }
 
-  const isPastEvent = new Date(event.date) < new Date();
+  const isPastEvent = parseLocalDate(event.date) < new Date();
   const spotsLeft = event.capacity ? event.capacity - rsvpCount : null;
   const isFull = spotsLeft !== null && spotsLeft <= 0;
 
@@ -274,7 +275,7 @@ const EventDetailPage = () => {
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <p className="text-primary text-sm font-bold uppercase tracking-wide">
-                {format(new Date(event.date), 'EEEE, MMMM d, yyyy')}
+                {format(parseLocalDate(event.date), 'EEEE, MMMM d, yyyy')}
               </p>
               <Badge className={getTierBadgeColor(event.tier)}>
                 {event.tier.charAt(0).toUpperCase() + event.tier.slice(1)} Tier
@@ -381,7 +382,7 @@ const EventDetailPage = () => {
             <div className="mb-8 p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
               <p className="text-amber-400 text-sm font-medium">
                 <Calendar className="h-4 w-4 inline mr-2" />
-                Registration deadline: {format(new Date(event.registration_deadline), 'MMMM d, yyyy')}
+                Registration deadline: {format(parseLocalDate(event.registration_deadline), 'MMMM d, yyyy')}
               </p>
             </div>
           )}
