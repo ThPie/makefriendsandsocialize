@@ -5,7 +5,7 @@ import logoLight from '@/assets/logo-transparent.png';
 import logoDark from '@/assets/logo-dark.png';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/hooks/use-toast';
+import { InlineFeedback } from '@/components/ui/inline-feedback';
 
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -34,6 +34,7 @@ const LinkedInIcon = ({ className }: { className?: string }) => (
 export const Footer = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
   
@@ -48,15 +49,19 @@ export const Footer = () => {
     if (!email) return;
 
     setIsSubmitting(true);
+    setFeedback(null);
     await new Promise((resolve) => setTimeout(resolve, 800));
     
-    toast({
-      title: 'Welcome to our community!',
-      description: 'You have successfully subscribed to our newsletter.',
+    setFeedback({
+      type: 'success',
+      message: 'Welcome to our community! You have successfully subscribed to our newsletter.',
     });
     
     setEmail('');
     setIsSubmitting(false);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => setFeedback(null), 5000);
   };
 
   return (
@@ -71,6 +76,17 @@ export const Footer = () => {
             <p className="text-muted-foreground mb-6">
               Subscribe to receive exclusive updates, event invitations, and community news.
             </p>
+            
+            {feedback && (
+              <div className="mb-4 max-w-md mx-auto">
+                <InlineFeedback
+                  type={feedback.type}
+                  message={feedback.message}
+                  onDismiss={() => setFeedback(null)}
+                />
+              </div>
+            )}
+            
             <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <Input
                 type="email"

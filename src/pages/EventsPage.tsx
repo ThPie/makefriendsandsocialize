@@ -8,7 +8,7 @@ import { AnimatedButton } from '@/components/ui/animated-button';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
+import { InlineFeedback } from '@/components/ui/inline-feedback';
 import { format, differenceInDays } from 'date-fns';
 import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2, ExternalLink } from 'lucide-react';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
@@ -61,13 +61,13 @@ const EventSkeleton = () => (
 const EventsPage = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [sortOrder, setSortOrder] = useState<SortOption>('date-desc');
   const [activeTab, setActiveTab] = useState<EventTab>('upcoming');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [rsvpFeedback, setRsvpFeedback] = useState<{ type: 'success' | 'info'; message: string } | null>(null);
 
   const categories = ["All", "Dining", "Sports", "Art & Culture", "Music", "Networking"];
 
@@ -137,29 +137,28 @@ const EventsPage = () => {
     // For external events (Meetup), redirect to Meetup
     if (isExternalEvent(event)) {
       window.open(getMeetupUrl(event), '_blank', 'noopener,noreferrer');
-      toast({
-        title: "Redirecting to Meetup",
-        description: "Complete your RSVP on Meetup.com",
+      setRsvpFeedback({
+        type: 'info',
+        message: "Opening Meetup to complete your RSVP.",
       });
+      setTimeout(() => setRsvpFeedback(null), 4000);
       return;
     }
     
     // For internal events, require authentication
     if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to RSVP for this event.",
+      setRsvpFeedback({
+        type: 'info',
+        message: "Please sign in to RSVP for this event.",
       });
-      navigate('/auth?returnTo=/portal/events');
+      setTimeout(() => {
+        navigate('/auth?returnTo=/portal/events');
+      }, 1500);
       return;
     }
     
     // Redirect to portal events for proper RSVP handling
     navigate('/portal/events');
-    toast({
-      title: "Complete your RSVP",
-      description: "Use the member portal to manage your event RSVPs.",
-    });
   };
 
   const filteredAndSortedEvents = useMemo(() => {

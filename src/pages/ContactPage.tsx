@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
+import { InlineFeedback } from '@/components/ui/inline-feedback';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Mail, MapPin, Clock, Facebook, Instagram, MessageCircle, Users, Calendar, Shirt, Sparkles, ArrowRight, Send, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -65,18 +66,29 @@ const itemVariants = {
 };
 
 const ContactPage = () => {
-  const { toast } = useToast();
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const heroAnimation = useScrollAnimation();
   const cardsAnimation = useScrollAnimation();
   const formAnimation = useScrollAnimation();
   const faqAnimation = useScrollAnimation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for reaching out. We'll get back to you within 24 hours.",
+    setIsSubmitting(true);
+    setFeedback(null);
+    
+    // Simulate submission
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    setFeedback({
+      type: 'success',
+      message: "Thank you for reaching out! We'll get back to you within 24 hours.",
     });
+    setIsSubmitting(false);
+    
+    // Clear form
+    (e.target as HTMLFormElement).reset();
   };
 
   return (
@@ -194,6 +206,17 @@ const ContactPage = () => {
                 <p className="text-muted-foreground text-sm">We'll get back to you within 24 hours</p>
               </div>
             </div>
+            
+            {feedback && (
+              <div className="mb-6">
+                <InlineFeedback
+                  type={feedback.type}
+                  message={feedback.message}
+                  onDismiss={() => setFeedback(null)}
+                />
+              </div>
+            )}
+            
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
@@ -252,8 +275,8 @@ const ContactPage = () => {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full py-6 text-base font-medium rounded-full group">
-                Send Message
+              <Button type="submit" disabled={isSubmitting} className="w-full py-6 text-base font-medium rounded-full group">
+                {isSubmitting ? 'Sending...' : 'Send Message'}
                 <Send className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </form>
