@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { parseLocalDateTime } from '@/lib/date-utils';
 
 interface TimeLeft {
   days: number;
@@ -58,14 +59,9 @@ export const EventCountdown = () => {
     if (!nextEvent) return;
 
     const calculateTimeLeft = () => {
-      // Parse event date and time
-      const eventDate = new Date(nextEvent.date);
-      if (nextEvent.time) {
-        const [hours, minutes] = nextEvent.time.split(':').map(Number);
-        eventDate.setHours(hours || 19, minutes || 0, 0, 0);
-      } else {
-        eventDate.setHours(19, 0, 0, 0); // Default to 7 PM
-      }
+      // Parse event date as LOCAL timezone (not UTC)
+      // Using parseLocalDateTime to avoid UTC midnight interpretation issue
+      const eventDate = parseLocalDateTime(nextEvent.date, nextEvent.time);
 
       const now = new Date();
       const difference = eventDate.getTime() - now.getTime();
