@@ -22,7 +22,7 @@ export function AppStoreBadges({ comingSoon = true, className = '' }: AppStoreBa
           <img 
             src={appStoreBadge} 
             alt="Download on the App Store"
-            className="h-10 md:h-12 w-auto rounded-lg shadow-md"
+            className="h-[40px] md:h-[48px] w-auto"
           />
         </div>
         {comingSoon && (
@@ -44,7 +44,7 @@ export function AppStoreBadges({ comingSoon = true, className = '' }: AppStoreBa
           <img 
             src={googlePlayBadge} 
             alt="Get it on Google Play"
-            className="h-10 md:h-12 w-auto rounded-lg shadow-md"
+            className="h-[58px] md:h-[70px] w-auto -my-2"
           />
         </div>
         {comingSoon && (
