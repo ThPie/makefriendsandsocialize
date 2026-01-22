@@ -192,16 +192,18 @@ export const Footer = () => {
               className="text-muted-foreground hover:text-primary transition-colors"
               aria-label="LinkedIn"
             >
-              <LinkedInIcon className="h-5 w-5" />
+          <LinkedInIcon className="h-5 w-5" />
             </a>
           </div>
+        </div>
 
-          {/* App Store Badges */}
-          <AppStoreBadges comingSoon={true} className="mt-4 md:mt-0" />
+        {/* App Store Badges - Centered above copyright */}
+        <div className="mx-auto max-w-7xl mt-8 flex justify-center">
+          <AppStoreBadges comingSoon={true} />
         </div>
 
         {/* Copyright */}
-        <div className="mx-auto max-w-7xl mt-8 pt-6 border-t border-border">
+        <div className="mx-auto max-w-7xl mt-6 pt-6 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
             © 2025 Make Friends and Socialize. All rights reserved.
           </p>
