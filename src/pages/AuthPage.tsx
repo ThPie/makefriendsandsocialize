@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useSiteStats } from '@/hooks/useSiteStats';
 import { ArrowLeft, ArrowRight, Check, Loader2, Mail, User, AlertTriangle, Phone, AlertCircle, CheckCircle } from 'lucide-react';
@@ -38,7 +39,7 @@ const INTERESTS = [
 const INDUSTRIES = [
   'Technology', 'Finance', 'Healthcare', 'Real Estate', 'Media & Entertainment',
   'Consulting', 'Legal', 'Education', 'Hospitality', 'Retail',
-  'Manufacturing', 'Non-Profit', 'Government', 'Other'
+  'Manufacturing', 'Non-Profit', 'Government'
 ];
 
 const MOTIVATIONS = [
@@ -91,6 +92,7 @@ export default function AuthPage() {
   const [valuesInPartner, setValuesInPartner] = useState('');
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [industry, setIndustry] = useState('');
+  const [customIndustry, setCustomIndustry] = useState('');
   const [jobTitle, setJobTitle] = useState('');
   
   // Real-time validation errors
@@ -292,6 +294,20 @@ export default function AuthPage() {
       return;
     }
 
+    // For signup, validate password strength BEFORE proceeding to onboarding
+    if (mode === 'signup') {
+      const { isValid, errors } = validatePassword(password);
+      if (!isValid) {
+        setFormError(`Password must meet all requirements: ${errors.join(', ')}`);
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        setFormError('Passwords do not match');
+        return;
+      }
+    }
+
     if (mode === 'signin') {
       setIsSubmitting(true);
       clearFormFeedback();
@@ -408,6 +424,9 @@ export default function AuthPage() {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (session?.user) {
+        // Use custom industry if "Other" is selected
+        const finalIndustry = industry === 'Other' ? customIndustry : industry;
+        
         // Update profile with onboarding data
         const { error: profileError } = await supabase
           .from('profiles')
@@ -418,7 +437,7 @@ export default function AuthPage() {
             favorite_brands: selectedBrands,
             values_in_partner: valuesInPartner,
             interests: selectedInterests,
-            industry,
+            industry: finalIndustry,
             job_title: jobTitle,
             terms_accepted_at: new Date().toISOString(),
           })
@@ -438,7 +457,7 @@ export default function AuthPage() {
             favorite_brands: selectedBrands,
             values_in_partner: valuesInPartner,
             interests: selectedInterests,
-            industry,
+            industry: finalIndustry,
             job_title: jobTitle,
             status: 'pending',
           });
@@ -889,22 +908,45 @@ export default function AuthPage() {
 
               <div className="space-y-3">
                 <Label className="text-white/90">Industry</Label>
-                <div className="flex flex-wrap gap-2">
-                  {INDUSTRIES.map((ind) => (
-                    <button
-                      key={ind}
-                      onClick={() => setIndustry(ind)}
-                      className={`px-4 py-2 rounded-full text-sm border transition-all duration-200 ${
-                        industry === ind
-                          ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25'
-                          : 'bg-white/5 text-white/80 border-white/10 hover:border-white/30 hover:bg-white/10'
-                      }`}
+                <Select 
+                  value={industry} 
+                  onValueChange={(value) => {
+                    setIndustry(value);
+                    if (value !== 'Other') {
+                      setCustomIndustry('');
+                    }
+                  }}
+                >
+                  <SelectTrigger className="bg-white/5 border-white/10 text-white focus:border-primary/50 focus:ring-primary/20 [&>span]:text-white/70 [&[data-state=open]>span]:text-white">
+                    <SelectValue placeholder="Select your industry" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-900 border-white/10 z-50">
+                    {INDUSTRIES.map((ind) => (
+                      <SelectItem 
+                        key={ind} 
+                        value={ind}
+                        className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white"
+                      >
+                        {ind}
+                      </SelectItem>
+                    ))}
+                    <SelectItem 
+                      value="Other"
+                      className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white"
                     >
-                      {ind}
-                      {industry === ind && <Check className="inline ml-1.5 h-3 w-3" />}
-                    </button>
-                  ))}
-                </div>
+                      Other
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {industry === 'Other' && (
+                  <Input
+                    placeholder="Please specify your industry"
+                    value={customIndustry}
+                    onChange={(e) => setCustomIndustry(e.target.value)}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20 mt-2"
+                  />
+                )}
               </div>
 
               <div className="space-y-2">
