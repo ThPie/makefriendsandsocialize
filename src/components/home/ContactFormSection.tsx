@@ -140,7 +140,7 @@ export const ContactFormSection = () => {
                     <SelectItem value="private-events">Private Events & Bookings</SelectItem>
                     <SelectItem value="slow-dating">Slow Dating Program</SelectItem>
                     <SelectItem value="circles">Connected Circles</SelectItem>
-                    <SelectItem value="business">Business Membership</SelectItem>
+                    <SelectItem value="founders">Founders Circle</SelectItem>
                     <SelectItem value="partnership">Partnership Opportunities</SelectItem>
                     <SelectItem value="sponsorship">Sponsorship Inquiries</SelectItem>
                     <SelectItem value="media">Media & Press</SelectItem>

@@ -15,7 +15,7 @@ import { useCapacitor } from '@/hooks/useCapacitor';
 const navItems = [
   { label: 'Events', path: '/events', icon: Calendar },
   { label: 'Journal', path: '/journal', icon: BookOpen },
-  { label: 'Business', path: '/connected-circle', icon: Building2 },
+  { label: 'Founders Circle', path: '/founders-circle', icon: Building2 },
   { label: 'The Gentlemen', path: '/circles/the-gentlemen', icon: Crown },
   { label: 'Les Amis', path: '/circles/les-amis', icon: Globe },
   { label: 'Membership', path: '/membership', icon: Users },

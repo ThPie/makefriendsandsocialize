@@ -117,8 +117,11 @@ const MainRoutes = () => (
     <Route path="/cookies" element={<Layout><CookiesPage /></Layout>} />
     <Route path="/faq" element={<Layout><FAQPage /></Layout>} />
     <Route path="/slow-dating" element={<SlowDatingPage />} />
-    <Route path="/connected-circle" element={<ConnectedCirclePage />} />
-    <Route path="/connected-circle/directory" element={<ConnectedCircleDirectoryPage />} />
+    <Route path="/founders-circle" element={<ConnectedCirclePage />} />
+    <Route path="/founders-circle/directory" element={<ConnectedCircleDirectoryPage />} />
+    {/* Redirects from old URLs for SEO */}
+    <Route path="/connected-circle" element={<Navigate to="/founders-circle" replace />} />
+    <Route path="/connected-circle/directory" element={<Navigate to="/founders-circle/directory" replace />} />
     <Route path="/business" element={<Layout><BusinessDirectoryPage /></Layout>} />
     <Route path="/circles" element={<CirclesPage />} />
     <Route path="/circles/the-gentlemen" element={<TheGentlemenPage />} />

@@ -154,8 +154,8 @@ const AdminBusinesses = () => {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-display text-3xl text-foreground mb-2">Business Directory</h1>
-        <p className="text-muted-foreground">Manage business listings for The Connected Circle</p>
+        <h1 className="font-display text-3xl text-foreground mb-2">Founders Directory</h1>
+        <p className="text-muted-foreground">Manage founder company listings for The Founders Circle</p>
       </div>
 
       {/* Stats */}

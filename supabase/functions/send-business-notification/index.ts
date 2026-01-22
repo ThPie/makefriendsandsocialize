@@ -18,33 +18,33 @@ const getStatusDetails = (status: string, businessName: string) => {
   switch (status) {
     case 'approved':
       return {
-        subject: `Your business "${businessName}" has been approved!`,
-        heading: "Congratulations! Your Business is Now Live",
-        message: `Great news! Your business listing for <strong>${businessName}</strong> has been approved and is now visible in The Connected Circle directory.`,
+        subject: `Your company "${businessName}" has been approved!`,
+        heading: "Congratulations! Your Company is Now Live",
+        message: `Great news! Your company listing for <strong>${businessName}</strong> has been approved and is now visible in The Founders Circle directory.`,
         ctaText: "View Your Listing",
         color: "#22c55e",
       };
     case 'featured':
       return {
-        subject: `Your business "${businessName}" is now featured!`,
+        subject: `Your company "${businessName}" is now featured!`,
         heading: "You've Been Featured!",
-        message: `Exciting news! Your business <strong>${businessName}</strong> has been selected as a featured listing in The Connected Circle. This means increased visibility and prominence in our directory.`,
+        message: `Exciting news! Your company <strong>${businessName}</strong> has been selected as a featured listing in The Founders Circle. This means increased visibility and prominence in our directory.`,
         ctaText: "See Your Featured Listing",
         color: "#f97316",
       };
     case 'rejected':
       return {
-        subject: `Update on your business listing "${businessName}"`,
-        heading: "Business Listing Update",
-        message: `We've reviewed your business listing for <strong>${businessName}</strong>. Unfortunately, we couldn't approve it at this time. This may be due to incomplete information or not meeting our community guidelines. Please review your listing and resubmit.`,
+        subject: `Update on your company listing "${businessName}"`,
+        heading: "Company Listing Update",
+        message: `We've reviewed your company listing for <strong>${businessName}</strong>. Unfortunately, we couldn't approve it at this time. This may be due to incomplete information or not meeting our community guidelines. Please review your listing and resubmit.`,
         ctaText: "Update Your Listing",
         color: "#ef4444",
       };
     default:
       return {
-        subject: `Update on your business listing`,
-        heading: "Business Listing Update",
-        message: `There's an update to your business listing.`,
+        subject: `Update on your company listing`,
+        heading: "Company Listing Update",
+        message: `There's an update to your company listing.`,
         ctaText: "View Details",
         color: "#6b7280",
       };
@@ -77,7 +77,7 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "The Connected Circle <onboarding@resend.dev>",
+        from: "The Founders Circle <onboarding@resend.dev>",
         to: [email],
         subject: details.subject,
         html: `
@@ -123,8 +123,8 @@ const handler = async (req: Request): Promise<Response> => {
 
                 <div style="border-top: 1px solid #262626; padding-top: 24px; text-align: center;">
                   <p style="color: #71717a; font-size: 14px; margin: 0;">
-                    The Connected Circle<br>
-                    <span style="color: #52525b;">Where business relationships thrive</span>
+                    The Founders Circle<br>
+                    <span style="color: #52525b;">Where visionary founders connect</span>
                   </p>
                 </div>
               </div>

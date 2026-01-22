@@ -256,7 +256,7 @@ const ContactPage = () => {
                   <option value="private-events">Private Events & Bookings</option>
                   <option value="slow-dating">Slow Dating Program</option>
                   <option value="circles">Connected Circles</option>
-                  <option value="business">Business Membership</option>
+                  <option value="founders">Founders Circle</option>
                   <option value="partnership">Partnership Opportunities</option>
                   <option value="sponsorship">Sponsorship Inquiries</option>
                   <option value="media">Media & Press</option>

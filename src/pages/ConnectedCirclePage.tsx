@@ -46,7 +46,7 @@ const ConnectedCirclePage = () => {
 
   // Stats data
   const stats = [
-    { value: 150, suffix: "+", label: "Member Businesses", icon: Building2 },
+    { value: 150, suffix: "+", label: "Founder Companies", icon: Building2 },
     { value: 50, suffix: "+", label: "Industries", icon: Briefcase },
     { value: 500, suffix: "+", label: "Connections Made", icon: Handshake },
     { value: 12, suffix: "+", label: "Cities", icon: Globe },
@@ -57,50 +57,50 @@ const ConnectedCirclePage = () => {
     {
       icon: Network,
       title: "Exclusive Network Access",
-      description: "Connect with vetted business owners and decision-makers who share your commitment to quality and integrity.",
+      description: "Connect with vetted founders and decision-makers who share your commitment to quality and integrity.",
     },
     {
       icon: Building2,
       title: "Premium Visibility",
-      description: "Showcase your business to a curated community of high-caliber professionals actively seeking trusted partners.",
+      description: "Showcase your company to a curated community of high-caliber entrepreneurs actively seeking trusted partners.",
     },
     {
       icon: Handshake,
       title: "Warm Introductions",
-      description: "Skip the cold outreach. Get introduced to potential clients and collaborators through our trusted network.",
+      description: "Skip the cold outreach. Get introduced to fellow founders, potential partners, and strategic collaborators through our trusted network.",
     },
     {
       icon: Shield,
       title: "Vetted Community",
-      description: "Every business in our circle undergoes verification, ensuring you connect with legitimate, reputable organizations.",
+      description: "Every founder and company in our circle undergoes verification, ensuring you connect with legitimate, reputable organizations led by real entrepreneurs.",
     },
   ];
 
   // FAQ data
   const faqs = [
     {
-      question: "Who can join The Connected Circle?",
-      answer: "The Connected Circle is available to active members with Fellow or Founder tier memberships who own or represent a business. We verify all business listings to maintain the quality and trust of our network."
+      question: "Who can join The Founders Circle?",
+      answer: "The Founders Circle is available to active members with Fellow or Founder tier memberships who own or represent a company. We verify all company listings to maintain the quality and trust of our network."
     },
     {
-      question: "What types of businesses are in the directory?",
+      question: "What types of companies are in the directory?",
       answer: "Our directory spans a wide range of industries including professional services, technology, creative agencies, hospitality, wellness, finance, and more. We prioritize quality and diversity to create a robust ecosystem of opportunities."
     },
     {
-      question: "How do I get my business listed?",
-      answer: "Once you're an active Fellow or Founder member, you can create your business profile through the member portal. Your listing will be reviewed by our team before appearing in the directory, typically within 48-72 hours."
+      question: "How do I get my company listed?",
+      answer: "Once you're an active Fellow or Founder member, you can create your founder profile through the member portal. Your listing will be reviewed by our team before appearing in the directory, typically within 48-72 hours."
     },
     {
       question: "Is there an additional cost?",
-      answer: "Business listing is included at no extra cost with Fellow and Founder memberships. We believe in creating value through connections, not additional fees."
+      answer: "Company listing is included at no extra cost with Fellow and Founder memberships. We believe in creating value through connections, not additional fees."
     },
     {
-      question: "How are businesses verified?",
-      answer: "Our team reviews each business submission, checking for legitimacy, professional presence, and alignment with our community values. We may request additional documentation for verification."
+      question: "How are companies verified?",
+      answer: "Our team reviews each company submission, checking for legitimacy, professional presence, and alignment with our community values. We may request additional documentation for verification."
     },
     {
-      question: "Can I update my business profile?",
-      answer: "Absolutely. You can update your business description, services, contact information, and logo at any time through the member portal. Changes are reflected immediately in the directory."
+      question: "Can I update my founder profile?",
+      answer: "Absolutely. You can update your company description, services, contact information, and logo at any time through the member portal. Changes are reflected immediately in the directory."
     },
   ];
 
@@ -167,7 +167,7 @@ const ConnectedCirclePage = () => {
                 className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2.5 mb-8"
               >
                 <Sparkles className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-white">Business Networking Reimagined</span>
+                <span className="text-sm font-medium text-white">Founders Networking Reimagined</span>
               </motion.div>
 
               <motion.h1
@@ -176,7 +176,7 @@ const ConnectedCirclePage = () => {
                 transition={{ duration: 0.7, delay: 0.1 }}
                 className="font-display text-5xl md:text-6xl lg:text-7xl text-white mb-6 leading-[1.1]"
               >
-                The Connected
+                The Founders
                 <br />
                 <span className="text-primary">Circle</span>
               </motion.h1>
@@ -187,9 +187,9 @@ const ConnectedCirclePage = () => {
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="text-white/80 text-lg md:text-xl max-w-xl mb-10 leading-relaxed"
               >
-                Where business relationships thrive. An exclusive directory of verified 
-                member businesses, creating opportunities for meaningful professional 
-                connections and collaborations.
+                Where visionary founders connect and thrive. An exclusive directory of verified 
+                member-founded companies, creating opportunities for meaningful professional 
+                connections and strategic collaborations.
               </motion.p>
 
               <motion.div
@@ -203,7 +203,7 @@ const ConnectedCirclePage = () => {
                   size="lg"
                   className="rounded-full px-8 min-h-[52px] text-base font-medium group"
                 >
-                  <Link to="/connected-circle/directory">
+                  <Link to="/founders-circle/directory">
                     Browse Directory
                     <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </Link>
@@ -276,8 +276,8 @@ const ConnectedCirclePage = () => {
                 Elevate Your Business
               </h2>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                The Connected Circle isn't just a directory—it's a gateway to 
-                meaningful business relationships built on trust and mutual respect.
+                The Founders Circle isn't just a directory—it's a gateway to 
+                meaningful founder-to-founder relationships built on trust, innovation, and mutual respect.
               </p>
             </div>
 
@@ -313,7 +313,7 @@ const ConnectedCirclePage = () => {
             <div className="text-center mb-16">
               <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">The Process</p>
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
-                Get Your Business Listed
+                Get Your Company Listed
               </h2>
             </div>
 
@@ -331,12 +331,12 @@ const ConnectedCirclePage = () => {
                   {
                     step: "01",
                     title: "Become a Member",
-                    description: "Join as a Fellow or Founder member to unlock access to The Connected Circle. Our membership ensures a vetted community of serious professionals.",
+                    description: "Join as a Fellow or Founder member to unlock access to The Founders Circle. Our membership ensures a vetted community of serious entrepreneurs and business builders.",
                   },
                   {
                     step: "02",
-                    title: "Create Your Business Profile",
-                    description: "Share your business story, services, and expertise. Upload your logo and provide the details that make your business unique.",
+                    title: "Create Your Founder Profile",
+                    description: "Share your founder journey, company story, and expertise. Upload your logo and provide the details that make your venture unique.",
                   },
                   {
                     step: "03",
@@ -346,7 +346,7 @@ const ConnectedCirclePage = () => {
                   {
                     step: "04",
                     title: "Connect & Grow",
-                    description: "Once approved, your business is visible to our entire member community. Receive introduction requests and build meaningful professional relationships.",
+                    description: "Once approved, your company is visible to our entire founder community. Receive introduction requests and build strategic founder-to-founder relationships.",
                   },
                 ].map((item, index) => (
                   <motion.div
@@ -420,16 +420,16 @@ const ConnectedCirclePage = () => {
             >
               <div className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8">
                 <Building2 className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">Join The Circle</span>
+                <span className="text-sm font-medium text-foreground">Join The Founders</span>
               </div>
               
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
-                Ready to Expand Your Network?
+                Ready to Connect with Fellow Founders?
               </h2>
               
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
-                Join The Connected Circle today and gain access to a curated community 
-                of professionals and businesses who value quality connections.
+                Join The Founders Circle today and gain access to a curated community 
+                of entrepreneurs and founders who value strategic connections and collaborative growth.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -449,7 +449,7 @@ const ConnectedCirclePage = () => {
                   size="lg"
                   className="rounded-full px-8 min-h-[52px] text-base border-border/50 hover:bg-secondary"
                 >
-                  <Link to="/connected-circle/directory">Browse Directory</Link>
+                  <Link to="/founders-circle/directory">Browse Directory</Link>
                 </Button>
               </div>
             </motion.div>
