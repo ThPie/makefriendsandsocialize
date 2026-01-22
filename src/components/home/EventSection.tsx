@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Calendar, MapPin, Users } from 'lucide-react';
 import { useEffect } from 'react';
+import { parseLocalDate } from '@/lib/date-utils';
 
 interface Event {
   id: string;
@@ -51,7 +52,7 @@ const EventCard = ({ event, className = '' }: EventCardProps) => {
         <div className="flex flex-col gap-1.5 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            {format(new Date(event.date), 'MMMM d, yyyy')}
+            {format(parseLocalDate(event.date), 'MMMM d, yyyy')}
             {event.time && ` • ${event.time}`}
           </div>
           {(event.venue_name || event.city) && (
