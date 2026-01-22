@@ -3,8 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { Loader2, Phone, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Loader2, Phone, ArrowRight, ArrowLeft, AlertCircle, Mail, CheckCircle } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
 // Country code mapping based on timezone/locale
@@ -59,15 +58,17 @@ const getDefaultCountryCode = (): string => {
 
 interface PhoneOTPLoginProps {
   onSuccess?: () => void;
+  onSwitchToEmail?: () => void;
   disabled?: boolean;
 }
 
-export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
+export function PhoneOTPLogin({ onSuccess, onSwitchToEmail, disabled }: PhoneOTPLoginProps) {
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Set default country code on mount
   useEffect(() => {
@@ -75,9 +76,10 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
     setPhone(defaultCode + ' ');
   }, []);
 
-  // Clear error when user starts typing
+  // Clear error/success when user starts typing
   const handlePhoneChangeWithClear = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(null);
+    setSuccessMessage(null);
     handlePhoneChange(e);
   };
 
@@ -146,7 +148,7 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
         return;
       }
 
-      toast.success('Verification code sent!');
+      setSuccessMessage('Verification code sent!');
       setError(null);
       setStep('otp');
     } catch (err) {
@@ -195,7 +197,7 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
       }
 
       if (data?.session) {
-        toast.success('Successfully signed in!');
+        setSuccessMessage('Successfully signed in!');
         onSuccess?.();
       }
     } catch (err) {
@@ -209,6 +211,7 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
   const handleResendOTP = async () => {
     setOtp('');
     setError(null);
+    setSuccessMessage(null);
     await handleSendOTP();
   };
 
@@ -216,6 +219,7 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
     setStep('phone');
     setOtp('');
     setError(null);
+    setSuccessMessage(null);
   };
 
   if (step === 'otp') {
@@ -252,10 +256,29 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
           </InputOTP>
         </div>
 
+        {successMessage && (
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm">
+            <CheckCircle className="h-4 w-4 mt-0.5 shrink-0" />
+            <span>{successMessage}</span>
+          </div>
+        )}
+
         {error && (
-          <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-            <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-            <span>{error}</span>
+          <div className="space-y-3">
+            <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+              <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+              <span>{error}</span>
+            </div>
+            {onSwitchToEmail && (
+              <Button
+                variant="outline"
+                onClick={onSwitchToEmail}
+                className="w-full border-white/20 text-white hover:bg-white/10"
+              >
+                <Mail className="mr-2 h-4 w-4" />
+                Try with Email Instead
+              </Button>
+            )}
           </div>
         )}
 
@@ -309,10 +332,29 @@ export function PhoneOTPLogin({ onSuccess, disabled }: PhoneOTPLoginProps) {
         </p>
       </div>
 
+      {successMessage && (
+        <div className="flex items-start gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm">
+          <CheckCircle className="h-4 w-4 mt-0.5 shrink-0" />
+          <span>{successMessage}</span>
+        </div>
+      )}
+
       {error && (
-        <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-          <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-          <span>{error}</span>
+        <div className="space-y-3">
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+          {onSwitchToEmail && (
+            <Button
+              variant="outline"
+              onClick={onSwitchToEmail}
+              className="w-full border-white/20 text-white hover:bg-white/10"
+            >
+              <Mail className="mr-2 h-4 w-4" />
+              Try with Email Instead
+            </Button>
+          )}
         </div>
       )}
 

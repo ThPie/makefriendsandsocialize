@@ -6,10 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useSiteStats } from '@/hooks/useSiteStats';
-import { ArrowLeft, ArrowRight, Check, Loader2, Mail, User, AlertTriangle, Phone } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Loader2, Mail, User, AlertTriangle, Phone, AlertCircle, CheckCircle } from 'lucide-react';
 import { PhoneOTPLogin } from '@/components/auth/PhoneOTPLogin';
 import { z } from 'zod';
 import { MemberAvatars } from '@/components/home/MemberAvatars';
@@ -95,6 +94,16 @@ export default function AuthPage() {
   const [emailTouched, setEmailTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
   const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
+  
+  // Inline form feedback (replaces toast notifications)
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formSuccess, setFormSuccess] = useState<string | null>(null);
+  
+  // Clear form feedback when user interacts
+  const clearFormFeedback = useCallback(() => {
+    setFormError(null);
+    setFormSuccess(null);
+  }, []);
 
   // Real-time email validation
   const validateEmail = useCallback((value: string) => {
@@ -139,6 +148,7 @@ export default function AuthPage() {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
+    clearFormFeedback();
     if (emailTouched) {
       validateEmail(value);
     }
@@ -148,6 +158,7 @@ export default function AuthPage() {
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
+    clearFormFeedback();
     if (passwordTouched && mode === 'signup') {
       validatePasswordField(value);
     }
@@ -211,19 +222,23 @@ export default function AuthPage() {
     // Mark all fields as touched to show errors
     setEmailTouched(true);
     setPasswordTouched(true);
+    clearFormFeedback();
+    
     if (mode === 'signup') {
       setConfirmPasswordTouched(true);
     }
     
     // Validate email
     let isValid = true;
+    let firstError: string | null = null;
+    
     try {
       emailSchema.parse(email);
       setEmailError(undefined);
     } catch (err) {
       if (err instanceof z.ZodError) {
         setEmailError(err.errors[0].message);
-        toast.error(err.errors[0].message);
+        if (!firstError) firstError = err.errors[0].message;
       }
       isValid = false;
     }
@@ -233,7 +248,7 @@ export default function AuthPage() {
       const { isValid: passwordValid, errors } = validatePassword(password);
       if (!passwordValid) {
         setPasswordError(errors[0]);
-        if (isValid) toast.error(errors[0]); // Only show if email was valid
+        if (!firstError) firstError = errors[0];
         isValid = false;
       } else {
         setPasswordError(undefined);
@@ -242,7 +257,7 @@ export default function AuthPage() {
       // Validate confirm password
       if (password !== confirmPassword) {
         setConfirmPasswordError('Passwords do not match');
-        if (isValid) toast.error('Passwords do not match');
+        if (!firstError) firstError = 'Passwords do not match';
         isValid = false;
       } else {
         setConfirmPasswordError(undefined);
@@ -250,9 +265,13 @@ export default function AuthPage() {
     } else {
       // For signin, just check password isn't empty
       if (password.length < 1) {
-        toast.error('Password is required');
+        if (!firstError) firstError = 'Password is required';
         isValid = false;
       }
+    }
+    
+    if (firstError) {
+      setFormError(firstError);
     }
     
     return isValid;
@@ -263,12 +282,13 @@ export default function AuthPage() {
 
     // Check CAPTCHA if required
     if (requiresCaptcha && !captchaVerified) {
-      toast.error('Please complete the security check first');
+      setFormError('Please complete the security check first');
       return;
     }
 
     if (mode === 'signin') {
       setIsSubmitting(true);
+      clearFormFeedback();
       
       // Record login attempt for rate limiting
       await recordAttempt(false);
@@ -281,7 +301,7 @@ export default function AuthPage() {
         setIsSubmitting(false);
         
         // Prevent account enumeration - use generic error message
-        toast.error('Invalid email or password. Please check your credentials and try again.');
+        setFormError('Invalid email or password. Please check your credentials and try again.');
         return;
       }
       
@@ -297,11 +317,12 @@ export default function AuthPage() {
 
   const handleFinalSubmit = async () => {
     if (!acceptedTerms) {
-      toast.error('Please accept the Privacy Policy and Terms of Service');
+      setFormError('Please accept the Privacy Policy and Terms of Service');
       return;
     }
     
     setIsSubmitting(true);
+    clearFormFeedback();
     
     try {
       const signUpResult = await signUp(email, password);
@@ -320,7 +341,7 @@ export default function AuthPage() {
             errorMessage.includes('unique constraint') ||
             // Supabase often returns a generic 422 error for existing users
             (signUpError as any)?.status === 422) {
-          toast.error('This email is already registered. Please sign in instead.');
+          setFormError('This email is already registered. Please sign in instead.');
           setMode('signin');
           setStep(1);
           setIsSubmitting(false);
@@ -330,32 +351,32 @@ export default function AuthPage() {
         if (errorMessage.includes('invalid api key') || errorMessage.includes('api key')) {
           // This is likely an email service configuration issue, not a user error
           console.error('Email service configuration error:', signUpError);
-          toast.error('Account creation temporarily unavailable. Please try again in a few minutes or contact support.');
+          setFormError('Account creation temporarily unavailable. Please try again in a few minutes or contact support.');
           setIsSubmitting(false);
           return;
         }
         
         if (errorMessage.includes('rate limit') || errorMessage.includes('too many')) {
-          toast.error('Too many signup attempts. Please wait a few minutes and try again.');
+          setFormError('Too many signup attempts. Please wait a few minutes and try again.');
           setIsSubmitting(false);
           return;
         }
         
         if (errorMessage.includes('signups not allowed') || errorMessage.includes('signup disabled')) {
-          toast.error('New registrations are temporarily disabled. Please try again later or contact support.');
+          setFormError('New registrations are temporarily disabled. Please try again later or contact support.');
           setIsSubmitting(false);
           return;
         }
         
         if (errorMessage.includes('email') && errorMessage.includes('invalid')) {
-          toast.error('Please enter a valid email address.');
+          setFormError('Please enter a valid email address.');
           setIsSubmitting(false);
           return;
         }
         
         // Generic fallback for unknown errors
         console.error('Signup error:', signUpError);
-        toast.error('Unable to create account. Please check your information and try again.');
+        setFormError('Unable to create account. Please check your information and try again.');
         setIsSubmitting(false);
         return;
       }
@@ -427,12 +448,12 @@ export default function AuthPage() {
         // No session but no error - might need email confirmation
         console.log('Signup completed, awaiting email confirmation');
         setIsSubmitting(false);
-        toast.success('Account created! Please check your email to verify your account.');
+        setFormSuccess('Account created! Please check your email to verify your account.');
         navigate('/auth/waiting');
       }
     } catch (err) {
       console.error('Unexpected signup error:', err);
-      toast.error('An unexpected error occurred. Please try again.');
+      setFormError('An unexpected error occurred. Please try again.');
       setIsSubmitting(false);
     }
   };
@@ -560,12 +581,28 @@ export default function AuthPage() {
                 </div>
               )}
 
+              {/* Inline Form Feedback */}
+              {formError && (
+                <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                  <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                  <span>{formError}</span>
+                </div>
+              )}
+              
+              {formSuccess && (
+                <div className="flex items-start gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm">
+                  <CheckCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                  <span>{formSuccess}</span>
+                </div>
+              )}
+
               {/* Form */}
               <div className="space-y-5">
                 {/* Phone Login - Sign In Only */}
                 {mode === 'signin' && authMethod === 'phone' ? (
                   <PhoneOTPLogin 
                     onSuccess={() => navigate('/portal')} 
+                    onSwitchToEmail={() => setAuthMethod('email')}
                     disabled={isRateLimited}
                   />
                 ) : (

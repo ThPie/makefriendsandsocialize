@@ -5,8 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'sonner';
-import { Star, Loader2, Quote, Clock, Check } from 'lucide-react';
+import { Star, Loader2, Quote, Clock, Check, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface UserTestimonial {
   id: string;
@@ -21,6 +20,7 @@ export function SubmitReview() {
   const [existingReview, setExistingReview] = useState<UserTestimonial | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const [quote, setQuote] = useState('');
   const [rating, setRating] = useState(5);
@@ -54,11 +54,12 @@ export function SubmitReview() {
 
   const handleSubmit = async () => {
     if (!user || !quote.trim()) {
-      toast.error('Please write a review');
+      setFeedback({ type: 'error', message: 'Please write a review' });
       return;
     }
 
     setIsSubmitting(true);
+    setFeedback(null);
     try {
       const name = profile?.first_name && profile?.last_name 
         ? `${profile.first_name} ${profile.last_name}`
@@ -82,15 +83,18 @@ export function SubmitReview() {
           .eq('id', existingReview.id);
 
         if (error) throw error;
-        toast.success('Review updated! It will be visible after approval.');
+        setFeedback({ type: 'success', message: 'Review updated! It will be visible after approval.' });
       } else {
         const { error } = await supabase
           .from('testimonials')
           .insert(reviewData);
 
         if (error) throw error;
-        toast.success('Review submitted! It will be visible after approval.');
+        setFeedback({ type: 'success', message: 'Review submitted! It will be visible after approval.' });
       }
+
+      // Clear success message after 5 seconds
+      setTimeout(() => setFeedback(null), 5000);
 
       // Refresh
       const { data } = await supabase
@@ -102,7 +106,7 @@ export function SubmitReview() {
       if (data) setExistingReview(data);
     } catch (error) {
       console.error('Error submitting review:', error);
-      toast.error('Failed to submit review');
+      setFeedback({ type: 'error', message: 'Failed to submit review' });
     } finally {
       setIsSubmitting(false);
     }
@@ -178,11 +182,30 @@ export function SubmitReview() {
           <Textarea
             id="review"
             value={quote}
-            onChange={(e) => setQuote(e.target.value)}
+            onChange={(e) => {
+              setQuote(e.target.value);
+              setFeedback(null);
+            }}
             placeholder="Share what you love about being part of our community..."
             className="min-h-[120px]"
           />
         </div>
+
+        {/* Inline Feedback */}
+        {feedback && (
+          <div className={`flex items-start gap-2 p-3 rounded-lg text-sm ${
+            feedback.type === 'success' 
+              ? 'bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400'
+              : 'bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400'
+          }`}>
+            {feedback.type === 'success' ? (
+              <CheckCircle className="h-4 w-4 mt-0.5 shrink-0" />
+            ) : (
+              <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+            )}
+            <span>{feedback.message}</span>
+          </div>
+        )}
 
         <Button
           onClick={handleSubmit}

@@ -6,8 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { Mail, Bell, Clock, Loader2, Check, Gift, Megaphone } from 'lucide-react';
+import { Mail, Bell, Clock, Loader2, Check, Gift, Megaphone, AlertCircle, CheckCircle } from 'lucide-react';
 
 const REMINDER_OPTIONS = [
   { value: '1', label: '1 hour before' },
@@ -21,6 +20,7 @@ export function EmailPreferences() {
   const { user, refreshProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   
   const [emailRemindersEnabled, setEmailRemindersEnabled] = useState(true);
   const [reminderHoursBefore, setReminderHoursBefore] = useState('24');
@@ -53,6 +53,7 @@ export function EmailPreferences() {
     if (!user) return;
     
     setIsSaving(true);
+    setFeedback(null);
 
     const { error } = await supabase
       .from('profiles')
@@ -67,12 +68,15 @@ export function EmailPreferences() {
     setIsSaving(false);
 
     if (error) {
-      toast.error('Failed to save email preferences');
+      setFeedback({ type: 'error', message: 'Failed to save email preferences' });
       return;
     }
 
     await refreshProfile();
-    toast.success('Email preferences updated');
+    setFeedback({ type: 'success', message: 'Email preferences updated' });
+    
+    // Clear success message after 3 seconds
+    setTimeout(() => setFeedback(null), 3000);
   };
 
   if (isLoading) {
@@ -182,6 +186,22 @@ export function EmailPreferences() {
             onCheckedChange={setMarketingEmailsEnabled}
           />
         </div>
+
+        {/* Inline Feedback */}
+        {feedback && (
+          <div className={`flex items-start gap-2 p-3 rounded-lg text-sm ${
+            feedback.type === 'success' 
+              ? 'bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400'
+              : 'bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400'
+          }`}>
+            {feedback.type === 'success' ? (
+              <CheckCircle className="h-4 w-4 mt-0.5 shrink-0" />
+            ) : (
+              <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+            )}
+            <span>{feedback.message}</span>
+          </div>
+        )}
 
         {/* Save Button */}
         <div className="pt-4 border-t border-border">
