@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Crown, Heart, Users, Calendar, Sparkles, ArrowRight, Lock } from 'lucide-react';
+import { Crown, Heart, Users, Calendar, Sparkles, ArrowRight, Lock, Gift, Briefcase } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type PromptVariant = 'minimal' | 'compact' | 'full';
@@ -20,42 +20,42 @@ const contextConfig: Record<FeatureContext, {
   description: string; 
   icon: typeof Crown;
   benefits: string[];
-  tier: 'member' | 'fellow';
+  tier: 'insider' | 'patron';
 }> = {
   dating: {
-    title: 'Unlock Unlimited Connection Reveals',
-    description: 'Get unlimited access to reveal your connections and discover meaningful introductions.',
+    title: 'Unlock Slow Dating & Matchmaking',
+    description: 'Get unlimited access to curated matchmaking, dating events, and connection reveals.',
     icon: Heart,
-    benefits: ['Unlimited connection reveals', 'Priority introductions', 'Members-only gatherings'],
-    tier: 'member',
+    benefits: ['Unlimited connection reveals', 'Slow Dating access', 'Priority introductions'],
+    tier: 'insider',
   },
   network: {
-    title: 'Access The Network',
-    description: 'Connect with like-minded professionals and request curated introductions.',
+    title: 'Access The Connected Circle',
+    description: 'Connect with like-minded professionals and browse verified member businesses.',
     icon: Users,
-    benefits: ['Browse all member profiles', 'Request introductions', 'Attend networking events'],
-    tier: 'fellow',
+    benefits: ['Browse member directory', 'Request introductions', 'Attend networking events'],
+    tier: 'insider',
   },
   business: {
-    title: 'List Your Business',
-    description: 'Showcase your business to our exclusive community of professionals.',
-    icon: Crown,
-    benefits: ['Business listing in directory', 'AI-powered verification', 'Member introductions'],
-    tier: 'fellow',
+    title: 'List Your Business & Receive Leads',
+    description: 'Showcase your business to our exclusive community and receive qualified leads.',
+    icon: Briefcase,
+    benefits: ['Business listing in directory', 'Receive qualified leads', 'Featured in newsletter'],
+    tier: 'patron',
   },
   events: {
-    title: 'Get Event Discounts',
+    title: 'Get Up to 30% Off Events',
     description: 'Enjoy member pricing on all exclusive events and experiences.',
     icon: Calendar,
-    benefits: ['Up to 30% off events', 'Priority reservations', 'Bring guests for free'],
-    tier: 'member',
+    benefits: ['Up to 30% off events', 'Invitation-only gatherings', 'Bring guests for free'],
+    tier: 'insider',
   },
   general: {
     title: 'Upgrade Your Membership',
-    description: 'Unlock exclusive features and get more from your membership.',
+    description: 'Unlock exclusive features including matchmaking, partner perks, and event discounts.',
     icon: Sparkles,
-    benefits: ['Unlimited connection reveals', 'Network access', 'Event discounts'],
-    tier: 'member',
+    benefits: ['Unlimited reveals', 'Slow Dating access', 'Partner perks & discounts'],
+    tier: 'insider',
   },
 };
 
@@ -72,8 +72,10 @@ export function UpgradePromptCard({
     return null;
   }
 
-  // Don't show for Fellow tier if context doesn't require it
-  if (subscription?.tier === 'fellow' && context !== 'general') {
+  // Don't show for Patron tier if context doesn't require it
+  // Patron tier (founder in DB) has all features - check using string comparison
+  const tier = subscription?.tier as string | undefined;
+  if ((tier === 'founder' || tier === 'fellow') && context !== 'business' && context !== 'general') {
     return null;
   }
 
@@ -89,7 +91,7 @@ export function UpgradePromptCard({
         <div className="flex items-center gap-2 text-sm">
           <Lock className="h-4 w-4 text-primary" />
           <span className="text-muted-foreground">
-            {lockedFeature || 'This feature'} requires {config.tier === 'fellow' ? 'Fellow' : 'Member'} membership
+            {lockedFeature || 'This feature'} requires {config.tier === 'patron' ? 'Patron' : 'Insider'} membership
           </span>
         </div>
         <Button asChild size="sm" variant="outline">

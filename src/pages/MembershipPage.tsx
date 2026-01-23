@@ -16,7 +16,10 @@ import {
   Calendar, 
   Briefcase,
   Loader2,
-  Zap
+  Zap,
+  Lock,
+  Heart,
+  Gift
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -97,61 +100,78 @@ const MembershipPage = () => {
   };
 
   const isCurrentTier = (tierName: string) => {
-    if (!subscription) return tierName === 'explorer';
-    return subscription.tier === tierName;
+    if (!subscription) return tierName === 'socialite';
+    // Map DB tier to UI tier
+    const tierMap: Record<string, string> = {
+      patron: 'socialite',
+      fellow: 'insider', 
+      founder: 'patron',
+    };
+    return tierMap[subscription.tier || 'patron'] === tierName;
   };
 
   const tiers = [
     {
-      id: 'explorer' as const,
-      name: TIER_BENEFITS.explorer.name,
+      id: 'socialite' as const,
+      stripeId: null,
+      name: TIER_BENEFITS.socialite.name,
       price: '$0',
       annualPrice: '$0',
       period: '/forever',
-      description: TIER_BENEFITS.explorer.description,
-      features: TIER_BENEFITS.explorer.features,
-      limitations: TIER_BENEFITS.explorer.limitations,
+      description: TIER_BENEFITS.socialite.description,
+      features: TIER_BENEFITS.socialite.features,
+      missingFeatures: TIER_BENEFITS.socialite.missingFeatures,
       featured: false,
       badge: null,
       buttonVariant: 'secondary' as const,
-      icon: Users,
+      icon: Star,
     },
     {
-      id: 'member' as const,
-      name: TIER_BENEFITS.member.name,
-      price: `$${TIER_BENEFITS.member.monthlyPrice}`,
-      annualPrice: `$${TIER_BENEFITS.member.annualPrice}`,
+      id: 'insider' as const,
+      stripeId: 'member' as const,
+      name: TIER_BENEFITS.insider.name,
+      price: `$${TIER_BENEFITS.insider.monthlyPrice}`,
+      annualPrice: `$${TIER_BENEFITS.insider.annualPrice}`,
       period: billingPeriod === 'monthly' ? '/month' : '/year',
-      description: TIER_BENEFITS.member.description,
-      features: TIER_BENEFITS.member.features,
+      description: TIER_BENEFITS.insider.description,
+      features: TIER_BENEFITS.insider.features,
+      missingFeatures: TIER_BENEFITS.insider.missingFeatures,
       featured: true,
       badge: 'Most Popular',
       buttonVariant: 'default' as const,
-      icon: Star,
-      trialDays: TIER_BENEFITS.member.trialDays,
-      annualSavings: TIER_BENEFITS.member.annualSavings,
+      icon: Sparkles,
+      trialDays: TIER_BENEFITS.insider.trialDays,
+      annualSavings: TIER_BENEFITS.insider.annualSavings,
     },
     {
-      id: 'fellow' as const,
-      name: TIER_BENEFITS.fellow.name,
-      price: `$${TIER_BENEFITS.fellow.monthlyPrice}`,
-      annualPrice: `$${TIER_BENEFITS.fellow.annualPrice}`,
+      id: 'patron' as const,
+      stripeId: 'fellow' as const,
+      name: TIER_BENEFITS.patron.name,
+      price: `$${TIER_BENEFITS.patron.monthlyPrice}`,
+      annualPrice: `$${TIER_BENEFITS.patron.annualPrice}`,
       period: billingPeriod === 'monthly' ? '/month' : '/year',
-      description: TIER_BENEFITS.fellow.description,
-      features: TIER_BENEFITS.fellow.features,
+      description: TIER_BENEFITS.patron.description,
+      features: TIER_BENEFITS.patron.features,
+      missingFeatures: TIER_BENEFITS.patron.missingFeatures,
       featured: false,
       badge: 'Premium',
       buttonVariant: 'secondary' as const,
       icon: Crown,
-      trialDays: TIER_BENEFITS.fellow.trialDays,
-      annualSavings: TIER_BENEFITS.fellow.annualSavings,
+      trialDays: TIER_BENEFITS.patron.trialDays,
+      annualSavings: TIER_BENEFITS.patron.annualSavings,
     },
   ];
 
   const processSteps = [
-    { step: 1, title: 'Choose Your Plan', desc: 'Select the membership tier that best fits your needs.', icon: Briefcase },
-    { step: 2, title: 'Start Free Trial', desc: 'Try Member or Fellow free for 7 days. Cancel anytime.', icon: Zap },
-    { step: 3, title: 'Unlock Everything', desc: 'Get full access to events, connections, and the Connected Circle.', icon: Crown },
+    { step: 1, title: 'Choose Your Tier', desc: 'Select the membership that matches your lifestyle.', icon: Briefcase },
+    { step: 2, title: 'Start Free Trial', desc: 'Try Insider or Patron free for 7 days. Cancel anytime.', icon: Zap },
+    { step: 3, title: 'Unlock Everything', desc: 'Access events, matchmaking, partner perks & the Connected Circle.', icon: Crown },
+  ];
+
+  const valueHighlights = [
+    { icon: Heart, label: 'Slow Dating', sublabel: 'Curated matchmaking', color: 'text-pink-500', bg: 'bg-pink-500/10' },
+    { icon: Gift, label: 'Partner Perks', sublabel: 'Exclusive discounts', color: 'text-amber-500', bg: 'bg-amber-500/10' },
+    { icon: Briefcase, label: 'Business Leads', sublabel: 'Patrons receive leads', color: 'text-blue-500', bg: 'bg-blue-500/10' },
   ];
 
   return (
@@ -209,7 +229,7 @@ const MembershipPage = () => {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
           >
-            Unlock exclusive events, unlimited connection reveals, and the Connected Circle business directory.
+            Unlock exclusive events, Slow Dating matchmaking, unlimited reveals, partner perks, and the Connected Circle.
           </motion.p>
 
           <motion.div
@@ -248,6 +268,31 @@ const MembershipPage = () => {
         </motion.div>
       </section>
 
+      {/* Value Highlights */}
+      <section className="py-12 w-full bg-secondary/30">
+        <div className="container max-w-4xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {valueHighlights.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
+                className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border/50"
+              >
+                <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center`}>
+                  <item.icon className={`w-5 h-5 ${item.color}`} />
+                </div>
+                <div>
+                  <p className="font-medium text-foreground">{item.label}</p>
+                  <p className="text-sm text-muted-foreground">{item.sublabel}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Legacy Section */}
       <section className="py-24 md:py-32 w-full">
         <div 
@@ -282,7 +327,7 @@ const MembershipPage = () => {
                 </div>
                 <h3 className="text-foreground text-xl font-bold mb-2 font-display">Exclusive Events</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Access a calendar of private gatherings, from intimate soirées to grand galas.
+                  Access a calendar of private gatherings, from intimate soirées to grand galas — with member discounts up to 30% off.
                 </p>
               </div>
             </motion.div>
@@ -298,7 +343,7 @@ const MembershipPage = () => {
                 </div>
                 <h3 className="text-foreground text-xl font-bold mb-2 font-display">Curated Community</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Join a vetted network of peers who share a passion for culture and elevated experiences.
+                  Join a vetted network of peers who share a passion for culture, connection, and elevated experiences.
                 </p>
               </div>
             </motion.div>
@@ -340,7 +385,7 @@ const MembershipPage = () => {
               </Label>
               {billingPeriod === 'annual' && (
                 <Badge variant="secondary" className="ml-2 bg-green-500/10 text-green-600 border-green-500/20">
-                  Save up to 30%
+                  Save up to 32%
                 </Badge>
               )}
             </div>
@@ -410,7 +455,7 @@ const MembershipPage = () => {
                   </div>
 
                   {/* Action Button */}
-                  {tier.id === 'explorer' ? (
+                  {tier.id === 'socialite' ? (
                     <Button variant="secondary" className="w-full rounded-full min-h-[48px]" disabled={isCurrent} asChild>
                       <Link to="/auth">{isCurrent ? 'Current Plan' : 'Get Started Free'}</Link>
                     </Button>
@@ -422,22 +467,22 @@ const MembershipPage = () => {
                     <Button 
                       variant={tier.featured ? 'default' : 'secondary'} 
                       className="w-full rounded-full min-h-[48px]"
-                      onClick={() => handleSubscribe(tier.id as 'member' | 'fellow')}
-                      disabled={loadingTier === tier.id}
+                      onClick={() => tier.stripeId && handleSubscribe(tier.stripeId)}
+                      disabled={loadingTier === tier.stripeId}
                     >
-                      {loadingTier === tier.id ? (
+                      {loadingTier === tier.stripeId ? (
                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
                       ) : null}
-                      {tier.id === 'fellow' ? 'Upgrade to Fellow' : 'Switch Plan'}
+                      {tier.id === 'patron' ? 'Upgrade to Patron' : 'Switch Plan'}
                     </Button>
                   ) : (
                     <Button 
                       variant={tier.featured ? 'default' : 'secondary'} 
                       className="w-full rounded-full min-h-[48px]"
-                      onClick={() => handleStartTrial(tier.id as 'member' | 'fellow')}
-                      disabled={loadingTier === tier.id}
+                      onClick={() => tier.stripeId && handleStartTrial(tier.stripeId)}
+                      disabled={loadingTier === tier.stripeId}
                     >
-                      {loadingTier === tier.id ? (
+                      {loadingTier === tier.stripeId ? (
                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
                       ) : (
                         <Zap className="h-4 w-4 mr-2" />
@@ -446,6 +491,7 @@ const MembershipPage = () => {
                     </Button>
                   )}
 
+                  {/* Included Features */}
                   <div className="flex flex-col gap-3">
                     {tier.features.map((feature, i) => (
                       <div key={i} className="flex items-start gap-3 text-sm text-foreground">
@@ -453,18 +499,29 @@ const MembershipPage = () => {
                         <span>{feature}</span>
                       </div>
                     ))}
-                    {tier.limitations?.map((limitation, i) => (
-                      <div key={`limit-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground">
-                        <span className="h-5 w-5 flex items-center justify-center flex-shrink-0">—</span>
-                        <span>{limitation}</span>
-                      </div>
-                    ))}
                   </div>
 
-                  {/* Fellow exclusivity note */}
-                  {tier.id === 'fellow' && (
+                  {/* Missing Features (Grayscale) */}
+                  {tier.missingFeatures && tier.missingFeatures.length > 0 && (
+                    <div className="border-t border-border/50 pt-4">
+                      <p className="text-xs text-muted-foreground/60 uppercase tracking-wider mb-3 font-medium">
+                        Upgrade to unlock
+                      </p>
+                      <div className="flex flex-col gap-2">
+                        {tier.missingFeatures.map((feature, i) => (
+                          <div key={`missing-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground/50">
+                            <Lock className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                            <span>{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Patron exclusivity note */}
+                  {tier.id === 'patron' && (
                     <p className="text-xs text-muted-foreground mt-4 text-center italic">
-                      Fellow membership is limited and subject to availability.
+                      Patron membership is limited and subject to availability.
                     </p>
                   )}
                 </motion.div>
@@ -535,7 +592,7 @@ const MembershipPage = () => {
             transition={{ duration: 0.5 }}
             className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-8"
           >
-            <Star className="h-10 w-10 text-primary" />
+            <Crown className="h-10 w-10 text-primary" />
           </motion.div>
 
           <motion.h2
@@ -553,7 +610,7 @@ const MembershipPage = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-muted-foreground text-lg md:text-xl mb-10 max-w-xl mx-auto"
           >
-            Take the first step towards joining a distinguished community of peers.
+            Take the first step towards joining a distinguished community of peers — with exclusive events, matchmaking, and partner perks.
           </motion.p>
 
           <motion.div
