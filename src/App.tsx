@@ -31,6 +31,7 @@ import AuthCallbackPage from "@/pages/AuthCallbackPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import AuthWaitingPage from "@/pages/AuthWaitingPage";
+import EmailVerificationPage from "@/pages/EmailVerificationPage";
 import PortalDashboard from "@/pages/portal/PortalDashboard";
 import PortalProfile from "@/pages/portal/PortalProfile";
 import PortalNetwork from "@/pages/portal/PortalNetwork";
@@ -91,6 +92,7 @@ const SlowDatingRoutes = () => (
     <Route path="/auth" element={<AuthPage />} />
     <Route path="/auth/callback" element={<AuthCallbackPage />} />
     <Route path="/auth/waiting" element={<AuthWaitingPage />} />
+    <Route path="/auth/verify-email" element={<EmailVerificationPage />} />
     <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
     <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
     <Route path="/privacy" element={<Layout><PrivacyPage /></Layout>} />
@@ -140,6 +142,7 @@ const MainRoutes = () => (
     <Route path="/auth" element={<AuthPage />} />
     <Route path="/auth/callback" element={<AuthCallbackPage />} />
     <Route path="/auth/waiting" element={<AuthWaitingPage />} />
+    <Route path="/auth/verify-email" element={<EmailVerificationPage />} />
     <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
     <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
     

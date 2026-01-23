@@ -550,13 +550,13 @@ export default function AuthPage() {
         }
         
         setIsSubmitting(false);
-        navigate('/auth/waiting');
+        navigate('/portal/onboarding');
       } else {
-        // No session but no error - might need email confirmation
+        // No session but no error - user needs to verify email
         console.log('Signup completed, awaiting email confirmation');
         setIsSubmitting(false);
         setFormSuccess('Account created! Please check your email to verify your account.');
-        navigate('/auth/waiting');
+        navigate('/auth/verify-email');
       }
     } catch (err) {
       console.error('Unexpected signup error:', err);
