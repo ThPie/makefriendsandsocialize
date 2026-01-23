@@ -2259,6 +2259,7 @@ export type Database = {
           linkedin_url: string | null
           marketing_emails_enabled: boolean | null
           onboarding_completed: boolean | null
+          onboarding_step: number | null
           profile_completed_at: string | null
           referral_code: string | null
           referral_count: number | null
@@ -2297,6 +2298,7 @@ export type Database = {
           linkedin_url?: string | null
           marketing_emails_enabled?: boolean | null
           onboarding_completed?: boolean | null
+          onboarding_step?: number | null
           profile_completed_at?: string | null
           referral_code?: string | null
           referral_count?: number | null
@@ -2335,6 +2337,7 @@ export type Database = {
           linkedin_url?: string | null
           marketing_emails_enabled?: boolean | null
           onboarding_completed?: boolean | null
+          onboarding_step?: number | null
           profile_completed_at?: string | null
           referral_code?: string | null
           referral_count?: number | null

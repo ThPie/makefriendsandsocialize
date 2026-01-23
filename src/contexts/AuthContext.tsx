@@ -31,6 +31,13 @@ interface Profile {
   reminder_hours_before: number | null;
   referral_notifications_enabled: boolean | null;
   marketing_emails_enabled: boolean | null;
+  // New fields for enhanced onboarding
+  company: string | null;
+  linkedin_url: string | null;
+  community_goals: string[] | null;
+  target_industries: string[] | null;
+  community_offering: string | null;
+  onboarding_step: number | null;
 }
 
 interface Membership {

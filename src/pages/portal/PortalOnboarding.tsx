@@ -10,11 +10,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PortalOnboardingLayout } from '@/components/portal/PortalOnboardingLayout';
-// PhotoUpload removed - using inline upload logic
+import { VpnBlockedModal } from '@/components/portal/VpnBlockedModal';
 import { LocationCombobox } from '@/components/ui/location-combobox';
 import { CityAutocomplete } from '@/components/ui/city-autocomplete';
 import { BrandedLoader } from '@/components/ui/branded-loader';
-import { ArrowLeft, ArrowRight, Check, Loader2, Camera, User, Briefcase, Heart, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Loader2, Camera, User, Briefcase, Heart, Sparkles, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { COUNTRIES, getRegionsForCountry } from '@/lib/location-data';
 
@@ -50,6 +50,9 @@ export default function PortalOnboarding() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDetectingLocation, setIsDetectingLocation] = useState(true);
+  const [showVpnModal, setShowVpnModal] = useState(false);
+  const [locationDetected, setLocationDetected] = useState(false);
   const totalSteps = 5;
 
   // Step 1: Basic Info
@@ -83,7 +86,7 @@ export default function PortalOnboarding() {
   const countries = COUNTRIES;
   const states = country ? getRegionsForCountry(country) : [];
 
-  // Pre-fill from existing profile
+  // Pre-fill from existing profile and restore saved step
   useEffect(() => {
     if (profile) {
       setFirstName(profile.first_name || '');
@@ -97,8 +100,74 @@ export default function PortalOnboarding() {
       setIndustry(profile.industry || '');
       setBio(profile.bio || '');
       setInterests(profile.interests || []);
+      setCompany(profile.company || '');
+      setLinkedinUrl(profile.linkedin_url || '');
+      setCommunityGoals(profile.community_goals || []);
+      setTargetIndustries(profile.target_industries || []);
+      setCommunityOffering(profile.community_offering || '');
+      
+      // Restore saved step (progress persistence)
+      if (profile.onboarding_step && profile.onboarding_step > 1) {
+        setStep(profile.onboarding_step);
+      }
+      
+      // If location is already set, mark as detected
+      if (profile.country || profile.city) {
+        setLocationDetected(true);
+      }
     }
   }, [profile]);
+
+  // Detect location and check for VPN on mount
+  useEffect(() => {
+    const detectLocation = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase.functions.invoke('detect-location');
+        
+        console.log('Location detection result:', data);
+        
+        if (error) {
+          console.error('Location detection error:', error);
+          setIsDetectingLocation(false);
+          return;
+        }
+        
+        // Check for VPN/proxy
+        if (data?.isVpn) {
+          setShowVpnModal(true);
+          setIsDetectingLocation(false);
+          return;
+        }
+        
+        // Only auto-fill if user hasn't already set values
+        if (!locationDetected && data?.success) {
+          if (data.country && !country) {
+            setCountry(data.country);
+          }
+          if (data.state && !state) {
+            setState(data.state);
+          }
+          if (data.city && !city) {
+            setCity(data.city);
+          }
+          setLocationDetected(true);
+        }
+      } catch (error) {
+        console.error('Location detection failed:', error);
+        // Silent failure - user can still enter manually
+      } finally {
+        setIsDetectingLocation(false);
+      }
+    };
+    
+    if (user && !locationDetected) {
+      detectLocation();
+    } else {
+      setIsDetectingLocation(false);
+    }
+  }, [user, locationDetected]);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -226,6 +295,7 @@ export default function PortalOnboarding() {
           target_industries: targetIndustries,
           community_offering: communityOffering || null,
           interests,
+          onboarding_step: step, // Persist current step for resume capability
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
@@ -451,42 +521,57 @@ export default function PortalOnboarding() {
               <p className="text-white/40 text-xs mt-2">Add up to 3 photos (optional but recommended)</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="text-white">Country</Label>
-                <LocationCombobox
-                  value={country}
-                  onValueChange={(val) => {
-                    setCountry(val);
-                    setState('');
-                    setCity('');
-                  }}
-                  options={countries}
-                  placeholder="Select country"
-                  searchPlaceholder="Search countries..."
-                />
+            {isDetectingLocation ? (
+              <div className="flex items-center gap-2 text-white/60 text-sm py-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Detecting your location...</span>
               </div>
-              <div>
-                <Label className="text-white">State/Province</Label>
-                <LocationCombobox
-                  value={state}
-                  onValueChange={setState}
-                  options={states}
-                  placeholder="Select state"
-                  searchPlaceholder="Search states..."
-                />
-              </div>
-            </div>
+            ) : (
+              <>
+                {locationDetected && (country || city) && (
+                  <div className="flex items-center gap-2 text-primary text-sm mb-2">
+                    <MapPin className="h-4 w-4" />
+                    <span>Location detected - you can adjust if needed</span>
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-white">Country</Label>
+                    <LocationCombobox
+                      value={country}
+                      onValueChange={(val) => {
+                        setCountry(val);
+                        setState('');
+                        setCity('');
+                      }}
+                      options={countries}
+                      placeholder="Select country"
+                      searchPlaceholder="Search countries..."
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white">State/Province</Label>
+                    <LocationCombobox
+                      value={state}
+                      onValueChange={setState}
+                      options={states}
+                      placeholder="Select state"
+                      searchPlaceholder="Search states..."
+                    />
+                  </div>
+                </div>
 
-            <div>
-              <Label className="text-white">City *</Label>
-              <CityAutocomplete
-                value={city}
-                onValueChange={setCity}
-                country={country}
-                state={state}
-              />
-            </div>
+                <div>
+                  <Label className="text-white">City *</Label>
+                  <CityAutocomplete
+                    value={city}
+                    onValueChange={setCity}
+                    country={country}
+                    state={state}
+                  />
+                </div>
+              </>
+            )}
           </div>
         );
 
@@ -756,47 +841,51 @@ export default function PortalOnboarding() {
   };
 
   return (
-    <PortalOnboardingLayout currentStep={step} totalSteps={totalSteps}>
-      <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-          >
-            {stepContent()}
-          </motion.div>
-        </AnimatePresence>
+    <>
+      <VpnBlockedModal isOpen={showVpnModal} />
+      
+      <PortalOnboardingLayout currentStep={step} totalSteps={totalSteps}>
+        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+            >
+              {stepContent()}
+            </motion.div>
+          </AnimatePresence>
 
-        <div className="flex justify-between mt-8 pt-6 border-t border-white/10">
-          <Button
-            variant="ghost"
-            onClick={handleBack}
-            disabled={step === 1 || isSubmitting}
-            className="text-white hover:bg-white/10"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
+          <div className="flex justify-between mt-8 pt-6 border-t border-white/10">
+            <Button
+              variant="ghost"
+              onClick={handleBack}
+              disabled={step === 1 || isSubmitting}
+              className="text-white hover:bg-white/10"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
 
-          <Button
-            onClick={handleNext}
-            disabled={isSubmitting}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            {isSubmitting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : step === totalSteps ? (
-              <Check className="mr-2 h-4 w-4" />
-            ) : (
-              <ArrowRight className="mr-2 h-4 w-4" />
-            )}
-            {step === totalSteps ? 'Submit Application' : 'Continue'}
-          </Button>
+            <Button
+              onClick={handleNext}
+              disabled={isSubmitting}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              {isSubmitting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : step === totalSteps ? (
+                <Check className="mr-2 h-4 w-4" />
+              ) : (
+                <ArrowRight className="mr-2 h-4 w-4" />
+              )}
+              {step === totalSteps ? 'Submit Application' : 'Continue'}
+            </Button>
+          </div>
         </div>
-      </div>
-    </PortalOnboardingLayout>
+      </PortalOnboardingLayout>
+    </>
   );
 }
