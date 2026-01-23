@@ -26,6 +26,7 @@ import CookiesPage from "@/pages/CookiesPage";
 import FAQPage from "@/pages/FAQPage";
 import NotFound from "@/pages/NotFound";
 import BusinessDirectoryPage from "@/pages/BusinessDirectoryPage";
+import BusinessLandingPage from "@/pages/BusinessLandingPage";
 import AuthPage from "@/pages/AuthPage";
 import AuthCallbackPage from "@/pages/AuthCallbackPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
@@ -127,6 +128,7 @@ const MainRoutes = () => (
     <Route path="/connected-circle" element={<Navigate to="/founders-circle" replace />} />
     <Route path="/connected-circle/directory" element={<Navigate to="/founders-circle/directory" replace />} />
     <Route path="/business" element={<Layout><BusinessDirectoryPage /></Layout>} />
+    <Route path="/directory/:slug" element={<BusinessLandingPage />} />
     <Route path="/circles" element={<CirclesPage />} />
     <Route path="/circles/the-gentlemen" element={<TheGentlemenPage />} />
     <Route path="/circles/les-amis" element={<LesAmisPage />} />

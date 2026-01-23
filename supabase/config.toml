@@ -149,3 +149,12 @@ verify_jwt = false
 
 [functions.detect-location]
 verify_jwt = false
+
+[functions.submit-business-lead]
+verify_jwt = false
+
+[functions.send-business-lead-notification]
+verify_jwt = false
+
+[functions.match-leads-to-businesses]
+verify_jwt = false
