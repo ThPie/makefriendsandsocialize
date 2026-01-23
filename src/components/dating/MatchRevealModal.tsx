@@ -208,14 +208,14 @@ export const MatchRevealModal = ({
                   <Crown className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-semibold text-foreground">Become a Member</p>
+                  <p className="font-semibold text-foreground">Become an Insider</p>
                   <p className="text-sm text-muted-foreground">
-                    <span className="text-primary font-medium">Unlimited reveals</span> + 20% off events
+                    <span className="text-primary font-medium">Unlimited reveals</span> + Slow Dating access
                   </p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="font-bold text-lg">${TIER_BENEFITS.member.monthlyPrice}</span>
+                <span className="font-bold text-lg">${TIER_BENEFITS.insider.monthlyPrice}</span>
                 <span className="text-sm text-muted-foreground">/mo</span>
               </div>
             </div>

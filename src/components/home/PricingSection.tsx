@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Check, Crown, Sparkles, Star } from 'lucide-react';
+import { Check, Crown, Sparkles, Star, Lock, Heart, Gift, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Badge } from '@/components/ui/badge';
@@ -7,16 +7,23 @@ import { cn } from '@/lib/utils';
 
 const tiers = [
   {
-    name: 'Explorer',
-    description: 'Start your journey',
+    name: 'Socialite',
+    description: 'Your gateway to the Circle',
     price: 'Free',
     period: '',
     features: [
-      'Browse all events',
+      'Browse all public events',
       'Purchase event tickets',
       'Create a Connection Profile',
-      'AI-assisted curated introductions',
-      '$19 per connection reveal',
+      'AI-curated introductions ($19/reveal)',
+      'Les Amis French circle access',
+    ],
+    missingFeatures: [
+      'Unlimited connection reveals',
+      'Slow Dating / matchmaking',
+      'Invitation-only gatherings',
+      'Partner perks & discounts',
+      'Event discounts',
     ],
     cta: 'Get Started',
     href: '/auth',
@@ -25,18 +32,25 @@ const tiers = [
     icon: Star,
   },
   {
-    name: 'Member',
-    description: 'For intentional connectors',
+    name: 'Insider',
+    description: 'For those who seek more',
     price: '$49',
     period: '/month',
     annualPrice: '$399/year (save 32%)',
     features: [
       'Unlimited connection reveals',
-      '20% off paid events',
-      'Complimentary members-only gatherings',
-      'Founders Circle access',
-      'Member badge',
-      'Priority support',
+      'Slow Dating / matchmaking access',
+      '20% off all paid events',
+      'Invitation-only member gatherings',
+      'Partner perks — restaurant & spa discounts',
+      'Connected Circle business directory',
+      'Insider badge & priority support',
+    ],
+    missingFeatures: [
+      '30% event discounts',
+      'Bring a guest free',
+      'List your business & get leads',
+      'Priority introductions',
     ],
     cta: 'Start Free Trial',
     href: '/membership',
@@ -46,20 +60,22 @@ const tiers = [
     trial: '7-day free trial',
   },
   {
-    name: 'Fellow',
+    name: 'Patron',
     description: 'The ultimate experience',
     price: '$79',
     period: '/month',
     annualPrice: '$699/year (save 27%)',
     features: [
-      'Everything in Member',
-      '30% off paid events',
-      'Bring one guest to all events',
-      'List your business in the Circle',
-      'Featured in the community newsletter',
+      'Everything in Insider',
+      '30% off all paid events',
+      '+1 guest privileges at all events',
+      'List your business & receive leads',
       'Priority introductions',
-      'Invitation-only Fellow dinners & experiences',
+      'Featured in community newsletter',
+      'Exclusive Patron dinners & experiences',
+      'Concierge support',
     ],
+    missingFeatures: [],
     cta: 'Start Free Trial',
     href: '/membership',
     variant: 'secondary' as const,
@@ -89,7 +105,7 @@ export const PricingSection = () => {
             We create intentional connections through curated events, community, and introductions.
           </p>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Start free and upgrade when you're ready to unlock the full community experience.
+            Start free and upgrade when you're ready for the full Circle experience.
           </p>
         </div>
 
@@ -147,7 +163,8 @@ export const PricingSection = () => {
                   )}
                 </div>
 
-                <ul className="space-y-3 mb-8">
+                {/* Included Features */}
+                <ul className="space-y-3 mb-4">
                   {tier.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start gap-3">
                       <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
@@ -155,6 +172,23 @@ export const PricingSection = () => {
                     </li>
                   ))}
                 </ul>
+
+                {/* Missing Features (Grayscale with Lock) */}
+                {tier.missingFeatures && tier.missingFeatures.length > 0 && (
+                  <div className="border-t border-border/50 pt-4 mb-6">
+                    <p className="text-xs text-muted-foreground/60 uppercase tracking-wider mb-3 font-medium">
+                      Upgrade to unlock
+                    </p>
+                    <ul className="space-y-2">
+                      {tier.missingFeatures.map((feature, featureIndex) => (
+                        <li key={featureIndex} className="flex items-start gap-3">
+                          <Lock className="w-4 h-4 text-muted-foreground/40 flex-shrink-0 mt-0.5" />
+                          <span className="text-muted-foreground/50 text-sm">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <Button
                   asChild
@@ -164,7 +198,7 @@ export const PricingSection = () => {
                   <Link to={tier.href}>{tier.cta}</Link>
                 </Button>
 
-                {/* Exclusivity note for Fellow */}
+                {/* Exclusivity note for Patron */}
                 {tier.exclusivityNote && (
                   <p className="text-xs text-muted-foreground mt-3 text-center italic">
                     {tier.exclusivityNote}
@@ -173,6 +207,37 @@ export const PricingSection = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* Value Highlights */}
+        <div className={`mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto scroll-animate scroll-animate-delay-4 ${isVisible ? 'visible' : ''}`}>
+          <div className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border/50">
+            <div className="w-10 h-10 rounded-full bg-pink-500/10 flex items-center justify-center">
+              <Heart className="w-5 h-5 text-pink-500" />
+            </div>
+            <div>
+              <p className="font-medium text-foreground">Slow Dating</p>
+              <p className="text-sm text-muted-foreground">Curated matchmaking</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border/50">
+            <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center">
+              <Gift className="w-5 h-5 text-amber-500" />
+            </div>
+            <div>
+              <p className="font-medium text-foreground">Partner Perks</p>
+              <p className="text-sm text-muted-foreground">Exclusive discounts</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border/50">
+            <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center">
+              <Briefcase className="w-5 h-5 text-blue-500" />
+            </div>
+            <div>
+              <p className="font-medium text-foreground">Business Leads</p>
+              <p className="text-sm text-muted-foreground">Patrons get qualified leads</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 // Stripe product and price mapping for the membership system
 // This file contains all the Stripe IDs for products and prices
-// Updated: January 2026 - Competitive pricing overhaul
+// Updated: January 2026 - Elevated tier naming & expanded benefits
 
 export const STRIPE_PRODUCTS = {
   MEMBER_MONTHLY: {
@@ -45,78 +45,99 @@ export const STRIPE_PRODUCTS = {
 } as const;
 
 // UI tier names mapped to database tier values
-// Database: patron = Explorer (free), fellow = Member ($49), founder = Fellow ($79)
+// Database: patron = Socialite (free), fellow = Insider ($49), founder = Patron ($79)
 export const TIER_MAPPING = {
   UI_TO_DB: {
-    explorer: 'patron',
-    member: 'fellow',
-    fellow: 'founder',
+    socialite: 'patron',
+    insider: 'fellow',
+    patron: 'founder',
   },
   DB_TO_UI: {
-    patron: 'explorer',
-    fellow: 'member',
-    founder: 'fellow',
+    patron: 'socialite',
+    fellow: 'insider',
+    founder: 'patron',
   },
 } as const;
 
-export type UITier = 'explorer' | 'member' | 'fellow';
+export type UITier = 'socialite' | 'insider' | 'patron';
 export type DBTier = 'patron' | 'fellow' | 'founder';
 
 export const TIER_BENEFITS = {
-  explorer: {
-    name: 'Explorer',
-    description: 'Start your journey',
+  socialite: {
+    name: 'Socialite',
+    description: 'Your gateway to the Circle',
     price: 0,
     features: [
-      'Browse all events',
-      'Purchase event tickets',
+      'Browse all public events',
+      'Purchase event tickets at standard pricing',
       'Create a Connection Profile',
       'AI-assisted curated introductions',
       '$19 per connection reveal',
-      'Free access to Les Amis French circle',
+      'Access to Les Amis French circle',
+      'Community newsletter',
     ],
-    limitations: [
-      'No event discounts',
-      'No members-only events',
-      'No Connected Circle access',
+    missingFeatures: [
+      'Unlimited connection reveals',
+      'Slow Dating / matchmaking access',
+      'Invitation-only member gatherings',
+      'Partner perks & exclusive discounts',
+      'Event discounts (up to 30% off)',
+      'Bring a guest to all events',
+      'List your business & receive leads',
+      'Priority introductions',
+      'Concierge support',
     ],
+    limitations: [],
   },
-  member: {
-    name: 'Member',
-    description: 'For intentional connectors',
+  insider: {
+    name: 'Insider',
+    description: 'For those who seek more',
     monthlyPrice: 49,
     annualPrice: 399,
     annualSavings: '32%',
     features: [
       'Unlimited connection reveals',
-      '20% off paid events',
-      'Complimentary members-only gatherings',
-      'Connected Circle access',
+      'Slow Dating access — curated matchmaking & dating events',
+      '20% off all paid events',
+      'Invitation-only member gatherings',
+      'Partner perks — exclusive discounts at restaurants, spas & experiences',
+      'Connected Circle access — browse verified local businesses',
       'Les Amis + apply to The Gentlemen (approval required)',
-      'Member badge',
+      'Insider badge on your profile',
       'Priority support',
+    ],
+    missingFeatures: [
+      '30% off events (vs 20%)',
+      'Bring a guest to all events free',
+      'List your business & receive qualified leads',
+      'Priority introductions — first access to new matches',
+      'Featured in community newsletter',
+      'Invitation-only Patron experiences',
+      'Concierge support',
     ],
     highlight: true,
     trialDays: 7,
   },
-  fellow: {
-    name: 'Fellow',
+  patron: {
+    name: 'Patron',
     description: 'The ultimate experience',
     monthlyPrice: 79,
     annualPrice: 699,
     annualSavings: '27%',
     features: [
-      'Everything in Member',
-      '30% off paid events',
-      'Bring one guest to all events',
-      'List your business in the Circle',
-      'Priority consideration for The Gentlemen',
-      'Invitation-only Circle experiences',
-      'Featured in the community newsletter',
-      'Priority introductions',
+      'Everything in Insider',
+      '30% off all paid events',
+      '+1 guest privileges — bring one guest to all events, free',
+      'List your business in the Circle Directory & receive qualified leads',
+      'Priority introductions — first access to new member matches',
+      'Invitation-only Patron experiences — exclusive dinners, retreats & trips',
+      'Featured in community newsletter — showcase your story or business',
+      'Concierge support — dedicated assistance for events & reservations',
+      'Early access to new features and premium events',
     ],
+    missingFeatures: [],
     trialDays: 7,
-    exclusivityNote: 'Fellow membership is limited and subject to availability.',
+    exclusivityNote: 'Patron membership is limited and subject to availability.',
   },
 } as const;
 
