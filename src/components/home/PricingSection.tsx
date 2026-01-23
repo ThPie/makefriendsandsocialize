@@ -16,7 +16,7 @@ const tiers = [
       'Purchase event tickets',
       'Create a Connection Profile',
       'AI-assisted curated introductions',
-      '$10 per connection reveal',
+      '$19 per connection reveal',
     ],
     cta: 'Get Started',
     href: '/auth',
@@ -27,9 +27,9 @@ const tiers = [
   {
     name: 'Member',
     description: 'For intentional connectors',
-    price: '$59',
+    price: '$49',
     period: '/month',
-    annualPrice: '$499/year (save 30%)',
+    annualPrice: '$399/year (save 32%)',
     features: [
       'Unlimited connection reveals',
       '20% off paid events',
@@ -48,9 +48,9 @@ const tiers = [
   {
     name: 'Fellow',
     description: 'The ultimate experience',
-    price: '$89.99',
+    price: '$79',
     period: '/month',
-    annualPrice: '$899/year (save 17%)',
+    annualPrice: '$699/year (save 27%)',
     features: [
       'Everything in Member',
       '30% off paid events',
