@@ -74,6 +74,7 @@ import CirclesPage from "@/pages/CirclesPage";
 import TheGentlemenPage from "@/pages/circles/TheGentlemenPage";
 import LesAmisPage from "@/pages/circles/LesAmisPage";
 import HealthCheckPage from "@/pages/HealthCheckPage";
+import PortalOnboarding from "@/pages/portal/PortalOnboarding";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +82,7 @@ const queryClient = new QueryClient();
 const SlowDatingRoutes = () => (
   <Routes>
     <Route path="/" element={<SlowDatingLandingPage />} />
+    <Route path="/portal/onboarding" element={<PortalOnboarding />} />
     <Route path="/portal/slow-dating" element={<PortalLayout><PortalSlowDating /></PortalLayout>} />
     <Route path="/portal/match/:matchId" element={<PortalLayout><PortalMatchDetail /></PortalLayout>} />
     <Route path="/portal/profile" element={<PortalLayout><PortalProfile /></PortalLayout>} />
@@ -145,6 +147,7 @@ const MainRoutes = () => (
     <Route path="/confirm-date/:token" element={<DateConfirmationPage />} />
     
     {/* Portal routes with portal layout */}
+    <Route path="/portal/onboarding" element={<PortalOnboarding />} />
     <Route path="/portal" element={<PortalLayout><PortalDashboard /></PortalLayout>} />
     <Route path="/portal/profile" element={<PortalLayout><PortalProfile /></PortalLayout>} />
     <Route path="/portal/network" element={<PortalLayout><PortalNetwork /></PortalLayout>} />

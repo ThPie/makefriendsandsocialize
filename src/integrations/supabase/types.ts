@@ -2239,6 +2239,9 @@ export type Database = {
           avatar_urls: string[] | null
           bio: string | null
           city: string | null
+          community_goals: string[] | null
+          community_offering: string | null
+          company: string | null
           country: string | null
           created_at: string
           date_of_birth: string | null
@@ -2253,6 +2256,7 @@ export type Database = {
           job_title: string | null
           last_name: string | null
           last_scanned_at: string | null
+          linkedin_url: string | null
           marketing_emails_enabled: boolean | null
           onboarding_completed: boolean | null
           profile_completed_at: string | null
@@ -2263,6 +2267,7 @@ export type Database = {
           reminder_hours_before: number | null
           signature_style: string | null
           state: string | null
+          target_industries: string[] | null
           terms_accepted_at: string | null
           updated_at: string
           values_in_partner: string | null
@@ -2272,6 +2277,9 @@ export type Database = {
           avatar_urls?: string[] | null
           bio?: string | null
           city?: string | null
+          community_goals?: string[] | null
+          community_offering?: string | null
+          company?: string | null
           country?: string | null
           created_at?: string
           date_of_birth?: string | null
@@ -2286,6 +2294,7 @@ export type Database = {
           job_title?: string | null
           last_name?: string | null
           last_scanned_at?: string | null
+          linkedin_url?: string | null
           marketing_emails_enabled?: boolean | null
           onboarding_completed?: boolean | null
           profile_completed_at?: string | null
@@ -2296,6 +2305,7 @@ export type Database = {
           reminder_hours_before?: number | null
           signature_style?: string | null
           state?: string | null
+          target_industries?: string[] | null
           terms_accepted_at?: string | null
           updated_at?: string
           values_in_partner?: string | null
@@ -2305,6 +2315,9 @@ export type Database = {
           avatar_urls?: string[] | null
           bio?: string | null
           city?: string | null
+          community_goals?: string[] | null
+          community_offering?: string | null
+          company?: string | null
           country?: string | null
           created_at?: string
           date_of_birth?: string | null
@@ -2319,6 +2332,7 @@ export type Database = {
           job_title?: string | null
           last_name?: string | null
           last_scanned_at?: string | null
+          linkedin_url?: string | null
           marketing_emails_enabled?: boolean | null
           onboarding_completed?: boolean | null
           profile_completed_at?: string | null
@@ -2329,6 +2343,7 @@ export type Database = {
           reminder_hours_before?: number | null
           signature_style?: string | null
           state?: string | null
+          target_industries?: string[] | null
           terms_accepted_at?: string | null
           updated_at?: string
           values_in_partner?: string | null

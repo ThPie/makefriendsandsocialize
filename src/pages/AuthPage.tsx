@@ -216,16 +216,56 @@ export default function AuthPage() {
 
   // Removed: member stats are now fetched via useSiteStats hook
 
-  // Handle redirect after login
+  // Handle redirect after login - use smart redirect logic
   useEffect(() => {
-    if (user && !isLoading) {
+    const handleRedirect = async () => {
+      if (!user || isLoading) return;
+
       const returnTo = searchParams.get('returnTo');
-      if (returnTo && returnTo.startsWith('/')) {
+      if (returnTo && returnTo.startsWith('/portal')) {
+        // For portal routes, still check if onboarding is needed
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('onboarding_completed, first_name, last_name, bio, avatar_urls, interests, industry, job_title, city')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (profileData && !profileData.onboarding_completed) {
+          navigate('/portal/onboarding');
+          return;
+        }
         navigate(returnTo);
-      } else {
-        navigate('/portal');
+        return;
       }
-    }
+
+      // For new logins, check profile completion
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!profileData?.onboarding_completed) {
+        navigate('/portal/onboarding');
+        return;
+      }
+
+      // Check application status
+      const { data: appData } = await supabase
+        .from('application_waitlist')
+        .select('status')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (appData?.status === 'pending') {
+        navigate('/auth/waiting');
+        return;
+      }
+
+      navigate('/portal');
+    };
+
+    handleRedirect();
   }, [user, isLoading, navigate, searchParams]);
 
   const validateStep1 = () => {
