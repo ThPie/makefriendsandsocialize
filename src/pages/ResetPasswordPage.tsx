@@ -22,6 +22,21 @@ export default function ResetPasswordPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    // IMMEDIATELY check for error parameters in URL hash FIRST
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const error = hashParams.get('error');
+    const errorDescription = hashParams.get('error_description');
+    
+    if (error) {
+      // Decode the error description (handles + signs and URL encoding)
+      const decodedError = errorDescription 
+        ? decodeURIComponent(errorDescription.replace(/\+/g, ' '))
+        : 'The reset link is invalid or has expired.';
+      setErrorMessage(decodedError);
+      setIsLoading(false);
+      return; // Don't set up listeners if there's already an error
+    }
+
     // Listen for auth state changes - this handles the token from the URL hash
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Reset password auth event:', event, 'Session:', !!session);
@@ -46,17 +61,9 @@ export default function ResetPasswordPage() {
       
       if (session) {
         setHasValidSession(true);
-      } else {
-        // Check if URL has error parameters
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const error = hashParams.get('error');
-        const errorDescription = hashParams.get('error_description');
-        
-        if (error) {
-          setErrorMessage(errorDescription || 'The reset link is invalid or has expired.');
-        } else if (!session) {
-          setErrorMessage('Invalid or expired reset link. Please request a new one.');
-        }
+      } else if (!hasValidSession) {
+        // No session and no valid recovery - show generic error
+        setErrorMessage('Invalid or expired reset link. Please request a new one.');
       }
       setIsLoading(false);
     };
