@@ -7,10 +7,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Price IDs for reveal purchases
+// Price IDs for reveal purchases - Updated January 2026
 const PRICE_IDS = {
-  SINGLE_REVEAL: "price_1SoDmA00I3YCY0De2l1K4gAA",
-  PACK_3_REVEAL: "price_1SoDmP00I3YCY0De8ZVDSdOu",
+  SINGLE_REVEAL: "price_1Ssn7X00I3YCY0DeIiMAOwSF",   // $19
+  PACK_3_REVEAL: "price_1Ssn7v00I3YCY0DeELElTXPV",   // $49
+  PACK_5_REVEAL: "price_1Ssn8F00I3YCY0DeCCUvX7ZX",   // $69
 };
 
 const logStep = (step: string, details?: any) => {
@@ -47,16 +48,18 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    // Determine price ID
+    // Determine price ID based on pack type
     let priceId: string;
     if (pack_type === "single") {
       priceId = PRICE_IDS.SINGLE_REVEAL;
     } else if (pack_type === "pack_3") {
       priceId = PRICE_IDS.PACK_3_REVEAL;
+    } else if (pack_type === "pack_5") {
+      priceId = PRICE_IDS.PACK_5_REVEAL;
     } else {
-      throw new Error("Invalid pack type specified");
+      throw new Error("Invalid pack type specified. Use: single, pack_3, or pack_5");
     }
-    logStep("Selected price", { priceId });
+    logStep("Selected price", { pack_type, priceId });
 
     // Initialize Stripe
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {

@@ -1,45 +1,51 @@
 // Stripe product and price mapping for the membership system
 // This file contains all the Stripe IDs for products and prices
+// Updated: January 2026 - Competitive pricing overhaul
 
 export const STRIPE_PRODUCTS = {
   MEMBER_MONTHLY: {
-    product_id: 'prod_TllHNmpI2mcUc2',
-    price_id: 'price_1SoDkp00I3YCY0DeDrniU1d6',
-    price: 59,
+    product_id: 'prod_TqU60tCgmumAue',
+    price_id: 'price_1Ssn8f00I3YCY0DeeE6nnMri',
+    price: 49,
     interval: 'month' as const,
   },
   MEMBER_ANNUAL: {
-    product_id: 'prod_TllHEULxPojYHI',
-    price_id: 'price_1SoDl700I3YCY0DezLxSxVBL',
-    price: 499,
+    product_id: 'prod_TqU7b2DETbd3iZ',
+    price_id: 'price_1Ssn9f00I3YCY0DeLZZloqCJ',
+    price: 399,
     interval: 'year' as const,
   },
   FELLOW_MONTHLY: {
-    product_id: 'prod_TllIG7YVUIoMZT',
-    price_id: 'price_1SoDli00I3YCY0DeVOlNtHl7',
-    price: 89.99,
+    product_id: 'prod_TqU84lfZCDFCWG',
+    price_id: 'price_1Ssn9u00I3YCY0DeF6IQ05fB',
+    price: 79,
     interval: 'month' as const,
   },
   FELLOW_ANNUAL: {
-    product_id: 'prod_TllIZTrST3Zu37',
-    price_id: 'price_1SoDlv00I3YCY0De33VrYzjX',
-    price: 899,
+    product_id: 'prod_TqU8huV2JTgzHV',
+    price_id: 'price_1SsnAL00I3YCY0Def32T8PTg',
+    price: 699,
     interval: 'year' as const,
   },
   SINGLE_REVEAL: {
-    product_id: 'prod_TllI9VgR5LCokX',
-    price_id: 'price_1SoDmA00I3YCY0De2l1K4gAA',
-    price: 10,
+    product_id: 'prod_TqU5DsuaEeLmKf',
+    price_id: 'price_1Ssn7X00I3YCY0DeIiMAOwSF',
+    price: 19,
   },
   PACK_3_REVEAL: {
-    product_id: 'prod_TllJ6UmnGAgyv3',
-    price_id: 'price_1SoDmP00I3YCY0De8ZVDSdOu',
-    price: 25,
+    product_id: 'prod_TqU6reEEQMGRr4',
+    price_id: 'price_1Ssn7v00I3YCY0DeELElTXPV',
+    price: 49,
+  },
+  PACK_5_REVEAL: {
+    product_id: 'prod_TqU6hiX76tBzic',
+    price_id: 'price_1Ssn8F00I3YCY0DeCCUvX7ZX',
+    price: 69,
   },
 } as const;
 
 // UI tier names mapped to database tier values
-// Database: patron = Explorer (free), fellow = Member ($59), founder = Fellow ($89.99)
+// Database: patron = Explorer (free), fellow = Member ($49), founder = Fellow ($79)
 export const TIER_MAPPING = {
   UI_TO_DB: {
     explorer: 'patron',
@@ -66,7 +72,7 @@ export const TIER_BENEFITS = {
       'Purchase event tickets',
       'Create a Connection Profile',
       'AI-assisted curated introductions',
-      '$10 per connection reveal',
+      '$19 per connection reveal',
       'Free access to Les Amis French circle',
     ],
     limitations: [
@@ -78,9 +84,9 @@ export const TIER_BENEFITS = {
   member: {
     name: 'Member',
     description: 'For intentional connectors',
-    monthlyPrice: 59,
-    annualPrice: 499,
-    annualSavings: '30%',
+    monthlyPrice: 49,
+    annualPrice: 399,
+    annualSavings: '32%',
     features: [
       'Unlimited connection reveals',
       '20% off paid events',
@@ -96,9 +102,9 @@ export const TIER_BENEFITS = {
   fellow: {
     name: 'Fellow',
     description: 'The ultimate experience',
-    monthlyPrice: 89.99,
-    annualPrice: 899,
-    annualSavings: '17%',
+    monthlyPrice: 79,
+    annualPrice: 699,
+    annualSavings: '27%',
     features: [
       'Everything in Member',
       '30% off paid events',
@@ -111,5 +117,33 @@ export const TIER_BENEFITS = {
     ],
     trialDays: 7,
     exclusivityNote: 'Fellow membership is limited and subject to availability.',
+  },
+} as const;
+
+// Reveal pack options for purchase UI
+export const REVEAL_PACKS = {
+  single: {
+    name: 'Single Reveal',
+    price: 19,
+    reveals: 1,
+    pricePerReveal: 19,
+    description: 'Reveal this match only',
+  },
+  pack_3: {
+    name: '3-Pack Reveals',
+    price: 49,
+    reveals: 3,
+    pricePerReveal: 16.33,
+    savings: '14%',
+    description: '$16.33 per reveal • Valid 90 days',
+  },
+  pack_5: {
+    name: '5-Pack Reveals',
+    price: 69,
+    reveals: 5,
+    pricePerReveal: 13.80,
+    savings: '27%',
+    description: '$13.80 per reveal • Valid 90 days',
+    bestValue: true,
   },
 } as const;

@@ -46,7 +46,7 @@ export function useMatchReveal() {
     }
   }, [canReveal, hasUnlimitedReveals, checkSubscription]);
 
-  const openRevealCheckout = async (packType: 'single' | 'pack_3', matchId?: string) => {
+  const openRevealCheckout = async (packType: 'single' | 'pack_3' | 'pack_5', matchId?: string) => {
     try {
       const { data, error } = await supabase.functions.invoke('create-reveal-checkout', {
         body: { pack_type: packType, match_id: matchId },

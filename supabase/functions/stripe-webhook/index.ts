@@ -12,14 +12,15 @@ const supabaseAdmin = createClient(
   { auth: { persistSession: false } }
 );
 
-// Price IDs mapping
+// Price IDs mapping - Updated January 2026
 const PRICE_IDS = {
-  MEMBER_MONTHLY: "price_1SoDkp00I3YCY0DeDrniU1d6",
-  MEMBER_ANNUAL: "price_1SoDl700I3YCY0DezLxSxVBL",
-  FELLOW_MONTHLY: "price_1SoDli00I3YCY0DeVOlNtHl7",
-  FELLOW_ANNUAL: "price_1SoDlv00I3YCY0De33VrYzjX",
-  SINGLE_REVEAL: "price_1SoDmA00I3YCY0De2l1K4gAA",
-  PACK_3_REVEAL: "price_1SoDmP00I3YCY0De8ZVDSdOu",
+  MEMBER_MONTHLY: "price_1Ssn8f00I3YCY0DeeE6nnMri",   // $49/month
+  MEMBER_ANNUAL: "price_1Ssn9f00I3YCY0DeLZZloqCJ",    // $399/year
+  FELLOW_MONTHLY: "price_1Ssn9u00I3YCY0DeF6IQ05fB",   // $79/month
+  FELLOW_ANNUAL: "price_1SsnAL00I3YCY0Def32T8PTg",    // $699/year
+  SINGLE_REVEAL: "price_1Ssn7X00I3YCY0DeIiMAOwSF",    // $19
+  PACK_3_REVEAL: "price_1Ssn7v00I3YCY0DeELElTXPV",    // $49
+  PACK_5_REVEAL: "price_1Ssn8F00I3YCY0DeCCUvX7ZX",    // $69
 };
 
 // Sanitize sensitive data before logging
@@ -155,6 +156,9 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     } else if (priceId === PRICE_IDS.PACK_3_REVEAL) {
       await createRevealPurchase(user.id, "pack_3", 3, session.id);
       logStep("Created 3-pack reveal purchase");
+    } else if (priceId === PRICE_IDS.PACK_5_REVEAL) {
+      await createRevealPurchase(user.id, "pack_5", 5, session.id);
+      logStep("Created 5-pack reveal purchase");
     }
     return;
   }
@@ -284,7 +288,7 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
 
 async function createRevealPurchase(
   userId: string, 
-  purchaseType: "single" | "pack_3", 
+  purchaseType: "single" | "pack_3" | "pack_5", 
   revealsTotal: number,
   sessionId: string
 ) {
