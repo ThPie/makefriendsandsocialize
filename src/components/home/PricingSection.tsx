@@ -23,7 +23,7 @@ const tiers = [
     ],
     missingFeatures: [
       'Unlimited connection reveals',
-      'Slow Dating / matchmaking',
+      'Hand-picked introductions & matchmaking',
       'Invitation-only gatherings',
       'Discounts at partners & Club businesses',
       'Event discounts',
@@ -42,7 +42,7 @@ const tiers = [
     annualPrice: '$470/year (save 20%)',
     features: [
       'Unlimited connection reveals',
-      'Slow Dating / matchmaking access',
+      'Hand-picked introductions & matchmaking',
       '20% off all paid events',
       'Invitation-only member gatherings',
       'Discounts at partners & Club businesses',
