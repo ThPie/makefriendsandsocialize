@@ -8,11 +8,12 @@ import { BrandedLoader } from '@/components/ui/branded-loader';
 
 export default function AuthWaitingPage() {
   const navigate = useNavigate();
-  const { user, applicationStatus, membership, isLoading, isAdmin } = useAuth();
+  const { user, profile, applicationStatus, membership, isLoading, isAdmin } = useAuth();
 
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/auth');
+      return;
     }
     
     // If admin, redirect to admin dashboard
@@ -20,12 +21,18 @@ export default function AuthWaitingPage() {
       navigate('/admin');
       return;
     }
+
+    // Check if onboarding is complete first - if not, redirect to onboarding
+    if (!isLoading && profile && !profile.onboarding_completed) {
+      navigate('/portal/onboarding');
+      return;
+    }
     
     // If approved, redirect to portal
     if (applicationStatus === 'approved' || membership?.status === 'active') {
       navigate('/portal');
     }
-  }, [user, applicationStatus, membership, isLoading, isAdmin, navigate]);
+  }, [user, profile, applicationStatus, membership, isLoading, isAdmin, navigate]);
 
   if (isLoading) {
     return <BrandedLoader message="Loading your application..." />;

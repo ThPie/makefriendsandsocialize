@@ -5,6 +5,47 @@ import { supabase } from "@/integrations/supabase/client";
 import { BrandedLoader } from "@/components/ui/branded-loader";
 import { AuthErrorCard } from "@/components/auth/AuthErrorCard";
 
+/**
+ * Determine where to redirect after successful auth
+ */
+async function getRedirectDestination(userId: string): Promise<string> {
+  // Check if admin
+  const { data: roleData } = await supabase
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', userId)
+    .eq('role', 'admin')
+    .maybeSingle();
+
+  if (roleData) {
+    return '/admin';
+  }
+
+  // Check profile completion
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('onboarding_completed')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (!profile?.onboarding_completed) {
+    return '/portal/onboarding';
+  }
+
+  // Check application status
+  const { data: appData } = await supabase
+    .from('application_waitlist')
+    .select('status')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (appData?.status === 'pending') {
+    return '/auth/waiting';
+  }
+
+  return '/portal';
+}
+
 export default function AuthCallbackPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -31,7 +72,7 @@ export default function AuthCallbackPage() {
       
       if (code) {
         // Exchange authorization code for session
-        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
         if (cancelled) return;
 
@@ -42,8 +83,13 @@ export default function AuthCallbackPage() {
           return;
         }
 
-        // Successfully exchanged code, redirect to portal
-        navigate("/portal", { replace: true });
+        // Successfully exchanged code, determine redirect destination
+        if (data.session?.user) {
+          const destination = await getRedirectDestination(data.session.user.id);
+          navigate(destination, { replace: true });
+        } else {
+          navigate("/portal/onboarding", { replace: true });
+        }
         return;
       }
 
@@ -67,16 +113,18 @@ export default function AuthCallbackPage() {
           return;
         }
 
-        if (session) {
-          navigate("/portal", { replace: true });
+        if (session?.user) {
+          const destination = await getRedirectDestination(session.user.id);
+          navigate(destination, { replace: true });
           return;
         }
 
         // If no session yet, set up a listener to wait for it
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-          if (session && !cancelled) {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+          if (session?.user && !cancelled) {
             subscription.unsubscribe();
-            navigate("/portal", { replace: true });
+            const destination = await getRedirectDestination(session.user.id);
+            navigate(destination, { replace: true });
           }
         });
 
@@ -97,8 +145,9 @@ export default function AuthCallbackPage() {
       
       if (cancelled) return;
 
-      if (session) {
-        navigate("/portal", { replace: true });
+      if (session?.user) {
+        const destination = await getRedirectDestination(session.user.id);
+        navigate(destination, { replace: true });
         return;
       }
 

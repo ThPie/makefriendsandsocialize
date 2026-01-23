@@ -33,20 +33,22 @@ import { NotificationBell } from './NotificationBell';
 import { TrialCountdownBanner } from './TrialCountdownBanner';
 import { PageTransition } from '@/components/ui/page-transition';
 import logo from '@/assets/logo-transparent.png';
+import { PendingMemberBanner } from './PendingMemberBanner';
+import { canAccessProtectedFeatures, getRestrictedRoutesForPending } from '@/lib/auth-redirect';
 
 interface PortalLayoutProps {
   children: ReactNode;
 }
 
 const menuItems = [
-  { title: 'Dashboard', url: '/portal', icon: LayoutDashboard },
-  { title: 'My Profile', url: '/portal/profile', icon: User },
-  { title: 'The Network', url: '/portal/network', icon: Users },
-  { title: 'Connections', url: '/portal/connections', icon: Heart },
-  { title: 'Intentional Connections', url: '/portal/slow-dating', icon: Heart },
-  { title: 'Founder Profile', url: '/portal/business', icon: Users },
-  { title: 'Events', url: '/portal/events', icon: Calendar },
-  { title: 'Referrals', url: '/portal/referrals', icon: Gift },
+  { title: 'Dashboard', url: '/portal', icon: LayoutDashboard, requiresApproval: false },
+  { title: 'My Profile', url: '/portal/profile', icon: User, requiresApproval: false },
+  { title: 'The Network', url: '/portal/network', icon: Users, requiresApproval: true },
+  { title: 'Connections', url: '/portal/connections', icon: Heart, requiresApproval: true },
+  { title: 'Intentional Connections', url: '/portal/slow-dating', icon: Heart, requiresApproval: true },
+  { title: 'Founder Profile', url: '/portal/business', icon: Users, requiresApproval: false },
+  { title: 'Events', url: '/portal/events', icon: Calendar, requiresApproval: false },
+  { title: 'Referrals', url: '/portal/referrals', icon: Gift, requiresApproval: false },
 ];
 
 export function PortalLayout({ children }: PortalLayoutProps) {
@@ -55,16 +57,30 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   const { user, profile, membership, applicationStatus, isLoading, isAdmin, signOut } = useAuth();
   const { subscription } = useSubscription();
 
+  const isApproved = canAccessProtectedFeatures({
+    applicationStatus,
+    membershipStatus: membership?.status || null,
+  });
+  const isPending = applicationStatus === 'pending' && !isApproved;
+  const restrictedRoutes = getRestrictedRoutesForPending();
+
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/auth');
+      return;
     }
     
-    // If application is pending, redirect to waiting page
-    if (!isLoading && user && applicationStatus === 'pending') {
-      navigate('/auth/waiting');
+    // Check if onboarding is complete first
+    if (!isLoading && profile && !profile.onboarding_completed) {
+      navigate('/portal/onboarding');
+      return;
     }
-  }, [user, applicationStatus, isLoading, navigate]);
+    
+    // If pending and trying to access restricted routes, redirect
+    if (!isLoading && user && isPending && restrictedRoutes.includes(location.pathname)) {
+      navigate('/portal');
+    }
+  }, [user, profile, applicationStatus, isLoading, navigate, isPending, location.pathname]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -139,19 +155,22 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                 <SidebarMenu>
                   {menuItems.map((item) => {
                     const isActive = location.pathname === item.url;
-                    const isRestricted = (item.url === '/portal/network' || item.url === '/portal/connections') 
+                    const isPatronRestricted = (item.url === '/portal/network' || item.url === '/portal/connections') 
                       && membership?.tier === 'patron';
+                    const isPendingRestricted = item.requiresApproval && isPending;
+                    const isRestricted = isPatronRestricted || isPendingRestricted;
                     
                     return (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
                           <Link
-                            to={item.url}
+                            to={isRestricted ? '#' : item.url}
+                            onClick={(e) => isRestricted && e.preventDefault()}
                             className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                               isActive
                                 ? 'bg-primary/10 text-primary'
                                 : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                            } ${isRestricted ? 'opacity-50' : ''}`}
+                            } ${isRestricted ? 'opacity-50 cursor-not-allowed' : ''}`}
                           >
                             <item.icon className="h-5 w-5" />
                             <span>{item.title}</span>
@@ -210,6 +229,9 @@ export function PortalLayout({ children }: PortalLayoutProps) {
           </div>
 
           <div className="p-8 md:p-12 lg:p-16">
+            {/* Pending Member Banner */}
+            {isPending && <PendingMemberBanner className="mb-6" />}
+            
             {/* Trial Countdown Banner */}
             <TrialCountdownBanner />
             
