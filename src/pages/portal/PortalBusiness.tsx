@@ -9,12 +9,15 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Building2, Globe, MapPin, Mail, Upload, Loader2, CheckCircle, Clock, XCircle, Plus, X, ExternalLink, Users, Link2, Copy } from "lucide-react";
+import { Building2, Globe, MapPin, Mail, Upload, Loader2, CheckCircle, Clock, XCircle, Plus, X, ExternalLink, Users, Link2, Copy, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BusinessVerificationStatus } from "@/components/business/BusinessVerificationStatus";
 import { LeadStatsCards } from "@/components/business/LeadStatsCards";
 import { LeadCard, Lead } from "@/components/business/LeadCard";
 import { LeadDetailSheet } from "@/components/business/LeadDetailSheet";
+import { LeadAnalyticsCharts } from "@/components/business/LeadAnalyticsCharts";
+import { LeadExportButton } from "@/components/business/LeadExportButton";
+import { useLeadRealtime } from "@/hooks/useLeadRealtime";
 import {
   Select,
   SelectContent,
@@ -45,6 +48,7 @@ const PortalBusiness = () => {
   const [statusFilter, setStatusFilter] = useState<LeadStatus | "all">("all");
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [leadSheetOpen, setLeadSheetOpen] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   const canAccess = membership?.tier === 'fellow' || membership?.tier === 'founder';
 
@@ -109,6 +113,9 @@ const PortalBusiness = () => {
     },
     enabled: !!businessProfile?.id,
   });
+
+  // Enable real-time lead updates
+  useLeadRealtime(businessProfile?.id);
 
   const [formData, setFormData] = useState({
     business_name: "",
@@ -577,9 +584,9 @@ const PortalBusiness = () => {
                 isLoading={leadsLoading}
               />
 
-              {/* Filters */}
-              <div className="flex items-center justify-between">
-                <div className="flex gap-2">
+              {/* Filters & Actions */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex flex-wrap gap-2">
                   {(["all", "new", "contacted", "converted", "lost"] as const).map((status) => (
                     <Button
                       key={status}
@@ -596,7 +603,29 @@ const PortalBusiness = () => {
                     </Button>
                   ))}
                 </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant={showAnalytics ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setShowAnalytics(!showAnalytics)}
+                  >
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    Analytics
+                  </Button>
+                  <LeadExportButton 
+                    leads={leads || []} 
+                    businessName={businessProfile?.business_name || "business"} 
+                  />
+                </div>
               </div>
+
+              {/* Analytics Charts (collapsible) */}
+              {showAnalytics && (
+                <LeadAnalyticsCharts 
+                  leads={leads || []} 
+                  isLoading={leadsLoading}
+                />
+              )}
 
               {/* Leads List */}
               {leadsLoading ? (

@@ -158,3 +158,6 @@ verify_jwt = false
 
 [functions.match-leads-to-businesses]
 verify_jwt = false
+
+[functions.send-lead-followup-reminders]
+verify_jwt = false
