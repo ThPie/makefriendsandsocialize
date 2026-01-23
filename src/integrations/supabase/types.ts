@@ -1802,6 +1802,48 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_followup_reminders: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          lead_id: string
+          reminder_type: string
+          sent_at: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          lead_id: string
+          reminder_type: string
+          sent_at?: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          lead_id?: string
+          reminder_type?: string
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_followup_reminders_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_followup_reminders_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "business_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           audience_segment: string | null
