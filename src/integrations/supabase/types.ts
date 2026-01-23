@@ -415,6 +415,187 @@ export type Database = {
           },
         ]
       }
+      business_lead_packages: {
+        Row: {
+          business_id: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          leads_per_month: number
+          package_type: string
+          price_monthly: number
+          priority_matching: boolean
+          starts_at: string | null
+          stripe_price_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          leads_per_month?: number
+          package_type?: string
+          price_monthly?: number
+          priority_matching?: boolean
+          starts_at?: string | null
+          stripe_price_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          leads_per_month?: number
+          package_type?: string
+          price_monthly?: number
+          priority_matching?: boolean
+          starts_at?: string | null
+          stripe_price_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_lead_packages_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_lead_usage: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          leads_allocated: number
+          leads_matched: number
+          leads_received: number
+          month_year: string
+          package_id: string | null
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          leads_allocated?: number
+          leads_matched?: number
+          leads_received?: number
+          month_year: string
+          package_id?: string | null
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          leads_allocated?: number
+          leads_matched?: number
+          leads_received?: number
+          month_year?: string
+          package_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_lead_usage_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_lead_usage_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "business_lead_packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_leads: {
+        Row: {
+          business_id: string
+          category_interest: string | null
+          company_name: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          contacted_at: string | null
+          converted_at: string | null
+          created_at: string
+          id: string
+          location: string | null
+          matched_at: string | null
+          message: string | null
+          notes: string | null
+          source: string
+          status: string
+          updated_at: string
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          business_id: string
+          category_interest?: string | null
+          company_name?: string | null
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          contacted_at?: string | null
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          matched_at?: string | null
+          message?: string | null
+          notes?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          business_id?: string
+          category_interest?: string | null
+          company_name?: string | null
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          contacted_at?: string | null
+          converted_at?: string | null
+          created_at?: string
+          id?: string
+          location?: string | null
+          matched_at?: string | null
+          message?: string | null
+          notes?: string | null
+          source?: string
+          status?: string
+          updated_at?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_leads_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_profiles: {
         Row: {
           business_name: string
@@ -429,6 +610,7 @@ export type Database = {
           location: string | null
           logo_url: string | null
           services: string[] | null
+          slug: string | null
           status: Database["public"]["Enums"]["business_status"]
           updated_at: string
           user_id: string
@@ -447,6 +629,7 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           services?: string[] | null
+          slug?: string | null
           status?: Database["public"]["Enums"]["business_status"]
           updated_at?: string
           user_id: string
@@ -465,6 +648,7 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           services?: string[] | null
+          slug?: string | null
           status?: Database["public"]["Enums"]["business_status"]
           updated_at?: string
           user_id?: string
@@ -2667,6 +2851,7 @@ export type Database = {
     }
     Functions: {
       calculate_reading_time: { Args: { _content: string }; Returns: number }
+      can_receive_leads: { Args: { p_business_id: string }; Returns: boolean }
       can_reveal_match: { Args: { _user_id: string }; Returns: boolean }
       check_admin_mfa_verified: { Args: { _user_id: string }; Returns: boolean }
       check_admin_rate_limit: {
@@ -2732,6 +2917,10 @@ export type Database = {
         Args: { p_event_id: string }
         Returns: boolean
       }
+      generate_business_slug: {
+        Args: { business_name: string }
+        Returns: string
+      }
       get_active_member_count: { Args: never; Returns: number }
       get_application_contact_safe: {
         Args: { _application_id: string }
@@ -2758,6 +2947,17 @@ export type Database = {
         }[]
       }
       get_available_reveals: { Args: { _user_id: string }; Returns: number }
+      get_business_lead_stats: {
+        Args: { p_business_id: string }
+        Returns: {
+          contacted_leads: number
+          conversion_rate: number
+          converted_leads: number
+          lost_leads: number
+          new_leads: number
+          total_leads: number
+        }[]
+      }
       get_cached_data: { Args: { _cache_key: string }; Returns: Json }
       get_connected_profile_limited: {
         Args: { _profile_id: string }
@@ -2821,6 +3021,10 @@ export type Database = {
       }
       increment_api_rate_limit: {
         Args: { _endpoint: string; _ip_address: string }
+        Returns: undefined
+      }
+      increment_lead_count: {
+        Args: { p_business_id: string; p_is_matched?: boolean }
         Returns: undefined
       }
       increment_oauth_attempt: {
