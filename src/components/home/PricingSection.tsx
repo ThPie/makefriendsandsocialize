@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { Check, Crown, Sparkles, Star, Lock, Heart, Gift, Briefcase } from 'lucide-react';
+import { Check, Crown, Sparkles, Star, Lock, Heart, Gift, Briefcase, ChevronDown, ChevronUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
+const INITIAL_FEATURES_SHOWN = 4;
 const tiers = [
   {
     name: 'Socialite',
@@ -88,6 +90,11 @@ const tiers = [
 
 export const PricingSection = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const [expandedTiers, setExpandedTiers] = useState<Record<number, boolean>>({});
+
+  const toggleExpanded = (index: number) => {
+    setExpandedTiers(prev => ({ ...prev, [index]: !prev[index] }));
+  };
 
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-secondary/5" id="membership">
@@ -113,6 +120,12 @@ export const PricingSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
           {tiers.map((tier, index) => {
             const Icon = tier.icon;
+            const isExpanded = expandedTiers[index] || false;
+            const visibleFeatures = isExpanded ? tier.features : tier.features.slice(0, INITIAL_FEATURES_SHOWN);
+            const hasMoreFeatures = tier.features.length > INITIAL_FEATURES_SHOWN;
+            const visibleMissingFeatures = isExpanded ? tier.missingFeatures : tier.missingFeatures?.slice(0, 2) || [];
+            const hasMoreMissing = (tier.missingFeatures?.length || 0) > 2;
+
             return (
               <div
                 key={index}
@@ -165,7 +178,7 @@ export const PricingSection = () => {
 
                 {/* Included Features */}
                 <ul className="space-y-3 mb-4">
-                  {tier.features.map((feature, featureIndex) => (
+                  {visibleFeatures.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start gap-3">
                       <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                       <span className="text-muted-foreground text-sm">{feature}</span>
@@ -173,14 +186,17 @@ export const PricingSection = () => {
                   ))}
                 </ul>
 
-                {/* Missing Features (Grayscale with Lock) */}
-                {tier.missingFeatures && tier.missingFeatures.length > 0 && (
-                  <div className="border-t border-border/50 pt-4 mb-6">
+                {/* Missing Features (Grayscale with Lock) - Only show when expanded or first 2 */}
+                {visibleMissingFeatures && visibleMissingFeatures.length > 0 && (
+                  <div className={cn(
+                    "border-t border-border/50 pt-4 mb-4",
+                    !isExpanded && "opacity-70"
+                  )}>
                     <p className="text-xs text-muted-foreground/60 uppercase tracking-wider mb-3 font-medium">
                       Upgrade to unlock
                     </p>
                     <ul className="space-y-2">
-                      {tier.missingFeatures.map((feature, featureIndex) => (
+                      {visibleMissingFeatures.map((feature, featureIndex) => (
                         <li key={featureIndex} className="flex items-start gap-3">
                           <Lock className="w-4 h-4 text-muted-foreground/40 flex-shrink-0 mt-0.5" />
                           <span className="text-muted-foreground/50 text-sm">{feature}</span>
@@ -188,6 +204,26 @@ export const PricingSection = () => {
                       ))}
                     </ul>
                   </div>
+                )}
+
+                {/* See More / See Less Button */}
+                {(hasMoreFeatures || hasMoreMissing) && (
+                  <button
+                    onClick={() => toggleExpanded(index)}
+                    className="w-full flex items-center justify-center gap-2 py-2 text-sm text-primary hover:text-primary/80 transition-colors mb-4"
+                  >
+                    {isExpanded ? (
+                      <>
+                        <span>See less</span>
+                        <ChevronUp className="w-4 h-4" />
+                      </>
+                    ) : (
+                      <>
+                        <span>See all benefits</span>
+                        <ChevronDown className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
                 )}
 
                 <Button
