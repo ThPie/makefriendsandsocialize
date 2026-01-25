@@ -112,21 +112,21 @@ export default function PortalConcierge() {
     queryKey: ['concierge-bookings', user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('concierge_bookings')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as Booking[];
+      return (data || []) as Booking[];
     },
     enabled: !!user && canBook,
   });
 
   const createBooking = useMutation({
     mutationFn: async (data: BookingFormData) => {
-      const { error } = await supabase.from('concierge_bookings').insert({
+      const { error } = await (supabase as any).from('concierge_bookings').insert({
         user_id: user!.id,
         booking_type: data.booking_type,
         topic: data.topic,
@@ -150,7 +150,7 @@ export default function PortalConcierge() {
 
   const cancelBooking = useMutation({
     mutationFn: async (bookingId: string) => {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('concierge_bookings')
         .update({ status: 'cancelled' })
         .eq('id', bookingId)

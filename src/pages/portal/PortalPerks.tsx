@@ -66,7 +66,7 @@ export default function PortalPerks() {
   const { data: perks = [], isLoading } = useQuery({
     queryKey: ['partner-perks'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('partner_perks')
         .select('*')
         .eq('is_active', true)
@@ -74,7 +74,7 @@ export default function PortalPerks() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data as Perk[];
+      return (data || []) as Perk[];
     },
   });
 
@@ -109,11 +109,15 @@ export default function PortalPerks() {
     }
     setSelectedPerk(perk);
 
-    // Track redemption click
-    await supabase
-      .from('partner_perks')
-      .update({ redemption_count: (perk as any).redemption_count + 1 })
-      .eq('id', perk.id);
+    // Track redemption click - increment counter
+    try {
+      await (supabase as any)
+        .from('partner_perks')
+        .update({ redemption_count: ((perk as any).redemption_count || 0) + 1 })
+        .eq('id', perk.id);
+    } catch {
+      // Silently fail - tracking is non-critical
+    }
   };
 
   const categories = Object.keys(CATEGORY_CONFIG);

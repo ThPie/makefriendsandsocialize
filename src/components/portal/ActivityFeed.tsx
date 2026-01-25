@@ -76,13 +76,13 @@ export function ActivityFeed({ limit = 10, compact = false }: ActivityFeedProps)
 
       if (error) throw error;
 
-      const userIds = [...new Set((data || []).map((a: any) => a.user_id))];
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, first_name, avatar_urls')
-        .in('id', userIds);
-
-      const profileMap = new Map(profiles?.map((p) => [p.id, p]) || []);
+      const userIds = [...new Set((data || []).map((a: any) => a.user_id))] as string[];
+      let profileMap = new Map<string, { id: string; first_name: string | null; avatar_urls: string[] | null }>();
+      
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase.from('profiles').select('id, first_name, avatar_urls').in('id', userIds);
+        profileMap = new Map((profiles || []).map((p) => [p.id, p]));
+      }
 
       return (data || []).map((activity: any) => ({
         ...activity,
