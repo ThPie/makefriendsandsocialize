@@ -164,11 +164,16 @@ export default function AuthPage() {
     }
   };
 
-  // Update password with validation
+  // Debounce timer ref for password breach check
+  const [passwordCheckTimeout, setPasswordCheckTimeout] = useState<NodeJS.Timeout | null>(null);
+
+  // Update password with validation and debounced breach check
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
     clearFormFeedback();
+    setPasswordServerError(null);
+    
     if (passwordTouched && mode === 'signup') {
       validatePasswordField(value);
     }
@@ -179,6 +184,40 @@ export default function AuthPage() {
       } else {
         setConfirmPasswordError(undefined);
       }
+    }
+
+    // Debounced server-side password breach check for signup
+    if (mode === 'signup' && value.length >= 10) {
+      // Clear previous timeout
+      if (passwordCheckTimeout) {
+        clearTimeout(passwordCheckTimeout);
+      }
+      
+      // Set new timeout for debounced check
+      const timeout = setTimeout(async () => {
+        setIsCheckingPassword(true);
+        try {
+          const { data, error } = await supabase.functions.invoke('check-password-strength', {
+            body: { password: value },
+          });
+
+          if (!error && data && !data.isSecure) {
+            // Show breach count in error message
+            if (data.breachCount) {
+              setPasswordServerError(`This password has appeared in ${data.breachCount.toLocaleString()} data breaches. Please choose a different one.`);
+            } else {
+              setPasswordServerError(data.reason || 'Please choose a stronger password');
+            }
+          }
+        } catch (err) {
+          // Silently fail - don't block user
+          console.error('Password check failed:', err);
+        } finally {
+          setIsCheckingPassword(false);
+        }
+      }, 800); // 800ms debounce
+      
+      setPasswordCheckTimeout(timeout);
     }
   };
 
@@ -400,7 +439,37 @@ export default function AuthPage() {
       setIsSubmitting(false);
       navigate('/portal');
     } else {
-      setStep(2);
+      // For signup, redirect to email verification page
+      setIsSubmitting(true);
+      clearFormFeedback();
+      
+      try {
+        const signUpResult = await signUp(email, password);
+        
+        if (signUpResult.error) {
+          const signUpError = signUpResult.error;
+          const errorMessage = signUpError.message?.toLowerCase() || '';
+          
+          if (errorMessage.includes('already registered') || 
+              errorMessage.includes('user already exists') ||
+              errorMessage.includes('email already')) {
+            setFormError('This email is already registered. Please sign in instead.');
+            setMode('signin');
+          } else {
+            setFormError(signUpError.message || 'Unable to create account. Please try again.');
+          }
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Redirect to email verification
+        setIsSubmitting(false);
+        navigate('/auth/verify-email');
+      } catch (err) {
+        console.error('Signup error:', err);
+        setFormError('An unexpected error occurred. Please try again.');
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -751,6 +820,19 @@ export default function AuthPage() {
                         error={passwordTouched && mode === 'signup' ? passwordError : undefined}
                         autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
                       />
+                      {/* Password breach warning - shown while typing */}
+                      {mode === 'signup' && passwordServerError && (
+                        <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm mt-2">
+                          <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
+                          <span>{passwordServerError}</span>
+                        </div>
+                      )}
+                      {mode === 'signup' && isCheckingPassword && (
+                        <p className="text-xs text-white/40 flex items-center gap-2 mt-1">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          Checking password security...
+                        </p>
+                      )}
                     </div>
 
                     {mode === 'signup' && (

@@ -13,6 +13,7 @@ const tiers = [
     description: 'Your gateway to the Circle',
     price: 'Free',
     period: '',
+    dailyPrice: null,
     features: [
       'Browse all public events',
       'Purchase event tickets',
@@ -37,8 +38,10 @@ const tiers = [
   {
     name: 'Insider',
     description: 'For those who seek more',
-    price: '$49',
-    period: '/month',
+    price: '$1.63',
+    period: '/day',
+    billedNote: 'billed $49/mo',
+    dailyPrice: 1.63,
     annualPrice: '$470/year (save 20%)',
     features: [
       'Unlimited connection reveals',
@@ -65,8 +68,10 @@ const tiers = [
   {
     name: 'Patron',
     description: 'The ultimate experience',
-    price: '$79',
-    period: '/month',
+    price: '$2.63',
+    period: '/day',
+    billedNote: 'billed $79/mo',
+    dailyPrice: 2.63,
     annualPrice: '$758/year (save 20%)',
     features: [
       'Everything in Insider',
@@ -167,6 +172,9 @@ export const PricingSection = () => {
                     </span>
                     <span className="text-muted-foreground">{tier.period}</span>
                   </div>
+                  {tier.billedNote && (
+                    <p className="text-xs text-muted-foreground mt-1">{tier.billedNote}</p>
+                  )}
                   {tier.annualPrice && (
                     <p className="text-xs text-primary mt-1">{tier.annualPrice}</p>
                   )}

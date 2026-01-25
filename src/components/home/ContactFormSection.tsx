@@ -180,7 +180,7 @@ export const ContactFormSection = () => {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base"
+                className="w-full h-10 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
               >
                 {isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>

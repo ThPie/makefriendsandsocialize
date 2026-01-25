@@ -205,7 +205,7 @@ export const Footer = () => {
         {/* Copyright */}
         <div className="mx-auto max-w-7xl mt-6 pt-6 border-t border-border">
           <p className="text-sm text-muted-foreground text-center">
-            © 2025 Make Friends and Socialize. All rights reserved.
+            © 2025 Make Friends and Socialize LLC. All rights reserved.
           </p>
         </div>
       </div>
