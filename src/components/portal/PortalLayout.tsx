@@ -48,6 +48,8 @@ const menuItems = [
   { title: 'Intentional Connections', url: '/portal/slow-dating', icon: Heart, requiresApproval: true },
   { title: 'Founder Profile', url: '/portal/business', icon: Users, requiresApproval: false },
   { title: 'Events', url: '/portal/events', icon: Calendar, requiresApproval: false },
+  { title: 'Perks', url: '/portal/perks', icon: Gift, requiresApproval: false },
+  { title: 'Concierge', url: '/portal/concierge', icon: Crown, requiresApproval: true },
   { title: 'Referrals', url: '/portal/referrals', icon: Gift, requiresApproval: false },
 ];
 

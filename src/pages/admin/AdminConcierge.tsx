@@ -93,13 +93,12 @@ export default function AdminConcierge() {
 
       if (error) throw error;
 
-      const userIds = [...new Set((data || []).map((b: any) => b.user_id))];
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, first_name, last_name')
-        .in('id', userIds);
+      const userIds = [...new Set((data || []).map((b: any) => b.user_id))] as string[];
+      const { data: profiles } = userIds.length > 0
+        ? await supabase.from('profiles').select('id, first_name, last_name').in('id', userIds)
+        : { data: [] };
 
-      const profileMap = new Map(profiles?.map((p) => [p.id, p]) || []);
+      const profileMap = new Map((profiles || []).map((p) => [p.id, p]));
 
       return (data || []).map((booking: any) => ({
         ...booking,

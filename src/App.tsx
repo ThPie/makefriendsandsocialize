@@ -77,6 +77,11 @@ import TheGentlemenPage from "@/pages/circles/TheGentlemenPage";
 import LesAmisPage from "@/pages/circles/LesAmisPage";
 import HealthCheckPage from "@/pages/HealthCheckPage";
 import PortalOnboarding from "@/pages/portal/PortalOnboarding";
+import PortalPerks from "@/pages/portal/PortalPerks";
+import PortalConcierge from "@/pages/portal/PortalConcierge";
+import PortalEventCheckin from "@/pages/portal/PortalEventCheckin";
+import AdminPerks from "@/pages/admin/AdminPerks";
+import AdminConcierge from "@/pages/admin/AdminConcierge";
 
 const queryClient = new QueryClient();
 
@@ -163,6 +168,9 @@ const MainRoutes = () => (
     <Route path="/portal/billing" element={<PortalLayout><PortalBilling /></PortalLayout>} />
     <Route path="/portal/referrals" element={<PortalLayout><PortalReferrals /></PortalLayout>} />
     <Route path="/portal/business" element={<PortalLayout><PortalBusiness /></PortalLayout>} />
+    <Route path="/portal/perks" element={<PortalLayout><PortalPerks /></PortalLayout>} />
+    <Route path="/portal/concierge" element={<PortalLayout><PortalConcierge /></PortalLayout>} />
+    <Route path="/portal/checkin/:eventId/:code" element={<PortalEventCheckin />} />
     
     {/* Dating intake route */}
     <Route path="/dating/apply" element={<Layout><DatingIntakePage /></Layout>} />
@@ -190,6 +198,8 @@ const MainRoutes = () => (
     <Route path="/admin/appeals" element={<AdminLayout><AdminAppeals /></AdminLayout>} />
     <Route path="/admin/circles" element={<AdminLayout><AdminCircles /></AdminLayout>} />
     <Route path="/admin/businesses" element={<AdminLayout><AdminBusinesses /></AdminLayout>} />
+    <Route path="/admin/perks" element={<AdminLayout><AdminPerks /></AdminLayout>} />
+    <Route path="/admin/concierge" element={<AdminLayout><AdminConcierge /></AdminLayout>} />
     
     <Route path="*" element={<Layout><NotFound /></Layout>} />
   </Routes>

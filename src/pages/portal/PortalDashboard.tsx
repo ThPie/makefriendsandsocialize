@@ -15,6 +15,8 @@ import { BadgeUnlockModal } from '@/components/portal/BadgeUnlockModal';
 import { VerificationBadge } from '@/components/portal/VerificationBadge';
 import { UpgradePromptCard } from '@/components/portal/UpgradePromptCard';
 import { EmailVerificationBanner } from '@/components/portal/EmailVerificationBanner';
+import { ActivityFeed } from '@/components/portal/ActivityFeed';
+import { AttendanceStreak } from '@/components/portal/AttendanceStreak';
 
 export default function PortalDashboard() {
   const { user, profile, membership, canAccessMatchmaking, refreshProfile } = useAuth();
@@ -188,6 +190,12 @@ export default function PortalDashboard() {
       {earnedBadges.length > 0 && (
         <BadgeDisplay earnedBadges={earnedBadges} showAll={false} compact />
       )}
+
+      {/* Activity Feed & Attendance Streak */}
+      <div className="grid gap-8 md:grid-cols-2">
+        <ActivityFeed limit={5} compact />
+        <AttendanceStreak />
+      </div>
 
       {/* Quick Actions */}
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">

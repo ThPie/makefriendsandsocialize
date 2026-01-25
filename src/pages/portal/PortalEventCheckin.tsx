@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,12 +16,11 @@ interface Event {
   time: string | null;
   venue_name: string | null;
   location: string | null;
-  check_in_code: string;
+  check_in_code: string | null;
 }
 
 export default function PortalEventCheckin() {
   const { eventId, code } = useParams<{ eventId: string; code: string }>();
-  const navigate = useNavigate();
   const { user, isLoading: authLoading } = useAuth();
   const { fireConfetti } = useConfetti();
   const [checkedIn, setCheckedIn] = useState(false);
@@ -31,7 +30,8 @@ export default function PortalEventCheckin() {
   const { data: event, isLoading: eventLoading } = useQuery({
     queryKey: ['event-checkin', eventId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Fetch event with check_in_code using type assertion
+      const { data, error } = await (supabase as any)
         .from('events')
         .select('id, title, date, time, venue_name, location, check_in_code')
         .eq('id', eventId)
@@ -48,7 +48,7 @@ export default function PortalEventCheckin() {
     queryKey: ['existing-checkin', eventId, user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from('event_checkins')
         .select('id, checked_in_at')
         .eq('event_id', eventId)
@@ -69,7 +69,7 @@ export default function PortalEventCheckin() {
         throw new Error('Invalid check-in code');
       }
 
-      const { error } = await supabase.from('event_checkins').insert({
+      const { error } = await (supabase as any).from('event_checkins').insert({
         event_id: event.id,
         user_id: user.id,
         check_in_method: 'qr',

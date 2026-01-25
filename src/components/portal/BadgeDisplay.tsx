@@ -60,6 +60,31 @@ export const BADGE_DEFINITIONS: Omit<Badge, 'id' | 'earned' | 'earnedAt'>[] = [
     icon: '👑',
     description: '10 successful referrals',
   },
+  // Attendance-based badges
+  {
+    type: 'first_timer',
+    name: 'First Timer',
+    icon: '🎉',
+    description: 'Attended your first event',
+  },
+  {
+    type: 'hat_trick',
+    name: 'Hat Trick',
+    icon: '🎯',
+    description: '3 events in 30 days',
+  },
+  {
+    type: 'social_star',
+    name: 'Social Star',
+    icon: '⭐',
+    description: '5 events attended',
+  },
+  {
+    type: 'event_master',
+    name: 'Event Master',
+    icon: '👑',
+    description: '10 events attended',
+  },
 ];
 
 interface BadgeDisplayProps {

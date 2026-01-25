@@ -58,13 +58,12 @@ export function EventPhotoGallery({ eventId, eventTitle, isPastEvent }: EventPho
 
       if (error) throw error;
 
-      const uploaderIds = [...new Set((data || []).map((p: any) => p.uploaded_by))];
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, first_name, avatar_urls')
-        .in('id', uploaderIds);
+      const uploaderIds = [...new Set((data || []).map((p: any) => p.uploaded_by))] as string[];
+      const { data: profiles } = uploaderIds.length > 0
+        ? await supabase.from('profiles').select('id, first_name, avatar_urls').in('id', uploaderIds)
+        : { data: [] };
 
-      const profileMap = new Map(profiles?.map((p) => [p.id, p]) || []);
+      const profileMap = new Map((profiles || []).map((p) => [p.id, p]));
 
       return (data || []).map((photo: any) => ({
         ...photo,
@@ -333,11 +332,10 @@ export function EventPhotoGallery({ eventId, eventTitle, isPastEvent }: EventPho
           </div>
 
           <Lightbox
-            images={lightboxImages}
-            currentIndex={lightboxIndex ?? 0}
+            images={lightboxImages.map(img => ({ url: img.url, title: img.alt }))}
+            initialIndex={lightboxIndex ?? 0}
             isOpen={lightboxIndex !== null}
             onClose={() => setLightboxIndex(null)}
-            onNavigate={setLightboxIndex}
           />
         </>
       )}
