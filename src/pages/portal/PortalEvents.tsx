@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,12 +10,15 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Calendar, MapPin, Clock, Crown, Users, ArrowRight, Clock3, AlertCircle } from 'lucide-react';
+import { Calendar, MapPin, Clock, Crown, Users, ArrowRight, Clock3, AlertCircle, ImageIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { parseLocalDate } from '@/lib/date-utils';
+import { EventAttendeePreview } from '@/components/portal/EventAttendeePreview';
+import { EventPhotoGallery } from '@/components/portal/EventPhotoGallery';
 
 interface Event {
   id: string;
@@ -50,9 +53,11 @@ export default function PortalEvents() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
+  const [activeTab, setActiveTab] = useState('upcoming');
+
   // Fetch upcoming events
-  const { data: events = [], isLoading: eventsLoading } = useQuery({
-    queryKey: ['portal-events'],
+  const { data: upcomingEvents = [], isLoading: eventsLoading } = useQuery({
+    queryKey: ['portal-events-upcoming'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('events')
@@ -65,6 +70,25 @@ export default function PortalEvents() {
       return data as Event[];
     },
   });
+
+  // Fetch past events
+  const { data: pastEvents = [], isLoading: pastEventsLoading } = useQuery({
+    queryKey: ['portal-events-past'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .or(`status.eq.past,date.lt.${new Date().toISOString().split('T')[0]}`)
+        .order('date', { ascending: false })
+        .limit(12);
+      
+      if (error) throw error;
+      return data as Event[];
+    },
+  });
+
+  // Get current events based on tab
+  const events = activeTab === 'upcoming' ? upcomingEvents : pastEvents;
 
   // Fetch RSVP counts for events
   const { data: rsvpCounts = {} } = useQuery({
@@ -323,197 +347,257 @@ export default function PortalEvents() {
       {/* Header */}
       <div>
         <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-          Upcoming Events
+          Events
         </h1>
         <p className="text-muted-foreground">
           Exclusive gatherings for members of Make Friends and Socialize
         </p>
       </div>
 
-      {/* Events Grid */}
-      {events.length === 0 ? (
-        <Card className="p-12 text-center">
-          <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-          <h3 className="font-display text-xl mb-2">No Upcoming Events</h3>
-          <p className="text-muted-foreground">Check back soon for new events!</p>
-        </Card>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2">
-          {events.map((event) => {
-            const canAccess = canAccessEvent(event.tier);
-            const isRSVPd = isUserRSVPd(event.id);
-            const isFull = isEventFull(event);
-            const waitlistEntry = getUserWaitlistEntry(event.id);
-            const attending = rsvpCounts[event.id] || 0;
-            const waitlistCount = waitlistCounts[event.id] || 0;
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList>
+          <TabsTrigger value="upcoming">Upcoming ({upcomingEvents.length})</TabsTrigger>
+          <TabsTrigger value="past">
+            <ImageIcon className="h-4 w-4 mr-1" />
+            Past Events ({pastEvents.length})
+          </TabsTrigger>
+        </TabsList>
 
-            return (
-              <Card key={event.id} className="overflow-hidden group">
-                {/* Image */}
-                <div className="aspect-[16/9] relative overflow-hidden">
-                  <img
-                    src={event.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
-                    alt={event.title}
-                    className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
-                      !canAccess ? 'opacity-50' : ''
-                    }`}
-                  />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    {getTierBadge(event.tier)}
-                    {isFull && (
-                      <Badge variant="destructive" className="gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        Sold Out
-                      </Badge>
-                    )}
-                  </div>
-                  {!canAccess && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-background/50">
-                      <Crown className="h-12 w-12 text-primary" />
-                    </div>
-                  )}
-                </div>
+        <TabsContent value="upcoming" className="mt-6">
+          {eventsLoading ? (
+            <div className="flex items-center justify-center min-h-[200px]">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary" />
+            </div>
+          ) : upcomingEvents.length === 0 ? (
+            <Card className="p-12 text-center">
+              <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="font-display text-xl mb-2">No Upcoming Events</h3>
+              <p className="text-muted-foreground">Check back soon for new events!</p>
+            </Card>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2">
+              {upcomingEvents.map((event) => {
+                const canAccess = canAccessEvent(event.tier);
+                const isRSVPd = isUserRSVPd(event.id);
+                const isFull = isEventFull(event);
+                const waitlistEntry = getUserWaitlistEntry(event.id);
+                const attending = rsvpCounts[event.id] || 0;
+                const waitlistCount = waitlistCounts[event.id] || 0;
 
-                <CardContent className="p-6">
-                  <h3 className="font-display text-xl text-foreground mb-3">
-                    {event.title}
-                  </h3>
-
-                  <div className="space-y-2 mb-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      <span>{formatDate(event.date)}</span>
-                    </div>
-                    {event.time && (
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        <span>{event.time}</span>
+                return (
+                  <Card key={event.id} className="overflow-hidden group">
+                    {/* Image */}
+                    <div className="aspect-[16/9] relative overflow-hidden">
+                      <img
+                        src={event.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
+                        alt={event.title}
+                        className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
+                          !canAccess ? 'opacity-50' : ''
+                        }`}
+                      />
+                      <div className="absolute top-4 left-4 flex gap-2">
+                        {getTierBadge(event.tier)}
+                        {isFull && (
+                          <Badge variant="destructive" className="gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            Sold Out
+                          </Badge>
+                        )}
                       </div>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      <span>
-                        {event.venue_name || event.location}
-                        {event.city && `, ${event.city}`}
-                      </span>
+                      {!canAccess && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+                          <Crown className="h-12 w-12 text-primary" />
+                        </div>
+                      )}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      {(() => {
-                        const spotsLeft = event.capacity ? event.capacity - attending : null;
-                        if (isFull) {
-                          return (
-                            <span className="text-destructive font-medium">
-                              Sold Out
-                              {waitlistCount > 0 && (
-                                <span className="text-amber-600 ml-2">
-                                  ({waitlistCount} on waitlist)
-                                </span>
-                              )}
-                            </span>
-                          );
-                        }
-                        if (spotsLeft !== null && spotsLeft <= 5) {
-                          return (
-                            <span className="text-amber-500 font-medium">
-                              {spotsLeft} spot{spotsLeft !== 1 ? 's' : ''} left!
-                              {waitlistCount > 0 && (
-                                <span className="text-muted-foreground ml-2">
-                                  ({waitlistCount} on waitlist)
-                                </span>
-                              )}
-                            </span>
-                          );
-                        }
-                        return (
+
+                    <CardContent className="p-6">
+                      <h3 className="font-display text-xl text-foreground mb-3">
+                        {event.title}
+                      </h3>
+
+                      <div className="space-y-2 mb-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          <span>{formatDate(event.date)}</span>
+                        </div>
+                        {event.time && (
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-4 w-4" />
+                            <span>{event.time}</span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4" />
                           <span>
-                            {attending} / {event.capacity || '∞'} attending
-                            {waitlistCount > 0 && (
-                              <span className="text-amber-600 ml-2">
-                                ({waitlistCount} on waitlist)
-                              </span>
-                            )}
+                            {event.venue_name || event.location}
+                            {event.city && `, ${event.city}`}
                           </span>
-                        );
-                      })()}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          {(() => {
+                            const spotsLeft = event.capacity ? event.capacity - attending : null;
+                            if (isFull) {
+                              return (
+                                <span className="text-destructive font-medium">
+                                  Sold Out
+                                  {waitlistCount > 0 && (
+                                    <span className="text-amber-600 ml-2">
+                                      ({waitlistCount} on waitlist)
+                                    </span>
+                                  )}
+                                </span>
+                              );
+                            }
+                            if (spotsLeft !== null && spotsLeft <= 5) {
+                              return (
+                                <span className="text-amber-500 font-medium">
+                                  {spotsLeft} spot{spotsLeft !== 1 ? 's' : ''} left!
+                                  {waitlistCount > 0 && (
+                                    <span className="text-muted-foreground ml-2">
+                                      ({waitlistCount} on waitlist)
+                                    </span>
+                                  )}
+                                </span>
+                              );
+                            }
+                            return (
+                              <span>
+                                {attending} / {event.capacity || '∞'} attending
+                                {waitlistCount > 0 && (
+                                  <span className="text-amber-600 ml-2">
+                                    ({waitlistCount} on waitlist)
+                                  </span>
+                                )}
+                              </span>
+                            );
+                          })()}
+                        </div>
+                      </div>
+
+                      {/* Who's Going Preview */}
+                      <div className="mb-4">
+                        <EventAttendeePreview
+                          eventId={event.id}
+                          totalCount={attending}
+                        />
+                      </div>
+
+                      {event.description && (
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                          {event.description}
+                        </p>
+                      )}
+
+                      {/* Waitlist status */}
+                      {waitlistEntry && (
+                        <div className="mb-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                          <div className="flex items-center gap-2 text-amber-600">
+                            <Clock3 className="h-4 w-4" />
+                            <span className="text-sm font-medium">
+                              {waitlistEntry.status === 'notified' 
+                                ? 'A spot opened up! Claim it now.'
+                                : `#${waitlistEntry.position} on waitlist`}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action buttons */}
+                      {waitlistEntry ? (
+                        <div className="flex gap-2">
+                          {waitlistEntry.status === 'notified' ? (
+                            <Button
+                              className="flex-1"
+                              onClick={() => {
+                                handleLeaveWaitlist(event.id);
+                                rsvpMutation.mutate({ eventId: event.id, action: 'rsvp' });
+                              }}
+                              disabled={rsvpMutation.isPending}
+                            >
+                              Claim Your Spot
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              className="flex-1"
+                              onClick={() => handleLeaveWaitlist(event.id)}
+                              disabled={waitlistMutation.isPending}
+                            >
+                              Leave Waitlist
+                            </Button>
+                          )}
+                        </div>
+                      ) : (
+                        <Button
+                          variant={isRSVPd ? 'outline' : canAccess ? 'default' : 'outline'}
+                          className="w-full"
+                          onClick={() => handleRSVP(event)}
+                          disabled={rsvpMutation.isPending || waitlistMutation.isPending}
+                        >
+                          {!canAccess ? (
+                            <>
+                              <Crown className="h-4 w-4 mr-2" />
+                              Upgrade to RSVP
+                            </>
+                          ) : isRSVPd ? (
+                            'Cancel RSVP'
+                          ) : isFull ? (
+                            <>
+                              <Clock3 className="h-4 w-4 mr-2" />
+                              Join Waitlist
+                            </>
+                          ) : (
+                            'RSVP Now'
+                          )}
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="past" className="mt-6">
+          {pastEventsLoading ? (
+            <div className="flex items-center justify-center min-h-[200px]">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary" />
+            </div>
+          ) : pastEvents.length === 0 ? (
+            <Card className="p-12 text-center">
+              <ImageIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="font-display text-xl mb-2">No Past Events Yet</h3>
+              <p className="text-muted-foreground">Event memories will appear here after they happen!</p>
+            </Card>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {pastEvents.map((event) => (
+                <Card key={event.id} className="overflow-hidden">
+                  <div className="aspect-[16/9] relative overflow-hidden">
+                    <img
+                      src={event.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
+                      alt={event.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <h3 className="font-display text-lg text-white mb-1">{event.title}</h3>
+                      <p className="text-white/80 text-sm">{formatDate(event.date)}</p>
                     </div>
                   </div>
-
-                  {event.description && (
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                      {event.description}
-                    </p>
-                  )}
-
-                  {/* Waitlist status */}
-                  {waitlistEntry && (
-                    <div className="mb-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                      <div className="flex items-center gap-2 text-amber-600">
-                        <Clock3 className="h-4 w-4" />
-                        <span className="text-sm font-medium">
-                          {waitlistEntry.status === 'notified' 
-                            ? 'A spot opened up! Claim it now.'
-                            : `#${waitlistEntry.position} on waitlist`}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Action buttons */}
-                  {waitlistEntry ? (
-                    <div className="flex gap-2">
-                      {waitlistEntry.status === 'notified' ? (
-                        <Button
-                          className="flex-1"
-                          onClick={() => {
-                            handleLeaveWaitlist(event.id);
-                            rsvpMutation.mutate({ eventId: event.id, action: 'rsvp' });
-                          }}
-                          disabled={rsvpMutation.isPending}
-                        >
-                          Claim Your Spot
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outline"
-                          className="flex-1"
-                          onClick={() => handleLeaveWaitlist(event.id)}
-                          disabled={waitlistMutation.isPending}
-                        >
-                          Leave Waitlist
-                        </Button>
-                      )}
-                    </div>
-                  ) : (
-                    <Button
-                      variant={isRSVPd ? 'outline' : canAccess ? 'default' : 'outline'}
-                      className="w-full"
-                      onClick={() => handleRSVP(event)}
-                      disabled={rsvpMutation.isPending || waitlistMutation.isPending}
-                    >
-                      {!canAccess ? (
-                        <>
-                          <Crown className="h-4 w-4 mr-2" />
-                          Upgrade to RSVP
-                        </>
-                      ) : isRSVPd ? (
-                        'Cancel RSVP'
-                      ) : isFull ? (
-                        <>
-                          <Clock3 className="h-4 w-4 mr-2" />
-                          Join Waitlist
-                        </>
-                      ) : (
-                        'RSVP Now'
-                      )}
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+                  <CardContent className="p-4">
+                    <EventPhotoGallery eventId={event.id} eventTitle={event.title} isPastEvent={true} />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
 
       {/* Upgrade Modal */}
       <Dialog open={showUpgradeModal} onOpenChange={setShowUpgradeModal}>

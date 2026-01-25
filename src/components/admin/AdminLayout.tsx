@@ -62,7 +62,7 @@ const menuItems = [
   { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp, sensitive: false, endpoint: null },
   { title: 'Events', url: '/admin/events', icon: Calendar, sensitive: false, endpoint: null },
   { title: 'Event Analytics', url: '/admin/event-analytics', icon: TrendingUp, sensitive: false, endpoint: null },
-  { title: 'Photos', url: '/admin/photos', icon: Image, sensitive: false, endpoint: null },
+  { title: 'Event Photos', url: '/admin/photos', icon: Image, sensitive: false, endpoint: null },
   { title: 'Connections', url: '/admin/connections', icon: UserCog, sensitive: false, endpoint: null },
   { title: 'Testimonials', url: '/admin/testimonials', icon: Quote, sensitive: false, endpoint: null },
   { title: 'Content', url: '/admin/content', icon: Image, sensitive: false, endpoint: null },
