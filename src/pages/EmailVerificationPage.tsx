@@ -223,19 +223,8 @@ export default function EmailVerificationPage() {
             )}
           </Button>
 
-          {/* Continue anyway (for testing/development) */}
-          <Button
-            asChild
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            <Link to="/portal/onboarding">
-              Continue to Profile
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Link>
-          </Button>
-
           <p className="text-white/40 text-xs mt-4">
-            You can continue without verification, but some features may be limited.
+            Please verify your email to continue. Check your inbox and spam folder.
           </p>
         </div>
 

@@ -110,6 +110,10 @@ const MembershipPage = () => {
     return tierMap[subscription.tier || 'patron'] === tierName;
   };
 
+  // Calculate daily prices
+  const insiderDailyPrice = (TIER_BENEFITS.insider.monthlyPrice / 30).toFixed(2);
+  const patronDailyPrice = (TIER_BENEFITS.patron.monthlyPrice / 30).toFixed(2);
+
   const tiers = [
     {
       id: 'socialite' as const,
@@ -118,6 +122,7 @@ const MembershipPage = () => {
       price: '$0',
       annualPrice: '$0',
       period: '/forever',
+      billedNote: null,
       description: TIER_BENEFITS.socialite.description,
       features: TIER_BENEFITS.socialite.features,
       missingFeatures: TIER_BENEFITS.socialite.missingFeatures,
@@ -130,9 +135,10 @@ const MembershipPage = () => {
       id: 'insider' as const,
       stripeId: 'member' as const,
       name: TIER_BENEFITS.insider.name,
-      price: `$${TIER_BENEFITS.insider.monthlyPrice}`,
+      price: billingPeriod === 'monthly' ? `$${insiderDailyPrice}` : `$${TIER_BENEFITS.insider.annualPrice}`,
       annualPrice: `$${TIER_BENEFITS.insider.annualPrice}`,
-      period: billingPeriod === 'monthly' ? '/month' : '/year',
+      period: billingPeriod === 'monthly' ? '/day' : '/year',
+      billedNote: billingPeriod === 'monthly' ? `billed $${TIER_BENEFITS.insider.monthlyPrice}/mo` : null,
       description: TIER_BENEFITS.insider.description,
       features: TIER_BENEFITS.insider.features,
       missingFeatures: TIER_BENEFITS.insider.missingFeatures,
@@ -147,9 +153,10 @@ const MembershipPage = () => {
       id: 'patron' as const,
       stripeId: 'fellow' as const,
       name: TIER_BENEFITS.patron.name,
-      price: `$${TIER_BENEFITS.patron.monthlyPrice}`,
+      price: billingPeriod === 'monthly' ? `$${patronDailyPrice}` : `$${TIER_BENEFITS.patron.annualPrice}`,
       annualPrice: `$${TIER_BENEFITS.patron.annualPrice}`,
-      period: billingPeriod === 'monthly' ? '/month' : '/year',
+      period: billingPeriod === 'monthly' ? '/day' : '/year',
+      billedNote: billingPeriod === 'monthly' ? `billed $${TIER_BENEFITS.patron.monthlyPrice}/mo` : null,
       description: TIER_BENEFITS.patron.description,
       features: TIER_BENEFITS.patron.features,
       missingFeatures: TIER_BENEFITS.patron.missingFeatures,
@@ -400,7 +407,6 @@ const MembershipPage = () => {
             {tiers.map((tier) => {
               const isCurrent = isCurrentTier(tier.id);
               const TierIcon = tier.icon;
-              const displayPrice = billingPeriod === 'annual' && tier.annualPrice !== '$0' ? tier.annualPrice : tier.price;
 
               return (
                 <motion.div
@@ -443,9 +449,12 @@ const MembershipPage = () => {
                       <h3 className="text-foreground text-lg font-bold font-display">{tier.name}</h3>
                     </div>
                     <p className="flex items-baseline gap-1.5 text-foreground mt-2">
-                      <span className="text-5xl font-black leading-tight tracking-tight font-display">{displayPrice}</span>
+                      <span className="text-5xl font-black leading-tight tracking-tight font-display">{tier.price}</span>
                       <span className="text-muted-foreground text-sm font-medium">{tier.period}</span>
                     </p>
+                    {tier.billedNote && (
+                      <p className="text-xs text-muted-foreground">{tier.billedNote}</p>
+                    )}
                     {tier.annualSavings && billingPeriod === 'annual' && (
                       <Badge variant="outline" className="w-fit text-xs bg-green-500/5 text-green-600 border-green-500/20">
                         Save {tier.annualSavings}
