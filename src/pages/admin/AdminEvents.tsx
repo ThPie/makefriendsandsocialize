@@ -14,11 +14,12 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { LocationCombobox } from '@/components/ui/location-combobox';
 import { EventImageUpload } from '@/components/admin/EventImageUpload';
+import { EventQRCodeDialog } from '@/components/admin/EventQRCodeDialog';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { 
   Calendar, MapPin, Users, Plus, Edit, Trash2, Loader2, 
-  Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw
+  Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw, QrCode
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -128,6 +129,7 @@ export default function AdminEvents() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
   const [isSyncingMeetup, setIsSyncingMeetup] = useState(false);
+  const [qrDialogEvent, setQrDialogEvent] = useState<Event | null>(null);
 
   useEffect(() => {
     fetchEvents();
@@ -833,6 +835,15 @@ export default function AdminEvents() {
                         <Button 
                           variant="ghost" 
                           size="icon" 
+                          onClick={() => setQrDialogEvent(event)}
+                          className="text-muted-foreground hover:text-primary"
+                          title="Check-in QR"
+                        >
+                          <QrCode className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
                           onClick={() => handleToggleFeatured(event)}
                           className="text-muted-foreground hover:text-amber-400"
                         >
@@ -855,6 +866,15 @@ export default function AdminEvents() {
             ))}
           </AnimatePresence>
         </motion.div>
+      )}
+
+      {/* QR Code Dialog */}
+      {qrDialogEvent && (
+        <EventQRCodeDialog
+          open={!!qrDialogEvent}
+          onOpenChange={(open) => !open && setQrDialogEvent(null)}
+          event={qrDialogEvent}
+        />
       )}
     </div>
   );
