@@ -212,8 +212,12 @@ export const Header = () => {
               </Avatar>
             </Link>
           ) : (
-            <Button asChild variant="outline">
-              <Link to="/auth">Member Sign In</Link>
+            <Button 
+              asChild 
+              variant="outline" 
+              className={isTransparent ? "border-white/60 text-white hover:bg-white/10 hover:border-white" : ""}
+            >
+              <Link to="/auth">Sign In</Link>
             </Button>
           )}
         </div>
@@ -372,7 +376,7 @@ export const Header = () => {
               >
                 <Button asChild variant="outline" className="w-full rounded-xl py-6 text-base font-semibold">
                   <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                    Member Sign In
+                    Sign In
                   </Link>
                 </Button>
                 <p className="text-center text-xs text-muted-foreground mt-4">
