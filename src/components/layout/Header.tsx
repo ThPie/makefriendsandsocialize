@@ -212,8 +212,8 @@ export const Header = () => {
               </Avatar>
             </Link>
           ) : (
-            <Button asChild>
-              <Link to="/membership">Apply to Join</Link>
+            <Button asChild variant="outline">
+              <Link to="/auth">Member Sign In</Link>
             </Button>
           )}
         </div>
@@ -370,9 +370,9 @@ export const Header = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
               >
-                <Button asChild className="w-full rounded-xl py-6 text-base font-semibold">
-                  <Link to="/membership" onClick={() => setIsMenuOpen(false)}>
-                    Apply to Join
+                <Button asChild variant="outline" className="w-full rounded-xl py-6 text-base font-semibold">
+                  <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                    Member Sign In
                   </Link>
                 </Button>
                 <p className="text-center text-xs text-muted-foreground mt-4">
