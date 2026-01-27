@@ -171,7 +171,7 @@ export const Header = () => {
             src={currentLogo} 
             alt="MakeFriends & Socialize" 
             className={`w-auto object-contain transition-all duration-300 ${
-              isTransparent ? 'h-14 md:h-16' : 'h-10 md:h-12'
+              isTransparent ? 'h-12 md:h-14' : 'h-10 md:h-12'
             }`}
           />
         </Link>
