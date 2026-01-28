@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,6 +20,7 @@ export default function ResetPasswordPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasValidSession, setHasValidSession] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const hasValidSessionRef = useRef(false);
 
   useEffect(() => {
     // IMMEDIATELY check for error parameters in URL hash FIRST
@@ -41,12 +42,9 @@ export default function ResetPasswordPage() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Reset password auth event:', event, 'Session:', !!session);
       
-      if (event === 'PASSWORD_RECOVERY') {
-        // User came from password reset email
-        setHasValidSession(true);
-        setIsLoading(false);
-      } else if (event === 'SIGNED_IN' && session) {
-        // Session established after password recovery
+      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+        // User came from password reset email or session established
+        hasValidSessionRef.current = true;
         setHasValidSession(true);
         setIsLoading(false);
       }
@@ -54,14 +52,20 @@ export default function ResetPasswordPage() {
 
     // Also check if there's already a session (user may have refreshed)
     const checkExistingSession = async () => {
-      // Give Supabase a moment to process the URL hash tokens
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Give Supabase more time to process the URL hash tokens
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Check the ref, not the state variable (avoids stale closure issue)
+      if (hasValidSessionRef.current) {
+        return; // Already handled by auth listener
+      }
       
       const { data: { session } } = await supabase.auth.getSession();
       
       if (session) {
+        hasValidSessionRef.current = true;
         setHasValidSession(true);
-      } else if (!hasValidSession) {
+      } else {
         // No session and no valid recovery - show generic error
         setErrorMessage('Invalid or expired reset link. Please request a new one.');
       }
