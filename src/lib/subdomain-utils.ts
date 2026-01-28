@@ -54,6 +54,51 @@ export function redirectWwwToRoot(): boolean {
   return false;
 }
 
+/**
+ * Published host for password reset and auth flows.
+ * This ensures reset links always land on a host that serves the actual app.
+ */
+const PUBLISHED_HOST = 'https://makefriendsandsocializecom.lovable.app';
+
+/**
+ * Redirects vanity preview hosts (preview--*.lovable.app) to the published host.
+ * This prevents blank pages caused by Lovable gate/login screens on preview hosts.
+ * Preserves pathname, search, and hash (critical for auth tokens).
+ * Returns true if a redirect was triggered, false otherwise.
+ */
+export function redirectVanityPreviewToPublished(): boolean {
+  const hostname = window.location.hostname;
+  
+  // Only run on Lovable preview hosts
+  if (!hostname.endsWith('.lovable.app')) {
+    return false;
+  }
+  
+  // Check if on a vanity preview host (preview--*.lovable.app)
+  // but NOT on id-preview-- (that's the dev preview which works fine)
+  // and NOT already on the published host
+  if (hostname.startsWith('preview--') && !hostname.startsWith('id-preview--')) {
+    // Already on published host? No redirect needed
+    if (hostname === 'makefriendsandsocializecom.lovable.app') {
+      return false;
+    }
+    
+    // Redirect to published host, preserving path, search, and hash
+    const newUrl = `${PUBLISHED_HOST}${window.location.pathname}${window.location.search}${window.location.hash}`;
+    window.location.replace(newUrl);
+    return true;
+  }
+  
+  return false;
+}
+
+/**
+ * Returns the published host URL for use in auth redirects.
+ */
+export function getPublishedHost(): string {
+  return PUBLISHED_HOST;
+}
+
 export function getSubdomainBaseUrl(subdomain: string): string {
   // In development, use query param
   if (window.location.hostname === 'localhost' || window.location.hostname.includes('lovable.app')) {

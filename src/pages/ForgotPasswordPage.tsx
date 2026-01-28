@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Loader2, CheckCircle, KeyRound, Shield, Lock } from 'lucide-react';
 import { z } from 'zod';
 import { useTheme } from 'next-themes';
+import { getPublishedHost } from '@/lib/subdomain-utils';
 import logoLight from '@/assets/logo-transparent.png';
 import logoDark from '@/assets/logo-dark.png';
 
@@ -27,14 +28,21 @@ export default function ForgotPasswordPage() {
   const currentLogo = !mounted || resolvedTheme === 'dark' ? logoLight : logoDark;
 
   // Password reset links must open a URL that serves the actual app.
-  // Some "preview--*.lovable.app" vanity preview hosts show a Lovable gate/login page
-  // instead of our app, which makes the reset flow appear blank.
+  // Any Lovable preview host (preview--, id-preview--) should redirect to the
+  // published host to ensure the reset flow works reliably.
   const getPasswordResetRedirectTo = () => {
-    const origin = window.location.origin;
-    if (origin.includes('preview--') && origin.endsWith('.lovable.app')) {
-      return 'https://makefriendsandsocializecom.lovable.app/auth/reset-password';
+    const hostname = window.location.hostname;
+    
+    // Use published host for any Lovable preview environment
+    if (hostname.endsWith('.lovable.app')) {
+      // Check if on any preview host or id-preview host
+      if (hostname.startsWith('preview--') || hostname.startsWith('id-preview--')) {
+        return `${getPublishedHost()}/auth/reset-password`;
+      }
     }
-    return `${origin}/auth/reset-password`;
+    
+    // For production domains or already on published host, use current origin
+    return `${window.location.origin}/auth/reset-password`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
