@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -25,8 +25,8 @@ export default function PortalDashboard() {
   const [earnedBadges, setEarnedBadges] = useState<{ badge_type: string; earned_at: string }[]>([]);
   const [newBadge, setNewBadge] = useState<{ name: string; icon: string; description: string; features?: string[] } | null>(null);
 
-  // Calculate completion percentage
-  const calculateCompletion = () => {
+  // Memoize completion calculation to prevent recalculation on every render
+  const completionPercentage = useMemo(() => {
     if (!profile) return 0;
     let score = 0;
     if (profile.first_name) score += 15;
@@ -39,9 +39,8 @@ export default function PortalDashboard() {
     if (profile.interests?.length >= 2) score += 5;
     if (profile.city) score += 5;
     return score;
-  };
+  }, [profile]);
 
-  const completionPercentage = calculateCompletion();
   const isProfileComplete = completionPercentage === 100;
 
   // Fetch badges
@@ -69,7 +68,8 @@ export default function PortalDashboard() {
     await refreshProfile();
   };
 
-  const quickActions = [
+  // Memoize quick actions to prevent re-creation on every render
+  const quickActions = useMemo(() => [
     {
       title: 'Complete Your Profile',
       description: 'Add photos and details about yourself',
@@ -104,7 +104,7 @@ export default function PortalDashboard() {
       href: '/portal/events',
       show: true,
     },
-  ];
+  ], [canAccessMatchmaking]);
 
   return (
     <div className="space-y-12">
