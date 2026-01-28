@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,74 +8,26 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2, Lock, CheckCircle, AlertTriangle } from 'lucide-react';
 import { z } from 'zod';
 import logoLight from '@/assets/logo-light.png';
+import { useAuth } from '@/contexts/AuthContext';
 
 const passwordSchema = z.string().min(8, 'Password must be at least 8 characters');
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
+  const { session, isRecoveryMode, isLoading: authLoading } = useAuth();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasValidSession, setHasValidSession] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const hasValidSessionRef = useRef(false);
 
-  useEffect(() => {
-    // IMMEDIATELY check for error parameters in URL hash FIRST
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const error = hashParams.get('error');
-    const errorDescription = hashParams.get('error_description');
-    
-    if (error) {
-      // Decode the error description (handles + signs and URL encoding)
-      const decodedError = errorDescription 
-        ? decodeURIComponent(errorDescription.replace(/\+/g, ' '))
-        : 'The reset link is invalid or has expired.';
-      setErrorMessage(decodedError);
-      setIsLoading(false);
-      return; // Don't set up listeners if there's already an error
-    }
-
-    // Listen for auth state changes - this handles the token from the URL hash
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Reset password auth event:', event, 'Session:', !!session);
-      
-      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
-        // User came from password reset email or session established
-        hasValidSessionRef.current = true;
-        setHasValidSession(true);
-        setIsLoading(false);
-      }
-    });
-
-    // Also check if there's already a session (user may have refreshed)
-    const checkExistingSession = async () => {
-      // Give Supabase more time to process the URL hash tokens
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Check the ref, not the state variable (avoids stale closure issue)
-      if (hasValidSessionRef.current) {
-        return; // Already handled by auth listener
-      }
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session) {
-        hasValidSessionRef.current = true;
-        setHasValidSession(true);
-      } else {
-        // No session and no valid recovery - show generic error
-        setErrorMessage('Invalid or expired reset link. Please request a new one.');
-      }
-      setIsLoading(false);
-    };
-
-    checkExistingSession();
-
-    return () => subscription.unsubscribe();
-  }, []);
+  // The user arrives here after being redirected from the home page by RecoveryRedirectHandler.
+  // The session should already be established by the time they get here.
+  // If not, they landed directly on this page without going through the recovery flow.
+  const hasValidSession = session !== null || isRecoveryMode;
+  const isLoading = authLoading;
+  
+  // Only show error if auth is done loading and there's no valid session
+  const showError = !isLoading && !hasValidSession;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,8 +79,8 @@ export default function ResetPasswordPage() {
     );
   }
 
-  // Error state - invalid or expired link
-  if (errorMessage && !hasValidSession) {
+  // Error state - no valid session (user landed here directly without recovery flow)
+  if (showError) {
     return (
       <div className="min-h-screen bg-secondary flex items-center justify-center px-4">
         <div className="w-full max-w-md animate-fade-in">
@@ -140,7 +92,7 @@ export default function ResetPasswordPage() {
             <AlertTriangle className="h-16 w-16 text-amber-500 mx-auto mb-4" />
             <h1 className="font-display text-2xl text-card-foreground mb-2">Link Expired</h1>
             <p className="text-muted-foreground text-sm mb-6">
-              {errorMessage}
+              The reset link is invalid or has expired. Please request a new one.
             </p>
             <div className="space-y-3">
               <Button asChild className="w-full" size="lg">

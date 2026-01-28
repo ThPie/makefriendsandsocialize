@@ -1,9 +1,10 @@
+import { useEffect } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ThemeProvider } from "next-themes";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Layout } from "@/components/layout/Layout";
 import { PortalLayout } from "@/components/portal/PortalLayout";
@@ -84,6 +85,23 @@ import AdminPerks from "@/pages/admin/AdminPerks";
 import AdminConcierge from "@/pages/admin/AdminConcierge";
 
 const queryClient = new QueryClient();
+
+// Component that handles password recovery redirect
+// When the user lands on the home page with recovery tokens, this detects
+// the PASSWORD_RECOVERY event and navigates to the reset password page
+function RecoveryRedirectHandler() {
+  const { isRecoveryMode } = useAuth();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (isRecoveryMode) {
+      console.log('Recovery mode detected, redirecting to reset password page');
+      navigate('/auth/reset-password', { replace: true });
+    }
+  }, [isRecoveryMode, navigate]);
+  
+  return null;
+}
 
 // Slow Dating subdomain routes - focused experience for dating users
 const SlowDatingRoutes = () => (
@@ -213,6 +231,7 @@ const App = () => (
           <TooltipProvider>
             <BrowserRouter>
               <ScrollToTop />
+              <RecoveryRedirectHandler />
               {isSlowDatingSubdomain() ? <SlowDatingRoutes /> : <MainRoutes />}
             </BrowserRouter>
           </TooltipProvider>

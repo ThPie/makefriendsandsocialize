@@ -28,8 +28,9 @@ export default function ForgotPasswordPage() {
   const currentLogo = !mounted || resolvedTheme === 'dark' ? logoLight : logoDark;
 
   // Password reset links must open a URL that serves the actual app.
-  // Any Lovable preview host (preview--, id-preview--) should redirect to the
-  // published host to ensure the reset flow works reliably.
+  // We redirect to the home page (/) instead of /auth/reset-password because
+  // deep links to the reset page are unreliable on the published host.
+  // The AuthContext will detect the PASSWORD_RECOVERY event and redirect internally.
   const getPasswordResetRedirectTo = () => {
     const hostname = window.location.hostname;
     
@@ -37,12 +38,13 @@ export default function ForgotPasswordPage() {
     if (hostname.endsWith('.lovable.app')) {
       // Check if on any preview host or id-preview host
       if (hostname.startsWith('preview--') || hostname.startsWith('id-preview--')) {
-        return `${getPublishedHost()}/auth/reset-password`;
+        return `${getPublishedHost()}/`;
       }
     }
     
     // For production domains or already on published host, use current origin
-    return `${window.location.origin}/auth/reset-password`;
+    // Land on home page, let AuthContext handle the recovery redirect
+    return `${window.location.origin}/`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
