@@ -194,16 +194,18 @@ export default function ResetPasswordPage() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover z-0"
           poster="/images/hero-poster.webp"
         >
           <source src="/videos/hero-1.mp4" type="video/mp4" />
         </video>
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/60 z-[1]" />
         
-        <FloatingParticles />
+        <div className="z-[2]">
+          <FloatingParticles />
+        </div>
         
         <div className="relative z-10 text-center">
           <BrandedLoader message="Verifying reset link..." />
@@ -222,16 +224,18 @@ export default function ResetPasswordPage() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover z-0"
           poster="/images/hero-poster.webp"
         >
           <source src="/videos/hero-1.mp4" type="video/mp4" />
         </video>
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/60 z-[1]" />
         
-        <FloatingParticles />
+        <div className="z-[2]">
+          <FloatingParticles />
+        </div>
         
         <div className="relative z-10 w-full max-w-md animate-fade-in">
           <Link to="/" className="inline-block mb-8">
@@ -270,16 +274,18 @@ export default function ResetPasswordPage() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover z-0"
           poster="/images/hero-poster.webp"
         >
           <source src="/videos/hero-1.mp4" type="video/mp4" />
         </video>
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/60 z-[1]" />
         
-        <FloatingParticles />
+        <div className="z-[2]">
+          <FloatingParticles />
+        </div>
         
         <div className="relative z-10 w-full max-w-md text-center animate-fade-in">
           <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
@@ -303,16 +309,18 @@ export default function ResetPasswordPage() {
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover z-0"
         poster="/images/hero-poster.webp"
       >
         <source src="/videos/hero-1.mp4" type="video/mp4" />
       </video>
       
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/60 z-[1]" />
       
-      <FloatingParticles />
+      <div className="z-[2]">
+        <FloatingParticles />
+      </div>
       
       <div className="relative z-10 w-full max-w-md animate-fade-in">
         {/* Logo - visible for both themes */}
@@ -421,13 +429,14 @@ export default function ResetPasswordPage() {
 
           {/* Back to Sign In Link */}
           <div className="mt-6 text-center">
-            <Link 
-              to="/auth" 
+            <Button 
+              variant="link"
+              onClick={() => navigate('/auth')}
               className="text-sm text-white/60 hover:text-primary inline-flex items-center gap-1 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Sign In
-            </Link>
+            </Button>
           </div>
         </div>
 
