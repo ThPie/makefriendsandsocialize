@@ -53,6 +53,7 @@ interface AuthContextType {
   applicationStatus: ApplicationStatus;
   isLoading: boolean;
   isAdmin: boolean;
+  isRecoveryMode: boolean;
   signUp: (email: string, password: string) => Promise<{ error: Error | null; user?: User | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -70,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [applicationStatus, setApplicationStatus] = useState<ApplicationStatus>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
 
   const fetchUserData = async (userId: string) => {
     // Fetch profile
@@ -120,8 +122,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('Auth event:', event);
         setSession(session);
         setUser(session?.user ?? null);
+        
+        // Detect password recovery mode
+        if (event === 'PASSWORD_RECOVERY') {
+          setIsRecoveryMode(true);
+        }
         
         // Defer Supabase calls with setTimeout
         if (session?.user) {
@@ -209,6 +217,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         applicationStatus,
         isLoading,
         isAdmin,
+        isRecoveryMode,
         signUp,
         signIn,
         signOut,
@@ -234,6 +243,7 @@ export function useAuth() {
       applicationStatus: null,
       isLoading: true,
       isAdmin: false,
+      isRecoveryMode: false,
       signUp: async () => ({ error: new Error('Auth not ready'), user: null }),
       signIn: async () => ({ error: new Error('Auth not ready') }),
       signOut: async () => {},
