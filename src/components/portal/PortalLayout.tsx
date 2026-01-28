@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -58,7 +58,10 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, profile, membership, applicationStatus, isLoading, isAdmin, signOut } = useAuth();
-  const { subscription } = useSubscription();
+  const { subscription, isLoading: subscriptionLoading } = useSubscription();
+
+  // Memoize menu items to prevent re-creation on every render
+  const memoizedMenuItems = useMemo(() => menuItems, []);
 
   const isApproved = canAccessProtectedFeatures({
     applicationStatus,
@@ -156,7 +159,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {menuItems.map((item) => {
+                  {memoizedMenuItems.map((item) => {
                     const isActive = location.pathname === item.url;
                     const isPatronRestricted = (item.url === '/portal/network' || item.url === '/portal/connections') 
                       && membership?.tier === 'patron';
@@ -235,8 +238,8 @@ export function PortalLayout({ children }: PortalLayoutProps) {
             {/* Pending Member Banner */}
             {isPending && <PendingMemberBanner className="mb-6" />}
             
-            {/* Trial Countdown Banner */}
-            <TrialCountdownBanner />
+            {/* Trial Countdown Banner - pass subscription to avoid duplicate API calls */}
+            <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
             
             {/* Breadcrumb Navigation */}
             <PortalBreadcrumb type="portal" />

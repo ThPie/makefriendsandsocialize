@@ -90,7 +90,9 @@ export function ActivityFeed({ limit = 10, compact = false }: ActivityFeedProps)
       })) as Activity[];
     },
     enabled: !!user,
-    refetchInterval: 30000, // Refresh every 30 seconds
+    staleTime: 60000, // Data stays fresh for 60 seconds
+    refetchInterval: 60000, // Refresh every 60 seconds (reduced from 30s)
+    refetchOnWindowFocus: false, // Don't refetch on window focus
   });
 
   // Subscribe to realtime updates

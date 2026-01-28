@@ -1,16 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
-import { useSubscription } from '@/hooks/useSubscription';
+import { useSubscription, SubscriptionStatus } from '@/hooks/useSubscription';
 import { Button } from '@/components/ui/button';
 import { Clock, X, Sparkles, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TrialCountdownBannerProps {
   className?: string;
+  subscription?: SubscriptionStatus | null;
+  isLoading?: boolean;
 }
 
-export function TrialCountdownBanner({ className }: TrialCountdownBannerProps) {
-  const { subscription, isLoading } = useSubscription();
+// Memoized component to prevent unnecessary re-renders
+export const TrialCountdownBanner = memo(function TrialCountdownBanner({ 
+  className,
+  subscription: propSubscription,
+  isLoading: propIsLoading,
+}: TrialCountdownBannerProps) {
+  // Use props if provided, otherwise fall back to hook (for standalone usage)
+  const hookData = useSubscription();
+  const subscription = propSubscription ?? hookData.subscription;
+  const isLoading = propIsLoading ?? hookData.isLoading;
+  
   const [isDismissed, setIsDismissed] = useState(false);
   const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number } | null>(null);
 
@@ -136,4 +147,4 @@ export function TrialCountdownBanner({ className }: TrialCountdownBannerProps) {
       </div>
     </div>
   );
-}
+});
