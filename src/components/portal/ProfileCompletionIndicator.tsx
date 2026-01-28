@@ -1,6 +1,8 @@
+import { useEffect, useRef } from 'react';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, AlertCircle } from 'lucide-react';
+import { CheckCircle2, AlertCircle, PartyPopper } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { useConfetti } from '@/hooks/useConfetti';
 
 interface ProfileData {
   first_name?: string | null;
@@ -38,6 +40,9 @@ const COMPLETION_FIELDS: CompletionField[] = [
 ];
 
 export function ProfileCompletionIndicator({ profile }: ProfileCompletionIndicatorProps) {
+  const { fireOnce } = useConfetti();
+  const hasCelebrated = useRef(false);
+
   const completedFields = COMPLETION_FIELDS.filter((field) => 
     field.check(profile[field.key])
   );
@@ -47,6 +52,18 @@ export function ProfileCompletionIndicator({ profile }: ProfileCompletionIndicat
   );
 
   const completionPercentage = completedFields.reduce((acc, field) => acc + field.weight, 0);
+
+  // Fire confetti when reaching 100% for the first time
+  useEffect(() => {
+    const celebrationKey = 'profile-completion-celebrated';
+    const alreadyCelebrated = localStorage.getItem(celebrationKey) === 'true';
+    
+    if (completionPercentage === 100 && !alreadyCelebrated && !hasCelebrated.current) {
+      hasCelebrated.current = true;
+      localStorage.setItem(celebrationKey, 'true');
+      fireOnce();
+    }
+  }, [completionPercentage, fireOnce]);
   
   const getMessage = () => {
     if (completionPercentage === 100) return "Your profile is complete!";
@@ -61,13 +78,13 @@ export function ProfileCompletionIndicator({ profile }: ProfileCompletionIndicat
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             {completionPercentage === 100 ? (
-              <CheckCircle2 className="h-5 w-5 text-green-500" />
+              <PartyPopper className="h-5 w-5 text-green-500" />
             ) : (
               <AlertCircle className="h-5 w-5 text-primary" />
             )}
             <span className="font-medium text-foreground">{getMessage()}</span>
           </div>
-          <span className="text-2xl font-display font-light text-primary">
+          <span className={`text-2xl font-display font-light ${completionPercentage === 100 ? 'text-green-500' : 'text-primary'}`}>
             {completionPercentage}%
           </span>
         </div>

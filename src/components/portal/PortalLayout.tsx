@@ -34,6 +34,7 @@ import { TrialCountdownBanner } from './TrialCountdownBanner';
 import { PageTransition } from '@/components/ui/page-transition';
 import logo from '@/assets/logo-transparent.png';
 import { PendingMemberBanner } from './PendingMemberBanner';
+import { PortalBreadcrumb } from './PortalBreadcrumb';
 import { canAccessProtectedFeatures, getRestrictedRoutesForPending } from '@/lib/auth-redirect';
 
 interface PortalLayoutProps {
@@ -236,6 +237,9 @@ export function PortalLayout({ children }: PortalLayoutProps) {
             
             {/* Trial Countdown Banner */}
             <TrialCountdownBanner />
+            
+            {/* Breadcrumb Navigation */}
+            <PortalBreadcrumb type="portal" />
             
             <PageTransition>
               {children}

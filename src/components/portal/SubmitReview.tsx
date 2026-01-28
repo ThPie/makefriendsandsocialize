@@ -130,8 +130,8 @@ export function SubmitReview() {
             <Quote className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-display text-lg text-foreground">Your Review</h3>
-            <p className="text-sm text-muted-foreground">Share your experience with our community</p>
+            <h3 className="font-display text-lg text-foreground">Rate Your MakeFriends Experience</h3>
+            <p className="text-sm text-muted-foreground">Help us improve by sharing your thoughts about the platform</p>
           </div>
         </div>
         {existingReview && (

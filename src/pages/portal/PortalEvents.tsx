@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Dialog,
   DialogContent,
@@ -12,7 +13,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Calendar, MapPin, Clock, Crown, Users, ArrowRight, Clock3, AlertCircle, ImageIcon } from 'lucide-react';
+import { Calendar, MapPin, Clock, Crown, Users, ArrowRight, AlertCircle, ImageIcon, Clock3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -336,8 +337,28 @@ export default function PortalEvents() {
 
   if (eventsLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      <div className="space-y-8">
+        <div>
+          <Skeleton className="h-10 w-32 mb-2" />
+          <Skeleton className="h-5 w-64" />
+        </div>
+        <Skeleton className="h-10 w-64" />
+        <div className="grid gap-6 md:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i} className="overflow-hidden">
+              <Skeleton className="aspect-[16/9] w-full" />
+              <CardContent className="p-6">
+                <Skeleton className="h-6 w-48 mb-3" />
+                <div className="space-y-2 mb-4">
+                  <Skeleton className="h-4 w-40" />
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-32" />
+                </div>
+                <Skeleton className="h-10 w-full" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
@@ -371,9 +392,15 @@ export default function PortalEvents() {
             </div>
           ) : upcomingEvents.length === 0 ? (
             <Card className="p-12 text-center">
-              <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <h3 className="font-display text-xl mb-2">No Upcoming Events</h3>
-              <p className="text-muted-foreground">Check back soon for new events!</p>
+              <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
+              <h3 className="font-display text-xl mb-2 text-foreground">No Upcoming Events</h3>
+              <p className="text-muted-foreground mb-4">
+                Check back soon for exciting gatherings! Browse our past events below for a taste of what's to come.
+              </p>
+              <Button variant="outline" onClick={() => setActiveTab('past')}>
+                <ImageIcon className="h-4 w-4 mr-2" />
+                View Past Events
+              </Button>
             </Card>
           ) : (
             <div className="grid gap-6 md:grid-cols-2">

@@ -39,6 +39,7 @@ import {
 import { PageTransition } from '@/components/ui/page-transition';
 import { MFAGuard } from './MFAGuard';
 import { RateLimitIndicator } from './RateLimitIndicator';
+import { PortalBreadcrumb } from '../portal/PortalBreadcrumb';
 import logo from '@/assets/logo-transparent.png';
 
 interface AdminLayoutProps {
@@ -213,6 +214,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </header>
 
           <div className="p-6 md:p-8 lg:p-10">
+            {/* Breadcrumb Navigation */}
+            <PortalBreadcrumb type="admin" />
+            
             <PageTransition>
               <MFAGuard requireMFA={requiresMFA}>
                 {children}

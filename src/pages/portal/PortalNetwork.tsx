@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { Loader2, Search, Heart, Crown, ArrowRight, Filter } from 'lucide-react';
+import { Search, Heart, Crown, ArrowRight, Filter, Users, Loader2 } from 'lucide-react';
 
 interface MemberProfile {
   id: string;
@@ -164,8 +165,25 @@ export default function PortalNetwork() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="space-y-8">
+        <div>
+          <Skeleton className="h-10 w-48 mb-2" />
+          <Skeleton className="h-5 w-72" />
+        </div>
+        <Skeleton className="h-10 w-full" />
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Card key={i} className="overflow-hidden">
+              <Skeleton className="aspect-[3/4] w-full" />
+              <CardContent className="p-5">
+                <Skeleton className="h-6 w-32 mb-2" />
+                <Skeleton className="h-4 w-24 mb-3" />
+                <Skeleton className="h-4 w-full mb-4" />
+                <Skeleton className="h-9 w-full" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
@@ -248,9 +266,16 @@ export default function PortalNetwork() {
 
       {/* Members Grid */}
       {filteredMembers.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-muted-foreground">No members found matching your criteria</p>
-        </div>
+        <Card className="p-12 text-center">
+          <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
+          <h3 className="font-display text-xl mb-2 text-foreground">No Members Found</h3>
+          <p className="text-muted-foreground mb-4">
+            No members found matching your criteria. Try adjusting your filters to discover more members.
+          </p>
+          <Button variant="outline" onClick={() => { setSearchTerm(''); setSelectedInterest(null); setSelectedIndustry(null); }}>
+            Clear All Filters
+          </Button>
+        </Card>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredMembers.map((member) => (

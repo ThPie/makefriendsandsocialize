@@ -3,7 +3,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Flame, Trophy, Calendar } from 'lucide-react';
+import { Flame, Trophy, Calendar, Info } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface AttendanceStats {
   total_events: number;
@@ -101,7 +107,19 @@ export function AttendanceStreak() {
               <Flame className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <p className="font-medium text-foreground">Your Streak</p>
+              <div className="flex items-center gap-1.5">
+                <p className="font-medium text-foreground">Your Streak</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="max-w-[200px]">
+                      <p className="text-xs">Build your streak by attending events! Each event you attend in a 30-day period increases your streak count and unlocks badges.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <p className="text-2xl font-bold text-primary">{eventsLast30}</p>
             </div>
           </div>
