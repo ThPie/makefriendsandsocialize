@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,9 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2, Mail, CheckCircle } from 'lucide-react';
 import { z } from 'zod';
-import logoLight from '@/assets/logo-light.png';
+import { useTheme } from 'next-themes';
+import logoLight from '@/assets/logo-transparent.png';
+import logoDark from '@/assets/logo-dark.png';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 
@@ -15,6 +17,16 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Use light logo for dark theme, dark logo for light theme
+  const currentLogo = !mounted || resolvedTheme === 'dark' ? logoLight : logoDark;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +61,7 @@ export default function ForgotPasswordPage() {
       <div className="min-h-screen bg-secondary flex items-center justify-center px-4">
         <div className="w-full max-w-md text-center animate-fade-in">
           <Link to="/" className="inline-block mb-8">
-            <img src={logoLight} alt="MakeFriends & Socialize" className="h-10 mx-auto brightness-0 invert" />
+            <img src={currentLogo} alt="MakeFriends & Socialize" className="h-10 mx-auto" />
           </Link>
           
           <div className="bg-card rounded-lg p-8 shadow-elegant">
@@ -77,7 +89,7 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-secondary flex items-center justify-center px-4">
       <div className="w-full max-w-md animate-fade-in">
         <Link to="/" className="inline-block mb-8">
-          <img src={logoLight} alt="MakeFriends & Socialize" className="h-10 brightness-0 invert" />
+          <img src={currentLogo} alt="MakeFriends & Socialize" className="h-10" />
         </Link>
 
         <div className="bg-card rounded-lg p-8 shadow-elegant">
