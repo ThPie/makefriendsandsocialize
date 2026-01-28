@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { 
   Loader2, 
@@ -15,7 +16,8 @@ import {
   Check, 
   X, 
   Clock,
-  MessageCircle 
+  MessageCircle,
+  User
 } from 'lucide-react';
 
 interface Connection {
@@ -189,8 +191,26 @@ export default function PortalConnections() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-16">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="space-y-8">
+        <div>
+          <Skeleton className="h-10 w-40 mb-2" />
+          <Skeleton className="h-5 w-56" />
+        </div>
+        <Skeleton className="h-10 w-full max-w-md" />
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Card key={i}>
+              <CardContent className="flex items-center gap-4 p-4">
+                <Skeleton className="h-16 w-16 rounded-lg" />
+                <div className="flex-1">
+                  <Skeleton className="h-5 w-32 mb-2" />
+                  <Skeleton className="h-4 w-48" />
+                </div>
+                <Skeleton className="h-9 w-24" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
@@ -246,13 +266,20 @@ export default function PortalConnections() {
           <TabsTrigger value="accepted">Connected</TabsTrigger>
         </TabsList>
 
-        {/* Received Tab */}
         <TabsContent value="received" className="space-y-4">
           {receivedConnections.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <Heart className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
-                <p className="text-muted-foreground">No introduction requests received yet</p>
+                <h3 className="font-display text-lg mb-2 text-foreground">No Requests Yet</h3>
+                <p className="text-muted-foreground mb-4">No introduction requests received yet.</p>
+                <p className="text-sm text-muted-foreground">Complete your profile to attract more connections!</p>
+                <Button asChild variant="outline" className="mt-4">
+                  <Link to="/portal/profile">
+                    <User className="h-4 w-4 mr-2" />
+                    View Profile
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
           ) : (
@@ -379,16 +406,24 @@ export default function PortalConnections() {
           )}
         </TabsContent>
 
-        {/* Accepted Tab */}
         <TabsContent value="accepted" className="space-y-4">
           {acceptedConnections.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <Heart className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
-                <p className="text-muted-foreground">No connections yet</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  When introductions are accepted, they'll appear here
+                <h3 className="font-display text-lg mb-2 text-foreground">No Connections Yet</h3>
+                <p className="text-muted-foreground mb-2">
+                  When introductions are accepted, you'll be able to message them here!
                 </p>
+                <p className="text-sm text-muted-foreground">
+                  Browse The Network and send introduction requests to get started.
+                </p>
+                <Button asChild variant="outline" className="mt-4">
+                  <Link to="/portal/network">
+                    Browse The Network
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
           ) : (
