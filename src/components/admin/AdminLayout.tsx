@@ -35,7 +35,6 @@ import {
   Target,
   Gift,
   Scale,
-  Lock,
 } from 'lucide-react';
 import { PageTransition } from '@/components/ui/page-transition';
 import { MFAGuard } from './MFAGuard';
@@ -165,8 +164,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   {menuItems.map((item) => {
                     const isActive = location.pathname === item.url;
                     
-                    const isSensitive = item.sensitive;
-                    
                     return (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton asChild>
@@ -180,7 +177,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                           >
                             <item.icon className="h-5 w-5" />
                             <span className="flex-1">{item.title}</span>
-                            {isSensitive && <Lock className="h-3 w-3 text-muted-foreground" />}
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>

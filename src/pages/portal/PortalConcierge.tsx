@@ -228,16 +228,83 @@ export default function PortalConcierge() {
             Concierge
           </h1>
           <p className="text-muted-foreground">
-            Book 1:1 sessions with our concierge team
+            Your personal guide to maximizing your membership experience
           </p>
         </div>
-        {!showForm && (
+        {!showForm && upcomingBookings.length === 0 && (
           <Button onClick={() => setShowForm(true)}>
             <Headphones className="h-4 w-4 mr-2" />
             Book Session
           </Button>
         )}
       </div>
+
+      {/* Service Overview - Show when no form and no bookings */}
+      {!showForm && bookings.length === 0 && (
+        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
+          <CardContent className="p-8">
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex-1 space-y-4">
+                <h2 className="font-display text-xl text-foreground">What is Concierge?</h2>
+                <p className="text-muted-foreground">
+                  Our Concierge service provides personalized, 1:1 support to help you make the most 
+                  of your MakeFriends membership. Whether you need networking advice, help with 
+                  introductions, or guidance on events, our team is here to assist.
+                </p>
+                
+                <div className="grid gap-4 sm:grid-cols-2 pt-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Headphones className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">30-Min Video Calls</p>
+                      <p className="text-xs text-muted-foreground">Face-to-face guidance sessions</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <CalendarIcon className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Flexible Scheduling</p>
+                      <p className="text-xs text-muted-foreground">Book at your convenience</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Crown className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Included in Membership</p>
+                      <p className="text-xs text-muted-foreground">No additional cost for Fellows & Founders</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Confirmation in 24h</p>
+                      <p className="text-xs text-muted-foreground">Quick response guaranteed</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="md:w-64 flex flex-col justify-center">
+                <Button onClick={() => setShowForm(true)} size="lg" className="w-full">
+                  <Headphones className="h-4 w-4 mr-2" />
+                  Book Your Session
+                </Button>
+                <p className="text-xs text-muted-foreground text-center mt-3">
+                  Average response time: 12 hours
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Booking Form */}
       {showForm && (
