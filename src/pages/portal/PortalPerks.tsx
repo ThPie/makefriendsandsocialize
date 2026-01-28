@@ -63,19 +63,29 @@ export default function PortalPerks() {
   const userTier = membership?.tier || 'patron';
   const userTierOrder = TIER_ORDER[userTier as keyof typeof TIER_ORDER];
 
-  const { data: perks = [], isLoading } = useQuery({
+  // Note: partner_perks table may not exist yet - gracefully handle with empty array
+  const { data: perks = [], isLoading, isError } = useQuery({
     queryKey: ['partner-perks'],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
-        .from('partner_perks')
-        .select('*')
-        .eq('is_active', true)
-        .order('is_featured', { ascending: false })
-        .order('created_at', { ascending: false });
+      try {
+        const { data, error } = await (supabase as any)
+          .from('partner_perks')
+          .select('*')
+          .eq('is_active', true)
+          .order('is_featured', { ascending: false })
+          .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      return (data || []) as Perk[];
+        if (error) {
+          // Table doesn't exist or other error - return empty array
+          console.warn('Partner perks not available:', error.message);
+          return [];
+        }
+        return (data || []) as Perk[];
+      } catch {
+        return [];
+      }
     },
+    retry: false, // Don't retry if table doesn't exist
   });
 
   const filteredPerks = perks.filter((perk) => {
@@ -122,10 +132,39 @@ export default function PortalPerks() {
 
   const categories = Object.keys(CATEGORY_CONFIG);
 
+  // Show empty state instead of infinite loading
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary" />
+      <div className="space-y-8">
+        <div>
+          <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+            Partner Perks
+          </h1>
+          <p className="text-muted-foreground">
+            Exclusive discounts and benefits from our partner network
+          </p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="animate-pulse">
+              <CardHeader className="pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-lg bg-muted" />
+                  <div className="space-y-2">
+                    <div className="h-4 w-24 bg-muted rounded" />
+                    <div className="h-3 w-16 bg-muted rounded" />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="h-4 w-full bg-muted rounded" />
+                  <div className="h-4 w-2/3 bg-muted rounded" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }

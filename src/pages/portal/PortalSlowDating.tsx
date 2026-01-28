@@ -200,7 +200,7 @@ export default function PortalSlowDating() {
     return (
       <div className="space-y-12">
         <div>
-          <h1 className="text-3xl font-display font-light text-foreground mb-2">Slow Dating</h1>
+          <h1 className="text-3xl font-display font-light text-foreground mb-2">Intentional Connections</h1>
           <p className="text-muted-foreground">Curated matchmaking for meaningful connections</p>
         </div>
 
@@ -243,7 +243,7 @@ export default function PortalSlowDating() {
       />
 
       <div>
-        <h1 className="text-3xl font-display font-light text-foreground mb-2">Slow Dating</h1>
+        <h1 className="text-3xl font-display font-light text-foreground mb-2">Intentional Connections</h1>
         <p className="text-muted-foreground">Your curated matchmaking journey</p>
       </div>
 

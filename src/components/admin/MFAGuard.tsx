@@ -102,40 +102,90 @@ export function MFAGuard({ children, requireMFA = true }: MFAGuardProps) {
 
   if (status === 'needs_setup') {
     return (
-      <div className="flex items-center justify-center min-h-[400px] p-4">
-        <MFASetup onSetupComplete={handleSetupComplete} />
+      <div className="space-y-6">
+        {/* Warning banner but still show content */}
+        <Card className="border-amber-500/50 bg-amber-500/5">
+          <CardContent className="py-4">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                <Shield className="w-5 h-5 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-foreground">Two-Factor Authentication Recommended</p>
+                <p className="text-sm text-muted-foreground">
+                  For enhanced security, please set up 2FA. Some sensitive actions may require verification.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowVerifyModal(true)}
+                className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-sm font-medium shrink-0"
+              >
+                Set Up 2FA
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+        {showVerifyModal && (
+          <div className="flex items-center justify-center min-h-[400px] p-4">
+            <MFASetup onSetupComplete={handleSetupComplete} />
+          </div>
+        )}
+        {!showVerifyModal && children}
       </div>
     );
   }
 
   if (status === 'needs_verify') {
     return (
-      <>
+      <div className="space-y-6">
         <MFAVerify 
           open={showVerifyModal}
           onVerified={handleVerified}
           onCancel={handleVerifyCancel}
         />
-        <Card className="max-w-md mx-auto mt-8">
-          <CardHeader className="text-center">
-            <div className="mx-auto w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-full flex items-center justify-center mb-4">
-              <Shield className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+        {/* Warning banner with verify button */}
+        <Card className="border-amber-500/50 bg-amber-500/5">
+          <CardContent className="py-4">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                <Shield className="w-5 h-5 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-foreground">Session Verification Required</p>
+                <p className="text-sm text-muted-foreground">
+                  Your 2FA session has expired. Please verify to access sensitive data.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowVerifyModal(true)}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium shrink-0"
+              >
+                Verify Now
+              </button>
             </div>
-            <CardTitle>Verification Required</CardTitle>
-            <CardDescription>
-              This area contains sensitive information and requires two-factor authentication.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <button 
-              onClick={() => setShowVerifyModal(true)}
-              className="text-primary hover:underline"
-            >
-              Click here to verify your identity
-            </button>
           </CardContent>
         </Card>
-      </>
+        {/* Show content with overlay for truly sensitive pages */}
+        <div className="relative">
+          <div className="opacity-50 pointer-events-none select-none blur-sm">
+            {children}
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+            <Card className="max-w-sm">
+              <CardContent className="py-6 text-center">
+                <Shield className="w-8 h-8 mx-auto mb-3 text-primary" />
+                <p className="font-medium mb-2">Verify to Continue</p>
+                <button
+                  onClick={() => setShowVerifyModal(true)}
+                  className="text-primary hover:underline text-sm"
+                >
+                  Click to verify your identity
+                </button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
     );
   }
 
