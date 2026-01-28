@@ -2,9 +2,8 @@ import { useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Loader2, CheckCircle, AlertTriangle, Shield, X, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, CheckCircle, AlertTriangle, Shield, X, AlertCircle, Mail } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { PasswordInput, validatePassword, getPasswordStrength } from '@/components/ui/password-input';
 import { FloatingParticles } from '@/components/ui/floating-particles';
@@ -166,20 +165,27 @@ export default function ResetPasswordPage() {
 
     const { error } = await supabase.auth.updateUser({ password });
 
-    setIsSubmitting(false);
-
     if (error) {
       setFormError(error.message);
-      toast.error(error.message);
+      setIsSubmitting(false);
       return;
     }
 
+    // Send password changed confirmation email
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.functions.invoke('send-password-changed-email', {
+          body: { userId: user.id },
+        });
+      }
+    } catch (emailError) {
+      console.error('Failed to send confirmation email:', emailError);
+      // Don't block success on email failure
+    }
+
+    setIsSubmitting(false);
     setIsSuccess(true);
-    toast.success('Password updated successfully!');
-    
-    setTimeout(() => {
-      navigate('/portal');
-    }, 2000);
   };
 
   const strength = getPasswordStrength(password);
@@ -287,13 +293,46 @@ export default function ResetPasswordPage() {
           <FloatingParticles />
         </div>
         
-        <div className="relative z-10 w-full max-w-md text-center animate-fade-in">
-          <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
-            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="h-8 w-8 text-primary" />
+        <div className="relative z-10 w-full max-w-md animate-fade-in">
+          {/* Logo */}
+          <Link to="/" className="inline-block mb-8">
+            <img src={logoWhite} alt="MakeFriends & Socialize" className="h-12 md:h-14" />
+          </Link>
+          
+          <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10 text-center">
+            {/* Success Icon */}
+            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="h-10 w-10 text-green-400" />
             </div>
-            <h1 className="font-display text-2xl text-card-foreground mb-2">Password Updated!</h1>
-            <p className="text-muted-foreground">Redirecting you to your portal...</p>
+            
+            <h1 className="font-display text-2xl text-white mb-3">Password Updated!</h1>
+            
+            <p className="text-white/70 mb-6">
+              Your password has been successfully changed. You can now sign in with your new password.
+            </p>
+            
+            {/* Email confirmation notice */}
+            <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-6 flex items-start gap-3 text-left">
+              <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div>
+                <p className="text-white/90 text-sm font-medium">Confirmation Email Sent</p>
+                <p className="text-white/60 text-xs mt-1">
+                  We've sent a confirmation email to your registered address for your records.
+                </p>
+              </div>
+            </div>
+            
+            <Button 
+              onClick={() => navigate('/portal')} 
+              className="w-full" 
+              size="lg"
+            >
+              Go to Your Portal
+            </Button>
+            
+            <p className="text-white/40 text-xs mt-4">
+              If you didn't make this change, please contact support immediately.
+            </p>
           </div>
         </div>
       </div>
