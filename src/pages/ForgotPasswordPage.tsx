@@ -8,7 +8,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Loader2, Mail, CheckCircle } from 'lucide-react';
 import { z } from 'zod';
 import { useTheme } from 'next-themes';
-import { FloatingParticles } from '@/components/ui/floating-particles';
 import logoLight from '@/assets/logo-transparent.png';
 import logoDark from '@/assets/logo-dark.png';
 
@@ -21,12 +20,10 @@ export default function ForgotPasswordPage() {
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
 
-  // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Use light logo for dark theme, dark logo for light theme
   const currentLogo = !mounted || resolvedTheme === 'dark' ? logoLight : logoDark;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,10 +65,7 @@ export default function ForgotPasswordPage() {
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
         <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-accent/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
         
-        {/* Floating particles */}
-        <FloatingParticles />
-        
-        <div className="w-full max-w-md text-center animate-fade-in relative z-10">
+        <div className="w-full max-w-md text-center relative z-10">
           <Link to="/" className="inline-block mb-8">
             <img src={currentLogo} alt="MakeFriends & Socialize" className="h-10 mx-auto" />
           </Link>
@@ -109,10 +103,7 @@ export default function ForgotPasswordPage() {
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
       <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-accent/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
       
-      {/* Floating particles */}
-      <FloatingParticles />
-      
-      <div className="w-full max-w-md animate-fade-in relative z-10">
+      <div className="w-full max-w-md relative z-10">
         <Link to="/" className="inline-block mb-8">
           <img src={currentLogo} alt="MakeFriends & Socialize" className="h-10" />
         </Link>
