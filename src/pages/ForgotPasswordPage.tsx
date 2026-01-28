@@ -26,6 +26,17 @@ export default function ForgotPasswordPage() {
 
   const currentLogo = !mounted || resolvedTheme === 'dark' ? logoLight : logoDark;
 
+  // Password reset links must open a URL that serves the actual app.
+  // Some "preview--*.lovable.app" vanity preview hosts show a Lovable gate/login page
+  // instead of our app, which makes the reset flow appear blank.
+  const getPasswordResetRedirectTo = () => {
+    const origin = window.location.origin;
+    if (origin.includes('preview--') && origin.endsWith('.lovable.app')) {
+      return 'https://makefriendsandsocializecom.lovable.app/auth/reset-password';
+    }
+    return `${origin}/auth/reset-password`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -41,7 +52,7 @@ export default function ForgotPasswordPage() {
     setIsSubmitting(true);
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
+      redirectTo: getPasswordResetRedirectTo(),
     });
 
     setIsSubmitting(false);
