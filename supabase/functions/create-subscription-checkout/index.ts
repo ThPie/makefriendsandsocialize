@@ -189,9 +189,9 @@ serve(async (req) => {
 
       if (!existingTrial) {
         sessionConfig.subscription_data = {
-          trial_period_days: 7,
+          trial_period_days: 30,
         };
-        logStep("Adding 7-day trial");
+        logStep("Adding 30-day trial");
         
         // Record trial start
         await supabaseAdmin
