@@ -12,7 +12,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import heroImage from "@/assets/business-hero.jpg";
+import heroImage from "@/assets/founders/founders-event-1.webp";
+import foundersEvent2 from "@/assets/founders/founders-event-2.webp";
+import foundersEvent3 from "@/assets/founders/founders-event-3.webp";
+
+// Gallery images for the Founders Circle
+const galleryImages = [
+  { src: heroImage, alt: "Founder presenting to a group of entrepreneurs" },
+  { src: foundersEvent2, alt: "Founders networking in an intimate setting" },
+  { src: foundersEvent3, alt: "One-on-one conversation between founders" },
+];
 
 const ConnectedCirclePage = () => {
   const heroAnimation = useScrollAnimation({ rootMargin: '100px' });
@@ -21,6 +30,7 @@ const ConnectedCirclePage = () => {
   const valuesAnimation = useScrollAnimation({ rootMargin: '100px' });
   const statsAnimation = useScrollAnimation({ rootMargin: '100px' });
   const benefitsAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const galleryAnimation = useScrollAnimation({ rootMargin: '100px' });
   const faqAnimation = useScrollAnimation({ rootMargin: '100px' });
   const ctaAnimation = useScrollAnimation({ rootMargin: '100px' });
 
@@ -370,8 +380,49 @@ const ConnectedCirclePage = () => {
           </div>
         </section>
 
-        {/* FAQ Section */}
+        {/* Gallery Section */}
         <section className="py-24 md:py-32">
+          <div 
+            ref={galleryAnimation.ref} 
+            className={`container max-w-6xl scroll-animate ${galleryAnimation.isVisible ? 'visible' : ''}`}
+          >
+            <div className="text-center mb-16">
+              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Community</p>
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+                Founders in Action
+              </h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                Glimpses from our exclusive founder gatherings and networking events.
+              </p>
+            </div>
+
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate={galleryAnimation.isVisible ? "visible" : "hidden"}
+              className="grid md:grid-cols-3 gap-4 md:gap-6"
+            >
+              {galleryImages.map((image, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  className="group relative overflow-hidden rounded-2xl aspect-[4/3]"
+                >
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-24 md:py-32 bg-secondary/30">
           <div 
             ref={faqAnimation.ref} 
             className={`container max-w-4xl scroll-animate ${faqAnimation.isVisible ? 'visible' : ''}`}
