@@ -100,6 +100,9 @@ interface FormData {
   email_notifications_enabled: boolean;
   push_notifications_enabled: boolean;
   sms_notifications_enabled: boolean;
+  // NEW: Intimacy & Fear questions
+  intimacy_expectations: string;
+  finding_love_fear: string;
 }
 
 const initialFormData: FormData = {
@@ -169,6 +172,8 @@ const initialFormData: FormData = {
   email_notifications_enabled: true,
   push_notifications_enabled: true,
   sms_notifications_enabled: false,
+  intimacy_expectations: "",
+  finding_love_fear: "",
 };
 
 const DRAFT_STORAGE_KEY = "dating_application_draft";
@@ -571,6 +576,9 @@ const DatingIntakePage = () => {
         accountability_reflection: formData.accountability_reflection || null,
         ex_admiration: formData.ex_admiration || null,
         growth_work: formData.growth_work || null,
+        // NEW: Intimacy & Fear questions
+        intimacy_expectations: formData.intimacy_expectations || null,
+        finding_love_fear: formData.finding_love_fear || null,
         // Other
         search_radius: formData.search_radius,
         // Notification preferences
@@ -1482,6 +1490,31 @@ const DatingIntakePage = () => {
                     />
                   </div>
 
+                  {/* Physical Intimacy Expectations - Only for serious relationships */}
+                  {isSeekingSerious() && (
+                    <div className="space-y-3">
+                      <Label htmlFor="intimacy_expectations" className="text-base">
+                        Physical Intimacy Expectations
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Beyond the honeymoon phase, what does a healthy intimate life look like to you? This helps us match partners with compatible expectations.
+                      </p>
+                      <Select value={formData.intimacy_expectations} onValueChange={(value) => updateField("intimacy_expectations", value)}>
+                        <SelectTrigger className="bg-background/50">
+                          <SelectValue placeholder="Select your expectation" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="very_important">Very important - frequent physical connection</SelectItem>
+                          <SelectItem value="important_regular">Important - regular but not constant</SelectItem>
+                          <SelectItem value="quality_over_quantity">Quality over quantity - meaningful moments</SelectItem>
+                          <SelectItem value="fluctuates">Fluctuates - depends on life circumstances</SelectItem>
+                          <SelectItem value="lower_priority">Lower priority - emotional connection is enough</SelectItem>
+                          <SelectItem value="prefer_not_say">Prefer not to say</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
                   <div className="space-y-3">
                     <Label>What's your primary love language?</Label>
                     <Select value={formData.love_language} onValueChange={(value) => updateField("love_language", value)}>
@@ -1950,6 +1983,23 @@ const DatingIntakePage = () => {
                         onChange={(e) => updateField("growth_work", e.target.value)}
                         placeholder="Therapy, books, workshops, habits, skills..."
                         className="min-h-[60px] bg-background/50"
+                      />
+                    </div>
+
+                    {/* Fear of Finding Love */}
+                    <div className="space-y-3">
+                      <Label htmlFor="finding_love_fear" className="text-base">
+                        What's holding you back?
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        What fear or belief do you think has kept you from finding "the one"? Understanding our patterns helps us grow beyond them.
+                      </p>
+                      <Textarea
+                        id="finding_love_fear"
+                        value={formData.finding_love_fear}
+                        onChange={(e) => updateField("finding_love_fear", e.target.value)}
+                        placeholder="Be honest with yourself - awareness is the first step to change..."
+                        className="min-h-[100px] bg-background/50"
                       />
                     </div>
                   </div>

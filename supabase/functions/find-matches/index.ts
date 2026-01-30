@@ -50,6 +50,9 @@ interface DatingProfile {
   accountability_reflection: string | null;
   family_relationship: string | null;
   family_involvement_expectation: string | null;
+  // Intimacy & Fear
+  intimacy_expectations: string | null;
+  finding_love_fear: string | null;
 }
 
 interface MatchResult {
@@ -238,6 +241,12 @@ Deep Dive:
 - Ideal Tuesday Night: ${targetProfile.tuesday_night_test || "Not specified"}
 - Dealbreakers: ${targetProfile.dealbreakers || "None specified"}
 
+Physical Intimacy:
+- Intimacy Expectations: ${targetProfile.intimacy_expectations || "Not specified"}
+
+Self-Awareness:
+- Finding Love Fear: ${targetProfile.finding_love_fear || "Not specified"}
+
 ---
 
 **PERSON B: ${candidate.display_name}**
@@ -278,6 +287,12 @@ Deep Dive:
 - Ideal Tuesday Night: ${candidate.tuesday_night_test || "Not specified"}
 - Dealbreakers: ${candidate.dealbreakers || "None specified"}
 
+Physical Intimacy:
+- Intimacy Expectations: ${candidate.intimacy_expectations || "Not specified"}
+
+Self-Awareness:
+- Finding Love Fear: ${candidate.finding_love_fear || "Not specified"}
+
 ---
 
 **SHARED CORE VALUES: ${sharedValues.length > 0 ? sharedValues.join(", ") : "None identified"}**
@@ -311,7 +326,12 @@ Deep Dive:
 - Compatible attachment styles → +10 points
 - Lifestyle habits align → +5 points
 
-**RED FLAG DETECTION - 10% of score:**
+**INTIMACY COMPATIBILITY - 10% of score:**
+- Same intimacy expectations → +10 points
+- One level difference → +5 points
+- Very different expectations → -5 points (flag as potential issue)
+
+**RED FLAG DETECTION - 10% of score (adjusted from 10% to account for intimacy):**
 - Accountability reflection shows blame pattern → -15 points
 - Unresolved trust trauma → flag for review, -5 points
 - Past relationship learning shows growth → +5 points

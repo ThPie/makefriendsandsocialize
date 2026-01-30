@@ -1153,6 +1153,7 @@ export type Database = {
           family_involvement_expectation: string | null
           family_relationship: string | null
           financial_philosophy: string | null
+          finding_love_fear: string | null
           friendship_benchmark: string | null
           future_goals: string | null
           gender: string
@@ -1160,6 +1161,7 @@ export type Database = {
           growth_work: string | null
           has_children: boolean | null
           id: string
+          intimacy_expectations: string | null
           introvert_extrovert: string | null
           is_active: boolean | null
           last_preprocessed_at: string | null
@@ -1235,6 +1237,7 @@ export type Database = {
           family_involvement_expectation?: string | null
           family_relationship?: string | null
           financial_philosophy?: string | null
+          finding_love_fear?: string | null
           friendship_benchmark?: string | null
           future_goals?: string | null
           gender: string
@@ -1242,6 +1245,7 @@ export type Database = {
           growth_work?: string | null
           has_children?: boolean | null
           id?: string
+          intimacy_expectations?: string | null
           introvert_extrovert?: string | null
           is_active?: boolean | null
           last_preprocessed_at?: string | null
@@ -1317,6 +1321,7 @@ export type Database = {
           family_involvement_expectation?: string | null
           family_relationship?: string | null
           financial_philosophy?: string | null
+          finding_love_fear?: string | null
           friendship_benchmark?: string | null
           future_goals?: string | null
           gender?: string
@@ -1324,6 +1329,7 @@ export type Database = {
           growth_work?: string | null
           has_children?: boolean | null
           id?: string
+          intimacy_expectations?: string | null
           introvert_extrovert?: string | null
           is_active?: boolean | null
           last_preprocessed_at?: string | null
