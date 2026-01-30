@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useInactivityLogout } from '@/hooks/useInactivityLogout';
 import {
   Sidebar,
   SidebarContent,
@@ -36,6 +37,7 @@ import logo from '@/assets/logo-transparent.png';
 import { PendingMemberBanner } from './PendingMemberBanner';
 import { PortalBreadcrumb } from './PortalBreadcrumb';
 import { canAccessProtectedFeatures, getRestrictedRoutesForPending } from '@/lib/auth-redirect';
+import { InactivityWarningModal } from '@/components/auth/InactivityWarningModal';
 
 interface PortalLayoutProps {
   children: ReactNode;
@@ -59,6 +61,17 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   const location = useLocation();
   const { user, profile, membership, applicationStatus, isLoading, isAdmin, signOut } = useAuth();
   const { subscription, isLoading: subscriptionLoading } = useSubscription();
+
+  // Inactivity logout - 30 minutes timeout with 2 minute warning
+  const { showWarning, remainingSeconds, dismissWarning } = useInactivityLogout({
+    timeoutMinutes: 30,
+    warningMinutes: 2,
+    onLogout: () => {
+      signOut();
+      navigate('/auth');
+    },
+    enabled: !!user,
+  });
 
   // Memoize menu items to prevent re-creation on every render
   const memoizedMenuItems = useMemo(() => menuItems, []);
@@ -123,7 +136,16 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   ) : null;
 
   return (
-    <SidebarProvider>
+    <>
+      {/* Inactivity Warning Modal */}
+      <InactivityWarningModal
+        isOpen={showWarning}
+        remainingSeconds={remainingSeconds}
+        onStayLoggedIn={dismissWarning}
+        onLogoutNow={handleSignOut}
+      />
+      
+      <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <Sidebar className="border-r border-border">
           <SidebarHeader className="p-4 border-b border-border">
@@ -251,5 +273,6 @@ export function PortalLayout({ children }: PortalLayoutProps) {
         </main>
       </div>
     </SidebarProvider>
+    </>
   );
 }
