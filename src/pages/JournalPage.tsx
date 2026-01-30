@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Sparkles, Search, ArrowRight, ChevronLeft, ChevronRight, Clock, Loader2, CheckCircle } from 'lucide-react';
+import { Search, ArrowRight, ChevronLeft, ChevronRight, Clock, Loader2, CheckCircle, FileText } from 'lucide-react';
 import { blogArticles, blogCategories } from '@/data/blogArticles';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -121,23 +121,13 @@ const JournalPage = () => {
           ref={heroAnimation.ref}
           className={`container max-w-5xl relative z-10 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-6"
-          >
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">Insights & Stories</span>
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
             className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-4 leading-[1.1]"
           >
-            The <span className="text-gradient">Journal</span>
+            <span className="text-gradient">Blog</span>
           </motion.h1>
 
           <motion.p
@@ -193,17 +183,11 @@ const JournalPage = () => {
       >
         {filteredArticles.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-muted-foreground text-lg">No articles found matching your criteria.</p>
-            <Button 
-              variant="ghost" 
-              className="mt-4"
-              onClick={() => {
-                setActiveCategory("All Posts");
-                setSearchQuery("");
-              }}
-            >
-              Clear filters
-            </Button>
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-6">
+              <FileText className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-display text-foreground mb-2">No Articles Yet</h3>
+            <p className="text-muted-foreground text-lg">Check back soon for insights on connection, community, and growth.</p>
           </div>
         ) : (
           <motion.div

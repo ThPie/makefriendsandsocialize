@@ -156,30 +156,11 @@ const ConnectedCirclePage = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
           </div>
           
-          {/* Floating Decorative Elements */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <motion.div
-              className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-primary/5 blur-3xl"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </div>
-
           <div 
             ref={heroAnimation.ref} 
             className={`container max-w-6xl relative z-10 py-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="max-w-2xl">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2.5 mb-8"
-              >
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-white">Founders Networking Reimagined</span>
-              </motion.div>
-
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -246,32 +227,6 @@ const ConnectedCirclePage = () => {
               <div className="w-1 h-2 rounded-full bg-primary" />
             </motion.div>
           </motion.div>
-        </section>
-
-        {/* Stats Section */}
-        <section className="py-16 md:py-20 bg-secondary/30">
-          <div 
-            ref={statsAnimation.ref} 
-            className={`container max-w-6xl scroll-animate ${statsAnimation.isVisible ? 'visible' : ''}`}
-          >
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={statsAnimation.isVisible ? "visible" : "hidden"}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
-            >
-              {stats.map((stat, index) => (
-                <AnimatedStat
-                  key={index}
-                  value={stat.value}
-                  suffix={stat.suffix}
-                  label={stat.label}
-                  icon={stat.icon}
-                  isVisible={statsAnimation.isVisible}
-                />
-              ))}
-            </motion.div>
-          </div>
         </section>
 
         {/* Benefits Section */}

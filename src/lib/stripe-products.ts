@@ -114,7 +114,7 @@ export const TIER_BENEFITS = {
       'Invitation-only Patron experiences',
     ],
     highlight: true,
-    trialDays: 7,
+    trialDays: 30,
   },
   patron: {
     name: 'Patron',
@@ -134,7 +134,7 @@ export const TIER_BENEFITS = {
       'Early access to new features and premium events',
     ],
     missingFeatures: [],
-    trialDays: 7,
+    trialDays: 30,
     exclusivityNote: 'Patron membership is limited and subject to availability.',
   },
 } as const;

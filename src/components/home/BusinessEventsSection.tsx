@@ -65,7 +65,7 @@ export const BusinessEventsSection = () => {
 
         <div className={`text-center scroll-animate ${isVisible ? 'visible' : ''}`} style={{ animationDelay: '0.5s' }}>
           <Button size="lg" asChild className="rounded-full">
-            <Link to="/events">Explore Business Events</Link>
+            <Link to="/events?category=Networking">Explore Business Events</Link>
           </Button>
         </div>
       </div>

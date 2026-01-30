@@ -17,11 +17,17 @@ import {
   Users, 
   MessageCircle,
   Star,
-  ArrowLeft,
   Loader2,
   LogIn
 } from "lucide-react";
-import heroImage from "@/assets/gentlemen-hero.jpg";
+import heroImage from "@/assets/gentlemen-hero-new.webp";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const TheGentlemenPage = () => {
   const { toast } = useToast();
@@ -182,24 +188,6 @@ const TheGentlemenPage = () => {
             ref={heroAnimation.ref} 
             className={`container max-w-5xl relative z-10 py-20 text-center scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
-            <Link 
-              to="/circles" 
-              className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors mb-8"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span className="text-sm">Back to Circles</span>
-            </Link>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2.5 mb-8"
-            >
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-white">Selective Circle</span>
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -402,35 +390,39 @@ const TheGentlemenPage = () => {
                   <label className="block text-sm font-medium text-foreground mb-2" htmlFor="stylePreference">
                     Style Preference *
                   </label>
-                  <select
-                    id="stylePreference"
-                    required
+                  <Select
                     value={formData.stylePreference}
-                    onChange={(e) => setFormData({ ...formData, stylePreference: e.target.value })}
-                    className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200"
+                    onValueChange={(value) => setFormData({ ...formData, stylePreference: value })}
+                    required
                   >
-                    <option value="">Select your style</option>
-                    <option value="classic">Classic</option>
-                    <option value="modern-classic">Modern Classic</option>
-                    <option value="other">Other</option>
-                  </select>
+                    <SelectTrigger className="w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm h-auto">
+                      <SelectValue placeholder="Select your style" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border border-border">
+                      <SelectItem value="classic">Classic</SelectItem>
+                      <SelectItem value="modern-classic">Modern Classic</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2" htmlFor="membershipTier">
                     Current Membership Tier *
                   </label>
-                  <select
-                    id="membershipTier"
-                    required
+                  <Select
                     value={formData.membershipTier}
-                    onChange={(e) => setFormData({ ...formData, membershipTier: e.target.value })}
-                    className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200"
+                    onValueChange={(value) => setFormData({ ...formData, membershipTier: value })}
+                    required
                   >
-                    <option value="">Select your tier</option>
-                    <option value="member">Member</option>
-                    <option value="fellow">Fellow</option>
-                  </select>
+                    <SelectTrigger className="w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm h-auto">
+                      <SelectValue placeholder="Select your tier" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border border-border">
+                      <SelectItem value="member">Member</SelectItem>
+                      <SelectItem value="fellow">Fellow</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <p className="text-xs text-muted-foreground mt-2">
                     The Gentlemen is available to Member and Fellow tier members only.
                   </p>

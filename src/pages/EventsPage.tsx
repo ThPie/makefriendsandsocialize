@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,6 +13,13 @@ import { format, differenceInDays } from 'date-fns';
 import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2, ExternalLink } from 'lucide-react';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
 import { parseLocalDate } from '@/lib/date-utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type SortOption = 'date-asc' | 'date-desc' | 'title-asc' | 'title-desc';
 type EventTab = 'upcoming' | 'past';
@@ -61,9 +68,13 @@ const EventSkeleton = () => (
 const EventsPage = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState(() => {
+    const categoryParam = searchParams.get('category');
+    return categoryParam || "All";
+  });
   const [sortOrder, setSortOrder] = useState<SortOption>('date-desc');
   const [activeTab, setActiveTab] = useState<EventTab>('upcoming');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -306,18 +317,18 @@ const EventsPage = () => {
             </div>
 
             {/* Sort */}
-            <div className="relative min-w-[160px]">
-              <select
-                value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value as SortOption)}
-                className="w-full appearance-none pl-4 pr-10 py-2.5 rounded-xl bg-background border border-border text-foreground text-sm font-medium focus:ring-2 focus:ring-primary/20 cursor-pointer"
-              >
-                <option value="date-asc">Date: Soonest</option>
-                <option value="date-desc">Date: Latest</option>
-                <option value="title-asc">Title: A-Z</option>
-                <option value="title-desc">Title: Z-A</option>
-              </select>
-              <ArrowUpDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <div className="min-w-[160px]">
+              <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOption)}>
+                <SelectTrigger className="w-full rounded-xl bg-background border border-border text-foreground text-sm font-medium focus:ring-2 focus:ring-primary/20">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-card border border-border">
+                  <SelectItem value="date-asc">Date: Soonest</SelectItem>
+                  <SelectItem value="date-desc">Date: Latest</SelectItem>
+                  <SelectItem value="title-asc">Title: A-Z</SelectItem>
+                  <SelectItem value="title-desc">Title: Z-A</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </motion.div>
