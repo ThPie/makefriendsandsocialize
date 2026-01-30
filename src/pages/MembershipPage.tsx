@@ -171,7 +171,7 @@ const MembershipPage = () => {
 
   const processSteps = [
     { step: 1, title: 'Choose Your Tier', desc: 'Select the membership that matches your lifestyle.', icon: Briefcase },
-    { step: 2, title: 'Start Free Trial', desc: 'Try Insider or Patron free for 7 days. Cancel anytime.', icon: Zap },
+    { step: 2, title: 'Start Free Trial', desc: 'Try Insider or Patron free for 30 days. Cancel anytime.', icon: Zap },
     { step: 3, title: 'Unlock Everything', desc: 'Access events, matchmaking, partner perks & the Connected Circle.', icon: Crown },
   ];
 
@@ -193,19 +193,6 @@ const MembershipPage = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
         
-        {/* Floating Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            className="absolute top-1/3 right-1/4 w-64 h-64 rounded-full bg-primary/10 blur-3xl"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-1/4 left-1/3 w-80 h-80 rounded-full bg-primary/5 blur-3xl"
-            animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
 
         <div 
           ref={heroAnimation.ref}
@@ -218,7 +205,7 @@ const MembershipPage = () => {
             className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8"
           >
             <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">Start Your 7-Day Free Trial</span>
+            <span className="text-sm font-medium text-foreground">Start Your 30-Day Free Trial</span>
           </motion.div>
 
           <motion.h1
@@ -374,7 +361,7 @@ const MembershipPage = () => {
               We create intentional connections through curated events, community, and introductions.
             </p>
             <p className="text-muted-foreground text-lg mb-8">
-              Select the tier that best aligns with your vision. Start with a 7-day free trial.
+              Select the tier that best aligns with your vision. Start with a 30-day free trial.
             </p>
 
             {/* Billing Toggle */}

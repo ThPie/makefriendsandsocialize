@@ -63,7 +63,7 @@ const tiers = [
     variant: 'default' as const,
     popular: true,
     icon: Crown,
-    trial: '7-day free trial',
+    trial: '30-day free trial',
   },
   {
     name: 'Patron',
@@ -89,7 +89,7 @@ const tiers = [
     variant: 'secondary' as const,
     popular: false,
     icon: Crown,
-    trial: '7-day free trial',
+    trial: '30-day free trial',
     exclusivityNote: 'Limited availability',
   },
 ];

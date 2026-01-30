@@ -21,7 +21,14 @@ import {
   Loader2,
   LogIn
 } from "lucide-react";
-import heroImage from "@/assets/les-amis-hero.jpg";
+import heroImage from "@/assets/les-amis-hero-new.webp";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const LesAmisPage = () => {
   const { toast } = useToast();
@@ -171,14 +178,6 @@ const LesAmisPage = () => {
             ref={heroAnimation.ref} 
             className={`container max-w-5xl relative z-10 py-20 text-center scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
-            <Link 
-              to="/circles" 
-              className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors mb-8"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span className="text-sm">Back to Circles</span>
-            </Link>
-
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -356,19 +355,21 @@ const LesAmisPage = () => {
                   <label className="block text-sm font-medium text-foreground mb-2" htmlFor="frenchLevel">
                     Current French Level *
                   </label>
-                  <select
-                    id="frenchLevel"
-                    required
+                  <Select
                     value={formData.frenchLevel}
-                    onChange={(e) => setFormData({ ...formData, frenchLevel: e.target.value })}
-                    className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200"
+                    onValueChange={(value) => setFormData({ ...formData, frenchLevel: value })}
+                    required
                   >
-                    <option value="">Select your level</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                    <option value="native">Native Speaker</option>
-                  </select>
+                    <SelectTrigger className="w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm h-auto">
+                      <SelectValue placeholder="Select your level" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border border-border">
+                      <SelectItem value="beginner">Beginner</SelectItem>
+                      <SelectItem value="intermediate">Intermediate</SelectItem>
+                      <SelectItem value="advanced">Advanced</SelectItem>
+                      <SelectItem value="native">Native Speaker</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
@@ -420,18 +421,20 @@ const LesAmisPage = () => {
                   <label className="block text-sm font-medium text-foreground mb-2" htmlFor="membershipTier">
                     Current Membership Tier *
                   </label>
-                  <select
-                    id="membershipTier"
-                    required
+                  <Select
                     value={formData.membershipTier}
-                    onChange={(e) => setFormData({ ...formData, membershipTier: e.target.value })}
-                    className="block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200"
+                    onValueChange={(value) => setFormData({ ...formData, membershipTier: value })}
+                    required
                   >
-                    <option value="">Select your tier</option>
-                    <option value="explorer">Explorer</option>
-                    <option value="member">Member</option>
-                    <option value="fellow">Fellow</option>
-                  </select>
+                    <SelectTrigger className="w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm h-auto">
+                      <SelectValue placeholder="Select your tier" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border border-border">
+                      <SelectItem value="explorer">Explorer</SelectItem>
+                      <SelectItem value="member">Member</SelectItem>
+                      <SelectItem value="fellow">Fellow</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <Button
