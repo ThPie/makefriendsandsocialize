@@ -14,9 +14,11 @@ import { VpnBlockedModal } from '@/components/portal/VpnBlockedModal';
 import { LocationCombobox } from '@/components/ui/location-combobox';
 import { CityAutocomplete } from '@/components/ui/city-autocomplete';
 import { BrandedLoader } from '@/components/ui/branded-loader';
+import { ImageCropper } from '@/components/admin/ImageCropper';
 import { ArrowLeft, ArrowRight, Check, Loader2, Camera, User, Briefcase, Heart, Sparkles, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { COUNTRIES, getRegionsForCountry } from '@/lib/location-data';
+import { validateBio } from '@/lib/text-validation';
 
 const INTERESTS = [
   'Arts & Culture', 'Fine Dining & Wine', 'Travel & Adventure', 'Entrepreneurship',
@@ -54,6 +56,13 @@ export default function PortalOnboarding() {
   const [showVpnModal, setShowVpnModal] = useState(false);
   const [locationDetected, setLocationDetected] = useState(false);
   const totalSteps = 5;
+
+  // Image cropper state
+  const [cropperImage, setCropperImage] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  
+  // Bio validation state
+  const [bioError, setBioError] = useState<string | null>(null);
 
   // Step 1: Basic Info
   const [firstName, setFirstName] = useState('');
@@ -220,6 +229,14 @@ export default function PortalOnboarding() {
           toast.error('Please write a bio (at least 50 characters)');
           return false;
         }
+        // Validate bio for gibberish
+        const bioValidationError = validateBio(bio, 50);
+        if (bioValidationError) {
+          setBioError(bioValidationError);
+          toast.error(bioValidationError);
+          return false;
+        }
+        setBioError(null);
         return true;
       case 3:
         if (communityGoals.length === 0) {
@@ -376,7 +393,7 @@ export default function PortalOnboarding() {
     }
   };
 
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0] || !user) return;
     if (photos.length >= 3) {
       toast.error('Maximum 3 photos allowed');
@@ -384,20 +401,33 @@ export default function PortalOnboarding() {
     }
 
     const file = e.target.files[0];
+    e.target.value = ''; // Reset input so same file can be selected again
+    
     if (file.size > 5 * 1024 * 1024) {
       toast.error('Image must be less than 5MB');
       return;
     }
 
+    // Open cropper instead of uploading directly
+    const imageUrl = URL.createObjectURL(file);
+    setCropperImage(imageUrl);
+    setPendingFile(file);
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    if (!user) return;
+    
     setIsUploading(true);
+    setCropperImage(null);
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      const fileName = `${user.id}/${Date.now()}.webp`;
 
       const { error: uploadError } = await supabase.storage
         .from('profile-photos')
-        .upload(fileName, file);
+        .upload(fileName, croppedBlob, {
+          contentType: 'image/webp',
+        });
 
       if (uploadError) throw uploadError;
 
@@ -412,6 +442,46 @@ export default function PortalOnboarding() {
       toast.error('Failed to upload photo');
     } finally {
       setIsUploading(false);
+      setPendingFile(null);
+    }
+  };
+
+  const handleCropCancel = () => {
+    if (cropperImage) {
+      URL.revokeObjectURL(cropperImage);
+    }
+    setCropperImage(null);
+    setPendingFile(null);
+  };
+
+  const handleCropSkip = async () => {
+    if (!pendingFile || !user) return;
+    
+    setIsUploading(true);
+    setCropperImage(null);
+
+    try {
+      const fileExt = pendingFile.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(fileName, pendingFile);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(fileName);
+
+      setPhotos([...photos, publicUrl]);
+      toast.success('Photo uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      toast.error('Failed to upload photo');
+    } finally {
+      setIsUploading(false);
+      setPendingFile(null);
     }
   };
 
@@ -511,7 +581,7 @@ export default function PortalOnboarding() {
                     <input
                       type="file"
                       accept="image/jpeg,image/png,image/webp"
-                      onChange={handlePhotoUpload}
+                      onChange={handlePhotoSelect}
                       className="hidden"
                       disabled={isUploading}
                     />
@@ -647,11 +717,17 @@ export default function PortalOnboarding() {
               <Textarea
                 id="bio"
                 value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                className="bg-white/10 border-white/20 text-white min-h-[120px]"
+                onChange={(e) => {
+                  setBio(e.target.value);
+                  setBioError(null); // Clear error on change
+                }}
+                className={`bg-white/10 border-white/20 text-white min-h-[120px] ${bioError ? 'border-destructive' : ''}`}
                 placeholder="Tell us about yourself, your background, and what makes you unique..."
               />
               <p className="text-white/40 text-xs mt-1">{bio.length}/50 characters minimum</p>
+              {bioError && (
+                <p className="text-sm text-destructive mt-1">{bioError}</p>
+              )}
             </div>
           </div>
         );
@@ -886,6 +962,17 @@ export default function PortalOnboarding() {
           </div>
         </div>
       </PortalOnboardingLayout>
+
+      {/* Image Cropper Modal */}
+      {cropperImage && (
+        <ImageCropper
+          imageUrl={cropperImage}
+          isOpen={!!cropperImage}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+          onSkip={handleCropSkip}
+        />
+      )}
     </>
   );
 }

@@ -6,9 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
-import { Loader2, Check, Camera, X, Calendar } from 'lucide-react';
+import { Loader2, Check, Camera, X, Calendar, MapPin } from 'lucide-react';
 import { PushNotificationSettings } from '@/components/portal/PushNotificationSettings';
 import { EmailPreferences } from '@/components/portal/EmailPreferences';
 import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
@@ -17,6 +16,9 @@ import { LocationCombobox } from '@/components/ui/location-combobox';
 import { CityAutocomplete } from '@/components/ui/city-autocomplete';
 import { COUNTRIES, getRegionsForCountry } from '@/lib/location-data';
 import { format, differenceInYears, parse } from 'date-fns';
+import { ImageCropper } from '@/components/admin/ImageCropper';
+import { VpnBlockedModal } from '@/components/portal/VpnBlockedModal';
+import { validateBio } from '@/lib/text-validation';
 
 const INTERESTS = [
   'Networking & Business', 'Arts & Culture', 'Food & Dining', 'Travel & Adventure',
@@ -34,6 +36,17 @@ export default function PortalProfile() {
   const { user, profile, refreshProfile } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  
+  // Image cropper state
+  const [cropperImage, setCropperImage] = useState<string | null>(null);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  
+  // Location detection state
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
+  const [showVpnModal, setShowVpnModal] = useState(false);
+  
+  // Bio validation state
+  const [bioError, setBioError] = useState<string | null>(null);
   
   // Form state
   const [firstName, setFirstName] = useState('');
@@ -92,6 +105,17 @@ export default function PortalProfile() {
       return;
     }
 
+    // Validate bio for gibberish
+    if (bio.trim()) {
+      const bioValidationError = validateBio(bio, 20);
+      if (bioValidationError) {
+        setBioError(bioValidationError);
+        toast.error(bioValidationError);
+        return;
+      }
+    }
+    setBioError(null);
+
     setIsSubmitting(true);
 
     const { error } = await supabase
@@ -123,9 +147,46 @@ export default function PortalProfile() {
     toast.success('Profile updated successfully');
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle location detection
+  const detectLocation = async () => {
+    setIsDetectingLocation(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('detect-location');
+      
+      if (error) {
+        console.error('Location detection error:', error);
+        toast.error('Failed to detect location');
+        return;
+      }
+      
+      // Check for VPN/proxy
+      if (data?.isVpn) {
+        setShowVpnModal(true);
+        return;
+      }
+      
+      if (data?.success) {
+        if (data.country) setCountry(data.country);
+        if (data.state) setState(data.state);
+        if (data.city) setCity(data.city);
+        toast.success('Location detected successfully');
+      } else {
+        toast.error('Could not detect your location');
+      }
+    } catch (error) {
+      console.error('Location detection failed:', error);
+      toast.error('Failed to detect location');
+    } finally {
+      setIsDetectingLocation(false);
+    }
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
+    
+    // Reset input so same file can be selected again
+    e.target.value = '';
 
     if (avatarUrls.length >= 3) {
       toast.error('Maximum 3 photos allowed');
@@ -145,15 +206,26 @@ export default function PortalProfile() {
       return;
     }
 
+    // Open cropper instead of uploading directly
+    const imageUrl = URL.createObjectURL(file);
+    setCropperImage(imageUrl);
+    setPendingFile(file);
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    if (!user) return;
+    
     setIsUploading(true);
+    setCropperImage(null);
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      const fileName = `${user.id}/${Date.now()}.webp`;
 
       const { error: uploadError } = await supabase.storage
         .from('profile-photos')
-        .upload(fileName, file);
+        .upload(fileName, croppedBlob, {
+          contentType: 'image/webp',
+        });
 
       if (uploadError) {
         throw uploadError;
@@ -170,6 +242,48 @@ export default function PortalProfile() {
       toast.error('Failed to upload photo');
     } finally {
       setIsUploading(false);
+      setPendingFile(null);
+    }
+  };
+
+  const handleCropCancel = () => {
+    if (cropperImage) {
+      URL.revokeObjectURL(cropperImage);
+    }
+    setCropperImage(null);
+    setPendingFile(null);
+  };
+
+  const handleCropSkip = async () => {
+    if (!pendingFile || !user) return;
+    
+    setIsUploading(true);
+    setCropperImage(null);
+
+    try {
+      const fileExt = pendingFile.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(fileName, pendingFile);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(fileName);
+
+      setAvatarUrls(prev => [...prev, publicUrl]);
+      toast.success('Photo uploaded successfully');
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload photo');
+    } finally {
+      setIsUploading(false);
+      setPendingFile(null);
     }
   };
 
@@ -285,8 +399,8 @@ export default function PortalProfile() {
                   )}
                   <input
                     type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleImageSelect}
                     className="hidden"
                     disabled={isUploading}
                   />
@@ -353,9 +467,15 @@ export default function PortalProfile() {
                 id="bio"
                 placeholder="Tell us about yourself and what you're looking for in this community..."
                 value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                className="min-h-[100px]"
+                onChange={(e) => {
+                  setBio(e.target.value);
+                  setBioError(null); // Clear error on change
+                }}
+                className={`min-h-[100px] ${bioError ? 'border-destructive' : ''}`}
               />
+              {bioError && (
+                <p className="text-sm text-destructive">{bioError}</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -427,7 +547,23 @@ export default function PortalProfile() {
         {/* Location */}
         <Card>
           <CardHeader>
-            <CardTitle className="font-display text-xl">Location</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="font-display text-xl">Location</CardTitle>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={detectLocation}
+                disabled={isDetectingLocation}
+              >
+                {isDetectingLocation ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <MapPin className="h-4 w-4 mr-2" />
+                )}
+                Detect My Location
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -528,6 +664,20 @@ export default function PortalProfile() {
           </Button>
         </div>
       </form>
+
+      {/* Image Cropper Modal */}
+      {cropperImage && (
+        <ImageCropper
+          imageUrl={cropperImage}
+          isOpen={!!cropperImage}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+          onSkip={handleCropSkip}
+        />
+      )}
+
+      {/* VPN Blocked Modal */}
+      <VpnBlockedModal isOpen={showVpnModal} />
     </div>
   );
 }
