@@ -1,179 +1,189 @@
 
+# Fix 2FA Setup, Profile Photo Display, and Auto-Logout Issues
 
-# Add Intimacy & Fear Questions to Matchmaking Intake
+## Issue Analysis
 
-## Overview
+### Issue 1: 2FA Setup Not Working
+**Root Cause:** After scanning the QR code and entering the verification code, the flow fails silently.
 
-This plan adds two important relationship compatibility questions to the dating intake form:
-1. **Intimacy expectations beyond the honeymoon phase** - Physical compatibility is crucial for long-term success
-2. **What fear keeps you from finding "the one"** - Deep self-awareness question to help identify limiting beliefs
+Looking at the edge function logs, I can see:
+- MFA setup is initiated successfully: `"MFA setup initiated for admin dbf66e17-86eb-4789-a800-390c9af4790c"`
+- But verification never completes - `mfa_enabled` is still `false` in the database
+- The `admin_mfa_sessions` table is empty (no sessions created)
 
-These questions will improve match quality by revealing important compatibility factors currently not captured.
+**The Problem:**
+The verification flow in `verify-admin-mfa` edge function (lines 104-195) works like this:
+1. Get MFA factors using `listFactors()`
+2. Create a challenge using `mfa.challenge()`
+3. Verify the challenge with the code
+
+However, when setting up MFA for the FIRST time, Supabase requires you to verify the factor during enrollment BEFORE it becomes available in `listFactors()`. The current code:
+- Sets up MFA enrollment (creates an unverified factor)
+- User scans QR code
+- User enters code
+- Code tries to `listFactors()` but the factor is NOT yet verified/available
+- Returns "No MFA factors found"
+
+**The Fix:** Store the `factorId` from the setup step and use it directly for verification instead of calling `listFactors()`.
+
+### Issue 2: Profile Picture Not Displaying Properly
+**Root Cause:** The Avatar component renders images in a circular container, but the `object-cover` class alone doesn't ensure proper aspect ratio fitting.
+
+Looking at the profile photos section (PortalProfile.tsx lines 248-290):
+- Photos are rendered using `Avatar` component with `rounded-lg` class
+- The `AvatarImage` uses `object-cover` but may have transparency/sizing issues
+- Storage bucket images might not be loading with proper caching headers
+
+**The Fix:**
+1. Ensure the Avatar container has explicit dimensions that match the image
+2. Add proper background color to prevent transparency issues
+3. Add `object-position: center` for better cropping
+
+### Issue 3: Sessions Staying Active for 2+ Days (Security Risk)
+**Root Cause:** The Supabase Auth session has a long default expiry (7 days) and there's no inactivity-based logout.
+
+Looking at `AuthContext.tsx`:
+- Uses Supabase's default session management
+- No inactivity timeout is implemented
+- `useSessionManager.ts` exists but only tracks custom sessions, not auth sessions
+
+**The Fix:**
+1. Implement an inactivity timer that logs users out after a configurable period (e.g., 30 minutes of inactivity)
+2. Use Page Visibility API + activity event listeners to track user engagement
+3. Show a warning before auto-logout to give users a chance to stay logged in
 
 ---
 
-## Analysis
+## Implementation Plan
 
-### Current State
-- The dating intake form has 8 steps with comprehensive questions covering lifestyle, values, communication, and dealbreakers
-- Step 5 ("Deep Dive") already includes a "Vulnerability Check" question about dating fears/insecurities
-- Step 6 ("Dealbreakers") includes trust/fidelity views but nothing about physical intimacy expectations
-- The `dating_profiles` table already has all the columns we need (discovered via query)
+### Step 1: Fix 2FA Setup Flow
+**File:** `src/components/admin/MFASetup.tsx`
 
-### Where to Add These Questions
-
-**Question 1: Intimacy/Sex Beyond Honeymoon Phase**
-- Best fit: Step 5 ("Deep Dive") after "Emotional Connection" - this is about relationship dynamics
-- This is research-backed (Gottman's intimacy research) and belongs with the emotional compatibility questions
-- Only shown to users seeking serious/marriage relationships (casual daters don't need this)
-
-**Question 2: Fear Keeping You From Finding The One**
-- Best fit: Step 6 ("Dealbreakers & Future") in the "Self-Awareness Indicators" section
-- This complements the existing "accountability_reflection" question
-- Helps matchmakers understand patterns that may affect success
-
----
-
-## Implementation
-
-### Step 1: Add New Fields to FormData Interface
-
-Add two new fields to the `FormData` interface and `initialFormData`:
+**Changes:**
+- Store the `factorId` from the setup response in component state
+- Pass the `factorId` to the verify action instead of relying on `listFactors()`
 
 ```typescript
-// In FormData interface (around line 21)
-intimacy_expectations: string;  // For the honeymoon phase question
-finding_love_fear: string;      // For the fear question
+// Add factorId state
+const [factorId, setFactorId] = useState<string>('');
 
-// In initialFormData (around line 105)
-intimacy_expectations: "",
-finding_love_fear: "",
+// In startSetup, store the factorId
+setFactorId(data.factorId);
+
+// In verifySetup, pass factorId to the edge function
+const { data, error } = await supabase.functions.invoke('verify-admin-mfa', {
+  body: { action: 'verify', code: verifyCode, factorId }
+});
 ```
 
-### Step 2: Add Database Migration
+**File:** `supabase/functions/verify-admin-mfa/index.ts`
 
-Add two new columns to the `dating_profiles` table:
-
-```sql
-ALTER TABLE dating_profiles 
-ADD COLUMN intimacy_expectations text,
-ADD COLUMN finding_love_fear text;
-```
-
-### Step 3: Add Intimacy Question to Step 5 (Deep Dive)
-
-Insert after the "Emotional Connection" question (around line 1483), only for serious relationship seekers:
+**Changes:**
+- Accept `factorId` in the verify action
+- Use the provided `factorId` if available, otherwise fall back to `listFactors()`
+- Handle first-time verification differently (factor needs to be verified to complete enrollment)
 
 ```typescript
-{/* Physical Intimacy Expectations - Only for serious relationships */}
-{isSeekingSerious() && (
-  <div className="space-y-3">
-    <Label htmlFor="intimacy_expectations" className="text-base">
-      Physical Intimacy Expectations
-    </Label>
-    <p className="text-sm text-muted-foreground">
-      Beyond the honeymoon phase, what does a healthy intimate life look like to you? This helps us match partners with compatible expectations.
-    </p>
-    <Select value={formData.intimacy_expectations} onValueChange={(value) => updateField("intimacy_expectations", value)}>
-      <SelectTrigger className="bg-background/50">
-        <SelectValue placeholder="Select your expectation" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="very_important">Very important - frequent physical connection</SelectItem>
-        <SelectItem value="important_regular">Important - regular but not constant</SelectItem>
-        <SelectItem value="quality_over_quantity">Quality over quantity - meaningful moments</SelectItem>
-        <SelectItem value="fluctuates">Fluctuates - depends on life circumstances</SelectItem>
-        <SelectItem value="lower_priority">Lower priority - emotional connection is enough</SelectItem>
-        <SelectItem value="prefer_not_say">Prefer not to say</SelectItem>
-      </SelectContent>
-    </Select>
-  </div>
-)}
+if (action === 'verify') {
+  const providedFactorId = factorId; // From request body
+  
+  let targetFactorId = providedFactorId;
+  
+  // If no factorId provided, try to get from listFactors
+  if (!targetFactorId) {
+    const { data: factors } = await supabaseUser.auth.mfa.listFactors();
+    if (factors?.totp?.length > 0) {
+      targetFactorId = factors.totp[0].id;
+    }
+  }
+  
+  if (!targetFactorId) {
+    return new Response(JSON.stringify({ error: 'No MFA factor found' }), ...);
+  }
+  
+  // Create challenge and verify
+  const { data: challenge } = await supabaseUser.auth.mfa.challenge({ factorId: targetFactorId });
+  const { data: verifyData } = await supabaseUser.auth.mfa.verify({
+    factorId: targetFactorId,
+    challengeId: challenge.id,
+    code: code
+  });
+}
 ```
 
-### Step 4: Add Fear Question to Step 6 (Dealbreakers)
+### Step 2: Fix Profile Photo Display
+**File:** `src/pages/portal/PortalProfile.tsx`
 
-Add in the "Self-Awareness Indicators" section (around line 1920):
+**Changes:**
+- Replace Avatar component with a direct img tag for better control
+- Add proper styling to prevent transparency/opaque issues
+- Add loading state and error handling for images
 
 ```typescript
-{/* Fear of Finding Love */}
-<div className="space-y-3">
-  <Label htmlFor="finding_love_fear" className="text-base">
-    What's holding you back?
-  </Label>
-  <p className="text-sm text-muted-foreground">
-    What fear or belief do you think has kept you from finding "the one"? Understanding our patterns helps us grow beyond them.
-  </p>
-  <Textarea
-    id="finding_love_fear"
-    value={formData.finding_love_fear}
-    onChange={(e) => updateField("finding_love_fear", e.target.value)}
-    placeholder="Be honest with yourself - awareness is the first step to change..."
-    className="min-h-[100px] bg-background/50"
+{/* Profile photo with better display */}
+<div className="relative group w-32 h-32 rounded-lg overflow-hidden bg-muted">
+  <img
+    src={url}
+    alt={`Profile photo ${index + 1}`}
+    className="w-full h-full object-cover object-center"
+    loading="lazy"
+    onError={(e) => {
+      (e.target as HTMLImageElement).style.display = 'none';
+    }}
   />
+  {/* Fallback */}
+  <div className="absolute inset-0 flex items-center justify-center bg-muted text-muted-foreground -z-10">
+    {initials}
+  </div>
+  {/* Remove button */}
+  <button ...>
 </div>
 ```
 
-### Step 5: Update Form Submission
+**File:** `src/components/ui/avatar.tsx`
 
-Add the new fields to the Supabase insert (around line 569):
+**Changes:**
+- Ensure `object-fit: cover` is properly applied
+- Add background color to prevent transparent/opaque appearance
 
-```typescript
-// Add these to the insert object
-intimacy_expectations: formData.intimacy_expectations || null,
-finding_love_fear: formData.finding_love_fear || null,
-```
+### Step 3: Implement Auto-Logout for Security
+**New File:** `src/hooks/useInactivityLogout.ts`
 
-### Step 6: Update Match-Finding AI Prompt
-
-Update the `find-matches` edge function to include these new fields in the compatibility analysis:
-
-Add to the prompt template (around line 230):
+**Purpose:** Hook to track user activity and auto-logout after inactivity period
 
 ```typescript
-// In the prompt for PERSON A and PERSON B
-Physical Intimacy:
-- Intimacy Expectations: ${targetProfile.intimacy_expectations || "Not specified"}
-
-Self-Awareness:
-- Finding Love Fear: ${targetProfile.finding_love_fear || "Not specified"}
+export function useInactivityLogout(timeoutMinutes = 30, warningMinutes = 2) {
+  // Track last activity time
+  // Listen for activity events (mouse, keyboard, touch, scroll)
+  // Show warning modal before logout
+  // Sign out user when timeout expires
+  // Reset timer on any activity
+}
 ```
 
-Add to the scoring guide:
+**File:** `src/contexts/AuthContext.tsx`
+
+**Changes:**
+- Integrate the inactivity logout hook
+- Add a warning modal component for upcoming logout
+- Only apply to authenticated users
+
+**New File:** `src/components/auth/InactivityWarningModal.tsx`
+
+**Purpose:** Modal that appears when user is about to be logged out
 
 ```typescript
-**INTIMACY COMPATIBILITY - 10% of score:**
-- Same intimacy expectations → +10 points
-- One level difference → +5 points
-- Very different expectations → -5 points (flag as potential issue)
+// Shows countdown timer
+// "You will be logged out in X seconds"
+// "Stay Logged In" button resets the timer
+// "Log Out Now" button logs out immediately
 ```
 
-### Step 7: Update DatingProfile Interface in Edge Function
+**File:** `src/App.tsx` or `src/components/portal/PortalLayout.tsx`
 
-Add the new fields to the `DatingProfile` interface in `find-matches/index.ts`:
-
-```typescript
-intimacy_expectations: string | null;
-finding_love_fear: string | null;
-```
-
----
-
-## Question Design Rationale
-
-### Intimacy Question Design
-- Uses discreet, professional language appropriate for a premium matchmaking service
-- Offers range of options from high priority to low priority
-- Includes "prefer not to say" for those uncomfortable sharing
-- Only shown to serious relationship seekers (casual daters typically prioritize this naturally)
-- Framed positively as "healthy intimate life" not demands or requirements
-
-### Fear Question Design
-- Open-ended to allow genuine reflection
-- Encourages vulnerability and self-awareness
-- Helps matchmakers identify potential red flags or coaching opportunities
-- Aligns with existing self-awareness questions (accountability_reflection, growth_work)
-- Framed as growth-oriented, not judgmental
+**Changes:**
+- Add InactivityWarningModal to authenticated routes
+- Configure timeout duration (suggest 30 minutes for normal users, 2 hours for admins)
 
 ---
 
@@ -181,16 +191,57 @@ finding_love_fear: string | null;
 
 | File | Changes |
 |------|---------|
-| `src/pages/DatingIntakePage.tsx` | Add FormData fields, add two new questions to UI |
-| `supabase/functions/find-matches/index.ts` | Update DatingProfile interface, add to AI prompt |
-| Database migration | Add `intimacy_expectations` and `finding_love_fear` columns |
+| `src/components/admin/MFASetup.tsx` | Store and pass factorId to verification |
+| `supabase/functions/verify-admin-mfa/index.ts` | Accept factorId parameter in verify action |
+| `src/pages/portal/PortalProfile.tsx` | Fix profile photo display with better img handling |
+| `src/hooks/useInactivityLogout.ts` | New hook for inactivity tracking |
+| `src/components/auth/InactivityWarningModal.tsx` | New warning modal component |
+| `src/components/portal/PortalLayout.tsx` | Integrate inactivity logout for portal users |
+| `src/components/admin/AdminLayout.tsx` | Integrate inactivity logout for admin users (longer timeout) |
 
 ---
 
-## Benefits
+## Technical Details
 
-1. **Better matches** - Physical compatibility expectations are often overlooked but crucial
-2. **Deeper insights** - The fear question reveals limiting beliefs that affect dating success
-3. **Research-backed** - Intimacy research from Gottman Institute shows this predicts satisfaction
-4. **Matchmaker value** - Gives human matchmakers additional context for curated introductions
+### MFA Fix - Factor ID Flow
+```text
+1. User clicks "Set Up 2FA"
+2. Edge function calls mfa.enroll() → returns factorId, qrCode, secret
+3. Frontend stores factorId in state
+4. User scans QR code in Google Authenticator
+5. User enters 6-digit code
+6. Frontend sends { action: 'verify', code, factorId }
+7. Edge function uses factorId to challenge → verify
+8. On success, factor is marked verified, session created
+```
 
+### Profile Photo Fix
+The "opal" appearance is likely due to:
+- The AvatarImage inheriting opacity from a parent
+- The rounded-lg on Avatar conflicts with rounded-full default
+- Missing background color causing transparency to show
+
+### Inactivity Timeout Logic
+```text
+- Track: mousemove, mousedown, keydown, touchstart, scroll
+- Timeout: 30 minutes of no activity
+- Warning: Show modal 2 minutes before logout
+- Reset: Any activity resets the full timer
+- Pause: Don't count time when tab is hidden (optional)
+```
+
+---
+
+## Expected Outcomes
+
+1. **2FA Setup Works**: Users can scan QR code, enter code, and complete MFA enrollment
+2. **Profile Photos Display Properly**: Photos show correctly without opacity/transparency issues
+3. **Auto-Logout Security**: Users are logged out after 30 minutes of inactivity with a 2-minute warning
+
+---
+
+## Verification Steps
+
+1. **2FA**: Navigate to admin, click Set Up 2FA, scan code, enter verification code → should complete successfully
+2. **Profile Photo**: Upload a profile photo → should display clearly without opacity issues
+3. **Auto-Logout**: Leave app idle for 28 minutes → warning should appear, 2 more minutes → auto-logout
