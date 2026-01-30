@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useInactivityLogout } from '@/hooks/useInactivityLogout';
 import {
   Sidebar,
   SidebarContent,
@@ -40,6 +41,7 @@ import { PageTransition } from '@/components/ui/page-transition';
 import { MFAGuard } from './MFAGuard';
 import { RateLimitIndicator } from './RateLimitIndicator';
 import { PortalBreadcrumb } from '../portal/PortalBreadcrumb';
+import { InactivityWarningModal } from '@/components/auth/InactivityWarningModal';
 import logo from '@/assets/logo-transparent.png';
 
 interface AdminLayoutProps {
@@ -101,6 +103,16 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     return currentItem?.endpoint || null;
   }, [location.pathname]);
 
+  // Inactivity logout - 2 hours for admin (longer due to complex work)
+  const { showWarning, remainingSeconds, dismissWarning } = useInactivityLogout({
+    timeoutMinutes: 120,
+    warningMinutes: 5,
+    onLogout: () => {
+      signOut();
+      navigate('/auth');
+    },
+    enabled: !!user && isAdmin,
+  });
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/auth');
@@ -129,7 +141,16 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <SidebarProvider>
+    <>
+      {/* Inactivity Warning Modal */}
+      <InactivityWarningModal
+        isOpen={showWarning}
+        remainingSeconds={remainingSeconds}
+        onStayLoggedIn={dismissWarning}
+        onLogoutNow={handleSignOut}
+      />
+      
+      <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         <Sidebar className="border-r border-border">
           <SidebarHeader className="p-4 border-b border-border">
@@ -226,5 +247,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         </main>
       </div>
     </SidebarProvider>
+    </>
   );
 }

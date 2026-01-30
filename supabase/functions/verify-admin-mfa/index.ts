@@ -59,7 +59,7 @@ serve(async (req) => {
       );
     }
 
-    const { action, code } = await req.json();
+    const { action, code, factorId: providedFactorId } = await req.json();
 
     if (action === 'setup') {
       // Generate a TOTP secret for MFA setup
@@ -110,21 +110,29 @@ serve(async (req) => {
         );
       }
 
-      // Get the user's MFA factors
-      const { data: factors } = await supabaseUser.auth.mfa.listFactors();
+      // Determine which factor ID to use
+      let targetFactorId = providedFactorId;
       
-      if (!factors?.totp || factors.totp.length === 0) {
+      // If no factorId provided, try to get from listFactors (for already verified factors)
+      if (!targetFactorId) {
+        const { data: factors } = await supabaseUser.auth.mfa.listFactors();
+        if (factors?.totp && factors.totp.length > 0) {
+          targetFactorId = factors.totp[0].id;
+        }
+      }
+      
+      if (!targetFactorId) {
         return new Response(
-          JSON.stringify({ error: 'No MFA factors found. Please set up MFA first.' }),
+          JSON.stringify({ error: 'No MFA factor found. Please set up MFA first.' }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 
-      const totpFactor = factors.totp[0];
+      console.log(`Verifying MFA for factor ${targetFactorId}`);
 
       // Create a challenge
       const { data: challenge, error: challengeError } = await supabaseUser.auth.mfa.challenge({
-        factorId: totpFactor.id
+        factorId: targetFactorId
       });
 
       if (challengeError) {
@@ -137,7 +145,7 @@ serve(async (req) => {
 
       // Verify the challenge with the code
       const { data: verifyData, error: verifyError } = await supabaseUser.auth.mfa.verify({
-        factorId: totpFactor.id,
+        factorId: targetFactorId,
         challengeId: challenge.id,
         code: code
       });

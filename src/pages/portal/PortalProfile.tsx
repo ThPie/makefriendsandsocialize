@@ -246,17 +246,26 @@ export default function PortalProfile() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-4">
-              {/* Existing photos */}
+              {/* Existing photos - using img tag for better display control */}
               {avatarUrls.map((url, index) => (
-                <div key={index} className="relative group">
-                  <Avatar className="h-32 w-32 rounded-lg">
-                    <AvatarImage src={url} className="object-cover" />
-                    <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
-                  </Avatar>
+                <div key={index} className="relative group h-32 w-32 rounded-lg overflow-hidden bg-muted">
+                  <img
+                    src={url}
+                    alt={`Profile photo ${index + 1}`}
+                    className="h-full w-full object-cover object-center"
+                    loading="lazy"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                  {/* Fallback behind the image */}
+                  <div className="absolute inset-0 flex items-center justify-center bg-muted text-muted-foreground -z-10">
+                    {initials}
+                  </div>
                   <button
                     type="button"
                     onClick={() => removePhoto(index)}
-                    className="absolute -top-2 -right-2 p-1 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute -top-2 -right-2 p-1 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity z-10"
                   >
                     <X className="h-4 w-4" />
                   </button>

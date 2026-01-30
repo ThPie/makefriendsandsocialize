@@ -16,6 +16,7 @@ export function MFASetup({ onSetupComplete, onCancel }: MFASetupProps) {
   const [loading, setLoading] = useState(false);
   const [qrCode, setQrCode] = useState<string>('');
   const [secret, setSecret] = useState<string>('');
+  const [factorId, setFactorId] = useState<string>('');
   const [verifyCode, setVerifyCode] = useState('');
   const [copied, setCopied] = useState(false);
 
@@ -30,6 +31,7 @@ export function MFASetup({ onSetupComplete, onCancel }: MFASetupProps) {
 
       setQrCode(data.qrCode);
       setSecret(data.secret);
+      setFactorId(data.factorId);
       setStep('qr');
     } catch (error: any) {
       console.error('MFA setup error:', error);
@@ -55,7 +57,7 @@ export function MFASetup({ onSetupComplete, onCancel }: MFASetupProps) {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('verify-admin-mfa', {
-        body: { action: 'verify', code: verifyCode }
+        body: { action: 'verify', code: verifyCode, factorId }
       });
 
       if (error) throw error;
