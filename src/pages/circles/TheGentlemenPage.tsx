@@ -20,7 +20,7 @@ import {
   Loader2,
   LogIn
 } from "lucide-react";
-import heroImage from "@/assets/gentlemen-hero-new.webp";
+import heroImage from "@/assets/gentlemen-hero-cultural.webp";
 import {
   Select,
   SelectContent,

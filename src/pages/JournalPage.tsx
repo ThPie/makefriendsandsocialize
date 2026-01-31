@@ -130,14 +130,7 @@ const JournalPage = () => {
             <span className="text-gradient">Blog</span>
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-muted-foreground text-lg md:text-xl max-w-xl mb-8"
-          >
-            Insights on Connection, Community & Growth
-          </motion.p>
+          <div className="mb-8" />
 
           {/* Search */}
           <motion.div

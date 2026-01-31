@@ -5,6 +5,7 @@ import { Briefcase, Quote, Users, Shield, Globe, MessageCircle, Sparkles, ArrowR
 import { Layout } from "@/components/layout/Layout";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
+import { useFoundersStats } from "@/hooks/useFoundersStats";
 import { motion } from "framer-motion";
 import {
   Accordion,
@@ -24,6 +25,7 @@ const galleryImages = [
 ];
 
 const ConnectedCirclePage = () => {
+  const { data: foundersStats, isLoading: statsLoading } = useFoundersStats();
   const heroAnimation = useScrollAnimation({ rootMargin: '100px' });
   const philosophyAnimation = useScrollAnimation({ rootMargin: '100px' });
   const processAnimation = useScrollAnimation({ rootMargin: '100px' });
@@ -54,13 +56,16 @@ const ConnectedCirclePage = () => {
     },
   };
 
-  // Stats data
+  // Stats data - use real data from hook
   const stats = [
-    { value: 150, suffix: "+", label: "Founder Companies", icon: Building2 },
-    { value: 50, suffix: "+", label: "Industries", icon: Briefcase },
-    { value: 500, suffix: "+", label: "Connections Made", icon: Handshake },
-    { value: 12, suffix: "+", label: "Cities", icon: Globe },
+    { value: foundersStats?.founderCompanies || 0, suffix: foundersStats?.founderCompanies ? "+" : "", label: "Founder Companies", icon: Building2 },
+    { value: foundersStats?.industries || 0, suffix: foundersStats?.industries ? "+" : "", label: "Industries", icon: Briefcase },
+    { value: foundersStats?.connectionsMade || 0, suffix: foundersStats?.connectionsMade ? "+" : "", label: "Connections Made", icon: Handshake },
+    { value: foundersStats?.cities || 0, suffix: foundersStats?.cities ? "+" : "", label: "Cities", icon: Globe },
   ];
+
+  // Check if we have any real data to show
+  const hasStatsData = foundersStats && (foundersStats.founderCompanies > 0 || foundersStats.connectionsMade > 0);
 
   // Benefits data
   const benefits = [
@@ -153,7 +158,7 @@ const ConnectedCirclePage = () => {
               alt="Professional business networking" 
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-background/90" />
           </div>
           
           <div 
