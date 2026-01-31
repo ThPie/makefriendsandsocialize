@@ -127,6 +127,26 @@ serve(async (req) => {
         .trim();
     };
 
+    // Meetup events are primarily Salt Lake City (Mountain Time). Using UTC here causes
+    // "today" to roll over early and incorrectly treat same-day events as "past".
+    // Using an IANA timezone also correctly handles DST.
+    const MEETUP_TIME_ZONE = 'America/Denver';
+
+    const formatDateInTimeZone = (date: Date, timeZone: string): string => {
+      // en-CA yields YYYY-MM-DD
+      return new Intl.DateTimeFormat('en-CA', {
+        timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(date);
+    };
+
+    const today = formatDateInTimeZone(new Date(), MEETUP_TIME_ZONE);
+    const [currentYearStr, currentMonthStr] = today.split('-');
+    const currentYear = Number(currentYearStr);
+    const currentMonth = Number(currentMonthStr);
+
     // Helper function to parse various date formats
     const parseEventDate = (dateStr: string): string | null => {
       if (!dateStr) return null;
@@ -153,8 +173,6 @@ serve(async (req) => {
       };
       
       const upper = dateStr.toUpperCase();
-      const currentYear = new Date().getFullYear();
-      const currentMonth = new Date().getMonth() + 1;
       
       for (const [monthName, monthNum] of Object.entries(months)) {
         if (upper.includes(monthName)) {
@@ -194,7 +212,7 @@ serve(async (req) => {
     // Process and validate extracted events
     const validEvents: ParsedEvent[] = [];
     let imageIndex = 0;
-    const today = new Date().toISOString().split('T')[0];
+    // Note: "today" is computed in MEETUP_TIME_ZONE above.
 
     console.log('Processing', extractedEvents.length, 'extracted events');
 
