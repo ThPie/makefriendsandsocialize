@@ -9,7 +9,8 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Layout } from "@/components/layout/Layout";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { isSlowDatingSubdomain } from "@/lib/subdomain-utils";
+import { isSlowDatingSubdomain, isCanadianDomain } from "@/lib/subdomain-utils";
+import { CountryRedirectBanner } from "@/components/ui/country-redirect-banner";
 
 import HomePage from "@/pages/HomePage";
 import EventsPage from "@/pages/EventsPage";
@@ -223,22 +224,31 @@ const MainRoutes = () => (
   </Routes>
 );
 
-const App = () => (
-  <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <AuthProvider>
-          <TooltipProvider>
-            <BrowserRouter>
-              <ScrollToTop />
-              <RecoveryRedirectHandler />
-              {isSlowDatingSubdomain() ? <SlowDatingRoutes /> : <MainRoutes />}
-            </BrowserRouter>
-          </TooltipProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  </ErrorBoundary>
-);
+const App = () => {
+  // Determine which routes to render based on subdomain
+  const showSlowDatingRoutes = isSlowDatingSubdomain();
+  // Only show geo-redirect banner on .com domains (not on .ca)
+  const showGeoRedirectBanner = !isCanadianDomain() && !showSlowDatingRoutes;
+
+  return (
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthProvider>
+            <TooltipProvider>
+              <BrowserRouter>
+                <ScrollToTop />
+                <RecoveryRedirectHandler />
+                {/* Show geo-redirect banner for Canadian users on .com */}
+                {showGeoRedirectBanner && <CountryRedirectBanner />}
+                {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
+              </BrowserRouter>
+            </TooltipProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
+  );
+};
 
 export default App;

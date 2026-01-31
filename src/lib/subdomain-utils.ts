@@ -1,7 +1,80 @@
 /**
  * Subdomain detection and redirect utilities
- * Handles slowdating.makefriendsandsocialize.com and www-to-root redirects
+ * Handles slowdating.makefriendsandsocialize.com/.ca and www-to-root redirects
  */
+
+// Known TLDs for our domains
+const KNOWN_TLDS = ['com', 'ca'];
+const BASE_DOMAIN = 'makefriendsandsocialize';
+
+/**
+ * Gets the TLD from the current hostname (.com, .ca, etc.)
+ */
+export function getTLD(): string | null {
+  const hostname = window.location.hostname;
+  
+  // Handle localhost and Lovable preview environments
+  if (hostname === 'localhost' || hostname.includes('lovable.app')) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('tld') || 'com';
+  }
+  
+  const parts = hostname.split('.');
+  const tld = parts[parts.length - 1];
+  
+  return KNOWN_TLDS.includes(tld) ? tld : null;
+}
+
+/**
+ * Returns true if the user is on a .ca domain
+ */
+export function isCanadianDomain(): boolean {
+  return getTLD() === 'ca';
+}
+
+/**
+ * Gets the base domain (makefriendsandsocialize.com or .ca)
+ */
+export function getBaseDomain(): string {
+  const tld = getTLD();
+  return `${BASE_DOMAIN}.${tld || 'com'}`;
+}
+
+/**
+ * Gets the equivalent Canadian (.ca) URL for the current page
+ */
+export function getEquivalentCanadianUrl(): string {
+  const hostname = window.location.hostname;
+  
+  // Handle localhost and Lovable preview environments
+  if (hostname === 'localhost' || hostname.includes('lovable.app')) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('tld', 'ca');
+    return url.toString();
+  }
+  
+  // Replace .com with .ca in the hostname
+  const canadianHostname = hostname.replace(/\.com$/, '.ca');
+  return `https://${canadianHostname}${window.location.pathname}${window.location.search}${window.location.hash}`;
+}
+
+/**
+ * Gets the equivalent .com URL for the current page
+ */
+export function getEquivalentComUrl(): string {
+  const hostname = window.location.hostname;
+  
+  // Handle localhost and Lovable preview environments
+  if (hostname === 'localhost' || hostname.includes('lovable.app')) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('tld', 'com');
+    return url.toString();
+  }
+  
+  // Replace .ca with .com in the hostname
+  const comHostname = hostname.replace(/\.ca$/, '.com');
+  return `https://${comHostname}${window.location.pathname}${window.location.search}${window.location.hash}`;
+}
 
 export function getCurrentSubdomain(): string | null {
   const hostname = window.location.hostname;
@@ -14,13 +87,28 @@ export function getCurrentSubdomain(): string | null {
     return urlParams.get('subdomain');
   }
   
-  // Production: check if first part is a known subdomain
-  // For makefriendsandsocialize.com, we expect: slowdating.makefriendsandsocialize.com
-  if (parts.length >= 3) {
-    const subdomain = parts[0];
-    // Return the subdomain if it's not 'www'
-    if (subdomain !== 'www') {
-      return subdomain;
+  // Production: check if we have a subdomain
+  // For makefriendsandsocialize.com or makefriendsandsocialize.ca, we expect:
+  // - Root: ['makefriendsandsocialize', 'com'] (2 parts)
+  // - Subdomain: ['slowdating', 'makefriendsandsocialize', 'com'] (3 parts)
+  // - www: ['www', 'makefriendsandsocialize', 'com'] (3 parts, but www is ignored)
+  
+  const tld = parts[parts.length - 1];
+  
+  // Only process if we're on a known TLD
+  if (!KNOWN_TLDS.includes(tld)) {
+    return null;
+  }
+  
+  // Check if the second-to-last part is our base domain
+  if (parts.length >= 2 && parts[parts.length - 2] === BASE_DOMAIN) {
+    // If we have more than 2 parts, the first part is the subdomain
+    if (parts.length > 2) {
+      const subdomain = parts[0];
+      // Return the subdomain if it's not 'www'
+      if (subdomain !== 'www') {
+        return subdomain;
+      }
     }
   }
   
@@ -33,6 +121,7 @@ export function isSlowDatingSubdomain(): boolean {
 
 /**
  * Redirects www subdomain to root domain to prevent CDN caching issues.
+ * Supports both .com and .ca domains.
  * Returns true if a redirect was triggered, false otherwise.
  */
 export function redirectWwwToRoot(): boolean {
@@ -100,13 +189,21 @@ export function getPublishedHost(): string {
 }
 
 export function getSubdomainBaseUrl(subdomain: string): string {
+  const hostname = window.location.hostname;
+  
   // In development, use query param
-  if (window.location.hostname === 'localhost' || window.location.hostname.includes('lovable.app')) {
+  if (hostname === 'localhost' || hostname.includes('lovable.app')) {
     return `${window.location.origin}?subdomain=${subdomain}`;
   }
   
-  // In production, construct the subdomain URL
-  const parts = window.location.hostname.split('.');
-  const baseDomain = parts.slice(-2).join('.'); // e.g., makefriendsandsocialize.com
+  // In production, construct the subdomain URL with the correct TLD
+  const baseDomain = getBaseDomain();
   return `https://${subdomain}.${baseDomain}`;
+}
+
+/**
+ * Gets the slow dating subdomain URL
+ */
+export function getSlowDatingSubdomainUrl(): string {
+  return getSubdomainBaseUrl('slowdating');
 }

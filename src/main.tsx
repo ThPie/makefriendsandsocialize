@@ -14,7 +14,7 @@ if (redirectVanityPreviewToPublished()) {
 }
 
 // Redirect www to root domain before app initialization
-// This prevents CDN caching issues between subdomains
+// This handles both .com and .ca domains (www.makefriendsandsocialize.com -> makefriendsandsocialize.com)
 if (redirectWwwToRoot()) {
   // Stop execution if redirecting - page will reload on root domain
   throw new Error('Redirecting to root domain');
