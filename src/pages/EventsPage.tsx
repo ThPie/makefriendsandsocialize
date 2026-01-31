@@ -13,6 +13,7 @@ import { format, differenceInDays } from 'date-fns';
 import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2, ExternalLink } from 'lucide-react';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
 import { parseLocalDate } from '@/lib/date-utils';
+import { categorizeEvent } from '@/lib/event-categorization';
 import {
   Select,
   SelectContent,
@@ -79,8 +80,7 @@ const EventsPage = () => {
   const [activeTab, setActiveTab] = useState<EventTab>('upcoming');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [rsvpFeedback, setRsvpFeedback] = useState<{ type: 'success' | 'info'; message: string } | null>(null);
-
-  const categories = ["All", "Dining", "Sports", "Art & Culture", "Music", "Networking"];
+  const categories = ["All", "Networking", "Social", "Dining", "Art & Culture", "Sports", "Music", "Dating"];
 
   // Fetch events from database
   const { data: events = [], isLoading } = useQuery({
@@ -176,10 +176,16 @@ const EventsPage = () => {
 
   const filteredAndSortedEvents = useMemo(() => {
     let result = events.filter(event => {
+      // Get auto-categorized category based on title/description
+      const autoCategory = categorizeEvent(event.title, event.description);
+      
+      // Check if event matches selected category
       const matchesCategory = activeCategory === "All" || 
+        autoCategory === activeCategory ||
         (event.tags && event.tags.some(tag => 
           tag.toLowerCase().includes(activeCategory.toLowerCase())
         ));
+      
       const query = searchQuery.toLowerCase().trim();
       const matchesSearch = 
         event.title.toLowerCase().includes(query) ||

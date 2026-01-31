@@ -21,7 +21,7 @@ import {
   Loader2,
   LogIn
 } from "lucide-react";
-import heroImage from "@/assets/les-amis-hero-new.webp";
+import heroImage from "@/assets/les-amis-hero-cultural.webp";
 import {
   Select,
   SelectContent,
