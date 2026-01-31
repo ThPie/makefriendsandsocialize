@@ -127,7 +127,9 @@ export const Header = () => {
   useEffect(() => {
     const fetchDailyQuote = async () => {
       try {
-        const today = new Date().toISOString().split('T')[0];
+        // Use local date (not UTC) so the quote matches the user's day.
+        const now = new Date();
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
         const { data, error } = await supabase
           .from('daily_quotes')
           .select('quote_text')
