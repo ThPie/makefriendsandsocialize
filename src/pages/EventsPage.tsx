@@ -86,7 +86,9 @@ const EventsPage = () => {
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['events', activeTab],
     queryFn: async () => {
-      const today = new Date().toISOString().split('T')[0];
+      // Use local date to avoid timezone issues (UTC can show wrong day)
+      const now = new Date();
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
       
       let query = supabase
         .from('events')

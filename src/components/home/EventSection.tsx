@@ -115,7 +115,9 @@ export const EventSection = () => {
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['home-upcoming-events'],
     queryFn: async () => {
-      const today = new Date().toISOString().split('T')[0];
+      // Use local date to avoid timezone issues (UTC can show wrong day)
+      const now = new Date();
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
       const { data, error } = await supabase
         .from('events')
         .select('id, title, date, time, location, description, image_url, capacity, city, venue_name, rsvp_count')
