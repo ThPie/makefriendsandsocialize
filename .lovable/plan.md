@@ -1,370 +1,193 @@
 
-# Comprehensive QA/QC Assessment Report
-## Pre-Domain Connection Audit
+# Subdomain & Canadian Domain Routing Implementation
 
-This comprehensive assessment covers email processes (Resend), APIs (SMS/Twilio), edge functions, design consistency, and security vulnerabilities across your MakeFriends & Socialize platform.
+## Current Status
+
+| Domain | Status | Issue |
+|--------|--------|-------|
+| `makefriendsandsocialize.com` | Cloudflare Error 1001 | DNS proxy needs to be disabled in Hostinger |
+| `slowdating.makefriendsandsocialize.com` | Working but wrong page | Shows main homepage instead of Slow Dating landing |
+| `makefriendsandsocialize.ca` | Working | Shows main homepage correctly |
+| `slowdating.makefriendsandsocialize.ca` | Not configured | Domain needs to be added in Lovable settings |
+
+## Root Cause Analysis
+
+The `isSlowDatingSubdomain()` function has a bug. It checks `parts.length >= 3`, but for `.ca` domains:
+- `slowdating.makefriendsandsocialize.ca` splits into 3 parts: `['slowdating', 'makefriendsandsocialize', 'ca']`
+- `slowdating.makefriendsandsocialize.com` also splits into 3 parts: `['slowdating', 'makefriendsandsocialize', 'com']`
+
+The current logic should work, but the issue is that the code assumes the base domain always has 2 parts (e.g., `domain.com`). For proper TLD detection, we need to handle both `.com` and `.ca` correctly.
 
 ---
 
-## Executive Summary
+## Phase 1: Fix DNS Issue (Manual Action Required)
 
-| Category | Status | Critical Issues | Warnings | Info |
-|----------|--------|-----------------|----------|------|
-| Email (Resend) | 🟡 Needs Work | 2 | 5 | 2 |
-| SMS (Twilio) | ✅ Good | 0 | 1 | 0 |
-| Edge Functions | 🟡 Needs Work | 1 | 22 | 0 |
-| Design/Branding | 🔴 Critical | 4 | 6 | 0 |
-| Security | 🟡 Needs Work | 2 | 4 | 1 |
-| API Configuration | 🟡 Needs Work | 1 | 1 | 0 |
+**Problem:** `makefriendsandsocialize.com` shows Cloudflare Error 1001.
+
+**Action in Hostinger DNS:**
+1. Find the A record for `@` (root domain)
+2. Ensure it points to `185.158.133.1`
+3. **Disable the Cloudflare proxy** (change from orange cloud to gray cloud)
+4. Wait for propagation (5-15 minutes)
 
 ---
 
-## 1. EMAIL SYSTEM (Resend) - Critical Fixes Required
+## Phase 2: Update Subdomain Detection Logic
 
-### 1.1 CRITICAL: Sandbox Domain Still in Use
+### File: `src/lib/subdomain-utils.ts`
 
-All 14+ email-sending edge functions use `onboarding@resend.dev` (Resend sandbox):
+Add new functions to properly handle both `.com` and `.ca` domains:
+
+**New Functions to Add:**
+```text
+getTLD()
+  Returns 'ca' or 'com' based on current hostname
+
+isCanadianDomain()
+  Returns true if on .ca domain
+
+getBaseDomain()
+  Returns 'makefriendsandsocialize.com' or 'makefriendsandsocialize.ca'
+
+getEquivalentCanadianUrl()
+  Converts .com URL to .ca equivalent
+```
+
+**Update Existing Functions:**
+- `getCurrentSubdomain()` - Fix to work with both `.com` and `.ca` TLDs
+- `redirectWwwToRoot()` - Support `.ca` www redirects
+- `getSubdomainBaseUrl()` - Support `.ca` base domains
+
+---
+
+## Phase 3: Add Geo-Redirect for Canadian Users
+
+### New Hook: `src/hooks/useGeoRedirect.ts`
+
+This hook will:
+1. Call the existing `detect-location` edge function
+2. Check if user is in Canada AND on `.com` domain
+3. Show a non-intrusive banner suggesting the `.ca` site
+4. Store user preference in localStorage to avoid repeated prompts
+
+### New Component: `src/components/ui/country-redirect-banner.tsx`
+
+A dismissible banner for Canadian users on `.com`:
+```
+"It looks like you're in Canada! Visit our Canadian site?"
+[Visit makefriendsandsocialize.ca] [Stay here]
+```
+
+---
+
+## Phase 4: Update App Routing
+
+### File: `src/App.tsx`
+
+Update the routing logic to handle:
+1. **Slow Dating subdomain** (both `.com` and `.ca`)
+2. **Canadian domain context** for analytics/SEO
 
 ```text
-send-dating-notification/index.ts     → "Make Friends and Socialize <onboarding@resend.dev>"
-send-waitlist-notification/index.ts   → "Events <onboarding@resend.dev>"
-send-event-reminders/index.ts         → "Club Events <onboarding@resend.dev>"
-send-security-alert/index.ts          → "Security Alerts <onboarding@resend.dev>"
-send-referral-invite/index.ts         → "Club Invitations <onboarding@resend.dev>"
-send-referral-notification/index.ts   → "Club Referrals <onboarding@resend.dev>"
-send-profile-notification/index.ts    → "Make Friends and Socialize <onboarding@resend.dev>"
-send-rsvp-notification/index.ts       → "Events <onboarding@resend.dev>"
-send-appeal-confirmation/index.ts     → "Make Friends & Socialize <onboarding@resend.dev>"
-send-appeal-notification/index.ts     → "Make Friends & Socialize <onboarding@resend.dev>"
-send-password-changed-email/index.ts  → "MakeFriends & Socialize <onboarding@resend.dev>"
-send-dating-reminders/index.ts        → "Make Friends and Socialize <onboarding@resend.dev>"
-send-business-lead-notification       → "MakeFriends <noreply@updates.makefriends.com>" ⚠️ Different domain!
+Current: isSlowDatingSubdomain() ? SlowDatingRoutes : MainRoutes
+
+Updated:
+- slowdating.*.com -> SlowDatingRoutes
+- slowdating.*.ca  -> SlowDatingRoutes
+- *.ca            -> MainRoutes (with geo-redirect disabled)
+- *.com           -> MainRoutes (with geo-redirect enabled)
 ```
 
-**Impact:** Emails go to spam, get rate-limited, and show "via resend.dev" which damages trust.
+---
 
-**Fix Required:**
-1. Verify domain `makefriendsandsocialize.com` in Resend Dashboard
-2. Update ALL edge functions to use verified domain sender addresses
-3. Standardize sender naming (some use "MakeFriends", others "Make Friends and Socialize")
+## Phase 5: Update Main Entry Point
 
-### 1.2 Email Template Issues
+### File: `src/main.tsx`
 
-| Issue | Affected Functions | Severity |
-|-------|-------------------|----------|
-| Hardcoded old URLs (makefriends.social) | event-confirmation.tsx, subscription-renewed.tsx, payment-failed.tsx, welcome.tsx | Medium |
-| Inconsistent branding names | Multiple functions | Low |
-| Missing footer unsubscribe links | All marketing-style emails | Medium |
-| No email preference checking | Some functions | Medium |
+Add `www.makefriendsandsocialize.ca` to `www.makefriendsandsocialize.ca` redirect (currently only handles `.com`).
 
-### 1.3 Recommended Email Domain Strategy
+---
+
+## Files to Modify
+
+| File | Changes |
+|------|---------|
+| `src/lib/subdomain-utils.ts` | Add TLD detection, fix subdomain logic for `.ca` |
+| `src/App.tsx` | Add Canadian domain context, fix subdomain routing |
+| `src/main.tsx` | Add `.ca` www redirect |
+
+## Files to Create
+
+| File | Purpose |
+|------|---------|
+| `src/hooks/useGeoRedirect.ts` | Geo-detection with localStorage persistence |
+| `src/components/ui/country-redirect-banner.tsx` | Optional redirect banner for Canadians |
+
+---
+
+## Technical Implementation Details
+
+### Updated `getCurrentSubdomain()` Logic
 
 ```text
-noreply@makefriendsandsocialize.com      → Transactional (password reset, verification)
-events@makefriendsandsocialize.com       → Event reminders, RSVPs
-hello@makefriendsandsocialize.com        → Welcome, referrals
-security@makefriendsandsocialize.com     → Security alerts
-dating@makefriendsandsocialize.com       → Slow Dating notifications
+hostname: slowdating.makefriendsandsocialize.com
+parts: ['slowdating', 'makefriendsandsocialize', 'com']
+
+Step 1: Detect TLD (.com or .ca)
+Step 2: Expected base domain parts = 2 (makefriendsandsocialize + TLD)
+Step 3: If parts.length > 2, first part is subdomain
+Step 4: Return subdomain if not 'www'
 ```
 
----
-
-## 2. SMS SYSTEM (Twilio) - Good Condition
-
-### 2.1 Configuration Status
-- ✅ `TWILIO_ACCOUNT_SID` configured
-- ✅ `TWILIO_AUTH_TOKEN` configured
-- ✅ `TWILIO_PHONE_NUMBER` configured
-
-### 2.2 Security Analysis
-
-**Good Practices Found:**
-- Admin-only access restriction
-- Rate limiting (50 SMS/hour per admin)
-- Phone number validation regex
-- Audit logging with masked phone numbers
-- No sensitive data in logs
-
-**One Warning:**
-- The `send-sms` function is auth-protected but `send-dating-reminders` calls it internally without re-validating admin status (acceptable for scheduled jobs)
-
----
-
-## 3. EDGE FUNCTIONS - 22 Files Need Updates
-
-### 3.1 CRITICAL: Outdated Deno Standard Library
-
-**22 functions use deprecated version `0.168.0`:**
+### Geo-Redirect Flow
 
 ```text
-scrape-meetup-events/index.ts
-test-push-notification/index.ts
-send-waitlist-notification/index.ts
-encrypt-sensitive-data/index.ts
-admin-rate-limiter/index.ts
-find-matches/index.ts
-scrape-meetup/index.ts
-verify-admin-mfa/index.ts
-scheduled-lead-discovery/index.ts
-generate-daily-quote/index.ts
-elevenlabs-scribe-token/index.ts
-scheduled-event-sync/index.ts
-sync-meetup-upcoming-events/index.ts
-preprocess-dating-profile/index.ts
-verify-social-profiles/index.ts
-api-rate-limiter/index.ts
-detect-location/index.ts
-find-leads/index.ts
-send-rsvp-notification/index.ts
-send-push-notification/index.ts
-deep-osint-analysis/index.ts
-verify-business-profile/index.ts
-```
-
-**Required Update:** Change to `0.190.0` for edge-runtime compatibility
-
-### 3.2 Inconsistent Supabase Client Versions
-
-```text
-@supabase/supabase-js@2.7.1    → send-waitlist-notification, send-rsvp-notification
-@supabase/supabase-js@2.50.0   → oauth-rate-limiter
-@supabase/supabase-js@2.57.2   → send-sms, stripe-webhook, generate-daily-quote
-@supabase/supabase-js@2.89.0   → send-event-reminders, send-referral-invite
-@supabase/supabase-js@2        → Most other functions (auto-resolves to latest)
-```
-
-**Fix:** Standardize all to `@supabase/supabase-js@2.89.0` or `@2` (latest)
-
-### 3.3 Missing STRIPE_WEBHOOK_SECRET
-
-The stripe-webhook function checks for `STRIPE_WEBHOOK_SECRET` but will skip signature verification if not set:
-
-```javascript
-if (webhookSecret) {
-  event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
-} else {
-  event = JSON.parse(body); // INSECURE FALLBACK
-}
-```
-
-**Required:** Add `STRIPE_WEBHOOK_SECRET` to secrets before production
-
-### 3.4 CORS Headers Inconsistency
-
-Most functions use basic headers:
-```javascript
-'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
-```
-
-But the recommended headers include additional Supabase client headers:
-```javascript
-'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version'
-```
-
-**Affected:** 30+ functions should be updated
-
----
-
-## 4. DESIGN & BRANDING - Critical Inconsistencies
-
-### 4.1 CRITICAL: Multiple Conflicting Domain References
-
-| URL Pattern | Location | Status |
-|-------------|----------|--------|
-| `the-gathering.lovable.app` | send-dating-notification, send-dating-reminders, send-profile-notification | ❌ OLD/WRONG |
-| `makefriends.social` | email templates (welcome, event-confirmation, etc.) | ❌ OLD/WRONG |
-| `preview--make-friends-socialize.lovable.app` | send-security-alert | ❌ PREVIEW URL |
-| `makefriendsandsocializecom.lovable.app` | send-business-lead-notification | ⚠️ Lovable URL |
-| `makefriendsandsocialize.com` | send-password-changed-email, send-appeal-* | ✅ CORRECT |
-
-**Fix Required:** All URLs should use `makefriendsandsocialize.com` (or use `SITE_URL` env variable)
-
-### 4.2 SITE_URL Environment Variable
-
-**Functions with hardcoded fallbacks:**
-- send-dating-notification: `https://the-gathering.lovable.app` ❌
-- send-dating-reminders: `https://the-gathering.lovable.app` ❌
-- send-waitlist-notification: `https://lovable.dev` ❌
-- send-business-lead-notification: `https://makefriendsandsocializecom.lovable.app` ⚠️
-
-**Fix:** Add `SITE_URL=https://makefriendsandsocialize.com` as a secret and update all fallbacks
-
-### 4.3 Brand Name Inconsistencies
-
-Found variations across the codebase:
-- "Make Friends and Socialize"
-- "MakeFriends & Socialize"
-- "MakeFriends Social Club"
-- "The Gathering"
-- "Make Friends & Socialize"
-
-**Standardize to:** "MakeFriends & Socialize" or "Make Friends and Socialize" (pick one)
-
-### 4.4 Email Contact Addresses
-
-Multiple email addresses referenced:
-- `hello@makefriends.social` (wrong domain)
-- `hello@makefriendsandsocialize.com` ✅
-- `billing@makefriends.social` (wrong domain)
-- `support@makefriendsandsocialize.com` ✅
-
----
-
-## 5. SECURITY FINDINGS
-
-### 5.1 Critical Security Issues (from automated scan)
-
-| Finding | Severity | Table/Function |
-|---------|----------|----------------|
-| Customer Personal Data Could Be Stolen | 🔴 ERROR | profiles table |
-| Business Lead Contact Information Exposure | 🔴 ERROR | business_leads table |
-| Referred Email Addresses Harvesting Risk | 🟡 WARN | referrals table |
-| Dating Sensitive Data RLS Bypass | 🟡 WARN | get_dating_profile_sensitive_data |
-| Session Tokens in LocalStorage | 🟡 WARN | useSessionManager.ts |
-| Analytics Events Injection | 🟡 WARN | analytics_events table |
-
-### 5.2 Database Linter Warning
-
-```text
-WARN: Function Search Path Mutable
-One or more functions do not have search_path set, which could allow schema injection attacks.
-```
-
-### 5.3 Missing Secrets
-
-| Secret | Status | Required For |
-|--------|--------|--------------|
-| STRIPE_WEBHOOK_SECRET | ❌ NOT CONFIGURED | Stripe webhook signature verification |
-| SITE_URL | ❌ NOT CONFIGURED | Email link generation |
-
----
-
-## 6. API CONFIGURATION
-
-### 6.1 Stripe Configuration
-- ✅ STRIPE_SECRET_KEY configured
-- ⚠️ STRIPE_WEBHOOK_SECRET NOT configured (critical for production)
-- ✅ Price IDs properly mapped
-- ✅ Trial period updated to 30 days
-
-### 6.2 External API Dependencies
-
-| API | Secret | Status | Notes |
-|-----|--------|--------|-------|
-| Resend | RESEND_API_KEY | ✅ | Domain verification needed |
-| Twilio | TWILIO_* (3 secrets) | ✅ | Working |
-| ElevenLabs | ELEVENLABS_API_KEY | ✅ | Voice features |
-| Perplexity | PERPLEXITY_API_KEY | ✅ | AI features |
-| Firecrawl | FIRECRAWL_API_KEY | ✅ | Meetup scraping |
-| VAPID | VAPID_PUBLIC/PRIVATE_KEY | ✅ | Push notifications |
-
----
-
-## 7. FIX IMPLEMENTATION PLAN
-
-### Phase 1: Critical Pre-Launch (Do Before Domain Connection)
-
-```text
-Priority 1 - Email Domain (2-3 hours)
-├── Verify makefriendsandsocialize.com in Resend
-├── Update 14 edge functions with correct sender addresses
-├── Standardize brand name across all emails
-└── Test email delivery
-
-Priority 2 - URL Fixes (1 hour)
-├── Add SITE_URL secret: https://makefriendsandsocialize.com
-├── Update hardcoded URLs in 6 edge functions
-└── Fix email template URLs
-
-Priority 3 - Stripe Webhook Security (30 min)
-├── Add STRIPE_WEBHOOK_SECRET to secrets
-├── Get webhook secret from Stripe Dashboard → Webhooks → Signing secret
-└── Test webhook signature verification
-
-Priority 4 - Deno Library Updates (1-2 hours)
-├── Update 22 functions from 0.168.0 → 0.190.0
-├── Standardize Supabase client versions
-└── Test all affected functions
-```
-
-### Phase 2: Security Hardening (Post-Launch)
-
-```text
-├── Encrypt business_leads contact information
-├── Add field-level RLS to profiles table
-├── Set search_path on database functions
-├── Implement rate limiting on analytics insertions
-└── Review session token storage strategy
-```
-
-### Phase 3: Polish & Consistency
-
-```text
-├── Standardize CORS headers across all functions
-├── Add email preference checking to all notifications
-├── Implement unsubscribe links in marketing emails
-└── Add comprehensive logging to all functions
+User visits makefriendsandsocialize.com from Canada
+          |
+          v
+detect-location edge function called
+          |
+          v
+Response: { country: "Canada" }
+          |
+          v
+Check localStorage for 'geo-redirect-dismissed'
+          |
+   +------+------+
+   |             |
+   v             v
+Dismissed?    Show Banner
+   |             |
+   v             v
+No action    User clicks:
+             - "Visit .ca" -> redirect
+             - "Stay" -> save preference
 ```
 
 ---
 
-## 8. FILES TO MODIFY
+## DNS Requirements Summary
 
-### Email Domain Updates (14 files)
+Ensure these domains are configured in Lovable Settings AND Hostinger:
 
-| File | Change |
-|------|--------|
-| supabase/functions/send-dating-notification/index.ts | Update sender, SITE_URL fallback |
-| supabase/functions/send-waitlist-notification/index.ts | Update sender, SITE_URL fallback |
-| supabase/functions/send-event-reminders/index.ts | Update sender |
-| supabase/functions/send-security-alert/index.ts | Update sender, fix preview URL |
-| supabase/functions/send-referral-invite/index.ts | Update sender |
-| supabase/functions/send-referral-notification/index.ts | Update sender |
-| supabase/functions/send-profile-notification/index.ts | Update sender, fix URLs |
-| supabase/functions/send-rsvp-notification/index.ts | Update sender |
-| supabase/functions/send-appeal-confirmation/index.ts | Update sender |
-| supabase/functions/send-appeal-notification/index.ts | Update sender |
-| supabase/functions/send-password-changed-email/index.ts | Update sender |
-| supabase/functions/send-dating-reminders/index.ts | Update sender, SITE_URL fallback |
-| supabase/functions/send-business-notification/index.ts | Update sender |
-| supabase/functions/send-admin-access-alert/index.ts | Update sender |
-
-### Deno Version Updates (22 files)
-All files listed in Section 3.1
-
-### Email Templates (4 files)
-| File | Change |
-|------|--------|
-| supabase/functions/_shared/email-templates/welcome.tsx | Fix makefriends.social URLs |
-| supabase/functions/_shared/email-templates/event-confirmation.tsx | Fix makefriends.social URLs |
-| supabase/functions/_shared/email-templates/subscription-renewed.tsx | Fix makefriends.social URLs |
-| supabase/functions/_shared/email-templates/payment-failed.tsx | Fix makefriends.social URLs |
+| Domain | A Record | Notes |
+|--------|----------|-------|
+| `makefriendsandsocialize.com` | 185.158.133.1 | Disable Cloudflare proxy |
+| `www.makefriendsandsocialize.com` | 185.158.133.1 | |
+| `slowdating.makefriendsandsocialize.com` | 185.158.133.1 | |
+| `makefriendsandsocialize.ca` | 185.158.133.1 | |
+| `www.makefriendsandsocialize.ca` | 185.158.133.1 | |
+| `slowdating.makefriendsandsocialize.ca` | 185.158.133.1 | Add if needed |
 
 ---
 
-## 9. VERIFICATION CHECKLIST
+## Expected Behavior After Implementation
 
-Before connecting domain, verify:
-
-- [ ] Domain verified in Resend Dashboard
-- [ ] All emails send from @makefriendsandsocialize.com
-- [ ] STRIPE_WEBHOOK_SECRET configured
-- [ ] SITE_URL secret added
-- [ ] All URLs point to production domain
-- [ ] Test email delivery to multiple providers (Gmail, Outlook)
-- [ ] Test Stripe webhook with test events
-- [ ] Test SMS sending
-- [ ] Test push notifications
-- [ ] Verify OAuth redirects work with new domain
-
----
-
-## 10. ESTIMATED EFFORT
-
-| Phase | Time | Priority |
-|-------|------|----------|
-| Phase 1: Critical Pre-Launch | 4-6 hours | 🔴 MUST DO |
-| Phase 2: Security Hardening | 3-4 hours | 🟡 SHOULD DO |
-| Phase 3: Polish | 2-3 hours | 🟢 NICE TO HAVE |
-
-**Recommendation:** Complete Phase 1 before connecting the production domain. Phase 2 and 3 can be done incrementally after launch.
+| User Scenario | Result |
+|---------------|--------|
+| Visit `slowdating.makefriendsandsocialize.com` | See Slow Dating landing page |
+| Visit `slowdating.makefriendsandsocialize.ca` | See Slow Dating landing page |
+| Visit `makefriendsandsocialize.com` from Canada | See main site + optional banner to visit `.ca` |
+| Visit `makefriendsandsocialize.ca` | See main site (no banner) |
+| Click `/slow-dating` from main site | Navigate to slow dating marketing page |
+| Authenticated slow dating user on subdomain | Auto-redirect to `/portal/slow-dating` |
