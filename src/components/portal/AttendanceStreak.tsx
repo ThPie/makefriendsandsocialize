@@ -49,11 +49,15 @@ export function AttendanceStreak() {
   const { data: upcomingEvents = [] } = useQuery({
     queryKey: ['upcoming-events-count'],
     queryFn: async () => {
+      // Use local date (not UTC) so same-day events count correctly.
+      const now = new Date();
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
       const { data, error } = await supabase
         .from('events')
         .select('id, date')
-        .eq('status', 'upcoming')
-        .gte('date', new Date().toISOString().split('T')[0])
+        .in('status', ['upcoming', 'published'])
+        .gte('date', today)
         .order('date', { ascending: true })
         .limit(3);
 

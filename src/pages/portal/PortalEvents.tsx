@@ -60,11 +60,16 @@ export default function PortalEvents() {
   const { data: upcomingEvents = [], isLoading: eventsLoading } = useQuery({
     queryKey: ['portal-events-upcoming'],
     queryFn: async () => {
+      // Use local date (not UTC) so events don't disappear early in Mountain Time.
+      const now = new Date();
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
       const { data, error } = await supabase
         .from('events')
         .select('*')
-        .eq('status', 'upcoming')
-        .gte('date', new Date().toISOString().split('T')[0])
+        // Treat both "upcoming" and "published" as upcoming for display
+        .in('status', ['upcoming', 'published'])
+        .gte('date', today)
         .order('date', { ascending: true });
       
       if (error) throw error;
@@ -76,10 +81,14 @@ export default function PortalEvents() {
   const { data: pastEvents = [], isLoading: pastEventsLoading } = useQuery({
     queryKey: ['portal-events-past'],
     queryFn: async () => {
+      // Use local date (not UTC) for consistent classification.
+      const now = new Date();
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
       const { data, error } = await supabase
         .from('events')
         .select('*')
-        .or(`status.eq.past,date.lt.${new Date().toISOString().split('T')[0]}`)
+        .or(`status.eq.past,date.lt.${today}`)
         .order('date', { ascending: false })
         .limit(12);
       
