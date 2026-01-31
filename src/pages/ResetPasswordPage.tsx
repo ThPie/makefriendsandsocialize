@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
-import { ArrowLeft, Loader2, CheckCircle, AlertTriangle, Shield, X, AlertCircle, Mail } from 'lucide-react';
+import { ArrowLeft, Loader2, CheckCircle, AlertTriangle, Shield, X, AlertCircle, Mail, Smartphone } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { PasswordInput, validatePassword, getPasswordStrength } from '@/components/ui/password-input';
 import { FloatingParticles } from '@/components/ui/floating-particles';
@@ -11,6 +12,7 @@ import { BrandedLoader } from '@/components/ui/branded-loader';
 import logoWhite from '@/assets/logo-white.png';
 import logoDark from '@/assets/logo-dark.png';
 import { useTheme } from 'next-themes';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
@@ -20,6 +22,15 @@ export default function ResetPasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  
+  // MFA states
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [mfaVerified, setMfaVerified] = useState(false);
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
+  const [mfaCode, setMfaCode] = useState('');
+  const [mfaError, setMfaError] = useState<string | null>(null);
+  const [isVerifyingMfa, setIsVerifyingMfa] = useState(false);
+  const [mfaChecked, setMfaChecked] = useState(false);
   
   // Validation states
   const [passwordError, setPasswordError] = useState<string | undefined>();
@@ -31,10 +42,88 @@ export default function ResetPasswordPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [passwordCheckTimeout, setPasswordCheckTimeout] = useState<NodeJS.Timeout | null>(null);
 
+  // Check for MFA factors when session is established
+  useEffect(() => {
+    const checkMfaFactors = async () => {
+      if (!session || mfaChecked) return;
+      
+      try {
+        const { data: factors, error } = await supabase.auth.mfa.listFactors();
+        
+        if (error) {
+          console.error('Error checking MFA factors:', error);
+          setMfaChecked(true);
+          return;
+        }
+        
+        // Check for verified TOTP factors
+        const verifiedFactors = factors?.totp?.filter(f => f.status === 'verified') || [];
+        
+        if (verifiedFactors.length > 0) {
+          setMfaRequired(true);
+          setMfaFactorId(verifiedFactors[0].id);
+        }
+        
+        setMfaChecked(true);
+      } catch (err) {
+        console.error('MFA check error:', err);
+        setMfaChecked(true);
+      }
+    };
+    
+    checkMfaFactors();
+  }, [session, mfaChecked]);
+
+  // Handle MFA verification
+  const handleMfaVerify = async () => {
+    if (!mfaFactorId || mfaCode.length !== 6) return;
+    
+    setIsVerifyingMfa(true);
+    setMfaError(null);
+    
+    try {
+      // Create MFA challenge
+      const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({
+        factorId: mfaFactorId,
+      });
+      
+      if (challengeError) {
+        setMfaError(challengeError.message);
+        setIsVerifyingMfa(false);
+        return;
+      }
+      
+      // Verify with the code
+      const { error: verifyError } = await supabase.auth.mfa.verify({
+        factorId: mfaFactorId,
+        challengeId: challenge.id,
+        code: mfaCode,
+      });
+      
+      if (verifyError) {
+        setMfaError('Invalid code. Please try again.');
+        setMfaCode('');
+        setIsVerifyingMfa(false);
+        return;
+      }
+      
+      // MFA verified successfully - session is now AAL2
+      setMfaVerified(true);
+      setMfaRequired(false);
+    } catch (err) {
+      console.error('MFA verification error:', err);
+      setMfaError('Verification failed. Please try again.');
+    } finally {
+      setIsVerifyingMfa(false);
+    }
+  };
+
   // The user arrives here after being redirected from the home page by RecoveryRedirectHandler.
   const hasValidSession = session !== null || isRecoveryMode;
-  const isLoading = authLoading;
-  const showError = !isLoading && !hasValidSession;
+  const isLoading = authLoading || (hasValidSession && !mfaChecked);
+  const showError = !authLoading && !hasValidSession;
+  const showMfaVerification = hasValidSession && mfaChecked && mfaRequired && !mfaVerified;
+  const showPasswordForm = hasValidSession && mfaChecked && (!mfaRequired || mfaVerified);
   
   // Get the right logo based on theme
   const logoSrc = resolvedTheme === 'dark' ? logoWhite : logoDark;
@@ -262,6 +351,117 @@ export default function ResetPasswordPage() {
               </Button>
               <Button asChild variant="outline" className="w-full border-white/20 text-white hover:bg-white/10" size="lg">
                 <Link to="/auth">Back to Sign In</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // MFA Verification state
+  if (showMfaVerification) {
+    return (
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4">
+        {/* Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          poster="/images/hero-poster.webp"
+        >
+          <source src="/videos/hero-1.mp4" type="video/mp4" />
+        </video>
+        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/60 z-[1]" />
+        
+        <div className="z-[2]">
+          <FloatingParticles />
+        </div>
+        
+        <div className="relative z-10 w-full max-w-md animate-fade-in">
+          <Link to="/" className="inline-block mb-8">
+            <img src={logoWhite} alt="MakeFriends & Socialize" className="h-12 md:h-14" />
+          </Link>
+
+          <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
+            {/* Header with Shield Icon */}
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                <Smartphone className="h-5 w-5 text-primary" />
+              </div>
+              <h1 className="font-display text-2xl text-white">Verify Your Identity</h1>
+            </div>
+            <p className="text-white/60 text-sm mb-6 ml-[52px]">
+              Your account has two-factor authentication enabled. Enter the code from your authenticator app.
+            </p>
+
+            {/* MFA Error Banner */}
+            {mfaError && (
+              <div className="mb-6 p-3 rounded-lg bg-destructive/20 border border-destructive/30 flex items-start gap-2">
+                <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                <p className="text-sm text-destructive">{mfaError}</p>
+              </div>
+            )}
+
+            <div className="space-y-6">
+              {/* OTP Input */}
+              <div className="flex flex-col items-center gap-4">
+                <Label className="text-white/80 text-center">Enter 6-digit code</Label>
+                <InputOTP
+                  maxLength={6}
+                  value={mfaCode}
+                  onChange={(value) => setMfaCode(value)}
+                  disabled={isVerifyingMfa}
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+
+              {/* Verify Button */}
+              <Button 
+                onClick={handleMfaVerify}
+                disabled={isVerifyingMfa || mfaCode.length !== 6} 
+                className="w-full" 
+                size="lg"
+              >
+                {isVerifyingMfa ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Verifying...
+                  </>
+                ) : (
+                  'Verify & Continue'
+                )}
+              </Button>
+            </div>
+
+            {/* Security Note */}
+            <div className="mt-6 p-3 rounded-lg bg-white/5 border border-white/10">
+              <p className="text-white/60 text-xs text-center">
+                🔒 This extra step keeps your account secure when changing your password.
+              </p>
+            </div>
+
+            {/* Back to Sign In Link */}
+            <div className="mt-6 text-center">
+              <Button 
+                variant="link"
+                onClick={() => navigate('/auth')}
+                className="text-sm text-white/60 hover:text-primary inline-flex items-center gap-1 transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Sign In
               </Button>
             </div>
           </div>
