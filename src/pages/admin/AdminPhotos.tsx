@@ -12,7 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PhotoUpload } from '@/components/admin/PhotoUpload';
-import { Plus, Pencil, Trash2, Star, GripVertical, Camera, CheckSquare, Square, X } from 'lucide-react';
+import { InstagramSyncDialog } from '@/components/admin/InstagramSyncDialog';
+import { Plus, Pencil, Trash2, Star, GripVertical, Camera, CheckSquare, Square, X, Instagram } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   DndContext,
@@ -40,6 +41,8 @@ interface EventPhoto {
   is_featured: boolean | null;
   display_order: number | null;
   event_id: string | null;
+  instagram_post_id: string | null;
+  source: string;
 }
 
 const CATEGORIES = [
@@ -192,6 +195,7 @@ const AdminPhotos = () => {
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState<Set<string>>(new Set());
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
+  const [isInstagramDialogOpen, setIsInstagramDialogOpen] = useState(false);
 
   // Form state for add/edit
   const [formData, setFormData] = useState({
@@ -434,6 +438,17 @@ const AdminPhotos = () => {
 
   const featuredCount = photos?.filter((p) => p.is_featured).length || 0;
   const selectedCount = selectedPhotos.size;
+  
+  // Create set of existing Instagram post IDs for deduplication
+  const existingInstagramPostIds = useMemo(() => {
+    const ids = new Set<string>();
+    photos?.forEach(p => {
+      if (p.instagram_post_id) {
+        ids.add(p.instagram_post_id);
+      }
+    });
+    return ids;
+  }, [photos]);
 
   const isAllSelected = photos && photos.length > 0 && selectedPhotos.size === photos.length;
   const isIndeterminate = selectedPhotos.size > 0 && selectedPhotos.size < (photos?.length || 0);
@@ -486,6 +501,11 @@ const AdminPhotos = () => {
                   ))}
                 </SelectContent>
               </Select>
+
+              <Button variant="outline" onClick={() => setIsInstagramDialogOpen(true)}>
+                <Instagram className="w-4 h-4 mr-2" />
+                Sync Instagram
+              </Button>
 
               <Button variant="outline" onClick={() => setIsSelectionMode(true)}>
                 <CheckSquare className="w-4 h-4 mr-2" />
@@ -800,6 +820,16 @@ const AdminPhotos = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Instagram Sync Dialog */}
+      <InstagramSyncDialog
+        open={isInstagramDialogOpen}
+        onOpenChange={setIsInstagramDialogOpen}
+        existingPostIds={existingInstagramPostIds}
+        onImportComplete={() => {
+          queryClient.invalidateQueries({ queryKey: ['admin-event-photos'] });
+        }}
+      />
     </div>
   );
 };
