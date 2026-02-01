@@ -17,6 +17,7 @@ import { UpgradePromptCard } from '@/components/portal/UpgradePromptCard';
 import { EmailVerificationBanner } from '@/components/portal/EmailVerificationBanner';
 import { ActivityFeed } from '@/components/portal/ActivityFeed';
 import { AttendanceStreak } from '@/components/portal/AttendanceStreak';
+import { WidgetErrorBoundary } from '@/components/ui/widget-error-boundary';
 
 export default function PortalDashboard() {
   const { user, profile, membership, canAccessMatchmaking, refreshProfile } = useAuth();
@@ -79,7 +80,7 @@ export default function PortalDashboard() {
     },
     {
       title: 'Browse The Network',
-      description: canAccessMatchmaking 
+      description: canAccessMatchmaking
         ? 'Discover like-minded members'
         : 'Upgrade to Fellow to access introductions',
       icon: Users,
@@ -89,7 +90,7 @@ export default function PortalDashboard() {
     },
     {
       title: 'Your Connections',
-      description: canAccessMatchmaking 
+      description: canAccessMatchmaking
         ? 'View your introduction requests'
         : 'Upgrade to unlock member introductions',
       icon: Heart,
@@ -134,8 +135,8 @@ export default function PortalDashboard() {
       <div>
         <h1 className="font-display font-light text-3xl md:text-4xl text-foreground mb-2 flex items-center gap-2">
           Welcome back, {profile?.first_name || 'Member'}
-          <VerificationBadge 
-            isVerified={profile?.is_security_verified || false} 
+          <VerificationBadge
+            isVerified={profile?.is_security_verified || false}
             verifiedAt={profile?.verified_at}
             size="lg"
           />
@@ -178,42 +179,51 @@ export default function PortalDashboard() {
       {/* Profile Completion & Feature Unlocks */}
       {profile && completionPercentage < 100 && (
         <div className="grid gap-8 md:grid-cols-2">
-          <ProfileCompletionIndicator profile={profile} />
-          <FeatureUnlockCard 
-            completionPercentage={completionPercentage} 
-            isProfileComplete={isProfileComplete} 
-          />
+          <WidgetErrorBoundary title="Profile Progress">
+            <ProfileCompletionIndicator profile={profile} />
+          </WidgetErrorBoundary>
+
+          <WidgetErrorBoundary title="Feature Status">
+            <FeatureUnlockCard
+              completionPercentage={completionPercentage}
+              isProfileComplete={isProfileComplete}
+            />
+          </WidgetErrorBoundary>
         </div>
       )}
 
       {/* Badges */}
       {earnedBadges.length > 0 && (
-        <BadgeDisplay earnedBadges={earnedBadges} showAll={false} compact />
+        <WidgetErrorBoundary title="Your Badges">
+          <BadgeDisplay earnedBadges={earnedBadges} showAll={false} compact />
+        </WidgetErrorBoundary>
       )}
 
       {/* Activity Feed & Attendance Streak */}
       <div className="grid gap-8 md:grid-cols-2">
-        <ActivityFeed limit={5} compact />
-        <AttendanceStreak />
+        <WidgetErrorBoundary title="Recent Activity">
+          <ActivityFeed limit={5} compact />
+        </WidgetErrorBoundary>
+
+        <WidgetErrorBoundary title="Attendance Streak">
+          <AttendanceStreak />
+        </WidgetErrorBoundary>
       </div>
 
       {/* Quick Actions */}
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {quickActions.filter(a => a.show).map((action) => (
-          <Card 
+          <Card
             key={action.title}
-            className={`group hover-lift ${
-              action.locked ? 'opacity-75' : ''
-            }`}
+            className={`group hover-lift ${action.locked ? 'opacity-75' : ''
+              }`}
           >
             <CardHeader>
               <div className="flex items-start justify-between">
-                <div className={`p-3 rounded-xl ${
-                  action.locked ? 'bg-muted' : 'bg-primary/10'
-                }`}>
-                  <action.icon className={`h-6 w-6 ${
-                    action.locked ? 'text-muted-foreground' : 'text-primary'
-                  }`} />
+                <div className={`p-3 rounded-xl ${action.locked ? 'bg-muted' : 'bg-primary/10'
+                  }`}>
+                  <action.icon className={`h-6 w-6 ${action.locked ? 'text-muted-foreground' : 'text-primary'
+                    }`} />
                 </div>
                 {action.locked && (
                   <Crown className="h-5 w-5 text-primary" />
@@ -227,8 +237,8 @@ export default function PortalDashboard() {
               <p className="text-muted-foreground text-sm mb-6">
                 {action.description}
               </p>
-              <Button 
-                asChild 
+              <Button
+                asChild
                 variant={action.locked ? 'outline' : 'default'}
                 className="w-full"
               >

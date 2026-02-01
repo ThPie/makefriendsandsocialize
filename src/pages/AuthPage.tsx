@@ -30,22 +30,7 @@ const emailSchema = z.string()
   .max(255, 'Email must be less than 255 characters');
 
 
-const INTERESTS = [
-  'Arts & Culture', 'Fine Dining & Wine', 'Travel & Adventure', 'Entrepreneurship',
-  'Wellness & Mindfulness', 'Music & Nightlife', 'Philanthropy', 'Fashion & Design',
-  'Technology & Innovation', 'Sports & Fitness'
-];
-
-const INDUSTRIES = [
-  'Technology', 'Finance', 'Healthcare', 'Real Estate', 'Media & Entertainment',
-  'Consulting', 'Legal', 'Education', 'Hospitality', 'Retail',
-  'Manufacturing', 'Non-Profit', 'Government'
-];
-
-const MOTIVATIONS = [
-  'Networking', 'New Friendships', 'Dating & Romance', 'Business Connections',
-  'Cultural Events', 'Personal Growth', 'Exclusive Experiences', 'Like-minded Community'
-];
+import { INTERESTS, INDUSTRIES, MOTIVATIONS } from '@/config/constants';
 
 const defaultAvatars = [
   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
@@ -63,24 +48,24 @@ export default function AuthPage() {
   const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('email');
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [rememberMe, setRememberMe] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [captchaVerified, setCaptchaVerified] = useState(false);
-  
+
   // Auth rate limiting
   const { recordAttempt, rateLimitInfo, isRateLimited, requiresCaptcha } = useAuthRateLimit();
   const { createSession } = useSessionManager();
-  
+
   // Use shared site stats hook for consistent data
   const { data: siteStats, isLoading: isLoadingStats } = useSiteStats();
   const memberCount = siteStats?.memberCount || 0;
   const avatarUrls = siteStats?.avatarUrls?.length ? siteStats.avatarUrls : defaultAvatars;
-  
+
   // Referral tracking
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [referrerName, setReferrerName] = useState<string | null>(null);
-  
+
   // Form state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -94,7 +79,7 @@ export default function AuthPage() {
   const [industry, setIndustry] = useState('');
   const [customIndustry, setCustomIndustry] = useState('');
   const [jobTitle, setJobTitle] = useState('');
-  
+
   // Real-time validation errors
   const [emailError, setEmailError] = useState<string | undefined>();
   const [passwordError, setPasswordError] = useState<string | undefined>();
@@ -104,11 +89,11 @@ export default function AuthPage() {
   const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
   const [isCheckingPassword, setIsCheckingPassword] = useState(false);
   const [passwordServerError, setPasswordServerError] = useState<string | null>(null);
-  
+
   // Inline form feedback (replaces toast notifications)
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
-  
+
   // Clear form feedback when user interacts
   const clearFormFeedback = useCallback(() => {
     setFormError(null);
@@ -173,7 +158,7 @@ export default function AuthPage() {
     setPassword(value);
     clearFormFeedback();
     setPasswordServerError(null);
-    
+
     if (passwordTouched && mode === 'signup') {
       validatePasswordField(value);
     }
@@ -192,7 +177,7 @@ export default function AuthPage() {
       if (passwordCheckTimeout) {
         clearTimeout(passwordCheckTimeout);
       }
-      
+
       // Set new timeout for debounced check
       const timeout = setTimeout(async () => {
         setIsCheckingPassword(true);
@@ -216,7 +201,7 @@ export default function AuthPage() {
           setIsCheckingPassword(false);
         }
       }, 800); // 800ms debounce
-      
+
       setPasswordCheckTimeout(timeout);
     }
   };
@@ -236,7 +221,7 @@ export default function AuthPage() {
     if (ref) {
       setReferralCode(ref.toUpperCase());
       setMode('signup'); // Auto-switch to signup mode when coming from referral
-      
+
       // Look up the referrer's name
       const lookupReferrer = async () => {
         const { data } = await supabase
@@ -244,7 +229,7 @@ export default function AuthPage() {
           .select('first_name')
           .eq('referral_code', ref.toUpperCase())
           .single();
-        
+
         if (data?.first_name) {
           setReferrerName(data.first_name);
         }
@@ -312,15 +297,15 @@ export default function AuthPage() {
     setEmailTouched(true);
     setPasswordTouched(true);
     clearFormFeedback();
-    
+
     if (mode === 'signup') {
       setConfirmPasswordTouched(true);
     }
-    
+
     // Validate email
     let isValid = true;
     let firstError: string | null = null;
-    
+
     try {
       emailSchema.parse(email);
       setEmailError(undefined);
@@ -331,7 +316,7 @@ export default function AuthPage() {
       }
       isValid = false;
     }
-    
+
     // For signup, validate password strength
     if (mode === 'signup') {
       const { isValid: passwordValid, errors } = validatePassword(password);
@@ -342,7 +327,7 @@ export default function AuthPage() {
       } else {
         setPasswordError(undefined);
       }
-      
+
       // Validate confirm password
       if (password !== confirmPassword) {
         setConfirmPasswordError('Passwords do not match');
@@ -358,11 +343,11 @@ export default function AuthPage() {
         isValid = false;
       }
     }
-    
+
     if (firstError) {
       setFormError(firstError);
     }
-    
+
     return isValid;
   };
 
@@ -382,7 +367,7 @@ export default function AuthPage() {
         setFormError(`Password must meet all requirements: ${errors.join(', ')}`);
         return;
       }
-      
+
       if (password !== confirmPassword) {
         setFormError('Passwords do not match');
         return;
@@ -417,42 +402,42 @@ export default function AuthPage() {
     if (mode === 'signin') {
       setIsSubmitting(true);
       clearFormFeedback();
-      
+
       // Record login attempt for rate limiting
       await recordAttempt(false);
-      
+
       const { error } = await signIn(email, password);
-      
+
       if (error) {
         // Record failed attempt
         await recordAttempt(true);
         setIsSubmitting(false);
-        
+
         // Prevent account enumeration - use generic error message
         setFormError('Invalid email or password. Please check your credentials and try again.');
         return;
       }
-      
+
       // Create session with remember me preference
       await createSession(rememberMe);
-      
+
       setIsSubmitting(false);
       navigate('/portal');
     } else {
       // For signup, redirect to email verification page
       setIsSubmitting(true);
       clearFormFeedback();
-      
+
       try {
         const signUpResult = await signUp(email, password);
-        
+
         if (signUpResult.error) {
           const signUpError = signUpResult.error;
           const errorMessage = signUpError.message?.toLowerCase() || '';
-          
-          if (errorMessage.includes('already registered') || 
-              errorMessage.includes('user already exists') ||
-              errorMessage.includes('email already')) {
+
+          if (errorMessage.includes('already registered') ||
+            errorMessage.includes('user already exists') ||
+            errorMessage.includes('email already')) {
             setFormError('This email is already registered. Please sign in instead.');
             setMode('signin');
           } else {
@@ -478,34 +463,34 @@ export default function AuthPage() {
       setFormError('Please accept the Privacy Policy and Terms of Service');
       return;
     }
-    
+
     setIsSubmitting(true);
     clearFormFeedback();
-    
+
     try {
       const signUpResult = await signUp(email, password);
-      
+
       if (signUpResult.error) {
         const signUpError = signUpResult.error;
         // Handle specific error cases with user-friendly messages
         const errorMessage = signUpError.message?.toLowerCase() || '';
         const errorStatus = (signUpError as any)?.status;
-        
+
         // Check for duplicate email - only if message explicitly indicates it
         // Don't assume 422 means duplicate - it could be password validation or other issues
-        if (errorMessage.includes('already registered') || 
-            errorMessage.includes('user already exists') ||
-            errorMessage.includes('already been registered') ||
-            errorMessage.includes('email already') ||
-            errorMessage.includes('duplicate') ||
-            errorMessage.includes('unique constraint')) {
+        if (errorMessage.includes('already registered') ||
+          errorMessage.includes('user already exists') ||
+          errorMessage.includes('already been registered') ||
+          errorMessage.includes('email already') ||
+          errorMessage.includes('duplicate') ||
+          errorMessage.includes('unique constraint')) {
           setFormError('This email is already registered. Please sign in instead.');
           setMode('signin');
           setStep(1);
           setIsSubmitting(false);
           return;
         }
-        
+
         // Handle 422 separately - could be password validation or other validation errors
         if (errorStatus === 422) {
           // Show actual error message or a helpful generic one
@@ -515,7 +500,7 @@ export default function AuthPage() {
           setIsSubmitting(false);
           return;
         }
-        
+
         if (errorMessage.includes('invalid api key') || errorMessage.includes('api key')) {
           // This is likely an email service configuration issue, not a user error
           console.error('Email service configuration error:', signUpError);
@@ -524,28 +509,28 @@ export default function AuthPage() {
           setIsSubmitting(false);
           return;
         }
-        
+
         if (errorMessage.includes('rate limit') || errorMessage.includes('too many')) {
           setFormError('Too many signup attempts. Please wait a few minutes and try again.');
           setStep(1);
           setIsSubmitting(false);
           return;
         }
-        
+
         if (errorMessage.includes('signups not allowed') || errorMessage.includes('signup disabled')) {
           setFormError('New registrations are temporarily disabled. Please try again later or contact support.');
           setStep(1);
           setIsSubmitting(false);
           return;
         }
-        
+
         if (errorMessage.includes('email') && errorMessage.includes('invalid')) {
           setFormError('Please enter a valid email address.');
           setStep(1);
           setIsSubmitting(false);
           return;
         }
-        
+
         // Generic fallback for unknown errors - always go back to Step 1
         console.error('Signup error:', signUpError);
         setFormError('Unable to create account. Please check your information and try again.');
@@ -556,13 +541,13 @@ export default function AuthPage() {
 
       // Wait briefly for session to be established
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (session?.user) {
         // Use custom industry if "Other" is selected
         const finalIndustry = industry === 'Other' ? customIndustry : industry;
-        
+
         // Update profile with onboarding data
         const { error: profileError } = await supabase
           .from('profiles')
@@ -617,7 +602,7 @@ export default function AuthPage() {
             // Non-critical, continue
           }
         }
-        
+
         setIsSubmitting(false);
         navigate('/portal/onboarding');
       } else {
@@ -635,15 +620,15 @@ export default function AuthPage() {
   };
 
   const toggleMotivation = (motivation: string) => {
-    setSelectedBrands(prev => 
-      prev.includes(motivation) 
+    setSelectedBrands(prev =>
+      prev.includes(motivation)
         ? prev.filter(b => b !== motivation)
         : [...prev, motivation]
     );
   };
 
   const toggleInterest = (interest: string) => {
-    setSelectedInterests(prev => 
+    setSelectedInterests(prev =>
       prev.includes(interest)
         ? prev.filter(i => i !== interest)
         : [...prev, interest]
@@ -684,19 +669,19 @@ export default function AuthPage() {
         <div className="w-full lg:w-1/2 relative flex flex-col justify-center px-8 md:px-16 lg:px-20 py-12 overflow-hidden">
           {/* Layered Gradient Background - Desktop only */}
           <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)] hidden lg:block" />
-          
+
           {/* Radial Glow Effects */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-[hsl(180,60%,25%)]/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
           <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-primary/5 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
-          
+
           {/* Watermark */}
           <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
             <span className="font-display text-[20rem] font-bold text-white/[0.02] select-none tracking-tighter">
               MFS
             </span>
           </div>
-          
+
           {/* Glassmorphism Form Container */}
           <div className="relative z-10 max-w-md mx-auto w-full">
             <div className="bg-white/[0.03] lg:backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl animate-fade-in">
@@ -720,9 +705,9 @@ export default function AuthPage() {
                   {mode === 'signin' ? 'Sign in' : 'Create Account'}
                 </h1>
                 <p className="text-white/60">
-                  {mode === 'signin' 
+                  {mode === 'signin'
                     ? 'Welcome back! Please enter your details.'
-                    : referralCode 
+                    : referralCode
                       ? `You've been invited to join our exclusive community.`
                       : 'Join our exclusive community today.'
                   }
@@ -734,22 +719,20 @@ export default function AuthPage() {
                 <div className="flex gap-2 p-1 bg-white/5 rounded-lg">
                   <button
                     onClick={() => setAuthMethod('email')}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-                      authMethod === 'email'
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md text-sm font-medium transition-all ${authMethod === 'email'
                         ? 'bg-primary text-primary-foreground shadow-md'
                         : 'text-white/60 hover:text-white hover:bg-white/5'
-                    }`}
+                      }`}
                   >
                     <Mail className="h-4 w-4" />
                     Email
                   </button>
                   <button
                     onClick={() => setAuthMethod('phone')}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-                      authMethod === 'phone'
+                    className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md text-sm font-medium transition-all ${authMethod === 'phone'
                         ? 'bg-primary text-primary-foreground shadow-md'
                         : 'text-white/60 hover:text-white hover:bg-white/5'
-                    }`}
+                      }`}
                   >
                     <Phone className="h-4 w-4" />
                     Phone
@@ -764,7 +747,7 @@ export default function AuthPage() {
                   <span>{formError}</span>
                 </div>
               )}
-              
+
               {formSuccess && (
                 <div className="flex items-start gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm">
                   <CheckCircle className="h-4 w-4 mt-0.5 shrink-0" />
@@ -776,8 +759,8 @@ export default function AuthPage() {
               <div className="space-y-5">
                 {/* Phone Login - Sign In Only */}
                 {mode === 'signin' && authMethod === 'phone' ? (
-                  <PhoneOTPLogin 
-                    onSuccess={() => navigate('/portal')} 
+                  <PhoneOTPLogin
+                    onSuccess={() => navigate('/portal')}
                     onSwitchToEmail={() => setAuthMethod('email')}
                     disabled={isRateLimited}
                   />
@@ -883,8 +866,8 @@ export default function AuthPage() {
                     {mode === 'signin' && (
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <Checkbox 
-                            id="remember" 
+                          <Checkbox
+                            id="remember"
                             checked={rememberMe}
                             onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                             className="border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
@@ -911,8 +894,8 @@ export default function AuthPage() {
 
                     {/* CAPTCHA - shown after 3 failed attempts */}
                     {requiresCaptcha && !isRateLimited && (
-                      <SimpleCaptcha 
-                        onVerify={setCaptchaVerified} 
+                      <SimpleCaptcha
+                        onVerify={setCaptchaVerified}
                         disabled={isSubmitting}
                       />
                     )}
@@ -968,10 +951,10 @@ export default function AuthPage() {
           >
             <source src="/videos/auth-chess.mp4" type="video/mp4" />
           </video>
-          
+
           {/* Subtle Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-          
+
           <div className="relative z-10 flex flex-col items-start animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <h2 className="font-display text-4xl xl:text-5xl text-white mb-4 drop-shadow-lg">
               Welcome to<br />
@@ -980,15 +963,15 @@ export default function AuthPage() {
             <p className="text-white/90 text-lg max-w-md mb-8 drop-shadow-md">
               Join an exclusive community of refined individuals who share a passion for meaningful connections, curated experiences, and extraordinary moments.
             </p>
-            
+
             {/* Floating Card with Avatars */}
             <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 w-full max-w-md animate-fade-in" style={{ animationDelay: '0.4s' }}>
               <p className="text-white font-medium mb-4">
                 Get access to exclusive events and connect with like-minded people
               </p>
-              <MemberAvatars 
-                avatarUrls={avatarUrls} 
-                memberCount={memberCount} 
+              <MemberAvatars
+                avatarUrls={avatarUrls}
+                memberCount={memberCount}
                 isLoading={isLoadingStats}
               />
             </div>
@@ -1012,13 +995,13 @@ export default function AuthPage() {
       >
         <source src="/videos/hero-1.mp4" type="video/mp4" />
       </video>
-      
+
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/95 via-[hsl(180,50%,12%)]/90 to-[hsl(180,55%,15%)]/85" />
-      
+
       {/* Floating Particles */}
       <FloatingParticles count={20} />
-      
+
       <div className="relative z-10 w-full max-w-2xl animate-fade-in">
         {/* Header */}
         <div className="text-center mb-8">
@@ -1038,9 +1021,8 @@ export default function AuthPage() {
           {[1, 2, 3].map((s) => (
             <div
               key={s}
-              className={`h-2 w-12 rounded-full transition-all duration-300 ${
-                s < step ? 'bg-primary' : s === step ? 'bg-primary shadow-lg shadow-primary/50' : 'bg-white/20'
-              }`}
+              className={`h-2 w-12 rounded-full transition-all duration-300 ${s < step ? 'bg-primary' : s === step ? 'bg-primary shadow-lg shadow-primary/50' : 'bg-white/20'
+                }`}
             />
           ))}
         </div>
@@ -1057,8 +1039,8 @@ export default function AuthPage() {
 
               <div className="space-y-3">
                 <Label className="text-white/90">Industry</Label>
-                <Select 
-                  value={industry} 
+                <Select
+                  value={industry}
                   onValueChange={(value) => {
                     setIndustry(value);
                     if (value !== 'Other') {
@@ -1071,15 +1053,15 @@ export default function AuthPage() {
                   </SelectTrigger>
                   <SelectContent className="bg-gray-900 border-white/10 z-50">
                     {INDUSTRIES.map((ind) => (
-                      <SelectItem 
-                        key={ind} 
+                      <SelectItem
+                        key={ind}
                         value={ind}
                         className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white"
                       >
                         {ind}
                       </SelectItem>
                     ))}
-                    <SelectItem 
+                    <SelectItem
                       value="Other"
                       className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white"
                     >
@@ -1129,11 +1111,10 @@ export default function AuthPage() {
                     <button
                       key={motivation}
                       onClick={() => toggleMotivation(motivation)}
-                      className={`px-4 py-2 rounded-full text-sm border transition-all duration-200 ${
-                        selectedBrands.includes(motivation)
+                      className={`px-4 py-2 rounded-full text-sm border transition-all duration-200 ${selectedBrands.includes(motivation)
                           ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25'
                           : 'bg-white/5 text-white/80 border-white/10 hover:border-white/30 hover:bg-white/10'
-                      }`}
+                        }`}
                     >
                       {motivation}
                       {selectedBrands.includes(motivation) && <Check className="inline ml-1.5 h-3 w-3" />}
@@ -1190,11 +1171,10 @@ export default function AuthPage() {
                     <button
                       key={interest}
                       onClick={() => toggleInterest(interest)}
-                      className={`px-4 py-2 rounded-full text-sm border transition-all duration-200 ${
-                        selectedInterests.includes(interest)
+                      className={`px-4 py-2 rounded-full text-sm border transition-all duration-200 ${selectedInterests.includes(interest)
                           ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25'
                           : 'bg-white/5 text-white/80 border-white/10 hover:border-white/30 hover:bg-white/10'
-                      }`}
+                        }`}
                     >
                       {interest}
                       {selectedInterests.includes(interest) && <Check className="inline ml-1.5 h-3 w-3" />}
