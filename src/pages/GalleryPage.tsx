@@ -190,8 +190,8 @@ const GalleryPage = () => {
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 cursor-pointer transition-all duration-300 ${activeCategory === cat
-                    ? 'bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/20'
-                    : 'bg-card border border-border/50 text-muted-foreground hover:bg-secondary hover:border-primary/30'
+                  ? 'bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/20'
+                  : 'bg-card border border-border/50 text-muted-foreground hover:bg-secondary hover:border-primary/30'
                   }`}
               >
                 <span className="text-sm font-medium leading-normal whitespace-nowrap">{cat}</span>
@@ -207,6 +207,7 @@ const GalleryPage = () => {
               className="h-8 w-8 rounded-full"
               onClick={() => setLayoutMode('grid')}
               title="Grid layout"
+              aria-label="Switch to grid layout"
             >
               <LayoutGrid className="w-4 h-4" />
             </Button>
@@ -216,6 +217,7 @@ const GalleryPage = () => {
               className="h-8 w-8 rounded-full"
               onClick={() => setLayoutMode('masonry')}
               title="Masonry layout"
+              aria-label="Switch to masonry layout"
             >
               <Columns className="w-4 h-4" />
             </Button>

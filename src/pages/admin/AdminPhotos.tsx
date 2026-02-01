@@ -63,13 +63,13 @@ interface SortablePhotoCardProps {
   onToggleSelect: () => void;
 }
 
-const SortablePhotoCard = ({ 
-  photo, 
-  onEdit, 
-  onDelete, 
-  isSelectionMode, 
+const SortablePhotoCard = ({
+  photo,
+  onEdit,
+  onDelete,
+  isSelectionMode,
   isSelected,
-  onToggleSelect 
+  onToggleSelect
 }: SortablePhotoCardProps) => {
   const {
     attributes,
@@ -94,20 +94,19 @@ const SortablePhotoCard = ({
   };
 
   return (
-    <div 
-      ref={setNodeRef} 
+    <div
+      ref={setNodeRef}
       style={style}
       onClick={handleClick}
-      className={`relative group aspect-square rounded-lg overflow-hidden border-2 transition-colors ${
-        isSelected ? 'border-primary ring-2 ring-primary/30' : 'border-transparent'
-      } ${isSelectionMode ? 'cursor-pointer' : ''}`}
+      className={`relative group aspect-square rounded-lg overflow-hidden border-2 transition-colors ${isSelected ? 'border-primary ring-2 ring-primary/30' : 'border-transparent'
+        } ${isSelectionMode ? 'cursor-pointer' : ''}`}
     >
       <img
         src={photo.image_url}
         alt={photo.title || 'Event photo'}
         className="w-full h-full object-cover"
       />
-      
+
       {/* Selection overlay */}
       {isSelectionMode && (
         <div className={`absolute inset-0 transition-colors ${isSelected ? 'bg-primary/20' : 'bg-transparent hover:bg-black/10'}`}>
@@ -153,6 +152,7 @@ const SortablePhotoCard = ({
                 e.stopPropagation();
                 onEdit();
               }}
+              aria-label="Edit photo"
             >
               <Pencil className="w-4 h-4" />
             </Button>
@@ -164,6 +164,7 @@ const SortablePhotoCard = ({
                 e.stopPropagation();
                 onDelete();
               }}
+              aria-label="Delete photo"
             >
               <Trash2 className="w-4 h-4" />
             </Button>
@@ -190,7 +191,7 @@ const AdminPhotos = () => {
   const [editingPhoto, setEditingPhoto] = useState<EventPhoto | null>(null);
   const [deletingPhoto, setDeletingPhoto] = useState<EventPhoto | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>('all');
-  
+
   // Multi-select state
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState<Set<string>>(new Set());
@@ -235,7 +236,7 @@ const AdminPhotos = () => {
   const addMutation = useMutation({
     mutationFn: async (data: Partial<EventPhoto>) => {
       const maxOrder = photos?.reduce((max, p) => Math.max(max, p.display_order || 0), 0) || 0;
-      
+
       const { error } = await supabase.from('event_photos').insert([{
         image_url: data.image_url!,
         title: data.title || null,
@@ -363,7 +364,7 @@ const AdminPhotos = () => {
     const newIndex = photos.findIndex((p) => p.id === over.id);
 
     const reordered = arrayMove(photos, oldIndex, newIndex);
-    
+
     // Optimistic update
     queryClient.setQueryData(['admin-event-photos', filterCategory], reordered);
 
@@ -438,7 +439,7 @@ const AdminPhotos = () => {
 
   const featuredCount = photos?.filter((p) => p.is_featured).length || 0;
   const selectedCount = selectedPhotos.size;
-  
+
   // Create set of existing Instagram post IDs for deduplication
   const existingInstagramPostIds = useMemo(() => {
     const ids = new Set<string>();
