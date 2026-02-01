@@ -161,3 +161,6 @@ verify_jwt = false
 
 [functions.send-lead-followup-reminders]
 verify_jwt = false
+
+[functions.fetch-instagram-photos]
+verify_jwt = false

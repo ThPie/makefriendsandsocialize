@@ -1428,7 +1428,9 @@ export type Database = {
           event_id: string | null
           id: string
           image_url: string
+          instagram_post_id: string | null
           is_featured: boolean | null
+          source: string
           title: string | null
         }
         Insert: {
@@ -1438,7 +1440,9 @@ export type Database = {
           event_id?: string | null
           id?: string
           image_url: string
+          instagram_post_id?: string | null
           is_featured?: boolean | null
+          source?: string
           title?: string | null
         }
         Update: {
@@ -1448,7 +1452,9 @@ export type Database = {
           event_id?: string | null
           id?: string
           image_url?: string
+          instagram_post_id?: string | null
           is_featured?: boolean | null
+          source?: string
           title?: string | null
         }
         Relationships: [
@@ -1696,6 +1702,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      instagram_settings: {
+        Row: {
+          auto_sync_enabled: boolean
+          created_at: string
+          default_category: string | null
+          id: string
+          instagram_username: string
+          last_synced_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          auto_sync_enabled?: boolean
+          created_at?: string
+          default_category?: string | null
+          id?: string
+          instagram_username: string
+          last_synced_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          auto_sync_enabled?: boolean
+          created_at?: string
+          default_category?: string | null
+          id?: string
+          instagram_username?: string
+          last_synced_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       invoice_history: {
         Row: {
