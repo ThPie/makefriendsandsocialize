@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { LazyImage } from '@/components/ui/lazy-image';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Lightbox } from '@/components/ui/lightbox';
@@ -126,14 +127,14 @@ const GalleryPage = () => {
     <div className="flex-1 w-full flex flex-col items-center bg-background">
       {/* Hero Section */}
       <section className="relative w-full min-h-[50vh] flex items-center justify-center overflow-hidden">
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCvlDLnFAUBGIy5PJIrjxlFuYUiP-OgNIMHpQhXa40KTcIpzW72E3Zz1tM0FPuand9c5SsbE2sbV7A5ySDr87EXiASgXVbyqZ8ShWcyOjYV3jEH-IgtJ-S31IgOgCuqlihSprqSvQ22QtCMlkcfa8f1CGSU6DE-RYrQxg--WqM1w3z_JJRk9uf9aNNLnOR7xo9z1IOj8QgULeAvRvKv6VfUYiYpsqYVcvw2QDVIOB5q3zfAmA7xoEwZqOayWGo6PBlKRji2oquzDY9h")'
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
-        
+
         {/* Floating Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -143,7 +144,7 @@ const GalleryPage = () => {
           />
         </div>
 
-        <div 
+        <div
           ref={heroAnimation.ref}
           className={`relative z-10 container max-w-4xl text-center py-16 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -179,7 +180,7 @@ const GalleryPage = () => {
 
       <div className="w-full max-w-7xl px-4">
         {/* Filters and Layout Toggle */}
-        <div 
+        <div
           ref={galleryAnimation.ref}
           className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 py-6 scroll-animate ${galleryAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -188,11 +189,10 @@ const GalleryPage = () => {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 cursor-pointer transition-all duration-300 ${
-                  activeCategory === cat
+                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 cursor-pointer transition-all duration-300 ${activeCategory === cat
                     ? 'bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/20'
                     : 'bg-card border border-border/50 text-muted-foreground hover:bg-secondary hover:border-primary/30'
-                }`}
+                  }`}
               >
                 <span className="text-sm font-medium leading-normal whitespace-nowrap">{cat}</span>
               </button>
@@ -224,22 +224,22 @@ const GalleryPage = () => {
 
         {/* Grid / Masonry */}
         {isLoading ? (
-          <motion.div 
+          <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className={layoutMode === 'masonry' 
-              ? "columns-2 sm:columns-3 md:columns-4 gap-4 py-4" 
+            className={layoutMode === 'masonry'
+              ? "columns-2 sm:columns-3 md:columns-4 gap-4 py-4"
               : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4"
             }
           >
             {Array.from({ length: 12 }).map((_, i) => (
               <motion.div key={i} variants={itemVariants}>
-                <Skeleton 
-                  className={layoutMode === 'masonry' 
-                    ? `rounded-2xl mb-4 break-inside-avoid ${i % 3 === 0 ? 'h-64' : i % 3 === 1 ? 'h-48' : 'h-56'}` 
+                <Skeleton
+                  className={layoutMode === 'masonry'
+                    ? `rounded-2xl mb-4 break-inside-avoid ${i % 3 === 0 ? 'h-64' : i % 3 === 1 ? 'h-48' : 'h-56'}`
                     : "aspect-[3/4] rounded-2xl"
-                  } 
+                  }
                 />
               </motion.div>
             ))}
@@ -247,29 +247,23 @@ const GalleryPage = () => {
         ) : photos.length > 0 ? (
           <>
             {layoutMode === 'masonry' ? (
-              <motion.div 
+              <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
                 className="columns-2 sm:columns-3 md:columns-4 gap-4 py-4"
               >
                 {photos.map((photo, index) => (
-                  <motion.div 
+                  <motion.div
                     key={photo.id}
                     variants={itemVariants}
                     onClick={() => openLightbox(index)}
                     className="break-inside-avoid mb-4 group relative overflow-hidden rounded-2xl cursor-pointer"
                   >
-                    <img
+                    <LazyImage
                       src={photo.image_url}
                       alt={photo.title || 'Event photo'}
-                      loading="lazy"
-                      decoding="async"
                       className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
-                      onLoad={(e) => {
-                        (e.target as HTMLImageElement).style.opacity = '1';
-                      }}
-                      style={{ opacity: 0, transition: 'opacity 0.3s ease-in-out' }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
@@ -284,24 +278,22 @@ const GalleryPage = () => {
                 ))}
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
                 className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4"
               >
                 {photos.map((photo, index) => (
-                  <motion.div 
+                  <motion.div
                     key={photo.id}
                     variants={itemVariants}
                     onClick={() => openLightbox(index)}
                     className="group relative overflow-hidden rounded-2xl cursor-pointer aspect-[3/4]"
                   >
-                    <img
+                    <LazyImage
                       src={photo.image_url}
                       alt={photo.title || 'Event photo'}
-                      loading="lazy"
-                      decoding="async"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />

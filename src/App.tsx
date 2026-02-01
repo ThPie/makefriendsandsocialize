@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
+import { BrandedLoader } from "@/components/ui/branded-loader";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
@@ -12,78 +13,78 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { isSlowDatingSubdomain, isCanadianDomain } from "@/lib/subdomain-utils";
 import { CountryRedirectBanner } from "@/components/ui/country-redirect-banner";
 
-import HomePage from "@/pages/HomePage";
-import EventsPage from "@/pages/EventsPage";
-import EventDetailPage from "@/pages/EventDetailPage";
-import MembershipPage from "@/pages/MembershipPage";
-import GalleryPage from "@/pages/GalleryPage";
-import AboutPage from "@/pages/AboutPage";
-import ContactPage from "@/pages/ContactPage";
-import JournalPage from "@/pages/JournalPage";
-import JournalPostPage from "@/pages/JournalPostPage";
-import PrivacyPage from "@/pages/PrivacyPage";
-import TermsPage from "@/pages/TermsPage";
-import CodeOfConductPage from "@/pages/CodeOfConductPage";
-import CookiesPage from "@/pages/CookiesPage";
-import FAQPage from "@/pages/FAQPage";
-import NotFound from "@/pages/NotFound";
-import BusinessDirectoryPage from "@/pages/BusinessDirectoryPage";
-import BusinessLandingPage from "@/pages/BusinessLandingPage";
-import AuthPage from "@/pages/AuthPage";
-import AuthCallbackPage from "@/pages/AuthCallbackPage";
-import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
-import ResetPasswordPage from "@/pages/ResetPasswordPage";
-import AuthWaitingPage from "@/pages/AuthWaitingPage";
-import EmailVerificationPage from "@/pages/EmailVerificationPage";
-import PortalDashboard from "@/pages/portal/PortalDashboard";
-import PortalProfile from "@/pages/portal/PortalProfile";
-import PortalNetwork from "@/pages/portal/PortalNetwork";
-import PortalConnections from "@/pages/portal/PortalConnections";
-import PortalEvents from "@/pages/portal/PortalEvents";
-import PortalSlowDating from "@/pages/portal/PortalSlowDating";
-import PortalMatchDetail from "@/pages/portal/PortalMatchDetail";
-import PortalReferrals from "@/pages/portal/PortalReferrals";
-import PortalBilling from "@/pages/portal/PortalBilling";
-import AdminDashboard from "@/pages/admin/AdminDashboard";
-import AdminApplications from "@/pages/admin/AdminApplications";
-import AdminMembers from "@/pages/admin/AdminMembers";
-import AdminConnections from "@/pages/admin/AdminConnections";
-import AdminEvents from "@/pages/admin/AdminEvents";
-import AdminContent from "@/pages/admin/AdminContent";
-import AdminRoles from "@/pages/admin/AdminRoles";
-import AdminSettings from "@/pages/admin/AdminSettings";
-import AdminTestimonials from "@/pages/admin/AdminTestimonials";
-import AdminDating from "@/pages/admin/AdminDating";
-import AdminDatingProfile from "@/pages/admin/AdminDatingProfile";
-import AdminMatches from "@/pages/admin/AdminMatches";
-import AdminAnalytics from "@/pages/admin/AdminAnalytics";
-import AdminEventAnalytics from "@/pages/admin/AdminEventAnalytics";
-import AdminSecurityReports from "@/pages/admin/AdminSecurityReports";
-import AdminSecurityDashboard from "@/pages/admin/AdminSecurityDashboard";
-import AdminLeads from "@/pages/admin/AdminLeads";
-import AdminReferrals from "@/pages/admin/AdminReferrals";
-import AdminPhotos from "@/pages/admin/AdminPhotos";
-import AdminAppeals from "@/pages/admin/AdminAppeals";
-import AdminCircles from "@/pages/admin/AdminCircles";
-import DatingIntakePage from "@/pages/DatingIntakePage";
-import SlowDatingPage from "@/pages/SlowDatingPage";
-import SlowDatingLandingPage from "@/pages/SlowDatingLandingPage";
-import AppealPage from "@/pages/AppealPage";
-import ConnectedCirclePage from "@/pages/ConnectedCirclePage";
-import ConnectedCircleDirectoryPage from "@/pages/ConnectedCircleDirectoryPage";
-import PortalBusiness from "@/pages/portal/PortalBusiness";
-import AdminBusinesses from "@/pages/admin/AdminBusinesses";
-import DateConfirmationPage from "@/pages/DateConfirmationPage";
-import CirclesPage from "@/pages/CirclesPage";
-import TheGentlemenPage from "@/pages/circles/TheGentlemenPage";
-import LesAmisPage from "@/pages/circles/LesAmisPage";
-import HealthCheckPage from "@/pages/HealthCheckPage";
-import PortalOnboarding from "@/pages/portal/PortalOnboarding";
-import PortalPerks from "@/pages/portal/PortalPerks";
-import PortalConcierge from "@/pages/portal/PortalConcierge";
-import PortalEventCheckin from "@/pages/portal/PortalEventCheckin";
-import AdminPerks from "@/pages/admin/AdminPerks";
-import AdminConcierge from "@/pages/admin/AdminConcierge";
+const HomePage = lazy(() => import("@/pages/HomePage"));
+const EventsPage = lazy(() => import("@/pages/EventsPage"));
+const EventDetailPage = lazy(() => import("@/pages/EventDetailPage"));
+const MembershipPage = lazy(() => import("@/pages/MembershipPage"));
+const GalleryPage = lazy(() => import("@/pages/GalleryPage"));
+const AboutPage = lazy(() => import("@/pages/AboutPage"));
+const ContactPage = lazy(() => import("@/pages/ContactPage"));
+const JournalPage = lazy(() => import("@/pages/JournalPage"));
+const JournalPostPage = lazy(() => import("@/pages/JournalPostPage"));
+const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
+const TermsPage = lazy(() => import("@/pages/TermsPage"));
+const CodeOfConductPage = lazy(() => import("@/pages/CodeOfConductPage"));
+const CookiesPage = lazy(() => import("@/pages/CookiesPage"));
+const FAQPage = lazy(() => import("@/pages/FAQPage"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
+const BusinessDirectoryPage = lazy(() => import("@/pages/BusinessDirectoryPage"));
+const BusinessLandingPage = lazy(() => import("@/pages/BusinessLandingPage"));
+const AuthPage = lazy(() => import("@/pages/AuthPage"));
+const AuthCallbackPage = lazy(() => import("@/pages/AuthCallbackPage"));
+const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
+const AuthWaitingPage = lazy(() => import("@/pages/AuthWaitingPage"));
+const EmailVerificationPage = lazy(() => import("@/pages/EmailVerificationPage"));
+const PortalDashboard = lazy(() => import("@/pages/portal/PortalDashboard"));
+const PortalProfile = lazy(() => import("@/pages/portal/PortalProfile"));
+const PortalNetwork = lazy(() => import("@/pages/portal/PortalNetwork"));
+const PortalConnections = lazy(() => import("@/pages/portal/PortalConnections"));
+const PortalEvents = lazy(() => import("@/pages/portal/PortalEvents"));
+const PortalSlowDating = lazy(() => import("@/pages/portal/PortalSlowDating"));
+const PortalMatchDetail = lazy(() => import("@/pages/portal/PortalMatchDetail"));
+const PortalReferrals = lazy(() => import("@/pages/portal/PortalReferrals"));
+const PortalBilling = lazy(() => import("@/pages/portal/PortalBilling"));
+const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
+const AdminApplications = lazy(() => import("@/pages/admin/AdminApplications"));
+const AdminMembers = lazy(() => import("@/pages/admin/AdminMembers"));
+const AdminConnections = lazy(() => import("@/pages/admin/AdminConnections"));
+const AdminEvents = lazy(() => import("@/pages/admin/AdminEvents"));
+const AdminContent = lazy(() => import("@/pages/admin/AdminContent"));
+const AdminRoles = lazy(() => import("@/pages/admin/AdminRoles"));
+const AdminSettings = lazy(() => import("@/pages/admin/AdminSettings"));
+const AdminTestimonials = lazy(() => import("@/pages/admin/AdminTestimonials"));
+const AdminDating = lazy(() => import("@/pages/admin/AdminDating"));
+const AdminDatingProfile = lazy(() => import("@/pages/admin/AdminDatingProfile"));
+const AdminMatches = lazy(() => import("@/pages/admin/AdminMatches"));
+const AdminAnalytics = lazy(() => import("@/pages/admin/AdminAnalytics"));
+const AdminEventAnalytics = lazy(() => import("@/pages/admin/AdminEventAnalytics"));
+const AdminSecurityReports = lazy(() => import("@/pages/admin/AdminSecurityReports"));
+const AdminSecurityDashboard = lazy(() => import("@/pages/admin/AdminSecurityDashboard"));
+const AdminLeads = lazy(() => import("@/pages/admin/AdminLeads"));
+const AdminReferrals = lazy(() => import("@/pages/admin/AdminReferrals"));
+const AdminPhotos = lazy(() => import("@/pages/admin/AdminPhotos"));
+const AdminAppeals = lazy(() => import("@/pages/admin/AdminAppeals"));
+const AdminCircles = lazy(() => import("@/pages/admin/AdminCircles"));
+const DatingIntakePage = lazy(() => import("@/pages/DatingIntakePage"));
+const SlowDatingPage = lazy(() => import("@/pages/SlowDatingPage"));
+const SlowDatingLandingPage = lazy(() => import("@/pages/SlowDatingLandingPage"));
+const AppealPage = lazy(() => import("@/pages/AppealPage"));
+const ConnectedCirclePage = lazy(() => import("@/pages/ConnectedCirclePage"));
+const ConnectedCircleDirectoryPage = lazy(() => import("@/pages/ConnectedCircleDirectoryPage"));
+const PortalBusiness = lazy(() => import("@/pages/portal/PortalBusiness"));
+const AdminBusinesses = lazy(() => import("@/pages/admin/AdminBusinesses"));
+const DateConfirmationPage = lazy(() => import("@/pages/DateConfirmationPage"));
+const CirclesPage = lazy(() => import("@/pages/CirclesPage"));
+const TheGentlemenPage = lazy(() => import("@/pages/circles/TheGentlemenPage"));
+const LesAmisPage = lazy(() => import("@/pages/circles/LesAmisPage"));
+const HealthCheckPage = lazy(() => import("@/pages/HealthCheckPage"));
+const PortalOnboarding = lazy(() => import("@/pages/portal/PortalOnboarding"));
+const PortalPerks = lazy(() => import("@/pages/portal/PortalPerks"));
+const PortalConcierge = lazy(() => import("@/pages/portal/PortalConcierge"));
+const PortalEventCheckin = lazy(() => import("@/pages/portal/PortalEventCheckin"));
+const AdminPerks = lazy(() => import("@/pages/admin/AdminPerks"));
+const AdminConcierge = lazy(() => import("@/pages/admin/AdminConcierge"));
 
 const queryClient = new QueryClient();
 
@@ -93,14 +94,14 @@ const queryClient = new QueryClient();
 function RecoveryRedirectHandler() {
   const { isRecoveryMode } = useAuth();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (isRecoveryMode) {
       console.log('Recovery mode detected, redirecting to reset password page');
       navigate('/auth/reset-password', { replace: true });
     }
   }, [isRecoveryMode, navigate]);
-  
+
   return null;
 }
 
@@ -157,13 +158,13 @@ const MainRoutes = () => (
     <Route path="/circles/the-gentlemen" element={<TheGentlemenPage />} />
     <Route path="/circles/les-amis" element={<LesAmisPage />} />
     <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
-    
+
     {/* Health check endpoint for deployment verification */}
     <Route path="/health" element={<HealthCheckPage />} />
-    
+
     {/* Dev testing route for subdomain landing page */}
     <Route path="/dev/slowdating-landing" element={<SlowDatingLandingPage />} />
-    
+
     {/* Auth routes */}
     <Route path="/auth" element={<AuthPage />} />
     <Route path="/auth/callback" element={<AuthCallbackPage />} />
@@ -171,10 +172,10 @@ const MainRoutes = () => (
     <Route path="/auth/verify-email" element={<EmailVerificationPage />} />
     <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
     <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
-    
+
     {/* Date confirmation (public route with token) */}
     <Route path="/confirm-date/:token" element={<DateConfirmationPage />} />
-    
+
     {/* Portal routes with portal layout */}
     <Route path="/portal/onboarding" element={<PortalOnboarding />} />
     <Route path="/portal" element={<PortalLayout><PortalDashboard /></PortalLayout>} />
@@ -190,10 +191,10 @@ const MainRoutes = () => (
     <Route path="/portal/perks" element={<PortalLayout><PortalPerks /></PortalLayout>} />
     <Route path="/portal/concierge" element={<PortalLayout><PortalConcierge /></PortalLayout>} />
     <Route path="/portal/checkin/:eventId/:code" element={<PortalEventCheckin />} />
-    
+
     {/* Dating intake route */}
     <Route path="/dating/apply" element={<Layout><DatingIntakePage /></Layout>} />
-    
+
     {/* Admin routes with admin layout */}
     <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
     <Route path="/admin/applications" element={<AdminLayout><AdminApplications /></AdminLayout>} />
@@ -219,7 +220,7 @@ const MainRoutes = () => (
     <Route path="/admin/businesses" element={<AdminLayout><AdminBusinesses /></AdminLayout>} />
     <Route path="/admin/perks" element={<AdminLayout><AdminPerks /></AdminLayout>} />
     <Route path="/admin/concierge" element={<AdminLayout><AdminConcierge /></AdminLayout>} />
-    
+
     <Route path="*" element={<Layout><NotFound /></Layout>} />
   </Routes>
 );
@@ -241,7 +242,9 @@ const App = () => {
                 <RecoveryRedirectHandler />
                 {/* Show geo-redirect banner for Canadian users on .com */}
                 {showGeoRedirectBanner && <CountryRedirectBanner />}
-                {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
+                <Suspense fallback={<BrandedLoader />}>
+                  {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
+                </Suspense>
               </BrowserRouter>
             </TooltipProvider>
           </AuthProvider>
