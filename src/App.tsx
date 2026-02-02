@@ -12,6 +12,7 @@ import { PortalLayout } from "@/components/portal/PortalLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { isSlowDatingSubdomain, isCanadianDomain } from "@/lib/subdomain-utils";
 import { CountryRedirectBanner } from "@/components/ui/country-redirect-banner";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const EventsPage = lazy(() => import("@/pages/EventsPage"));
@@ -245,6 +246,7 @@ const App = () => {
                 <Suspense fallback={<BrandedLoader />}>
                   {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
                 </Suspense>
+                <SpeedInsights />
               </BrowserRouter>
             </TooltipProvider>
           </AuthProvider>
