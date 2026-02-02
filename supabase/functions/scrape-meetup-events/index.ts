@@ -25,6 +25,17 @@ serve(async (req) => {
       );
     }
 
+    // DISABLE SCRAPE: User reported these events are not theirs.
+    const ENABLE_MEETUP_SCRAPE = false;
+
+    if (!ENABLE_MEETUP_SCRAPE) {
+      console.log('Meetup scraping is disabled by configuration.');
+      return new Response(
+        JSON.stringify({ success: true, message: 'Scraping disabled', data: { events: [] } }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const pastEventsUrl = 'https://www.meetup.com/makefriendsandsocialize/events/?type=past';
     console.log('Scraping past events from:', pastEventsUrl);
 
@@ -69,7 +80,7 @@ serve(async (req) => {
     });
 
     const scrapeData = await scrapeResponse.json();
-    
+
     if (!scrapeResponse.ok) {
       console.error('Firecrawl API error:', scrapeData);
       return new Response(
@@ -114,7 +125,7 @@ serve(async (req) => {
 
     for (const event of extractedEvents) {
       if (!event.title || !event.date) continue;
-      
+
       // Validate and format date
       let eventDate = event.date;
       try {

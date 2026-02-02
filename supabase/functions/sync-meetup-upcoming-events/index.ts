@@ -25,6 +25,18 @@ serve(async (req) => {
       );
     }
 
+    // DISABLE SYNC: User reported these events are not theirs.
+    // To re-enable, set this to true and ensure the URL matches your Meetup group.
+    const ENABLE_MEETUP_SYNC = false;
+
+    if (!ENABLE_MEETUP_SYNC) {
+      console.log('Meetup sync is disabled by configuration.');
+      return new Response(
+        JSON.stringify({ success: true, message: 'Sync disabled', data: { events: [] } }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const upcomingEventsUrl = 'https://www.meetup.com/makefriendsandsocialize/events/';
     console.log('Scraping upcoming events from:', upcomingEventsUrl);
 
@@ -72,7 +84,7 @@ serve(async (req) => {
     });
 
     const scrapeData = await scrapeResponse.json();
-    
+
     if (!scrapeResponse.ok) {
       console.error('Firecrawl API error:', scrapeData);
       return new Response(
@@ -150,12 +162,12 @@ serve(async (req) => {
     // Helper function to parse various date formats
     const parseEventDate = (dateStr: string): string | null => {
       if (!dateStr) return null;
-      
+
       // Already in YYYY-MM-DD format
       if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
         return dateStr;
       }
-      
+
       // Parse formats like "THU, JAN 23, 2026" or "January 23, 2026" or "FRI, JAN 23"
       const months: { [key: string]: string } = {
         'JAN': '01', 'JANUARY': '01',
@@ -171,31 +183,31 @@ serve(async (req) => {
         'NOV': '11', 'NOVEMBER': '11',
         'DEC': '12', 'DECEMBER': '12',
       };
-      
+
       const upper = dateStr.toUpperCase();
-      
+
       for (const [monthName, monthNum] of Object.entries(months)) {
         if (upper.includes(monthName)) {
           const dayMatch = dateStr.match(/(\d{1,2})/);
           const yearMatch = dateStr.match(/(\d{4})/);
-          
+
           if (dayMatch) {
             const day = dayMatch[1].padStart(2, '0');
             const monthNumber = parseInt(monthNum);
-            
+
             // If year is specified, use it; otherwise infer from current date
             let year = yearMatch ? parseInt(yearMatch[1]) : currentYear;
-            
+
             // If no year specified and the month is before current month, assume next year
             if (!yearMatch && monthNumber < currentMonth) {
               year = currentYear + 1;
             }
-            
+
             return `${year}-${monthNum}-${day}`;
           }
         }
       }
-      
+
       // Try native Date parsing as fallback
       try {
         const parsed = new Date(dateStr);
@@ -205,7 +217,7 @@ serve(async (req) => {
       } catch {
         // Continue
       }
-      
+
       return null;
     };
 
@@ -221,11 +233,11 @@ serve(async (req) => {
         console.log('Skipping event without title');
         continue;
       }
-      
+
       // Parse date from rawDate or date field
       const dateStr = event.rawDate || event.date || '';
       const eventDate = parseEventDate(dateStr);
-      
+
       if (!eventDate) {
         console.log('Could not parse date for event:', event.title, 'raw:', dateStr);
         continue;
@@ -270,10 +282,10 @@ serve(async (req) => {
           let hours = parseInt(timeMatch[1]);
           const minutes = timeMatch[2];
           const period = timeMatch[3]?.toUpperCase();
-          
+
           if (period === 'PM' && hours !== 12) hours += 12;
           if (period === 'AM' && hours === 12) hours = 0;
-          
+
           formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}`;
         }
       }
