@@ -6,20 +6,22 @@ import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/contexts/AuthContext';
 import { TIER_BENEFITS } from '@/lib/stripe-products';
-import { 
-  Sparkles, 
-  ArrowRight, 
-  Crown, 
-  Check, 
-  Star, 
-  Users, 
-  Calendar, 
+import {
+  Sparkles,
+  ArrowRight,
+  Crown,
+  Check,
+  Star,
+  Users,
+  Calendar,
   Briefcase,
   Loader2,
   Zap,
   Lock,
   Heart,
-  Gift
+  Gift,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -58,13 +60,19 @@ const MembershipPage = () => {
   const { subscription, isLoading: subscriptionLoading, openCheckout, openCustomerPortal } = useSubscription();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [expandedTiers, setExpandedTiers] = useState<Record<string, boolean>>({});
+  const INITIAL_FEATURES_SHOWN = 4;
+
+  const toggleExpanded = (tierId: string) => {
+    setExpandedTiers(prev => ({ ...prev, [tierId]: !prev[tierId] }));
+  };
 
   const handleStartTrial = async (tier: 'member' | 'fellow') => {
     if (!user) {
       navigate('/auth?returnTo=/membership');
       return;
     }
-    
+
     setLoadingTier(tier);
     try {
       await openCheckout(tier, billingPeriod, true);
@@ -80,7 +88,7 @@ const MembershipPage = () => {
       navigate('/auth?returnTo=/membership');
       return;
     }
-    
+
     setLoadingTier(tier);
     try {
       await openCheckout(tier, billingPeriod, false);
@@ -104,7 +112,7 @@ const MembershipPage = () => {
     // Map DB tier to UI tier
     const tierMap: Record<string, string> = {
       patron: 'socialite',
-      fellow: 'insider', 
+      fellow: 'insider',
       founder: 'patron',
     };
     return tierMap[subscription.tier || 'patron'] === tierName;
@@ -185,16 +193,16 @@ const MembershipPage = () => {
     <div className="flex-1 w-full flex flex-col items-center bg-background">
       {/* Hero Section */}
       <section className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden">
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuA1LPDNLmTM3QdP2Pr0_KuoEX2ABfPK8uOWYED8mrY7Vm_PWmos6JzhSkimaZ6s4lDEw-_pnBlX4nJbSAAMUJJrDg5sVnr05RQtaY2O0PShRnO4btK8Y248sf2ZXAIAx6DnGZIL388TKe51HP_Wwbt_2LkZ9FisLlXFm4XbwcttGVEcwEsoaIbo_T4KcuNryiU09AJ5jR-ds4q_z8noYp2Ga4TC-heUZNwTIoeTOsAJ5Xl7lsGhw4vlFiN2rW9ANb9IZSoxFaCWsxtA")'
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/80" />
-        
 
-        <div 
+
+        <div
           ref={heroAnimation.ref}
           className={`relative z-10 container max-w-4xl text-center py-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -289,7 +297,7 @@ const MembershipPage = () => {
 
       {/* Legacy Section */}
       <section className="py-24 md:py-32 w-full">
-        <div 
+        <div
           ref={legacyAnimation.ref}
           className={`container max-w-6xl scroll-animate ${legacyAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -299,7 +307,7 @@ const MembershipPage = () => {
               A Legacy of Connection
             </h2>
             <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
-              MakeFriends Socialize is founded on the principle that the most meaningful moments are shared. 
+              MakeFriends Socialize is founded on the principle that the most meaningful moments are shared.
               We provide a private, curated environment for leaders, innovators, and connoisseurs to connect.
             </p>
           </div>
@@ -311,9 +319,9 @@ const MembershipPage = () => {
             className="grid grid-cols-1 md:grid-cols-2 gap-8"
           >
             <motion.div variants={itemVariants} className="group bg-card border border-border/50 rounded-2xl overflow-hidden hover-lift">
-              <div 
-                className="w-full aspect-video bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
-                style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDruggrnBN-9qTOe1Fc9qMF_JtiW_VnADSmII4S2ux8MqT6fOs2HG-ghWwtzWWHqkDaTAmD4LSpx6E1Hm-sS0Zl0P8VefX-D5Etk3lO-dk0r-NPEcPKRUOBu-2UdNaKofKZFu5q8ho1Fl3MglVTEqdi6uRMGWJ9_6kBmYVGB1jvjTPhvJuXwwTTesD0I1g-PsBP4RwCkV1vaqccSNY-5TXH6oF1728qjz6PlerqNSYPtnIdaWjHcaH5T-JfK_fO9GunPtHGxtXhJY3C")'}}
+              <div
+                className="w-full aspect-video bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDruggrnBN-9qTOe1Fc9qMF_JtiW_VnADSmII4S2ux8MqT6fOs2HG-ghWwtzWWHqkDaTAmD4LSpx6E1Hm-sS0Zl0P8VefX-D5Etk3lO-dk0r-NPEcPKRUOBu-2UdNaKofKZFu5q8ho1Fl3MglVTEqdi6uRMGWJ9_6kBmYVGB1jvjTPhvJuXwwTTesD0I1g-PsBP4RwCkV1vaqccSNY-5TXH6oF1728qjz6PlerqNSYPtnIdaWjHcaH5T-JfK_fO9GunPtHGxtXhJY3C")' }}
               />
               <div className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
@@ -327,9 +335,9 @@ const MembershipPage = () => {
             </motion.div>
 
             <motion.div variants={itemVariants} className="group bg-card border border-border/50 rounded-2xl overflow-hidden hover-lift">
-              <div 
-                className="w-full aspect-video bg-cover bg-center transition-transform duration-500 group-hover:scale-105" 
-                style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDB4GSC6Jo5fw67mSMHAPEJFdrOGuo0YWScMlid-EMsl053fi94hxzLQ8Gr2YRsYR2xZGZv3UIXwrM1WpGe8ugpoAv-7Px5WKpOsLDczUkvB7yCVf7gZssUxy7wEBOhd78EareiANb92XxNzKtQSoAxWjQ0CdI2DdoWkLuMOsVHXKvf9qwBFAhSfiXgI1tZ5k__18haE_z-XAzllweTDSNcZEad7ucCeinEDHN5ftXsXCEMDuS2_Z3ofrUh-vEyWcFG3oMIK2NqS4Ho")'}}
+              <div
+                className="w-full aspect-video bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDB4GSC6Jo5fw67mSMHAPEJFdrOGuo0YWScMlid-EMsl053fi94hxzLQ8Gr2YRsYR2xZGZv3UIXwrM1WpGe8ugpoAv-7Px5WKpOsLDczUkvB7yCVf7gZssUxy7wEBOhd78EareiANb92XxNzKtQSoAxWjQ0CdI2DdoWkLuMOsVHXKvf9qwBFAhSfiXgI1tZ5k__18haE_z-XAzllweTDSNcZEad7ucCeinEDHN5ftXsXCEMDuS2_Z3ofrUh-vEyWcFG3oMIK2NqS4Ho")' }}
               />
               <div className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
@@ -347,7 +355,7 @@ const MembershipPage = () => {
 
       {/* Pricing Tiers */}
       <section className="py-24 md:py-32 w-full bg-secondary/30">
-        <div 
+        <div
           ref={tiersAnimation.ref}
           className={`container max-w-6xl scroll-animate ${tiersAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -399,11 +407,10 @@ const MembershipPage = () => {
                 <motion.div
                   key={tier.name}
                   variants={itemVariants}
-                  className={`relative flex flex-col gap-6 rounded-2xl p-8 transition-all duration-300 ${
-                    tier.featured
+                  className={`relative flex flex-col gap-6 rounded-2xl p-8 transition-all duration-300 ${tier.featured
                       ? 'bg-gradient-to-b from-primary/10 to-card border-2 border-primary shadow-xl shadow-primary/10'
                       : 'bg-card border border-border/50 hover:border-primary/50 hover-lift'
-                  } ${isCurrent ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
+                    } ${isCurrent ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
                 >
                   {/* Current Plan Badge */}
                   {isCurrent && (
@@ -418,11 +425,10 @@ const MembershipPage = () => {
                   {/* Tier Badge */}
                   {tier.badge && !isCurrent && (
                     <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                      <Badge className={`text-xs ${
-                        tier.featured 
-                          ? 'bg-primary text-primary-foreground' 
+                      <Badge className={`text-xs ${tier.featured
+                          ? 'bg-primary text-primary-foreground'
                           : 'bg-primary/70 text-primary-foreground'
-                      }`}>
+                        }`}>
                         {tier.badge}
                       </Badge>
                     </div>
@@ -460,8 +466,8 @@ const MembershipPage = () => {
                       Manage Subscription
                     </Button>
                   ) : subscription?.subscribed ? (
-                    <Button 
-                      variant={tier.featured ? 'default' : 'secondary'} 
+                    <Button
+                      variant={tier.featured ? 'default' : 'secondary'}
                       className="w-full rounded-full min-h-[48px]"
                       onClick={() => tier.stripeId && handleSubscribe(tier.stripeId)}
                       disabled={loadingTier === tier.stripeId}
@@ -472,8 +478,8 @@ const MembershipPage = () => {
                       {tier.id === 'patron' ? 'Upgrade to Patron' : 'Switch Plan'}
                     </Button>
                   ) : (
-                    <Button 
-                      variant={tier.featured ? 'default' : 'secondary'} 
+                    <Button
+                      variant={tier.featured ? 'default' : 'secondary'}
                       className="w-full rounded-full min-h-[48px]"
                       onClick={() => tier.stripeId && handleStartTrial(tier.stripeId)}
                       disabled={loadingTier === tier.stripeId}
@@ -488,23 +494,23 @@ const MembershipPage = () => {
                   )}
 
                   {/* Included Features */}
-                  <div className="flex flex-col gap-3">
-                    {tier.features.map((feature, i) => (
-                      <div key={i} className="flex items-start gap-3 text-sm text-foreground">
+                  <ul className="space-y-3 mb-4">
+                    {(expandedTiers[tier.id] ? tier.features : tier.features.slice(0, INITIAL_FEATURES_SHOWN)).map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-foreground">
                         <Check className="h-5 w-5 text-primary flex-shrink-0" />
                         <span>{feature}</span>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
 
                   {/* Missing Features (Grayscale) */}
                   {tier.missingFeatures && tier.missingFeatures.length > 0 && (
-                    <div className="border-t border-border/50 pt-4">
+                    <div className={`border-t border-border/50 pt-4 mb-4 ${!expandedTiers[tier.id] ? 'opacity-70' : ''}`}>
                       <p className="text-xs text-muted-foreground/60 uppercase tracking-wider mb-3 font-medium">
                         Upgrade to unlock
                       </p>
                       <div className="flex flex-col gap-2">
-                        {tier.missingFeatures.map((feature, i) => (
+                        {(expandedTiers[tier.id] ? tier.missingFeatures : tier.missingFeatures.slice(0, 2)).map((feature, i) => (
                           <div key={`missing-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground/50">
                             <Lock className="h-4 w-4 flex-shrink-0 mt-0.5" />
                             <span>{feature}</span>
@@ -512,6 +518,26 @@ const MembershipPage = () => {
                         ))}
                       </div>
                     </div>
+                  )}
+
+                  {/* See More / See Less Button */}
+                  {((tier.features.length > INITIAL_FEATURES_SHOWN) || (tier.missingFeatures && tier.missingFeatures.length > 2)) && (
+                    <button
+                      onClick={() => toggleExpanded(tier.id)}
+                      className="w-full flex items-center justify-center gap-2 py-2 text-sm text-primary hover:text-primary/80 transition-colors mb-4"
+                    >
+                      {expandedTiers[tier.id] ? (
+                        <>
+                          <span>See less</span>
+                          <ChevronUp className="w-4 h-4" />
+                        </>
+                      ) : (
+                        <>
+                          <span>See all benefits</span>
+                          <ChevronDown className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
                   )}
 
                   {/* Patron exclusivity note */}
@@ -529,7 +555,7 @@ const MembershipPage = () => {
 
       {/* Application Process */}
       <section className="py-24 md:py-32 w-full">
-        <div 
+        <div
           ref={processAnimation.ref}
           className={`container max-w-5xl scroll-animate ${processAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -550,7 +576,7 @@ const MembershipPage = () => {
             className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
             {processSteps.map((item) => (
-              <motion.div 
+              <motion.div
                 key={item.step}
                 variants={itemVariants}
                 className="flex flex-col items-center text-center group"
@@ -578,7 +604,7 @@ const MembershipPage = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
-        <div 
+        <div
           ref={ctaAnimation.ref}
           className={`container max-w-3xl text-center relative z-10 scroll-animate ${ctaAnimation.isVisible ? 'visible' : ''}`}
         >
