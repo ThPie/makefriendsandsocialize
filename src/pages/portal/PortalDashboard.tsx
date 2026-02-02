@@ -17,6 +17,7 @@ import { UpgradePromptCard } from '@/components/portal/UpgradePromptCard';
 import { EmailVerificationBanner } from '@/components/portal/EmailVerificationBanner';
 import { ActivityFeed } from '@/components/portal/ActivityFeed';
 import { AttendanceStreak } from '@/components/portal/AttendanceStreak';
+import { EventRecommendations } from '@/components/events/EventRecommendations';
 import { WidgetErrorBoundary } from '@/components/ui/widget-error-boundary';
 
 export default function PortalDashboard() {
@@ -209,6 +210,11 @@ export default function PortalDashboard() {
           <AttendanceStreak />
         </WidgetErrorBoundary>
       </div>
+
+      {/* Event Recommendations */}
+      <WidgetErrorBoundary title="Events For You">
+        <EventRecommendations />
+      </WidgetErrorBoundary>
 
       {/* Quick Actions */}
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">

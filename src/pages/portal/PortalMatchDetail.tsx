@@ -9,12 +9,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { DateScheduler } from '@/components/dating/DateScheduler';
 import { MatchDecision } from '@/components/dating/MatchDecision';
 import { CompatibilityBreakdown } from '@/components/dating/CompatibilityBreakdown';
-import { 
-  ArrowLeft, 
-  Heart, 
-  User, 
-  MapPin, 
-  Briefcase, 
+import { MatchInsightsCard } from '@/components/dating/MatchInsightsCard';
+import { CompatibilityTimeline } from '@/components/dating/CompatibilityTimeline';
+import {
+  ArrowLeft,
+  Heart,
+  User,
+  MapPin,
+  Briefcase,
   Calendar,
   Clock,
   PartyPopper,
@@ -119,7 +121,7 @@ export default function PortalMatchDetail() {
     queryFn: async () => {
       if (!match || !myProfile) return null;
       const matchedProfileId = match.user_a_id === myProfile.id ? match.user_b_id : match.user_a_id;
-      
+
       const { data, error } = await supabase
         .from('dating_profiles')
         .select('*')
@@ -186,7 +188,7 @@ export default function PortalMatchDetail() {
       }, 300);
     }
   }, [isRevealed]);
-  
+
   const currentResponse = isUserA ? match.user_a_response : match.user_b_response;
   const otherResponse = isUserA ? match.user_b_response : match.user_a_response;
 
@@ -256,7 +258,7 @@ export default function PortalMatchDetail() {
                   <User className="h-24 w-24 text-dating-forest/30" />
                 </div>
               )}
-              
+
               {!isRevealed && (
                 <div className="absolute inset-0 bg-dating-cream/50 flex items-center justify-center">
                   <div className="text-center">
@@ -360,6 +362,55 @@ export default function PortalMatchDetail() {
         </CardContent>
       </Card>
 
+      {/* AI Match Insights - Only for revealed matches */}
+      {isRevealed && (
+        <div className="grid gap-6 md:grid-cols-2">
+          <MatchInsightsCard
+            matchExplanation={match.match_reason}
+            compatibilityScore={match.compatibility_score}
+            sharedValues={matchedProfile.core_values_ranked?.filter((v) =>
+              myProfile.core_values_ranked?.includes(v)
+            ) || []}
+            conversationStarters={[
+              `Ask about their ${matchedProfile.occupation || 'work'}`,
+              `Share your thoughts on ${matchedProfile.core_values_ranked?.[0] || 'what matters most'}`,
+              matchedProfile.location ? `Discuss favorite spots in ${matchedProfile.location}` : 'Share your favorite local spots',
+            ]}
+            compatibilityFactors={[
+              {
+                name: 'Values Alignment',
+                score: match.match_dimensions?.values || 85,
+                icon: Heart,
+                description: 'Shared core values and priorities',
+                color: 'text-rose-500',
+              },
+              {
+                name: 'Communication',
+                score: match.match_dimensions?.communication || 80,
+                icon: User,
+                description: 'Compatible communication styles',
+                color: 'text-blue-500',
+              },
+              {
+                name: 'Life Goals',
+                score: match.match_dimensions?.goals || 75,
+                icon: Briefcase,
+                description: 'Aligned vision for the future',
+                color: 'text-emerald-500',
+              },
+              {
+                name: 'Lifestyle',
+                score: match.match_dimensions?.lifestyle || 70,
+                icon: Calendar,
+                description: 'Similar daily routines',
+                color: 'text-amber-500',
+              },
+            ]}
+          />
+          <CompatibilityTimeline />
+        </div>
+      )}
+
       {/* Scheduler or Decision UI */}
       {showScheduler && (
         <DateScheduler
@@ -400,8 +451,8 @@ export default function PortalMatchDetail() {
                   {isWoman && match.meeting_status === 'pending_woman'
                     ? "Propose dates that work for you. Your match will then confirm."
                     : !isWoman && match.meeting_status === 'pending_man'
-                    ? "Review the proposed dates and accept one that works for you."
-                    : "Waiting for the other person to take action."}
+                      ? "Review the proposed dates and accept one that works for you."
+                      : "Waiting for the other person to take action."}
                 </p>
                 <Button
                   onClick={() => setShowScheduler(true)}
@@ -431,8 +482,8 @@ export default function PortalMatchDetail() {
                   {currentResponse === 'pending'
                     ? "Did you feel a connection? Share your decision."
                     : currentResponse === 'accepted'
-                    ? "You said yes! Waiting for their decision..."
-                    : "You've made your decision."}
+                      ? "You said yes! Waiting for their decision..."
+                      : "You've made your decision."}
                 </p>
                 <Button
                   onClick={() => setShowDecision(true)}
