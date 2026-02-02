@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Picture } from '@/components/ui/picture';
-import slowDatingImage from '@/assets/slow-dating.jpg';
+import slowDatingImage from '@/assets/slow-dating-new.jpg';
 
 export const SlowDatingSection = () => {
   const { ref, isVisible } = useScrollAnimation();
