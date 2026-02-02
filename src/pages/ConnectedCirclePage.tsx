@@ -154,7 +154,8 @@ const ConnectedCirclePage = () => {
               alt="Professional business networking"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-background/90" />
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background" />
           </div>
 
           <div
@@ -201,12 +202,15 @@ const ConnectedCirclePage = () => {
                   </Link>
                 </Button>
                 <Button
-                  asChild
                   variant="outline"
                   size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base border-border/50 hover:bg-secondary"
+                  className="rounded-full px-8 min-h-[52px] text-base border-border/50 hover:bg-secondary cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                 >
-                  <Link to="#how-it-works">How It Works</Link>
+                  How It Works
                 </Button>
               </motion.div>
             </div>
@@ -231,7 +235,7 @@ const ConnectedCirclePage = () => {
         </section>
 
         {/* Benefits Section */}
-        <section className="py-24 md:py-32" id="how-it-works">
+        <section className="py-24 md:py-32">
           <div
             ref={benefitsAnimation.ref}
             className={`container max-w-6xl scroll-animate ${benefitsAnimation.isVisible ? 'visible' : ''}`}
@@ -271,7 +275,7 @@ const ConnectedCirclePage = () => {
         </section>
 
         {/* How It Works Section */}
-        <section className="py-24 md:py-32 bg-secondary/30">
+        <section className="py-24 md:py-32 bg-secondary/30" id="how-it-works">
           <div
             ref={processAnimation.ref}
             className={`container max-w-5xl scroll-animate ${processAnimation.isVisible ? 'visible' : ''}`}
