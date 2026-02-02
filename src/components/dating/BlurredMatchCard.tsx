@@ -50,10 +50,10 @@ interface BlurredMatchCardProps {
   canReveal?: boolean;
 }
 
-export const BlurredMatchCard = ({ 
-  match, 
-  currentProfileId, 
-  onSchedule, 
+export const BlurredMatchCard = ({
+  match,
+  currentProfileId,
+  onSchedule,
   onViewDetails,
   onReveal,
   isWoman,
@@ -64,13 +64,13 @@ export const BlurredMatchCard = ({
   const profile = match.matched_profile;
   const isRevealed = match.status === 'mutual_yes';
   const isDeclined = match.status === 'declined';
-  
+
   // Determine if user can take action based on meeting status
   const canProposeDates = isWoman && match.meeting_status === 'pending_woman';
   const canRespondToDates = !isWoman && match.meeting_status === 'pending_man';
   const isScheduled = match.meeting_status === 'scheduled';
   const awaitingDecision = match.meeting_status === 'met';
-  
+
   if (!profile) return null;
 
   const getScoreColor = (score: number) => {
@@ -133,8 +133,8 @@ export const BlurredMatchCard = ({
   return (
     <Card className={cn(
       "overflow-hidden transition-all duration-300",
-      isRevealed 
-        ? "border-primary shadow-lg shadow-primary/10" 
+      isRevealed
+        ? "border-primary shadow-lg shadow-primary/10"
         : "border-border hover:shadow-md"
     )}>
       <CardContent className="p-0">
@@ -167,7 +167,7 @@ export const BlurredMatchCard = ({
                 <User className="h-12 w-12 text-primary/30" />
               </div>
             )}
-            
+
             {/* Overlay for blurred state */}
             {!isRevealed && (
               <div className="absolute inset-0 bg-muted/50 flex items-center justify-center">
@@ -255,12 +255,18 @@ export const BlurredMatchCard = ({
               </div>
             )}
 
-            {/* Match Reason - Always Visible */}
+            {/* Match Reason - Show generic teaser before reveal for privacy */}
             <div className="bg-primary/5 rounded-xl p-3 border border-primary/10">
               <p className="text-xs uppercase tracking-wide text-primary/70 mb-1">Why you match</p>
-              <p className="text-sm text-foreground italic line-clamp-2">
-                "{match.match_reason}"
-              </p>
+              {isRevealed ? (
+                <p className="text-sm text-foreground italic line-clamp-2">
+                  "{match.match_reason}"
+                </p>
+              ) : (
+                <p className="text-sm text-muted-foreground italic line-clamp-2">
+                  Strong compatibility in communication and shared values. Reveal to see full details.
+                </p>
+              )}
             </div>
 
             {/* Revealed: Show full bio */}
@@ -294,6 +300,7 @@ export const BlurredMatchCard = ({
                   size="sm"
                   className="flex-1"
                   onClick={onViewDetails}
+                  aria-label="Make decision on this match"
                 >
                   <Heart className="h-4 w-4 mr-2" />
                   Make Decision
@@ -303,6 +310,7 @@ export const BlurredMatchCard = ({
                   size="sm"
                   className="flex-1"
                   onClick={onSchedule}
+                  aria-label={canProposeDates ? 'Propose dates for meeting' : 'View date proposals'}
                 >
                   <Calendar className="h-4 w-4 mr-2" />
                   {canProposeDates ? 'Propose Dates' : 'View Proposals'}
@@ -313,6 +321,7 @@ export const BlurredMatchCard = ({
                   variant="outline"
                   className="flex-1"
                   onClick={onViewDetails}
+                  aria-label="View meeting details"
                 >
                   <CheckCircle2 className="h-4 w-4 mr-2" />
                   View Meeting Details
@@ -322,6 +331,7 @@ export const BlurredMatchCard = ({
                   size="sm"
                   className="flex-1"
                   onClick={onViewDetails}
+                  aria-label="View full profile"
                 >
                   View Full Profile
                 </Button>
@@ -330,6 +340,7 @@ export const BlurredMatchCard = ({
                   size="sm"
                   className="flex-1"
                   onClick={onReveal}
+                  aria-label="Reveal this match's profile"
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   Reveal Match
@@ -340,6 +351,7 @@ export const BlurredMatchCard = ({
                   variant="outline"
                   className="flex-1"
                   onClick={onViewDetails}
+                  aria-label="View match details"
                 >
                   View Details
                 </Button>

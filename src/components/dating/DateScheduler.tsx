@@ -10,6 +10,7 @@ import { format, addDays, isBefore, startOfToday } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
 interface Proposal {
   id: string;
@@ -176,8 +177,24 @@ export const DateScheduler = ({
     return TIME_SLOTS.find(t => t.value === timeValue)?.label || timeValue;
   };
 
+  // Keyboard navigation handler for proposals
+  const handleProposalKeyDown = useCallback((e: React.KeyboardEvent, proposalId: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      acceptMutation.mutate(proposalId);
+    }
+  }, [acceptMutation]);
+
+  // Keyboard handler for pending proposal removal
+  const handleRemoveKeyDown = useCallback((e: React.KeyboardEvent, index: number) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      removeProposal(index);
+    }
+  }, [removeProposal]);
+
   return (
-    <Card className="border-dating-forest/20">
+    <Card className="border-dating-forest/20" role="region" aria-label="Date scheduling">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-dating-forest">
           <CalendarIcon className="h-5 w-5" />
@@ -198,10 +215,14 @@ export const DateScheduler = ({
               {otherPersonsProposals.map((proposal) => (
                 <div
                   key={proposal.id}
-                  className="flex items-center justify-between p-3 bg-dating-cream/30 rounded-lg border border-dating-cream"
+                  className="flex items-center justify-between p-3 bg-dating-cream/30 rounded-lg border border-dating-cream focus-within:ring-2 focus-within:ring-dating-forest"
+                  role="listitem"
+                  tabIndex={0}
+                  onKeyDown={(e) => handleProposalKeyDown(e, proposal.id)}
+                  aria-label={`${format(new Date(proposal.proposed_date), 'EEEE, MMMM d')} ${getTimeLabel(proposal.proposed_time)}. Press Enter to accept.`}
                 >
                   <div className="flex items-center gap-3">
-                    <CalendarIcon className="h-4 w-4 text-dating-forest" />
+                    <CalendarIcon className="h-4 w-4 text-dating-forest" aria-hidden="true" />
                     <span className="font-medium">
                       {format(new Date(proposal.proposed_date), 'EEEE, MMMM d')}
                     </span>
@@ -214,8 +235,9 @@ export const DateScheduler = ({
                     className="bg-dating-forest hover:bg-dating-forest/90"
                     onClick={() => acceptMutation.mutate(proposal.id)}
                     disabled={acceptMutation.isPending}
+                    aria-label={`Accept ${format(new Date(proposal.proposed_date), 'EEEE, MMMM d')} ${getTimeLabel(proposal.proposed_time)}`}
                   >
-                    <Check className="h-4 w-4 mr-1" />
+                    <Check className="h-4 w-4 mr-1" aria-hidden="true" />
                     Accept
                   </Button>
                 </div>
@@ -238,7 +260,7 @@ export const DateScheduler = ({
         {myProposals.length > 0 && !canPropose && (
           <div className="space-y-3">
             <h4 className="font-medium text-foreground">Your Proposed Dates</h4>
-            <div className="grid gap-2">
+            <div className="grid gap-2" role="list" aria-label="Your submitted proposals">
               {myProposals.map((proposal) => (
                 <div
                   key={proposal.id}
@@ -329,9 +351,11 @@ export const DateScheduler = ({
                         size="sm"
                         variant="ghost"
                         onClick={() => removeProposal(index)}
+                        onKeyDown={(e) => handleRemoveKeyDown(e, index)}
                         className="text-muted-foreground hover:text-destructive"
+                        aria-label={`Remove ${format(proposal.date, 'EEEE, MMMM d')} ${getTimeLabel(proposal.time)}`}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
                       </Button>
                     </div>
                   ))}
@@ -343,7 +367,7 @@ export const DateScheduler = ({
 
         {/* Actions */}
         <div className="flex gap-3 pt-4 border-t">
-          <Button variant="outline" onClick={onClose} className="flex-1">
+          <Button variant="outline" onClick={onClose} className="flex-1" aria-label="Cancel date scheduling">
             Cancel
           </Button>
           {canPropose && (
@@ -351,6 +375,7 @@ export const DateScheduler = ({
               onClick={submitProposals}
               disabled={pendingProposals.length === 0 || proposeMutation.isPending}
               className="flex-1 bg-dating-forest hover:bg-dating-forest/90"
+              aria-label={pendingProposals.length === 0 ? 'Add date proposals first' : `Submit ${pendingProposals.length} date proposal${pendingProposals.length > 1 ? 's' : ''}`}
             >
               {proposeMutation.isPending ? 'Submitting...' : 'Submit Proposals'}
             </Button>

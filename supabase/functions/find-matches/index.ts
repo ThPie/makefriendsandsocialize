@@ -60,6 +60,7 @@ interface MatchResult {
   score: number;
   reason: string;
   gottmanScore?: number;
+  confidence?: number;
   dimensions?: {
     communication: number;
     values: number;
@@ -68,6 +69,105 @@ interface MatchResult {
     redFlags: number;
   };
 }
+
+// ============================================
+// UTILITY FUNCTIONS (from Audit Recommendations)
+// ============================================
+
+// Rate limiting: 3 requests per hour per profile
+const RATE_LIMIT_WINDOW_MS = 3600000; // 1 hour
+const RATE_LIMIT_MAX_REQUESTS = 3;
+
+// Profile completeness threshold
+const PROFILE_COMPLETENESS_THRESHOLD = 0.5; // 50%
+
+// Batch size for parallel AI processing
+const AI_BATCH_SIZE = 5;
+
+// Hard dealbreaker check - runs BEFORE AI analysis to save API calls
+const passesDealbreakerCheck = (
+  target: DatingProfile,
+  candidate: DatingProfile
+): boolean => {
+  // Children dealbreaker - absolute incompatibility
+  if (
+    target.wants_children === "No, definitely not" &&
+    candidate.wants_children?.includes("Yes")
+  ) {
+    console.log(`DEALBREAKER: ${target.display_name} doesn't want kids, ${candidate.display_name} does`);
+    return false;
+  }
+  if (
+    target.wants_children?.includes("Yes") &&
+    candidate.wants_children === "No, definitely not"
+  ) {
+    console.log(`DEALBREAKER: ${target.display_name} wants kids, ${candidate.display_name} definitely doesn't`);
+    return false;
+  }
+
+  // Smoking dealbreaker (if specified in dealbreakers text)
+  if (
+    target.dealbreakers?.toLowerCase().includes("smoker") &&
+    candidate.smoking_status === "Daily"
+  ) {
+    console.log(`DEALBREAKER: ${target.display_name} won't date smokers, ${candidate.display_name} smokes daily`);
+    return false;
+  }
+  if (
+    target.dealbreakers?.toLowerCase().includes("no smoking") &&
+    candidate.smoking_status === "Daily"
+  ) {
+    console.log(`DEALBREAKER: ${target.display_name} won't date smokers, ${candidate.display_name} smokes daily`);
+    return false;
+  }
+
+  // Relationship type dealbreaker
+  if (
+    target.relationship_type === "Long-term relationship" &&
+    candidate.relationship_type === "Casual dating"
+  ) {
+    console.log(`DEALBREAKER: Relationship type mismatch (${target.display_name} wants long-term, ${candidate.display_name} wants casual)`);
+    return false;
+  }
+  if (
+    target.relationship_type === "Casual dating" &&
+    candidate.relationship_type === "Long-term relationship"
+  ) {
+    console.log(`DEALBREAKER: Relationship type mismatch (${target.display_name} wants casual, ${candidate.display_name} wants long-term)`);
+    return false;
+  }
+
+  return true;
+};
+
+// Calculate profile completeness for confidence scoring
+const getProfileCompleteness = (profile: DatingProfile): number => {
+  const importantFields = [
+    "communication_style",
+    "core_values_ranked",
+    "wants_children",
+    "conflict_resolution",
+    "love_language",
+    "attachment_style",
+    "stress_response",
+    "repair_attempt_response",
+    "relationship_type",
+    "intimacy_expectations",
+  ];
+  const filledCount = importantFields.filter(
+    (field) => profile[field as keyof DatingProfile] !== null &&
+      profile[field as keyof DatingProfile] !== undefined
+  ).length;
+  return filledCount / importantFields.length;
+};
+
+// Improved gender preference parsing (supports non-binary)
+const parseGenderPreference = (pref: string): string[] => {
+  if (pref === "Everyone") return ["Man", "Woman", "Non-binary", "Trans Man", "Trans Woman", "Other"];
+  if (pref === "Men") return ["Man", "Trans Man"];
+  if (pref === "Women") return ["Woman", "Trans Woman"];
+  return [pref];
+};
 
 serve(async (req) => {
   // Handle CORS preflight
@@ -118,6 +218,32 @@ serve(async (req) => {
       );
     }
 
+    // ============================================
+    // RATE LIMITING CHECK
+    // ============================================
+    const oneHourAgo = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
+    const { data: recentCalls, error: rateLimitError } = await supabase
+      .from("match_api_calls")
+      .select("id")
+      .eq("profile_id", profileId)
+      .gte("created_at", oneHourAgo);
+
+    // Log rate limit call (even if table doesn't exist yet)
+    await supabase.from("match_api_calls").insert({ profile_id: profileId }).catch(() => {
+      console.log("Rate limit table not created yet - skipping rate limit tracking");
+    });
+
+    if (!rateLimitError && recentCalls && recentCalls.length >= RATE_LIMIT_MAX_REQUESTS) {
+      console.log(`Rate limit exceeded for profile ${profileId}: ${recentCalls.length} calls in last hour`);
+      return new Response(
+        JSON.stringify({
+          error: "Rate limit exceeded. You can request new matches up to 3 times per hour.",
+          retry_after_seconds: 3600
+        }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     console.log(`Finding matches for: ${targetProfile.display_name}`);
 
     // Hard filter: Get candidates that match basic criteria
@@ -128,11 +254,10 @@ serve(async (req) => {
       .in("status", ["approved", "vetted"])
       .eq("is_active", true);
 
-    // Filter by target's gender preference
+    // Filter by target's gender preference (improved for non-binary support)
     if (targetProfile.target_gender !== "Everyone") {
-      // If target wants "Men", candidates should be "Man"
-      const genderMatch = targetProfile.target_gender === "Men" ? "Man" : "Woman";
-      query = query.eq("gender", genderMatch);
+      const acceptableGenders = parseGenderPreference(targetProfile.target_gender);
+      query = query.in("gender", acceptableGenders);
     }
 
     // Filter by age range
@@ -157,10 +282,11 @@ serve(async (req) => {
 
     // Reciprocal filter: Check if candidates would also be interested in target
     const reciprocalCandidates = candidates.filter((candidate: DatingProfile) => {
-      // Check if candidate's target_gender matches target's gender
-      if (candidate.target_gender === "Everyone") return true;
-      const targetGenderMatch = candidate.target_gender === "Men" ? "Man" : "Woman";
-      if (targetProfile.gender !== targetGenderMatch) return false;
+      // Check if candidate's target_gender matches target's gender (improved)
+      if (candidate.target_gender !== "Everyone") {
+        const candidateAcceptsGenders = parseGenderPreference(candidate.target_gender);
+        if (!candidateAcceptsGenders.includes(targetProfile.gender)) return false;
+      }
 
       // Check if target's age falls within candidate's preferred range
       if (targetProfile.age < candidate.age_range_min || targetProfile.age > candidate.age_range_max) {
@@ -179,6 +305,38 @@ serve(async (req) => {
       );
     }
 
+    // ============================================
+    // DEALBREAKER HARD FILTER (Runs BEFORE AI to save API calls)
+    // ============================================
+    const candidatesAfterDealbreakers = reciprocalCandidates.filter((candidate: DatingProfile) =>
+      passesDealbreakerCheck(targetProfile, candidate)
+    );
+    console.log(`${candidatesAfterDealbreakers.length} candidates after dealbreaker filter (removed ${reciprocalCandidates.length - candidatesAfterDealbreakers.length})`);
+
+    if (candidatesAfterDealbreakers.length === 0) {
+      return new Response(
+        JSON.stringify({ matches: [], message: "No compatible matches after dealbreaker checks" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // ============================================
+    // PROFILE COMPLETENESS FILTER
+    // ============================================
+    const targetCompleteness = getProfileCompleteness(targetProfile);
+    console.log(`Target profile completeness: ${Math.round(targetCompleteness * 100)}%`);
+
+    const qualifiedCandidates = candidatesAfterDealbreakers.filter((candidate: DatingProfile) => {
+      const completeness = getProfileCompleteness(candidate);
+      if (completeness < PROFILE_COMPLETENESS_THRESHOLD) {
+        console.log(`Skipping ${candidate.display_name}: Profile only ${Math.round(completeness * 100)}% complete`);
+        return false;
+      }
+      return true;
+    });
+
+    console.log(`${qualifiedCandidates.length} candidates with sufficient profile data`);
+
     // AI Analysis using Lovable AI Gateway
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -193,15 +351,15 @@ serve(async (req) => {
       return a.filter(v => b.includes(v));
     };
 
-    // Process candidates in batches to avoid rate limits
-    for (const candidate of reciprocalCandidates) {
-      try {
-        const sharedValues = getSharedValues(
-          targetProfile.core_values_ranked,
-          candidate.core_values_ranked
-        );
-        
-        const prompt = `You are an expert matchmaker using Gottman Institute research and 50 years of relationship science to analyze compatibility.
+    // ============================================
+    // BATCH AI PROCESSING (Parallel with rate limiting)
+    // ============================================
+
+    // Helper to build prompt for a candidate
+    const buildPrompt = (candidate: DatingProfile, sharedValues: string[]): string => {
+      const candidateCompleteness = getProfileCompleteness(candidate);
+
+      return `You are an expert matchmaker using Gottman Institute research and 50 years of relationship science to analyze compatibility.
 
 **PERSON A: ${targetProfile.display_name}**
 Basic Info:
@@ -295,6 +453,10 @@ Self-Awareness:
 
 ---
 
+**PROFILE COMPLETENESS:**
+- Person A: ${Math.round(targetCompleteness * 100)}% complete
+- Person B: ${Math.round(candidateCompleteness * 100)}% complete
+
 **SHARED CORE VALUES: ${sharedValues.length > 0 ? sharedValues.join(", ") : "None identified"}**
 
 ---
@@ -312,37 +474,51 @@ Self-Awareness:
 - One needs space, one leans in → +8 (complementary if they understand each other)
 - Both withdraw → -5 (isolation pattern risk)
 
-**CORE VALUES ALIGNMENT - 20% of score:**
-- 3+ shared values in top 5 → +20 points
+**CORE VALUES ALIGNMENT - 25% of score:**
+- 3+ shared values in top 5 → +25 points
 - #1 value matches → +5 bonus
 - 0 shared values → -15 points (fundamental incompatibility)
 
-**RELATIONSHIP GOALS & FAMILY - 20% of score:**
+**RELATIONSHIP GOALS & FAMILY - 15% of score:**
 - Same relationship goals → +15 points
 - Children preferences aligned → +10 points
 - Family involvement expectations match → +5 points
 
-**LIFESTYLE & PERSONALITY - 10% of score:**
-- Compatible attachment styles → +10 points
+**ATTACHMENT STYLE - 10% of score:**
+- Secure-Secure → +10 points (ideal)
+- Secure paired with Anxious/Avoidant → +7 points (can work)
+- Anxious-Avoidant → +3 points (challenging but workable)
+- Both Avoidant → -5 points (connection difficulty)
+
+**LIFESTYLE & INTIMACY - 10% of score:**
+- Same intimacy expectations → +10 points
 - Lifestyle habits align → +5 points
 
-**INTIMACY COMPATIBILITY - 10% of score:**
-- Same intimacy expectations → +10 points
-- One level difference → +5 points
-- Very different expectations → -5 points (flag as potential issue)
+**CONFIDENCE SCORING:**
+Evaluate how confident you are in this match based on:
+- Profile completeness: ${Math.round(Math.min(targetCompleteness, candidateCompleteness) * 100)}% minimum
+- Specificity of answers (vague vs detailed)
+- Number of "Not specified" fields
 
-**RED FLAG DETECTION - 10% of score (adjusted from 10% to account for intimacy):**
-- Accountability reflection shows blame pattern → -15 points
-- Unresolved trust trauma → flag for review, -5 points
-- Past relationship learning shows growth → +5 points
-
-Be realistic. Most people are NOT highly compatible. A 60%+ match meets our threshold for introduction. Prioritize communication patterns and core values over surface-level traits.
+Be realistic. Most people are NOT highly compatible. A 60%+ match meets our threshold for introduction.
 
 Return JSON with:
 - "score": 0-100 overall compatibility
 - "gottman_score": 0-100 for communication/repair specifically
+- "confidence": 0-100 (how confident in this score based on available data)
 - "dimensions": { "communication": 0-100, "values": 0-100, "goals": 0-100, "lifestyle": 0-100, "red_flags": 0-100 }
-- "reason": 2-3 sentence explanation`;
+- \"reason\": 2-3 sentence explanation (do NOT reveal specific personal details)`;
+    };
+
+    // Process a single candidate with AI
+    const processCandidate = async (candidate: DatingProfile): Promise<MatchResult | null> => {
+      try {
+        const sharedValues = getSharedValues(
+          targetProfile.core_values_ranked,
+          candidate.core_values_ranked
+        );
+
+        const prompt = buildPrompt(candidate, sharedValues);
 
         const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
@@ -362,50 +538,67 @@ Return JSON with:
 
         if (!response.ok) {
           console.error(`AI API error for candidate ${candidate.id}:`, await response.text());
-          continue;
+          return null;
         }
 
         const aiResult = await response.json();
         const content = aiResult.choices?.[0]?.message?.content;
 
-        if (content) {
-          try {
-            const parsed = JSON.parse(content);
-            const score = parseInt(parsed.score) || 0;
-            const gottmanScore = parseInt(parsed.gottman_score) || score;
-            const reason = parsed.reason || "Compatibility analysis unavailable";
-            const dimensions = parsed.dimensions || {
-              communication: gottmanScore,
-              values: score,
-              goals: score,
-              lifestyle: score,
-              red_flags: 80
-            };
+        if (!content) return null;
 
-            console.log(`${candidate.display_name}: ${score}% (Gottman: ${gottmanScore}%) - ${reason}`);
+        const parsed = JSON.parse(content);
+        const score = parseInt(parsed.score) || 0;
+        const gottmanScore = parseInt(parsed.gottman_score) || score;
+        const confidence = parseInt(parsed.confidence) || 70;
+        const reason = parsed.reason || "Compatibility analysis unavailable";
+        const dimensions = parsed.dimensions || {
+          communication: gottmanScore,
+          values: score,
+          goals: score,
+          lifestyle: score,
+          red_flags: 80
+        };
 
-            // 60% threshold - provides foundation, real connection happens in person
-            if (score >= 60) {
-              matchResults.push({
-                candidateId: candidate.id,
-                score,
-                gottmanScore,
-                reason,
-                dimensions: {
-                  communication: parseInt(dimensions.communication) || gottmanScore,
-                  values: parseInt(dimensions.values) || score,
-                  goals: parseInt(dimensions.goals) || score,
-                  lifestyle: parseInt(dimensions.lifestyle) || score,
-                  redFlags: parseInt(dimensions.red_flags) || 80,
-                },
-              });
-            }
-          } catch (parseError) {
-            console.error(`Failed to parse AI response for ${candidate.id}:`, { message: (parseError as Error).message });
-          }
+        console.log(`${candidate.display_name}: ${score}% (Gottman: ${gottmanScore}%, Confidence: ${confidence}%) - ${reason}`);
+
+        // 60% threshold - provides foundation, real connection happens in person
+        if (score >= 60) {
+          return {
+            candidateId: candidate.id,
+            score,
+            gottmanScore,
+            confidence,
+            reason,
+            dimensions: {
+              communication: parseInt(dimensions.communication) || gottmanScore,
+              values: parseInt(dimensions.values) || score,
+              goals: parseInt(dimensions.goals) || score,
+              lifestyle: parseInt(dimensions.lifestyle) || score,
+              redFlags: parseInt(dimensions.red_flags) || 80,
+            },
+          };
         }
-      } catch (aiError) {
-        console.error(`AI analysis failed for candidate ${candidate.id}:`, { message: (aiError as Error).message });
+
+        return null;
+      } catch (error) {
+        console.error(`AI analysis failed for candidate ${candidate.id}:`, { message: (error as Error).message });
+        return null;
+      }
+    };
+
+    // Process candidates in batches of AI_BATCH_SIZE for parallel execution
+    for (let i = 0; i < qualifiedCandidates.length; i += AI_BATCH_SIZE) {
+      const batch = qualifiedCandidates.slice(i, i + AI_BATCH_SIZE);
+      console.log(`Processing batch ${Math.floor(i / AI_BATCH_SIZE) + 1} of ${Math.ceil(qualifiedCandidates.length / AI_BATCH_SIZE)}`);
+
+      const batchResults = await Promise.allSettled(
+        batch.map((candidate: DatingProfile) => processCandidate(candidate))
+      );
+
+      for (const result of batchResults) {
+        if (result.status === 'fulfilled' && result.value) {
+          matchResults.push(result.value);
+        }
       }
     }
 
@@ -427,6 +620,7 @@ Return JSON with:
         lifestyle: match.dimensions?.lifestyle || match.score,
         red_flags: match.dimensions?.redFlags || 80,
         gottman_score: match.gottmanScore || match.score,
+        confidence: match.confidence || 70,
       };
 
       if (existingMatch) {
@@ -468,3 +662,4 @@ Return JSON with:
     );
   }
 });
+

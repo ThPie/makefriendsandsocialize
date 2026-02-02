@@ -1,12 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { 
-  Heart, 
-  MessageCircle, 
-  Shield, 
-  Sparkles, 
-  Users, 
+import {
+  Heart,
+  MessageCircle,
+  Shield,
+  Sparkles,
+  Users,
   Target,
   Brain,
   Zap
@@ -76,19 +76,19 @@ export const CompatibilityBreakdown = ({
   // Calculate shared values
   const sharedValues = (myValues || []).filter(v => (theirValues || []).includes(v));
   const valuesScore = Math.min(100, (sharedValues.length / 5) * 100);
-  
+
   // Calculate communication compatibility
   const getCommunicationScore = () => {
     if (!myCommunicationStyle || !theirCommunicationStyle) return null;
-    
+
     // Complementary styles score higher
     const complementary = [
       ['direct', 'patient'],
       ['analytical', 'expressive'],
     ];
-    
+
     if (myCommunicationStyle === theirCommunicationStyle) return 70;
-    
+
     for (const pair of complementary) {
       if (pair.includes(myCommunicationStyle) && pair.includes(theirCommunicationStyle)) {
         return 90;
@@ -96,15 +96,15 @@ export const CompatibilityBreakdown = ({
     }
     return 75;
   };
-  
+
   // Calculate repair attempt compatibility (Gottman's #1 predictor)
   const getRepairScore = () => {
     if (!myRepairResponse || !theirRepairResponse) return null;
-    
+
     const positiveResponses = ['accept_easily', 'usually_accept', 'accept'];
     const myPositive = positiveResponses.some(r => myRepairResponse.toLowerCase().includes(r.replace('_', ' ')));
     const theirPositive = positiveResponses.some(r => theirRepairResponse.toLowerCase().includes(r.replace('_', ' ')));
-    
+
     if (myPositive && theirPositive) return 95;
     if (myPositive || theirPositive) return 70;
     return 45;
@@ -113,17 +113,17 @@ export const CompatibilityBreakdown = ({
   // Calculate stress response compatibility
   const getStressScore = () => {
     if (!myStressResponse || !theirStressResponse) return null;
-    
+
     // Similar stress responses indicate compatibility
     if (myStressResponse === theirStressResponse) return 85;
-    
+
     // Complementary responses
     const leanIn = ['lean_on_partner', 'talk_it_out', 'seek_support'];
     const needSpace = ['need_space', 'withdraw', 'alone_time'];
-    
+
     const myLeanIn = leanIn.some(r => myStressResponse.toLowerCase().includes(r.replace('_', ' ')));
     const theirLeanIn = leanIn.some(r => theirStressResponse.toLowerCase().includes(r.replace('_', ' ')));
-    
+
     if (myLeanIn && theirLeanIn) return 80;
     if (!myLeanIn && !theirLeanIn) return 60; // Both withdraw - not ideal
     return 70; // One leans in, one needs space - workable
@@ -147,9 +147,9 @@ export const CompatibilityBreakdown = ({
 
     return gottmanFactors.length > 0
       ? Math.round(
-          gottmanFactors.reduce((acc, f) => acc + (f.score || 0) * f.weight, 0) /
-          gottmanFactors.reduce((acc, f) => acc + f.weight, 0)
-        )
+        gottmanFactors.reduce((acc, f) => acc + (f.score || 0) * f.weight, 0) /
+        gottmanFactors.reduce((acc, f) => acc + f.weight, 0)
+      )
       : null;
   })();
 
@@ -165,6 +165,14 @@ export const CompatibilityBreakdown = ({
     return "bg-red-500";
   };
 
+  // Text labels for accessibility (color-blind friendly)
+  const getScoreLabel = (score: number): string => {
+    if (score >= 85) return "Excellent";
+    if (score >= 70) return "Good";
+    if (score >= 50) return "Fair";
+    return "Needs Work";
+  };
+
   return (
     <Card className={cn("border-dating-forest/20", className)}>
       <CardHeader className="pb-2">
@@ -175,26 +183,38 @@ export const CompatibilityBreakdown = ({
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Overall Score */}
-        <div className="text-center p-4 bg-gradient-to-br from-dating-forest/10 to-dating-terracotta/10 rounded-xl">
+        <div
+          className="text-center p-4 bg-gradient-to-br from-dating-forest/10 to-dating-terracotta/10 rounded-xl"
+          role="region"
+          aria-label={`Overall compatibility score: ${compatibilityScore}%`}
+        >
           <div className="text-5xl font-display font-bold text-dating-forest">
             {compatibilityScore}%
           </div>
-          <p className="text-sm text-muted-foreground mt-1">Overall Compatibility</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Overall Compatibility
+            <span className="sr-only"> - {getScoreLabel(compatibilityScore)}</span>
+          </p>
         </div>
 
         {/* Gottman Score */}
         {gottmanScore !== null && (
-          <div className="p-4 bg-muted/30 rounded-lg border border-border/50">
+          <div
+            className="p-4 bg-muted/30 rounded-lg border border-border/50"
+            role="region"
+            aria-label={`Gottman Research Score: ${gottmanScore}% - ${getScoreLabel(gottmanScore)}`}
+          >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-dating-terracotta" />
+                <Sparkles className="h-4 w-4 text-dating-terracotta" aria-hidden="true" />
                 <span className="font-medium text-sm">Gottman Research Score</span>
               </div>
               <span className={cn("font-bold text-lg", getScoreColor(gottmanScore))}>
                 {gottmanScore}%
+                <span className="text-xs font-normal ml-1">({getScoreLabel(gottmanScore)})</span>
               </span>
             </div>
-            <Progress value={gottmanScore} className="h-2" />
+            <Progress value={gottmanScore} className="h-2" aria-label={`${gottmanScore}% score`} />
             <p className="text-xs text-muted-foreground mt-2">
               Based on 50+ years of relationship research predicting long-term success
             </p>
@@ -208,7 +228,7 @@ export const CompatibilityBreakdown = ({
               <Sparkles className="h-4 w-4 text-dating-terracotta" />
               <span className="font-medium text-sm">AI Compatibility Analysis</span>
             </div>
-            
+
             {valuesScoreAI !== undefined && (
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Core Values</span>
@@ -272,7 +292,7 @@ export const CompatibilityBreakdown = ({
                 <span className="font-medium text-sm">Communication Style</span>
               </div>
               <span className={cn("font-semibold", getScoreColor(communicationScore))}>
-                {communicationScore}%
+                {communicationScore}% <span className="text-xs font-normal">({getScoreLabel(communicationScore)})</span>
               </span>
             </div>
             <Progress value={communicationScore} className="h-1.5" />
@@ -280,8 +300,8 @@ export const CompatibilityBreakdown = ({
               {communicationScore >= 85
                 ? "Complementary styles - you balance each other well"
                 : communicationScore >= 70
-                ? "Compatible communication patterns"
-                : "Different styles - may require extra understanding"}
+                  ? "Compatible communication patterns"
+                  : "Different styles - may require extra understanding"}
             </p>
           </div>
         )}
@@ -295,7 +315,7 @@ export const CompatibilityBreakdown = ({
                 <span className="font-medium text-sm">Conflict Resolution</span>
               </div>
               <span className={cn("font-semibold", getScoreColor(repairScore))}>
-                {repairScore}%
+                {repairScore}% <span className="text-xs font-normal">({getScoreLabel(repairScore)})</span>
               </span>
             </div>
             <Progress value={repairScore} className="h-1.5" />
@@ -303,8 +323,8 @@ export const CompatibilityBreakdown = ({
               {repairScore >= 85
                 ? "Both open to repair - strongest predictor of lasting relationships"
                 : repairScore >= 70
-                ? "Good potential for working through disagreements"
-                : "May need to develop repair skills together"}
+                  ? "Good potential for working through disagreements"
+                  : "May need to develop repair skills together"}
             </p>
           </div>
         )}
@@ -318,7 +338,7 @@ export const CompatibilityBreakdown = ({
                 <span className="font-medium text-sm">Stress Response</span>
               </div>
               <span className={cn("font-semibold", getScoreColor(stressScore))}>
-                {stressScore}%
+                {stressScore}% <span className="text-xs font-normal">({getScoreLabel(stressScore)})</span>
               </span>
             </div>
             <Progress value={stressScore} className="h-1.5" />
@@ -326,8 +346,8 @@ export const CompatibilityBreakdown = ({
               {stressScore >= 80
                 ? "Compatible coping styles - you support each other naturally"
                 : stressScore >= 65
-                ? "Different but workable approaches to stress"
-                : "Complementary growth opportunity in this area"}
+                  ? "Different but workable approaches to stress"
+                  : "Complementary growth opportunity in this area"}
             </p>
           </div>
         )}

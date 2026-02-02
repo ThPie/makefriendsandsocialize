@@ -69,7 +69,7 @@ export default function PortalSlowDating() {
   const [showReactivationModal, setShowReactivationModal] = useState(false);
   const [revealModalOpen, setRevealModalOpen] = useState(false);
   const [selectedMatchForReveal, setSelectedMatchForReveal] = useState<{ id: string; score: number } | null>(null);
-  
+
   const { availableReveals, hasUnlimitedReveals, canReveal } = useMatchReveal();
   const { subscription } = useSubscription();
 
@@ -111,23 +111,29 @@ export default function PortalSlowDating() {
 
       const allMatches = [...(matchesA || []), ...(matchesB || [])];
 
-      // Fetch matched profile details for each match
-      const enrichedMatches = await Promise.all(
-        allMatches.map(async (match) => {
-          const matchedProfileId = match.user_a_id === profile.id ? match.user_b_id : match.user_a_id;
-          
-          const { data: matchedProfile } = await supabase
-            .from('dating_profiles')
-            .select('id, display_name, photo_url, age, gender, location, occupation, bio')
-            .eq('id', matchedProfileId)
-            .single();
-
-          return {
-            ...match,
-            matched_profile: matchedProfile,
-          };
-        })
+      // Batch fetch all matched profile IDs in a single query (fixes N+1 problem)
+      const profileIds = allMatches.map(m =>
+        m.user_a_id === profile.id ? m.user_b_id : m.user_a_id
       );
+
+      // Single query for all profiles instead of N queries
+      const { data: profiles, error: profilesError } = await supabase
+        .from('dating_profiles')
+        .select('id, display_name, photo_url, age, gender, location, occupation, bio')
+        .in('id', profileIds);
+
+      if (profilesError) throw profilesError;
+
+      // Create lookup map for O(1) access
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
+      // Enrich matches with profile data from map
+      const enrichedMatches = allMatches.map(match => ({
+        ...match,
+        matched_profile: profileMap.get(
+          match.user_a_id === profile.id ? match.user_b_id : match.user_a_id
+        ),
+      }));
 
       return enrichedMatches as Match[];
     },
@@ -213,7 +219,7 @@ export default function PortalSlowDating() {
               Join Our Slow Dating Community
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto mb-8">
-              Experience a more intentional approach to dating. Our curators carefully review each profile 
+              Experience a more intentional approach to dating. Our curators carefully review each profile
               to create meaningful introductions based on shared values and genuine compatibility.
             </p>
             <Button asChild size="lg">
@@ -406,8 +412,8 @@ export default function PortalSlowDating() {
                 {isPaused
                   ? "Your profile is paused. Resume dating to receive new matches."
                   : profile.status === 'vetted'
-                  ? "Our matchmakers are carefully reviewing profiles to find your ideal connections. We'll notify you when we find a match!"
-                  : "Once your profile is approved, our matchmakers will begin finding compatible matches for you."}
+                    ? "Our matchmakers are carefully reviewing profiles to find your ideal connections. We'll notify you when we find a match!"
+                    : "Once your profile is approved, our matchmakers will begin finding compatible matches for you."}
               </p>
             </CardContent>
           </Card>
@@ -427,7 +433,7 @@ export default function PortalSlowDating() {
                 match={match}
                 currentProfileId={profile.id}
                 isWoman={isWoman}
-                onSchedule={() => {}}
+                onSchedule={() => { }}
                 onViewDetails={() => navigate(`/portal/match/${match.id}`)}
                 availableReveals={availableReveals}
                 hasUnlimitedReveals={hasUnlimitedReveals}
