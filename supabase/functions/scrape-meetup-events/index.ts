@@ -25,16 +25,8 @@ serve(async (req) => {
       );
     }
 
-    // DISABLE SCRAPE: User reported these events are not theirs.
-    const ENABLE_MEETUP_SCRAPE = false;
-
-    if (!ENABLE_MEETUP_SCRAPE) {
-      console.log('Meetup scraping is disabled by configuration.');
-      return new Response(
-        JSON.stringify({ success: true, message: 'Scraping disabled', data: { events: [] } }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    // RE-ENABLED with stricter filtering for "Make Friends and Socialize" group only
+    const ENABLE_MEETUP_SCRAPE = true;
 
     const pastEventsUrl = 'https://www.meetup.com/makefriendsandsocialize/events/?type=past';
     console.log('Scraping past events from:', pastEventsUrl);
@@ -72,7 +64,7 @@ serve(async (req) => {
             },
             required: ['events']
           },
-          prompt: 'Extract all past events from this Meetup page. For each event, get the complete event title, the date it occurred (format as YYYY-MM-DD), the start time, the venue/location, number of attendees, and the event image URL. Only include actual events, not navigation links or page elements.'
+          prompt: 'IMPORTANT: Only extract past events HOSTED BY "Make Friends and Socialize" group. DO NOT include "suggested events", "similar events", or events from other Meetup groups. Look ONLY in the main past events list. Events should typically be at HAVN at Salt Lake Crossing or Salt Lake City venues. For each event, get the complete event title, the date (YYYY-MM-DD), the start time, the venue/location, number of attendees, and the event image URL.'
         },
         onlyMainContent: false,
         waitFor: 3000,
@@ -147,6 +139,24 @@ serve(async (req) => {
       // Skip navigation items
       const skipWords = ['Events', 'Members', 'Photos', 'Discussions', 'About', 'See all', 'Load more'];
       if (skipWords.some(w => title === w || title.startsWith(w + ' '))) continue;
+
+      // STRICT VALIDATION: Only accept events from "Make Friends and Socialize" group
+      const venue = (event.location || '').toLowerCase();
+      
+      const isValidVenue = venue.includes('havn') || 
+                           venue.includes('salt lake') || 
+                           venue.includes('slc') ||
+                           venue === '';
+      
+      // Skip events that are clearly from other groups
+      const suspiciousKeywords = ['singles mix', 'mingle', 'quiet conversation', 'speed dating', 'christian', 'jewish', 'muslim', 'hindu', 'senior', 'over 40', 'over 50', 'lgbtq', 'divorce', 'widowed'];
+      const titleLower = title.toLowerCase();
+      const isSuspiciousEvent = suspiciousKeywords.some(kw => titleLower.includes(kw));
+      
+      if (isSuspiciousEvent && !isValidVenue) {
+        console.log('Skipping past event from another group:', title);
+        continue;
+      }
 
       // Use extracted image or fallback to scraped images
       let imageUrl = event.imageUrl || null;
