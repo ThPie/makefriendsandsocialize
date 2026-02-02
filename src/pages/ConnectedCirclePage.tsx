@@ -291,51 +291,43 @@ const ConnectedCirclePage = () => {
               variants={containerVariants}
               initial="hidden"
               animate={processAnimation.isVisible ? "visible" : "hidden"}
-              className="relative"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative"
             >
-              {/* Connecting Line */}
-              <div className="absolute left-8 md:left-10 top-0 bottom-0 w-px bg-gradient-to-b from-primary/50 via-primary/20 to-transparent hidden md:block" />
+              {[
+                {
+                  step: "01",
+                  title: "Become a Member",
+                  description: "Join as a Fellow or Founder member to unlock access to The Founders Circle.",
+                },
+                {
+                  step: "02",
+                  title: "Create Profile",
+                  description: "Share your founder journey, company story, and expertise via the member portal.",
+                },
+                {
+                  step: "03",
+                  title: "Get Verified",
+                  description: "Our team reviews your submission to ensure quality and legitimacy of the network.",
+                },
+                {
+                  step: "04",
+                  title: "Connect & Grow",
+                  description: "Once approved, receive introductions and build strategic relationships.",
+                },
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  className="bg-card border border-border/50 rounded-2xl p-6 hover-lift flex flex-col items-center text-center group h-full"
+                >
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 transition-all group-hover:bg-primary/20 group-hover:scale-110">
+                    <span className="font-display text-2xl font-bold text-primary">{item.step}</span>
+                  </div>
 
-              <div className="space-y-6">
-                {[
-                  {
-                    step: "01",
-                    title: "Become a Member",
-                    description: "Join as a Fellow or Founder member to unlock access to The Founders Circle. Our membership ensures a vetted community of serious entrepreneurs and business builders.",
-                  },
-                  {
-                    step: "02",
-                    title: "Create Your Founder Profile",
-                    description: "Share your founder journey, company story, and expertise. Upload your logo and provide the details that make your venture unique.",
-                  },
-                  {
-                    step: "03",
-                    title: "Get Verified",
-                    description: "Our team reviews your submission to ensure quality and legitimacy. This verification process protects the integrity of our network.",
-                  },
-                  {
-                    step: "04",
-                    title: "Connect & Grow",
-                    description: "Once approved, your company is visible to our entire founder community. Receive introduction requests and build strategic founder-to-founder relationships.",
-                  },
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    variants={itemVariants}
-                    className="flex gap-6 md:gap-8 items-start group"
-                  >
-                    <div className="relative z-10 flex-shrink-0">
-                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-card border border-border flex items-center justify-center transition-all group-hover:border-primary/50 group-hover:shadow-lg group-hover:shadow-primary/10">
-                        <span className="font-display text-2xl md:text-3xl text-primary">{item.step}</span>
-                      </div>
-                    </div>
-                    <div className="flex-1 bg-card border border-border/50 rounded-2xl p-6 md:p-8 transition-all group-hover:border-primary/30 group-hover:shadow-lg group-hover:shadow-primary/5">
-                      <h3 className="font-display text-xl md:text-2xl text-foreground mb-3">{item.title}</h3>
-                      <p className="text-muted-foreground leading-relaxed">{item.description}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                  <h3 className="font-display text-xl text-foreground mb-3">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </section>
