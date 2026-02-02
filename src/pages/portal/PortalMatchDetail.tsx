@@ -11,6 +11,9 @@ import { MatchDecision } from '@/components/dating/MatchDecision';
 import { CompatibilityBreakdown } from '@/components/dating/CompatibilityBreakdown';
 import { MatchInsightsCard } from '@/components/dating/MatchInsightsCard';
 import { CompatibilityTimeline } from '@/components/dating/CompatibilityTimeline';
+import { MeetingFeedbackForm } from '@/components/dating/MeetingFeedbackForm';
+import { MeetingModeUI } from '@/components/dating/MeetingModeUI';
+import { MatchRevealMoment } from '@/components/dating/MatchRevealMoment';
 import {
   ArrowLeft,
   Heart,
@@ -20,7 +23,10 @@ import {
   Calendar,
   Clock,
   PartyPopper,
-  Lock
+  Lock,
+  Sparkles,
+  Zap,
+  Video
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
@@ -41,6 +47,9 @@ interface DatingProfile {
   communication_style: string | null;
   stress_response: string | null;
   repair_attempt_response: string | null;
+  vibe_clip_url: string | null;
+  vibe_clip_status: string | null;
+  avatar_urls?: string[];
 }
 
 interface MatchDimensions {
@@ -62,9 +71,9 @@ interface Match {
   meeting_date: string | null;
   meeting_time: string | null;
   user_a_response: string;
-  user_b_response: string;
   user_a_id: string;
   user_b_id: string;
+  origin_story: string | null;
 }
 
 interface Proposal {
@@ -150,6 +159,43 @@ export default function PortalMatchDetail() {
     enabled: !!matchId,
   });
 
+  const acceptedProposal = proposals.find(p => p.status === 'accepted');
+
+  const isUserA = match?.user_a_id === myProfile?.id;
+  const isWoman = myProfile?.gender.toLowerCase() === 'female' || myProfile?.gender.toLowerCase() === 'woman';
+  const isRevealed = match?.status === 'mutual_yes';
+  const isDeclined = match?.status === 'declined';
+  const awaitingDecision = match?.meeting_status === 'met';
+  const isScheduled = match?.meeting_status === 'scheduled';
+
+  // Fetch scheduled concierge slot details if applicable
+  const { data: scheduledSlot } = useQuery({
+    queryKey: ['concierge-slot', acceptedProposal?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('concierge_availability')
+        .select('*')
+        .eq('id', (acceptedProposal as any).concierge_slot_id)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!acceptedProposal && !!(acceptedProposal as any).concierge_slot_id,
+  });
+
+  // Fetch recommendation rationale
+  const { data: recommendation } = useQuery({
+    queryKey: ['venue-recommendation', matchId],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('recommend-meeting-venue', {
+        body: { matchId },
+      });
+      if (error) throw error;
+      return data as { recommended_slot_id: string; rationale: string };
+    },
+    enabled: !!matchId && isScheduled,
+  });
+
   if (matchLoading || profileLoading) {
     return (
       <div className="space-y-8">
@@ -170,12 +216,29 @@ export default function PortalMatchDetail() {
     );
   }
 
-  const isUserA = match.user_a_id === myProfile.id;
-  const isWoman = myProfile.gender.toLowerCase() === 'female' || myProfile.gender.toLowerCase() === 'woman';
-  const isRevealed = match.status === 'mutual_yes';
-  const isDeclined = match.status === 'declined';
-  const awaitingDecision = match.meeting_status === 'met';
-  const isScheduled = match.meeting_status === 'scheduled';
+  const currentResponse = isUserA ? match?.user_a_response : match?.user_b_response;
+  const otherResponse = isUserA ? match?.user_b_response : match?.user_a_response;
+
+  const [showReveal, setShowReveal] = useState(false);
+  const userProfile = myProfile;
+
+  // Check for mutual yes to trigger reveal
+  useEffect(() => {
+    if (match?.meeting_status === 'feedback_positive' && !match.origin_story) {
+      // Trigger origin story generation
+      supabase.functions.invoke('generate-origin-story', {
+        body: { matchId },
+      }).then(() => {
+        setShowReveal(true);
+      });
+    } else if (match?.meeting_status === 'feedback_positive' && match.origin_story) {
+      const shown = localStorage.getItem(`reveal_shown_${matchId}`);
+      if (!shown) {
+        setShowReveal(true);
+        localStorage.setItem(`reveal_shown_${matchId}`, 'true');
+      }
+    }
+  }, [match?.meeting_status, match?.origin_story, matchId]);
 
   // Fire confetti when viewing a mutual match for the first time
   useEffect(() => {
@@ -188,9 +251,6 @@ export default function PortalMatchDetail() {
       }, 300);
     }
   }, [isRevealed]);
-
-  const currentResponse = isUserA ? match.user_a_response : match.user_b_response;
-  const otherResponse = isUserA ? match.user_b_response : match.user_a_response;
 
   const getTimeLabel = (timeValue: string) => {
     const labels: Record<string, string> = {
@@ -212,6 +272,16 @@ export default function PortalMatchDetail() {
         <ArrowLeft className="h-4 w-4 mr-2" />
         Back to Matches
       </Button>
+
+      {showReveal && matchedProfile && (
+        <MatchRevealMoment
+          matchId={matchId!}
+          profileA={userProfile}
+          profileB={matchedProfile}
+          originStory={match?.origin_story}
+          onClose={() => setShowReveal(false)}
+        />
+      )}
 
       {/* Revealed Banner */}
       {isRevealed && (
@@ -272,6 +342,16 @@ export default function PortalMatchDetail() {
                 </div>
               )}
             </div>
+
+            {/* Vibe Clip Overlay (Always subtlely visible if revealed) */}
+            {isRevealed && (matchedProfile as any).vibe_clip_url && (matchedProfile as any).vibe_clip_status === 'verified' && (
+              <div className="absolute top-4 left-4 z-10">
+                <div className="bg-primary/90 text-primary-foreground text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-lg animate-pulse">
+                  <Video className="h-2.5 w-2.5" />
+                  VIBE CLIP READY
+                </div>
+              </div>
+            )}
 
             {/* Info - Show age always, hide name/location/occupation before reveal */}
             <div className="md:w-2/3 p-6 space-y-4">
@@ -339,6 +419,23 @@ export default function PortalMatchDetail() {
                 </div>
               )}
 
+              {/* Vibe Clip Player */}
+              {isRevealed && (matchedProfile as any).vibe_clip_url && (
+                <div className="mt-4">
+                  <h3 className="text-sm uppercase tracking-wide text-muted-foreground mb-3 flex items-center gap-2">
+                    <Video className="h-4 w-4" />
+                    Vibe Clip
+                  </h3>
+                  <div className="rounded-xl overflow-hidden bg-black aspect-video border border-dating-cream">
+                    <video
+                      src={(matchedProfile as any).vibe_clip_url}
+                      className="w-full h-full object-cover"
+                      controls
+                    />
+                  </div>
+                </div>
+              )}
+
               {/* Meeting Info */}
               {isScheduled && match.meeting_date && (
                 <div className="bg-dating-cream/30 rounded-lg p-4 border border-dating-cream">
@@ -355,6 +452,35 @@ export default function PortalMatchDetail() {
                       {getTimeLabel(match.meeting_time)}
                     </p>
                   )}
+                  {scheduledSlot && (
+                    <div className="mt-3 border-t border-dating-cream pt-3">
+                      <div className="flex items-start gap-2 text-sm text-dating-forest font-medium">
+                        <MapPin className="h-4 w-4 mt-0.5" />
+                        <div>
+                          <p>{scheduledSlot.location_name}</p>
+                          <p className="text-xs text-muted-foreground font-normal">{scheduledSlot.location_address}</p>
+                        </div>
+                      </div>
+                      {recommendation && recommendation.recommended_slot_id === scheduledSlot.id && (
+                        <div className="mt-3 bg-primary/10 p-3 rounded-lg border border-primary/20">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <Zap className="h-3.5 w-3.5 text-primary" />
+                            <span className="text-[11px] font-bold text-primary uppercase tracking-wider">AI Date Concierge</span>
+                          </div>
+                          <p className="text-xs text-foreground italic leading-relaxed">
+                            "{recommendation.rationale}"
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* In-Person Meeting Boosters */}
+              {isScheduled && matchId && (
+                <div className="mt-6">
+                  <MeetingModeUI matchId={matchId} />
                 </div>
               )}
             </div>
@@ -434,6 +560,17 @@ export default function PortalMatchDetail() {
         />
       )}
 
+      {/* Meeting Feedback UI */}
+      {awaitingDecision && (
+        <MeetingFeedbackForm
+          matchId={match.id}
+          userId={user?.id || ''}
+          onSuccess={() => {
+            // Success logic if needed
+          }}
+        />
+      )}
+
       {/* Action Cards */}
       {!showScheduler && !showDecision && !isDeclined && (
         <div className="grid gap-4 md:grid-cols-2">
@@ -463,34 +600,6 @@ export default function PortalMatchDetail() {
                   }
                 >
                   {isWoman ? 'Propose Dates' : 'Review Proposals'}
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Decision Card */}
-          {awaitingDecision && (
-            <Card className="border-dating-terracotta/20">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Heart className="h-5 w-5 text-dating-terracotta" />
-                  After Your Meeting
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  {currentResponse === 'pending'
-                    ? "Did you feel a connection? Share your decision."
-                    : currentResponse === 'accepted'
-                      ? "You said yes! Waiting for their decision..."
-                      : "You've made your decision."}
-                </p>
-                <Button
-                  onClick={() => setShowDecision(true)}
-                  className="w-full bg-dating-terracotta hover:bg-dating-terracotta/90"
-                  disabled={currentResponse !== 'pending'}
-                >
-                  {currentResponse === 'pending' ? 'Make Your Decision' : 'View Decision'}
                 </Button>
               </CardContent>
             </Card>

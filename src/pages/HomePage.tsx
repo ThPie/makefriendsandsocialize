@@ -22,14 +22,23 @@ const SectionSkeleton = memo(() => (
 ));
 SectionSkeleton.displayName = 'SectionSkeleton';
 
+import { SEO } from '@/components/common/SEO';
+import { generateOrganizationSchema } from '@/lib/seo-schema';
+
 const HomePage = () => {
   return (
     <main className="flex flex-col">
+      <SEO
+        title="Experience Meaningful Connection"
+        description="Join an exclusive community of professionals in NYC. Weekly curated events, authentic networking, and slow dating for high-achievers."
+        keywords="NYC social club, professional networking NYC, private members club, professional community events"
+        schema={generateOrganizationSchema()}
+      />
       {/* Above the fold - load immediately */}
       <Hero />
       <SocialProofBanner />
       <WhyChooseSection />
-      
+
       {/* Below the fold - lazy loaded */}
       <Suspense fallback={<SectionSkeleton />}>
         <EventSection />

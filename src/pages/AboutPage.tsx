@@ -57,6 +57,8 @@ const itemVariants = {
   },
 };
 
+import { SEO } from '@/components/common/SEO';
+
 const AboutPage = () => {
   const heroAnimation = useScrollAnimation();
   const storyAnimation = useScrollAnimation();
@@ -66,17 +68,22 @@ const AboutPage = () => {
 
   return (
     <div className="flex-1 w-full flex flex-col items-center bg-background">
+      <SEO
+        title="Our Story & Core Values"
+        description="Founded on the principles of authenticity and exclusivity. Learn about our mission to create meaningful connections for professionals in the digital age."
+        keywords="about makefriends, social club values, luxury networking mission, professional community NYC"
+      />
       {/* Hero Section */}
       <section className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD8-F3RY9H5cqEv7-lZOpcYmt4E5bLYfLDW5gCw3Bz2tS0M1tJY_stkdmb3tg_U2mBg8BCNImMzNg1-bw1YUJyKJgp9-XRGw6bslt88e3BZWh8JDxfxmiRHJ0XGnNSsfmNYWFVIN9Ntq7kMOH8BSBLDcygmOmq1KImEma6iU3IkxdZcYBvSDfNHKtW2024ILgRsPr1zqBao9VjQgYkg2D9Zy9137MbsF4D3A2AiKgy1i1SHQ4Jp_jb3gKarxjHqlbPUEDUaPdh5x-XO")'
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
-        
+
         {/* Floating Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -91,7 +98,7 @@ const AboutPage = () => {
           />
         </div>
 
-        <div 
+        <div
           ref={heroAnimation.ref}
           className={`relative z-10 container max-w-4xl text-center py-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -144,7 +151,7 @@ const AboutPage = () => {
 
       {/* Story, Mission, Values Section */}
       <section className="py-24 md:py-32 w-full">
-        <div 
+        <div
           ref={storyAnimation.ref}
           className={`container max-w-6xl scroll-animate ${storyAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -198,7 +205,7 @@ const AboutPage = () => {
 
       {/* Values Grid */}
       <section className="py-24 md:py-32 w-full bg-secondary/30">
-        <div 
+        <div
           ref={valuesAnimation.ref}
           className={`container max-w-6xl scroll-animate ${valuesAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -216,7 +223,7 @@ const AboutPage = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {values.map((item, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
                 variants={itemVariants}
                 className="group flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl hover-lift"
@@ -234,7 +241,7 @@ const AboutPage = () => {
 
       {/* Experience Gallery */}
       <section className="py-24 md:py-32 w-full">
-        <div 
+        <div
           ref={experienceAnimation.ref}
           className={`container max-w-6xl scroll-animate ${experienceAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -262,10 +269,10 @@ const AboutPage = () => {
                 variants={itemVariants}
                 className="group relative aspect-square overflow-hidden rounded-2xl"
               >
-                <img 
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
-                  alt="Society event" 
-                  src={img} 
+                <img
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  alt="Society event"
+                  src={img}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.div>
@@ -281,7 +288,7 @@ const AboutPage = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
-        <div 
+        <div
           ref={ctaAnimation.ref}
           className={`container max-w-3xl text-center relative z-10 scroll-animate ${ctaAnimation.isVisible ? 'visible' : ''}`}
         >

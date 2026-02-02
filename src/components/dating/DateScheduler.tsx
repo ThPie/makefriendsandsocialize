@@ -2,15 +2,24 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar } from '@/components/ui/calendar';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { Calendar as CalendarIcon, Clock, Check, X, Plus, Trash2 } from 'lucide-react';
-import { format, addDays, isBefore, startOfToday } from 'date-fns';
+import { Calendar as CalendarIcon, Clock, Check, X, Plus, Trash2, MapPin, Loader2, Zap, Sparkles } from 'lucide-react';
+import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
+
+interface ConciergeSlot {
+  id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  location_name: string | null;
+  location_address: string | null;
+  location_description?: string | null;
+  tags?: string[] | null;
+}
 
 interface Proposal {
   id: string;
@@ -18,6 +27,7 @@ interface Proposal {
   proposed_time: string;
   status: string;
   proposed_by: string;
+  concierge_slot_id?: string;
 }
 
 interface DateSchedulerProps {
@@ -29,12 +39,6 @@ interface DateSchedulerProps {
   onClose: () => void;
 }
 
-const TIME_SLOTS = [
-  { value: 'morning', label: 'Morning', time: '10:00 AM - 12:00 PM' },
-  { value: 'afternoon', label: 'Afternoon', time: '2:00 PM - 5:00 PM' },
-  { value: 'evening', label: 'Evening', time: '6:00 PM - 9:00 PM' },
-];
-
 export const DateScheduler = ({
   matchId,
   currentProfileId,
@@ -43,10 +47,37 @@ export const DateScheduler = ({
   proposals,
   onClose,
 }: DateSchedulerProps) => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [selectedTime, setSelectedTime] = useState<string>('');
-  const [pendingProposals, setPendingProposals] = useState<{ date: Date; time: string }[]>([]);
+  const [selectedSlotId, setSelectedSlotId] = useState<string>('');
+  const [pendingSlots, setPendingSlots] = useState<ConciergeSlot[]>([]);
   const queryClient = useQueryClient();
+
+  const { data: availableSlots = [], isLoading: slotsLoading } = useQuery({
+    queryKey: ['concierge-availability'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('concierge_availability')
+        .select('*')
+        .eq('is_active', true)
+        .gte('date', new Date().toISOString().split('T')[0])
+        .order('date', { ascending: true })
+        .order('start_time', { ascending: true });
+
+      if (error) throw error;
+      return data as ConciergeSlot[];
+    },
+  });
+
+  const { data: recommendation, isLoading: recommendationLoading } = useQuery({
+    queryKey: ['venue-recommendation', matchId],
+    queryFn: async () => {
+      const { data, error } = await supabase.functions.invoke('recommend-meeting-venue', {
+        body: { matchId },
+      });
+      if (error) throw error;
+      return data as { recommended_slot_id: string; rationale: string };
+    },
+    enabled: !!matchId && availableSlots.length > 0,
+  });
 
   const canPropose = isWoman ? meetingStatus === 'pending_woman' : meetingStatus === 'pending_man';
   const canRespond = isWoman ? meetingStatus === 'pending_man' : meetingStatus === 'pending_woman';
@@ -54,12 +85,13 @@ export const DateScheduler = ({
   const myProposals = proposals.filter(p => p.proposed_by === currentProfileId);
 
   const proposeMutation = useMutation({
-    mutationFn: async (proposalsToSubmit: { date: Date; time: string }[]) => {
-      const insertData = proposalsToSubmit.map(p => ({
+    mutationFn: async (slotsToSubmit: ConciergeSlot[]) => {
+      const insertData = slotsToSubmit.map(s => ({
         match_id: matchId,
         proposed_by: currentProfileId,
-        proposed_date: format(p.date, 'yyyy-MM-dd'),
-        proposed_time: p.time,
+        proposed_date: s.date,
+        proposed_time: `${s.start_time} - ${s.end_time}`,
+        concierge_slot_id: s.id,
         status: 'proposed',
       }));
 
@@ -69,7 +101,6 @@ export const DateScheduler = ({
 
       if (insertError) throw insertError;
 
-      // Update match status
       const newStatus = isWoman ? 'pending_man' : 'scheduling';
       const { error: updateError } = await supabase
         .from('dating_matches')
@@ -78,15 +109,53 @@ export const DateScheduler = ({
 
       if (updateError) throw updateError;
     },
-    onSuccess: () => {
-      toast.success('Date proposals submitted!');
-      queryClient.invalidateQueries({ queryKey: ['my-dating-matches'] });
-      queryClient.invalidateQueries({ queryKey: ['meeting-proposals'] });
-      onClose();
+    onMutate: async (newSlots) => {
+      await queryClient.cancelQueries({ queryKey: ['meeting-proposals', matchId] });
+      await queryClient.cancelQueries({ queryKey: ['my-dating-matches'] });
+
+      const previousProposals = queryClient.getQueryData(['meeting-proposals', matchId]);
+      const previousMatches = queryClient.getQueryData(['my-dating-matches']);
+
+      if (previousProposals) {
+        queryClient.setQueryData(['meeting-proposals', matchId], (old: any[]) => [
+          ...(old || []),
+          ...newSlots.map((s, i) => ({
+            id: `temp-${i}`,
+            proposed_date: s.date,
+            proposed_time: `${s.start_time} - ${s.end_time}`,
+            concierge_slot_id: s.id,
+            status: 'proposed',
+            proposed_by: currentProfileId
+          }))
+        ]);
+      }
+
+      const newStatus = isWoman ? 'pending_man' : 'scheduling';
+      if (previousMatches) {
+        queryClient.setQueryData(['my-dating-matches'], (old: any[]) =>
+          old?.map(m => m.id === matchId ? { ...m, meeting_status: newStatus } : m)
+        );
+      }
+
+      return { previousProposals, previousMatches };
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      if (context?.previousProposals) {
+        queryClient.setQueryData(['meeting-proposals', matchId], context.previousProposals);
+      }
+      if (context?.previousMatches) {
+        queryClient.setQueryData(['my-dating-matches'], context.previousMatches);
+      }
       console.error('Error proposing dates:', error);
-      toast.error('Failed to submit proposals');
+      toast.error('Failed to book slots. Please try again.');
+    },
+    onSuccess: () => {
+      toast.success('Concierge slots booked!');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-dating-matches'] });
+      queryClient.invalidateQueries({ queryKey: ['meeting-proposals', matchId] });
+      onClose();
     },
   });
 
@@ -95,7 +164,6 @@ export const DateScheduler = ({
       const proposal = proposals.find(p => p.id === proposalId);
       if (!proposal) throw new Error('Proposal not found');
 
-      // Update proposal status
       const { error: proposalError } = await supabase
         .from('meeting_proposals')
         .update({ status: 'accepted' })
@@ -103,7 +171,6 @@ export const DateScheduler = ({
 
       if (proposalError) throw proposalError;
 
-      // Decline other proposals
       const { error: declineError } = await supabase
         .from('meeting_proposals')
         .update({ status: 'declined' })
@@ -112,7 +179,6 @@ export const DateScheduler = ({
 
       if (declineError) throw declineError;
 
-      // Update match with meeting date
       const { error: matchError } = await supabase
         .from('dating_matches')
         .update({
@@ -124,134 +190,139 @@ export const DateScheduler = ({
 
       if (matchError) throw matchError;
     },
+    onMutate: async (proposalId) => {
+      const proposal = proposals.find(p => p.id === proposalId);
+      if (!proposal) return;
+
+      await queryClient.cancelQueries({ queryKey: ['meeting-proposals', matchId] });
+      await queryClient.cancelQueries({ queryKey: ['my-dating-matches'] });
+
+      const previousProposals = queryClient.getQueryData(['meeting-proposals', matchId]);
+      const previousMatches = queryClient.getQueryData(['my-dating-matches']);
+
+      if (previousProposals) {
+        queryClient.setQueryData(['meeting-proposals', matchId], (old: any[]) =>
+          old?.map(p => p.id === proposalId ? { ...p, status: 'accepted' } : { ...p, status: 'declined' })
+        );
+      }
+
+      if (previousMatches) {
+        queryClient.setQueryData(['my-dating-matches'], (old: any[]) =>
+          old?.map(m => m.id === matchId ? {
+            ...m,
+            meeting_status: 'scheduled',
+            meeting_date: proposal.proposed_date,
+            meeting_time: proposal.proposed_time
+          } : m)
+        );
+      }
+
+      return { previousProposals, previousMatches };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousProposals) {
+        queryClient.setQueryData(['meeting-proposals', matchId], context.previousProposals);
+      }
+      if (context?.previousMatches) {
+        queryClient.setQueryData(['my-dating-matches'], context.previousMatches);
+      }
+      console.error('Error accepting proposal:', error);
+      toast.error('Failed to confirm date. Please try again.');
+    },
     onSuccess: () => {
       toast.success('Meeting date confirmed!');
-      queryClient.invalidateQueries({ queryKey: ['my-dating-matches'] });
-      queryClient.invalidateQueries({ queryKey: ['meeting-proposals'] });
-      onClose();
     },
-    onError: (error) => {
-      console.error('Error accepting proposal:', error);
-      toast.error('Failed to accept proposal');
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-dating-matches'] });
+      queryClient.invalidateQueries({ queryKey: ['meeting-proposals', matchId] });
+      onClose();
     },
   });
 
-  const addProposal = () => {
-    if (!selectedDate || !selectedTime) {
-      toast.error('Please select both a date and time');
+  const addSlot = () => {
+    const slot = availableSlots.find(s => s.id === selectedSlotId);
+    if (!slot) return;
+
+    if (pendingSlots.length >= 3) {
+      toast.error('Maximum 3 slot options allowed');
       return;
     }
 
-    if (pendingProposals.length >= 3) {
-      toast.error('Maximum 3 date proposals allowed');
+    if (pendingSlots.some(s => s.id === slot.id)) {
+      toast.error('This slot is already added');
       return;
     }
 
-    const exists = pendingProposals.some(
-      p => format(p.date, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd') && p.time === selectedTime
-    );
-
-    if (exists) {
-      toast.error('This date/time is already added');
-      return;
-    }
-
-    setPendingProposals([...pendingProposals, { date: selectedDate, time: selectedTime }]);
-    setSelectedDate(undefined);
-    setSelectedTime('');
+    setPendingSlots([...pendingSlots, slot]);
+    setSelectedSlotId('');
   };
 
-  const removeProposal = (index: number) => {
-    setPendingProposals(pendingProposals.filter((_, i) => i !== index));
+  const removeSlot = (id: string) => {
+    setPendingSlots(pendingSlots.filter(s => s.id !== id));
   };
 
   const submitProposals = () => {
-    if (pendingProposals.length === 0) {
-      toast.error('Please add at least one date proposal');
+    if (pendingSlots.length === 0) {
+      toast.error('Please select at least one availability slot');
       return;
     }
-    proposeMutation.mutate(pendingProposals);
+    proposeMutation.mutate(pendingSlots);
   };
 
-  const getTimeLabel = (timeValue: string) => {
-    return TIME_SLOTS.find(t => t.value === timeValue)?.label || timeValue;
-  };
-
-  // Keyboard navigation handler for proposals
-  const handleProposalKeyDown = useCallback((e: React.KeyboardEvent, proposalId: string) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      acceptMutation.mutate(proposalId);
-    }
-  }, [acceptMutation]);
-
-  // Keyboard handler for pending proposal removal
-  const handleRemoveKeyDown = useCallback((e: React.KeyboardEvent, index: number) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      removeProposal(index);
-    }
-  }, [removeProposal]);
+  if (slotsLoading) {
+    return (
+      <Card className="flex items-center justify-center p-12">
+        <Loader2 className="h-8 w-8 animate-spin text-dating-forest" />
+      </Card>
+    );
+  }
 
   return (
-    <Card className="border-dating-forest/20" role="region" aria-label="Date scheduling">
+    <Card className="border-dating-forest/20" role="region" aria-label="Concierge scheduling">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-dating-forest">
           <CalendarIcon className="h-5 w-5" />
-          {canPropose ? 'Propose Meeting Dates' : 'Review Date Proposals'}
+          {canPropose ? 'Book Concierge Meeting' : 'Review Meeting Slots'}
         </CardTitle>
         <CardDescription>
           {canPropose
-            ? 'Select up to 3 dates and times that work for you'
-            : 'Accept a proposed date or suggest alternatives'}
+            ? 'Select from our available concierge slots for your meeting.'
+            : 'Review and confirm one of the proposed meeting slots.'}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Show other person's proposals if responding */}
         {canRespond && otherPersonsProposals.length > 0 && (
           <div className="space-y-3">
-            <h4 className="font-medium text-foreground">Proposed Dates</h4>
+            <h4 className="font-medium text-foreground">Proposed Slots</h4>
             <div className="grid gap-2">
               {otherPersonsProposals.map((proposal) => (
                 <div
                   key={proposal.id}
-                  className="flex items-center justify-between p-3 bg-dating-cream/30 rounded-lg border border-dating-cream focus-within:ring-2 focus-within:ring-dating-forest"
-                  role="listitem"
-                  tabIndex={0}
-                  onKeyDown={(e) => handleProposalKeyDown(e, proposal.id)}
-                  aria-label={`${format(new Date(proposal.proposed_date), 'EEEE, MMMM d')} ${getTimeLabel(proposal.proposed_time)}. Press Enter to accept.`}
+                  className="flex items-center justify-between p-3 bg-dating-cream/30 rounded-lg border border-dating-cream"
                 >
-                  <div className="flex items-center gap-3">
-                    <CalendarIcon className="h-4 w-4 text-dating-forest" aria-hidden="true" />
-                    <span className="font-medium">
-                      {format(new Date(proposal.proposed_date), 'EEEE, MMMM d')}
-                    </span>
-                    <Badge variant="outline" className="text-xs">
-                      {getTimeLabel(proposal.proposed_time)}
-                    </Badge>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4 text-dating-forest" />
+                      <span className="font-medium">
+                        {format(new Date(proposal.proposed_date + 'T00:00:00'), 'EEEE, MMM do')}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="h-3 w-3" />
+                      {proposal.proposed_time}
+                    </div>
                   </div>
                   <Button
                     size="sm"
                     className="bg-dating-forest hover:bg-dating-forest/90"
                     onClick={() => acceptMutation.mutate(proposal.id)}
                     disabled={acceptMutation.isPending}
-                    aria-label={`Accept ${format(new Date(proposal.proposed_date), 'EEEE, MMMM d')} ${getTimeLabel(proposal.proposed_time)}`}
                   >
-                    <Check className="h-4 w-4 mr-1" aria-hidden="true" />
-                    Accept
+                    Confirm Slot
                   </Button>
                 </div>
               ))}
-            </div>
-            <div className="relative py-4">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-muted" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or suggest different dates
-                </span>
-              </div>
             </div>
           </div>
         )}
@@ -259,19 +330,23 @@ export const DateScheduler = ({
         {/* My submitted proposals */}
         {myProposals.length > 0 && !canPropose && (
           <div className="space-y-3">
-            <h4 className="font-medium text-foreground">Your Proposed Dates</h4>
-            <div className="grid gap-2" role="list" aria-label="Your submitted proposals">
+            <h4 className="font-medium text-foreground">Your Selected Slots</h4>
+            <div className="grid gap-2">
               {myProposals.map((proposal) => (
                 <div
                   key={proposal.id}
                   className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
                 >
-                  <div className="flex items-center gap-3">
-                    <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                    <span>{format(new Date(proposal.proposed_date), 'EEEE, MMMM d')}</span>
-                    <Badge variant="outline" className="text-xs">
-                      {getTimeLabel(proposal.proposed_time)}
-                    </Badge>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">
+                        {format(new Date(proposal.proposed_date + 'T00:00:00'), 'EEEE, MMM do')}
+                      </span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {proposal.proposed_time}
+                    </div>
                   </div>
                   <Badge
                     variant={proposal.status === 'accepted' ? 'default' : 'secondary'}
@@ -282,80 +357,116 @@ export const DateScheduler = ({
                 </div>
               ))}
             </div>
+            <p className="text-xs text-muted-foreground text-center">
+              Waiting for your match to confirm their availability for one of these slots.
+            </p>
           </div>
         )}
 
         {/* Proposal form */}
         {canPropose && (
           <>
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Calendar */}
-              <div>
-                <Label className="text-sm font-medium mb-2 block">Select Date</Label>
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  disabled={(date) => isBefore(date, startOfToday()) || isBefore(addDays(new Date(), 30), date)}
-                  className="rounded-md border"
-                />
-              </div>
+            <div className="space-y-4">
+              <Label className="text-sm font-medium">Available Concierge Slots</Label>
+              <div className="grid gap-3 max-h-[300px] overflow-y-auto pr-2">
+                {availableSlots.length === 0 ? (
+                  <div className="text-center py-6 text-muted-foreground italic bg-muted/20 rounded-lg">
+                    No available slots at this time. Please check back later.
+                  </div>
+                ) : (
+                  availableSlots.map((slot) => {
+                    const isSelected = selectedSlotId === slot.id;
+                    const isPending = pendingSlots.some(ps => ps.id === slot.id);
+                    const isRecommended = recommendation?.recommended_slot_id === slot.id;
 
-              {/* Time slots */}
-              <div>
-                <Label className="text-sm font-medium mb-2 block">Select Time</Label>
-                <RadioGroup value={selectedTime} onValueChange={setSelectedTime} className="space-y-3">
-                  {TIME_SLOTS.map((slot) => (
-                    <div key={slot.value} className="flex items-center space-x-3">
-                      <RadioGroupItem value={slot.value} id={slot.value} />
-                      <Label htmlFor={slot.value} className="flex-1 cursor-pointer">
+                    return (
+                      <div
+                        key={slot.id}
+                        onClick={() => !isPending && setSelectedSlotId(slot.id)}
+                        className={`p-3 rounded-lg border transition-all cursor-pointer relative overflow-hidden ${isSelected ? 'border-dating-forest bg-dating-forest/5 ring-1 ring-dating-forest' :
+                          isPending ? 'opacity-50 cursor-not-allowed border-muted bg-muted/10' :
+                            isRecommended ? 'border-primary/40 bg-primary/5' :
+                              'border-border hover:border-dating-forest/50'
+                          }`}
+                      >
+                        {isRecommended && (
+                          <div className="absolute top-0 right-0">
+                            <div className="bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-bl-lg flex items-center gap-1 font-bold">
+                              <Zap className="h-2.5 w-2.5" />
+                              AI SUGGESTED
+                            </div>
+                          </div>
+                        )}
                         <div className="flex items-center justify-between">
-                          <span className="font-medium">{slot.label}</span>
-                          <span className="text-sm text-muted-foreground">{slot.time}</span>
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-2 font-medium text-foreground">
+                              {format(new Date(slot.date + 'T00:00:00'), 'EEEE, MMM do')}
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                              <span className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {slot.start_time} - {slot.end_time}
+                              </span>
+                              {slot.location_name && (
+                                <span className="flex items-center gap-1">
+                                  <MapPin className="h-3 w-3" />
+                                  {slot.location_name}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          {isSelected && <Check className="h-5 w-5 text-dating-forest" />}
                         </div>
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-
-                <Button
-                  onClick={addProposal}
-                  variant="outline"
-                  className="w-full mt-4 border-dating-forest text-dating-forest hover:bg-dating-forest/10"
-                  disabled={!selectedDate || !selectedTime}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Date Option
-                </Button>
+                        {isRecommended && (
+                          <div className="mt-2 flex items-start gap-2 bg-primary/10 p-2 rounded-md border border-primary/10">
+                            <Sparkles className="h-3 w-3 text-primary mt-0.5" />
+                            <p className="text-[10px] text-primary-foreground/80 dark:text-primary font-medium leading-tight">
+                              {recommendation.rationale}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
+
+              <Button
+                onClick={addSlot}
+                variant="outline"
+                className="w-full border-dating-forest text-dating-forest hover:bg-dating-forest/10"
+                disabled={!selectedSlotId}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add to My Selection
+              </Button>
             </div>
 
-            {/* Pending proposals */}
-            {pendingProposals.length > 0 && (
-              <div className="space-y-3">
-                <Label className="text-sm font-medium">Your Date Proposals ({pendingProposals.length}/3)</Label>
+            {/* Selected slots list */}
+            {pendingSlots.length > 0 && (
+              <div className="space-y-3 pt-4 border-t">
+                <Label className="text-sm font-medium">Your Selected Slots ({pendingSlots.length}/3)</Label>
                 <div className="grid gap-2">
-                  {pendingProposals.map((proposal, index) => (
+                  {pendingSlots.map((slot) => (
                     <div
-                      key={index}
+                      key={slot.id}
                       className="flex items-center justify-between p-3 bg-dating-forest/5 rounded-lg border border-dating-forest/20"
                     >
-                      <div className="flex items-center gap-3">
-                        <CalendarIcon className="h-4 w-4 text-dating-forest" />
-                        <span className="font-medium">{format(proposal.date, 'EEEE, MMMM d')}</span>
-                        <Badge variant="outline" className="text-xs border-dating-forest/30 text-dating-forest">
-                          {getTimeLabel(proposal.time)}
-                        </Badge>
+                      <div className="flex flex-col gap-1">
+                        <div className="font-medium text-dating-forest">
+                          {format(new Date(slot.date + 'T00:00:00'), 'EEEE, MMM do')}
+                        </div>
+                        <div className="text-sm text-dating-forest/70">
+                          {slot.start_time} - {slot.end_time}
+                        </div>
                       </div>
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => removeProposal(index)}
-                        onKeyDown={(e) => handleRemoveKeyDown(e, index)}
+                        onClick={() => removeSlot(slot.id)}
                         className="text-muted-foreground hover:text-destructive"
-                        aria-label={`Remove ${format(proposal.date, 'EEEE, MMMM d')} ${getTimeLabel(proposal.time)}`}
                       >
-                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   ))}
@@ -367,17 +478,16 @@ export const DateScheduler = ({
 
         {/* Actions */}
         <div className="flex gap-3 pt-4 border-t">
-          <Button variant="outline" onClick={onClose} className="flex-1" aria-label="Cancel date scheduling">
-            Cancel
+          <Button variant="outline" onClick={onClose} className="flex-1">
+            Back
           </Button>
           {canPropose && (
             <Button
               onClick={submitProposals}
-              disabled={pendingProposals.length === 0 || proposeMutation.isPending}
+              disabled={pendingSlots.length === 0 || proposeMutation.isPending}
               className="flex-1 bg-dating-forest hover:bg-dating-forest/90"
-              aria-label={pendingProposals.length === 0 ? 'Add date proposals first' : `Submit ${pendingProposals.length} date proposal${pendingProposals.length > 1 ? 's' : ''}`}
             >
-              {proposeMutation.isPending ? 'Submitting...' : 'Submit Proposals'}
+              {proposeMutation.isPending ? 'Booking...' : 'Submit Selection'}
             </Button>
           )}
         </div>

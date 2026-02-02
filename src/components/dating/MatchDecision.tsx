@@ -37,11 +37,10 @@ export const MatchDecision = ({
   const decisionMutation = useMutation({
     mutationFn: async (decision: 'accepted' | 'declined') => {
       const updateField = isUserA ? 'user_a_response' : 'user_b_response';
-      
-      // Check if both have now decided
+
       const bothAccepted = decision === 'accepted' && otherResponse === 'accepted';
       const anyDeclined = decision === 'declined' || otherResponse === 'declined';
-      
+
       let newStatus = 'met';
       if (bothAccepted) {
         newStatus = 'mutual_yes';
@@ -49,7 +48,6 @@ export const MatchDecision = ({
         newStatus = 'declined';
       }
 
-      // First update the match
       const { error: matchError } = await supabase
         .from('dating_matches')
         .update({
@@ -60,9 +58,7 @@ export const MatchDecision = ({
 
       if (matchError) throw matchError;
 
-      // If mutual_yes, pause BOTH profiles
       if (newStatus === 'mutual_yes') {
-        // Get both profile IDs from the match
         const { data: matchData, error: fetchError } = await supabase
           .from('dating_matches')
           .select('user_a_id, user_b_id')
@@ -71,8 +67,7 @@ export const MatchDecision = ({
 
         if (fetchError) throw fetchError;
 
-        // Pause both profiles
-        const { error: pauseError } = await supabase
+        await supabase
           .from('dating_profiles')
           .update({
             is_active: false,
@@ -80,22 +75,65 @@ export const MatchDecision = ({
             paused_at: new Date().toISOString(),
           })
           .in('id', [matchData.user_a_id, matchData.user_b_id]);
-
-        if (pauseError) {
-          console.error('Error pausing profiles:', pauseError);
-          // Don't throw - the match decision already succeeded
-        }
       }
 
       return { decision, newStatus };
     },
+    onMutate: async (decision) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['my-dating-matches'] });
+      await queryClient.cancelQueries({ queryKey: ['match-detail', matchId] });
+
+      // Snapshot the previous values
+      const previousMatchDetail = queryClient.getQueryData(['match-detail', matchId]);
+      const previousMatches = queryClient.getQueryData(['my-dating-matches', currentProfileId]);
+
+      // Optimistically update to the new value
+      const updateField = isUserA ? 'user_a_response' : 'user_b_response';
+      const bothAccepted = decision === 'accepted' && otherResponse === 'accepted';
+      const anyDeclined = decision === 'declined' || otherResponse === 'declined';
+
+      let newStatus = 'met';
+      if (bothAccepted) {
+        newStatus = 'mutual_yes';
+      } else if (anyDeclined) {
+        newStatus = 'declined';
+      }
+
+      if (previousMatchDetail) {
+        queryClient.setQueryData(['match-detail', matchId], (old: any) => ({
+          ...old,
+          [updateField]: decision,
+          status: newStatus
+        }));
+      }
+
+      if (previousMatches) {
+        queryClient.setQueryData(['my-dating-matches', currentProfileId], (old: any[]) =>
+          old?.map(m => m.id === matchId ? { ...m, [updateField]: decision, status: newStatus } : m)
+        );
+      }
+
+      return { previousMatchDetail, previousMatches };
+    },
+    onError: (error, decision, context) => {
+      // Roll back to the previous state
+      if (context?.previousMatchDetail) {
+        queryClient.setQueryData(['match-detail', matchId], context.previousMatchDetail);
+      }
+      if (context?.previousMatches) {
+        queryClient.setQueryData(['my-dating-matches', currentProfileId], context.previousMatches);
+      }
+
+      console.error('Error submitting decision:', error);
+      toast.error('Failed to submit decision. Please try again.');
+    },
     onSuccess: ({ decision, newStatus }) => {
       if (newStatus === 'mutual_yes') {
-        // Fire confetti celebration!
         fireCelebration();
         setTimeout(() => fireCelebration(), 500);
-        
-        toast.success('Wonderful! You both felt a connection. Profiles revealed! Your dating profiles are now paused.', {
+
+        toast.success('Wonderful! You both felt a connection. Profiles revealed!', {
           icon: <Handshake className="h-5 w-5 text-dating-terracotta" />,
           duration: 6000,
         });
@@ -104,14 +142,13 @@ export const MatchDecision = ({
       } else {
         toast.info('Thank you for your honesty');
       }
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure server sync
       queryClient.invalidateQueries({ queryKey: ['my-dating-matches'] });
       queryClient.invalidateQueries({ queryKey: ['my-dating-profile'] });
       queryClient.invalidateQueries({ queryKey: ['match-detail', matchId] });
       onClose();
-    },
-    onError: (error) => {
-      console.error('Error submitting decision:', error);
-      toast.error('Failed to submit decision');
     },
   });
 
@@ -121,8 +158,8 @@ export const MatchDecision = ({
         <CardContent className="py-8 text-center">
           <div className={cn(
             "w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center",
-            currentResponse === 'accepted' 
-              ? "bg-dating-forest/10" 
+            currentResponse === 'accepted'
+              ? "bg-dating-forest/10"
               : "bg-muted"
           )}>
             {currentResponse === 'accepted' ? (
@@ -135,8 +172,8 @@ export const MatchDecision = ({
             {currentResponse === 'accepted' ? "You said yes!" : "You passed on this match"}
           </h3>
           <p className="text-sm text-muted-foreground">
-            {currentResponse === 'accepted' 
-              ? otherHasDecided 
+            {currentResponse === 'accepted'
+              ? otherHasDecided
                 ? otherResponse === 'accepted'
                   ? "They also said yes! Check your revealed match."
                   : "Unfortunately, they didn't feel the same connection."

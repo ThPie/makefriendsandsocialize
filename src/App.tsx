@@ -226,6 +226,8 @@ const MainRoutes = () => (
   </Routes>
 );
 
+import { HelmetProvider } from 'react-helmet-async';
+
 const App = () => {
   // Determine which routes to render based on subdomain
   const showSlowDatingRoutes = isSlowDatingSubdomain();
@@ -234,24 +236,26 @@ const App = () => {
 
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <AuthProvider>
-            <TooltipProvider>
-              <BrowserRouter>
-                <ScrollToTop />
-                <RecoveryRedirectHandler />
-                {/* Show geo-redirect banner for Canadian users on .com */}
-                {showGeoRedirectBanner && <CountryRedirectBanner />}
-                <Suspense fallback={<BrandedLoader />}>
-                  {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
-                </Suspense>
-                <SpeedInsights />
-              </BrowserRouter>
-            </TooltipProvider>
-          </AuthProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <AuthProvider>
+              <TooltipProvider>
+                <BrowserRouter>
+                  <ScrollToTop />
+                  <RecoveryRedirectHandler />
+                  {/* Show geo-redirect banner for Canadian users on .com */}
+                  {showGeoRedirectBanner && <CountryRedirectBanner />}
+                  <Suspense fallback={<BrandedLoader />}>
+                    {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
+                  </Suspense>
+                  <SpeedInsights />
+                </BrowserRouter>
+              </TooltipProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </HelmetProvider>
     </ErrorBoundary>
   );
 };

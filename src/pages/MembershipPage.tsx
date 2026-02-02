@@ -27,6 +27,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { SEO } from '@/components/common/SEO';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -189,8 +190,14 @@ const MembershipPage = () => {
     { icon: Briefcase, label: 'Business Leads', sublabel: 'Patrons receive leads', color: 'text-blue-500', bg: 'bg-blue-500/10' },
   ];
 
+
   return (
     <div className="flex-1 w-full flex flex-col items-center bg-background">
+      <SEO
+        title="Exclusive Membership & Benefits"
+        description="Unlock access to curated events, personalized matchmaking, and a private network of high-achieving professionals. Start your 30-day trial today."
+        keywords="social club membership, private club application, exclusive networking, slow dating membership NYC"
+      />
       {/* Hero Section */}
       <section className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden">
         <div
@@ -408,8 +415,8 @@ const MembershipPage = () => {
                   key={tier.name}
                   variants={itemVariants}
                   className={`relative flex flex-col gap-6 rounded-2xl p-8 transition-all duration-300 ${tier.featured
-                      ? 'bg-gradient-to-b from-primary/10 to-card border-2 border-primary shadow-xl shadow-primary/10'
-                      : 'bg-card border border-border/50 hover:border-primary/50 hover-lift'
+                    ? 'bg-gradient-to-b from-primary/10 to-card border-2 border-primary shadow-xl shadow-primary/10'
+                    : 'bg-card border border-border/50 hover:border-primary/50 hover-lift'
                     } ${isCurrent ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
                 >
                   {/* Current Plan Badge */}
@@ -426,8 +433,8 @@ const MembershipPage = () => {
                   {tier.badge && !isCurrent && (
                     <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
                       <Badge className={`text-xs ${tier.featured
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-primary/70 text-primary-foreground'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-primary/70 text-primary-foreground'
                         }`}>
                         {tier.badge}
                       </Badge>

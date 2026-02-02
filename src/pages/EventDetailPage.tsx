@@ -10,10 +10,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { format } from 'date-fns';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
 import { parseLocalDate } from '@/lib/date-utils';
-import { 
-  ArrowLeft, Clock, MapPin, Users, DollarSign, Tag, 
+import {
+  ArrowLeft, Clock, MapPin, Users, DollarSign, Tag,
   Calendar, ExternalLink, CheckCircle2, Loader2
 } from 'lucide-react';
+import { SEO } from '@/components/common/SEO';
+import { generateEventSchema, generateBreadcrumbSchema } from '@/lib/seo-schema';
 
 interface Event {
   id: string;
@@ -55,7 +57,7 @@ const EventDetailPage = () => {
         .select('*')
         .eq('id', id)
         .single();
-      
+
       if (error) throw error;
       return data as Event;
     },
@@ -71,7 +73,7 @@ const EventDetailPage = () => {
         .select('*', { count: 'exact', head: true })
         .eq('event_id', id)
         .eq('status', 'confirmed');
-      
+
       if (error) throw error;
       return count || 0;
     },
@@ -89,7 +91,7 @@ const EventDetailPage = () => {
         .eq('event_id', id)
         .eq('user_id', user.id)
         .single();
-      
+
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     },
@@ -110,7 +112,7 @@ const EventDetailPage = () => {
           .from('event_rsvps')
           .delete()
           .eq('id', userRsvp.id);
-        
+
         if (error) throw error;
 
         // Decrement rsvp_count
@@ -130,7 +132,7 @@ const EventDetailPage = () => {
             user_id: user.id,
             status: 'confirmed',
           });
-        
+
         if (error) throw error;
 
         // Increment rsvp_count
@@ -142,7 +144,7 @@ const EventDetailPage = () => {
         });
         setTimeout(() => setRsvpFeedback(null), 5000);
       }
-      
+
       queryClient.invalidateQueries({ queryKey: ['user-rsvp', id] });
       queryClient.invalidateQueries({ queryKey: ['event-rsvp-count', id] });
       queryClient.invalidateQueries({ queryKey: ['event', id] });
@@ -234,24 +236,39 @@ const EventDetailPage = () => {
   const spotsLeft = event.capacity ? event.capacity - rsvpCount : null;
   const isFull = spotsLeft !== null && spotsLeft <= 0;
 
+  const breadcrumbSchema = event ? generateBreadcrumbSchema([
+    { name: 'Home', item: '/' },
+    { name: 'Events', item: '/events' },
+    { name: event.title, item: `/events/${event.id}` }
+  ]) : null;
+
+  const eventSchema = event ? generateEventSchema(event) : null;
+  const combinedSchema = [breadcrumbSchema, eventSchema].filter(Boolean) as object[];
+
   return (
     <div className="flex-1 w-full flex flex-col">
+      <SEO
+        title={event.title}
+        description={event.description?.slice(0, 160)}
+        keywords={event.tags?.join(', ')}
+        schema={combinedSchema}
+      />
       {/* Hero Image */}
       <section className="relative w-full h-[50vh] md:h-[60vh] overflow-hidden">
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ 
-            backgroundImage: event.image_url 
-              ? `url("${event.image_url}")` 
+          style={{
+            backgroundImage: event.image_url
+              ? `url("${event.image_url}")`
               : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)/0.5) 100%)'
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-        
+
         {/* Back Button */}
         <div className="absolute top-6 left-6 z-10">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => navigate(-1)}
             className="bg-background/80 backdrop-blur-sm border-border hover:bg-background"
           >
@@ -288,11 +305,11 @@ const EventDetailPage = () => {
                 </Badge>
               )}
             </div>
-            
+
             <h1 className="text-foreground text-3xl md:text-4xl font-bold font-display leading-tight mb-4">
               {event.title}
             </h1>
-            
+
             {userRsvp && (
               <span className="inline-flex items-center gap-2 text-green-600 dark:text-green-400 text-sm font-bold bg-green-100 dark:bg-green-900/30 px-3 py-1.5 rounded-full">
                 <CheckCircle2 className="h-4 w-4" />
@@ -310,7 +327,7 @@ const EventDetailPage = () => {
                 <p className="text-foreground font-medium">{formatTime(event.time)}</p>
               </div>
             </div>
-            
+
             <div className="flex items-start gap-3">
               <MapPin className="h-5 w-5 text-primary mt-0.5" />
               <div>
@@ -326,7 +343,7 @@ const EventDetailPage = () => {
                 )}
               </div>
             </div>
-            
+
             <div className="flex items-start gap-3">
               <Users className="h-5 w-5 text-primary mt-0.5" />
               <div>
@@ -336,9 +353,9 @@ const EventDetailPage = () => {
                 </p>
                 {event.capacity && (
                   <p className="text-sm text-muted-foreground">
-                    {spotsLeft !== null && spotsLeft > 0 
+                    {spotsLeft !== null && spotsLeft > 0
                       ? `${spotsLeft} spots left`
-                      : isFull 
+                      : isFull
                         ? 'Event is full'
                         : `${event.capacity} capacity`
                     }
@@ -346,7 +363,7 @@ const EventDetailPage = () => {
                 )}
               </div>
             </div>
-            
+
             <div className="flex items-start gap-3">
               <DollarSign className="h-5 w-5 text-primary mt-0.5" />
               <div>
@@ -391,7 +408,7 @@ const EventDetailPage = () => {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
             {!isPastEvent && event.status !== 'cancelled' && (
-              <Button 
+              <Button
                 size="lg"
                 onClick={handleRSVP}
                 variant={userRsvp ? "outline" : "default"}
@@ -409,13 +426,13 @@ const EventDetailPage = () => {
                 )}
               </Button>
             )}
-            
-            <AddToCalendarButton 
-              event={event} 
-              size="lg" 
+
+            <AddToCalendarButton
+              event={event}
+              size="lg"
               className="flex-1 sm:flex-none"
             />
-            
+
             <Button variant="outline" size="lg" asChild>
               <Link to="/contact">Have Questions?</Link>
             </Button>

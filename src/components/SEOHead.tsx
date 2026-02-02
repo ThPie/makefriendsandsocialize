@@ -28,7 +28,7 @@ interface SEOProps {
   noIndex?: boolean;
 }
 
-const BASE_URL = 'https://makefriends.social';
+const BASE_URL = 'https://makefriendsandsocialize.com';
 const DEFAULT_IMAGE = 'https://lovable.dev/opengraph-image-p98pqg.png';
 const SITE_NAME = 'MakeFriends Social Club';
 
@@ -114,25 +114,25 @@ export function SEOHead({
 
 function updateMetaTag(name: string, content: string, attr: 'name' | 'property' = 'name') {
   let element = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement;
-  
+
   if (!element) {
     element = document.createElement('meta');
     element.setAttribute(attr, name);
     document.head.appendChild(element);
   }
-  
+
   element.content = content;
 }
 
 function updateLinkTag(rel: string, href: string) {
   let element = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement;
-  
+
   if (!element) {
     element = document.createElement('link');
     element.rel = rel;
     document.head.appendChild(element);
   }
-  
+
   element.href = href;
 }
 

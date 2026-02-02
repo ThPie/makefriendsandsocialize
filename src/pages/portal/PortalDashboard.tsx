@@ -19,6 +19,7 @@ import { ActivityFeed } from '@/components/portal/ActivityFeed';
 import { AttendanceStreak } from '@/components/portal/AttendanceStreak';
 import { EventRecommendations } from '@/components/events/EventRecommendations';
 import { WidgetErrorBoundary } from '@/components/ui/widget-error-boundary';
+import { RelationshipHealthSection } from '@/components/portal/RelationshipHealthSection';
 
 export default function PortalDashboard() {
   const { user, profile, membership, canAccessMatchmaking, refreshProfile } = useAuth();
@@ -215,6 +216,11 @@ export default function PortalDashboard() {
       <WidgetErrorBoundary title="Events For You">
         <EventRecommendations />
       </WidgetErrorBoundary>
+
+      {/* Relationship Health Section */}
+      {canAccessMatchmaking && user && (
+        <RelationshipHealthSection userId={user.id} />
+      )}
 
       {/* Quick Actions */}
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">

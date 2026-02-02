@@ -196,15 +196,30 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-
     const { profileId } = parseResult.data;
 
-    // Initialize Supabase client with service role
+    // Initialize Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    // Gateway has already verified JWT if verify_jwt = true in config.toml
+    // But we still fetch the user to verify ownership and get user ID
+    const authHeader = req.headers.get("Authorization")!;
+    const supabaseClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!);
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(authHeader.replace("Bearer ", ""));
+
+    if (authError || !user) {
+      console.error("Auth error:", authError);
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: Invalid or missing token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Initialize admin client for sensitive operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get the target profile
+    // Get the target profile and verify ownership
     const { data: targetProfile, error: profileError } = await supabase
       .from("dating_profiles")
       .select("*")
@@ -215,6 +230,22 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ error: "Profile not found" }),
         { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Check ownership or admin status
+    const { data: userRoles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id);
+
+    const isAdmin = userRoles?.some(r => r.role === 'admin');
+
+    if (targetProfile.user_id !== user.id && !isAdmin) {
+      console.error(`Security alert: User ${user.id} tried to find matches for profile ${profileId} owned by ${targetProfile.user_id}`);
+      return new Response(
+        JSON.stringify({ error: "You do not have permission to access this profile" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -588,7 +619,19 @@ Return JSON with:
       }
     };
 
+    if (qualifiedCandidates.length === 0) {
+      console.log("No qualified candidates found after hard filters.");
+      return new Response(
+        JSON.stringify({
+          matches: [],
+          message: "No qualified candidates found in your area matching your basic preferences."
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Process candidates in batches of AI_BATCH_SIZE for parallel execution
+    let aiFailuresCount = 0;
     for (let i = 0; i < qualifiedCandidates.length; i += AI_BATCH_SIZE) {
       const batch = qualifiedCandidates.slice(i, i + AI_BATCH_SIZE);
       console.log(`Processing batch ${Math.floor(i / AI_BATCH_SIZE) + 1} of ${Math.ceil(qualifiedCandidates.length / AI_BATCH_SIZE)}`);
@@ -600,8 +643,17 @@ Return JSON with:
       for (const result of batchResults) {
         if (result.status === 'fulfilled' && result.value) {
           matchResults.push(result.value);
+        } else if (result.status === 'rejected' || (result.status === 'fulfilled' && !result.value)) {
+          aiFailuresCount++;
+          if (result.status === 'rejected') {
+            console.error("Batch item rejected:", result.reason);
+          }
         }
       }
+    }
+
+    if (matchResults.length === 0 && aiFailuresCount > 0) {
+      console.warn(`All ${aiFailuresCount} AI analyses failed or returned no matches.`);
     }
 
     console.log(`Found ${matchResults.length} matches with score >= 60%`);

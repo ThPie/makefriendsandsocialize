@@ -1,48 +1,26 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Building2, Globe, MapPin, Mail, Upload, Loader2, CheckCircle, Clock, XCircle, Plus, X, ExternalLink, Users, Link2, Copy, BarChart3 } from "lucide-react";
+import { Building2, Loader2, CheckCircle, Clock, XCircle, ExternalLink, Users, Link2, Copy } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BusinessVerificationStatus } from "@/components/business/BusinessVerificationStatus";
-import { LeadStatsCards } from "@/components/business/LeadStatsCards";
-import { LeadCard, Lead } from "@/components/business/LeadCard";
+import { Lead } from "@/components/business/LeadCard";
 import { LeadDetailSheet } from "@/components/business/LeadDetailSheet";
-import { LeadAnalyticsCharts } from "@/components/business/LeadAnalyticsCharts";
-import { LeadExportButton } from "@/components/business/LeadExportButton";
 import { useLeadRealtime } from "@/hooks/useLeadRealtime";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-const BUSINESS_CATEGORIES = [
-  'Technology',
-  'Finance',
-  'Fashion',
-  'Health',
-  'Food & Beverage',
-  'Professional Services',
-  'Real Estate',
-  'Other'
-];
+import { BusinessProfileForm } from "@/components/portal/business/BusinessProfileForm";
+import { BusinessLeadsSection } from "@/components/portal/business/BusinessLeadsSection";
+import { BusinessSynergySection } from "@/components/portal/business/BusinessSynergySection";
 
 type LeadStatus = "new" | "contacted" | "converted" | "lost";
 
 const PortalBusiness = () => {
   const { user, membership } = useAuth();
   const queryClient = useQueryClient();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [newService, setNewService] = useState("");
   const [statusFilter, setStatusFilter] = useState<LeadStatus | "all">("all");
@@ -254,10 +232,6 @@ const PortalBusiness = () => {
     }
   };
 
-  const filteredLeads = leads?.filter(lead => 
-    statusFilter === "all" ? true : lead.status === statusFilter
-  ) || [];
-
   const handleSelectLead = (lead: Lead) => {
     setSelectedLead(lead);
     setLeadSheetOpen(true);
@@ -297,7 +271,7 @@ const PortalBusiness = () => {
           <div>
             <h1 className="font-display text-3xl text-foreground mb-2">Founder Profile</h1>
             <p className="text-muted-foreground">
-              {businessProfile 
+              {businessProfile
                 ? "Manage your company listing and leads"
                 : "Create your company listing for The Founders Circle"}
             </p>
@@ -307,7 +281,7 @@ const PortalBusiness = () => {
       </div>
 
       {/* Preview Link / Landing Page URL */}
-      {businessProfile?.status === 'approved' || businessProfile?.status === 'featured' ? (
+      {(businessProfile?.status === 'approved' || businessProfile?.status === 'featured') && (
         <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -343,11 +317,15 @@ const PortalBusiness = () => {
             </div>
           </div>
         </div>
-      ) : null}
+      )}
 
       {/* Tabs */}
-      <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+      <Tabs defaultValue="synergy" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="synergy" className="flex items-center gap-2" disabled={!businessProfile}>
+            <Zap className="h-4 w-4" />
+            Synergy
+          </TabsTrigger>
           <TabsTrigger value="profile" className="flex items-center gap-2">
             <Building2 className="h-4 w-4" />
             Profile
@@ -363,306 +341,51 @@ const PortalBusiness = () => {
           </TabsTrigger>
         </TabsList>
 
+        {/* Synergy Tab */}
+        <TabsContent value="synergy" className="space-y-6">
+          {businessProfile && <BusinessSynergySection businessId={businessProfile.id} />}
+        </TabsContent>
+
         {/* Profile Tab */}
         <TabsContent value="profile" className="space-y-6">
           {/* Verification Status */}
           {businessProfile && (
-            <BusinessVerificationStatus 
-              businessId={businessProfile.id} 
+            <BusinessVerificationStatus
+              businessId={businessProfile.id}
               className="mb-8"
             />
           )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Logo */}
-            <div className="bg-card border border-border/50 rounded-2xl p-6">
-              <h2 className="font-display text-xl text-foreground mb-4">Business Logo</h2>
-              <div className="flex items-center gap-6">
-                {formData.logo_url ? (
-                  <img
-                    src={formData.logo_url}
-                    alt="Business logo"
-                    className="w-24 h-24 rounded-xl object-contain bg-muted"
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Building2 className="h-10 w-10 text-primary" />
-                  </div>
-                )}
-                <div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isUploading}
-                  >
-                    {isUploading ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                      <Upload className="h-4 w-4 mr-2" />
-                    )}
-                    Upload Logo
-                  </Button>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Recommended: Square image, at least 200x200px
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Basic Info */}
-            <div className="bg-card border border-border/50 rounded-2xl p-6">
-              <h2 className="font-display text-xl text-foreground mb-4">Basic Information</h2>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="business_name">Business Name *</Label>
-                  <Input
-                    id="business_name"
-                    value={formData.business_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, business_name: e.target.value }))}
-                    placeholder="Your Business Name"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="industry">Industry</Label>
-                  <Input
-                    id="industry"
-                    value={formData.industry}
-                    onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
-                    placeholder="e.g., Technology, Consulting, Design"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="category">Category *</Label>
-                  <Select 
-                    value={formData.category} 
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
-                  >
-                    <SelectTrigger id="category">
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {BUSINESS_CATEGORIES.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Tell us about your business..."
-                    rows={4}
-                    maxLength={500}
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {formData.description.length}/500 characters
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Services */}
-            <div className="bg-card border border-border/50 rounded-2xl p-6">
-              <h2 className="font-display text-xl text-foreground mb-4">Services</h2>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {formData.services.map((service, index) => (
-                  <Badge key={index} variant="secondary" className="gap-1 pr-1">
-                    {service}
-                    <button
-                      type="button"
-                      onClick={() => removeService(service)}
-                      className="ml-1 hover:text-destructive"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-              <div className="flex gap-2">
-                <Input
-                  value={newService}
-                  onChange={(e) => setNewService(e.target.value)}
-                  placeholder="Add a service..."
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addService())}
-                />
-                <Button type="button" variant="outline" onClick={addService}>
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Contact Info */}
-            <div className="bg-card border border-border/50 rounded-2xl p-6">
-              <h2 className="font-display text-xl text-foreground mb-4">Contact Information</h2>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="location">Location</Label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="location"
-                      value={formData.location}
-                      onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                      placeholder="City, Country"
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="website">Website</Label>
-                  <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="website"
-                      value={formData.website}
-                      onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-                      placeholder="https://www.example.com"
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="contact_email">Contact Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="contact_email"
-                      type="email"
-                      value={formData.contact_email}
-                      onChange={(e) => setFormData(prev => ({ ...prev, contact_email: e.target.value }))}
-                      placeholder="business@example.com"
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Submit */}
-            <div className="flex justify-end gap-4">
-              <Button
-                type="submit"
-                disabled={saveMutation.isPending}
-                className="min-w-[150px]"
-              >
-                {saveMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                ) : null}
-                {businessProfile ? "Save Changes" : "Submit for Review"}
-              </Button>
-            </div>
-          </form>
+          <BusinessProfileForm
+            formData={formData}
+            setFormData={setFormData}
+            onSubmit={handleSubmit}
+            isSaving={saveMutation.isPending}
+            isUploading={isUploading}
+            handleLogoUpload={handleLogoUpload}
+            newService={newService}
+            setNewService={setNewService}
+            addService={addService}
+            removeService={removeService}
+            isEdit={!!businessProfile}
+          />
         </TabsContent>
 
         {/* Leads Tab */}
         <TabsContent value="leads" className="space-y-6">
-          {!businessProfile ? (
-            <div className="text-center py-12 text-muted-foreground">
-              Create your business profile first to start receiving leads.
-            </div>
-          ) : (
-            <>
-              {/* Stats */}
-              <LeadStatsCards 
-                stats={leadStats} 
-                usage={leadUsage}
-                isLoading={leadsLoading}
-              />
-
-              {/* Filters & Actions */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex flex-wrap gap-2">
-                  {(["all", "new", "contacted", "converted", "lost"] as const).map((status) => (
-                    <Button
-                      key={status}
-                      variant={statusFilter === status ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setStatusFilter(status)}
-                    >
-                      {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
-                      {status !== "all" && leads && (
-                        <Badge variant="secondary" className="ml-2 h-5 px-1.5">
-                          {leads.filter(l => l.status === status).length}
-                        </Badge>
-                      )}
-                    </Button>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant={showAnalytics ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setShowAnalytics(!showAnalytics)}
-                  >
-                    <BarChart3 className="h-4 w-4 mr-2" />
-                    Analytics
-                  </Button>
-                  <LeadExportButton 
-                    leads={leads || []} 
-                    businessName={businessProfile?.business_name || "business"} 
-                  />
-                </div>
-              </div>
-
-              {/* Analytics Charts (collapsible) */}
-              {showAnalytics && (
-                <LeadAnalyticsCharts 
-                  leads={leads || []} 
-                  isLoading={leadsLoading}
-                />
-              )}
-
-              {/* Leads List */}
-              {leadsLoading ? (
-                <div className="space-y-4">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-32 bg-muted animate-pulse rounded-lg" />
-                  ))}
-                </div>
-              ) : filteredLeads.length === 0 ? (
-                <div className="text-center py-12">
-                  <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-medium mb-2">No leads yet</h3>
-                  <p className="text-muted-foreground text-sm max-w-md mx-auto">
-                    {statusFilter === "all" 
-                      ? "Share your landing page to start receiving leads from potential clients."
-                      : `No ${statusFilter} leads to show.`}
-                  </p>
-                  {statusFilter === "all" && businessProfile.slug && (
-                    <Button variant="outline" className="mt-4" onClick={copyLandingPageUrl}>
-                      <Copy className="h-4 w-4 mr-2" />
-                      Copy Landing Page URL
-                    </Button>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {filteredLeads.map((lead) => (
-                    <LeadCard 
-                      key={lead.id} 
-                      lead={lead} 
-                      onSelect={handleSelectLead}
-                    />
-                  ))}
-                </div>
-              )}
-            </>
-          )}
+          <BusinessLeadsSection
+            businessProfile={businessProfile}
+            leads={leads}
+            leadsLoading={leadsLoading}
+            leadStats={leadStats}
+            leadUsage={leadUsage}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            showAnalytics={showAnalytics}
+            setShowAnalytics={setShowAnalytics}
+            copyLandingPageUrl={copyLandingPageUrl}
+            handleSelectLead={handleSelectLead}
+          />
         </TabsContent>
       </Tabs>
 

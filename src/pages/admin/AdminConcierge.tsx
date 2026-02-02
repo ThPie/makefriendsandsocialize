@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -33,9 +34,11 @@ import {
   XCircle,
   User,
   Calendar,
+  Settings,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import ConciergeAvailabilityManager from '@/components/admin/ConciergeAvailabilityManager';
 
 interface Booking {
   id: string;
@@ -175,139 +178,156 @@ export default function AdminConcierge() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-3xl text-foreground mb-2">Concierge Bookings</h1>
-        <p className="text-muted-foreground">Manage member concierge sessions</p>
+        <h1 className="font-display text-3xl text-foreground mb-2 text-center md:text-left">Concierge Center</h1>
+        <p className="text-muted-foreground text-center md:text-left">Manage availability and member concierge sessions</p>
       </div>
 
-      {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card
-          className={`cursor-pointer transition-all ${
-            statusFilter === 'pending' ? 'ring-2 ring-primary' : ''
-          }`}
-          onClick={() => setStatusFilter('pending')}
-        >
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">Pending</p>
-            <p className="text-2xl font-bold text-amber-600">{stats.pending}</p>
-          </CardContent>
-        </Card>
-        <Card
-          className={`cursor-pointer transition-all ${
-            statusFilter === 'confirmed' ? 'ring-2 ring-primary' : ''
-          }`}
-          onClick={() => setStatusFilter('confirmed')}
-        >
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">Confirmed</p>
-            <p className="text-2xl font-bold text-green-600">{stats.confirmed}</p>
-          </CardContent>
-        </Card>
-        <Card
-          className={`cursor-pointer transition-all ${
-            statusFilter === 'completed' ? 'ring-2 ring-primary' : ''
-          }`}
-          onClick={() => setStatusFilter('completed')}
-        >
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">Completed</p>
-            <p className="text-2xl font-bold">{stats.completed}</p>
-          </CardContent>
-        </Card>
-        <Card
-          className={`cursor-pointer transition-all ${
-            statusFilter === 'all' ? 'ring-2 ring-primary' : ''
-          }`}
-          onClick={() => setStatusFilter('all')}
-        >
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground">Total</p>
-            <p className="text-2xl font-bold">{stats.total}</p>
-          </CardContent>
-        </Card>
-      </div>
+      <Tabs defaultValue="bookings" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto md:mx-0">
+          <TabsTrigger value="bookings" className="flex items-center gap-2">
+            <Headphones className="h-4 w-4" />
+            Bookings
+          </TabsTrigger>
+          <TabsTrigger value="availability" className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            Availability
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Bookings Table */}
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Member</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Topic</TableHead>
-                <TableHead>Requested Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredBookings.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
-                    <Headphones className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">No bookings found</p>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredBookings.map((booking) => {
-                  const statusConfig = STATUS_CONFIG[booking.status] || STATUS_CONFIG.pending;
-                  const Icon = statusConfig.icon;
+        <TabsContent value="bookings" className="space-y-8">
+          {/* Stats */}
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+            <Card
+              className={`cursor-pointer transition-all hover:border-primary/50 ${statusFilter === 'pending' ? 'ring-2 ring-primary border-primary' : ''
+                }`}
+              onClick={() => setStatusFilter('pending')}
+            >
+              <CardContent className="p-4">
+                <p className="text-sm text-muted-foreground">Pending</p>
+                <p className="text-2xl font-bold text-amber-600">{stats.pending}</p>
+              </CardContent>
+            </Card>
+            <Card
+              className={`cursor-pointer transition-all hover:border-primary/50 ${statusFilter === 'confirmed' ? 'ring-2 ring-primary border-primary' : ''
+                }`}
+              onClick={() => setStatusFilter('confirmed')}
+            >
+              <CardContent className="p-4">
+                <p className="text-sm text-muted-foreground">Confirmed</p>
+                <p className="text-2xl font-bold text-green-600">{stats.confirmed}</p>
+              </CardContent>
+            </Card>
+            <Card
+              className={`cursor-pointer transition-all hover:border-primary/50 ${statusFilter === 'completed' ? 'ring-2 ring-primary border-primary' : ''
+                }`}
+              onClick={() => setStatusFilter('completed')}
+            >
+              <CardContent className="p-4">
+                <p className="text-sm text-muted-foreground">Completed</p>
+                <p className="text-2xl font-bold">{stats.completed}</p>
+              </CardContent>
+            </Card>
+            <Card
+              className={`cursor-pointer transition-all hover:border-primary/50 ${statusFilter === 'all' ? 'ring-2 ring-primary border-primary' : ''
+                }`}
+              onClick={() => setStatusFilter('all')}
+            >
+              <CardContent className="p-4">
+                <p className="text-sm text-muted-foreground">Total</p>
+                <p className="text-2xl font-bold">{stats.total}</p>
+              </CardContent>
+            </Card>
+          </div>
 
-                  return (
-                    <TableRow key={booking.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                            <User className="h-4 w-4 text-muted-foreground" />
-                          </div>
-                          <div>
-                            <p className="font-medium">
-                              {booking.profile?.first_name || 'Unknown'}{' '}
-                              {booking.profile?.last_name?.[0]}.
-                            </p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">
-                          {BOOKING_TYPES[booking.booking_type] || booking.booking_type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{TOPICS[booking.topic] || booking.topic}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1 text-sm">
-                          <Calendar className="h-3 w-3" />
-                          {format(new Date(booking.preferred_date), 'dd MMM yyyy')} at{' '}
-                          {booking.preferred_time}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={statusConfig.color}>
-                          <Icon className="h-3 w-3 mr-1" />
-                          {statusConfig.label}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedBooking(booking);
-                            setAdminNotes(booking.admin_notes || '');
-                          }}
-                        >
-                          Manage
-                        </Button>
-                      </TableCell>
+          {/* Bookings Table */}
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Member</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Topic</TableHead>
+                      <TableHead>Requested Date</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredBookings.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-12">
+                          <Headphones className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-20" />
+                          <p className="text-muted-foreground">No bookings found</p>
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      filteredBookings.map((booking) => {
+                        const statusConfig = STATUS_CONFIG[booking.status] || STATUS_CONFIG.pending;
+                        const Icon = statusConfig.icon;
+
+                        return (
+                          <TableRow key={booking.id}>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+                                  <User className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                                <div>
+                                  <p className="font-medium">
+                                    {booking.profile?.first_name || 'Unknown'}{' '}
+                                    {booking.profile?.last_name?.[0]}.
+                                  </p>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary">
+                                {BOOKING_TYPES[booking.booking_type] || booking.booking_type}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{TOPICS[booking.topic] || booking.topic}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1 text-sm">
+                                <Calendar className="h-3 w-3" />
+                                {format(new Date(booking.preferred_date), 'dd MMM yyyy')} at{' '}
+                                {booking.preferred_time}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge className={statusConfig.color}>
+                                <Icon className="h-3 w-3 mr-1" />
+                                {statusConfig.label}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedBooking(booking);
+                                  setAdminNotes(booking.admin_notes || '');
+                                }}
+                              >
+                                Manage
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="availability">
+          <ConciergeAvailabilityManager />
+        </TabsContent>
+      </Tabs>
 
       {/* Booking Detail Dialog */}
       <Dialog open={!!selectedBooking} onOpenChange={() => setSelectedBooking(null)}>

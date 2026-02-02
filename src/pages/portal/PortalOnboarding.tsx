@@ -20,31 +20,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { COUNTRIES, getRegionsForCountry } from '@/lib/location-data';
 import { validateBio } from '@/lib/text-validation';
 
-const INTERESTS = [
-  'Arts & Culture', 'Fine Dining & Wine', 'Travel & Adventure', 'Entrepreneurship',
-  'Wellness & Mindfulness', 'Music & Nightlife', 'Philanthropy', 'Fashion & Design',
-  'Technology & Innovation', 'Sports & Fitness', 'Photography', 'Reading & Literature'
-];
-
-const INDUSTRIES = [
-  'Technology', 'Finance', 'Healthcare', 'Real Estate', 'Media & Entertainment',
-  'Consulting', 'Legal', 'Education', 'Hospitality', 'Retail',
-  'Manufacturing', 'Non-Profit', 'Government', 'Other'
-];
-
-const COMMUNITY_GOALS = [
-  { id: 'networking', label: 'Professional Networking' },
-  { id: 'business', label: 'Business Growth & Partnerships' },
-  { id: 'social', label: 'Social Connections & Friendships' },
-  { id: 'learning', label: 'Learning & Personal Development' },
-  { id: 'events', label: 'Access to Exclusive Events' },
-  { id: 'dating', label: 'Dating & Romance' },
-];
-
-const TARGET_INDUSTRIES = [
-  'Technology', 'Finance', 'Healthcare', 'Real Estate', 'Media',
-  'Consulting', 'Legal', 'Education', 'Hospitality', 'Creative Arts'
-];
+import { BasicInfoStep } from '@/components/portal/onboarding/BasicInfoStep';
+import { ProfessionalStep } from '@/components/portal/onboarding/ProfessionalStep';
+import { GoalsStep } from '@/components/portal/onboarding/GoalsStep';
+import { InterestsStep } from '@/components/portal/onboarding/InterestsStep';
+import { ReviewStep } from '@/components/portal/onboarding/ReviewStep';
+import { INDUSTRIES, COMMUNITY_GOALS, TARGET_INDUSTRIES, INTERESTS } from '@/constants/onboarding';
 
 export default function PortalOnboarding() {
   const navigate = useNavigate();
@@ -60,7 +41,7 @@ export default function PortalOnboarding() {
   // Image cropper state
   const [cropperImage, setCropperImage] = useState<string | null>(null);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
-  
+
   // Bio validation state
   const [bioError, setBioError] = useState<string | null>(null);
 
@@ -114,12 +95,12 @@ export default function PortalOnboarding() {
       setCommunityGoals(profile.community_goals || []);
       setTargetIndustries(profile.target_industries || []);
       setCommunityOffering(profile.community_offering || '');
-      
+
       // Restore saved step (progress persistence)
       if (profile.onboarding_step && profile.onboarding_step > 1) {
         setStep(profile.onboarding_step);
       }
-      
+
       // If location is already set, mark as detected
       if (profile.country || profile.city) {
         setLocationDetected(true);
@@ -131,25 +112,25 @@ export default function PortalOnboarding() {
   useEffect(() => {
     const detectLocation = async () => {
       if (!user) return;
-      
+
       try {
         const { data, error } = await supabase.functions.invoke('detect-location');
-        
+
         console.log('Location detection result:', data);
-        
+
         if (error) {
           console.error('Location detection error:', error);
           setIsDetectingLocation(false);
           return;
         }
-        
+
         // Check for VPN/proxy
         if (data?.isVpn) {
           setShowVpnModal(true);
           setIsDetectingLocation(false);
           return;
         }
-        
+
         // Only auto-fill if user hasn't already set values
         if (!locationDetected && data?.success) {
           if (data.country && !country) {
@@ -170,7 +151,7 @@ export default function PortalOnboarding() {
         setIsDetectingLocation(false);
       }
     };
-    
+
     if (user && !locationDetected) {
       detectLocation();
     } else {
@@ -402,7 +383,7 @@ export default function PortalOnboarding() {
 
     const file = e.target.files[0];
     e.target.value = ''; // Reset input so same file can be selected again
-    
+
     if (file.size > 5 * 1024 * 1024) {
       toast.error('Image must be less than 5MB');
       return;
@@ -416,7 +397,7 @@ export default function PortalOnboarding() {
 
   const handleCropComplete = async (croppedBlob: Blob) => {
     if (!user) return;
-    
+
     setIsUploading(true);
     setCropperImage(null);
 
@@ -456,7 +437,7 @@ export default function PortalOnboarding() {
 
   const handleCropSkip = async () => {
     if (!pendingFile || !user) return;
-    
+
     setIsUploading(true);
     setCropperImage(null);
 
@@ -521,394 +502,87 @@ export default function PortalOnboarding() {
     switch (step) {
       case 1:
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
-                <User className="h-8 w-8 text-primary" />
-              </div>
-              <h1 className="font-display text-3xl text-white mb-2">Welcome! Let's get started</h1>
-              <p className="text-white/60">Tell us a bit about yourself</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="firstName" className="text-white">First Name *</Label>
-                <Input
-                  id="firstName"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="bg-white/10 border-white/20 text-white"
-                  placeholder="John"
-                />
-              </div>
-              <div>
-                <Label htmlFor="lastName" className="text-white">Last Name *</Label>
-                <Input
-                  id="lastName"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="bg-white/10 border-white/20 text-white"
-                  placeholder="Doe"
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-white mb-2 block">Profile Photo</Label>
-              <div className="flex gap-4 items-center">
-                {photos.map((photo, i) => (
-                  <div key={i} className="relative">
-                    <img src={photo} alt="Profile" className="w-20 h-20 rounded-full object-cover border-2 border-primary" />
-                    <button
-                      type="button"
-                      onClick={() => removePhoto(i)}
-                      className="absolute -top-1 -right-1 w-5 h-5 bg-destructive rounded-full flex items-center justify-center text-white text-xs"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-                {photos.length < 3 && (
-                  <label className="w-20 h-20 rounded-full bg-white/10 border-2 border-dashed border-white/30 flex flex-col items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
-                    {isUploading ? (
-                      <Loader2 className="h-6 w-6 text-white animate-spin" />
-                    ) : (
-                      <>
-                        <Camera className="h-6 w-6 text-white/60" />
-                        <span className="text-xs text-white/60 mt-1">Add</span>
-                      </>
-                    )}
-                    <input
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp"
-                      onChange={handlePhotoSelect}
-                      className="hidden"
-                      disabled={isUploading}
-                    />
-                  </label>
-                )}
-              </div>
-              <p className="text-white/40 text-xs mt-2">Add up to 3 photos (optional but recommended)</p>
-            </div>
-
-            {isDetectingLocation ? (
-              <div className="flex items-center gap-2 text-white/60 text-sm py-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Detecting your location...</span>
-              </div>
-            ) : (
-              <>
-                {locationDetected && (country || city) && (
-                  <div className="flex items-center gap-2 text-primary text-sm mb-2">
-                    <MapPin className="h-4 w-4" />
-                    <span>Location detected - you can adjust if needed</span>
-                  </div>
-                )}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-white">Country</Label>
-                    <LocationCombobox
-                      value={country}
-                      onValueChange={(val) => {
-                        setCountry(val);
-                        setState('');
-                        setCity('');
-                      }}
-                      options={countries}
-                      placeholder="Select country"
-                      searchPlaceholder="Search countries..."
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-white">State/Province</Label>
-                    <LocationCombobox
-                      value={state}
-                      onValueChange={setState}
-                      options={states}
-                      placeholder="Select state"
-                      searchPlaceholder="Search states..."
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="text-white">City *</Label>
-                  <CityAutocomplete
-                    value={city}
-                    onValueChange={setCity}
-                    country={country}
-                    state={state}
-                  />
-                </div>
-              </>
-            )}
-          </div>
+          <BasicInfoStep
+            firstName={firstName}
+            setFirstName={setFirstName}
+            lastName={lastName}
+            setLastName={setLastName}
+            photos={photos}
+            isUploading={isUploading}
+            handlePhotoSelect={handlePhotoSelect}
+            removePhoto={removePhoto}
+            isDetectingLocation={isDetectingLocation}
+            locationDetected={locationDetected}
+            country={country}
+            setCountry={setCountry}
+            state={state}
+            setState={setState}
+            city={city}
+            setCity={setCity}
+            countries={countries}
+            states={states}
+          />
         );
 
       case 2:
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
-                <Briefcase className="h-8 w-8 text-primary" />
-              </div>
-              <h1 className="font-display text-3xl text-white mb-2">Professional Background</h1>
-              <p className="text-white/60">Help others understand what you do</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="jobTitle" className="text-white">Job Title *</Label>
-                <Input
-                  id="jobTitle"
-                  value={jobTitle}
-                  onChange={(e) => setJobTitle(e.target.value)}
-                  className="bg-white/10 border-white/20 text-white"
-                  placeholder="Senior Product Manager"
-                />
-              </div>
-              <div>
-                <Label htmlFor="company" className="text-white">Company/Organization *</Label>
-                <Input
-                  id="company"
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  className="bg-white/10 border-white/20 text-white"
-                  placeholder="Acme Inc."
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-white">Industry *</Label>
-              <Select value={industry} onValueChange={setIndustry}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                  <SelectValue placeholder="Select your industry" />
-                </SelectTrigger>
-                <SelectContent>
-                  {INDUSTRIES.map((ind) => (
-                    <SelectItem key={ind} value={ind}>{ind}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {industry === 'Other' && (
-                <Input
-                  value={customIndustry}
-                  onChange={(e) => setCustomIndustry(e.target.value)}
-                  className="mt-2 bg-white/10 border-white/20 text-white"
-                  placeholder="Please specify your industry"
-                />
-              )}
-            </div>
-
-            <div>
-              <Label htmlFor="linkedin" className="text-white">LinkedIn URL (optional)</Label>
-              <Input
-                id="linkedin"
-                value={linkedinUrl}
-                onChange={(e) => setLinkedinUrl(e.target.value)}
-                className="bg-white/10 border-white/20 text-white"
-                placeholder="https://linkedin.com/in/yourprofile"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="bio" className="text-white">Bio * (minimum 50 characters)</Label>
-              <Textarea
-                id="bio"
-                value={bio}
-                onChange={(e) => {
-                  setBio(e.target.value);
-                  setBioError(null); // Clear error on change
-                }}
-                className={`bg-white/10 border-white/20 text-white min-h-[120px] ${bioError ? 'border-destructive' : ''}`}
-                placeholder="Tell us about yourself, your background, and what makes you unique..."
-              />
-              <p className="text-white/40 text-xs mt-1">{bio.length}/50 characters minimum</p>
-              {bioError && (
-                <p className="text-sm text-destructive mt-1">{bioError}</p>
-              )}
-            </div>
-          </div>
+          <ProfessionalStep
+            jobTitle={jobTitle}
+            setJobTitle={setJobTitle}
+            company={company}
+            setCompany={setCompany}
+            industry={industry}
+            setIndustry={setIndustry}
+            customIndustry={customIndustry}
+            setCustomIndustry={setCustomIndustry}
+            linkedinUrl={linkedinUrl}
+            setLinkedinUrl={setLinkedinUrl}
+            bio={bio}
+            setBio={setBio}
+            bioError={bioError}
+            setBioError={setBioError}
+          />
         );
 
       case 3:
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
-                <Heart className="h-8 w-8 text-primary" />
-              </div>
-              <h1 className="font-display text-3xl text-white mb-2">Community Goals</h1>
-              <p className="text-white/60">What are you looking to get out of the community?</p>
-            </div>
-
-            <div>
-              <Label className="text-white mb-3 block">Why are you joining? *</Label>
-              <div className="grid grid-cols-2 gap-3">
-                {COMMUNITY_GOALS.map((goal) => (
-                  <div
-                    key={goal.id}
-                    onClick={() => toggleGoal(goal.id)}
-                    className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                      communityGoals.includes(goal.id)
-                        ? 'bg-primary/20 border-primary text-white'
-                        : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      {communityGoals.includes(goal.id) && <Check className="h-4 w-4 text-primary" />}
-                      <span className="text-sm">{goal.label}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-white mb-3 block">Industries you want to connect with</Label>
-              <div className="flex flex-wrap gap-2">
-                {TARGET_INDUSTRIES.map((ind) => (
-                  <button
-                    key={ind}
-                    type="button"
-                    onClick={() => toggleTargetIndustry(ind)}
-                    className={`px-3 py-1.5 rounded-full text-sm transition-all ${
-                      targetIndustries.includes(ind)
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-white/10 text-white/70 hover:bg-white/20'
-                    }`}
-                  >
-                    {ind}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="offering" className="text-white">What can you offer the community? (optional)</Label>
-              <Textarea
-                id="offering"
-                value={communityOffering}
-                onChange={(e) => setCommunityOffering(e.target.value)}
-                className="bg-white/10 border-white/20 text-white min-h-[100px]"
-                placeholder="Share your expertise, mentorship opportunities, or unique value you can bring..."
-              />
-            </div>
-          </div>
+          <GoalsStep
+            communityGoals={communityGoals}
+            toggleGoal={toggleGoal}
+            targetIndustries={targetIndustries}
+            toggleTargetIndustry={toggleTargetIndustry}
+            communityOffering={communityOffering}
+            setCommunityOffering={setCommunityOffering}
+          />
         );
 
       case 4:
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
-                <Sparkles className="h-8 w-8 text-primary" />
-              </div>
-              <h1 className="font-display text-3xl text-white mb-2">Your Interests</h1>
-              <p className="text-white/60">Select at least 3 interests to help us match you with like-minded members</p>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {INTERESTS.map((interest) => (
-                <button
-                  key={interest}
-                  type="button"
-                  onClick={() => toggleInterest(interest)}
-                  className={`px-4 py-2 rounded-full transition-all ${
-                    interests.includes(interest)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-white/10 text-white/70 hover:bg-white/20'
-                  }`}
-                >
-                  {interest}
-                </button>
-              ))}
-            </div>
-            <p className="text-white/40 text-sm">{interests.length} selected (minimum 3)</p>
-
-            <div>
-              <Label htmlFor="dob" className="text-white">Date of Birth (21+ required)</Label>
-              <Input
-                id="dob"
-                type="date"
-                value={dateOfBirth}
-                onChange={(e) => setDateOfBirth(e.target.value)}
-                className="bg-white/10 border-white/20 text-white"
-                max={new Date(new Date().setFullYear(new Date().getFullYear() - 21)).toISOString().split('T')[0]}
-              />
-            </div>
-          </div>
+          <InterestsStep
+            interests={interests}
+            toggleInterest={toggleInterest}
+            dateOfBirth={dateOfBirth}
+            setDateOfBirth={setDateOfBirth}
+          />
         );
 
       case 5:
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
-                <Check className="h-8 w-8 text-primary" />
-              </div>
-              <h1 className="font-display text-3xl text-white mb-2">Almost Done!</h1>
-              <p className="text-white/60">Review your profile and submit your application</p>
-            </div>
-
-            <div className="bg-white/5 rounded-xl p-6 space-y-4">
-              <div className="flex items-center gap-4">
-                {photos[0] ? (
-                  <img src={photos[0]} alt="Profile" className="w-16 h-16 rounded-full object-cover border-2 border-primary" />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-                    <User className="h-8 w-8 text-primary" />
-                  </div>
-                )}
-                <div>
-                  <h3 className="text-white font-medium text-lg">{firstName} {lastName}</h3>
-                  <p className="text-white/60">{jobTitle} at {company}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-white/40">Location:</span>
-                  <p className="text-white">{city}{state ? `, ${state}` : ''}</p>
-                </div>
-                <div>
-                  <span className="text-white/40">Industry:</span>
-                  <p className="text-white">{industry === 'Other' ? customIndustry : industry}</p>
-                </div>
-              </div>
-
-              {bio && (
-                <div>
-                  <span className="text-white/40 text-sm">Bio:</span>
-                  <p className="text-white text-sm line-clamp-2">{bio}</p>
-                </div>
-              )}
-
-              {interests.length > 0 && (
-                <div>
-                  <span className="text-white/40 text-sm">Interests:</span>
-                  <p className="text-white text-sm">{interests.join(', ')}</p>
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-start gap-3 pt-4">
-              <Checkbox
-                id="terms"
-                checked={acceptedTerms}
-                onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-                className="mt-1 border-white/30"
-              />
-              <label htmlFor="terms" className="text-white/70 text-sm leading-relaxed cursor-pointer">
-                I agree to the{' '}
-                <a href="/terms" target="_blank" className="text-primary hover:underline">Terms of Service</a>
-                {' '}and{' '}
-                <a href="/privacy" target="_blank" className="text-primary hover:underline">Privacy Policy</a>.
-                I understand that my application will be reviewed by the membership committee.
-              </label>
-            </div>
-          </div>
+          <ReviewStep
+            firstName={firstName}
+            lastName={lastName}
+            jobTitle={jobTitle}
+            company={company}
+            industry={industry}
+            customIndustry={customIndustry}
+            city={city}
+            state={state}
+            bio={bio}
+            interests={interests}
+            photos={photos}
+            acceptedTerms={acceptedTerms}
+            setAcceptedTerms={setAcceptedTerms}
+          />
         );
 
       default:
@@ -919,7 +593,7 @@ export default function PortalOnboarding() {
   return (
     <>
       <VpnBlockedModal isOpen={showVpnModal} />
-      
+
       <PortalOnboardingLayout currentStep={step} totalSteps={totalSteps}>
         <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8">
           <AnimatePresence mode="wait">

@@ -21,6 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SEO } from '@/components/common/SEO';
+import { generateEventSchema, generateBreadcrumbSchema } from '@/lib/seo-schema';
 
 type SortOption = 'date-asc' | 'date-desc' | 'title-asc' | 'title-desc';
 type EventTab = 'upcoming' | 'past';
@@ -46,7 +48,7 @@ interface Event {
 }
 
 const EventSkeleton = () => (
-  <motion.div 
+  <motion.div
     className="flex flex-col gap-4 rounded-2xl bg-card overflow-hidden border border-border"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -89,7 +91,7 @@ const EventsPage = () => {
       // Use local date to avoid timezone issues (UTC can show wrong day)
       const now = new Date();
       const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-      
+
       let query = supabase
         .from('events')
         .select('*')
@@ -102,12 +104,12 @@ const EventsPage = () => {
       }
 
       const { data, error } = await query;
-      
+
       if (error) {
         console.error('Error fetching events:', error);
         throw error;
       }
-      
+
       return data as Event[];
     },
   });
@@ -157,7 +159,7 @@ const EventsPage = () => {
       setTimeout(() => setRsvpFeedback(null), 4000);
       return;
     }
-    
+
     // For internal events, require authentication
     if (!user) {
       setRsvpFeedback({
@@ -169,7 +171,7 @@ const EventsPage = () => {
       }, 1500);
       return;
     }
-    
+
     // Redirect to portal events for proper RSVP handling
     navigate('/portal/events');
   };
@@ -178,21 +180,21 @@ const EventsPage = () => {
     let result = events.filter(event => {
       // Get auto-categorized category based on title/description
       const autoCategory = categorizeEvent(event.title, event.description);
-      
+
       // Check if event matches selected category
-      const matchesCategory = activeCategory === "All" || 
+      const matchesCategory = activeCategory === "All" ||
         autoCategory === activeCategory ||
-        (event.tags && event.tags.some(tag => 
+        (event.tags && event.tags.some(tag =>
           tag.toLowerCase().includes(activeCategory.toLowerCase())
         ));
-      
+
       const query = searchQuery.toLowerCase().trim();
-      const matchesSearch = 
+      const matchesSearch =
         event.title.toLowerCase().includes(query) ||
         (event.description?.toLowerCase().includes(query)) ||
         (event.location?.toLowerCase().includes(query)) ||
         (event.city?.toLowerCase().includes(query));
-      
+
       return matchesCategory && matchesSearch;
     });
 
@@ -224,18 +226,36 @@ const EventsPage = () => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.4, ease: "easeOut" as const }
     },
   };
 
+  const upcomingEventsSchema = useMemo(() => {
+    return filteredAndSortedEvents
+      .slice(0, 3)
+      .map(event => generateEventSchema(event));
+  }, [filteredAndSortedEvents]);
+
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', item: '/' },
+    { name: 'Events', item: '/events' }
+  ]);
+
   return (
     <div className="flex-1 w-full flex flex-col items-center bg-background">
+      <SEO
+        title="Curated Social & Networking Events in NYC"
+        description="Discover exclusive gatherings for professionals. From intimate networking dinners to lively social mixers. Curated guest lists. Authentic connections."
+        keywords="NYC networking events, social mixers NYC, professional events, curated parties, business networking"
+        schema={[...upcomingEventsSchema, breadcrumbSchema]}
+      />
       {/* Header */}
       <div className="w-full max-w-[1440px] px-4 md:px-10 py-12 flex flex-col gap-8">
-        <motion.div 
+        <motion.div
           className="flex flex-col md:flex-row md:items-center justify-between gap-4"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -248,16 +268,16 @@ const EventsPage = () => {
               Curated gatherings for the discerning few.
             </p>
           </div>
-          
+
           <div className="flex items-center gap-2 bg-card p-1 rounded-xl border border-border self-start md:self-auto">
-            <button 
+            <button
               onClick={() => setViewMode('grid')}
               className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
               aria-label="Grid View"
             >
               <Grid className="h-5 w-5" />
             </button>
-            <button 
+            <button
               onClick={() => setViewMode('list')}
               className={`p-2.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
               aria-label="List View"
@@ -288,7 +308,7 @@ const EventsPage = () => {
         </motion.div>
 
         {/* Filters */}
-        <motion.div 
+        <motion.div
           className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-card p-5 rounded-2xl border border-border"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -297,9 +317,9 @@ const EventsPage = () => {
           {/* Search */}
           <div className="w-full lg:w-96 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search events, locations..." 
+            <input
+              type="text"
+              placeholder="Search events, locations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-12 pr-4 py-3 rounded-xl bg-background border border-border focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground placeholder:text-muted-foreground transition-all"
@@ -313,11 +333,10 @@ const EventsPage = () => {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
-                    activeCategory === cat 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-background border border-border text-muted-foreground hover:text-foreground hover:border-primary/30'
-                  }`}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${activeCategory === cat
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-background border border-border text-muted-foreground hover:text-foreground hover:border-primary/30'
+                    }`}
                 >
                   {cat}
                 </button>
@@ -349,7 +368,7 @@ const EventsPage = () => {
             {[1, 2, 3, 4, 5, 6].map(i => <EventSkeleton key={i} />)}
           </div>
         ) : filteredAndSortedEvents.length > 0 ? (
-          <motion.div 
+          <motion.div
             className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}
             variants={containerVariants}
             initial="hidden"
@@ -357,7 +376,7 @@ const EventsPage = () => {
           >
             <AnimatePresence>
               {filteredAndSortedEvents.map((event) => (
-                <motion.div 
+                <motion.div
                   key={event.id}
                   variants={itemVariants}
                   layout
@@ -367,8 +386,8 @@ const EventsPage = () => {
                   {/* Image */}
                   <div className={`relative overflow-hidden bg-muted ${viewMode === 'list' ? 'w-full md:w-1/3 aspect-video md:aspect-auto' : 'aspect-[4/3] w-full'}`}>
                     {event.image_url ? (
-                      <div 
-                        className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" 
+                      <div
+                        className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                         style={{ backgroundImage: `url("${event.image_url}")` }}
                         role="img"
                         aria-label={event.title}
@@ -426,11 +445,11 @@ const EventsPage = () => {
                         </span>
                       )}
                     </div>
-                    
+
                     <h3 className="text-foreground text-xl font-semibold font-display leading-tight mb-2 group-hover:text-primary transition-colors">
                       {event.title}
                     </h3>
-                    
+
                     {event.description && (
                       <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
                         {event.description}
@@ -458,7 +477,7 @@ const EventsPage = () => {
                           const cap = event.capacity;
                           const spotsLeft = cap ? cap - attending : null;
                           const isFull = cap !== null && attending >= cap;
-                          
+
                           if (isFull) {
                             return (
                               <span className="text-destructive font-medium">
@@ -484,7 +503,7 @@ const EventsPage = () => {
                     <div className="flex flex-wrap gap-2 md:gap-3 mt-auto border-t border-border pt-4">
                       {activeTab === 'upcoming' ? (
                         <>
-                          <AnimatedButton 
+                          <AnimatedButton
                             onClick={() => handleRSVP(event)}
                             variant={isExternalEvent(event) ? "outline" : "default"}
                             className={`flex-1 min-w-[100px] ${isExternalEvent(event) ? 'border-blue-500/50 text-blue-500 hover:bg-blue-500/10' : ''}`}
@@ -524,7 +543,7 @@ const EventsPage = () => {
             </AnimatePresence>
           </motion.div>
         ) : (
-          <motion.div 
+          <motion.div
             className="text-center py-20"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -534,8 +553,8 @@ const EventsPage = () => {
               No {activeTab} events found
             </h3>
             <p className="text-muted-foreground">
-              {activeTab === 'upcoming' 
-                ? 'Check back soon for new events' 
+              {activeTab === 'upcoming'
+                ? 'Check back soon for new events'
                 : 'No past events to show'}
             </p>
           </motion.div>

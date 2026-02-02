@@ -5,9 +5,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle, XCircle, Calendar, MapPin, Loader2, ArrowRight, PartyPopper } from 'lucide-react';
+import { CheckCircle, XCircle, Calendar, MapPin, Loader2, ArrowRight, PartyPopper, Users } from 'lucide-react';
 import { useConfetti } from '@/hooks/useConfetti';
 import { parseLocalDate } from '@/lib/date-utils';
+import { EventQuestList } from '@/components/events/EventQuestList';
+import { EventHeatmap } from '@/components/events/EventHeatmap';
+import { toast } from 'sonner';
 
 interface Event {
   id: string;
@@ -25,6 +28,9 @@ export default function PortalEventCheckin() {
   const { fireConfetti } = useConfetti();
   const [checkedIn, setCheckedIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedZone, setSelectedZone] = useState<string | null>(null);
+
+  const zones = ['Bar Area', 'Networking Lounge', 'Main Stage', 'Terrace', 'VIP Section'];
 
   // Fetch event details
   const { data: event, isLoading: eventLoading } = useQuery({
@@ -50,7 +56,7 @@ export default function PortalEventCheckin() {
       if (!user) return null;
       const { data } = await (supabase as any)
         .from('event_checkins')
-        .select('id, checked_in_at')
+        .select('id, checked_in_at, zone')
         .eq('event_id', eventId)
         .eq('user_id', user.id)
         .maybeSingle();
@@ -85,6 +91,10 @@ export default function PortalEventCheckin() {
     onSuccess: () => {
       setCheckedIn(true);
       fireConfetti();
+      // Generate AI Quests on check-in
+      supabase.functions.invoke('generate-event-quests', {
+        body: { eventId, userId: user?.id },
+      }).catch(err => console.error('Quest generation failed:', err));
     },
     onError: (err: Error) => {
       setError(err.message);
@@ -98,10 +108,30 @@ export default function PortalEventCheckin() {
     }
   }, [user, event, code, existingCheckin, checkedIn, error]);
 
+  // Update zone mutation
+  const updateZoneMutation = useMutation({
+    mutationFn: async (zone: string) => {
+      if (!user || !eventId) return;
+      const { error } = await (supabase as any)
+        .from('event_checkins')
+        .update({ zone })
+        .eq('event_id', eventId)
+        .eq('user_id', user.id);
+      if (error) throw error;
+      setSelectedZone(zone);
+    },
+    onSuccess: () => {
+      toast.success('Zone updated! 📍');
+    }
+  });
+
   // Handle already checked in
   useEffect(() => {
     if (existingCheckin) {
       setCheckedIn(true);
+      if (existingCheckin.zone) {
+        setSelectedZone(existingCheckin.zone);
+      }
     }
   }, [existingCheckin]);
 
@@ -213,28 +243,37 @@ export default function PortalEventCheckin() {
               : 'Welcome! Enjoy the event and connect with fellow members.'}
           </p>
 
-          <div className="bg-muted/50 rounded-lg p-4 mb-6 text-left">
-            <h3 className="font-medium text-foreground mb-3">{event.title}</h3>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                <span>
-                  {parseLocalDate(event.date).toLocaleDateString('en-GB', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                  })}
-                  {event.time && ` at ${event.time}`}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                <span>{event.venue_name || event.location}</span>
-              </div>
+          <div className="mb-8 p-4 rounded-xl bg-primary/5 border border-primary/10">
+            <h3 className="text-sm font-bold text-primary uppercase tracking-wider mb-3 flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              Where are you currently?
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {zones.map((zone) => (
+                <Button
+                  key={zone}
+                  variant={selectedZone === zone ? 'default' : 'outline'}
+                  size="sm"
+                  className="rounded-full text-[11px] h-8"
+                  onClick={() => updateZoneMutation.mutate(zone)}
+                  disabled={updateZoneMutation.isPending}
+                >
+                  {zone}
+                </Button>
+              ))}
             </div>
+            <p className="text-[10px] text-muted-foreground mt-3 italic">
+              Updating your zone helps the "Social Heatmap" guide members to synergy hotspots! 🔥
+            </p>
           </div>
 
-          <div className="flex flex-col gap-3">
+          <EventHeatmap eventId={eventId!} />
+
+          <div className="mt-8">
+            <EventQuestList eventId={eventId!} userId={user.id} />
+          </div>
+
+          <div className="flex flex-col gap-3 mt-6">
             <Button asChild className="w-full">
               <Link to="/portal">
                 Go to Dashboard
