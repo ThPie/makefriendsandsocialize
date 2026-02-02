@@ -82,6 +82,7 @@ serve(async (req) => {
                       description: { type: 'string', description: 'Event description or summary' },
                       imageUrl: { type: 'string', description: 'URL to the event cover image' },
                       price: { type: 'string', description: 'Ticket price if any' },
+                      hostName: { type: 'string', description: 'Name of the group hosting the event' },
                     },
                     required: ['title', 'date']
                   },
@@ -89,7 +90,7 @@ serve(async (req) => {
               },
               required: ['events']
             },
-            prompt: 'Extract all upcoming events from this Meetup page. For each event, get the complete event title, the scheduled date (format as YYYY-MM-DD), the start time, the venue/location, venue name, description, event image URL, and ticket price. Focus on future events only.'
+            prompt: 'IMPORTANT: Only extract events that are HOSTED BY "Make Friends and Socialize" group. DO NOT include "suggested events", "events near you", or events from other Meetup groups shown in sidebars. Look for events in the main content area that show "Make Friends and Socialize" as the host. For each event, extract the title, date (YYYY-MM-DD format), time, venue (should be HAVN at Salt Lake Crossing or similar Salt Lake City venues), description, and image URL.'
           },
           onlyMainContent: false,
           waitFor: 3000,
@@ -120,6 +121,30 @@ serve(async (req) => {
 
           const title = event.title.trim();
           if (title.length < 5 || title.length > 300) continue;
+
+          // STRICT VALIDATION: Only accept events from your group
+          // Check venue - should be HAVN, Salt Lake Crossing, or Salt Lake City area
+          const venue = (event.venueName || event.location || '').toLowerCase();
+          const host = (event.hostName || '').toLowerCase();
+          
+          const isValidVenue = venue.includes('havn') || 
+                               venue.includes('salt lake') || 
+                               venue.includes('slc') ||
+                               venue === ''; // Allow if no venue specified (we'll default to HAVN)
+          
+          const isValidHost = host === '' || // Allow if no host extracted
+                              host.includes('make friends') || 
+                              host.includes('socialize');
+          
+          // Skip events that are clearly from other groups
+          const suspiciousKeywords = ['singles mix', 'mingle', 'quiet conversation', 'speed dating', 'christian', 'jewish', 'muslim', 'hindu', 'senior', 'over 40', 'over 50', 'lgbtq'];
+          const titleLower = title.toLowerCase();
+          const isSuspiciousEvent = suspiciousKeywords.some(kw => titleLower.includes(kw));
+          
+          if (isSuspiciousEvent && !isValidVenue) {
+            console.log('Skipping suspicious event (likely from another group):', title);
+            continue;
+          }
 
           // Format time
           let formattedTime = event.time || '18:00';

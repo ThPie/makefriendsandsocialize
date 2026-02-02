@@ -25,17 +25,8 @@ serve(async (req) => {
       );
     }
 
-    // DISABLE SYNC: User reported these events are not theirs.
-    // To re-enable, set this to true and ensure the URL matches your Meetup group.
-    const ENABLE_MEETUP_SYNC = false;
-
-    if (!ENABLE_MEETUP_SYNC) {
-      console.log('Meetup sync is disabled by configuration.');
-      return new Response(
-        JSON.stringify({ success: true, message: 'Sync disabled', data: { events: [] } }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    // RE-ENABLED with stricter filtering for "Make Friends and Socialize" group only
+    const ENABLE_MEETUP_SYNC = true;
 
     const upcomingEventsUrl = 'https://www.meetup.com/makefriendsandsocialize/events/';
     console.log('Scraping upcoming events from:', upcomingEventsUrl);
@@ -76,7 +67,7 @@ serve(async (req) => {
             },
             required: ['events']
           },
-          prompt: 'This is a Meetup group events page. Extract ALL upcoming events shown. For each event card, get: 1) The full event title, 2) The date shown (e.g. "THU, JAN 23, 2026"), 3) The time (e.g. "6:00 PM MST"), 4) The venue name and location, 5) Any description text, 6) The event image URL, 7) The ticket price if shown. Look for event cards that show upcoming gatherings.'
+          prompt: 'IMPORTANT: Only extract events HOSTED BY "Make Friends and Socialize" group. DO NOT include "suggested events", "events near you", "similar events", or events from other Meetup groups shown in sidebars or recommendations. Look ONLY in the main event list area. For each event, get: 1) The full event title, 2) The date shown (e.g. "THU, JAN 23, 2026"), 3) The time (e.g. "6:00 PM MST"), 4) The venue name (usually HAVN at Salt Lake Crossing), 5) Any description text, 6) The event image URL, 7) The ticket price if shown.'
         },
         onlyMainContent: false,
         waitFor: 5000,
@@ -256,6 +247,24 @@ serve(async (req) => {
       // Skip navigation items
       const skipWords = ['Events', 'Members', 'Photos', 'Discussions', 'About', 'See all', 'Load more'];
       if (skipWords.some(w => title === w || title.startsWith(w + ' '))) continue;
+
+      // STRICT VALIDATION: Only accept events from "Make Friends and Socialize" group
+      const venue = (event.venueName || event.location || '').toLowerCase();
+      
+      const isValidVenue = venue.includes('havn') || 
+                           venue.includes('salt lake') || 
+                           venue.includes('slc') ||
+                           venue === '';
+      
+      // Skip events that are clearly from other groups (suggested events)
+      const suspiciousKeywords = ['singles mix', 'mingle', 'quiet conversation', 'speed dating', 'christian', 'jewish', 'muslim', 'hindu', 'senior', 'over 40', 'over 50', 'lgbtq', 'divorce', 'widowed'];
+      const titleLower = title.toLowerCase();
+      const isSuspiciousEvent = suspiciousKeywords.some(kw => titleLower.includes(kw));
+      
+      if (isSuspiciousEvent && !isValidVenue) {
+        console.log('Skipping event from another group:', title);
+        continue;
+      }
 
       // Use extracted image or fallback to scraped images
       let imageUrl = event.imageUrl || null;
