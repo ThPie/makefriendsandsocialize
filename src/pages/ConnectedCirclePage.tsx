@@ -13,15 +13,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import heroImage from "@/assets/founders/founders-event-1.webp";
-import foundersEvent2 from "@/assets/founders/founders-event-2.webp";
-import foundersEvent3 from "@/assets/founders/founders-event-3.webp";
-
 // Gallery images for the Founders Circle
 const galleryImages = [
-  { src: heroImage, alt: "Founder presenting to a group of entrepreneurs" },
-  { src: foundersEvent2, alt: "Founders networking in an intimate setting" },
-  { src: foundersEvent3, alt: "One-on-one conversation between founders" },
+  { src: "/images/founders/founder-gathering.jpg", alt: "Founder presenting to a group of entrepreneurs" },
+  { src: "/images/founders/founder-duo.jpg", alt: "Founders networking in an intimate setting" },
+  { src: "/images/founders/founder-chat.jpg", alt: "One-on-one conversation between founders" },
 ];
 
 const ConnectedCirclePage = () => {
@@ -153,16 +149,16 @@ const ConnectedCirclePage = () => {
         <section className="relative min-h-[90vh] flex items-center overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
-            <img 
-              src={heroImage} 
-              alt="Professional business networking" 
+            <img
+              src="/images/founders/founder-group-hero.jpg"
+              alt="Professional business networking"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-background/90" />
           </div>
-          
-          <div 
-            ref={heroAnimation.ref} 
+
+          <div
+            ref={heroAnimation.ref}
             className={`container max-w-6xl relative z-10 py-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="max-w-2xl">
@@ -183,8 +179,8 @@ const ConnectedCirclePage = () => {
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="text-white/80 text-lg md:text-xl max-w-xl mb-10 leading-relaxed"
               >
-                Where visionary founders connect and thrive. An exclusive directory of verified 
-                member-founded companies, creating opportunities for meaningful professional 
+                Where visionary founders connect and thrive. An exclusive directory of verified
+                member-founded companies, creating opportunities for meaningful professional
                 connections and strategic collaborations.
               </motion.p>
 
@@ -236,8 +232,8 @@ const ConnectedCirclePage = () => {
 
         {/* Benefits Section */}
         <section className="py-24 md:py-32" id="how-it-works">
-          <div 
-            ref={benefitsAnimation.ref} 
+          <div
+            ref={benefitsAnimation.ref}
             className={`container max-w-6xl scroll-animate ${benefitsAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -246,7 +242,7 @@ const ConnectedCirclePage = () => {
                 Elevate Your Business
               </h2>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                The Founders Circle isn't just a directory—it's a gateway to 
+                The Founders Circle isn't just a directory—it's a gateway to
                 meaningful founder-to-founder relationships built on trust, innovation, and mutual respect.
               </p>
             </div>
@@ -276,8 +272,8 @@ const ConnectedCirclePage = () => {
 
         {/* How It Works Section */}
         <section className="py-24 md:py-32 bg-secondary/30">
-          <div 
-            ref={processAnimation.ref} 
+          <div
+            ref={processAnimation.ref}
             className={`container max-w-5xl scroll-animate ${processAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -342,8 +338,8 @@ const ConnectedCirclePage = () => {
 
         {/* Gallery Section */}
         <section className="py-24 md:py-32">
-          <div 
-            ref={galleryAnimation.ref} 
+          <div
+            ref={galleryAnimation.ref}
             className={`container max-w-6xl scroll-animate ${galleryAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -383,8 +379,8 @@ const ConnectedCirclePage = () => {
 
         {/* FAQ Section */}
         <section className="py-24 md:py-32 bg-secondary/30">
-          <div 
-            ref={faqAnimation.ref} 
+          <div
+            ref={faqAnimation.ref}
             className={`container max-w-4xl scroll-animate ${faqAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -396,8 +392,8 @@ const ConnectedCirclePage = () => {
 
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, index) => (
-                <AccordionItem 
-                  key={index} 
+                <AccordionItem
+                  key={index}
                   value={`item-${index}`}
                   className="bg-card border border-border/50 rounded-2xl px-6 data-[state=open]:border-primary/30"
                 >
@@ -420,8 +416,8 @@ const ConnectedCirclePage = () => {
 
         {/* CTA Section */}
         <section className="py-24 md:py-32 bg-secondary/30">
-          <div 
-            ref={ctaAnimation.ref} 
+          <div
+            ref={ctaAnimation.ref}
             className={`container max-w-4xl text-center scroll-animate ${ctaAnimation.isVisible ? 'visible' : ''}`}
           >
             <motion.div
@@ -433,13 +429,13 @@ const ConnectedCirclePage = () => {
                 <Building2 className="h-4 w-4 text-primary" />
                 <span className="text-sm font-medium text-foreground">Join The Founders</span>
               </div>
-              
+
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
                 Ready to Connect with Fellow Founders?
               </h2>
-              
+
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
-                Join The Founders Circle today and gain access to a curated community 
+                Join The Founders Circle today and gain access to a curated community
                 of entrepreneurs and founders who value strategic connections and collaborative growth.
               </p>
 
