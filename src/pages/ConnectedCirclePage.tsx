@@ -275,7 +275,7 @@ const ConnectedCirclePage = () => {
         </section>
 
         {/* How It Works Section */}
-        <section className="py-24 md:py-32 bg-secondary/30" id="how-it-works">
+        <section className="py-24 md:py-32 bg-secondary/30 scroll-mt-32" id="how-it-works">
           <div
             ref={processAnimation.ref}
             className={`container max-w-5xl scroll-animate ${processAnimation.isVisible ? 'visible' : ''}`}
