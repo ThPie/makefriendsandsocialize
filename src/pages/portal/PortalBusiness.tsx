@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Building2, Loader2, CheckCircle, Clock, XCircle, ExternalLink, Users, Link2, Copy } from "lucide-react";
+import { Building2, Loader2, CheckCircle, Clock, XCircle, ExternalLink, Users, Link2, Copy, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { BusinessVerificationStatus } from "@/components/business/BusinessVerificationStatus";
 import { Lead } from "@/components/business/LeadCard";
