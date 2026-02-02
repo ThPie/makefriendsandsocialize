@@ -229,9 +229,11 @@ serve(async (req) => {
       .gte("created_at", oneHourAgo);
 
     // Log rate limit call (even if table doesn't exist yet)
-    await supabase.from("match_api_calls").insert({ profile_id: profileId }).catch(() => {
+    try {
+      await supabase.from("match_api_calls").insert({ profile_id: profileId });
+    } catch {
       console.log("Rate limit table not created yet - skipping rate limit tracking");
-    });
+    }
 
     if (!rateLimitError && recentCalls && recentCalls.length >= RATE_LIMIT_MAX_REQUESTS) {
       console.log(`Rate limit exceeded for profile ${profileId}: ${recentCalls.length} calls in last hour`);
