@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import { AdaptiveVideo } from '@/components/ui/adaptive-video';
 import { EventCountdown } from './EventCountdown';
 import { useSiteStats } from '@/hooks/useSiteStats';
+import { ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 /**
  * Full-screen Hero with:
  * - Video background covering entire viewport (100dvh)
- * - Minimal, modern typography
- * - Larger member avatars + EventCountdown
+ * - Left-aligned modern layout
+ * - Larger member avatars + EventCountdown in bottom card
  */
 
 const videoQualitySources = [
@@ -58,58 +59,70 @@ export const Hero = () => {
           className="h-full w-full object-cover scale-[1.02]"
         />
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
       </div>
 
       {/* CONTENT */}
-      <div
-        className="relative flex min-h-[calc(100vh-81px)] w-full flex-col items-center justify-center px-6 py-20 text-center md:px-10"
-        role="img"
-        aria-label="An elegant evening social gathering with people mingling in a softly lit, luxurious room."
-      >
-        <div className="mx-auto flex max-w-[900px] flex-col items-center gap-8 animate-fade-in">
-          <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-lg">
-            A Private Social Club for <span className="text-gradient font-display italic">Authentic Connections</span>
-          </h1>
-          <p className="max-w-2xl text-lg font-normal leading-relaxed text-white/90 md:text-xl drop-shadow-md">
-            Weekly curated events. Vetted members. Genuine friendships.
+      <div className="relative z-10 flex flex-col justify-between min-h-screen min-h-[100dvh] px-6 md:px-12 lg:px-20 pt-[env(safe-area-inset-top)] pb-safe">
+        {/* TOP SECTION - Tagline & CTA (Left aligned) */}
+        <div className="flex flex-col justify-center flex-1 max-w-3xl pt-16 md:pt-20">
+          <p className="text-white/60 text-sm md:text-base font-medium mb-3 uppercase tracking-widest">
+            Join Make Friends & Socialize — Where Quality Meets Community
           </p>
 
-          <Button size="lg" asChild className="animate-fade-in mt-2" style={{ animationDelay: '0.15s' }}>
-            <Link to="/membership">Start Your Application</Link>
-          </Button>
+          <div className="mb-8">
+            <Button
+              variant="outline"
+              size="lg"
+              asChild
+              className="rounded-full bg-white text-black hover:bg-white/90 font-semibold px-6 text-base shadow-lg group"
+            >
+              <Link to="/membership">
+                Apply Now
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+          </div>
+        </div>
 
-          {/* Member Avatars - Larger Size */}
-          {avatars.length > 0 && (
-            <div className="flex items-center gap-4 mt-4 animate-fade-in" style={{ animationDelay: '0.25s' }}>
-              <div className="flex -space-x-4">
+        {/* BOTTOM SECTION - Headline + Countdown Card */}
+        <div className="pb-12 md:pb-16 lg:pb-20">
+          <div className="max-w-4xl mb-10">
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
+              Curated Events,<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">
+                Meaningful Connections
+              </span>
+            </h1>
+            <p className="text-white/70 text-base md:text-lg max-w-xl leading-relaxed">
+              A private social club for professionals seeking genuine friendships, intentional networking, and authentic dating experiences.
+            </p>
+          </div>
+
+          {/* COUNTDOWN CARD with Avatars */}
+          <div className="inline-flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-4">
+            {/* Event Countdown */}
+            <EventCountdown />
+
+            {/* Avatars - Larger Size */}
+            {avatars.length > 0 && (
+              <div className="flex -space-x-3 ml-0 sm:ml-4 border-t sm:border-t-0 sm:border-l border-white/20 pt-4 sm:pt-0 sm:pl-6">
                 {avatars.map((url, i) => (
                   <img
                     key={i}
                     src={url}
                     alt={`Member ${i + 1}`}
-                    className="w-14 h-14 rounded-full border-3 border-white/80 shadow-lg ring-2 ring-black/10 object-cover transition-transform hover:scale-110 hover:z-10"
+                    className="w-12 h-12 rounded-full border-2 border-white/50 object-cover shadow-lg transition-transform hover:scale-110 hover:z-10"
                     loading="lazy"
                   />
                 ))}
                 {displayCount > 5 && (
-                  <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold border-3 border-white/80 shadow-lg">
+                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold border-2 border-white/50 shadow-lg">
                     +{(displayCount - 5).toLocaleString()}
                   </div>
                 )}
               </div>
-              <div className="flex flex-col text-left">
-                <span className="text-lg font-bold text-white drop-shadow-md">
-                  {displayCount.toLocaleString()}+ Members
-                </span>
-                <span className="text-sm text-white/80 drop-shadow-sm">Join our community</span>
-              </div>
-            </div>
-          )}
-
-          {/* Event Countdown */}
-          <div className="mt-8">
-            <EventCountdown />
+            )}
           </div>
         </div>
       </div>
