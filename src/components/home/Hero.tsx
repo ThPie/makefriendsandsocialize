@@ -2,14 +2,14 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { AdaptiveVideo } from '@/components/ui/adaptive-video';
 import { useSiteStats } from '@/hooks/useSiteStats';
-import { ArrowRight, Share2 } from 'lucide-react';
+import { ArrowRight, Users, TrendingUp, Calendar, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 /**
  * Full-screen Hero with:
  * - Video background covering entire viewport (including mobile status bar area via safe-area-inset)
  * - Minimal, modern typography
- * - Integrated social proof (avatars + member count)
+ * - Integrated stats grid (Members, Joined, Events, Rating)
  */
 
 const videoQualitySources = [
@@ -44,7 +44,12 @@ export const Hero = () => {
     return () => clearInterval(timer);
   }, [stats?.memberCount]);
 
-  const avatars = stats?.avatarUrls?.slice(0, 4) || [];
+  const statsGrid = [
+    { icon: Users, value: displayCount > 0 ? `${displayCount}+` : '—', label: 'Active Members', color: 'text-primary' },
+    { icon: TrendingUp, value: stats?.joinedThisWeek?.toString() || '—', label: 'Joined This Week', color: 'text-emerald-400' },
+    { icon: Calendar, value: stats?.upcomingEventsCount?.toString() || '—', label: 'Upcoming Events', color: 'text-amber-400' },
+    { icon: Star, value: stats?.rating?.toFixed(1) || '4.9', label: 'Member Rating', color: 'text-yellow-400' },
+  ];
 
   return (
     <section className="relative w-full min-h-screen min-h-[100dvh] overflow-hidden">
@@ -88,43 +93,34 @@ export const Hero = () => {
           </div>
         </div>
 
-        {/* BOTTOM SECTION - Headline + Social Proof */}
-        <div className="pb-12 md:pb-16 lg:pb-20 max-w-4xl">
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
-            Curated Events,<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">
-              Meaningful Connections
-            </span>
-          </h1>
-          <p className="text-white/70 text-base md:text-lg max-w-xl leading-relaxed mb-8">
-            A private social club for professionals seeking genuine friendships, intentional networking, and authentic dating experiences.
-          </p>
+        {/* BOTTOM SECTION - Headline + Stats */}
+        <div className="pb-12 md:pb-16 lg:pb-20">
+          <div className="max-w-4xl mb-10">
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
+              Curated Events,<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">
+                Meaningful Connections
+              </span>
+            </h1>
+            <p className="text-white/70 text-base md:text-lg max-w-xl leading-relaxed">
+              A private social club for professionals seeking genuine friendships, intentional networking, and authentic dating experiences.
+            </p>
+          </div>
 
-          {/* SOCIAL PROOF CARD (Inspired by reference - "Refer a friends" style) */}
-          <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-5 py-3">
-            <div>
-              <p className="text-white font-semibold text-sm">Share with friends</p>
-              <p className="text-white/60 text-xs">Get 10% off when they join</p>
-            </div>
-            <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 gap-2 rounded-full px-4">
-              <Share2 className="h-4 w-4" />
-              Share Link
-            </Button>
-            <div className="flex -space-x-2 ml-2">
-              {avatars.map((url, i) => (
-                <img
-                  key={i}
-                  src={url}
-                  alt=""
-                  className="w-8 h-8 rounded-full border-2 border-white/30 object-cover"
-                  loading="lazy"
-                />
-              ))}
-              {displayCount > 4 && (
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold border-2 border-white/30">
-                  +{(displayCount - 4).toLocaleString()}
+          {/* STATS GRID - Dark Green Card like reference */}
+          <div className="bg-[#0a1f1a]/90 backdrop-blur-md border border-white/10 rounded-2xl p-6 md:p-8 max-w-2xl">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+              {statsGrid.map((stat, i) => (
+                <div key={i} className="flex flex-col items-center text-center">
+                  <stat.icon className={`h-6 w-6 ${stat.color} mb-2`} />
+                  <span className="text-2xl md:text-3xl font-bold text-white font-display">
+                    {stat.value}
+                  </span>
+                  <span className="text-xs md:text-sm text-white/60 mt-1">
+                    {stat.label}
+                  </span>
                 </div>
-              )}
+              ))}
             </div>
           </div>
         </div>
