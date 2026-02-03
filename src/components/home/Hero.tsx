@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
  * Full-screen Hero with:
  * - Video background covering entire viewport (100dvh)
  * - Left-aligned modern layout
- * - Compact bottom card with avatars + Apply Now button
+ * - Single Apply Now button in bottom card
  */
 
 const videoQualitySources = [
@@ -62,79 +62,61 @@ export const Hero = () => {
       </div>
 
       {/* CONTENT */}
-      <div className="relative z-10 flex flex-col justify-between min-h-screen min-h-[100dvh] px-6 md:px-12 lg:px-20 pt-[env(safe-area-inset-top)] pb-safe">
-        {/* TOP SECTION - Tagline & CTA (Left aligned) */}
-        <div className="flex flex-col justify-center flex-1 max-w-3xl pt-16 md:pt-20">
-          <p className="text-white/60 text-sm md:text-base font-medium mb-3 uppercase tracking-widest">
-            Join Make Friends & Socialize — Where Quality Meets Community
+      <div className="relative z-10 flex flex-col justify-end min-h-screen min-h-[100dvh] px-6 md:px-12 lg:px-20 pt-[env(safe-area-inset-top)] pb-12 md:pb-16 lg:pb-20">
+        {/* HEADLINE SECTION */}
+        <div className="max-w-4xl mb-8">
+          {/* Tagline above title */}
+          <p className="text-white/60 text-sm md:text-base font-medium mb-4 uppercase tracking-widest">
+            Where Quality Meets Community
           </p>
 
-          <div className="mb-8">
-            <Button
-              variant="outline"
-              size="lg"
-              asChild
-              className="rounded-full bg-white text-black hover:bg-white/90 font-semibold px-6 text-base shadow-lg group"
-            >
-              <Link to="/membership">
-                Apply Now
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </div>
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
+            Curated Events,<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">
+              Meaningful Connections
+            </span>
+          </h1>
+          <p className="text-white/70 text-base md:text-lg max-w-xl leading-relaxed">
+            A private social club for professionals seeking genuine friendships, intentional networking, and authentic dating experiences.
+          </p>
         </div>
 
-        {/* BOTTOM SECTION - Headline + Compact Card */}
-        <div className="pb-12 md:pb-16 lg:pb-20">
-          <div className="max-w-4xl mb-8">
-            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
-              Curated Events,<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">
-                Meaningful Connections
-              </span>
-            </h1>
-            <p className="text-white/70 text-base md:text-lg max-w-xl leading-relaxed">
-              A private social club for professionals seeking genuine friendships, intentional networking, and authentic dating experiences.
-            </p>
+        {/* COMPACT CARD - Avatars + Join Text + Apply Button */}
+        <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 w-fit">
+          {/* Avatars */}
+          <div className="flex -space-x-2">
+            {avatars.map((url, i) => (
+              <img
+                key={i}
+                src={url}
+                alt=""
+                className="w-10 h-10 rounded-full border-2 border-white/50 object-cover"
+                loading="lazy"
+              />
+            ))}
+            {displayCount > 4 && (
+              <div className="w-10 h-10 rounded-full bg-primary/80 flex items-center justify-center text-primary-foreground text-xs font-bold border-2 border-white/50">
+                +{(displayCount - 4).toLocaleString()}
+              </div>
+            )}
           </div>
 
-          {/* COMPACT CARD - Avatars + Join Text + Apply Button */}
-          <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2">
-            {/* Avatars */}
-            <div className="flex -space-x-2">
-              {avatars.map((url, i) => (
-                <img
-                  key={i}
-                  src={url}
-                  alt=""
-                  className="w-10 h-10 rounded-full border-2 border-white/50 object-cover"
-                  loading="lazy"
-                />
-              ))}
-              {displayCount > 4 && (
-                <div className="w-10 h-10 rounded-full bg-primary/80 flex items-center justify-center text-primary-foreground text-xs font-bold border-2 border-white/50">
-                  +{(displayCount - 4).toLocaleString()}
-                </div>
-              )}
-            </div>
+          {/* Join Text */}
+          <span className="text-white text-sm font-medium">
+            Join {displayCount > 0 ? displayCount.toLocaleString() : '—'}+ members
+          </span>
 
-            {/* Join Text */}
-            <span className="text-white text-sm font-medium">
-              Join {displayCount > 0 ? displayCount.toLocaleString() : '—'}+ members
-            </span>
-
-            {/* Apply Button */}
-            <Button
-              size="sm"
-              asChild
-              className="rounded-full bg-white text-black hover:bg-white/90 font-semibold px-4"
-            >
-              <Link to="/membership">
-                Apply Now
-                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          </div>
+          {/* Apply Button */}
+          <Button
+            size="sm"
+            asChild
+            className="rounded-full bg-white text-black hover:bg-white/90 font-semibold px-4"
+          >
+            <Link to="/membership">
+              Apply Now
+              <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
