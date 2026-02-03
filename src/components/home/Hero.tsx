@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { AdaptiveVideo } from '@/components/ui/adaptive-video';
-import { EventCountdown } from './EventCountdown';
 import { useSiteStats } from '@/hooks/useSiteStats';
 import { ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -10,7 +9,7 @@ import { useEffect, useState } from 'react';
  * Full-screen Hero with:
  * - Video background covering entire viewport (100dvh)
  * - Left-aligned modern layout
- * - Larger member avatars + EventCountdown in bottom card
+ * - Compact bottom card with avatars + Apply Now button
  */
 
 const videoQualitySources = [
@@ -45,7 +44,7 @@ export const Hero = () => {
     return () => clearInterval(timer);
   }, [stats?.memberCount]);
 
-  const avatars = stats?.avatarUrls?.slice(0, 5) || [];
+  const avatars = stats?.avatarUrls?.slice(0, 4) || [];
 
   return (
     <section className="relative w-full min-h-screen min-h-[100dvh] overflow-hidden">
@@ -85,9 +84,9 @@ export const Hero = () => {
           </div>
         </div>
 
-        {/* BOTTOM SECTION - Headline + Countdown Card */}
+        {/* BOTTOM SECTION - Headline + Compact Card */}
         <div className="pb-12 md:pb-16 lg:pb-20">
-          <div className="max-w-4xl mb-10">
+          <div className="max-w-4xl mb-8">
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
               Curated Events,<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">
@@ -99,30 +98,42 @@ export const Hero = () => {
             </p>
           </div>
 
-          {/* COUNTDOWN CARD with Avatars */}
-          <div className="inline-flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-6 py-4">
-            {/* Event Countdown */}
-            <EventCountdown />
+          {/* COMPACT CARD - Avatars + Join Text + Apply Button */}
+          <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2">
+            {/* Avatars */}
+            <div className="flex -space-x-2">
+              {avatars.map((url, i) => (
+                <img
+                  key={i}
+                  src={url}
+                  alt=""
+                  className="w-10 h-10 rounded-full border-2 border-white/50 object-cover"
+                  loading="lazy"
+                />
+              ))}
+              {displayCount > 4 && (
+                <div className="w-10 h-10 rounded-full bg-primary/80 flex items-center justify-center text-primary-foreground text-xs font-bold border-2 border-white/50">
+                  +{(displayCount - 4).toLocaleString()}
+                </div>
+              )}
+            </div>
 
-            {/* Avatars - Larger Size */}
-            {avatars.length > 0 && (
-              <div className="flex -space-x-3 ml-0 sm:ml-4 border-t sm:border-t-0 sm:border-l border-white/20 pt-4 sm:pt-0 sm:pl-6">
-                {avatars.map((url, i) => (
-                  <img
-                    key={i}
-                    src={url}
-                    alt={`Member ${i + 1}`}
-                    className="w-12 h-12 rounded-full border-2 border-white/50 object-cover shadow-lg transition-transform hover:scale-110 hover:z-10"
-                    loading="lazy"
-                  />
-                ))}
-                {displayCount > 5 && (
-                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold border-2 border-white/50 shadow-lg">
-                    +{(displayCount - 5).toLocaleString()}
-                  </div>
-                )}
-              </div>
-            )}
+            {/* Join Text */}
+            <span className="text-white text-sm font-medium">
+              Join {displayCount > 0 ? displayCount.toLocaleString() : '—'}+ members
+            </span>
+
+            {/* Apply Button */}
+            <Button
+              size="sm"
+              asChild
+              className="rounded-full bg-white text-black hover:bg-white/90 font-semibold px-4"
+            >
+              <Link to="/membership">
+                Apply Now
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
