@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { CheckCircle2, Circle, Sparkles, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 interface Quest {
@@ -18,38 +15,21 @@ interface EventQuestListProps {
 }
 
 export const EventQuestList = ({ eventId, userId }: EventQuestListProps) => {
-    const queryClient = useQueryClient();
+    // Note: This component requires the 'event_checkin_quests' table to be created.
+    // For now, it uses sample data as a placeholder.
+    const [quests, setQuests] = useState<Quest[]>([
+        { id: '1', quest_text: 'Introduce yourself to 3 new people', is_completed: false },
+        { id: '2', quest_text: 'Exchange contact info with someone in a different industry', is_completed: false },
+        { id: '3', quest_text: 'Find someone who shares your favorite hobby', is_completed: false },
+    ]);
+    const [isLoading] = useState(false);
 
-    const { data: quests, isLoading } = useQuery({
-        queryKey: ['event-quests', eventId, userId],
-        queryFn: async () => {
-            const { data, error } = await (supabase as any)
-                .from('event_checkin_quests')
-                .select('*')
-                .eq('event_id', eventId)
-                .eq('user_id', userId)
-                .order('created_at', { ascending: true });
-
-            if (error) throw error;
-            return data as Quest[];
-        },
-        enabled: !!eventId && !!userId,
-    });
-
-    const completeMutation = useMutation({
-        mutationFn: async (questId: string) => {
-            const { error } = await supabase
-                .from('event_checkin_quests')
-                .update({ is_completed: true, completed_at: new Date().toISOString() })
-                .eq('id', questId);
-
-            if (error) throw error;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['event-quests', eventId, userId] });
-            toast.success('Mission accomplished! ✨');
-        },
-    });
+    const handleComplete = (questId: string) => {
+        setQuests(quests.map(q => 
+            q.id === questId ? { ...q, is_completed: true } : q
+        ));
+        toast.success('Mission accomplished! ✨');
+    };
 
     if (isLoading) {
         return (
@@ -76,9 +56,9 @@ export const EventQuestList = ({ eventId, userId }: EventQuestListProps) => {
                     >
                         <CardContent className="p-4 flex items-start gap-3">
                             <button
-                                onClick={() => !quest.is_completed && completeMutation.mutate(quest.id)}
+                                onClick={() => !quest.is_completed && handleComplete(quest.id)}
                                 className="mt-0.5 focus:outline-none"
-                                disabled={quest.is_completed || completeMutation.isPending}
+                                disabled={quest.is_completed}
                             >
                                 {quest.is_completed ? (
                                     <CheckCircle2 className="h-5 w-5 text-green-500" />
