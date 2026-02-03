@@ -29,14 +29,14 @@ export const SlowDatingSection = () => {
               Slow <span className="text-gradient">Dating</span>
             </h2>
             <p className="text-muted-foreground text-base md:text-lg mb-6 leading-relaxed">
-              The Club facilitates meaningful connections between members who share values and interests. 
+              The Club facilitates meaningful connections between members who share values and interests.
               Our team provides thoughtful, human-facilitated introductions—no algorithms, no profiles.
             </p>
             <p className="text-muted-foreground text-base md:text-lg mb-8 leading-relaxed">
-              This exclusive service is a benefit of your membership, 
+              This exclusive service is a benefit of your membership,
               available through personal consultation with our concierge team.
             </p>
-            <Button asChild size="sm" className="rounded-full px-4 text-sm">
+            <Button asChild className="rounded-full px-6">
               <Link to="/dating/apply">Apply for Matchmaking</Link>
             </Button>
           </div>
