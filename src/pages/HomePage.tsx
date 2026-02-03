@@ -1,6 +1,5 @@
 import { Suspense, lazy, memo } from 'react';
 import { Hero } from '@/components/home/Hero';
-import { SocialProofBanner } from '@/components/home/SocialProofBanner';
 import { WhyChooseSection } from '@/components/home/WhyChooseSection';
 
 // Lazy load below-the-fold sections for faster initial load
@@ -36,7 +35,7 @@ const HomePage = () => {
       />
       {/* Above the fold - load immediately */}
       <Hero />
-      <SocialProofBanner />
+      {/* SocialProofBanner is now integrated into the Hero */}
       <WhyChooseSection />
 
       {/* Below the fold - lazy loaded */}
