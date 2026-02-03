@@ -38,21 +38,18 @@ serve(async (req) => {
 
         if (matchError || !match) throw new Error("Match not found");
 
-        // 2. Fetch available concierge slots
-        const { data: slots, error: slotsError } = await supabase
-            .from("concierge_availability")
-            .select("*")
-            .eq("is_active", true)
-            .gte("date", new Date().toISOString().split("T")[0]);
+        // Extract first profile from the array (Supabase returns array for FK joins)
+        const userA = Array.isArray(match.user_a) ? match.user_a[0] : match.user_a;
+        const userB = Array.isArray(match.user_b) ? match.user_b[0] : match.user_b;
 
-        if (slotsError) throw slotsError;
+        if (!userA || !userB) throw new Error("Could not find dating profiles for match");
 
-        if (!slots || slots.length === 0) {
-            return new Response(
-                JSON.stringify({ recommendation: null, message: "No available slots" }),
-                { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-            );
-        }
+        // 2. For now, return a simple recommendation without concierge_availability table
+        // The table doesn't exist yet, so we provide sample slots
+        const sampleSlots = [
+            { id: "slot-1", location_name: "The Grand Hotel Lounge", location_description: "Premium venue", tags: ["quiet", "romantic"] },
+            { id: "slot-2", location_name: "Café Central", location_description: "Cozy atmosphere", tags: ["casual", "coffee"] },
+        ];
 
         const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
         if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
@@ -60,16 +57,16 @@ serve(async (req) => {
         // 3. AI Analysis
         const prompt = `You are a premium date concierge. Your task is to recommend the single best meeting slot for these two people based on their interests and the available venues.
 
-**PERSON A: ${match.user_a.display_name}**
-- Interests/Bio: ${match.user_a.tuesday_night_test || "Not specified"}
-- Ideal Experience: ${match.user_a.emotional_connection || "Not specified"}
+**PERSON A: ${userA.display_name}**
+- Interests/Bio: ${userA.tuesday_night_test || "Not specified"}
+- Ideal Experience: ${userA.emotional_connection || "Not specified"}
 
-**PERSON B: ${match.user_b.display_name}**
-- Interests/Bio: ${match.user_b.tuesday_night_test || "Not specified"}
-- Ideal Experience: ${match.user_b.emotional_connection || "Not specified"}
+**PERSON B: ${userB.display_name}**
+- Interests/Bio: ${userB.tuesday_night_test || "Not specified"}
+- Ideal Experience: ${userB.emotional_connection || "Not specified"}
 
 **AVAILABLE SLOTS & VENUES:**
-${slots.map(s => `- ID: ${s.id} | Venue: ${s.location_name} | Vibe: ${s.location_description || "Premium"} | Tags: ${s.tags?.join(", ") || "none"}`).join("\n")}
+${sampleSlots.map(s => `- ID: ${s.id} | Venue: ${s.location_name} | Vibe: ${s.location_description || "Premium"} | Tags: ${s.tags?.join(", ") || "none"}`).join("\n")}
 
 ---
 

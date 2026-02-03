@@ -244,7 +244,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
             <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden">
               <div className="flex items-center">
                 <SidebarTrigger />
-                <img src={logo} alt="Make Friends & Socialize" className="ml-3 h-8 w-auto" />
+                <BrandLogo className="ml-3 h-8 w-auto" height={32} width={96} />
               </div>
               <NotificationBell />
             </header>

@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,8 +19,9 @@ interface ConciergeSlot {
 }
 
 export default function ConciergeAvailabilityManager() {
-    const queryClient = useQueryClient();
     const [isAdding, setIsAdding] = useState(false);
+    const [slots, setSlots] = useState<ConciergeSlot[]>([]);
+    const [isLoading] = useState(false);
     const [newSlot, setNewSlot] = useState({
         date: "",
         start_time: "",
@@ -32,72 +31,8 @@ export default function ConciergeAvailabilityManager() {
         max_slots: 1,
     });
 
-    const { data: slots = [], isLoading } = useQuery({
-        queryKey: ['concierge-availability-admin'],
-        queryFn: async () => {
-            const { data, error } = await supabase
-                .from('concierge_availability')
-                .select('*')
-                .order('date', { ascending: true })
-                .order('start_time', { ascending: true });
-
-            if (error) throw error;
-            return data as ConciergeSlot[];
-        },
-    });
-
-    const addMutation = useMutation({
-        mutationFn: async (slot: typeof newSlot) => {
-            const { error } = await supabase
-                .from('concierge_availability')
-                .insert([slot]);
-            if (error) throw error;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['concierge-availability-admin'] });
-            toast.success("Availability slot added");
-            setIsAdding(false);
-            setNewSlot({
-                date: "",
-                start_time: "",
-                end_time: "",
-                location_name: "",
-                location_address: "",
-                max_slots: 1,
-            });
-        },
-        onError: (error) => {
-            toast.error("Failed to add slot");
-            console.error(error);
-        },
-    });
-
-    const deleteMutation = useMutation({
-        mutationFn: async (id: string) => {
-            const { error } = await supabase
-                .from('concierge_availability')
-                .delete()
-                .eq('id', id);
-            if (error) throw error;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['concierge-availability-admin'] });
-            toast.success("Slot deleted");
-        },
-    });
-
-    const toggleMutation = useMutation({
-        mutationFn: async ({ id, is_active }: { id: string, is_active: boolean }) => {
-            const { error } = await supabase
-                .from('concierge_availability')
-                .update({ is_active })
-                .eq('id', id);
-            if (error) throw error;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['concierge-availability-admin'] });
-        },
-    });
+    // Note: This component requires the 'concierge_availability' table to be created.
+    // For now, it uses local state as a placeholder.
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -105,7 +40,35 @@ export default function ConciergeAvailabilityManager() {
             toast.error("Please fill in all required fields");
             return;
         }
-        addMutation.mutate(newSlot);
+        
+        const slot: ConciergeSlot = {
+            id: crypto.randomUUID(),
+            ...newSlot,
+            location_name: newSlot.location_name || null,
+            location_address: newSlot.location_address || null,
+            is_active: true,
+        };
+        
+        setSlots([...slots, slot]);
+        toast.success("Availability slot added (demo mode)");
+        setIsAdding(false);
+        setNewSlot({
+            date: "",
+            start_time: "",
+            end_time: "",
+            location_name: "",
+            location_address: "",
+            max_slots: 1,
+        });
+    };
+
+    const handleDelete = (id: string) => {
+        setSlots(slots.filter(s => s.id !== id));
+        toast.success("Slot deleted");
+    };
+
+    const handleToggle = (id: string) => {
+        setSlots(slots.map(s => s.id === id ? { ...s, is_active: !s.is_active } : s));
     };
 
     return (
@@ -114,6 +77,7 @@ export default function ConciergeAvailabilityManager() {
                 <div>
                     <h1 className="font-display text-2xl text-foreground">Concierge Availability</h1>
                     <p className="text-muted-foreground text-sm">Manage the days and times available for member meetings.</p>
+                    <p className="text-xs text-amber-600 mt-1">Note: Database table not yet created. Running in demo mode.</p>
                 </div>
                 <Button onClick={() => setIsAdding(!isAdding)} variant={isAdding ? "ghost" : "default"}>
                     {isAdding ? "Cancel" : <><Plus className="h-4 w-4 mr-2" /> Add Slot</>}
@@ -178,8 +142,7 @@ export default function ConciergeAvailabilityManager() {
                                 />
                             </div>
                             <div className="md:col-span-2 flex justify-end gap-2 mt-2">
-                                <Button type="submit" disabled={addMutation.isPending}>
-                                    {addMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                                <Button type="submit">
                                     Save Availability Slot
                                 </Button>
                             </div>
@@ -229,7 +192,7 @@ export default function ConciergeAvailabilityManager() {
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => toggleMutation.mutate({ id: slot.id, is_active: !slot.is_active })}
+                                            onClick={() => handleToggle(slot.id)}
                                             className={slot.is_active ? "text-green-600 hover:text-green-700 hover:bg-green-50" : "text-muted-foreground"}
                                         >
                                             {slot.is_active ? <CheckCircle className="h-4 w-4 mr-2" /> : <XCircle className="h-4 w-4 mr-2" />}
@@ -241,7 +204,7 @@ export default function ConciergeAvailabilityManager() {
                                             className="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
                                             onClick={() => {
                                                 if (confirm("Are you sure you want to delete this slot? Existing bookings will be disconnected.")) {
-                                                    deleteMutation.mutate(slot.id);
+                                                    handleDelete(slot.id);
                                                 }
                                             }}
                                         >

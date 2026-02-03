@@ -14,7 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { User, Camera, Upload, MapPin } from 'lucide-react';
 import { VoiceBioRecorder } from '@/components/dating/VoiceBioRecorder';
-import type { IntakeFormContext } from './useIntakeForm';
+import type { IntakeFormContext } from '../useIntakeForm';
 
 interface BasicsStepProps {
     form: IntakeFormContext;

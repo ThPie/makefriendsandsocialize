@@ -8,10 +8,10 @@ import { Heart, Loader2 } from "lucide-react";
 import { IntakeWizard } from "@/components/dating/intake";
 
 export const DatingIntakePage = () => {
-  const { user, loading, profile } = useAuth();
+  const { user, isLoading, profile } = useAuth();
 
   // Show loading state
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-dating-cream via-background to-background flex items-center justify-center">
         <div className="text-center">
