@@ -196,8 +196,8 @@ export const PricingSection = () => {
             const isExpanded = expandedTiers[index] || false;
             const visibleFeatures = isExpanded ? tier.features : tier.features.slice(0, INITIAL_FEATURES_SHOWN);
             const hasMoreFeatures = tier.features.length > INITIAL_FEATURES_SHOWN;
-            const visibleMissingFeatures = isExpanded ? tier.missingFeatures : tier.missingFeatures?.slice(0, 2) || [];
-            const hasMoreMissing = (tier.missingFeatures?.length || 0) > 2;
+            const visibleMissingFeatures = isExpanded ? tier.missingFeatures : [];
+            const hasMoreMissing = (tier.missingFeatures?.length || 0) > 0;
 
             const displayPrice = billingCycle === 'yearly' ? tier.yearlyPrice : tier.monthlyPrice;
             const displayPeriod = tier.monthlyPrice === 'Free' ? '' : (billingCycle === 'yearly' ? '/yr' : '/mo');

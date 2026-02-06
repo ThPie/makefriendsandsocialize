@@ -82,27 +82,22 @@ export const Hero = () => {
         </div>
 
         {/* COMPACT CARD - Avatars + Join Text + Apply Button */}
-        <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-4 py-2 w-fit">
+        <div className="inline-flex flex-wrap items-center gap-3 sm:gap-4 bg-black/40 backdrop-blur-md border border-white/20 rounded-full px-4 sm:px-5 py-2.5 sm:py-3 w-fit">
           {/* Avatars */}
-          <div className="flex -space-x-2">
+          <div className="flex -space-x-2 shrink-0">
             {avatars.map((url, i) => (
               <img
                 key={i}
                 src={url}
                 alt=""
-                className="w-10 h-10 rounded-full border-2 border-white/50 object-cover"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-white/60 object-cover shadow-md"
                 loading="lazy"
               />
             ))}
-            {displayCount > 4 && (
-              <div className="w-10 h-10 rounded-full bg-primary/80 flex items-center justify-center text-primary-foreground text-xs font-bold border-2 border-white/50">
-                +{(displayCount - 4).toLocaleString()}
-              </div>
-            )}
           </div>
 
           {/* Join Text */}
-          <span className="text-white text-sm font-medium">
+          <span className="text-white text-sm sm:text-base font-medium whitespace-nowrap">
             Join {displayCount > 0 ? displayCount.toLocaleString() : '—'}+ members
           </span>
 
@@ -110,7 +105,7 @@ export const Hero = () => {
           <Button
             size="sm"
             asChild
-            className="rounded-full bg-white text-black hover:bg-white/90 font-semibold px-4"
+            className="rounded-full bg-white text-black hover:bg-white/90 font-semibold px-4 sm:px-5 shrink-0"
           >
             <Link to="/membership">
               Apply Now

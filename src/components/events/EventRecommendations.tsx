@@ -97,7 +97,7 @@ export const EventRecommendations = ({
 
     return (
         <Card className={cn(
-            'border-primary/20 bg-gradient-to-br from-accent/40 to-white',
+            'border-primary/20 bg-card',
             className
         )}>
             <CardHeader className="pb-3">
@@ -136,13 +136,13 @@ export const EventRecommendations = ({
                                     'p-4 rounded-lg border transition-all duration-200',
                                     hoveredEvent === event.id
                                         ? 'bg-primary/5 border-primary/30 shadow-md'
-                                        : 'bg-white/60 border-transparent hover:bg-primary/5'
+                                        : 'bg-secondary/50 border-border hover:bg-primary/5'
                                 )}
                             >
                                 <div className="flex items-start justify-between gap-3">
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <h4 className="font-medium text-sm truncate">
+                                            <h4 className="font-medium text-sm truncate text-foreground">
                                                 {event.title}
                                             </h4>
                                             <Badge
@@ -177,7 +177,7 @@ export const EventRecommendations = ({
                                             <div className="flex items-center gap-2 mt-2">
                                                 <div className="flex -space-x-2">
                                                     {event.friendsAttending.slice(0, 3).map((friend, i) => (
-                                                        <Avatar key={i} className="h-6 w-6 border-2 border-white">
+                                                        <Avatar key={i} className="h-6 w-6 border-2 border-background">
                                                             <AvatarImage src={friend.avatar} />
                                                             <AvatarFallback className="text-xs bg-primary/10">
                                                                 {friend.name.split(' ').map(n => n[0]).join('')}
