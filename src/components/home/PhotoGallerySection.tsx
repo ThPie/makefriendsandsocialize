@@ -1,24 +1,25 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Lightbox } from '@/components/ui/lightbox';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-// Static gallery photos from real events - showing only 5 for cleaner look
+// Static gallery photos from real events
 const galleryPhotos = [
   { id: '1', image_url: '/images/gallery/event-1.jpg', title: 'Cheers at the Lounge', category: 'Social' },
   { id: '2', image_url: '/images/gallery/event-2.jpg', title: 'Elegant Attire', category: 'Members' },
   { id: '3', image_url: '/images/gallery/event-3.jpg', title: 'Great Conversations', category: 'Social' },
   { id: '4', image_url: '/images/gallery/event-4.jpg', title: 'Black Tie Evening', category: 'Events' },
   { id: '5', image_url: '/images/gallery/event-5.jpg', title: 'Fireside Chat', category: 'Social' },
+  { id: '6', image_url: '/images/gallery/event-6.jpg', title: 'Networking Night', category: 'Events' },
 ];
 
 export const PhotoGallerySection = () => {
   const { ref, isVisible } = useScrollAnimation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [currentIndex, setCurrentIndex] = useState(2); // Center image
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollIntervalRef = useRef<number | null>(null);
 
   const lightboxImages = galleryPhotos.map((p) => ({
     url: p.image_url,
@@ -31,38 +32,31 @@ export const PhotoGallerySection = () => {
     setLightboxOpen(true);
   };
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % galleryPhotos.length);
+  // Start auto-scroll on hover
+  const handleMouseEnter = () => {
+    if (!scrollRef.current) return;
+
+    scrollIntervalRef.current = window.setInterval(() => {
+      if (scrollRef.current) {
+        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+        const currentScroll = scrollRef.current.scrollLeft;
+
+        // If we've reached the end, scroll back to start
+        if (currentScroll >= maxScroll - 10) {
+          scrollRef.current.scrollLeft = 0;
+        } else {
+          scrollRef.current.scrollLeft += 2;
+        }
+      }
+    }, 20);
   };
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + galleryPhotos.length) % galleryPhotos.length);
-  };
-
-  // Calculate positions for fan-out carousel
-  const getSlideStyle = (index: number) => {
-    const diff = index - currentIndex;
-    const normalizedDiff = ((diff + galleryPhotos.length) % galleryPhotos.length);
-    const adjustedDiff = normalizedDiff > galleryPhotos.length / 2 ? normalizedDiff - galleryPhotos.length : normalizedDiff;
-
-    const isCenter = adjustedDiff === 0;
-    const absDistance = Math.abs(adjustedDiff);
-
-    // Hide images too far from center
-    if (absDistance > 2) {
-      return { opacity: 0, transform: 'scale(0.5)', zIndex: 0 };
+  // Stop auto-scroll when not hovering
+  const handleMouseLeave = () => {
+    if (scrollIntervalRef.current) {
+      clearInterval(scrollIntervalRef.current);
+      scrollIntervalRef.current = null;
     }
-
-    const translateX = adjustedDiff * 180;
-    const scale = isCenter ? 1.15 : 1 - absDistance * 0.1;
-    const zIndex = 10 - absDistance;
-    const rotate = adjustedDiff * 3;
-
-    return {
-      transform: `translateX(${translateX}px) scale(${scale}) rotate(${rotate}deg)`,
-      zIndex,
-      opacity: 1 - absDistance * 0.2,
-    };
   };
 
   return (
@@ -90,47 +84,46 @@ export const PhotoGallerySection = () => {
           </Button>
         </div>
 
-        {/* Fan-out Carousel */}
-        <div className="relative h-[400px] md:h-[500px] flex items-center justify-center overflow-hidden">
-          <div className="relative w-full max-w-4xl h-full flex items-center justify-center">
-            {galleryPhotos.map((photo, index) => (
-              <div
-                key={photo.id}
-                onClick={() => openLightbox(index)}
-                className="absolute cursor-pointer transition-all duration-500 ease-out"
-                style={getSlideStyle(index)}
-              >
-                <div className="w-[220px] md:w-[280px] aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl">
-                  <img
-                    src={photo.image_url}
-                    alt={photo.title || 'Event photo'}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
+        {/* Horizontal Scrolling Gallery - Scrolls on Hover */}
+        <div
+          ref={scrollRef}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 cursor-grab active:cursor-grabbing"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {galleryPhotos.map((photo, index) => (
+            <div
+              key={photo.id}
+              onClick={() => openLightbox(index)}
+              className="flex-shrink-0 group relative overflow-hidden rounded-2xl cursor-pointer w-[280px] md:w-[320px] aspect-[3/4] shadow-lg hover:shadow-xl transition-shadow duration-300"
+            >
+              <img
+                src={photo.image_url}
+                alt={photo.title || 'Event photo'}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                loading="lazy"
+                decoding="async"
+              />
+              {/* Overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* Title on hover */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <p className="text-white font-display font-semibold text-base drop-shadow-lg">
+                  {photo.title}
+                </p>
+                {photo.category && (
+                  <span className="text-white/70 text-sm">{photo.category}</span>
+                )}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
-        {/* Navigation Arrows */}
-        <div className="flex justify-center gap-4 mt-8">
-          <button
-            onClick={prevSlide}
-            className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors"
-            aria-label="Previous image"
-          >
-            <ChevronLeft className="w-5 h-5 text-foreground" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors"
-            aria-label="Next image"
-          >
-            <ChevronRight className="w-5 h-5 text-foreground" />
-          </button>
-        </div>
+        {/* Hover hint */}
+        <p className="text-center text-muted-foreground text-sm mt-6">
+          Hover to scroll • Click to enlarge
+        </p>
       </div>
 
       {/* Lightbox */}
