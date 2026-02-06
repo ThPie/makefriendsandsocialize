@@ -38,11 +38,11 @@ export const ReviewStep = ({
                 <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
                     <Check className="h-8 w-8 text-primary" />
                 </div>
-                <h1 className="font-display text-3xl text-white mb-2">Almost Done!</h1>
-                <p className="text-white/60">Review your profile and submit your application</p>
+                <h1 className="font-display text-3xl text-foreground mb-2">Almost Done!</h1>
+                <p className="text-muted-foreground">Review your profile and submit your application</p>
             </div>
 
-            <div className="bg-white/5 rounded-xl p-6 space-y-4">
+            <div className="bg-secondary/50 rounded-xl p-6 space-y-4">
                 <div className="flex items-center gap-4">
                     {photos[0] ? (
                         <img src={photos[0]} alt="Profile" className="w-16 h-16 rounded-full object-cover border-2 border-primary" />
@@ -52,33 +52,33 @@ export const ReviewStep = ({
                         </div>
                     )}
                     <div>
-                        <h3 className="text-white font-medium text-lg">{firstName} {lastName}</h3>
-                        <p className="text-white/60">{jobTitle} at {company}</p>
+                        <h3 className="text-foreground font-medium text-lg">{firstName} {lastName}</h3>
+                        <p className="text-muted-foreground">{jobTitle} at {company}</p>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                        <span className="text-white/40">Location:</span>
-                        <p className="text-white">{city}{state ? `, ${state}` : ''}</p>
+                        <span className="text-muted-foreground/60">Location:</span>
+                        <p className="text-foreground">{city}{state ? `, ${state}` : ''}</p>
                     </div>
                     <div>
-                        <span className="text-white/40">Industry:</span>
-                        <p className="text-white">{industry === 'Other' ? customIndustry : industry}</p>
+                        <span className="text-muted-foreground/60">Industry:</span>
+                        <p className="text-foreground">{industry === 'Other' ? customIndustry : industry}</p>
                     </div>
                 </div>
 
                 {bio && (
                     <div>
-                        <span className="text-white/40 text-sm">Bio:</span>
-                        <p className="text-white text-sm line-clamp-2">{bio}</p>
+                        <span className="text-muted-foreground/60 text-sm">Bio:</span>
+                        <p className="text-foreground text-sm line-clamp-2">{bio}</p>
                     </div>
                 )}
 
                 {interests.length > 0 && (
                     <div>
-                        <span className="text-white/40 text-sm">Interests:</span>
-                        <p className="text-white text-sm">{interests.join(', ')}</p>
+                        <span className="text-muted-foreground/60 text-sm">Interests:</span>
+                        <p className="text-foreground text-sm">{interests.join(', ')}</p>
                     </div>
                 )}
             </div>
@@ -88,9 +88,9 @@ export const ReviewStep = ({
                     id="terms"
                     checked={acceptedTerms}
                     onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-                    className="mt-1 border-white/30"
+                    className="mt-1 border-border"
                 />
-                <label htmlFor="terms" className="text-white/70 text-sm leading-relaxed cursor-pointer">
+                <label htmlFor="terms" className="text-muted-foreground text-sm leading-relaxed cursor-pointer">
                     I agree to the{' '}
                     <a href="/terms" target="_blank" className="text-primary hover:underline">Terms of Service</a>
                     {' '}and{' '}

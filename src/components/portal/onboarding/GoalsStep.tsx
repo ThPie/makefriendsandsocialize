@@ -26,20 +26,20 @@ export const GoalsStep = ({
                 <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
                     <Heart className="h-8 w-8 text-primary" />
                 </div>
-                <h1 className="font-display text-3xl text-white mb-2">Community Goals</h1>
-                <p className="text-white/60">What are you looking to get out of the community?</p>
+                <h1 className="font-display text-3xl text-foreground mb-2">Community Goals</h1>
+                <p className="text-muted-foreground">What are you looking to get out of the community?</p>
             </div>
 
             <div>
-                <Label className="text-white mb-3 block">Why are you joining? *</Label>
+                <Label className="text-foreground mb-3 block">Why are you joining? *</Label>
                 <div className="grid grid-cols-2 gap-3">
                     {COMMUNITY_GOALS.map((goal) => (
                         <div
                             key={goal.id}
                             onClick={() => toggleGoal(goal.id)}
                             className={`p-4 rounded-lg border cursor-pointer transition-all ${communityGoals.includes(goal.id)
-                                    ? 'bg-primary/20 border-primary text-white'
-                                    : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10'
+                                ? 'bg-primary/20 border-primary text-foreground'
+                                : 'bg-secondary/50 border-border text-muted-foreground hover:bg-secondary'
                                 }`}
                         >
                             <div className="flex items-center gap-2">
@@ -52,7 +52,7 @@ export const GoalsStep = ({
             </div>
 
             <div>
-                <Label className="text-white mb-3 block">Industries you want to connect with</Label>
+                <Label className="text-foreground mb-3 block">Industries you want to connect with</Label>
                 <div className="flex flex-wrap gap-2">
                     {TARGET_INDUSTRIES.map((ind) => (
                         <button
@@ -60,8 +60,8 @@ export const GoalsStep = ({
                             type="button"
                             onClick={() => toggleTargetIndustry(ind)}
                             className={`px-3 py-1.5 rounded-full text-sm transition-all ${targetIndustries.includes(ind)
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'bg-white/10 text-white/70 hover:bg-white/20'
+                                ? 'bg-primary text-primary-foreground'
+                                : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
                                 }`}
                         >
                             {ind}
@@ -71,12 +71,12 @@ export const GoalsStep = ({
             </div>
 
             <div>
-                <Label htmlFor="offering" className="text-white">What can you offer the community? (optional)</Label>
+                <Label htmlFor="offering" className="text-foreground">What can you offer the community? (optional)</Label>
                 <Textarea
                     id="offering"
                     value={communityOffering}
                     onChange={(e) => setCommunityOffering(e.target.value)}
-                    className="bg-white/10 border-white/20 text-white min-h-[100px]"
+                    className="bg-secondary border-border text-foreground min-h-[100px]"
                     placeholder="Share your expertise, mentorship opportunities, or unique value you can bring..."
                 />
             </div>

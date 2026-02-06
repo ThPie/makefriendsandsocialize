@@ -50,37 +50,37 @@ export const ProfessionalStep = ({
                 <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
                     <Briefcase className="h-8 w-8 text-primary" />
                 </div>
-                <h1 className="font-display text-3xl text-white mb-2">Professional Background</h1>
-                <p className="text-white/60">Help others understand what you do</p>
+                <h1 className="font-display text-3xl text-foreground mb-2">Professional Background</h1>
+                <p className="text-muted-foreground">Help others understand what you do</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <Label htmlFor="jobTitle" className="text-white">Job Title *</Label>
+                    <Label htmlFor="jobTitle" className="text-foreground">Job Title *</Label>
                     <Input
                         id="jobTitle"
                         value={jobTitle}
                         onChange={(e) => setJobTitle(e.target.value)}
-                        className="bg-white/10 border-white/20 text-white"
+                        className="bg-secondary border-border text-foreground"
                         placeholder="Senior Product Manager"
                     />
                 </div>
                 <div>
-                    <Label htmlFor="company" className="text-white">Company/Organization *</Label>
+                    <Label htmlFor="company" className="text-foreground">Company/Organization *</Label>
                     <Input
                         id="company"
                         value={company}
                         onChange={(e) => setCompany(e.target.value)}
-                        className="bg-white/10 border-white/20 text-white"
+                        className="bg-secondary border-border text-foreground"
                         placeholder="Acme Inc."
                     />
                 </div>
             </div>
 
             <div>
-                <Label className="text-white">Industry *</Label>
+                <Label className="text-foreground">Industry *</Label>
                 <Select value={industry} onValueChange={setIndustry}>
-                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectTrigger className="bg-secondary border-border text-foreground">
                         <SelectValue placeholder="Select your industry" />
                     </SelectTrigger>
                     <SelectContent>
@@ -93,25 +93,25 @@ export const ProfessionalStep = ({
                     <Input
                         value={customIndustry}
                         onChange={(e) => setCustomIndustry(e.target.value)}
-                        className="mt-2 bg-white/10 border-white/20 text-white"
+                        className="mt-2 bg-secondary border-border text-foreground"
                         placeholder="Please specify your industry"
                     />
                 )}
             </div>
 
             <div>
-                <Label htmlFor="linkedin" className="text-white">LinkedIn URL (optional)</Label>
+                <Label htmlFor="linkedin" className="text-foreground">LinkedIn URL (optional)</Label>
                 <Input
                     id="linkedin"
                     value={linkedinUrl}
                     onChange={(e) => setLinkedinUrl(e.target.value)}
-                    className="bg-white/10 border-white/20 text-white"
+                    className="bg-secondary border-border text-foreground"
                     placeholder="https://linkedin.com/in/yourprofile"
                 />
             </div>
 
             <div>
-                <Label htmlFor="bio" className="text-white">Bio * (minimum 50 characters)</Label>
+                <Label htmlFor="bio" className="text-foreground">Bio * (minimum 50 characters)</Label>
                 <Textarea
                     id="bio"
                     value={bio}
@@ -119,10 +119,10 @@ export const ProfessionalStep = ({
                         setBio(e.target.value);
                         setBioError(null);
                     }}
-                    className={`bg-white/10 border-white/20 text-white min-h-[120px] ${bioError ? 'border-destructive' : ''}`}
+                    className={`bg-secondary border-border text-foreground min-h-[120px] ${bioError ? 'border-destructive' : ''}`}
                     placeholder="Tell us about yourself, your background, and what makes you unique..."
                 />
-                <p className="text-white/40 text-xs mt-1">{bio.length}/50 characters minimum</p>
+                <p className="text-muted-foreground/60 text-xs mt-1">{bio.length}/50 characters minimum</p>
                 {bioError && (
                     <p className="text-sm text-destructive mt-1">{bioError}</p>
                 )}

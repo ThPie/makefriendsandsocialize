@@ -51,35 +51,35 @@ export const BasicInfoStep = ({
                 <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
                     <User className="h-8 w-8 text-primary" />
                 </div>
-                <h1 className="font-display text-3xl text-white mb-2">Welcome! Let's get started</h1>
-                <p className="text-white/60">Tell us a bit about yourself</p>
+                <h1 className="font-display text-3xl text-foreground mb-2">Welcome! Let's get started</h1>
+                <p className="text-muted-foreground">Tell us a bit about yourself</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <Label htmlFor="firstName" className="text-white">First Name *</Label>
+                    <Label htmlFor="firstName" className="text-foreground">First Name *</Label>
                     <Input
                         id="firstName"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        className="bg-white/10 border-white/20 text-white"
+                        className="bg-secondary border-border text-foreground"
                         placeholder="John"
                     />
                 </div>
                 <div>
-                    <Label htmlFor="lastName" className="text-white">Last Name *</Label>
+                    <Label htmlFor="lastName" className="text-foreground">Last Name *</Label>
                     <Input
                         id="lastName"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        className="bg-white/10 border-white/20 text-white"
+                        className="bg-secondary border-border text-foreground"
                         placeholder="Doe"
                     />
                 </div>
             </div>
 
             <div>
-                <Label className="text-white mb-2 block">Profile Photo</Label>
+                <Label className="text-foreground mb-2 block">Profile Photo</Label>
                 <div className="flex gap-4 items-center">
                     {photos.map((photo, i) => (
                         <div key={i} className="relative">
@@ -94,13 +94,13 @@ export const BasicInfoStep = ({
                         </div>
                     ))}
                     {photos.length < 3 && (
-                        <label className="w-20 h-20 rounded-full bg-white/10 border-2 border-dashed border-white/30 flex flex-col items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
+                        <label className="w-20 h-20 rounded-full bg-secondary border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-secondary/80 transition-colors">
                             {isUploading ? (
-                                <Loader2 className="h-6 w-6 text-white animate-spin" />
+                                <Loader2 className="h-6 w-6 text-muted-foreground animate-spin" />
                             ) : (
                                 <>
-                                    <Camera className="h-6 w-6 text-white/60" />
-                                    <span className="text-xs text-white/60 mt-1">Add</span>
+                                    <Camera className="h-6 w-6 text-muted-foreground" />
+                                    <span className="text-xs text-muted-foreground mt-1">Add</span>
                                 </>
                             )}
                             <input
@@ -113,11 +113,11 @@ export const BasicInfoStep = ({
                         </label>
                     )}
                 </div>
-                <p className="text-white/40 text-xs mt-2">Add up to 3 photos (optional but recommended)</p>
+                <p className="text-muted-foreground/60 text-xs mt-2">Add up to 3 photos (optional but recommended)</p>
             </div>
 
             {isDetectingLocation ? (
-                <div className="flex items-center gap-2 text-white/60 text-sm py-2">
+                <div className="flex items-center gap-2 text-muted-foreground text-sm py-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span>Detecting your location...</span>
                 </div>
@@ -131,7 +131,7 @@ export const BasicInfoStep = ({
                     )}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Label className="text-white">Country</Label>
+                            <Label className="text-foreground">Country</Label>
                             <LocationCombobox
                                 value={country}
                                 onValueChange={(val) => {
@@ -145,7 +145,7 @@ export const BasicInfoStep = ({
                             />
                         </div>
                         <div>
-                            <Label className="text-white">State/Province</Label>
+                            <Label className="text-foreground">State/Province</Label>
                             <LocationCombobox
                                 value={state}
                                 onValueChange={setState}
@@ -157,7 +157,7 @@ export const BasicInfoStep = ({
                     </div>
 
                     <div>
-                        <Label className="text-white">City *</Label>
+                        <Label className="text-foreground">City *</Label>
                         <CityAutocomplete
                             value={city}
                             onValueChange={setCity}
