@@ -1,112 +1,53 @@
 import { Button } from '@/components/ui/button';
-import { Check, Crown, Lock, ChevronDown, ChevronUp } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
+import { TIER_BENEFITS } from '@/lib/stripe-products';
 
 const INITIAL_FEATURES_SHOWN = 4;
-const tiers = [
-  {
-    name: 'Socialite',
-    id: 'socialite',
-    description: 'Your gateway to the Circle',
-    monthlyPrice: 'Free',
-    yearlyPrice: 'Free',
-    period: '',
-    features: [
-      'Browse all public events',
-      'Purchase event tickets',
-      'Create a Connection Profile',
-      'Hand-picked introductions ($19/reveal)',
-      'Concierge support with paid reveals',
-      'Les Amis French circle access',
-    ],
-    missingFeatures: [
-      'Unlimited connection reveals',
-      'Hand-picked introductions & matchmaking',
-      'Invitation-only gatherings',
-      'Discounts at partners & Club businesses',
-      'Event discounts',
-    ],
-    cta: 'Get Started',
-    href: '/auth',
-    variant: 'outline' as const,
-    popular: false,
-    glow: 'bg-muted/5',
-    border: 'border-border/60'
-  },
-  {
-    name: 'Insider',
-    id: 'insider',
-    description: 'For those who seek more',
-    monthlyPrice: '$49',
-    yearlyPrice: '$470',
-    period: '/mo',
-    yearlyNote: 'billed yearly (save 20%)',
-    features: [
-      'Unlimited connection reveals',
-      'Hand-picked introductions & matchmaking',
-      '20% off all paid events',
-      'Invitation-only member gatherings',
-      'Discounts at partners & Club businesses',
-      'Connected Circle business directory',
-      'Concierge support',
-    ],
-    missingFeatures: [
-      '30% event discounts',
-      'Bring a guest free',
-      'List your business & get leads',
-      'Priority introductions',
-    ],
-    cta: 'Start Free Trial',
-    href: '/membership',
-    variant: 'default' as const,
-    popular: true,
-    trial: '30-day free trial',
-    glow: 'bg-primary/10',
-    border: 'border-primary/40'
-  },
-  {
-    name: 'Patron',
-    id: 'patron',
-    description: 'The ultimate experience',
-    monthlyPrice: '$79',
-    yearlyPrice: '$758',
-    period: '/mo',
-    yearlyNote: 'billed yearly (save 20%)',
-    features: [
-      'Everything in Insider',
-      '30% off all paid events',
-      '+1 guest privileges at all events',
-      'List your business & receive leads',
-      'Priority introductions',
-      'Featured in community newsletter',
-      'Exclusive Patron dinners & experiences',
-      'Concierge support',
-    ],
-    missingFeatures: [],
-    cta: 'Join Waitlist',
-    href: '/membership',
-    variant: 'secondary' as const,
-    popular: false,
-    trial: '30-day free trial',
-    exclusivityNote: 'Limited availability',
-    glow: 'bg-[hsl(var(--accent-gold))]/10',
-    border: 'border-[hsl(var(--accent-gold))]/30'
-  },
-];
 
 export const PricingSection = () => {
   const { ref, isVisible } = useScrollAnimation();
-  const [expandedTiers, setExpandedTiers] = useState<Record<number, boolean>>({});
+  const [expandedTiers, setExpandedTiers] = useState<Record<string, boolean>>({});
   const [activeTab, setActiveTab] = useState<'socialite' | 'insider' | 'patron'>('insider');
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
 
-  const toggleExpanded = (index: number) => {
-    setExpandedTiers(prev => ({ ...prev, [index]: !prev[index] }));
+  const toggleExpanded = (id: string) => {
+    setExpandedTiers(prev => ({ ...prev, [id]: !prev[id] }));
   };
+
+  // Map TIER_BENEFITS to display format
+  const tiers = [
+    {
+      id: 'socialite',
+      data: TIER_BENEFITS.socialite,
+      cta: 'Get Started',
+      href: '/auth',
+      variant: 'outline' as const,
+      popular: false,
+    },
+    {
+      id: 'insider',
+      data: TIER_BENEFITS.insider,
+      cta: 'Start Free Trial',
+      href: '/membership',
+      variant: 'default' as const,
+      popular: true,
+      trial: '30-day free trial',
+    },
+    {
+      id: 'patron',
+      data: TIER_BENEFITS.patron,
+      cta: 'Join Waitlist',
+      href: '/membership',
+      variant: 'secondary' as const,
+      popular: false,
+      trial: '30-day free trial',
+    }
+  ];
 
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-background" id="membership">
@@ -167,7 +108,7 @@ export const PricingSection = () => {
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                {tier.name}
+                {tier.data.name}
               </button>
             ))}
           </div>
@@ -177,19 +118,32 @@ export const PricingSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {tiers.map((tier, index) => {
             const isMobileHidden = activeTab !== tier.id;
+            const { data } = tier;
 
-            const isExpanded = expandedTiers[index] || false;
-            const visibleFeatures = isExpanded ? tier.features : tier.features.slice(0, INITIAL_FEATURES_SHOWN);
-            const hasMoreFeatures = tier.features.length > INITIAL_FEATURES_SHOWN;
-            const visibleMissingFeatures = isExpanded ? tier.missingFeatures : [];
-            const hasMoreMissing = (tier.missingFeatures?.length || 0) > 0;
+            const isExpanded = expandedTiers[tier.id] || false;
+            const features = data.features || [];
+            const missingFeatures = data.missingFeatures || [];
 
-            const displayPrice = billingCycle === 'yearly' ? tier.yearlyPrice : tier.monthlyPrice;
-            const displayPeriod = tier.monthlyPrice === 'Free' ? '' : (billingCycle === 'yearly' ? '/yr' : '/mo');
+            const visibleFeatures = isExpanded ? features : features.slice(0, INITIAL_FEATURES_SHOWN);
+            const hasMoreFeatures = features.length > INITIAL_FEATURES_SHOWN;
+
+            // For missing features, shows 0 if collapsed, all if expanded
+            const visibleMissingFeatures = isExpanded ? missingFeatures : [];
+            const hasMoreMissing = missingFeatures.length > 0;
+
+            // Price calculation
+            let displayPrice = 'Free';
+            let displayPeriod = '';
+
+            if ('monthlyPrice' in data && data.monthlyPrice > 0) {
+              const priceValue = billingCycle === 'yearly' ? data.annualPrice : data.monthlyPrice;
+              displayPrice = `$${priceValue}`;
+              displayPeriod = billingCycle === 'yearly' ? '/yr' : '/mo';
+            }
 
             return (
               <div
-                key={index}
+                key={tier.id}
                 className={cn(
                   "relative flex flex-col gap-6 rounded-2xl p-8 transition-all duration-300",
                   tier.popular
@@ -210,7 +164,7 @@ export const PricingSection = () => {
 
                 <div className={cn("flex flex-col gap-2", tier.popular ? "mt-2" : "")}>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-foreground text-lg font-bold font-display">{tier.name}</h3>
+                    <h3 className="text-foreground text-lg font-bold font-display">{data.name}</h3>
                   </div>
 
                   <div className="flex items-baseline gap-1.5 text-foreground mt-2">
@@ -220,12 +174,12 @@ export const PricingSection = () => {
                     <span className="text-muted-foreground text-sm font-medium">{displayPeriod}</span>
                   </div>
 
-                  {billingCycle === 'yearly' && tier.yearlyNote && (
-                    <p className="text-xs text-primary font-medium">{tier.yearlyNote}</p>
+                  {billingCycle === 'yearly' && 'annualSavings' in data && (
+                    <p className="text-xs text-primary font-medium">billed yearly (save {data.annualSavings})</p>
                   )}
 
                   <p className="text-sm text-muted-foreground mt-2">
-                    {tier.description}
+                    {data.description}
                   </p>
                 </div>
 
@@ -262,7 +216,7 @@ export const PricingSection = () => {
                 {/* See More Toggle */}
                 {(hasMoreFeatures || hasMoreMissing) && (
                   <button
-                    onClick={() => toggleExpanded(index)}
+                    onClick={() => toggleExpanded(tier.id)}
                     className="w-full flex items-center justify-center gap-2 py-2 text-sm text-primary hover:text-primary/80 transition-colors mb-4"
                   >
                     {isExpanded ? (
