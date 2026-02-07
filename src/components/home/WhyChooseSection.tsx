@@ -1,24 +1,24 @@
-import { Heart, Gem, Calendar, Briefcase } from 'lucide-react';
+import { ShieldCheck, Star, CalendarClock, Handshake } from 'lucide-react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
 const features = [
   {
-    icon: Heart,
+    icon: ShieldCheck,
     title: 'Vetted, Like-Minded Members',
     description: 'Every member is personally reviewed to ensure a community of ambitious, warm, and interesting people.',
   },
   {
-    icon: Gem,
+    icon: Star,
     title: 'Thoughtfully Designed Events',
     description: 'From intimate dinners to cultural outings—each gathering is crafted to spark genuine conversation.',
   },
   {
-    icon: Calendar,
+    icon: CalendarClock,
     title: 'Weekly Gatherings, Year-Round',
     description: 'Multiple events each week ensure you always have opportunities to meet new friends.',
   },
   {
-    icon: Briefcase,
+    icon: Handshake,
     title: 'Business Networking',
     description: 'Connect with founders, executives, and entrepreneurs at events designed to foster partnerships.',
   },

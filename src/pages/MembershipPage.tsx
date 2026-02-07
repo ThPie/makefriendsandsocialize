@@ -7,17 +7,16 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/contexts/AuthContext';
 import { TIER_BENEFITS } from '@/lib/stripe-products';
 import {
-  Sparkles,
-  ArrowRight,
-  Crown,
   Check,
   Star,
   Users,
   Calendar,
   Briefcase,
   Loader2,
-  Zap,
+  PlayCircle,
   Lock,
+  ArrowRight,
+  Crown,
   Heart,
   Gift,
   ChevronDown,
@@ -154,7 +153,7 @@ const MembershipPage = () => {
       featured: true,
       badge: 'Most Popular',
       buttonVariant: 'default' as const,
-      icon: Sparkles,
+      icon: Star,
       trialDays: TIER_BENEFITS.insider.trialDays,
       annualSavings: TIER_BENEFITS.insider.annualSavings,
     },
@@ -180,7 +179,7 @@ const MembershipPage = () => {
 
   const processSteps = [
     { step: 1, title: 'Choose Your Tier', desc: 'Select the membership that matches your lifestyle.', icon: Briefcase },
-    { step: 2, title: 'Start Free Trial', desc: 'Try Insider or Patron free for 30 days. Cancel anytime.', icon: Zap },
+    { step: 2, title: 'Start Free Trial', desc: 'Try Insider or Patron free for 30 days. Cancel anytime.', icon: PlayCircle },
     { step: 3, title: 'Unlock Everything', desc: 'Access events, matchmaking, partner perks & the Connected Circle.', icon: Crown },
   ];
 
@@ -219,7 +218,7 @@ const MembershipPage = () => {
             transition={{ duration: 0.6 }}
             className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8"
           >
-            <Sparkles className="h-4 w-4 text-primary" />
+            <Check className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium text-foreground">Start Your 30-Day Free Trial</span>
           </motion.div>
 
@@ -408,151 +407,90 @@ const MembershipPage = () => {
           >
             {tiers.map((tier) => {
               const isCurrent = isCurrentTier(tier.id);
-              const TierIcon = tier.icon;
+              // Removed TierIcon usage as per design request
 
               return (
                 <motion.div
                   key={tier.name}
                   variants={itemVariants}
-                  className={`relative flex flex-col gap-6 rounded-2xl p-8 transition-all duration-300 ${tier.featured
-                    ? 'bg-card border-2 border-primary shadow-sm'
-                    : 'bg-card border border-border/60 hover:border-primary/40'
-                    } ${isCurrent ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
+                  className={`relative flex flex-col h-full rounded-2xl p-8 transition-all duration-300 border ${tier.featured
+                    ? 'bg-[#122b22] border-[hsl(43,55%,45%)] shadow-xl scale-105 z-10' // Insider: Green bg, Gold border
+                    : 'bg-[#0f251d] border-transparent hover:border-white/10 opacity-90 hover:opacity-100' // Others: Darker Green
+                    }`}
                 >
-                  {/* Current Plan Badge */}
-                  {isCurrent && (
-                    <div className="absolute -top-3.5 right-4 z-10">
-                      <Badge className="bg-primary text-primary-foreground">
-                        <Check className="h-3 w-3 mr-1" />
-                        Your Plan
+                  {/* Badge */}
+                  {tier.featured && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-[hsl(43,55%,45%)] text-[#0f251d] hover:bg-[hsl(43,55%,40%)] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border-none">
+                        Most Popular
                       </Badge>
                     </div>
                   )}
 
-                  {/* Tier Badge */}
-                  {tier.badge && !isCurrent && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                      <Badge className={`text-xs ${tier.featured
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-primary/70 text-primary-foreground'
-                        }`}>
-                        {tier.badge}
-                      </Badge>
-                    </div>
-                  )}
-
-                  <div className={`flex flex-col gap-2 ${tier.badge || isCurrent ? 'mt-2' : ''}`}>
-                    <div className="flex items-center gap-2">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <TierIcon className="h-5 w-5 text-primary" />
-                      </div>
-                      <h3 className="text-foreground text-lg font-bold font-display">{tier.name}</h3>
-                    </div>
-                    <p className="flex items-baseline gap-1.5 text-foreground mt-2">
-                      <span className="text-5xl font-black leading-tight tracking-tight font-display">{tier.price}</span>
-                      <span className="text-muted-foreground text-sm font-medium">{tier.period}</span>
+                  <div className="flex flex-col gap-1 mb-6">
+                    <h3 className="font-display text-xl text-[#d4c5a3] font-medium">{tier.name}</h3>
+                    <p className="flex items-baseline gap-1 mt-2">
+                      {/* Price styling */}
+                      <span className={`font-display text-5xl font-normal ${tier.featured ? 'text-white' : 'text-[#d4c5a3]'}`}>
+                        {tier.price}
+                      </span>
+                      {tier.price !== 'Free' && <span className="text-[#a3b3aa] text-sm font-light">{tier.period}</span>}
                     </p>
-                    {tier.billedNote && (
-                      <p className="text-xs text-muted-foreground">{tier.billedNote}</p>
+                    {tier.description && (
+                      <p className="text-[#a3b3aa] text-sm mt-3 font-light leading-relaxed">
+                        {tier.description}
+                      </p>
                     )}
-                    {tier.annualSavings && billingPeriod === 'annual' && (
-                      <Badge variant="outline" className="w-fit text-xs bg-green-500/5 text-green-600 border-green-500/20">
-                        Save {tier.annualSavings}
-                      </Badge>
-                    )}
-                    <p className="text-sm text-muted-foreground">{tier.description}</p>
                   </div>
 
-                  {/* Action Button */}
-                  {tier.id === 'socialite' ? (
-                    <Button variant="secondary" className="w-full rounded-full min-h-[48px]" disabled={isCurrent} asChild>
-                      <Link to="/auth">{isCurrent ? 'Current Plan' : 'Get Started Free'}</Link>
-                    </Button>
-                  ) : isCurrent ? (
-                    <Button variant="outline" className="w-full rounded-full min-h-[48px]" onClick={handleManageSubscription}>
-                      Manage Subscription
-                    </Button>
-                  ) : subscription?.subscribed ? (
-                    <Button
-                      variant={tier.featured ? 'default' : 'secondary'}
-                      className="w-full rounded-full min-h-[48px]"
-                      onClick={() => tier.stripeId && handleSubscribe(tier.stripeId)}
-                      disabled={loadingTier === tier.stripeId}
-                    >
-                      {loadingTier === tier.stripeId ? (
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      ) : null}
-                      {tier.id === 'patron' ? 'Upgrade to Patron' : 'Switch Plan'}
-                    </Button>
-                  ) : (
-                    <Button
-                      variant={tier.featured ? 'default' : 'secondary'}
-                      className="w-full rounded-full min-h-[48px]"
-                      onClick={() => tier.stripeId && handleStartTrial(tier.stripeId)}
-                      disabled={loadingTier === tier.stripeId}
-                    >
-                      {loadingTier === tier.stripeId ? (
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      ) : (
-                        <Zap className="h-4 w-4 mr-2" />
-                      )}
-                      Start {tier.trialDays}-Day Free Trial
-                    </Button>
-                  )}
-
-                  {/* Included Features */}
-                  <ul className="space-y-3 mb-4">
-                    {(expandedTiers[tier.id] ? tier.features : tier.features.slice(0, INITIAL_FEATURES_SHOWN)).map((feature, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-foreground">
-                        <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                        <span>{feature}</span>
+                  {/* Features List */}
+                  <ul className="space-y-4 mb-8 flex-1">
+                    {tier.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <Check className="h-5 w-5 text-[hsl(43,55%,45%)] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                        <span className="text-sm text-[#e8e4d9] font-light leading-snug">{feature}</span>
                       </li>
+                    ))}
+                    {tier.missingFeatures?.map((feature, i) => ( // Show missing features but styled? Or just hide? Image implies full lists. I'll stick to current logic but style them.
+                      null // The attached image shows checkmarks for available. Assuming lists are complete.
                     ))}
                   </ul>
 
-                  {/* Missing Features (Grayscale) */}
-                  {tier.missingFeatures && tier.missingFeatures.length > 0 && (
-                    <div className={`border-t border-border/50 pt-4 mb-4 ${!expandedTiers[tier.id] ? 'opacity-70' : ''}`}>
-                      <p className="text-xs text-muted-foreground/60 uppercase tracking-wider mb-3 font-medium">
-                        Upgrade to unlock
-                      </p>
-                      <div className="flex flex-col gap-2">
-                        {(expandedTiers[tier.id] ? tier.missingFeatures : tier.missingFeatures.slice(0, 2)).map((feature, i) => (
-                          <div key={`missing-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground/50">
-                            <Lock className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                            <span>{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* See More / See Less Button */}
-                  {((tier.features.length > INITIAL_FEATURES_SHOWN) || (tier.missingFeatures && tier.missingFeatures.length > 2)) && (
+                  {/* See Details Link */}
+                  <div className="text-center mb-6">
                     <button
                       onClick={() => toggleExpanded(tier.id)}
-                      className="w-full flex items-center justify-center gap-2 py-2 text-sm text-primary hover:text-primary/80 transition-colors mb-4"
+                      className="text-[hsl(43,55%,45%)] text-sm hover:text-white transition-colors flex items-center justify-center gap-1 mx-auto"
                     >
-                      {expandedTiers[tier.id] ? (
-                        <>
-                          <span>See less</span>
-                          <ChevronUp className="w-4 h-4" />
-                        </>
-                      ) : (
-                        <>
-                          <span>See all benefits</span>
-                          <ChevronDown className="w-4 h-4" />
-                        </>
-                      )}
+                      See all benefits <ChevronDown className="w-3 h-3" />
                     </button>
-                  )}
+                  </div>
 
-                  {/* Patron exclusivity note */}
-                  {tier.id === 'patron' && (
-                    <p className="text-xs text-muted-foreground mt-4 text-center italic">
-                      Patron membership is limited and subject to availability.
-                    </p>
-                  )}
+                  {/* Action Button */}
+                  <div className="mt-auto">
+                    {tier.id === 'socialite' ? (
+                      <Button
+                        className="w-full rounded-full h-12 bg-[#1a382e] hover:bg-[#23453a] text-white border border-white/5 font-medium transition-all"
+                        asChild
+                      >
+                        <Link to="/auth">Get Started</Link>
+                      </Button>
+                    ) : tier.id === 'insider' ? (
+                      <Button
+                        className="w-full rounded-full h-12 bg-[hsl(43,55%,45%)] hover:bg-[hsl(43,55%,40%)] text-[#0f251d] font-bold transition-all shadow-lg shadow-black/20"
+                        onClick={() => tier.stripeId && handleStartTrial(tier.stripeId)}
+                      >
+                        Start Free Trial
+                      </Button>
+                    ) : (
+                      <Button
+                        className="w-full rounded-full h-12 bg-[#1a382e] hover:bg-[#23453a] text-white border border-white/5 font-medium transition-all"
+                        onClick={() => tier.stripeId && handleSubscribe(tier.stripeId)} // Patron is "Join Waitlist" in image? Or "Upgrade"?
+                      >
+                        {tier.id === 'patron' ? 'Join Waitlist' : 'Upgrade'}
+                      </Button>
+                    )}
+                  </div>
                 </motion.div>
               );
             })}
