@@ -8,13 +8,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
-import { 
-  Crown, 
-  Sparkles, 
-  ArrowRight, 
-  CheckCircle, 
-  Wine, 
-  Users, 
+import {
+  Crown,
+  Sparkles,
+  ArrowRight,
+  CheckCircle,
+  Wine,
+  Users,
   MessageCircle,
   Star,
   Loader2,
@@ -105,7 +105,7 @@ const TheGentlemenPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Require authentication
     if (!user) {
       toast({
@@ -116,7 +116,7 @@ const TheGentlemenPage = () => {
       navigate('/auth?returnTo=/circles/the-gentlemen');
       return;
     }
-    
+
     if (!formData.dressCodeCommitment) {
       toast({
         title: "Dress Code Commitment Required",
@@ -173,19 +173,19 @@ const TheGentlemenPage = () => {
     <Layout>
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
-        <section className="relative min-h-[70vh] flex items-center overflow-hidden">
+        <section className="relative min-h-[60vh] flex items-center overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
-            <img 
-              src={heroImage} 
-              alt="Gentlemen's lounge atmosphere" 
+            <img
+              src={heroImage}
+              alt="Gentlemen's lounge atmosphere"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           </div>
 
-          <div 
-            ref={heroAnimation.ref} 
+          <div
+            ref={heroAnimation.ref}
             className={`container max-w-5xl relative z-10 py-20 text-center scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
             <motion.h1
@@ -223,94 +223,80 @@ const TheGentlemenPage = () => {
           </div>
         </section>
 
-        {/* What It Is */}
-        <section className="py-24 md:py-32">
-          <div 
-            ref={whatIsAnimation.ref} 
-            className={`container max-w-4xl scroll-animate ${whatIsAnimation.isVisible ? 'visible' : ''}`}
+        {/* What It Is + What to Expect - Combined Section */}
+        <section className="py-16 md:py-20">
+          <div
+            ref={whatIsAnimation.ref}
+            className={`container max-w-6xl scroll-animate ${whatIsAnimation.isVisible ? 'visible' : ''}`}
           >
+            {/* What It Is - Compact intro */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={whatIsAnimation.isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7 }}
-              className="bg-card border border-border/50 rounded-2xl p-8 md:p-12"
+              className="text-center mb-12"
             >
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-                  <Crown className="h-7 w-7 text-primary" />
-                </div>
+              <div className="inline-flex items-center gap-3 mb-4">
+                <Crown className="h-6 w-6 text-primary" />
                 <h2 className="font-display text-3xl md:text-4xl text-foreground">What It Is</h2>
               </div>
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                The Gentlemen is a selective men's circle inside Make Friends & Socialize. 
-                This isn't about fashion flexing or networking for transactions—it's about 
-                bringing together men who appreciate timeless style, presence, and the art 
-                of meaningful conversation in refined settings. If you value substance over 
-                flash, this Circle is for you.
+              <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl mx-auto">
+                The Gentlemen is a selective men's circle inside Make Friends & Socialize.
+                Bringing together men who appreciate timeless style, presence, and the art
+                of meaningful conversation in refined settings.
               </p>
             </motion.div>
-          </div>
-        </section>
 
-        {/* What to Expect */}
-        <section className="py-24 md:py-32 bg-secondary/30">
-          <div 
-            ref={expectAnimation.ref} 
-            className={`container max-w-5xl scroll-animate ${expectAnimation.isVisible ? 'visible' : ''}`}
-          >
-            <div className="text-center mb-16">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">The Experience</p>
-              <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-                What to Expect
-              </h2>
+            {/* What to Expect - Horizontal Cards */}
+            <div
+              ref={expectAnimation.ref}
+              className={`scroll-animate ${expectAnimation.isVisible ? 'visible' : ''}`}
+            >
+              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-6 text-center">What to Expect</p>
+
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate={expectAnimation.isVisible ? "visible" : "hidden"}
+                className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+              >
+                {expectations.map((item) => (
+                  <motion.div
+                    key={item.title}
+                    variants={itemVariants}
+                    className="group bg-card border border-border/50 rounded-xl p-4 text-center"
+                  >
+                    <div className="w-10 h-10 mx-auto rounded-lg bg-primary/10 flex items-center justify-center mb-3 transition-colors group-hover:bg-primary/20">
+                      <item.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <h3 className="font-semibold text-foreground text-sm mb-1">{item.title}</h3>
+                    <p className="text-muted-foreground text-xs leading-relaxed">{item.description}</p>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Selectivity Note */}
+              <motion.div
+                variants={itemVariants}
+                initial="hidden"
+                animate={expectAnimation.isVisible ? "visible" : "hidden"}
+                className="mt-8 text-center"
+              >
+                <div className="inline-flex items-center gap-2 border border-border/50 rounded-full px-4 py-2">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    Applications are reviewed to maintain the tone of the circle.
+                  </span>
+                </div>
+              </motion.div>
             </div>
-
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={expectAnimation.isVisible ? "visible" : "hidden"}
-              className="grid md:grid-cols-2 gap-6"
-            >
-              {expectations.map((item) => (
-                <motion.div
-                  key={item.title}
-                  variants={itemVariants}
-                  className="group bg-card border border-border/50 rounded-2xl p-6 hover-lift"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 transition-colors group-hover:bg-primary/20">
-                      <item.icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-xl text-foreground mb-2">{item.title}</h3>
-                      <p className="text-muted-foreground">{item.description}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            {/* Selectivity Note */}
-            <motion.div
-              variants={itemVariants}
-              initial="hidden"
-              animate={expectAnimation.isVisible ? "visible" : "hidden"}
-              className="mt-12 text-center"
-            >
-              <div className="inline-flex items-center gap-2 glass border border-border/50 rounded-full px-6 py-3">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
-                  To maintain the tone of the circle, applications are reviewed.
-                </span>
-              </div>
-            </motion.div>
           </div>
         </section>
 
         {/* Application Form */}
-        <section id="apply" className="py-24 md:py-32">
-          <div 
-            ref={formAnimation.ref} 
+        <section id="apply" className="py-16 md:py-20">
+          <div
+            ref={formAnimation.ref}
             className={`container max-w-2xl scroll-animate ${formAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-12">

@@ -222,8 +222,8 @@ export default function PortalDashboard() {
         <RelationshipHealthSection userId={user.id} />
       )}
 
-      {/* Quick Actions */}
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      {/* Quick Actions - Hidden on mobile since MobileDashboardNav handles navigation */}
+      <div className="hidden md:grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {quickActions.filter(a => a.show).map((action) => (
           <Card
             key={action.title}

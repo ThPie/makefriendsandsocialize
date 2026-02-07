@@ -4,14 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/layout/Layout";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { motion } from "framer-motion";
-import { 
-  Sparkles, 
-  ArrowRight, 
-  Crown, 
-  MessageCircle, 
-  Users, 
-  ClipboardCheck, 
-  Mail, 
+import {
+  Sparkles,
+  ArrowRight,
+  Crown,
+  MessageCircle,
+  Users,
+  ClipboardCheck,
+  Mail,
   CheckCircle,
   Star
 } from "lucide-react";
@@ -117,7 +117,7 @@ const CirclesPage = () => {
         <section className="relative min-h-[70vh] flex items-center overflow-hidden">
           {/* Background gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-secondary/50 via-background to-background" />
-          
+
           {/* Floating Elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <motion.div
@@ -132,8 +132,8 @@ const CirclesPage = () => {
             />
           </div>
 
-          <div 
-            ref={heroAnimation.ref} 
+          <div
+            ref={heroAnimation.ref}
             className={`container max-w-5xl relative z-10 py-20 text-center scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
             <motion.div
@@ -163,8 +163,8 @@ const CirclesPage = () => {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
             >
-              Make Friends & Socialize is a private social club—not a dating app. 
-              Circles are curated communities inside the club, built around shared tastes, 
+              Make Friends & Socialize is a private social club—not a dating app.
+              Circles are curated communities inside the club, built around shared tastes,
               culture, and connection.
             </motion.p>
 
@@ -198,8 +198,8 @@ const CirclesPage = () => {
 
         {/* Circles Section */}
         <section id="circles" className="py-24 md:py-32">
-          <div 
-            ref={circlesAnimation.ref} 
+          <div
+            ref={circlesAnimation.ref}
             className={`container max-w-5xl scroll-animate ${circlesAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -236,10 +236,10 @@ const CirclesPage = () => {
                   <p className="text-muted-foreground leading-relaxed mb-6">{circle.description}</p>
                   <div className="flex flex-wrap gap-2 mb-6">
                     {circle.tags.map((tag) => (
-                      <Badge 
-                        key={tag} 
-                        variant="secondary" 
-                        className={tag === "Free for All" 
+                      <Badge
+                        key={tag}
+                        variant="secondary"
+                        className={tag === "Free for All"
                           ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20"
                           : "bg-secondary/50 text-foreground/80 border-border/50"
                         }
@@ -261,9 +261,9 @@ const CirclesPage = () => {
         </section>
 
         {/* How Circles Work */}
-        <section className="py-24 md:py-32 bg-secondary/30">
-          <div 
-            ref={howItWorksAnimation.ref} 
+        <section className="py-16 md:py-20">
+          <div
+            ref={howItWorksAnimation.ref}
             className={`container max-w-5xl scroll-animate ${howItWorksAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -309,9 +309,9 @@ const CirclesPage = () => {
         </section>
 
         {/* Membership Integration */}
-        <section className="py-24 md:py-32">
-          <div 
-            ref={membershipAnimation.ref} 
+        <section className="py-16 md:py-20">
+          <div
+            ref={membershipAnimation.ref}
             className={`container max-w-5xl scroll-animate ${membershipAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -334,11 +334,10 @@ const CirclesPage = () => {
                 <motion.div
                   key={tier.name}
                   variants={itemVariants}
-                  className={`bg-card border rounded-2xl p-6 ${
-                    tier.highlight 
-                      ? 'border-primary/50 ring-1 ring-primary/20' 
+                  className={`bg-card border rounded-2xl p-6 ${tier.highlight
+                      ? 'border-primary/50 ring-1 ring-primary/20'
                       : 'border-border/50'
-                  }`}
+                    }`}
                 >
                   {tier.highlight && (
                     <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">

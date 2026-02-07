@@ -68,7 +68,7 @@ export default function SlowDatingLandingPage() {
   // Smart redirect logic for authenticated users
   useEffect(() => {
     if (authLoading || profileLoading) return;
-    
+
     if (user) {
       if (hasDatingProfile && datingProfileStatus === 'active') {
         navigate('/portal/slow-dating', { replace: true });
@@ -88,16 +88,16 @@ export default function SlowDatingLandingPage() {
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
-          <img 
-            src={slowDatingImage} 
-            alt="Elegant couple" 
+          <img
+            src={slowDatingImage}
+            alt="Elegant couple"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
         </div>
 
         {/* Content */}
-        <motion.div 
+        <motion.div
           className="relative z-10 container mx-auto px-6 py-20 text-center"
           initial="hidden"
           animate="visible"
@@ -110,18 +110,18 @@ export default function SlowDatingLandingPage() {
             </span>
           </motion.div>
 
-          <motion.h1 
+          <motion.h1
             variants={itemVariants}
             className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6"
           >
             Slow <span className="text-gradient">Dating</span>
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             variants={itemVariants}
             className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
           >
-            Intentional introductions for those who value depth over speed. 
+            Intentional introductions for those who value depth over speed.
             One meaningful connection at a time, curated by humans who understand what matters.
           </motion.p>
 
@@ -153,7 +153,7 @@ export default function SlowDatingLandingPage() {
           </motion.div>
 
           {/* Stats */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto"
           >
@@ -167,7 +167,7 @@ export default function SlowDatingLandingPage() {
         </motion.div>
 
         {/* Scroll Indicator */}
-        <motion.div 
+        <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
@@ -181,7 +181,7 @@ export default function SlowDatingLandingPage() {
       {/* Benefits Section */}
       <section className="py-20 px-6 bg-secondary/5">
         <div className="container mx-auto max-w-6xl">
-          <motion.div 
+          <motion.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -222,7 +222,7 @@ export default function SlowDatingLandingPage() {
       {/* How It Works Section */}
       <section className="py-20 px-6">
         <div className="container mx-auto max-w-4xl">
-          <motion.div 
+          <motion.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -328,7 +328,7 @@ export default function SlowDatingLandingPage() {
 
       {/* Mobile Sticky CTA */}
       {isMobile && !user && (
-        <motion.div 
+        <motion.div
           className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur border-t border-border z-50"
           initial={{ y: 100 }}
           animate={{ y: 0 }}

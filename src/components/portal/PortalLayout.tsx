@@ -38,6 +38,7 @@ import { PendingMemberBanner } from './PendingMemberBanner';
 import { PortalBreadcrumb } from './PortalBreadcrumb';
 import { canAccessProtectedFeatures, getRestrictedRoutesForPending } from '@/lib/auth-redirect';
 import { InactivityWarningModal } from '@/components/auth/InactivityWarningModal';
+import { MobileDashboardNav } from './MobileDashboardNav';
 
 interface PortalLayoutProps {
   children: ReactNode;
@@ -242,11 +243,20 @@ export function PortalLayout({ children }: PortalLayoutProps) {
           <main className="flex-1 overflow-auto">
             {/* Mobile Header */}
             <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden">
-              <div className="flex items-center">
-                <SidebarTrigger />
-                <BrandLogo className="ml-3 h-8 w-auto" height={32} width={96} />
+              <div className="flex items-center gap-3">
+                <Link to="/" className="flex items-center gap-2">
+                  <BrandLogo className="h-8 w-auto" height={32} width={96} />
+                </Link>
               </div>
-              <NotificationBell />
+              <div className="flex items-center gap-3">
+                <NotificationBell />
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={profile?.avatar_urls?.[0]} />
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
             </header>
 
             {/* Desktop Notification Bell */}
@@ -254,15 +264,22 @@ export function PortalLayout({ children }: PortalLayoutProps) {
               <NotificationBell />
             </div>
 
-            <div className="p-8 md:p-12 lg:p-16">
+            <div className="p-4 md:p-8 lg:p-12">
               {/* Pending Member Banner */}
               {isPending && <PendingMemberBanner className="mb-6" />}
 
               {/* Trial Countdown Banner - pass subscription to avoid duplicate API calls */}
               <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
 
-              {/* Breadcrumb Navigation */}
-              <PortalBreadcrumb type="portal" />
+              {/* Mobile Dashboard Navigation - only show on dashboard page */}
+              {location.pathname === '/portal' && (
+                <MobileDashboardNav onSignOut={handleSignOut} className="mb-8" />
+              )}
+
+              {/* Breadcrumb Navigation - hide on mobile dashboard */}
+              <div className={location.pathname === '/portal' ? 'hidden md:block' : ''}>
+                <PortalBreadcrumb type="portal" />
+              </div>
 
               <PageTransition>
                 {children}

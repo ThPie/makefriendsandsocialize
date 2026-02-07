@@ -185,9 +185,9 @@ const MembershipPage = () => {
   ];
 
   const valueHighlights = [
-    { icon: Heart, label: 'Slow Dating', sublabel: 'Curated matchmaking', color: 'text-pink-500', bg: 'bg-pink-500/10' },
-    { icon: Gift, label: 'Partner Perks', sublabel: 'Exclusive discounts', color: 'text-amber-500', bg: 'bg-amber-500/10' },
-    { icon: Briefcase, label: 'Business Leads', sublabel: 'Patrons receive leads', color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { icon: Heart, label: 'Slow Dating', sublabel: 'Curated matchmaking', color: 'text-primary', bg: 'bg-primary/10' },
+    { icon: Gift, label: 'Partner Perks', sublabel: 'Exclusive discounts', color: 'text-[hsl(var(--accent-gold))]', bg: 'bg-[hsl(var(--accent-gold))]/10' },
+    { icon: Briefcase, label: 'Business Leads', sublabel: 'Patrons receive leads', color: 'text-primary', bg: 'bg-primary/10' },
   ];
 
 
@@ -206,7 +206,7 @@ const MembershipPage = () => {
             backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuA1LPDNLmTM3QdP2Pr0_KuoEX2ABfPK8uOWYED8mrY7Vm_PWmos6JzhSkimaZ6s4lDEw-_pnBlX4nJbSAAMUJJrDg5sVnr05RQtaY2O0PShRnO4btK8Y248sf2ZXAIAx6DnGZIL388TKe51HP_Wwbt_2LkZ9FisLlXFm4XbwcttGVEcwEsoaIbo_T4KcuNryiU09AJ5jR-ds4q_z8noYp2Ga4TC-heUZNwTIoeTOsAJ5Xl7lsGhw4vlFiN2rW9ANb9IZSoxFaCWsxtA")'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background" />
 
 
         <div
@@ -229,7 +229,7 @@ const MembershipPage = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
           >
-            Join an Inner Circle of <span className="text-gradient">Distinction</span>
+            Join an Inner Circle of <span className="text-primary">Distinction</span>
           </motion.h1>
 
           <motion.p
@@ -278,7 +278,7 @@ const MembershipPage = () => {
       </section>
 
       {/* Value Highlights */}
-      <section className="py-12 w-full bg-secondary/30">
+      <section className="py-10 w-full">
         <div className="container max-w-4xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {valueHighlights.map((item, index) => (
@@ -303,7 +303,7 @@ const MembershipPage = () => {
       </section>
 
       {/* Legacy Section */}
-      <section className="py-24 md:py-32 w-full">
+      <section className="py-16 md:py-20 w-full">
         <div
           ref={legacyAnimation.ref}
           className={`container max-w-6xl scroll-animate ${legacyAnimation.isVisible ? 'visible' : ''}`}
@@ -361,7 +361,7 @@ const MembershipPage = () => {
       </section>
 
       {/* Pricing Tiers */}
-      <section className="py-24 md:py-32 w-full bg-secondary/30">
+      <section className="py-16 md:py-20 w-full">
         <div
           ref={tiersAnimation.ref}
           className={`container max-w-6xl scroll-animate ${tiersAnimation.isVisible ? 'visible' : ''}`}
@@ -415,8 +415,8 @@ const MembershipPage = () => {
                   key={tier.name}
                   variants={itemVariants}
                   className={`relative flex flex-col gap-6 rounded-2xl p-8 transition-all duration-300 ${tier.featured
-                    ? 'bg-gradient-to-b from-primary/10 to-card border-2 border-primary shadow-xl shadow-primary/10'
-                    : 'bg-card border border-border/50 hover:border-primary/50 hover-lift'
+                    ? 'bg-card border-2 border-primary shadow-sm'
+                    : 'bg-card border border-border/60 hover:border-primary/40'
                     } ${isCurrent ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}`}
                 >
                   {/* Current Plan Badge */}
@@ -561,7 +561,7 @@ const MembershipPage = () => {
       </section>
 
       {/* Application Process */}
-      <section className="py-24 md:py-32 w-full">
+      <section className="py-16 md:py-20 w-full">
         <div
           ref={processAnimation.ref}
           className={`container max-w-5xl scroll-animate ${processAnimation.isVisible ? 'visible' : ''}`}
@@ -605,8 +605,8 @@ const MembershipPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 md:py-32 w-full relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-secondary" />
+      <section className="py-16 md:py-20 w-full relative overflow-hidden">
+        <div className="absolute inset-0 bg-secondary/30" />
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
         </div>

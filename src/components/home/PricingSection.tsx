@@ -34,9 +34,8 @@ const tiers = [
     href: '/auth',
     variant: 'outline' as const,
     popular: false,
-    color: 'from-zinc-500 to-zinc-400',
-    glow: 'bg-zinc-500/5',
-    border: 'border-border dark:border-white/10'
+    glow: 'bg-muted/5',
+    border: 'border-border/60'
   },
   {
     name: 'Insider',
@@ -66,9 +65,8 @@ const tiers = [
     variant: 'default' as const,
     popular: true,
     trial: '30-day free trial',
-    color: 'from-amber-400 to-orange-500',
-    glow: 'bg-amber-500/10',
-    border: 'border-amber-500/30'
+    glow: 'bg-primary/10',
+    border: 'border-primary/40'
   },
   {
     name: 'Patron',
@@ -95,9 +93,8 @@ const tiers = [
     popular: false,
     trial: '30-day free trial',
     exclusivityNote: 'Limited availability',
-    color: 'from-primary to-emerald-600',
-    glow: 'bg-primary/10',
-    border: 'border-primary/30'
+    glow: 'bg-[hsl(var(--accent-gold))]/10',
+    border: 'border-[hsl(var(--accent-gold))]/30'
   },
 ];
 
@@ -112,10 +109,7 @@ export const PricingSection = () => {
   };
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-secondary/10 dark:bg-[#0a1f1a] relative overflow-hidden" id="membership">
-      {/* Ambient Background Glows */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-card/50" id="membership">
 
       <div ref={ref} className="mx-auto max-w-7xl relative z-10">
         {/* Membership Header */}
@@ -124,16 +118,15 @@ export const PricingSection = () => {
             Membership
           </Badge>
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
-            Pricing on <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-primary">your terms</span>
+            Pricing on <span className="text-primary">your terms</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
             Whichever plan you pick, it's free until you love your matches. That's our promise.
           </p>
         </div>
 
-        {/* Billing Toggle */}
         <div className="flex justify-center mb-10">
-          <div className="flex p-1 bg-secondary dark:bg-white/5 rounded-full border border-border dark:border-white/10">
+          <div className="flex p-1 bg-muted/50 rounded-full border border-border/60">
             <button
               onClick={() => setBillingCycle('monthly')}
               className={cn(
@@ -155,14 +148,14 @@ export const PricingSection = () => {
               )}
             >
               Yearly
-              <span className="text-xs bg-amber-500 text-black px-2 py-0.5 rounded-full font-bold">-20%</span>
+              <span className="text-xs bg-[hsl(var(--accent-gold))] text-foreground px-2 py-0.5 rounded-full font-bold">-20%</span>
             </button>
           </div>
         </div>
 
         {/* Mobile Tab Switcher */}
         <div className="md:hidden flex justify-center mb-8">
-          <div className="flex p-1 bg-secondary dark:bg-white/5 rounded-full border border-border dark:border-white/10 backdrop-blur-sm relative">
+          <div className="flex p-1 bg-muted/50 rounded-full border border-border/60">
             {tiers.map((tier) => (
               <button
                 key={tier.id}
@@ -170,18 +163,10 @@ export const PricingSection = () => {
                 className={cn(
                   "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 relative z-10",
                   activeTab === tier.id
-                    ? "text-primary-foreground"
+                    ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                {activeTab === tier.id && (
-                  <div className={cn(
-                    "absolute inset-0 rounded-full shadow-lg transition-all duration-300 -z-10",
-                    tier.id === 'insider' ? "bg-gradient-to-r from-amber-400 to-orange-500" :
-                      tier.id === 'patron' ? "bg-gradient-to-r from-primary to-emerald-600" :
-                        "bg-foreground"
-                  )} />
-                )}
                 {tier.name}
               </button>
             ))}
@@ -206,19 +191,18 @@ export const PricingSection = () => {
               <div
                 key={index}
                 className={cn(
-                  "relative rounded-[2rem] p-8 border backdrop-blur-md transition-all duration-500 flex flex-col h-full group",
-                  "bg-card dark:bg-white/[0.03] hover:bg-secondary/50 dark:hover:bg-white/[0.06]",
+                  "relative rounded-2xl p-8 border transition-all duration-300 flex flex-col h-full",
+                  "bg-card hover:bg-card/80",
                   tier.border,
-                  tier.popular ? "shadow-[0_0_40px_-10px_rgba(251,191,36,0.15)] ring-1 ring-amber-500/20" : "",
+                  tier.popular ? "shadow-sm ring-1 ring-primary/20" : "",
                   isMobileHidden ? "hidden md:flex" : "flex",
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10',
-                  `transition-delay-${index * 100}`
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                 )}
               >
                 {/* Popular Badge */}
                 {tier.popular && (
-                  <div className="absolute top-0 right-0 bg-gradient-to-bl from-amber-500/20 to-transparent pr-4 pt-4 rounded-tr-[2rem]">
-                    <span className="inline-block px-3 py-1 bg-amber-500 text-black text-xs font-bold rounded-full uppercase tracking-wider">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="inline-block px-4 py-1.5 bg-primary text-primary-foreground text-xs font-semibold rounded-full uppercase tracking-wider">
                       Most Popular
                     </span>
                   </div>
@@ -236,7 +220,7 @@ export const PricingSection = () => {
                   </div>
 
                   {billingCycle === 'yearly' && tier.yearlyNote && (
-                    <p className="text-xs text-amber-600 dark:text-amber-500/80 font-medium">{tier.yearlyNote}</p>
+                    <p className="text-xs text-primary font-medium">{tier.yearlyNote}</p>
                   )}
 
                   <p className="text-muted-foreground text-sm mt-4 min-h-[40px]">
@@ -250,16 +234,11 @@ export const PricingSection = () => {
                 {/* Features */}
                 <ul className="space-y-4 mb-8 flex-1">
                   {visibleFeatures.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-start gap-3 group/item">
-                      <div className={cn(
-                        "w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors",
-                        tier.popular ? "bg-amber-500/20 text-amber-600 dark:text-amber-500 group-hover/item:bg-amber-500 group-hover/item:text-black"
-                          : tier.name === 'Patron' ? "bg-primary/20 text-primary"
-                            : "bg-muted text-foreground dark:bg-white/10 dark:text-white"
-                      )}>
+                    <li key={featureIndex} className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-primary/15 text-primary">
                         <Check className="w-3 h-3" strokeWidth={3} />
                       </div>
-                      <span className="text-muted-foreground dark:text-zinc-300 text-sm font-medium leading-relaxed">{feature}</span>
+                      <span className="text-muted-foreground text-sm font-medium leading-relaxed">{feature}</span>
                     </li>
                   ))}
 
@@ -308,14 +287,8 @@ export const PricingSection = () => {
                 <Button
                   asChild
                   size="lg"
-                  className={cn(
-                    "w-full rounded-xl py-6 text-base font-semibold shadow-xl transition-all duration-300 hover:scale-[1.02]",
-                    tier.popular
-                      ? "bg-gradient-to-r from-amber-400 to-orange-500 text-black hover:from-amber-300 hover:to-orange-400 hover:shadow-amber-500/20"
-                      : tier.name === 'Patron'
-                        ? "bg-gradient-to-r from-primary to-emerald-600 text-white hover:from-primary/90 hover:to-emerald-500 hover:shadow-primary/20"
-                        : "bg-secondary dark:bg-white/10 text-foreground dark:text-white hover:bg-secondary/80 dark:hover:bg-white/20 border border-border dark:border-white/5"
-                  )}
+                  variant={tier.popular ? 'default' : tier.name === 'Patron' ? 'secondary' : 'outline'}
+                  className="w-full rounded-xl py-6 text-base font-semibold"
                 >
                   <Link to={tier.href}>
                     {tier.cta}
