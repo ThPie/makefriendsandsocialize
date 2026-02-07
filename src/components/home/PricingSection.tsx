@@ -109,8 +109,7 @@ export const PricingSection = () => {
   };
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-card/50" id="membership">
-
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-background" id="membership">
       <div ref={ref} className="mx-auto max-w-7xl relative z-10">
         {/* Membership Header */}
         <div className={`text-center mb-10 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
@@ -125,6 +124,7 @@ export const PricingSection = () => {
           </p>
         </div>
 
+        {/* Billing Toggle */}
         <div className="flex justify-center mb-10">
           <div className="flex p-1 bg-muted/50 rounded-full border border-border/60">
             <button
@@ -174,7 +174,7 @@ export const PricingSection = () => {
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {tiers.map((tier, index) => {
             const isMobileHidden = activeTab !== tier.id;
 
@@ -191,71 +191,67 @@ export const PricingSection = () => {
               <div
                 key={index}
                 className={cn(
-                  "relative rounded-2xl p-8 border transition-all duration-300 flex flex-col h-full",
-                  "bg-card hover:bg-card/80",
-                  tier.border,
-                  tier.popular ? "shadow-sm ring-1 ring-primary/20" : "",
+                  "relative flex flex-col gap-6 rounded-2xl p-8 transition-all duration-300",
+                  tier.popular
+                    ? "bg-card border-2 border-primary shadow-sm"
+                    : "bg-card border border-border/60 hover:border-primary/40",
                   isMobileHidden ? "hidden md:flex" : "flex",
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                 )}
               >
                 {/* Popular Badge */}
                 {tier.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="inline-block px-4 py-1.5 bg-primary text-primary-foreground text-xs font-semibold rounded-full uppercase tracking-wider">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
+                    <Badge className="bg-primary text-primary-foreground text-xs">
                       Most Popular
-                    </span>
+                    </Badge>
                   </div>
                 )}
 
-                <div className="mb-8">
-                  <h3 className={cn("font-display text-2xl font-bold mb-2 text-foreground")}>
-                    {tier.name}
-                  </h3>
-                  <div className="flex items-baseline gap-1 mb-4">
-                    <span className="font-display text-4xl lg:text-5xl font-bold text-foreground tracking-tight">
+                <div className={cn("flex flex-col gap-2", tier.popular ? "mt-2" : "")}>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-foreground text-lg font-bold font-display">{tier.name}</h3>
+                  </div>
+
+                  <div className="flex items-baseline gap-1.5 text-foreground mt-2">
+                    <span className="text-5xl font-black leading-tight tracking-tight font-display">
                       {displayPrice}
                     </span>
-                    <span className="text-muted-foreground font-medium">{displayPeriod}</span>
+                    <span className="text-muted-foreground text-sm font-medium">{displayPeriod}</span>
                   </div>
 
                   {billingCycle === 'yearly' && tier.yearlyNote && (
                     <p className="text-xs text-primary font-medium">{tier.yearlyNote}</p>
                   )}
 
-                  <p className="text-muted-foreground text-sm mt-4 min-h-[40px]">
+                  <p className="text-sm text-muted-foreground mt-2">
                     {tier.description}
                   </p>
                 </div>
 
-                {/* Divider with Gradient */}
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-border dark:via-white/10 to-transparent mb-8" />
-
                 {/* Features */}
-                <ul className="space-y-4 mb-8 flex-1">
+                <ul className="space-y-3 mb-4 flex-1">
                   {visibleFeatures.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 bg-primary/15 text-primary">
-                        <Check className="w-3 h-3" strokeWidth={3} />
-                      </div>
-                      <span className="text-muted-foreground text-sm font-medium leading-relaxed">{feature}</span>
+                    <li key={featureIndex} className="flex items-start gap-3 text-sm text-foreground">
+                      <Check className="h-5 w-5 text-primary flex-shrink-0" />
+                      <span>{feature}</span>
                     </li>
                   ))}
 
                   {/* Missing Features */}
                   {visibleMissingFeatures && visibleMissingFeatures.length > 0 && (
                     <div className={cn(
-                      "pt-4 opacity-50 transition-opacity hover:opacity-100",
-                      !isExpanded && "opacity-40"
+                      "border-t border-border/50 pt-4 mb-4",
+                      !isExpanded && "opacity-70"
                     )}>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-3 pl-1">
-                        Not Included
+                      <p className="text-xs text-muted-foreground/60 uppercase tracking-wider mb-3 font-medium">
+                        Upgrade to unlock
                       </p>
                       <ul className="space-y-3">
                         {visibleMissingFeatures.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-start gap-3">
-                            <Lock className="w-4 h-4 text-muted-foreground/50 flex-shrink-0 mt-0.5" />
-                            <span className="text-muted-foreground/70 text-sm">{feature}</span>
+                          <li key={featureIndex} className="flex items-start gap-3 text-sm text-muted-foreground/50">
+                            <Lock className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                            <span>{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -267,17 +263,17 @@ export const PricingSection = () => {
                 {(hasMoreFeatures || hasMoreMissing) && (
                   <button
                     onClick={() => toggleExpanded(index)}
-                    className="w-full flex items-center justify-center gap-2 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors mb-6 uppercase tracking-wider font-bold"
+                    className="w-full flex items-center justify-center gap-2 py-2 text-sm text-primary hover:text-primary/80 transition-colors mb-4"
                   >
                     {isExpanded ? (
                       <>
-                        <span>Show Less</span>
-                        <ChevronUp className="w-3 h-3" />
+                        <span>See less</span>
+                        <ChevronUp className="w-4 h-4" />
                       </>
                     ) : (
                       <>
-                        <span>Compare All Features</span>
-                        <ChevronDown className="w-3 h-3" />
+                        <span>See all benefits</span>
+                        <ChevronDown className="w-4 h-4" />
                       </>
                     )}
                   </button>
@@ -286,9 +282,8 @@ export const PricingSection = () => {
                 {/* CTA Button */}
                 <Button
                   asChild
-                  size="lg"
-                  variant={tier.popular ? 'default' : tier.name === 'Patron' ? 'secondary' : 'outline'}
-                  className="w-full rounded-xl py-6 text-base font-semibold"
+                  variant={tier.popular ? 'default' : 'secondary'}
+                  className="w-full rounded-full min-h-[48px]"
                 >
                   <Link to={tier.href}>
                     {tier.cta}
@@ -298,8 +293,6 @@ export const PricingSection = () => {
             );
           })}
         </div>
-
-        {/* Removed small value highlight cards per user request */}
       </div>
     </section>
   );
