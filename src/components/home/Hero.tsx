@@ -72,7 +72,7 @@ export const Hero = () => {
 
           <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6">
             Curated Events,<br />
-            <span className="text-white">
+            <span className="italic text-primary">
               Meaningful Connections
             </span>
           </h1>
@@ -82,7 +82,7 @@ export const Hero = () => {
         </div>
 
         {/* COMPACT CARD - Avatars + Join Text + Apply Button */}
-        <div className="inline-flex flex-wrap items-center gap-4 bg-black/60 border border-white/10 rounded-full pl-2 pr-2 py-2 w-fit backdrop-blur-sm">
+        <div className="inline-flex flex-wrap items-center gap-4 bg-[hsl(155,25%,12%)]/95 border border-primary/30 rounded-full pl-2 pr-2 py-2 w-fit backdrop-blur-sm shadow-xl">
           {/* Avatars */}
           <div className="flex -space-x-3 shrink-0 pl-2">
             {avatars.map((url, i) => (
@@ -90,7 +90,7 @@ export const Hero = () => {
                 key={i}
                 src={url}
                 alt=""
-                className="w-10 h-10 rounded-full border border-white/20 object-cover"
+                className="w-10 h-10 rounded-full border border-primary/30 object-cover"
                 loading="lazy"
               />
             ))}
@@ -98,14 +98,14 @@ export const Hero = () => {
 
           {/* Join Text */}
           <span className="text-white text-sm sm:text-base font-medium whitespace-nowrap px-2">
-            Join {displayCount > 0 ? displayCount.toLocaleString() : '—'}+ members
+            Join <span className="text-primary font-bold font-display italic">{displayCount > 0 ? displayCount.toLocaleString() : '—'}+</span> members
           </span>
 
           {/* Apply Button */}
           <Button
             size="sm"
             asChild
-            className="rounded-full bg-white text-black hover:bg-white/90 font-medium px-6 h-10 shrink-0"
+            className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-6 h-10 shrink-0 border border-primary/20"
           >
             <Link to="/membership">
               Apply Now
