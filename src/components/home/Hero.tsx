@@ -66,13 +66,13 @@ export const Hero = () => {
         {/* HEADLINE SECTION */}
         <div className="max-w-4xl mb-8">
           {/* Tagline above title */}
-          <p className="text-white/60 text-sm md:text-base font-medium mb-4 uppercase tracking-widest">
+          <p className="text-white/60 text-xs md:text-sm font-medium mb-4 uppercase tracking-[0.2em]">
             Where Quality Meets Community
           </p>
 
           <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6">
             Curated Events,<br />
-            <span className="italic text-primary">
+            <span className="italic text-primary font-light text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
               Meaningful Connections
             </span>
           </h1>
