@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Users } from 'lucide-react';
 import { useEffect } from 'react';
 import { parseLocalDate } from '@/lib/date-utils';
@@ -33,7 +34,7 @@ interface EventCardProps {
 const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
   ({ event, className = '' }, ref) => {
     return (
-      <div 
+      <div
         ref={ref}
         className={`flex flex-col gap-4 rounded-xl bg-card group hover:shadow-elegant transition-all duration-500 border border-border hover:border-primary/30 hover:-translate-y-2 overflow-hidden ${className}`}
       >
@@ -71,9 +72,9 @@ const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
             )}
             <div className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              {event.rsvp_count && event.rsvp_count > 0 
+              {event.rsvp_count && event.rsvp_count > 0
                 ? `${event.rsvp_count} attending`
-                : event.capacity 
+                : event.capacity
                   ? `${event.capacity} spots`
                   : 'Open event'
               }
@@ -126,7 +127,7 @@ export const EventSection = () => {
         .neq('status', 'past')
         .order('date', { ascending: true })
         .limit(6);
-      
+
       if (error) throw error;
       return data as Event[];
     },
@@ -157,15 +158,19 @@ export const EventSection = () => {
   return (
     <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="events">
       <div ref={ref} className="mx-auto max-w-7xl">
-        <div className={`scroll-animate text-center mb-12 md:mb-16 ${isVisible ? 'visible' : ''}`}>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight tracking-tight text-foreground">
-            Upcoming <span className="text-primary">Gatherings</span>
+        <div className={`scroll-animate mb-12 md:mb-16 ${isVisible ? 'visible' : ''}`}>
+          <span className="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">
+            Calendar
+          </span>
+          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-semibold leading-tight text-foreground max-w-2xl">
+            Upcoming <span className="italic text-primary">Gatherings</span>
           </h2>
-          <p className="text-muted-foreground text-lg mt-3 max-w-2xl mx-auto">
-            From intimate dinners to grand galas—experience gatherings designed to inspire.
+          <p className="text-muted-foreground text-lg mt-4 max-w-xl leading-relaxed font-light">
+            From intimate dinners to grand galas—experience gatherings designed to inspire connection.
           </p>
         </div>
-        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-6 px-6 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible scrollbar-hide">
+
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 -mx-6 px-6 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible scrollbar-hide">
           {isLoading ? (
             <>
               <div className="snap-center shrink-0 w-[85vw] md:w-auto"><EventCardSkeleton /></div>
@@ -175,29 +180,29 @@ export const EventSection = () => {
           ) : events.length > 0 ? (
             events.map((event, index) => (
               <div key={event.id} className="snap-center shrink-0 w-[85vw] md:w-auto">
-                <EventCard 
-                  event={event} 
+                <EventCard
+                  event={event}
                   className={`scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
                 />
               </div>
             ))
           ) : (
-            <div className="w-full text-center py-12 text-muted-foreground">
-              <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <div className="w-full text-left py-12 text-muted-foreground col-span-full">
+              <Calendar className="h-12 w-12 mb-4 opacity-50" />
               <p>No upcoming events at the moment. Check back soon!</p>
             </div>
           )}
         </div>
-        <div className={`mt-10 text-center scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <Link
-            to="/events"
-            className="inline-flex items-center gap-2 text-primary font-bold hover:opacity-80 transition-opacity group min-h-[44px] py-2"
-          >
-            View All Events
-            <span className="material-symbols-outlined transition-transform group-hover:translate-x-1 text-lg">
-              arrow_forward
-            </span>
-          </Link>
+
+        <div className={`mt-12 text-left scroll-animate ${isVisible ? 'visible' : ''}`}>
+          <Button asChild variant="outline" className="rounded-full px-8 border-primary/20 hover:bg-primary hover:text-white transition-colors">
+            <Link to="/events" className="inline-flex items-center gap-2">
+              View All Events
+              <span className="material-symbols-outlined text-lg">
+                arrow_forward
+              </span>
+            </Link>
+          </Button>
         </div>
       </div>
     </section>

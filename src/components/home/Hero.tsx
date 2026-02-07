@@ -70,34 +70,34 @@ export const Hero = () => {
             Where Quality Meets Community
           </p>
 
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6">
             Curated Events,<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600">
+            <span className="text-white">
               Meaningful Connections
             </span>
           </h1>
-          <p className="text-white/70 text-base md:text-lg max-w-xl leading-relaxed">
+          <p className="text-white/80 text-base md:text-lg max-w-xl leading-relaxed font-light">
             A private social club for professionals seeking genuine friendships, intentional networking, and authentic dating experiences.
           </p>
         </div>
 
         {/* COMPACT CARD - Avatars + Join Text + Apply Button */}
-        <div className="inline-flex flex-wrap items-center gap-3 sm:gap-4 bg-black/40 backdrop-blur-md border border-white/20 rounded-full px-4 sm:px-5 py-2.5 sm:py-3 w-fit">
+        <div className="inline-flex flex-wrap items-center gap-4 bg-black/60 border border-white/10 rounded-full pl-2 pr-2 py-2 w-fit backdrop-blur-sm">
           {/* Avatars */}
-          <div className="flex -space-x-2 shrink-0">
+          <div className="flex -space-x-3 shrink-0 pl-2">
             {avatars.map((url, i) => (
               <img
                 key={i}
                 src={url}
                 alt=""
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-white/60 object-cover shadow-md"
+                className="w-10 h-10 rounded-full border border-white/20 object-cover"
                 loading="lazy"
               />
             ))}
           </div>
 
           {/* Join Text */}
-          <span className="text-white text-sm sm:text-base font-medium whitespace-nowrap">
+          <span className="text-white text-sm sm:text-base font-medium whitespace-nowrap px-2">
             Join {displayCount > 0 ? displayCount.toLocaleString() : '—'}+ members
           </span>
 
@@ -105,11 +105,11 @@ export const Hero = () => {
           <Button
             size="sm"
             asChild
-            className="rounded-full bg-white text-black hover:bg-white/90 font-semibold px-4 sm:px-5 shrink-0"
+            className="rounded-full bg-white text-black hover:bg-white/90 font-medium px-6 h-10 shrink-0"
           >
             <Link to="/membership">
               Apply Now
-              <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </div>

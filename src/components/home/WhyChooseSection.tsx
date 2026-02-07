@@ -28,30 +28,33 @@ export const WhyChooseSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="why">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-muted/30" id="why">
       <div ref={ref} className="mx-auto max-w-7xl">
-        <div className={`text-center mb-12 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
-            Why Members <span className="text-primary">Choose Us</span>
+        <div className={`mb-12 md:mb-20 scroll-animate ${isVisible ? 'visible' : ''}`}>
+          <span className="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">
+            Our Ethos
+          </span>
+          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 max-w-3xl">
+            Cultivating <span className="italic text-primary">meaningful</span> connection in a digital world.
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            A private community for professionals who value depth over volume.
+          <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed font-light">
+            We curate spaces where ambition meets distinct character, fostering a private community for professionals who value depth over volume.
           </p>
         </div>
 
-        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-6 px-6 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-visible scrollbar-hide">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
             <div
               key={index}
-              className={`snap-center shrink-0 w-[85vw] sm:w-[70vw] md:w-auto group bg-card rounded-2xl p-8 shadow-elegant border border-border/50 transition-all duration-500 card-animate scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''} text-center`}
+              className={`group flex flex-col items-start p-6 rounded-2xl transition-all duration-500 hover:bg-background/50 border border-transparent hover:border-border/60 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
             >
-              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors mx-auto">
-                <feature.icon className="w-7 h-7 text-primary" />
+              <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                <feature.icon className="w-5 h-5" />
               </div>
-              <h3 className="font-display text-xl md:text-2xl font-semibold text-foreground mb-3">
+              <h3 className="font-display text-xl font-semibold text-foreground mb-3">
                 {feature.title}
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 {feature.description}
               </p>
             </div>

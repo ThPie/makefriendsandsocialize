@@ -81,7 +81,7 @@ const ReviewForm = ({
           rows={4}
         />
       </div>
-      
+
       {/* Photo Upload */}
       <div className="space-y-2">
         <Label className="text-sm text-muted-foreground">Add your photo (optional)</Label>
@@ -115,7 +115,7 @@ const ReviewForm = ({
           </label>
         )}
       </div>
-      
+
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">Rating:</span>
         <div className="flex gap-1">
@@ -127,11 +127,10 @@ const ReviewForm = ({
               className="p-0.5"
             >
               <Star
-                className={`h-5 w-5 transition-colors ${
-                  star <= formData.rating
+                className={`h-5 w-5 transition-colors ${star <= formData.rating
                     ? 'text-yellow-500 fill-yellow-500'
                     : 'text-muted-foreground/30 hover:text-yellow-400'
-                }`}
+                  }`}
               />
             </button>
           ))}
@@ -337,90 +336,94 @@ export const TestimonialsSection = () => {
   }
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="testimonials">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-muted/30" id="testimonials">
       <div ref={ref} className="mx-auto max-w-7xl">
-        <div className={`text-center mb-12 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <span className="inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-4">
-            Testimonials
+        <div className={`mb-12 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
+          <span className="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">
+            Community
           </span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-semibold text-foreground mb-4">
-            What Our <span className="text-primary">Members</span> Say
+          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 max-w-2xl">
+            Voices from the <span className="italic text-primary">Circle</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Hear from our community of extraordinary individuals.
+          <p className="text-muted-foreground text-lg max-w-xl leading-relaxed font-light">
+            Hear from our community of extraordinary individuals who value authentic connection.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => {
             const isUnsplash = testimonial.image_url?.includes('unsplash.com');
-            const optimizedSrc = isUnsplash 
+            const optimizedSrc = isUnsplash
               ? getUnsplashUrl(testimonial.image_url!, 96, 96)
               : testimonial.image_url;
-            const srcSet = isUnsplash 
+            const srcSet = isUnsplash
               ? getUnsplashSrcSet(testimonial.image_url!, [48, 96, 144])
               : undefined;
             const sourceBadge = getSourceBadge(testimonial.source);
-            
+
             return (
               <div
                 key={testimonial.id}
-                className={`relative bg-card rounded-2xl p-8 border border-border/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-elegant scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+                className={`relativ flex flex-col justify-between bg-card rounded-2xl p-8 border border-transparent hover:border-border/60 transition-all duration-500 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <Quote className="w-10 h-10 text-primary/20" />
-                  {sourceBadge && (
-                    <Badge variant="outline" className="text-xs">
-                      {sourceBadge}
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-muted-foreground leading-relaxed mb-4 italic">
-                  "{testimonial.quote}"
-                </p>
-                {testimonial.rating && (
-                  <div className="flex gap-0.5 mb-4">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`h-4 w-4 ${
-                          star <= testimonial.rating!
-                            ? 'text-yellow-500 fill-yellow-500'
-                            : 'text-muted-foreground/30'
-                        }`}
-                      />
-                    ))}
+                <div>
+                  <div className="flex items-start justify-between mb-6">
+                    <Quote className="w-8 h-8 text-primary/10" />
+                    {sourceBadge && (
+                      <Badge variant="outline" className="text-xs font-normal text-muted-foreground border-border/50">
+                        {sourceBadge}
+                      </Badge>
+                    )}
                   </div>
-                )}
-                <div className="flex items-center gap-4 min-h-[44px]">
-                  {optimizedSrc ? (
-                    <img
-                      src={optimizedSrc}
-                      srcSet={srcSet}
-                      sizes={avatarSizes}
-                      alt={testimonial.name}
-                      loading="lazy"
-                      decoding="async"
-                      width={48}
-                      height={48}
-                      className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/20 flex-shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-primary/20 flex-shrink-0">
-                      <span className="text-primary font-semibold text-lg">
-                        {testimonial.name.charAt(0)}
-                      </span>
+                  <p className="text-foreground/80 leading-relaxed mb-6 font-light">
+                    "{testimonial.quote}"
+                  </p>
+                </div>
+
+                <div>
+                  {testimonial.rating && (
+                    <div className="flex gap-0.5 mb-4">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={`h-3 w-3 ${star <= testimonial.rating!
+                              ? 'text-[hsl(var(--accent-gold))] fill-[hsl(var(--accent-gold))]'
+                              : 'text-muted-foreground/20'
+                            }`}
+                        />
+                      ))}
                     </div>
                   )}
-                  <div>
-                    <p className="font-display text-lg font-semibold text-foreground">
-                      {testimonial.name}
-                    </p>
-                    {testimonial.role && (
-                      <p className="text-sm text-muted-foreground">
-                        {testimonial.role}
-                      </p>
+                  <div className="flex items-center gap-4">
+                    {optimizedSrc ? (
+                      <img
+                        src={optimizedSrc}
+                        srcSet={srcSet}
+                        sizes={avatarSizes}
+                        alt={testimonial.name}
+                        loading="lazy"
+                        decoding="async"
+                        width={48}
+                        height={48}
+                        className="w-10 h-10 rounded-full object-cover ring-1 ring-border flex-shrink-0 grayscale hover:grayscale-0 transition-all duration-500"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center ring-1 ring-border flex-shrink-0">
+                        <span className="text-primary font-medium text-lg">
+                          {testimonial.name.charAt(0)}
+                        </span>
+                      </div>
                     )}
+                    <div>
+                      <p className="font-display text-base font-semibold text-foreground">
+                        {testimonial.name}
+                      </p>
+                      {testimonial.role && (
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                          {testimonial.role}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -429,7 +432,7 @@ export const TestimonialsSection = () => {
         </div>
 
         {/* Leave a Review CTA */}
-        <div className={`text-center mt-12 scroll-animate scroll-animate-delay-3 ${isVisible ? 'visible' : ''}`}>
+        <div className={`mt-16 text-left scroll-animate scroll-animate-delay-3 ${isVisible ? 'visible' : ''}`}>
           {showForm ? (
             <ReviewForm
               formData={formData}
@@ -444,8 +447,8 @@ export const TestimonialsSection = () => {
               onImageRemove={handleImageRemove}
             />
           ) : (
-            <Button variant="outline" size="lg" className="rounded-full px-8" onClick={() => setShowForm(true)}>
-              <MessageSquarePlus className="h-5 w-5 mr-2" />
+            <Button variant="outline" className="rounded-full px-8 border-primary/20 hover:bg-primary hover:text-white transition-colors" onClick={() => setShowForm(true)}>
+              <MessageSquarePlus className="h-4 w-4 mr-2" />
               Share Your Experience
             </Button>
           )}
