@@ -118,10 +118,6 @@ const MembershipPage = () => {
     return tierMap[subscription.tier || 'patron'] === tierName;
   };
 
-  // Calculate daily prices
-  const insiderDailyPrice = (TIER_BENEFITS.insider.monthlyPrice / 30).toFixed(2);
-  const patronDailyPrice = (TIER_BENEFITS.patron.monthlyPrice / 30).toFixed(2);
-
   const tiers = [
     {
       id: 'socialite' as const,
@@ -143,10 +139,10 @@ const MembershipPage = () => {
       id: 'insider' as const,
       stripeId: 'member' as const,
       name: TIER_BENEFITS.insider.name,
-      price: billingPeriod === 'monthly' ? `$${insiderDailyPrice}` : `$${TIER_BENEFITS.insider.annualPrice}`,
+      price: billingPeriod === 'monthly' ? `$${TIER_BENEFITS.insider.monthlyPrice}` : `$${TIER_BENEFITS.insider.annualPrice}`,
       annualPrice: `$${TIER_BENEFITS.insider.annualPrice}`,
-      period: billingPeriod === 'monthly' ? '/day' : '/year',
-      billedNote: billingPeriod === 'monthly' ? `billed $${TIER_BENEFITS.insider.monthlyPrice}/mo` : null,
+      period: billingPeriod === 'monthly' ? '/mo' : '/yr',
+      billedNote: billingPeriod === 'annual' ? `billed $${TIER_BENEFITS.insider.annualPrice}/yr` : null,
       description: TIER_BENEFITS.insider.description,
       features: TIER_BENEFITS.insider.features,
       missingFeatures: TIER_BENEFITS.insider.missingFeatures,
@@ -161,10 +157,10 @@ const MembershipPage = () => {
       id: 'patron' as const,
       stripeId: 'fellow' as const,
       name: TIER_BENEFITS.patron.name,
-      price: billingPeriod === 'monthly' ? `$${patronDailyPrice}` : `$${TIER_BENEFITS.patron.annualPrice}`,
+      price: billingPeriod === 'monthly' ? `$${TIER_BENEFITS.patron.monthlyPrice}` : `$${TIER_BENEFITS.patron.annualPrice}`,
       annualPrice: `$${TIER_BENEFITS.patron.annualPrice}`,
-      period: billingPeriod === 'monthly' ? '/day' : '/year',
-      billedNote: billingPeriod === 'monthly' ? `billed $${TIER_BENEFITS.patron.monthlyPrice}/mo` : null,
+      period: billingPeriod === 'monthly' ? '/mo' : '/yr',
+      billedNote: billingPeriod === 'annual' ? `billed $${TIER_BENEFITS.patron.annualPrice}/yr` : null,
       description: TIER_BENEFITS.patron.description,
       features: TIER_BENEFITS.patron.features,
       missingFeatures: TIER_BENEFITS.patron.missingFeatures,
