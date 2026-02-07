@@ -31,20 +31,20 @@ export const Header = () => {
   const { user, profile } = useAuth();
   const { resolvedTheme } = useTheme();
   const { isNative, isIOS } = useCapacitor();
-  
+
   const isHomePage = location.pathname === '/';
   const isTransparent = isHomePage && !isScrolled;
-  
+
   // Use light logo for dark theme OR transparent header, dark logo for light theme
   const currentLogo = !mounted || resolvedTheme === 'dark' || isTransparent ? logoLight : logoDark;
 
   const [scrollDepth, setScrollDepth] = useState(0);
-  
+
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
-  
+
   // Get user initials for avatar fallback
   const getUserInitials = () => {
     if (profile?.first_name || profile?.last_name) {
@@ -57,14 +57,14 @@ export const Header = () => {
     }
     return 'U';
   };
-  
+
   const getFullName = () => {
     if (profile?.first_name || profile?.last_name) {
       return [profile.first_name, profile.last_name].filter(Boolean).join(' ');
     }
     return null;
   };
-  
+
   const getAvatarUrl = () => {
     if (profile?.avatar_urls && profile.avatar_urls.length > 0) {
       return profile.avatar_urls[0];
@@ -76,13 +76,13 @@ export const Header = () => {
   useEffect(() => {
     let rafId: number;
     let lastScrollY = window.scrollY;
-    
+
     const handleScroll = () => {
       // Cancel any pending animation frame
       if (rafId) {
         cancelAnimationFrame(rafId);
       }
-      
+
       rafId = requestAnimationFrame(() => {
         const currentScrollY = window.scrollY;
         // Only update if scroll position changed significantly (debounce threshold)
@@ -152,57 +152,39 @@ export const Header = () => {
     fetchDailyQuote();
   }, []);
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${
-        isTransparent 
-          ? 'bg-gradient-to-b from-black/50 via-black/25 to-transparent' 
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${isTransparent
+          ? 'bg-gradient-to-b from-black/50 via-black/25 to-transparent'
           : 'border-b border-border bg-background/95 backdrop-blur-md'
-      }`}
+        }`}
       style={{
         // Add safe area padding for iOS notch/dynamic island in native apps
         paddingTop: isNative && isIOS ? 'env(safe-area-inset-top)' : undefined,
-        boxShadow: isTransparent 
-          ? 'none' 
+        boxShadow: isTransparent
+          ? 'none'
           : `0 ${4 + scrollDepth * 8}px ${12 + scrollDepth * 20}px -${4 - scrollDepth * 2}px hsl(var(--foreground) / ${0.05 + scrollDepth * 0.1})`
       }}
     >
       <div className="mx-auto flex h-full items-center justify-between px-4 py-2 md:px-8 lg:px-12 xl:px-16">
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <img 
-            src={currentLogo} 
-            alt="MakeFriends & Socialize" 
-            className={`w-auto object-contain transition-all duration-300 ${
-              isTransparent ? 'h-12 md:h-14' : 'h-10 md:h-12'
-            }`}
+          <img
+            src={currentLogo}
+            alt="MakeFriends & Socialize"
+            className={`w-auto object-contain transition-all duration-300 ${isTransparent ? 'h-12 md:h-14' : 'h-10 md:h-12'
+              }`}
           />
         </Link>
 
-        {/* Desktop Navigation - xl breakpoint for better tablet support */}
-        <div className="hidden flex-1 items-center justify-end gap-3 xl:flex">
-          <nav className="flex items-center gap-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`text-sm font-medium leading-normal transition-colors hover:text-primary ${
-                  location.pathname === item.path
-                    ? 'text-primary'
-                    : isTransparent ? 'text-white/90' : 'text-foreground/80'
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          
+        {/* Actions - Theme & Profile/Auth */}
+        <div className="flex flex-1 items-center justify-end gap-3">
           {/* Theme Toggle */}
           <ThemeToggle isTransparent={isTransparent} />
-          
+
           {/* Profile Avatar or Apply Button */}
           {user ? (
-            <Link 
-              to="/portal" 
+            <Link
+              to="/portal"
               className="ml-2 transition-transform hover:scale-105"
               title="Go to your profile"
             >
@@ -214,54 +196,50 @@ export const Header = () => {
               </Avatar>
             </Link>
           ) : (
-            <Button 
-              asChild 
-              variant="outline" 
+            <Button
+              asChild
+              variant="outline"
               className={isTransparent ? "border-white/60 text-white hover:bg-white/10 hover:border-white" : ""}
             >
               <Link to="/auth">Sign In</Link>
             </Button>
           )}
-        </div>
 
-        {/* Mobile Menu Button - Animated Hamburger */}
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className={`relative z-50 flex items-center justify-center w-11 h-11 rounded-lg transition-colors xl:hidden pointer-events-auto ${
-            isTransparent 
-              ? 'text-white hover:bg-white/10 bg-black/20 backdrop-blur-sm' 
-              : 'text-foreground hover:bg-muted bg-background/80'
-          }`}
-          aria-label="Toggle menu"
-          aria-expanded={isMenuOpen}
-        >
-          <div className="w-6 h-5 flex flex-col justify-center items-center">
-            <span 
-              className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${
-                isMenuOpen ? 'rotate-45 translate-y-0.5' : '-translate-y-1.5'
+          {/* Hamburger Menu Button - Visible on ALL screens */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className={`relative z-50 flex ml-2 items-center justify-center w-11 h-11 rounded-lg transition-colors pointer-events-auto ${isTransparent
+                ? 'text-white hover:bg-white/10 bg-black/20 backdrop-blur-sm'
+                : 'text-foreground hover:bg-muted bg-background/80'
               }`}
-            />
-            <span 
-              className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${
-                isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100'
-              }`}
-            />
-            <span 
-              className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${
-                isMenuOpen ? '-rotate-45 -translate-y-0.5' : 'translate-y-1.5'
-              }`}
-            />
-          </div>
-        </button>
+            aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
+          >
+            <div className="w-6 h-5 flex flex-col justify-center items-center">
+              <span
+                className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-0.5' : '-translate-y-1.5'
+                  }`}
+              />
+              <span
+                className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100'
+                  }`}
+              />
+              <span
+                className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-0.5' : 'translate-y-1.5'
+                  }`}
+              />
+            </div>
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Menu - Full Screen Slide Out */}
+      {/* Menu - Full Screen Slide Out */}
       <AnimatePresence>
         {isMenuOpen && (
           <>
             {/* Backdrop */}
-            <motion.div 
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm xl:hidden"
+            <motion.div
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
               style={{ zIndex: 9998 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -269,10 +247,10 @@ export const Header = () => {
               transition={{ duration: 0.3 }}
               onClick={() => setIsMenuOpen(false)}
             />
-            
+
             {/* Slide-out Panel - Opens from Right */}
             <motion.nav
-              className="fixed inset-y-0 right-0 w-[85%] max-w-[320px] bg-card border-l border-border flex flex-col xl:hidden shadow-2xl overflow-hidden"
+              className="fixed inset-y-0 right-0 w-[85%] max-w-[320px] bg-card border-l border-border flex flex-col shadow-2xl overflow-hidden"
               style={{ zIndex: 9999 }}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -282,25 +260,31 @@ export const Header = () => {
               {/* Header with Logo and Theme Toggle */}
               <div className="p-6 border-b border-border flex items-center justify-between">
                 <Link to="/" onClick={() => setIsMenuOpen(false)}>
-                  <img 
-                    src={mounted && resolvedTheme === 'light' ? logoDark : logoLight} 
-                    alt="MakeFriends & Socialize" 
+                  <img
+                    src={mounted && resolvedTheme === 'light' ? logoDark : logoLight}
+                    alt="MakeFriends & Socialize"
                     className="h-12 w-auto object-contain"
                   />
                 </Link>
-                <ThemeToggle />
+                {/* Theme Toggle inside menu can be redundant if it's on main header, but keeping for completeness or removing if user said "leave out light/dark mode and sign in" from the simplified view? 
+                    User said "leave out light/dark mode and sign in" meaning Keep them OUT of the menu (on the bar)? 
+                    "make the menu to be humburger menu ... the only thing I want you to leave out is the light/dark mode and sign in"
+                    This implies light/dark and sign in stay on the nav bar.
+                    So I don't necessarily need them *inside* the menu, but it doesn't hurt.
+                    I'll keep the menu content as is. 
+                */}
               </div>
-              
+
               {/* Profile Section for logged in users */}
               {user && (
-                <motion.div 
+                <motion.div
                   className="px-6 py-4 border-b border-border"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <Link 
-                    to="/portal" 
+                  <Link
+                    to="/portal"
                     className="flex items-center gap-3 p-3 rounded-xl bg-primary/10 hover:bg-primary/15 transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
@@ -335,26 +319,24 @@ export const Header = () => {
                     >
                       <Link
                         to={item.path}
-                        className={`flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${
-                          location.pathname === item.path
+                        className={`flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${location.pathname === item.path
                             ? 'bg-primary/15 text-primary'
                             : 'text-foreground hover:bg-muted hover:text-primary'
-                        }`}
+                          }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <item.icon className={`w-5 h-5 ${
-                          location.pathname === item.path ? 'text-primary' : 'text-muted-foreground'
-                        }`} />
+                        <item.icon className={`w-5 h-5 ${location.pathname === item.path ? 'text-primary' : 'text-muted-foreground'
+                          }`} />
                         <span>{item.label}</span>
                       </Link>
                     </motion.div>
                   ))}
                 </nav>
               </div>
-              
+
               {/* Daily Quote Section */}
               {dailyQuote && (
-                <motion.div 
+                <motion.div
                   className="px-6 py-4 border-t border-border bg-secondary/30"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -370,7 +352,7 @@ export const Header = () => {
               )}
 
               {/* Footer with CTA */}
-              <motion.div 
+              <motion.div
                 className="p-6 border-t border-border"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
