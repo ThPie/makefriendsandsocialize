@@ -96,6 +96,7 @@ const ReviewForm = ({
               type="button"
               onClick={onImageRemove}
               className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 hover:bg-destructive/90 transition-colors"
+              aria-label="Remove image"
             >
               <X className="h-3 w-3" />
             </button>
@@ -125,11 +126,12 @@ const ReviewForm = ({
               type="button"
               onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
               className="p-0.5"
+              aria-label={`Rate ${star} stars`}
             >
               <Star
                 className={`h-5 w-5 transition-colors ${star <= formData.rating
-                    ? 'text-yellow-500 fill-yellow-500'
-                    : 'text-muted-foreground/30 hover:text-yellow-400'
+                  ? 'text-yellow-500 fill-yellow-500'
+                  : 'text-muted-foreground/30 hover:text-yellow-400'
                   }`}
               />
             </button>
@@ -387,8 +389,8 @@ export const TestimonialsSection = () => {
                         <Star
                           key={star}
                           className={`h-3 w-3 ${star <= testimonial.rating!
-                              ? 'text-[hsl(var(--accent-gold))] fill-[hsl(var(--accent-gold))]'
-                              : 'text-muted-foreground/20'
+                            ? 'text-[hsl(var(--accent-gold))] fill-[hsl(var(--accent-gold))]'
+                            : 'text-muted-foreground/20'
                             }`}
                         />
                       ))}

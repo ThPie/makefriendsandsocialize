@@ -76,9 +76,9 @@ export const Footer = () => {
         <div className="hidden md:grid grid-cols-4 gap-8 w-full max-w-6xl mb-16 px-4">
           {Object.values(footerLinks).map((section) => (
             <div key={section.title} className="flex flex-col space-y-6">
-              <h4 className="font-display font-bold text-sm tracking-widest uppercase text-muted-foreground">
+              <h3 className="font-display font-bold text-sm tracking-widest uppercase text-muted-foreground">
                 {section.title}
-              </h4>
+              </h3>
               <ul className="space-y-4">
                 {section.links.map((link) => (
                   <li key={link.label}>

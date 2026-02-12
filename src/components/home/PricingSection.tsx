@@ -198,12 +198,12 @@ export const PricingSection = () => {
                       "border-t border-border/50 pt-4 mb-4",
                       !isExpanded && "opacity-70"
                     )}>
-                      <p className="text-xs text-muted-foreground/60 uppercase tracking-wider mb-3 font-medium">
+                      <p className="text-xs text-muted-foreground/80 uppercase tracking-wider mb-3 font-medium">
                         Upgrade to unlock
                       </p>
                       <ul className="space-y-3">
                         {visibleMissingFeatures.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-start gap-3 text-sm text-muted-foreground/50">
+                          <li key={featureIndex} className="flex items-start gap-3 text-sm text-muted-foreground/70">
                             <Lock className="h-4 w-4 flex-shrink-0 mt-0.5" />
                             <span>{feature}</span>
                           </li>

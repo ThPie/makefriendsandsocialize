@@ -24,7 +24,7 @@ const CountdownUnit = ({ value, label }: { value: number; label: string }) => (
         {value.toString().padStart(2, '0')}
       </span>
     </div>
-    <span className="text-xs text-white/60 mt-1 uppercase tracking-wider">{label}</span>
+    <span className="text-xs text-white/70 mt-1 uppercase tracking-wider">{label}</span>
   </div>
 );
 
