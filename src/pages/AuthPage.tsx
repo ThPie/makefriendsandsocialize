@@ -43,7 +43,7 @@ const defaultAvatars = [
 export default function AuthPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, signUp, signIn, signInWithGoogle, isLoading } = useAuth();
+  const { user, signUp, signIn, isLoading } = useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('email');
   const [step, setStep] = useState(1);
@@ -718,9 +718,16 @@ export default function AuthPage() {
               <button
                 onClick={async () => {
                   clearFormFeedback();
-                  const { error } = await signInWithGoogle();
-                  if (error) {
-                    setFormError(error.message || 'Could not connect to Google. Please try again.');
+                  try {
+                    const { lovable } = await import('@/integrations/lovable/index');
+                    const result = await lovable.auth.signInWithOAuth('google', {
+                      redirect_uri: window.location.origin,
+                    });
+                    if (result.error) {
+                      setFormError(result.error.message || 'Could not connect to Google. Please try again.');
+                    }
+                  } catch (err) {
+                    setFormError('Could not connect to Google. Please try again.');
                   }
                 }}
                 disabled={isSubmitting || isRateLimited}
