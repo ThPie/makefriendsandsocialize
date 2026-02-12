@@ -56,6 +56,7 @@ interface AuthContextType {
   isRecoveryMode: boolean;
   signUp: (email: string, password: string) => Promise<{ error: Error | null; user?: User | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signInWithGoogle: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   canAccessMatchmaking: boolean;
@@ -80,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .select('*')
       .eq('id', userId)
       .maybeSingle();
-    
+
     if (profileData) {
       setProfile(profileData as Profile);
     }
@@ -91,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .select('tier, status')
       .eq('user_id', userId)
       .maybeSingle();
-    
+
     if (membershipData) {
       setMembership(membershipData as Membership);
     }
@@ -102,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .select('status')
       .eq('user_id', userId)
       .maybeSingle();
-    
+
     if (applicationData) {
       setApplicationStatus(applicationData.status as ApplicationStatus);
     }
@@ -114,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .eq('user_id', userId)
       .eq('role', 'admin')
       .maybeSingle();
-    
+
     setIsAdmin(!!roleData);
   };
 
@@ -125,12 +126,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log('Auth event:', event);
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         // Detect password recovery mode
         if (event === 'PASSWORD_RECOVERY') {
           setIsRecoveryMode(true);
         }
-        
+
         // Defer Supabase calls with setTimeout
         if (session?.user) {
           setTimeout(() => {
@@ -161,7 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (email: string, password: string) => {
     const redirectUrl = `${window.location.origin}/`;
-    
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -169,14 +170,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         emailRedirectTo: redirectUrl
       }
     });
-    
+
     // Log for debugging (remove in production)
     if (data?.user) {
       console.log('User created successfully:', data.user.id);
     } else if (!error) {
       console.log('Signup response without user:', data);
     }
-    
+
     return { error: error as Error | null, user: data?.user };
   };
 
@@ -184,6 +185,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
+    });
+    return { error: error as Error | null };
+  };
+
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
     return { error: error as Error | null };
   };
@@ -204,7 +215,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const canAccessMatchmaking = membership?.status === 'active' && 
+  const canAccessMatchmaking = membership?.status === 'active' &&
     (membership?.tier === 'fellow' || membership?.tier === 'founder');
 
   return (
@@ -220,6 +231,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isRecoveryMode,
         signUp,
         signIn,
+        signInWithGoogle,
         signOut,
         refreshProfile,
         canAccessMatchmaking,
@@ -246,8 +258,9 @@ export function useAuth() {
       isRecoveryMode: false,
       signUp: async () => ({ error: new Error('Auth not ready'), user: null }),
       signIn: async () => ({ error: new Error('Auth not ready') }),
-      signOut: async () => {},
-      refreshProfile: async () => {},
+      signInWithGoogle: async () => ({ error: new Error('Auth not ready') }),
+      signOut: async () => { },
+      refreshProfile: async () => { },
       canAccessMatchmaking: false,
     } as AuthContextType;
   }
