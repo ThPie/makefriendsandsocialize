@@ -58,7 +58,7 @@ export const SlowDatingSection = () => {
             </div>
 
             {/* Image Card */}
-            <div className="relative rounded-3xl overflow-hidden aspect-[4/5] w-full max-w-lg shadow-2xl border border-white/10 group">
+            <div className="relative rounded-3xl overflow-hidden aspect-square w-full max-w-lg shadow-2xl border border-white/10 group">
               <img
                 src={slowDatingImage}
                 alt="Slow Dating Process"
@@ -67,7 +67,7 @@ export const SlowDatingSection = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
               <div className="absolute bottom-6 left-6 text-white p-4">
                 <p className="font-medium text-lg">The Experience</p>
-                <p className="text-sm text-white/80">Curated just for you</p>
+                <p className="text-sm text-white/80">Hand-selected just for you</p>
               </div>
             </div>
           </div>
