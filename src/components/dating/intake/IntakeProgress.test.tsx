@@ -3,6 +3,7 @@
  * Tests visual progress indicators and click interactions
  */
 import { describe, it, expect, vi } from 'vitest';
+// @ts-expect-error - screen/fireEvent re-exported from @testing-library/dom
 import { render, screen, fireEvent } from '@testing-library/react';
 import { IntakeProgress } from './IntakeProgress';
 
