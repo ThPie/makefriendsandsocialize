@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Lightbox } from '@/components/ui/lightbox';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
 
 // Static gallery photos from real events
 const galleryPhotos = [
@@ -19,6 +18,8 @@ export const PhotoGallerySection = () => {
   const { ref, isVisible } = useScrollAnimation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollIntervalRef = useRef<number | null>(null);
 
   const lightboxImages = galleryPhotos.map((p) => ({
     url: p.image_url,
@@ -29,6 +30,33 @@ export const PhotoGallerySection = () => {
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
     setLightboxOpen(true);
+  };
+
+  // Start auto-scroll on hover
+  const handleMouseEnter = () => {
+    if (!scrollRef.current) return;
+
+    scrollIntervalRef.current = window.setInterval(() => {
+      if (scrollRef.current) {
+        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+        const currentScroll = scrollRef.current.scrollLeft;
+
+        // If we've reached the end, scroll back to start
+        if (currentScroll >= maxScroll - 10) {
+          scrollRef.current.scrollLeft = 0;
+        } else {
+          scrollRef.current.scrollLeft += 2;
+        }
+      }
+    }, 20);
+  };
+
+  // Stop auto-scroll when not hovering
+  const handleMouseLeave = () => {
+    if (scrollIntervalRef.current) {
+      clearInterval(scrollIntervalRef.current);
+      scrollIntervalRef.current = null;
+    }
   };
 
   return (
@@ -48,28 +76,39 @@ export const PhotoGallerySection = () => {
           </p>
         </div>
 
-        {/* Masonry Gallery Layout */}
-        <div className="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6">
+        {/* Horizontal Scrolling Gallery - Scrolls on Hover */}
+        <div
+          ref={scrollRef}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 cursor-grab active:cursor-grabbing"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
           {galleryPhotos.map((photo, index) => (
             <div
               key={photo.id}
               onClick={() => openLightbox(index)}
-              className="break-inside-avoid group relative overflow-hidden rounded-lg cursor-pointer mb-6"
+              className="flex-shrink-0 group relative overflow-hidden rounded-lg cursor-pointer w-[280px] md:w-[320px] aspect-[3/4] shadow-md hover:shadow-xl transition-all duration-300"
             >
               <img
                 src={photo.image_url}
                 alt={photo.title || 'Event photo'}
-                className="w-full h-auto object-cover grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:scale-105"
+                className="w-full h-full object-cover grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:scale-110"
                 loading="lazy"
               />
-              {/* Optional Overlay on hover if needed, keeping it minimal as per reference */}
+              {/* Optional Overlay on hover */}
               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
           ))}
         </div>
 
+        {/* Hover hint */}
+        <p className="text-center text-muted-foreground text-sm mt-6 mb-8 md:mb-12">
+          Hover to scroll • Click to enlarge
+        </p>
+
         {/* CTA Button */}
-        <div className="flex justify-center mt-16 md:mt-24">
+        <div className="flex justify-center">
           <Button
             asChild
             variant="outline"
