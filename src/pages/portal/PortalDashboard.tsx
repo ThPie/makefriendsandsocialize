@@ -1,34 +1,28 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Users, Calendar, Heart, Crown, ArrowRight, Sparkles } from 'lucide-react';
 import { SubmitReview } from '@/components/portal/SubmitReview';
 import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
 import { BadgeDisplay } from '@/components/portal/BadgeDisplay';
 import { FeatureUnlockCard } from '@/components/portal/FeatureUnlockCard';
 import { OnboardingWizard } from '@/components/portal/OnboardingWizard';
 import { BadgeUnlockModal } from '@/components/portal/BadgeUnlockModal';
-import { VerificationBadge } from '@/components/portal/VerificationBadge';
 import { UpgradePromptCard } from '@/components/portal/UpgradePromptCard';
 import { EmailVerificationBanner } from '@/components/portal/EmailVerificationBanner';
-import { ActivityFeed } from '@/components/portal/ActivityFeed';
-import { AttendanceStreak } from '@/components/portal/AttendanceStreak';
-import { EventRecommendations } from '@/components/events/EventRecommendations';
 import { WidgetErrorBoundary } from '@/components/ui/widget-error-boundary';
 import { RelationshipHealthSection } from '@/components/portal/RelationshipHealthSection';
+import { DashboardStats } from '@/components/portal/dashboard/DashboardStats';
+import { UpcomingSchedule } from '@/components/portal/dashboard/UpcomingSchedule';
 
 export default function PortalDashboard() {
-  const { user, profile, membership, canAccessMatchmaking, refreshProfile } = useAuth();
-  const { subscription, isLoading: subscriptionLoading } = useSubscription();
+  const { user, profile, refreshProfile, canAccessMatchmaking } = useAuth();
+  const { subscription } = useSubscription();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [earnedBadges, setEarnedBadges] = useState<{ badge_type: string; earned_at: string }[]>([]);
   const [newBadge, setNewBadge] = useState<{ name: string; icon: string; description: string; features?: string[] } | null>(null);
 
-  // Memoize completion calculation to prevent recalculation on every render
+  // Memoize completion calculation
   const completionPercentage = useMemo(() => {
     if (!profile) return 0;
     let score = 0;
@@ -71,46 +65,8 @@ export default function PortalDashboard() {
     await refreshProfile();
   };
 
-  // Memoize quick actions to prevent re-creation on every render
-  const quickActions = useMemo(() => [
-    {
-      title: 'Complete Your Profile',
-      description: 'Add photos and details about yourself',
-      icon: User,
-      href: '/portal/profile',
-      show: true,
-    },
-    {
-      title: 'Browse The Network',
-      description: canAccessMatchmaking
-        ? 'Discover like-minded members'
-        : 'Upgrade to Fellow to access introductions',
-      icon: Users,
-      href: '/portal/network',
-      show: true,
-      locked: !canAccessMatchmaking,
-    },
-    {
-      title: 'Your Connections',
-      description: canAccessMatchmaking
-        ? 'View your introduction requests'
-        : 'Upgrade to unlock member introductions',
-      icon: Heart,
-      href: '/portal/connections',
-      show: canAccessMatchmaking,
-      locked: !canAccessMatchmaking,
-    },
-    {
-      title: 'Upcoming Events',
-      description: 'RSVP to exclusive gatherings',
-      icon: Calendar,
-      href: '/portal/events',
-      show: true,
-    },
-  ], [canAccessMatchmaking]);
-
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       {/* Email Verification Banner */}
       <EmailVerificationBanner />
 
@@ -135,16 +91,11 @@ export default function PortalDashboard() {
 
       {/* Welcome Header */}
       <div>
-        <h1 className="font-display font-light text-3xl md:text-4xl text-foreground mb-2 flex items-center gap-2">
+        <h1 className="font-display font-semibold text-3xl md:text-4xl text-foreground mb-2">
           Welcome back, {profile?.first_name || 'Member'}
-          <VerificationBadge
-            isVerified={profile?.is_security_verified || false}
-            verifiedAt={profile?.verified_at}
-            size="lg"
-          />
         </h1>
-        <p className="text-muted-foreground">
-          Your exclusive access to Make Friends and Socialize
+        <p className="text-muted-foreground text-lg">
+          Here is a curated look at what's happening in your social circle today.
         </p>
       </div>
 
@@ -153,30 +104,15 @@ export default function PortalDashboard() {
         <UpgradePromptCard variant="compact" context="general" />
       )}
 
-      {/* Upgrade Banner for Explorer users */}
-      {membership?.tier === 'patron' && (
-        <Card className="border-primary/20">
-          <CardContent className="flex flex-col md:flex-row items-center justify-between gap-4 p-8">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-full bg-primary/10">
-                <Crown className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-display text-xl text-foreground">Unlock The Network</h3>
-                <p className="text-muted-foreground text-sm">
-                  Upgrade to Member or Fellow to access curated introductions and exclusive events
-                </p>
-              </div>
-            </div>
-            <Button asChild>
-              <Link to="/membership">
-                Upgrade Membership
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      {/* Main Stats Row */}
+      <WidgetErrorBoundary title="Dashboard Stats">
+        <DashboardStats />
+      </WidgetErrorBoundary>
+
+      {/* Upcoming Schedule */}
+      <WidgetErrorBoundary title="Upcoming Schedule">
+        <UpcomingSchedule />
+      </WidgetErrorBoundary>
 
       {/* Profile Completion & Feature Unlocks */}
       {profile && completionPercentage < 100 && (
@@ -194,75 +130,20 @@ export default function PortalDashboard() {
         </div>
       )}
 
-      {/* Badges */}
-      {earnedBadges.length > 0 && (
-        <WidgetErrorBoundary title="Your Badges">
-          <BadgeDisplay earnedBadges={earnedBadges} showAll={false} compact />
-        </WidgetErrorBoundary>
-      )}
-
-      {/* Activity Feed & Attendance Streak */}
-      <div className="grid gap-8 md:grid-cols-2">
-        <WidgetErrorBoundary title="Recent Activity">
-          <ActivityFeed limit={5} compact />
-        </WidgetErrorBoundary>
-
-        <WidgetErrorBoundary title="Attendance Streak">
-          <AttendanceStreak />
-        </WidgetErrorBoundary>
-      </div>
-
-      {/* Event Recommendations */}
-      <WidgetErrorBoundary title="Events For You">
-        <EventRecommendations />
-      </WidgetErrorBoundary>
-
-      {/* Relationship Health Section */}
+      {/* Relationship Health Section - Only for matchmaking users */}
       {canAccessMatchmaking && user && (
         <RelationshipHealthSection userId={user.id} />
       )}
 
-      {/* Quick Actions - Hidden on mobile since MobileDashboardNav handles navigation */}
-      <div className="hidden md:grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {quickActions.filter(a => a.show).map((action) => (
-          <Card
-            key={action.title}
-            className={`group hover-lift ${action.locked ? 'opacity-75' : ''
-              }`}
-          >
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className={`p-3 rounded-xl ${action.locked ? 'bg-muted' : 'bg-primary/10'
-                  }`}>
-                  <action.icon className={`h-6 w-6 ${action.locked ? 'text-muted-foreground' : 'text-primary'
-                    }`} />
-                </div>
-                {action.locked && (
-                  <Crown className="h-5 w-5 text-primary" />
-                )}
-              </div>
-              <CardTitle className="font-display font-light text-xl">
-                {action.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm mb-6">
-                {action.description}
-              </p>
-              <Button
-                asChild
-                variant={action.locked ? 'outline' : 'default'}
-                className="w-full"
-              >
-                <Link to={action.locked ? '/membership' : action.href}>
-                  {action.locked ? 'Upgrade to Access' : 'View'}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* Badges - Show if any owned */}
+      {earnedBadges.length > 0 && (
+        <div className="mt-8">
+          <h3 className="font-display text-xl font-semibold mb-4">Your Achievements</h3>
+          <WidgetErrorBoundary title="Your Badges">
+            <BadgeDisplay earnedBadges={earnedBadges} showAll={false} compact />
+          </WidgetErrorBoundary>
+        </div>
+      )}
 
       {/* Submit Review */}
       <SubmitReview />

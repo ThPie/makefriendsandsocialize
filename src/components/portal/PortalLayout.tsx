@@ -29,7 +29,10 @@ import {
   Shield,
   Home,
   Gift,
+  Search,
+  Mail
 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { NotificationBell } from './NotificationBell';
 import { TrialCountdownBanner } from './TrialCountdownBanner';
 import { PageTransition } from '@/components/ui/page-transition';
@@ -240,7 +243,44 @@ export function PortalLayout({ children }: PortalLayoutProps) {
             </div>
           </Sidebar>
 
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
+            {/* Desktop Top Bar */}
+            <header className="hidden md:flex items-center justify-between h-20 px-8 border-b border-border bg-background/95 backdrop-blur z-40">
+              <div className="flex-1 max-w-xl">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search events, members, or news..."
+                    className="pl-10 bg-muted/50 border-transparent focus:bg-background transition-all rounded-full"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-6 ml-4">
+                <NotificationBell />
+                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+                  <Mail className="h-5 w-5" />
+                </Button>
+
+                <div className="h-8 w-px bg-border/50 mx-2" />
+
+                <div className="flex items-center gap-3">
+                  <div className="text-right hidden lg:block">
+                    <p className="text-sm font-medium leading-none">{profile?.first_name || 'Member'}</p>
+                    <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-bold text-[10px]">
+                      {membership?.tier || 'Explorer'} Member
+                    </p>
+                  </div>
+                  <Avatar className="h-10 w-10 border-2 border-primary/20">
+                    <AvatarImage src={profile?.avatar_urls?.[0]} />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              </div>
+            </header>
+
             {/* Mobile Header */}
             <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden">
               <div className="flex items-center gap-3">
@@ -259,31 +299,28 @@ export function PortalLayout({ children }: PortalLayoutProps) {
               </div>
             </header>
 
-            {/* Desktop Notification Bell */}
-            <div className="hidden md:flex fixed top-4 right-8 z-50">
-              <NotificationBell />
-            </div>
+            <div className="flex-1 overflow-auto p-4 md:p-8 lg:p-12 scroll-smooth">
+              <div className="max-w-7xl mx-auto space-y-8">
+                {/* Pending Member Banner */}
+                {isPending && <PendingMemberBanner className="mb-6" />}
 
-            <div className="p-4 md:p-8 lg:p-12">
-              {/* Pending Member Banner */}
-              {isPending && <PendingMemberBanner className="mb-6" />}
+                {/* Trial Countdown Banner */}
+                <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
 
-              {/* Trial Countdown Banner - pass subscription to avoid duplicate API calls */}
-              <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
+                {/* Mobile Dashboard Navigation */}
+                {location.pathname === '/portal' && (
+                  <MobileDashboardNav onSignOut={handleSignOut} className="mb-8" />
+                )}
 
-              {/* Mobile Dashboard Navigation - only show on dashboard page */}
-              {location.pathname === '/portal' && (
-                <MobileDashboardNav onSignOut={handleSignOut} className="mb-8" />
-              )}
+                {/* Breadcrumb Navigation */}
+                <div className={location.pathname === '/portal' ? 'hidden' : 'block mb-6'}>
+                  <PortalBreadcrumb type="portal" />
+                </div>
 
-              {/* Breadcrumb Navigation - hide on mobile dashboard */}
-              <div className={location.pathname === '/portal' ? 'hidden md:block' : ''}>
-                <PortalBreadcrumb type="portal" />
+                <PageTransition>
+                  {children}
+                </PageTransition>
               </div>
-
-              <PageTransition>
-                {children}
-              </PageTransition>
             </div>
           </main>
         </div>
