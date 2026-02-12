@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Clock, Shield, Sparkles, ArrowRight, Play } from 'lucide-react';
+import { Clock, Shield, Sparkles, ArrowRight } from 'lucide-react';
 import slowDatingImage from '@/assets/slow-dating-new.jpg';
 
 export const SlowDatingSection = () => {
@@ -57,21 +57,17 @@ export const SlowDatingSection = () => {
               </Button>
             </div>
 
-            {/* Video/Image Placeholder */}
-            <div className="relative rounded-3xl overflow-hidden aspect-[4/3] w-full max-w-md shadow-2xl border border-white/10 group">
+            {/* Image Card */}
+            <div className="relative rounded-3xl overflow-hidden aspect-[4/5] w-full max-w-lg shadow-2xl border border-white/10 group">
               <img
                 src={slowDatingImage}
                 alt="Slow Dating Process"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/30 transition-colors">
-                <div className="h-16 w-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                  <Play className="h-6 w-6 text-white fill-white ml-1" />
-                </div>
-              </div>
-              <div className="absolute bottom-6 left-6 text-white">
-                <p className="font-medium text-sm">The Experience</p>
-                <p className="text-xs text-white/70">1 min 30 sec</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
+              <div className="absolute bottom-6 left-6 text-white p-4">
+                <p className="font-medium text-lg">The Experience</p>
+                <p className="text-sm text-white/80">Curated just for you</p>
               </div>
             </div>
           </div>
