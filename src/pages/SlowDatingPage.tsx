@@ -147,7 +147,7 @@ const SlowDatingPage = () => {
               className="w-full h-full object-cover"
               loading="eager"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/60" />
+            <div className="absolute inset-0 bg-black/50" />
 
           </div>
 

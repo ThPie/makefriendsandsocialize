@@ -59,6 +59,7 @@ export const Hero = () => {
         />
 
       </div>
+      <div className="absolute inset-0 bg-black/50" />
 
       {/* CONTENT */}
       <div className="relative z-10 flex flex-col justify-end min-h-screen min-h-[100dvh] px-6 md:px-12 lg:px-20 pt-[env(safe-area-inset-top)] pb-12 md:pb-16 lg:pb-20">

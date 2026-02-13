@@ -82,7 +82,7 @@ const AboutPage = () => {
             backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD8-F3RY9H5cqEv7-lZOpcYmt4E5bLYfLDW5gCw3Bz2tS0M1tJY_stkdmb3tg_U2mBg8BCNImMzNg1-bw1YUJyKJgp9-XRGw6bslt88e3BZWh8JDxfxmiRHJ0XGnNSsfmNYWFVIN9Ntq7kMOH8BSBLDcygmOmq1KImEma6iU3IkxdZcYBvSDfNHKtW2024ILgRsPr1zqBao9VjQgYkg2D9Zy9137MbsF4D3A2AiKgy1i1SHQ4Jp_jb3gKarxjHqlbPUEDUaPdh5x-XO")'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+        <div className="absolute inset-0 bg-black/50" />
 
         {/* Floating Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">

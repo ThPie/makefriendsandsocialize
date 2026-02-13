@@ -263,7 +263,7 @@ const EventDetailPage = () => {
               : 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)/0.5) 100%)'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-black/50" />
 
         {/* Back Button */}
         <div className="absolute top-6 left-6 z-10">

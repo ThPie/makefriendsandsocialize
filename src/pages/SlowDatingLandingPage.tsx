@@ -93,7 +93,7 @@ export default function SlowDatingLandingPage() {
             alt="Elegant couple"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
 
         {/* Content */}
