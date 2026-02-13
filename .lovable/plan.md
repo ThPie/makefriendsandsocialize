@@ -1,72 +1,113 @@
 
-# Fix Meetup Sync to Only Import Your Group's Events
 
-## Problem Identified
-The Meetup scraper is importing events that don't belong to your group ("Make Friends and Socialize"). Events like "Singles Mix & Mingle", "Celebrate Mardi Gras", and "Quiet Conversations" are from other Meetup groups showing as "suggested events" on the page.
+## The Ladies Society Circle -- Implementation Plan
 
-Your actual events are:
-- **Upcoming**: "A Candlelit Gatsby Soirée – Valentine" (Feb 14)
-- **Past**: "See How Slow Dating Matchmaking Works", "Founders Freelancers and Business Owners Networking Night", etc.
+### Overview
+Create a premium landing page for "The Ladies Society" circle, matching the structure and quality of The Gentlemen page. Also update The Gentlemen page to include a mission section, membership pricing, and enhanced application form fields (age, occupation). Finally, add The Ladies Society to the Circles directory page.
 
-## Solution
+---
 
-### Step 1: Clean Up Foreign Events from Database
-Delete events that were incorrectly imported from other Meetup groups:
-- Remove events with titles that don't match your group's events
-- Keep only legitimate events from your "Make Friends and Socialize" group
+### 1. Database Migration
 
-### Step 2: Update Scraping Functions with Stricter Validation
-Modify all three edge functions to:
+Add new columns to `circle_applications` to support both The Ladies Society and the enhanced Gentlemen form:
 
-1. **Use your group's specific events URLs**:
-   - Upcoming: `https://www.meetup.com/makefriendsandsocialize/events/`
-   - Past: `https://www.meetup.com/makefriendsandsocialize/events/past/`
+- `age` (integer, nullable) -- applicant's age
+- `occupation` (text, nullable) -- applicant's occupation  
+- `contribution_statement` (text, nullable) -- "What do you hope to contribute to this circle?"
+- `support_meaning` (text, nullable) -- "What does support among women mean to you?"
 
-2. **Add venue validation** - Your events are at "HAVN at Salt Lake Crossing" - use this to filter
+No new RLS policies needed; existing policies already cover inserts by authenticated users and admin management.
 
-3. **Add stricter extraction prompts** that explicitly tell Firecrawl to:
-   - Only extract events from the main event list
-   - Ignore "suggested events" and "events near you" sections
-   - Look for events hosted by "Make Friends and Socialize"
+---
 
-4. **Re-enable the sync** with the fixed logic
+### 2. New File: `src/pages/circles/TheLadiesSocietyPage.tsx`
 
-### Files to Update
+Structure mirrors TheGentlemenPage with these sections:
 
-| File | Changes |
-|------|---------|
-| `supabase/functions/scheduled-event-sync/index.ts` | Update extraction prompt to be more specific |
-| `supabase/functions/sync-meetup-upcoming-events/index.ts` | Re-enable sync, add venue/host validation |
-| `supabase/functions/scrape-meetup-events/index.ts` | Re-enable scraping, add venue/host validation |
+**Hero Section**
+- Background image (reuse an existing elegant asset or a gradient-based hero)
+- Title: "The Ladies Society" with primary color accent
+- Subtitle: "Where women build women."
+- Descriptive paragraph about private membership for growth, support, accountability, and meaningful connection
+- CTA button: "Apply Now" scrolling to form
 
-## Technical Implementation
+**Mission Section**
+- Heading: "Our Mission"
+- Content about everyday being women's day, consistent support rather than once a year
+- Elegant icon (Crown or gem, per brand guidelines)
 
-For each scraping function:
+**What Members Receive Section**
+- 6 benefit cards in a grid:
+  - Monthly private gatherings
+  - Growth conversations
+  - Networking opportunities
+  - Wellness evenings
+  - Priority access to events
+  - Annual appreciation dinner
 
+**Membership Pricing Section**
+- Monthly and Annual pricing options displayed as cards
+- "Apply Now" CTA
+- Note about Member tier and above access; suggestion for Fellows with business listings
+
+**Application Form**
+- Fields: Full Name, Email, Age, Occupation, "Why do you want to join?", "What does support among women mean to you?", "What do you hope to contribute?", Membership Tier (Member/Fellow)
+- Pre-fills name/email from auth context
+- Submits to `circle_applications` with `circle_name: "the-ladies-society"`
+- Review note at bottom
+
+---
+
+### 3. Update: `src/pages/circles/TheGentlemenPage.tsx`
+
+Align with the same enhanced structure:
+
+- **Add Mission Section** after hero: Explain the purpose of The Gentlemen -- a space for men to connect through timeless style and presence
+- **Add Age and Occupation fields** to the application form
+- **Add "What do you hope to contribute?"** textarea field
+- Keep existing style preference and dress code commitment fields
+
+---
+
+### 4. Update: `src/pages/CirclesPage.tsx`
+
+Add The Ladies Society to the circles array:
 ```text
-┌─────────────────────────────────┐
-│   Scrape Meetup Page            │
-└──────────────┬──────────────────┘
-               ▼
-┌─────────────────────────────────┐
-│   Extract Events (AI)           │
-│   - Specific prompt for YOUR    │
-│     group only                  │
-└──────────────┬──────────────────┘
-               ▼
-┌─────────────────────────────────┐
-│   Validate Each Event:          │
-│   ✓ Venue = HAVN/Salt Lake      │
-│   ✓ Title not generic           │
-│   ✓ Matches your event style    │
-└──────────────┬──────────────────┘
-               ▼
-┌─────────────────────────────────┐
-│   Insert/Update in Database     │
-└─────────────────────────────────┘
+{
+  title: "The Ladies Society",
+  description: "A private circle for women who value growth, support, and meaningful connection.",
+  icon: Crown (or gem icon),
+  tags: ["Women Only", "Selective", "Monthly / Curated"],
+  path: "/circles/the-ladies-society",
+  isFree: false,
+}
 ```
 
-## Expected Outcome
-- Only YOUR group's events will be synced
-- Foreign events from other groups will be ignored
-- Existing incorrect events can be manually deleted or marked as cancelled
+Update the grid from `md:grid-cols-2` to `md:grid-cols-3` to accommodate three circles.
+
+---
+
+### 5. Update: `src/App.tsx`
+
+Add route and lazy import:
+```text
+const TheLadiesSocietyPage = lazy(() => import("@/pages/circles/TheLadiesSocietyPage"));
+
+<Route path="/circles/the-ladies-society" element={<TheLadiesSocietyPage />} />
+```
+
+---
+
+### 6. Fix Existing Build Error
+
+Remove the unused `@ts-expect-error` directive in `src/components/dating/intake/IntakeProgress.test.tsx` line 6.
+
+---
+
+### Design Notes
+
+- The Ladies Society page uses the same design system (fonts, colors, card styles, animations) as The Gentlemen
+- Tone is elegant, empowering, and structured -- no casual language
+- Icons use Crown or gem variants (no sparkles/lightbulb per brand guidelines)
+- Both circle pages will share a consistent section flow: Hero, Mission, Benefits/Expectations, Pricing (if applicable), Application Form
+
