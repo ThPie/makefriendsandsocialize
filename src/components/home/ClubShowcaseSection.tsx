@@ -97,8 +97,8 @@ export const ClubShowcaseSection = () => {
                                 />
 
                                 {/* Overlays */}
-                                <div className={`absolute inset-0 bg-gradient-to-t ${club.color} via-transparent to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-80`} />
-                                <div className="absolute inset-0 bg-black/20 transition-colors duration-500 group-hover:bg-black/10" />
+                                <div className={`absolute inset-0 bg-gradient-to-t ${club.color} via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90`} />
+                                <div className="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/50" />
 
                                 {/* Content */}
                                 <div className="absolute inset-0 p-8 flex flex-col justify-between">

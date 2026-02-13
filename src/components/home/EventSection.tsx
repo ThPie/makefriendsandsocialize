@@ -28,67 +28,90 @@ import React from 'react';
 interface EventCardProps {
   event: Event;
   className?: string;
+  featured?: boolean;
 }
 
 // Use forwardRef to properly handle refs and prevent React warnings
 const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
-  ({ event, className = '' }, ref) => {
+  ({ event, className = '', featured = false }, ref) => {
     return (
       <div
         ref={ref}
-        className={`flex flex-col gap-4 rounded-xl bg-card group hover:shadow-elegant transition-all duration-500 border border-border hover:border-primary/30 hover:-translate-y-2 overflow-hidden ${className}`}
+        className={`flex flex-col gap-0 rounded-2xl bg-card group hover:shadow-elegant transition-all duration-500 border border-border hover:border-primary/30 hover:-translate-y-1 overflow-hidden h-full ${className}`}
       >
-        <div className="relative w-full aspect-[16/9] overflow-hidden bg-muted">
+        <div className={`relative w-full overflow-hidden bg-muted ${featured ? 'aspect-[21/9]' : 'aspect-[4/3] md:aspect-[16/9]'}`}>
+          {/* Location Badge */}
+          {(event.city || event.location) && (
+            <div className="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-white/10 shadow-sm">
+              <MapPin className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-medium text-white tracking-wide">
+                {event.city || event.location}
+                {/* Assuming default country is USA/Utah for now, can add logic if country data exists */}
+              </span>
+            </div>
+          )}
+
           {event.image_url ? (
             <img
               src={event.image_url}
               alt={event.title}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-muted">
               <Calendar className="h-12 w-12 text-muted-foreground/50" />
             </div>
           )}
+
+          {/* Date Overlay (Optional - alternative design) */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+            <p className="text-white font-medium text-sm flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-primary" />
+              {format(parseLocalDate(event.date), 'EEEE, MMMM d')}
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-3 p-4 pt-0 z-10 bg-card">
-          <p className="font-display text-xl font-medium leading-normal text-card-foreground mt-4 line-clamp-2">
-            {event.title}
-          </p>
-          <div className="flex flex-col gap-1.5 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              {format(parseLocalDate(event.date), 'MMMM d, yyyy')}
-              {event.time && ` • ${event.time}`}
-            </div>
-            {(event.venue_name || event.city) && (
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                {event.venue_name || event.location}
-                {event.city && ` • ${event.city}`}
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              {event.rsvp_count && event.rsvp_count > 0
-                ? `${event.rsvp_count} attending`
-                : event.capacity
-                  ? `${event.capacity} spots`
-                  : 'Open event'
-              }
+
+        <div className="flex flex-col flex-grow gap-4 p-5 md:p-6 bg-card">
+          <div className="flex-1">
+            <h3 className={`font-display font-medium text-card-foreground line-clamp-2group-hover:text-primary transition-colors ${featured ? 'text-2xl md:text-3xl' : 'text-xl'}`}>
+              {event.title}
+            </h3>
+
+            <div className="mt-4 space-y-2 text-muted-foreground text-sm">
+              {event.venue_name && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 shrink-0 text-primary/70" />
+                  <span>{event.venue_name}</span>
+                </div>
+              )}
+              {event.time && (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 flex items-center justify-center">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary/70" />
+                  </div>
+                  <span>{event.time}</span>
+                </div>
+              )}
             </div>
           </div>
-          <Link
-            to={`/events/${event.id}`}
-            className="group/link inline-flex items-center gap-2 text-sm font-bold text-primary hover:opacity-80 transition-opacity min-h-[44px] py-2"
-          >
-            View Details
-            <span className="material-symbols-outlined transition-transform group-hover/link:translate-x-1 text-lg">
-              arrow_forward
+
+          <div className="pt-4 border-t border-border/50 flex items-center justify-between">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              {event.rsvp_count && event.rsvp_count > 0 ? `${event.rsvp_count} Attending` : 'Open Invite'}
             </span>
-          </Link>
+            <Link
+              to={`/events/${event.id}`}
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:text-primary/80 transition-colors"
+            >
+              Details
+              <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">
+                arrow_forward
+              </span>
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -170,7 +193,11 @@ export const EventSection = () => {
           </p>
         </div>
 
-        <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 -mx-6 px-6 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:overflow-visible scrollbar-hide">
+        <div className={`
+          flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 -mx-6 px-6 
+          md:mx-0 md:px-0 md:overflow-visible scrollbar-hide
+          md:grid ${events.length === 1 ? 'md:grid-cols-1 max-w-3xl mx-auto' : events.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'}
+        `}>
           {isLoading ? (
             <>
               <div className="snap-center shrink-0 w-[85vw] md:w-auto"><EventCardSkeleton /></div>
@@ -179,10 +206,11 @@ export const EventSection = () => {
             </>
           ) : events.length > 0 ? (
             events.map((event, index) => (
-              <div key={event.id} className="snap-center shrink-0 w-[85vw] md:w-auto">
+              <div key={event.id} className="snap-center shrink-0 w-[85vw] md:w-auto h-full">
                 <EventCard
                   event={event}
-                  className={`scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+                  className={`scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''} h-full`}
+                  featured={events.length === 1}
                 />
               </div>
             ))
