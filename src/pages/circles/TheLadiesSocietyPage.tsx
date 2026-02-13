@@ -10,13 +10,14 @@ import { motion } from "framer-motion";
 import {
   Crown,
   ArrowRight,
-  Wine,
   Users,
+  Heart,
+  Calendar,
   MessageCircle,
   Star,
+  Gem,
   Loader2,
 } from "lucide-react";
-import heroImage from "@/assets/gentlemen-hero-cultural.webp";
 import {
   Select,
   SelectContent,
@@ -25,13 +26,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const TheGentlemenPage = () => {
+const TheLadiesSocietyPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user, profile } = useAuth();
   const heroAnimation = useScrollAnimation({ rootMargin: "100px" });
   const missionAnimation = useScrollAnimation({ rootMargin: "100px" });
-  const expectAnimation = useScrollAnimation({ rootMargin: "100px" });
+  const benefitsAnimation = useScrollAnimation({ rootMargin: "100px" });
+  const pricingAnimation = useScrollAnimation({ rootMargin: "100px" });
   const formAnimation = useScrollAnimation({ rootMargin: "100px" });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,11 +42,9 @@ const TheGentlemenPage = () => {
     email: "",
     age: "",
     occupation: "",
-    instagramLinkedin: "",
     reasonToJoin: "",
+    supportMeaning: "",
     contributionStatement: "",
-    stylePreference: "",
-    dressCodeCommitment: false,
     membershipTier: "",
   });
 
@@ -77,26 +77,42 @@ const TheGentlemenPage = () => {
     },
   };
 
-  const expectations = [
+  const benefits = [
     {
-      icon: Wine,
-      title: "Monthly Meetups",
-      description: "Curated gatherings at refined bars and lounges",
-    },
-    {
-      icon: Crown,
-      title: "Dress Code: Tailored",
-      description: "Suits, sport coats, and classic attire expected",
+      icon: Calendar,
+      title: "Monthly Private Gatherings",
+      description:
+        "Intimate events designed to foster genuine connection and sisterhood.",
     },
     {
       icon: MessageCircle,
-      title: "Conversation-Forward",
-      description: "Quality networking without hard pitching",
+      title: "Growth Conversations",
+      description:
+        "Facilitated discussions on personal development, leadership, and life goals.",
+    },
+    {
+      icon: Users,
+      title: "Networking Opportunities",
+      description:
+        "Connect with ambitious women across industries in a supportive setting.",
+    },
+    {
+      icon: Heart,
+      title: "Wellness Evenings",
+      description:
+        "Curated wellness experiences — from mindfulness sessions to self-care rituals.",
     },
     {
       icon: Star,
-      title: "Special Experiences",
-      description: "Occasional private rooms, tastings, and dinners",
+      title: "Priority Access to Events",
+      description:
+        "First access to all Make Friends & Socialize gatherings and exclusive invitations.",
+    },
+    {
+      icon: Gem,
+      title: "Annual Appreciation Dinner",
+      description:
+        "An elegant evening celebrating the achievements and bonds within the circle.",
     },
   ];
 
@@ -107,19 +123,10 @@ const TheGentlemenPage = () => {
       toast({
         title: "Sign in required",
         description:
-          "Please sign in or create an account to apply to The Gentlemen.",
+          "Please sign in or create an account to apply to The Ladies Society.",
         variant: "destructive",
       });
-      navigate("/auth?returnTo=/circles/the-gentlemen");
-      return;
-    }
-
-    if (!formData.dressCodeCommitment) {
-      toast({
-        title: "Dress Code Commitment Required",
-        description: "Please confirm your commitment to the dress code.",
-        variant: "destructive",
-      });
+      navigate("/auth?returnTo=/circles/the-ladies-society");
       return;
     }
 
@@ -128,20 +135,15 @@ const TheGentlemenPage = () => {
     try {
       const { error } = await supabase.from("circle_applications").insert({
         user_id: user.id,
-        circle_name: "the-gentlemen",
+        circle_name: "the-ladies-society",
         full_name: formData.fullName,
         email: formData.email,
         age: formData.age ? parseInt(formData.age, 10) : null,
         occupation: formData.occupation || null,
-        instagram_linkedin: formData.instagramLinkedin || null,
         reason_to_join: formData.reasonToJoin,
+        support_meaning: formData.supportMeaning || null,
         contribution_statement: formData.contributionStatement || null,
-        style_preference: formData.stylePreference as
-          | "classic"
-          | "modern-classic"
-          | "other",
-        dress_code_commitment: formData.dressCodeCommitment,
-        membership_tier: formData.membershipTier as "member" | "fellow",
+        membership_tier: formData.membershipTier,
       });
 
       if (error) throw error;
@@ -149,7 +151,7 @@ const TheGentlemenPage = () => {
       toast({
         title: "Application Submitted",
         description:
-          "Thanks — we'll review and follow up with next steps.",
+          "Thank you — we will review your application and follow up with next steps.",
       });
 
       setFormData({
@@ -157,11 +159,9 @@ const TheGentlemenPage = () => {
         email: "",
         age: "",
         occupation: "",
-        instagramLinkedin: "",
         reasonToJoin: "",
+        supportMeaning: "",
         contributionStatement: "",
-        stylePreference: "",
-        dressCodeCommitment: false,
         membershipTier: "",
       });
     } catch (error) {
@@ -185,35 +185,77 @@ const TheGentlemenPage = () => {
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative min-h-[60vh] flex items-center overflow-hidden">
-          <div className="absolute inset-0">
-            <img
-              src={heroImage}
-              alt="Gentlemen's lounge atmosphere"
-              className="w-full h-full object-cover"
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-background to-background" />
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <motion.div
+              className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-primary/5 blur-3xl"
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.5, 0.3],
+              }}
+              transition={{
+                duration: 8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+            <motion.div
+              className="absolute bottom-1/3 left-1/4 w-96 h-96 rounded-full bg-primary/5 blur-3xl"
+              animate={{
+                scale: [1.2, 1, 1.2],
+                opacity: [0.2, 0.4, 0.2],
+              }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
           </div>
 
           <div
             ref={heroAnimation.ref}
             className={`container max-w-5xl relative z-10 py-20 text-center scroll-animate ${heroAnimation.isVisible ? "visible" : ""}`}
           >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8"
+            >
+              <Crown className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">
+                Private Women&apos;s Circle
+              </span>
+            </motion.div>
+
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="font-display text-5xl md:text-6xl lg:text-7xl text-white mb-6 leading-[1.1]"
+              className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-4 leading-[1.1]"
             >
-              The <span className="text-primary">Gentlemen</span>
+              The <span className="text-primary">Ladies Society</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="font-display text-xl md:text-2xl text-muted-foreground mb-6"
             >
-              Timeless style. Refined spaces. Meaningful conversation.
+              Where women build women.
+            </motion.p>
+
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="text-muted-foreground text-lg max-w-2xl mx-auto mb-10 leading-relaxed"
+            >
+              A private membership space for women who seek growth, support,
+              accountability, and meaningful connection — without drama or
+              gossip. Just women lifting each other higher.
             </motion.p>
 
             <motion.div
@@ -230,7 +272,7 @@ const TheGentlemenPage = () => {
                     ?.scrollIntoView({ behavior: "smooth" })
                 }
               >
-                Apply to The Gentlemen
+                Apply Now
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </motion.div>
@@ -255,43 +297,51 @@ const TheGentlemenPage = () => {
                   Our Mission
                 </h2>
               </div>
+              <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl mx-auto mb-4">
+                We believe every day is women&apos;s day — not just once a year.
+                The Ladies Society exists to recognize, celebrate, and support
+                women consistently, through meaningful gatherings, honest
+                conversations, and a community built on mutual respect.
+              </p>
               <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl mx-auto">
-                The Gentlemen is a selective circle for men who value timeless
-                style, presence, and the art of meaningful conversation. We
-                create a space where men connect through shared appreciation for
-                refinement — not to impress, but to inspire and elevate one
-                another in an atmosphere of respect and camaraderie.
+                This is a space where ambition is encouraged, vulnerability is
+                welcomed, and every woman leaves stronger than she arrived.
               </p>
             </motion.div>
           </div>
         </section>
 
-        {/* What to Expect */}
+        {/* What Members Receive */}
         <section className="py-16 md:py-20">
           <div
-            ref={expectAnimation.ref}
-            className={`container max-w-6xl scroll-animate ${expectAnimation.isVisible ? "visible" : ""}`}
+            ref={benefitsAnimation.ref}
+            className={`container max-w-6xl scroll-animate ${benefitsAnimation.isVisible ? "visible" : ""}`}
           >
-            <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-6 text-center">
-              What to Expect
-            </p>
+            <div className="text-center mb-12">
+              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">
+                Membership Benefits
+              </p>
+              <h2 className="font-display text-3xl md:text-4xl text-foreground">
+                What Members Receive
+              </h2>
+            </div>
 
             <motion.div
               variants={containerVariants}
               initial="hidden"
-              animate={expectAnimation.isVisible ? "visible" : "hidden"}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+              animate={benefitsAnimation.isVisible ? "visible" : "hidden"}
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
             >
-              {expectations.map((item) => (
+              {benefits.map((item) => (
                 <motion.div
                   key={item.title}
                   variants={itemVariants}
-                  className="group bg-card border border-border/50 rounded-xl p-4 text-center"
+                  className="group bg-card border border-border/50 rounded-xl p-6 text-center"
                 >
-                  <div className="w-10 h-10 mx-auto rounded-lg bg-primary/10 flex items-center justify-center mb-3 transition-colors group-hover:bg-primary/20">
-                    <item.icon className="h-5 w-5 text-primary" />
+                  <div className="w-12 h-12 mx-auto rounded-lg bg-primary/10 flex items-center justify-center mb-4 transition-colors group-hover:bg-primary/20">
+                    <item.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-foreground text-sm mb-1">
+                  <h3 className="font-semibold text-foreground text-sm mb-2">
                     {item.title}
                   </h3>
                   <p className="text-muted-foreground text-xs leading-relaxed">
@@ -300,19 +350,96 @@ const TheGentlemenPage = () => {
                 </motion.div>
               ))}
             </motion.div>
+          </div>
+        </section>
+
+        {/* Membership Pricing */}
+        <section className="py-16 md:py-20">
+          <div
+            ref={pricingAnimation.ref}
+            className={`container max-w-4xl scroll-animate ${pricingAnimation.isVisible ? "visible" : ""}`}
+          >
+            <div className="text-center mb-12">
+              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">
+                Pricing
+              </p>
+              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
+                Membership Options
+              </h2>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                Access to The Ladies Society requires a Member tier or above.
+                Fellows with businesses can have their listings featured in our
+                directory.
+              </p>
+            </div>
 
             <motion.div
-              variants={itemVariants}
+              variants={containerVariants}
               initial="hidden"
-              animate={expectAnimation.isVisible ? "visible" : "hidden"}
-              className="mt-8 text-center"
+              animate={pricingAnimation.isVisible ? "visible" : "hidden"}
+              className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto"
             >
-              <div className="inline-flex items-center gap-2 border border-border/50 rounded-full px-4 py-2">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
-                  Applications are reviewed to maintain the tone of the circle.
-                </span>
-              </div>
+              <motion.div
+                variants={itemVariants}
+                className="bg-card border border-border/50 rounded-2xl p-8 text-center"
+              >
+                <h3 className="font-display text-2xl text-foreground mb-2">
+                  Monthly
+                </h3>
+                <div className="mb-4">
+                  <span className="font-display text-4xl text-primary">
+                    $29
+                  </span>
+                  <span className="text-muted-foreground">/month</span>
+                </div>
+                <p className="text-muted-foreground text-sm mb-6">
+                  Full access to all Ladies Society gatherings and benefits.
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full rounded-full"
+                  onClick={() =>
+                    document
+                      .getElementById("apply")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  Apply Now
+                </Button>
+              </motion.div>
+
+              <motion.div
+                variants={itemVariants}
+                className="bg-card border border-primary/50 ring-1 ring-primary/20 rounded-2xl p-8 text-center relative"
+              >
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                    Best Value
+                  </span>
+                </div>
+                <h3 className="font-display text-2xl text-foreground mb-2">
+                  Annual
+                </h3>
+                <div className="mb-4">
+                  <span className="font-display text-4xl text-primary">
+                    $249
+                  </span>
+                  <span className="text-muted-foreground">/year</span>
+                </div>
+                <p className="text-muted-foreground text-sm mb-6">
+                  Save over $99 annually. Includes all membership benefits.
+                </p>
+                <Button
+                  className="w-full rounded-full"
+                  onClick={() =>
+                    document
+                      .getElementById("apply")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  Apply Now
+                </Button>
+              </motion.div>
             </motion.div>
           </div>
         </section>
@@ -328,7 +455,7 @@ const TheGentlemenPage = () => {
                 Join Us
               </p>
               <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-                Apply to The Gentlemen
+                Apply to The Ladies Society
               </h2>
             </div>
 
@@ -423,42 +550,42 @@ const TheGentlemenPage = () => {
                 <div>
                   <label
                     className="block text-sm font-medium text-foreground mb-2"
-                    htmlFor="instagramLinkedin"
+                    htmlFor="reasonToJoin"
                   >
-                    Instagram / LinkedIn (Optional)
+                    Why do you want to join The Ladies Society? *
                   </label>
-                  <input
-                    id="instagramLinkedin"
-                    type="text"
-                    value={formData.instagramLinkedin}
+                  <textarea
+                    id="reasonToJoin"
+                    required
+                    rows={3}
+                    value={formData.reasonToJoin}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        instagramLinkedin: e.target.value,
-                      })
+                      setFormData({ ...formData, reasonToJoin: e.target.value })
                     }
-                    className={inputClasses}
-                    placeholder="@handle or profile URL"
+                    className={`${inputClasses} resize-none`}
+                    placeholder="Tell us what draws you to this circle..."
                   />
                 </div>
 
                 <div>
                   <label
                     className="block text-sm font-medium text-foreground mb-2"
-                    htmlFor="reasonToJoin"
+                    htmlFor="supportMeaning"
                   >
-                    Why do you want to join The Gentlemen? *
+                    What does support among women mean to you?
                   </label>
                   <textarea
-                    id="reasonToJoin"
-                    required
-                    rows={4}
-                    value={formData.reasonToJoin}
+                    id="supportMeaning"
+                    rows={3}
+                    value={formData.supportMeaning}
                     onChange={(e) =>
-                      setFormData({ ...formData, reasonToJoin: e.target.value })
+                      setFormData({
+                        ...formData,
+                        supportMeaning: e.target.value,
+                      })
                     }
                     className={`${inputClasses} resize-none`}
-                    placeholder="Tell us about yourself and what draws you to this circle..."
+                    placeholder="Share your perspective..."
                   />
                 </div>
 
@@ -487,33 +614,6 @@ const TheGentlemenPage = () => {
                 <div>
                   <label
                     className="block text-sm font-medium text-foreground mb-2"
-                    htmlFor="stylePreference"
-                  >
-                    Style Preference *
-                  </label>
-                  <Select
-                    value={formData.stylePreference}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, stylePreference: value })
-                    }
-                    required
-                  >
-                    <SelectTrigger className="w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm h-auto">
-                      <SelectValue placeholder="Select your style" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border border-border">
-                      <SelectItem value="classic">Classic</SelectItem>
-                      <SelectItem value="modern-classic">
-                        Modern Classic
-                      </SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label
-                    className="block text-sm font-medium text-foreground mb-2"
                     htmlFor="membershipTier"
                   >
                     Membership Tier *
@@ -534,31 +634,10 @@ const TheGentlemenPage = () => {
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground mt-2">
-                    The Gentlemen is available to Member and Fellow tier members
-                    only.
+                    The Ladies Society is available to Member and Fellow tier
+                    members. Fellows with businesses can have their listings
+                    featured in our directory.
                   </p>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <input
-                    id="dressCodeCommitment"
-                    type="checkbox"
-                    checked={formData.dressCodeCommitment}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        dressCodeCommitment: e.target.checked,
-                      })
-                    }
-                    className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary/50"
-                  />
-                  <label
-                    htmlFor="dressCodeCommitment"
-                    className="text-sm text-muted-foreground"
-                  >
-                    I commit to the dress code (tailored attire: suits, sport
-                    coats, classic style) for all Circle events. *
-                  </label>
                 </div>
 
                 <Button
@@ -578,6 +657,11 @@ const TheGentlemenPage = () => {
                     </>
                   )}
                 </Button>
+
+                <p className="text-xs text-muted-foreground text-center mt-4">
+                  Membership is reviewed to maintain a respectful and empowering
+                  environment.
+                </p>
               </form>
             </motion.div>
           </div>
@@ -587,4 +671,4 @@ const TheGentlemenPage = () => {
   );
 };
 
-export default TheGentlemenPage;
+export default TheLadiesSocietyPage;

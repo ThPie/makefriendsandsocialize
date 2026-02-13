@@ -8,6 +8,7 @@ import {
   Sparkles,
   ArrowRight,
   Crown,
+  Gem,
   MessageCircle,
   Users,
   ClipboardCheck,
@@ -49,6 +50,14 @@ const CirclesPage = () => {
       icon: Crown,
       tags: ["Dress Code: Tailored", "Selective", "Monthly / Curated"],
       path: "/circles/the-gentlemen",
+      isFree: false,
+    },
+    {
+      title: "The Ladies Society",
+      description: "A private circle for women who value growth, support, and meaningful connection.",
+      icon: Gem,
+      tags: ["Women Only", "Selective", "Monthly / Curated"],
+      path: "/circles/the-ladies-society",
       isFree: false,
     },
     {
@@ -216,7 +225,7 @@ const CirclesPage = () => {
               variants={containerVariants}
               initial="hidden"
               animate={circlesAnimation.isVisible ? "visible" : "hidden"}
-              className="grid md:grid-cols-2 gap-6 lg:gap-8"
+              className="grid md:grid-cols-3 gap-6 lg:gap-8"
             >
               {circles.map((circle) => (
                 <motion.div

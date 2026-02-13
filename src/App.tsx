@@ -78,6 +78,7 @@ const AdminBusinesses = lazy(() => import("@/pages/admin/AdminBusinesses"));
 const DateConfirmationPage = lazy(() => import("@/pages/DateConfirmationPage"));
 const CirclesPage = lazy(() => import("@/pages/CirclesPage"));
 const TheGentlemenPage = lazy(() => import("@/pages/circles/TheGentlemenPage"));
+const TheLadiesSocietyPage = lazy(() => import("@/pages/circles/TheLadiesSocietyPage"));
 const LesAmisPage = lazy(() => import("@/pages/circles/LesAmisPage"));
 const HealthCheckPage = lazy(() => import("@/pages/HealthCheckPage"));
 const PortalOnboarding = lazy(() => import("@/pages/portal/PortalOnboarding"));
@@ -157,6 +158,7 @@ const MainRoutes = () => (
     <Route path="/directory/:slug" element={<BusinessLandingPage />} />
     <Route path="/circles" element={<CirclesPage />} />
     <Route path="/circles/the-gentlemen" element={<TheGentlemenPage />} />
+    <Route path="/circles/the-ladies-society" element={<TheLadiesSocietyPage />} />
     <Route path="/circles/les-amis" element={<LesAmisPage />} />
     <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
 

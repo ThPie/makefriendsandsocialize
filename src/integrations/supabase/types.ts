@@ -774,8 +774,10 @@ export type Database = {
       circle_applications: {
         Row: {
           admin_notes: string | null
+          age: number | null
           circle_name: string
           comfortable_speaking: boolean | null
+          contribution_statement: string | null
           created_at: string | null
           dress_code_commitment: boolean | null
           email: string
@@ -785,18 +787,22 @@ export type Database = {
           improvement_goals: string | null
           instagram_linkedin: string | null
           membership_tier: string
+          occupation: string | null
           reason_to_join: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           status: string
           style_preference: string | null
+          support_meaning: string | null
           updated_at: string | null
           user_id: string | null
         }
         Insert: {
           admin_notes?: string | null
+          age?: number | null
           circle_name: string
           comfortable_speaking?: boolean | null
+          contribution_statement?: string | null
           created_at?: string | null
           dress_code_commitment?: boolean | null
           email: string
@@ -806,18 +812,22 @@ export type Database = {
           improvement_goals?: string | null
           instagram_linkedin?: string | null
           membership_tier: string
+          occupation?: string | null
           reason_to_join?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
           style_preference?: string | null
+          support_meaning?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
         Update: {
           admin_notes?: string | null
+          age?: number | null
           circle_name?: string
           comfortable_speaking?: boolean | null
+          contribution_statement?: string | null
           created_at?: string | null
           dress_code_commitment?: boolean | null
           email?: string
@@ -827,11 +837,13 @@ export type Database = {
           improvement_goals?: string | null
           instagram_linkedin?: string | null
           membership_tier?: string
+          occupation?: string | null
           reason_to_join?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: string
           style_preference?: string | null
+          support_meaning?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
