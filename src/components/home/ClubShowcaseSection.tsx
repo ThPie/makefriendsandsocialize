@@ -58,65 +58,70 @@ export const ClubShowcaseSection = () => {
     const { ref, isVisible } = useScrollAnimation();
 
     return (
-        <section className="w-full bg-background py-20 md:py-32 px-4 md:px-8 overflow-hidden">
-            <div ref={ref} className={`max-w-[1400px] mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+        <section className="w-full bg-background py-24 md:py-32 overflow-hidden">
+            <div ref={ref} className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
 
                 {/* Section Header */}
-                <div className="text-center mb-16 space-y-4">
-                    <div className="inline-flex items-center gap-2 border border-primary/30 rounded-full px-4 py-1.5 mb-2">
-                        <span className="flex h-1.5 w-1.5 rounded-full bg-primary"></span>
-                        <span className="text-xs font-medium text-primary tracking-wider uppercase">Our Societies</span>
+                <div className="container max-w-[1400px] mb-12 md:mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6 px-6">
+                    <div className="space-y-4">
+                        <div className="inline-flex items-center gap-2 border border-primary/30 rounded-full px-4 py-1.5 backdrop-blur-sm">
+                            <span className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+                            <span className="text-xs font-medium text-primary tracking-wider uppercase">Our Societies</span>
+                        </div>
+                        <h2 className="font-display text-4xl md:text-5xl lg:text-7xl font-bold text-foreground leading-[0.9]">
+                            Curated <span className="text-muted-foreground font-serif italic">Collections</span>
+                        </h2>
                     </div>
-                    <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground">
-                        Curated <span className="text-muted-foreground font-serif italic">Collections</span>
-                    </h2>
-                    <p className="text-muted-foreground max-w-lg mx-auto text-lg pt-2">
-                        Discover the exclusive circles that define our community.
+                    <p className="text-muted-foreground max-w-sm text-lg leading-relaxed md:pb-2">
+                        Discover the exclusive circles that define our community. Each one a unique world of connection.
                     </p>
                 </div>
 
-                {/* Scrollable Container for Mobile / Grid for Desktop */}
-                <div className="flex overflow-x-auto pb-8 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6 lg:gap-4 snap-x snap-mandatory scrollbar-none">
-                    {clubs.map((club) => (
-                        <Link
-                            key={club.id}
-                            to={club.link}
-                            className="group relative flex-none w-[85vw] md:w-full snap-center aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
-                        >
-                            {/* Background Image */}
-                            <img
-                                src={club.image}
-                                alt={club.title}
-                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            />
+                {/* Horizontal Scroll Container */}
+                <div className="relative w-full overflow-x-auto pb-12 px-6 scrollbar-hide">
+                    <div className="flex gap-6 w-max">
+                        {clubs.map((club, index) => (
+                            <Link
+                                key={club.id}
+                                to={club.link}
+                                className="group relative flex-none w-[85vw] md:w-[450px] aspect-[3/4] rounded-[2rem] overflow-hidden cursor-pointer"
+                            >
+                                {/* Background Image */}
+                                <img
+                                    src={club.image}
+                                    alt={club.title}
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                />
 
-                            {/* Overlay Gradient */}
-                            <div className={`absolute inset-0 bg-gradient-to-t ${club.color} via-black/20 to-transparent transition-opacity duration-500 group-hover:opacity-90`} />
-                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
+                                {/* Overlays */}
+                                <div className={`absolute inset-0 bg-gradient-to-t ${club.color} via-transparent to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-80`} />
+                                <div className="absolute inset-0 bg-black/20 transition-colors duration-500 group-hover:bg-black/10" />
 
-                            {/* Content */}
-                            <div className="absolute inset-0 p-6 flex flex-col justify-end translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                {/* Top Right Arrow */}
-                                <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-md p-2 rounded-full opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
-                                    <ArrowUpRight className="w-5 h-5 text-white" />
+                                {/* Content */}
+                                <div className="absolute inset-0 p-8 flex flex-col justify-between">
+                                    {/* Top Area */}
+                                    <div className="flex justify-between items-start">
+                                        <span className="text-white/80 font-mono text-sm tracking-widest">
+                                            0{index + 1}
+                                        </span>
+                                        <div className="bg-white/10 backdrop-blur-md p-3 rounded-full opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                                            <ArrowUpRight className="w-6 h-6 text-white" />
+                                        </div>
+                                    </div>
+
+                                    {/* Bottom Area */}
+                                    <div className="transform transition-transform duration-500 group-hover:-translate-y-2">
+                                        <h3 className="font-display text-4xl md:text-5xl font-bold text-white mb-3">
+                                            {club.title}
+                                        </h3>
+                                        <p className="text-white/90 text-lg leading-relaxed max-w-[90%] opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                                            {club.description}
+                                        </p>
+                                    </div>
                                 </div>
-
-                                <h3 className="font-display text-2xl font-bold text-white mb-2 transform transition-transform duration-500 group-hover:-translate-y-1">
-                                    {club.title}
-                                </h3>
-
-                                <p className="text-white/80 text-sm leading-relaxed opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-20 transition-all duration-500 delay-75 overflow-hidden">
-                                    {club.description}
-                                </p>
-
-                                {/* "Explore" Label - Visible by default, hidden on hover to make room for description? 
-                    Actually, let's keep it consistent. The request said "modern, minimal".
-                    Let's just show the description sliding up.
-                */}
-                                <div className="h-1 w-12 bg-white/50 rounded-full mt-4 group-hover:w-full group-hover:bg-primary transition-all duration-700" />
-                            </div>
-                        </Link>
-                    ))}
+                            </Link>
+                        ))}
+                    </div>
                 </div>
 
             </div>

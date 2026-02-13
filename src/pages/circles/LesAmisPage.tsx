@@ -9,19 +9,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import {
-  MessageCircle,
-  Sparkles,
   ArrowRight,
-  CheckCircle,
-  Coffee,
-  Globe,
-  Music,
-  Users,
   ArrowLeft,
   Loader2,
-  LogIn
+  Sparkles
 } from "lucide-react";
-import heroImage from "@/assets/les-amis-hero-cultural.webp";
+import heroImage from "@/assets/les-amis-hero-new.webp";
 import {
   Select,
   SelectContent,
@@ -60,46 +53,26 @@ const LesAmisPage = () => {
     }
   }, [user, profile]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
-    },
-  };
-
   const expectations = [
     {
-      icon: Coffee,
+      id: "01",
       title: "Monthly Meetups",
-      description: "Casual gatherings at cafés, wine bars, and restaurants",
+      description: "Casual gatherings at selected cafés and wine bars",
     },
     {
-      icon: Users,
-      title: "All Levels Welcome",
-      description: "Native speakers and learners come together",
+      id: "02",
+      title: "Open to All",
+      description: "Native speakers and learners together",
     },
     {
-      icon: MessageCircle,
+      id: "03",
       title: "Light Prompts",
-      description: "Guided conversation topics to keep things flowing",
+      description: "Guided conversation topics to keep it flowing",
     },
     {
-      icon: Music,
-      title: "Culture-Friendly Themes",
-      description: "Explore music, travel, food, and French culture",
+      id: "04",
+      title: "Culture",
+      description: "Explore music, travel, food, and French art",
     },
   ];
 
@@ -161,9 +134,9 @@ const LesAmisPage = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background text-foreground">
         {/* Hero Section */}
-        <section className="relative min-h-[60vh] flex items-center overflow-hidden">
+        <section className="relative h-[80vh] flex items-center overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
             <img
@@ -171,62 +144,46 @@ const LesAmisPage = () => {
               alt="French café social gathering"
               className="w-full h-full object-cover"
             />
+            <div className="absolute inset-0 bg-black/30" />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           </div>
 
           <div
             ref={heroAnimation.ref}
-            className={`container max-w-5xl relative z-10 py-20 text-center scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+            className={`container max-w-[1400px] relative z-10 py-20 pl-8 md:pl-16 border-l border-white/20 ml-4 md:ml-12 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="flex items-center justify-center gap-3 mb-8"
             >
-              <Badge className="bg-green-500/20 text-green-300 border-green-500/30 px-4 py-2">
-                <Sparkles className="h-3 w-3 mr-2" />
-                Open Circle — Free for All Members
-              </Badge>
-            </motion.div>
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-white/80 font-mono text-sm tracking-widest uppercase">Open Circle</span>
+              </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="font-display text-5xl md:text-6xl lg:text-7xl text-white mb-6 leading-[1.1]"
-            >
-              Les <span className="text-primary">Amis</span>
-            </motion.h1>
+              <h1 className="font-display text-6xl md:text-8xl lg:text-9xl text-white mb-8 leading-[0.9]">
+                Les <span className="text-primary italic font-serif">Amis</span>
+              </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
-            >
-              Conversation, culture, and connection — in French.
-            </motion.p>
+              <p className="text-white/90 text-xl md:text-2xl max-w-xl leading-relaxed mb-12 border-l-2 border-primary pl-6">
+                Conversation, culture, and connection — in French.
+              </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-            >
-              <Button
-                size="lg"
-                className="rounded-full px-8 min-h-[52px] text-base font-medium group"
-                onClick={() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Join Les Amis
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
+              <div>
+                <Button
+                  size="lg"
+                  className="rounded-full px-10 h-14 text-lg font-medium bg-white text-black hover:bg-white/90 transition-colors"
+                  onClick={() => document.getElementById('apply')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  Join Les Amis
+                </Button>
+              </div>
             </motion.div>
           </div>
         </section>
 
         {/* What It Is + What to Expect - Combined Section */}
-        <section className="py-16 md:py-20">
+        <section className="py-24 md:py-32">
           <div
             ref={whatIsAnimation.ref}
             className={`container max-w-6xl scroll-animate ${whatIsAnimation.isVisible ? 'visible' : ''}`}
@@ -236,49 +193,34 @@ const LesAmisPage = () => {
               initial={{ opacity: 0, y: 30 }}
               animate={whatIsAnimation.isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7 }}
-              className="text-center mb-12"
+              className="text-center mb-24"
             >
-              <div className="inline-flex items-center gap-3 mb-4">
-                <Globe className="h-6 w-6 text-primary" />
-                <h2 className="font-display text-3xl md:text-4xl text-foreground">What It Is</h2>
-              </div>
-              <Badge className="mb-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">
-                Open to all members — no application required
-              </Badge>
+              <h2 className="font-display text-4xl md:text-6xl text-foreground mb-8">
+                "A space for real conversation in a <br /><span className="text-primary italic">welcoming</span> setting."
+              </h2>
               <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl mx-auto">
                 Les Amis is a French-speaking social circle open to all Make Friends & Socialize members.
-                A space for real conversation in a welcoming, low-pressure setting—whether you're a
-                native speaker or just starting your French journey.
+                Whether you're a native speaker or just starting your French journey, you'll find
+                camaraderie and culture here.
               </p>
             </motion.div>
 
-            {/* What to Expect - Horizontal Cards */}
+            {/* What to Expect - Feature List */}
             <div
               ref={expectAnimation.ref}
               className={`scroll-animate ${expectAnimation.isVisible ? 'visible' : ''}`}
             >
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-6 text-center">What to Expect</p>
-
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate={expectAnimation.isVisible ? "visible" : "hidden"}
-                className="grid grid-cols-2 lg:grid-cols-4 gap-4"
-              >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 px-8">
                 {expectations.map((item) => (
-                  <motion.div
-                    key={item.title}
-                    variants={itemVariants}
-                    className="group bg-card border border-border/50 rounded-xl p-4 text-center"
-                  >
-                    <div className="w-10 h-10 mx-auto rounded-lg bg-primary/10 flex items-center justify-center mb-3 transition-colors group-hover:bg-primary/20">
-                      <item.icon className="h-5 w-5 text-primary" />
-                    </div>
-                    <h3 className="font-semibold text-foreground text-sm mb-1">{item.title}</h3>
-                    <p className="text-muted-foreground text-xs leading-relaxed">{item.description}</p>
-                  </motion.div>
+                  <div key={item.id} className="group">
+                    <span className="block font-mono text-sm text-primary tracking-widest mb-4">
+                      {item.id}
+                    </span>
+                    <h3 className="font-display text-3xl text-foreground mb-3 group-hover:text-primary transition-colors">{item.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed border-t border-border/40 pt-4 mt-4">{item.description}</p>
+                  </div>
                 ))}
-              </motion.div>
+              </div>
             </div>
           </div>
         </section>

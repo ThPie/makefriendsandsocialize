@@ -1,121 +1,48 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/layout/Layout";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { motion } from "framer-motion";
-import {
-  Sparkles,
-  ArrowRight,
-  Crown,
-  Gem,
-  MessageCircle,
-  Users,
-  ClipboardCheck,
-  Mail,
-  CheckCircle,
-  Star
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
+
+// Assets
+import lesAmisImg from "@/assets/les-amis-hero-new.webp";
+import gentlemenImg from "@/assets/gentlemen-hero-new.webp";
+// Placeholder for Women Society
+const womenSocietyImg = "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?q=80&w=2938&auto=format&fit=crop";
 
 const CirclesPage = () => {
   const heroAnimation = useScrollAnimation({ rootMargin: '100px' });
   const circlesAnimation = useScrollAnimation({ rootMargin: '100px' });
   const howItWorksAnimation = useScrollAnimation({ rootMargin: '100px' });
-  const membershipAnimation = useScrollAnimation({ rootMargin: '100px' });
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] as const },
-    },
-  };
 
   const circles = [
     {
       title: "The Gentlemen",
       description: "A selective circle for men who value timeless style, presence, and refined social settings.",
-      icon: Crown,
-      tags: ["Dress Code: Tailored", "Selective", "Monthly / Curated"],
+      image: gentlemenImg,
+      tags: ["Dress Code: Tailored", "Selective"],
       path: "/circles/the-gentlemen",
       isFree: false,
+      colSpan: "md:col-span-2",
     },
     {
       title: "The Ladies Society",
       description: "A private circle for women who value growth, support, and meaningful connection.",
-      icon: Gem,
-      tags: ["Women Only", "Selective", "Monthly / Curated"],
+      image: womenSocietyImg,
+      tags: ["Women Only", "Selective"],
       path: "/circles/the-ladies-society",
       isFree: false,
+      colSpan: "md:col-span-1",
     },
     {
       title: "Les Amis",
       description: "A French-speaking social circle for conversation, culture, and connection—no classroom vibe.",
-      icon: MessageCircle,
-      tags: ["French Conversation", "Monthly", "All levels welcome", "Free for All"],
+      image: lesAmisImg,
+      tags: ["French Conversation", "Open to All"],
       path: "/circles/les-amis",
       isFree: true,
-    },
-  ];
-
-  const steps = [
-    {
-      step: "01",
-      title: "Join Make Friends & Socialize",
-      description: "Become a member of our private social club to access Circles and exclusive experiences.",
-      icon: Users,
-    },
-    {
-      step: "02",
-      title: "Choose a Circle",
-      description: "Browse our curated Circles and find the community that matches your interests and lifestyle.",
-      icon: Star,
-    },
-    {
-      step: "03",
-      title: "Submit an Application",
-      description: "Tell us about yourself and why you'd like to join. Applications help maintain the tone of each Circle.",
-      icon: ClipboardCheck,
-    },
-    {
-      step: "04",
-      title: "Get Invited to Events",
-      description: "Once approved, receive invitations to exclusive Circle gatherings and experiences.",
-      icon: Mail,
-    },
-  ];
-
-  const tiers = [
-    {
-      name: "Explorer",
-      description: "Free access to Les Amis; can view selective Circles",
-      features: ["Free access to Les Amis", "Browse Circle pages", "Attend public events"],
-      canApply: true,
-    },
-    {
-      name: "Member",
-      description: "Les Amis + apply to The Gentlemen (approval required)",
-      features: ["Les Amis access", "Apply to The Gentlemen", "Attend Circle events"],
-      canApply: true,
-      highlight: true,
-    },
-    {
-      name: "Fellow",
-      description: "All Circles + priority consideration + invitation-only experiences",
-      features: ["Priority for The Gentlemen", "Invitation-only experiences", "All Circle benefits"],
-      canApply: true,
+      colSpan: "md:col-span-3",
     },
   ];
 
@@ -123,263 +50,128 @@ const CirclesPage = () => {
     <Layout>
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
-        <section className="relative min-h-[70vh] flex items-center overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-secondary/50 via-background to-background" />
-
-          {/* Floating Elements */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <motion.div
-              className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-primary/5 blur-3xl"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              className="absolute bottom-1/4 left-1/3 w-96 h-96 rounded-full bg-primary/5 blur-3xl"
-              animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </div>
-
-          <div
-            ref={heroAnimation.ref}
-            className={`container max-w-5xl relative z-10 py-20 text-center scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
-          >
+        <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden pt-20">
+          <div className="container relative z-10 text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8"
+              className="inline-flex items-center gap-2 border border-primary/30 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm"
             >
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Curated Communities</span>
+              <span className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+              <span className="text-xs font-medium text-primary tracking-wider uppercase">Curated Communities</span>
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
+              className="font-display text-5xl md:text-7xl lg:text-8xl text-foreground mb-6"
             >
-              Circles within
-              <br />
-              <span className="text-gradient">the Club</span>
+              Circles
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+              className="text-muted-foreground text-xl max-w-2xl mx-auto"
             >
-              Make Friends & Socialize is a private social club—not a dating app.
-              Circles are curated communities inside the club, built around shared tastes,
-              culture, and connection.
+              Exclusive micro-communities built around shared tastes, culture, and connection.
             </motion.p>
+          </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            >
-              <Button
-                asChild
-                size="lg"
-                className="rounded-full px-8 min-h-[52px] text-base font-medium group"
-              >
-                <Link to="/membership">
-                  Apply to Join
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="rounded-full px-8 min-h-[52px] text-base border-border/50 hover:bg-secondary"
-              >
-                <a href="#circles">Explore Circles</a>
-              </Button>
-            </motion.div>
+          {/* Ambient Background */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px]" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px]" />
           </div>
         </section>
 
-        {/* Circles Section */}
-        <section id="circles" className="py-24 md:py-32">
-          <div
-            ref={circlesAnimation.ref}
-            className={`container max-w-5xl scroll-animate ${circlesAnimation.isVisible ? 'visible' : ''}`}
-          >
-            <div className="text-center mb-16">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Circles</p>
-              <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-                Find Your Community
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Each Circle is a curated space for members who share a common interest or lifestyle.
-              </p>
-            </div>
-
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={circlesAnimation.isVisible ? "visible" : "hidden"}
-              className="grid md:grid-cols-3 gap-6 lg:gap-8"
-            >
-              {circles.map((circle) => (
-                <motion.div
+        {/* Circles Mosaic Grid */}
+        <section className="py-20 px-4 md:px-8">
+          <div className="max-w-[1400px] mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+              {circles.map((circle, idx) => (
+                <Link
                   key={circle.title}
-                  variants={itemVariants}
-                  className="group bg-card border border-border/50 rounded-2xl p-8 hover-lift relative"
+                  to={circle.path}
+                  className={`group relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden ${circle.colSpan}`}
                 >
-                  {circle.isFree && (
-                    <Badge className="absolute top-4 right-4 bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20">
-                      Free for All
-                    </Badge>
-                  )}
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 transition-colors group-hover:bg-primary/20">
-                    <circle.icon className="h-7 w-7 text-primary" />
+                  {/* Image */}
+                  <img
+                    src={circle.image}
+                    alt={circle.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-500 group-hover:opacity-90" />
+
+                  {/* Content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10">
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {circle.tags.map(tag => (
+                        <span key={tag} className="text-[10px] uppercase tracking-wider font-medium bg-white/10 backdrop-blur-md text-white px-3 py-1 rounded-full border border-white/10">
+                          {tag}
+                        </span>
+                      ))}
+                      {circle.isFree && (
+                        <span className="text-[10px] uppercase tracking-wider font-medium bg-green-500/20 backdrop-blur-md text-green-300 px-3 py-1 rounded-full border border-green-500/20">
+                          Open Circle
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="font-display text-4xl text-white mb-2 group-hover:text-primary transition-colors duration-300">
+                      {circle.title}
+                    </h3>
+
+                    <p className="text-white/70 text-lg max-w-xl line-clamp-2 group-hover:line-clamp-none transition-all duration-300">
+                      {circle.description}
+                    </p>
+
+                    <div className="mt-6 flex items-center text-white/50 group-hover:text-white transition-colors">
+                      <span className="text-sm font-medium tracking-widest uppercase">Explore Circle</span>
+                      <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-2 transition-transform" />
+                    </div>
                   </div>
-                  <h3 className="font-display text-2xl md:text-3xl text-foreground mb-3">{circle.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed mb-6">{circle.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {circle.tags.map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="secondary"
-                        className={tag === "Free for All"
-                          ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20"
-                          : "bg-secondary/50 text-foreground/80 border-border/50"
-                        }
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <Button asChild variant="outline" className="rounded-full group/btn">
-                    <Link to={circle.path}>
-                      View Circle
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                    </Link>
-                  </Button>
-                </motion.div>
+                </Link>
               ))}
-            </motion.div>
+            </div>
           </div>
         </section>
 
-        {/* How Circles Work */}
-        <section className="py-16 md:py-20">
-          <div
-            ref={howItWorksAnimation.ref}
-            className={`container max-w-5xl scroll-animate ${howItWorksAnimation.isVisible ? 'visible' : ''}`}
-          >
-            <div className="text-center mb-16">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">The Process</p>
-              <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-                How Circles Work
-              </h2>
-            </div>
-
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={howItWorksAnimation.isVisible ? "visible" : "hidden"}
-              className="relative"
-            >
-              {/* Connecting Line */}
-              <div className="absolute left-8 md:left-10 top-0 bottom-0 w-px bg-gradient-to-b from-primary/50 via-primary/20 to-transparent hidden md:block" />
-
-              <div className="space-y-6">
-                {steps.map((item) => (
-                  <motion.div
-                    key={item.step}
-                    variants={itemVariants}
-                    className="flex gap-6 md:gap-8 items-start group"
-                  >
-                    <div className="relative z-10 flex-shrink-0">
-                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-card border border-border flex items-center justify-center transition-all group-hover:border-primary/50 group-hover:shadow-lg group-hover:shadow-primary/10">
-                        <span className="font-display text-2xl md:text-3xl text-primary">{item.step}</span>
-                      </div>
-                    </div>
-                    <div className="flex-1 bg-card border border-border/50 rounded-2xl p-6 md:p-8 transition-all group-hover:border-primary/30 group-hover:shadow-lg group-hover:shadow-primary/5">
-                      <div className="flex items-center gap-3 mb-3">
-                        <item.icon className="h-5 w-5 text-primary" />
-                        <h3 className="font-display text-xl md:text-2xl text-foreground">{item.title}</h3>
-                      </div>
-                      <p className="text-muted-foreground leading-relaxed">{item.description}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Membership Integration */}
-        <section className="py-16 md:py-20">
-          <div
-            ref={membershipAnimation.ref}
-            className={`container max-w-5xl scroll-animate ${membershipAnimation.isVisible ? 'visible' : ''}`}
-          >
-            <div className="text-center mb-16">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Access Levels</p>
-              <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-                Circle Access by Tier
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Your membership tier determines how you can engage with Circles.
-              </p>
-            </div>
-
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={membershipAnimation.isVisible ? "visible" : "hidden"}
-              className="grid md:grid-cols-3 gap-6"
-            >
-              {tiers.map((tier) => (
-                <motion.div
-                  key={tier.name}
-                  variants={itemVariants}
-                  className={`bg-card border rounded-2xl p-6 ${tier.highlight
-                      ? 'border-primary/50 ring-1 ring-primary/20'
-                      : 'border-border/50'
-                    }`}
-                >
-                  {tier.highlight && (
-                    <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
-                      Most Popular
-                    </Badge>
-                  )}
-                  <h3 className="font-display text-2xl text-foreground mb-2">{tier.name}</h3>
-                  <p className="text-muted-foreground text-sm mb-6">{tier.description}</p>
-                  <ul className="space-y-3">
-                    {tier.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2 text-sm">
-                        <CheckCircle className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-foreground/80">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </motion.div>
+        {/* Minimal How it Works */}
+        <section className="py-20 border-t border-border/40">
+          <div className="container max-w-4xl text-center">
+            <h2 className="font-display text-3xl md:text-4xl mb-12">How to Join</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                { step: "01", title: "Member Access", desc: "Join the Club to unlock access." },
+                { step: "02", title: "Choose Circle", desc: "Find your community." },
+                { step: "03", title: "Apply", desc: "Quick application for selective circles." }
+              ].map((item) => (
+                <div key={item.step} className="group">
+                  <span className="font-display text-6xl text-border/40 group-hover:text-primary/40 transition-colors block mb-4">
+                    {item.step}
+                  </span>
+                  <h3 className="text-xl font-medium mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm">{item.desc}</p>
+                </div>
               ))}
-            </motion.div>
+            </div>
 
-            <div className="text-center mt-8">
-              <p className="text-muted-foreground text-sm mb-6">
-                Circles are selective to maintain the tone and quality of the experience.
-              </p>
-              <Button asChild size="lg" className="rounded-full px-8">
+            <div className="mt-16">
+              <Button asChild size="lg" className="rounded-full px-8 h-14 text-base">
                 <Link to="/membership">
                   View Membership Options
-                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </div>
           </div>
         </section>
+
       </div>
     </Layout>
   );
