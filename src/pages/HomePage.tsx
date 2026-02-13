@@ -12,6 +12,7 @@ const SlowDatingSection = lazy(() => import('@/components/home/SlowDatingSection
 const PricingSection = lazy(() => import('@/components/home/PricingSection').then(m => ({ default: m.PricingSection })));
 const FAQSection = lazy(() => import('@/components/home/FAQSection').then(m => ({ default: m.FAQSection })));
 const ContactFormSection = lazy(() => import('@/components/home/ContactFormSection').then(m => ({ default: m.ContactFormSection })));
+const ClubShowcaseSection = lazy(() => import('@/components/home/ClubShowcaseSection').then(m => ({ default: m.ClubShowcaseSection })));
 
 // Minimal skeleton for lazy loaded sections
 const SectionSkeleton = memo(() => (
@@ -37,6 +38,11 @@ const HomePage = () => {
       <Hero />
       {/* SocialProofBanner is now integrated into the Hero */}
       <WhyChooseSection />
+
+      {/* Club Showcase - Lazy loaded but with high priority if possible, or just standard suspense */}
+      <Suspense fallback={<SectionSkeleton />}>
+        <ClubShowcaseSection />
+      </Suspense>
 
       {/* Below the fold - lazy loaded */}
       <Suspense fallback={<SectionSkeleton />}>
