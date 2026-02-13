@@ -148,7 +148,7 @@ const SlowDatingPage = () => {
               loading="eager"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/60" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+
           </div>
 
           {/* Floating Decorative Elements */}
@@ -165,8 +165,8 @@ const SlowDatingPage = () => {
             />
           </div>
 
-          <div 
-            ref={heroAnimation.ref} 
+          <div
+            ref={heroAnimation.ref}
             className={`container max-w-6xl relative z-10 py-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="max-w-2xl">
@@ -250,8 +250,8 @@ const SlowDatingPage = () => {
 
         {/* Stats Section */}
         <section className="py-16 md:py-20 bg-secondary/30">
-          <div 
-            ref={statsAnimation.ref} 
+          <div
+            ref={statsAnimation.ref}
             className={`container max-w-6xl scroll-animate ${statsAnimation.isVisible ? 'visible' : ''}`}
           >
             <motion.div
@@ -276,8 +276,8 @@ const SlowDatingPage = () => {
 
         {/* Philosophy Section */}
         <section className="py-24 md:py-32" id="how-it-works">
-          <div 
-            ref={philosophyAnimation.ref} 
+          <div
+            ref={philosophyAnimation.ref}
             className={`container max-w-6xl scroll-animate ${philosophyAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -332,8 +332,8 @@ const SlowDatingPage = () => {
 
         {/* How It Works Section */}
         <section className="py-24 md:py-32 bg-secondary/30">
-          <div 
-            ref={processAnimation.ref} 
+          <div
+            ref={processAnimation.ref}
             className={`container max-w-5xl scroll-animate ${processAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -398,8 +398,8 @@ const SlowDatingPage = () => {
 
         {/* Testimonials Section */}
         <section className="py-24 md:py-32">
-          <div 
-            ref={testimonialsAnimation.ref} 
+          <div
+            ref={testimonialsAnimation.ref}
             className={`container max-w-6xl scroll-animate ${testimonialsAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -450,8 +450,8 @@ const SlowDatingPage = () => {
 
         {/* Values Section */}
         <section className="py-24 md:py-32 bg-secondary/30">
-          <div 
-            ref={valuesAnimation.ref} 
+          <div
+            ref={valuesAnimation.ref}
             className={`container max-w-6xl scroll-animate ${valuesAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -531,8 +531,8 @@ const SlowDatingPage = () => {
 
         {/* FAQ Section */}
         <section className="py-24 md:py-32">
-          <div 
-            ref={faqAnimation.ref} 
+          <div
+            ref={faqAnimation.ref}
             className={`container max-w-4xl scroll-animate ${faqAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
@@ -553,7 +553,7 @@ const SlowDatingPage = () => {
               <Accordion type="single" collapsible className="w-full space-y-3">
                 {faqs.map((faq, index) => (
                   <motion.div key={index} variants={itemVariants}>
-                    <AccordionItem 
+                    <AccordionItem
                       value={`faq-${index}`}
                       className="border border-border/50 rounded-xl px-6 bg-card hover:border-primary/30 transition-colors"
                     >
@@ -582,8 +582,8 @@ const SlowDatingPage = () => {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
           </div>
 
-          <div 
-            ref={ctaAnimation.ref} 
+          <div
+            ref={ctaAnimation.ref}
             className={`container max-w-3xl text-center relative z-10 scroll-animate ${ctaAnimation.isVisible ? 'visible' : ''}`}
           >
             <motion.div

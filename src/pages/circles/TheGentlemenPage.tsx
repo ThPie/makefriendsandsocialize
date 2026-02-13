@@ -170,7 +170,7 @@ const TheGentlemenPage = () => {
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/40" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+
           </div>
 
           <div

@@ -57,8 +57,7 @@ export const Hero = () => {
           showPosterOnSlowConnection={false}
           className="h-full w-full object-cover scale-[1.02]"
         />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50" />
+
       </div>
 
       {/* CONTENT */}

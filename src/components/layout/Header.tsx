@@ -12,14 +12,26 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useCapacitor } from '@/hooks/useCapacitor';
+import foundersImg from '@/assets/founders-hero-new.jpg';
+import gentlemenImg from '@/assets/gentlemen-hero-new.webp';
+import womenImg from '@/assets/women-society-hero.jpg';
+import lesAmisImg from '@/assets/les-amis-hero-new.webp';
 
 const navItems = [
   { label: 'Events', path: '/events', icon: Calendar },
-  { label: 'Journal', path: '/journal', icon: BookOpen },
-  { label: 'Founders Circle', path: '/founders-circle', icon: Building2 },
-  { label: 'The Gentlemen', path: '/circles/the-gentlemen', icon: Crown },
-  { label: 'The Ladies Society', path: '/circles/the-ladies-society', icon: Crown },
-  { label: 'Les Amis', path: '/circles/les-amis', icon: Globe },
+  { label: 'Blog', path: '/journal', icon: BookOpen },
+  {
+    label: 'Circles',
+    path: '/circles',
+    icon: Users,
+    isMegaMenu: true,
+    children: [
+      { label: 'Founders Circle', path: '/founders-circle', image: foundersImg },
+      { label: 'The Gentlemen', path: '/circles/the-gentlemen', image: gentlemenImg },
+      { label: 'The Women Society', path: '/circles', image: womenImg }, // Linking to main circles page for now as per previous
+      { label: 'Les Amis', path: '/circles/les-amis', image: lesAmisImg },
+    ]
+  },
   { label: 'Membership', path: '/membership', icon: Users },
   { label: 'Contact', path: '/contact', icon: Mail },
 ];
@@ -314,26 +326,55 @@ export const Header = () => {
 
                 {/* Navigation Items */}
                 <div className="flex-1 overflow-y-auto py-6 px-4">
-                  <nav className="space-y-1">
+                  <nav className="space-y-6">
                     {navItems.map((item, index) => (
                       <motion.div
-                        key={item.path}
+                        key={item.label}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.1 + index * 0.05 }}
                       >
-                        <Link
-                          to={item.path}
-                          className={`flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${location.pathname === item.path
-                            ? 'bg-primary/15 text-primary'
-                            : 'text-foreground hover:bg-muted hover:text-primary'
-                            }`}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          <item.icon className={`w-5 h-5 ${location.pathname === item.path ? 'text-primary' : 'text-muted-foreground'
-                            }`} />
-                          <span>{item.label}</span>
-                        </Link>
+                        {item.isMegaMenu ? (
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-4 px-4 text-lg font-medium text-muted-foreground">
+                              <item.icon className="w-5 h-5" />
+                              <span>{item.label}</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3 px-2">
+                              {item.children?.map((child) => (
+                                <Link
+                                  key={child.label}
+                                  to={child.path}
+                                  onClick={() => setIsMenuOpen(false)}
+                                  className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10"
+                                >
+                                  <img
+                                    src={child.image}
+                                    alt={child.label}
+                                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                  />
+                                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
+                                  <div className="absolute inset-0 flex items-center justify-center p-2 text-center">
+                                    <span className="text-sm font-bold text-white font-display leading-tight">{child.label}</span>
+                                  </div>
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          <Link
+                            to={item.path}
+                            className={`flex items-center gap-4 px-4 py-3 rounded-xl text-lg font-medium transition-all duration-200 ${location.pathname === item.path
+                              ? 'bg-primary/15 text-primary'
+                              : 'text-foreground hover:bg-muted hover:text-primary'
+                              }`}
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            <item.icon className={`w-5 h-5 ${location.pathname === item.path ? 'text-primary' : 'text-muted-foreground'
+                              }`} />
+                            <span>{item.label}</span>
+                          </Link>
+                        )}
                       </motion.div>
                     ))}
                   </nav>
