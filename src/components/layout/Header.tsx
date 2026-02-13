@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -237,143 +238,146 @@ export const Header = () => {
       </div>
 
       {/* Menu - Full Screen Slide Out */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
-              style={{ zIndex: 9998 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setIsMenuOpen(false)}
-            />
+      {/* Menu - Full Screen Slide Out - Portalled to body to escape Header's stacking context */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isMenuOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+                style={{ zIndex: 9998 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => setIsMenuOpen(false)}
+              />
 
-            {/* Slide-out Panel - Opens from Right */}
-            <motion.nav
-              className="fixed inset-y-0 right-0 w-[85%] max-w-[320px] bg-card border-l border-border flex flex-col shadow-2xl overflow-hidden"
-              style={{ zIndex: 9999 }}
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            >
-              {/* Header with Logo and Theme Toggle */}
-              <div className="p-6 border-b border-border flex items-center justify-between">
-                <Link to="/" onClick={() => setIsMenuOpen(false)}>
-                  <img
-                    src={mounted && resolvedTheme === 'light' ? logoDark : logoLight}
-                    alt="MakeFriends & Socialize"
-                    className="h-12 w-auto object-contain"
-                  />
-                </Link>
-                {/* Theme Toggle inside menu can be redundant if it's on main header, but keeping for completeness or removing if user said "leave out light/dark mode and sign in" from the simplified view? 
-                    User said "leave out light/dark mode and sign in" meaning Keep them OUT of the menu (on the bar)? 
-                    "make the menu to be humburger menu ... the only thing I want you to leave out is the light/dark mode and sign in"
-                    This implies light/dark and sign in stay on the nav bar.
-                    So I don't necessarily need them *inside* the menu, but it doesn't hurt.
-                    I'll keep the menu content as is. 
-                */}
-              </div>
+              {/* Slide-out Panel - Opens from Right */}
+              <motion.nav
+                className="fixed inset-y-0 right-0 w-[85%] max-w-[320px] bg-card border-l border-border flex flex-col shadow-2xl overflow-hidden"
+                style={{ zIndex: 9999 }}
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+              >
+                {/* Header with Logo and Theme Toggle */}
+                <div className="p-6 border-b border-border flex items-center justify-between">
+                  {/* Close button / Logo area */}
+                  <div className="flex items-center gap-4">
+                    {/* Optional: Add an explicit close button if needed, but clicking outside or the toggle works. 
+                         For now, keeping previous layout but adding logo.
+                     */}
+                    <Link to="/" onClick={() => setIsMenuOpen(false)}>
+                      <img
+                        src={resolvedTheme === 'light' ? logoDark : logoLight}
+                        alt="MakeFriends & Socialize"
+                        className="h-10 w-auto object-contain"
+                      />
+                    </Link>
+                  </div>
+                </div>
 
-              {/* Profile Section for logged in users */}
-              {user && (
-                <motion.div
-                  className="px-6 py-4 border-b border-border"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                >
-                  <Link
-                    to="/portal"
-                    className="flex items-center gap-3 p-3 rounded-xl bg-primary/10 hover:bg-primary/15 transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
+                {/* Profile Section for logged in users */}
+                {user && (
+                  <motion.div
+                    className="px-6 py-4 border-b border-border"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1 }}
                   >
-                    <Avatar className="h-12 w-12 border-2 border-primary/30">
-                      <AvatarImage src={getAvatarUrl()} alt={getFullName() || 'Profile'} />
-                      <AvatarFallback className="bg-primary/20 text-primary font-medium">
-                        {getUserInitials()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground truncate">
-                        {getFullName() || 'Your Profile'}
-                      </p>
-                      <p className="text-sm text-muted-foreground truncate">
-                        View your dashboard
+                    <Link
+                      to="/portal"
+                      className="flex items-center gap-3 p-3 rounded-xl bg-primary/10 hover:bg-primary/15 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Avatar className="h-12 w-12 border-2 border-primary/30">
+                        <AvatarImage src={getAvatarUrl()} alt={getFullName() || 'Profile'} />
+                        <AvatarFallback className="bg-primary/20 text-primary font-medium">
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground truncate">
+                          {getFullName() || 'Your Profile'}
+                        </p>
+                        <p className="text-sm text-muted-foreground truncate">
+                          View your dashboard
+                        </p>
+                      </div>
+                      <User className="w-5 h-5 text-primary" />
+                    </Link>
+                  </motion.div>
+                )}
+
+                {/* Navigation Items */}
+                <div className="flex-1 overflow-y-auto py-6 px-4">
+                  <nav className="space-y-1">
+                    {navItems.map((item, index) => (
+                      <motion.div
+                        key={item.path}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 + index * 0.05 }}
+                      >
+                        <Link
+                          to={item.path}
+                          className={`flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${location.pathname === item.path
+                            ? 'bg-primary/15 text-primary'
+                            : 'text-foreground hover:bg-muted hover:text-primary'
+                            }`}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          <item.icon className={`w-5 h-5 ${location.pathname === item.path ? 'text-primary' : 'text-muted-foreground'
+                            }`} />
+                          <span>{item.label}</span>
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </nav>
+                </div>
+
+                {/* Daily Quote Section */}
+                {dailyQuote && (
+                  <motion.div
+                    className="px-6 py-4 border-t border-border bg-secondary/30"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.35 }}
+                  >
+                    <div className="flex items-start gap-2">
+                      <Quote className="w-4 h-4 text-primary/60 flex-shrink-0 mt-0.5" />
+                      <p className="font-serif italic text-sm text-muted-foreground leading-relaxed">
+                        {dailyQuote}
                       </p>
                     </div>
-                    <User className="w-5 h-5 text-primary" />
-                  </Link>
-                </motion.div>
-              )}
+                  </motion.div>
+                )}
 
-              {/* Navigation Items */}
-              <div className="flex-1 overflow-y-auto py-6 px-4">
-                <nav className="space-y-1">
-                  {navItems.map((item, index) => (
-                    <motion.div
-                      key={item.path}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 + index * 0.05 }}
-                    >
-                      <Link
-                        to={item.path}
-                        className={`flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${location.pathname === item.path
-                          ? 'bg-primary/15 text-primary'
-                          : 'text-foreground hover:bg-muted hover:text-primary'
-                          }`}
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <item.icon className={`w-5 h-5 ${location.pathname === item.path ? 'text-primary' : 'text-muted-foreground'
-                          }`} />
-                        <span>{item.label}</span>
-                      </Link>
-                    </motion.div>
-                  ))}
-                </nav>
-              </div>
-
-              {/* Daily Quote Section */}
-              {dailyQuote && (
+                {/* Footer with CTA */}
                 <motion.div
-                  className="px-6 py-4 border-t border-border bg-secondary/30"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.35 }}
+                  className="p-6 border-t border-border"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
                 >
-                  <div className="flex items-start gap-2">
-                    <Quote className="w-4 h-4 text-primary/60 flex-shrink-0 mt-0.5" />
-                    <p className="font-serif italic text-sm text-muted-foreground leading-relaxed">
-                      {dailyQuote}
-                    </p>
-                  </div>
+                  <Button asChild variant="outline" className="w-full rounded-xl py-6 text-base font-semibold">
+                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                      Sign In
+                    </Link>
+                  </Button>
+                  <p className="text-center text-xs text-muted-foreground mt-4">
+                    Exclusive membership for professionals
+                  </p>
                 </motion.div>
-              )}
-
-              {/* Footer with CTA */}
-              <motion.div
-                className="p-6 border-t border-border"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <Button asChild variant="outline" className="w-full rounded-xl py-6 text-base font-semibold">
-                  <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                    Sign In
-                  </Link>
-                </Button>
-                <p className="text-center text-xs text-muted-foreground mt-4">
-                  Exclusive membership for professionals
-                </p>
-              </motion.div>
-            </motion.nav>
-          </>
-        )}
-      </AnimatePresence>
+              </motion.nav>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </header>
   );
 };
