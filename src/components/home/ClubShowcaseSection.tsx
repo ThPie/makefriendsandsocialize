@@ -6,19 +6,17 @@ import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import lesAmisImg from '@/assets/les-amis-hero-new.webp';
 import gentlemenImg from '@/assets/gentlemen-hero-new.webp';
 import slowDatingImg from '@/assets/slow-dating-new.jpg';
-import foundersImg from '@/assets/contact-hero.jpg';
-
-// Placeholder for Women Society until asset is provided
-const womenSocietyImg = "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?q=80&w=2938&auto=format&fit=crop";
+import foundersImg from '@/assets/founders-hero-new.jpg';
+import womenSocietyImg from '@/assets/women-society-hero.jpg';
 
 const clubs = [
     {
-        id: 'les-amis',
-        title: 'Les Amis',
-        description: 'A global community for cultural exchange and authentic connection.',
-        image: lesAmisImg,
-        link: '/circles/les-amis',
-        color: 'from-amber-900/40',
+        id: 'founders',
+        title: 'Founders Circle',
+        description: 'Where visionaries shape the future.',
+        image: foundersImg,
+        link: '/founders-circle',
+        color: 'from-emerald-900/40',
         className: 'md:col-span-2 md:row-span-2'
     },
     {
@@ -29,6 +27,15 @@ const clubs = [
         link: '/circles/the-gentlemen',
         color: 'from-slate-900/40',
         className: 'md:col-span-1 md:row-span-2'
+    },
+    {
+        id: 'les-amis',
+        title: 'Les Amis',
+        description: 'A global community for cultural exchange.',
+        image: lesAmisImg,
+        link: '/circles/les-amis',
+        color: 'from-amber-900/40',
+        className: 'md:col-span-1 md:row-span-1'
     },
     {
         id: 'women-society',
@@ -46,15 +53,6 @@ const clubs = [
         image: slowDatingImg,
         link: '/slow-dating',
         color: 'from-red-900/40',
-        className: 'md:col-span-1 md:row-span-1'
-    },
-    {
-        id: 'founders',
-        title: 'Founders Circle',
-        description: 'Where visionaries shape the future.',
-        image: foundersImg,
-        link: '/founders-circle',
-        color: 'from-emerald-900/40',
         className: 'md:col-span-1 md:row-span-1'
     }
 ];
