@@ -154,8 +154,8 @@ export const Header = () => {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${isTransparent
-          ? 'bg-gradient-to-b from-black/50 via-black/25 to-transparent'
-          : 'border-b border-border bg-background/95 backdrop-blur-md'
+        ? 'bg-gradient-to-b from-black/50 via-black/25 to-transparent'
+        : 'border-b border-border bg-background/95 backdrop-blur-md'
         }`}
       style={{
         // Add safe area padding for iOS notch/dynamic island in native apps
@@ -171,6 +171,8 @@ export const Header = () => {
           <img
             src={currentLogo}
             alt="MakeFriends & Socialize"
+            width={160}
+            height={48}
             className={`w-auto object-contain transition-all duration-300 ${isTransparent ? 'h-12 md:h-14' : 'h-10 md:h-12'
               }`}
           />
@@ -209,8 +211,8 @@ export const Header = () => {
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className={`relative z-50 flex ml-2 items-center justify-center w-11 h-11 rounded-lg transition-colors pointer-events-auto ${isTransparent
-                ? 'text-white hover:bg-white/10 bg-black/20 backdrop-blur-sm'
-                : 'text-foreground hover:bg-muted bg-background/80'
+              ? 'text-white hover:bg-white/10 bg-black/20 backdrop-blur-sm'
+              : 'text-foreground hover:bg-muted bg-background/80'
               }`}
             aria-label="Toggle menu"
             aria-expanded={isMenuOpen}
@@ -320,8 +322,8 @@ export const Header = () => {
                       <Link
                         to={item.path}
                         className={`flex items-center gap-4 px-4 py-4 rounded-xl text-lg font-medium transition-all duration-200 ${location.pathname === item.path
-                            ? 'bg-primary/15 text-primary'
-                            : 'text-foreground hover:bg-muted hover:text-primary'
+                          ? 'bg-primary/15 text-primary'
+                          : 'text-foreground hover:bg-muted hover:text-primary'
                           }`}
                         onClick={() => setIsMenuOpen(false)}
                       >

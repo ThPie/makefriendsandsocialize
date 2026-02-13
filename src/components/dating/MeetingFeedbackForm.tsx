@@ -24,12 +24,12 @@ export const MeetingFeedbackForm = ({ matchId, userId, onSuccess }: MeetingFeedb
         mutationFn: async () => {
             // Note: The 'meeting_feedback' table needs to be created in the database.
             // For now, we just update the match status as a workaround.
-            console.log('Feedback submitted:', { matchId, userId, rating, wouldMeetAgain, notes });
-            
+            // console.log('Feedback submitted:', { matchId, userId, rating, wouldMeetAgain, notes });
+
             // Update match status to reflect feedback given
             const { error: matchError } = await supabase
                 .from('dating_matches')
-                .update({ 
+                .update({
                     meeting_status: wouldMeetAgain ? 'feedback_positive' : 'feedback_completed',
                     admin_notes: `User feedback: Rating ${rating}/5, Would meet again: ${wouldMeetAgain ? 'Yes' : 'No'}. Notes: ${notes || 'None'}`
                 })
