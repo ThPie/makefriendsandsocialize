@@ -11,10 +11,10 @@ const WINDOW_MINUTES = 15;
 
 // Price IDs mapping to DB tiers (canonical names: patron, fellow, founder)
 const PRICE_TO_TIER: Record<string, string> = {
-  "price_1SoDkp00I3YCY0DeDrniU1d6": "fellow",  // Insider Monthly (DB: fellow)
-  "price_1SoDl700I3YCY0DezLxSxVBL": "fellow",  // Insider Annual  (DB: fellow)
-  "price_1SoDli00I3YCY0DeVOlNtHl7": "founder", // Patron Monthly  (DB: founder)
-  "price_1SoDlv00I3YCY0De33VrYzjX": "founder", // Patron Annual   (DB: founder)
+  "price_1SoDkp00I3YCY0DeDrniU1d6": "fellow",  // Insider Monthly
+  "price_1SoDl700I3YCY0DezLxSxVBL": "fellow",  // Insider Annual
+  "price_1SoDli00I3YCY0DeVOlNtHl7": "founder", // Patron Monthly (DB: founder)
+  "price_1SoDlv00I3YCY0De33VrYzjX": "founder", // Patron Annual
 };
 
 const logStep = (step: string, details?: any) => {
@@ -126,10 +126,28 @@ serve(async (req) => {
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
 
-    if (customers.data.length === 0) {
-      logStep("No customer found");
+    // Step 1: Try O(1) indexed lookup in our DB first
+    logStep("Looking up customer in DB");
+    const { data: membership, error: memError } = await supabaseClient
+      .from("memberships")
+      .select("stripe_customer_id")
+      .eq("user_id", user.id)
+      .single();
+
+    let customerId = membership?.stripe_customer_id;
+
+    // Step 2: Fallback to email search if not found in DB
+    if (!customerId) {
+      logStep("Customer not in DB, falling back to Stripe email search");
+      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+      }
+    }
+
+    if (!customerId) {
+      logStep("No customer found in DB or Stripe");
       return new Response(
         JSON.stringify({
           subscribed: false,
@@ -141,7 +159,6 @@ serve(async (req) => {
       );
     }
 
-    const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
     // Check for active subscription
