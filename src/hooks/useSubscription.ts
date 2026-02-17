@@ -13,9 +13,14 @@ export interface SubscriptionStatus {
 }
 
 // Cache subscription data to prevent duplicate calls
-const subscriptionCache: { data: SubscriptionStatus | null; timestamp: number } = {
+const subscriptionCache: {
+  data: SubscriptionStatus | null;
+  timestamp: number;
+  userId: string | null;
+} = {
   data: null,
   timestamp: 0,
+  userId: null,
 };
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
 
@@ -37,7 +42,10 @@ export function useSubscription() {
     const now = Date.now();
 
     // Use cache if still valid and not forcing refresh
-    if (!force && subscriptionCache.data && (now - subscriptionCache.timestamp) < CACHE_DURATION) {
+    if (!force &&
+      subscriptionCache.userId === user.id &&
+      subscriptionCache.data &&
+      (now - subscriptionCache.timestamp) < CACHE_DURATION) {
       setSubscription(subscriptionCache.data);
       setIsLoading(false);
       return;
@@ -61,6 +69,7 @@ export function useSubscription() {
       // Update cache
       subscriptionCache.data = data;
       subscriptionCache.timestamp = now;
+      subscriptionCache.userId = user.id;
 
       setSubscription(data);
       setError(null);
