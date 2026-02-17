@@ -13,7 +13,7 @@ export function useLeadRealtime(businessId: string | undefined) {
   useEffect(() => {
     if (!businessId) return;
 
-    console.log('Subscribing to lead updates for business:', businessId);
+    if (import.meta.env.DEV) console.log('Subscribing to lead updates for business:', businessId);
 
     const channel = supabase
       .channel(`business-leads-${businessId}`)
@@ -26,9 +26,9 @@ export function useLeadRealtime(businessId: string | undefined) {
           filter: `business_id=eq.${businessId}`,
         },
         (payload) => {
-          console.log('New lead received:', payload);
+          if (import.meta.env.DEV) console.log('New lead received:', payload);
           const newLead = payload.new as Lead;
-          
+
           // Show toast notification
           toast.success('New Lead!', {
             description: `${newLead.contact_name} from ${newLead.company_name || 'Unknown Company'} just submitted an inquiry.`,
@@ -55,13 +55,13 @@ export function useLeadRealtime(businessId: string | undefined) {
           filter: `business_id=eq.${businessId}`,
         },
         (payload) => {
-          console.log('Lead updated:', payload);
+          if (import.meta.env.DEV) console.log('Lead updated:', payload);
           const updatedLead = payload.new as Lead;
-          
+
           // Update the leads query cache
           queryClient.setQueryData<Lead[]>(['business-leads', businessId], (old) => {
             if (!old) return [updatedLead];
-            return old.map((lead) => 
+            return old.map((lead) =>
               lead.id === updatedLead.id ? updatedLead : lead
             );
           });
@@ -71,11 +71,11 @@ export function useLeadRealtime(businessId: string | undefined) {
         }
       )
       .subscribe((status) => {
-        console.log('Lead realtime subscription status:', status);
+        if (import.meta.env.DEV) console.log('Lead realtime subscription status:', status);
       });
 
     return () => {
-      console.log('Unsubscribing from lead updates');
+      if (import.meta.env.DEV) console.log('Unsubscribing from lead updates');
       supabase.removeChannel(channel);
     };
   }, [businessId, queryClient]);

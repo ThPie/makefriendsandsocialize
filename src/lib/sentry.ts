@@ -3,9 +3,9 @@ import * as Sentry from '@sentry/react';
 // Initialize Sentry
 export function initSentry() {
   const dsn = import.meta.env.VITE_SENTRY_DSN;
-  
+
   if (!dsn) {
-    console.log('[Sentry] DSN not configured, error tracking disabled');
+    if (import.meta.env.DEV) console.log('[Sentry] DSN not configured, error tracking disabled');
     return;
   }
 
@@ -21,38 +21,38 @@ export function initSentry() {
     ],
     // Performance Monitoring
     tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0, // 10% in production, 100% in development
-    
+
     // Session Replay
     replaysSessionSampleRate: 0.1, // 10% of sessions
     replaysOnErrorSampleRate: 1.0, // 100% of sessions with errors
-    
+
     // Only send errors in production or if explicitly enabled
     enabled: import.meta.env.PROD || import.meta.env.VITE_SENTRY_ENABLED === 'true',
-    
+
     // Filter out common non-actionable errors
     beforeSend(event, hint) {
       const error = hint.originalException as Error;
-      
+
       // Ignore network errors that are expected
       if (error?.message?.includes('Failed to fetch')) {
         return null;
       }
-      
+
       // Ignore cancelled requests
       if (error?.message?.includes('AbortError')) {
         return null;
       }
-      
+
       return event;
     },
   });
 
-  console.log('[Sentry] Initialized successfully');
+  if (import.meta.env.DEV) console.log('[Sentry] Initialized successfully');
 }
 
 // Performance transaction helpers
 export function startTransaction(name: string, op: string) {
-  return Sentry.startSpan({ name, op }, () => {});
+  return Sentry.startSpan({ name, op }, () => { });
 }
 
 export function setUserContext(userId: string, email?: string) {

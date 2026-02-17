@@ -50,12 +50,12 @@ export function getPlatform(): 'ios' | 'android' | 'web' {
  */
 export async function initDeepLinkListener(navigate: (path: string) => void): Promise<() => void> {
   if (!isNativeApp()) {
-    return () => {}; // No-op cleanup for web
+    return () => { }; // No-op cleanup for web
   }
 
   // Handle app opened via deep link while running
   const urlOpenListener = await App.addListener('appUrlOpen', (event) => {
-    console.log('Deep link received:', event.url);
+    if (import.meta.env.DEV) console.log('Deep link received:', event.url);
     const path = handleIncomingDeepLink(event.url);
     if (path) {
       navigate(path);
@@ -66,7 +66,7 @@ export async function initDeepLinkListener(navigate: (path: string) => void): Pr
   try {
     const launchUrl = await App.getLaunchUrl();
     if (launchUrl?.url) {
-      console.log('App launched with URL:', launchUrl.url);
+      if (import.meta.env.DEV) console.log('App launched with URL:', launchUrl.url);
       const path = handleIncomingDeepLink(launchUrl.url);
       if (path) {
         // Small delay to ensure router is ready
@@ -91,11 +91,11 @@ export async function initAppStateListener(
   onPause?: () => void
 ): Promise<() => void> {
   if (!isNativeApp()) {
-    return () => {};
+    return () => { };
   }
 
   const stateListener = await App.addListener('appStateChange', (state) => {
-    console.log('App state changed:', state.isActive ? 'active' : 'inactive');
+    if (import.meta.env.DEV) console.log('App state changed:', state.isActive ? 'active' : 'inactive');
     if (state.isActive) {
       onResume?.();
     } else {

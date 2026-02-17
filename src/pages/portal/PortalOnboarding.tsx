@@ -116,7 +116,7 @@ export default function PortalOnboarding() {
       try {
         const { data, error } = await supabase.functions.invoke('detect-location');
 
-        console.log('Location detection result:', data);
+        if (import.meta.env.DEV) console.log('Location detection result:', data);
 
         if (error) {
           console.error('Location detection error:', error);

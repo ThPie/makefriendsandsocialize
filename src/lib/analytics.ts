@@ -37,7 +37,7 @@ export function initGA4(measurementId: string) {
     cookie_flags: 'SameSite=None;Secure',
   });
 
-  console.log('[Analytics] GA4 initialized');
+  if (import.meta.env.DEV) console.log('[Analytics] GA4 initialized');
 }
 
 // Track page views
@@ -49,7 +49,7 @@ export function trackPageView(path: string, title?: string) {
 }
 
 // Key events for conversion tracking
-export type AnalyticsEvent = 
+export type AnalyticsEvent =
   | 'signup'
   | 'login'
   | 'event_registration'
@@ -75,7 +75,7 @@ export async function trackEvent(
 
     // Track to database for our own analytics
     const { data: { user } } = await supabase.auth.getUser();
-    
+
     await supabase.from('analytics_events').insert({
       user_id: user?.id || null,
       session_id: getSessionId(),
@@ -86,7 +86,7 @@ export async function trackEvent(
       user_agent: navigator.userAgent,
     });
 
-    console.log('[Analytics] Event tracked:', eventName, properties);
+    if (import.meta.env.DEV) console.log('[Analytics] Event tracked:', eventName, properties);
   } catch (error) {
     console.error('[Analytics] Failed to track event:', error);
   }
@@ -164,10 +164,10 @@ export function trackPurchase(
 // Initialize analytics
 export function initAnalytics() {
   const ga4Id = import.meta.env.VITE_GA4_MEASUREMENT_ID;
-  
+
   if (ga4Id) {
     initGA4(ga4Id);
   } else {
-    console.log('[Analytics] GA4 measurement ID not configured');
+    if (import.meta.env.DEV) console.log('[Analytics] GA4 measurement ID not configured');
   }
 }

@@ -128,7 +128,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async (event, session) => {
         if (!mounted) return;
 
-        console.log('Auth event:', event);
+        if (import.meta.env.DEV) console.log('Auth event:', event);
         setSession(session);
         setUser(session?.user ?? null);
 
@@ -177,9 +177,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Log for debugging (remove in production)
     if (data?.user) {
-      console.log('User created successfully:', data.user.id);
+      if (import.meta.env.DEV) console.log('User created successfully:', data.user.id);
     } else if (!error) {
-      console.log('Signup response without user:', data);
+      if (import.meta.env.DEV) console.log('Signup response without user:', data);
     }
 
     return { error: error as Error | null, user: data?.user };

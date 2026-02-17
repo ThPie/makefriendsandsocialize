@@ -607,7 +607,7 @@ export default function AuthPage() {
         navigate('/portal/onboarding');
       } else {
         // No session but no error - user needs to verify email
-        console.log('Signup completed, awaiting email confirmation');
+        // console.log('Signup completed, awaiting email confirmation');
         setIsSubmitting(false);
         setFormSuccess('Account created! Please check your email to verify your account.');
         navigate('/auth/verify-email');

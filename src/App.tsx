@@ -100,7 +100,7 @@ function RecoveryRedirectHandler() {
 
   useEffect(() => {
     if (isRecoveryMode) {
-      console.log('Recovery mode detected, redirecting to reset password page');
+      if (import.meta.env.DEV) console.log('Recovery mode detected, redirecting to reset password page');
       navigate('/auth/reset-password', { replace: true });
     }
   }, [isRecoveryMode, navigate]);

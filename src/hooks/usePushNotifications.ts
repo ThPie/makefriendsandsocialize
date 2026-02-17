@@ -41,10 +41,10 @@ export function usePushNotifications() {
       setIsLoading(false);
       return;
     }
-    
+
     const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
     setIsSupported(supported);
-    
+
     if (supported) {
       setPermission(Notification.permission);
     }
@@ -60,10 +60,10 @@ export function usePushNotifications() {
     const checkSubscription = async () => {
       try {
         const registration = await navigator.serviceWorker.register('/sw.js');
-        console.log('Service Worker registered:', registration);
+        if (import.meta.env.DEV) console.log('Service Worker registered:', registration);
 
         const subscription = await (registration as any).pushManager.getSubscription();
-        
+
         if (subscription) {
           // Verify subscription exists in database
           const { data } = await supabase
@@ -94,12 +94,12 @@ export function usePushNotifications() {
     }
 
     setIsLoading(true);
-    
+
     try {
       // Request notification permission
       const permissionResult = await Notification.requestPermission();
       setPermission(permissionResult);
-      
+
       if (permissionResult !== 'granted') {
         toast.error('Notification permission denied');
         return false;
@@ -115,7 +115,7 @@ export function usePushNotifications() {
       });
 
       const subscriptionJson = subscription.toJSON();
-      
+
       if (!subscriptionJson.keys?.p256dh || !subscriptionJson.keys?.auth) {
         throw new Error('Invalid subscription keys');
       }
@@ -148,7 +148,7 @@ export function usePushNotifications() {
     if (!user) return false;
 
     setIsLoading(true);
-    
+
     try {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await (registration as any).pushManager.getSubscription();
