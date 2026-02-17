@@ -120,15 +120,36 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
   }
 
   html {
     scroll-behavior: smooth;
+    touch-action: pan-x pan-y;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
+    overscroll-behavior-y: contain;
+  }
+
+  /* Standalone PWA safe area */
+  @media (display-mode: standalone) {
+    body {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+  }
+
+  /* Disable text selection on interactive elements */
+  button,
+  a,
+  nav,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"] {
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   /* Scroll margin for fixed header */
@@ -278,5 +299,19 @@
   /* PWA slow spin animation */
   .animate-spin-slow {
     animation: spin 3s linear infinite;
+  }
+
+  /* Safe area utilities */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Smooth scrolling momentum for scroll containers */
+  .scroll-touch {
+    -webkit-overflow-scrolling: touch;
   }
 }
