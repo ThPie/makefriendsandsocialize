@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Lightbox } from '@/components/ui/lightbox';
 import { Button } from '@/components/ui/button';
+import { optimizeGoogleImageUrl } from '@/lib/image-utils';
+import { LazyImage } from '@/components/ui/lazy-image';
 
 // Static gallery photos from real events
 const galleryPhotos = [
@@ -90,11 +92,10 @@ export const PhotoGallerySection = () => {
               onClick={() => openLightbox(index)}
               className="flex-shrink-0 group relative overflow-hidden rounded-lg cursor-pointer w-[280px] md:w-[320px] aspect-[3/4] shadow-md hover:shadow-xl transition-all duration-300"
             >
-              <img
-                src={photo.image_url}
+              <LazyImage
+                src={optimizeGoogleImageUrl(photo.image_url, { width: 400, quality: 80 })}
                 alt={photo.title || 'Event photo'}
                 className="w-full h-full object-cover grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:scale-110"
-                loading="lazy"
               />
               {/* Optional Overlay on hover */}
               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

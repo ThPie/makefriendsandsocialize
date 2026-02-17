@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { getLqipUrl } from '@/lib/image-utils';
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -37,7 +38,7 @@ export const LazyImage = ({
         }
       },
       {
-        rootMargin: '50px',
+        rootMargin: '100px', // Increased rootMargin for smoother loading
         threshold: 0.01,
       }
     );
@@ -57,16 +58,27 @@ export const LazyImage = ({
         className
       )}
     >
-      {/* Placeholder skeleton */}
+      {/* Placeholder skeleton or LQIP */}
       {!isLoaded && (
         <div
           className={cn(
-            'absolute inset-0 bg-muted animate-pulse',
+            'absolute inset-0 bg-muted transition-opacity duration-500',
+            isLoaded ? 'opacity-0' : 'opacity-100',
             placeholderClassName
           )}
-        />
+        >
+          {src && isInView && (
+            <img
+              src={getLqipUrl(src)}
+              alt=""
+              className="w-full h-full object-cover blur-2xl scale-110"
+              aria-hidden="true"
+            />
+          )}
+          <div className="absolute inset-0 bg-muted/20 animate-pulse" />
+        </div>
       )}
-      
+
       <img
         ref={imgRef}
         src={isInView ? src : undefined}
@@ -76,8 +88,8 @@ export const LazyImage = ({
         fetchPriority={priority ? 'high' : 'auto'}
         onLoad={() => setIsLoaded(true)}
         className={cn(
-          'transition-opacity duration-300',
-          isLoaded ? 'opacity-100' : 'opacity-0',
+          'transition-all duration-700 ease-out',
+          isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-105 blur-lg',
           'w-full h-full object-cover'
         )}
         {...props}

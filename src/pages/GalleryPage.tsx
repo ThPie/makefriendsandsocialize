@@ -8,6 +8,7 @@ import { Loader2, LayoutGrid, Columns, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { optimizeGoogleImageUrl } from '@/lib/image-utils';
 
 interface EventPhoto {
   id: string;
@@ -263,8 +264,9 @@ const GalleryPage = () => {
                     className="break-inside-avoid mb-4 group relative overflow-hidden rounded-2xl cursor-pointer"
                   >
                     <LazyImage
-                      src={photo.image_url}
+                      src={optimizeGoogleImageUrl(photo.image_url, { width: 500, quality: 85 })}
                       alt={photo.title || 'Event photo'}
+                      priority={index < 4}
                       className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -294,8 +296,9 @@ const GalleryPage = () => {
                     className="group relative overflow-hidden rounded-2xl cursor-pointer aspect-[3/4]"
                   >
                     <LazyImage
-                      src={photo.image_url}
+                      src={optimizeGoogleImageUrl(photo.image_url, { width: 500, quality: 85 })}
                       alt={photo.title || 'Event photo'}
+                      priority={index < 4}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
