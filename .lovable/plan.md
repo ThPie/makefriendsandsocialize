@@ -1,110 +1,74 @@
 
 
-## Premium PWA Optimization Plan
+## Mobile-First UI/UX Overhaul
 
 ### Overview
-Transform the existing app into a high-end Progressive Web App that feels indistinguishable from a native iOS/Android app. This covers native interaction CSS, safe area fixes, a mobile bottom navigation bar for the portal, skeleton screen components, and PWA manifest/meta tag improvements. Also fixes two existing build errors.
+Four major changes to make the app feel like a native mobile app: fix the auth page layout on mobile, restructure the Ethos cards into a 2x2 grid, fix the Curated Collections cards styling and add horizontal scroll, and apply broader mobile-native UX improvements.
 
 ---
 
-### 1. Fix Existing Build Errors
+### 1. Auth Page -- Remove Mobile Overlay, Match Desktop Layout
 
-In `src/pages/portal/PortalDashboard.tsx` (line 103) and `src/pages/portal/PortalSlowDating.tsx` (line 257), replace `'explorer'` with `'patron'` (the actual lowest DBTier value). The type `DBTier` is `'patron' | 'fellow' | 'founder'` -- there is no `'explorer'` tier.
+**Problem:** On mobile, the auth page (step 1) shows a video background with a dark overlay behind the form. On desktop, the left panel has a solid gradient background (no video). The user wants mobile to look the same as desktop.
 
----
+**Changes in `src/pages/AuthPage.tsx`:**
+- Remove the mobile-only video background block (lines 648-661: the `<div className="absolute inset-0 lg:hidden">` with video + overlay)
+- Change the left-side form panel from `hidden lg:block` to always visible for the gradient background
+- Make the gradient background (`from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)]`) show on all screen sizes (remove `hidden lg:block` from line 671)
+- On mobile, the form takes full width (already `w-full lg:w-1/2`)
+- The right-side video panel stays `hidden lg:flex` (desktop only) -- no change needed there
+- Remove the mobile-only FloatingParticles block and keep just the desktop one visible on all screens
 
-### 2. PWA Manifest and Meta Tags
-
-**vite.config.ts** -- Update the VitePWA configuration:
-- Add `navigateFallbackDenylist: [/^\/~oauth/]` to workbox config (critical for OAuth)
-- Add `start_url: "/"` and `scope: "/"` to manifest
-- Update `theme_color` to brand forest green `#1a2e1a` for dark mode consistency
-- Keep existing icons and display: standalone
-
-**index.html** -- Enhance meta tags:
-- Already has `apple-mobile-web-app-capable` and `apple-mobile-web-app-status-bar-style` set to `black-translucent` -- these are correct
-- Add `<meta name="mobile-web-app-capable" content="yes">` for Android Chrome
-- Ensure `viewport-fit=cover` is present (already there)
+Result: On mobile, users see the same solid dark gradient background with the glassmorphism form card, identical to the desktop left panel.
 
 ---
 
-### 3. Native Interaction CSS
+### 2. Ethos Section -- 2x2 Grid on Mobile with Centered Icons
 
-Add to `src/index.css` in the base layer:
-
-- **Remove gray tap highlight**: `-webkit-tap-highlight-color: transparent` on all elements
-- **Disable text selection on interactive elements**: `user-select: none` on buttons, nav links, and interactive elements while keeping it enabled on content areas
-- **Disable pinch-to-zoom**: `touch-action: pan-x pan-y` on the html element (allows scrolling but prevents pinch zoom)
-- **Prevent rubber-band overscroll**: `overscroll-behavior-y: contain` on body
-- **Smooth scrolling momentum**: `-webkit-overflow-scrolling: touch` for scroll containers
-
----
-
-### 4. Safe Area Design Improvements
-
-**src/index.css** -- Add global safe area utilities:
-- `.safe-area-top` class applying `padding-top: env(safe-area-inset-top, 0px)`
-- `.safe-area-bottom` class applying `padding-bottom: env(safe-area-inset-bottom, 0px)`
-- Body gets `padding-bottom: env(safe-area-inset-bottom, 0px)` when in standalone mode via `@media (display-mode: standalone)`
-
-**Header** -- Already applies `paddingTop: env(safe-area-inset-top, 0px)` -- no changes needed.
-
-**Portal Mobile Header** -- Add safe area top padding for standalone PWA mode.
-
-**Bottom Navigation** -- Will include `env(safe-area-inset-bottom)` padding (see next section).
+**Changes in `src/components/home/WhyChooseSection.tsx`:**
+- Change the card grid from `grid-cols-1 sm:grid-cols-2` to `grid-cols-2` so the 4 cards always show in a 2x2 layout even on small screens
+- Center-align card content: change `items-start` to `items-center text-center` on each card
+- Center the icon container by adding `mx-auto` or wrapping appropriately
+- Reduce padding slightly on mobile for tighter cards (e.g., `p-4 sm:p-6`)
+- Keep description text centered
 
 ---
 
-### 5. Mobile Bottom Navigation Bar for Portal
+### 3. Curated Collections -- Less Rounded Cards + Horizontal Scroll on Mobile
 
-Create a new component `src/components/portal/PortalBottomNav.tsx`:
-
-- Fixed to bottom of screen, visible only on mobile (`md:hidden`)
-- 5 core tabs: Dashboard, Events, Connections, Dating, Profile
-- Active state indicator with primary color
-- Includes `env(safe-area-inset-bottom)` padding for iPhone home indicator
-- Uses frosted-glass backdrop: `bg-background/90 backdrop-blur-lg`
-- Border top separator
-
-Integrate into `src/components/portal/PortalLayout.tsx`:
-- Add `<PortalBottomNav />` at the bottom of the portal layout
-- Add bottom padding to the main content area on mobile to prevent content being hidden behind the nav bar (`pb-20 md:pb-0`)
+**Changes in `src/components/home/ClubShowcaseSection.tsx`:**
+- Change card border radius from `rounded-[2rem]` to `rounded-2xl` (matching other cards in the app which use `rounded-2xl`)
+- On mobile, replace the vertical stacked grid with a horizontal scrollable row:
+  - Change grid to `flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar md:grid md:grid-cols-3` on mobile
+  - Each card gets `min-w-[280px] snap-center` on mobile, normal grid behavior on desktop
+  - Remove the `md:col-span-*` / `md:row-span-*` classes from mobile (keep them for `md:` grid)
+  - Set fixed height for mobile cards (e.g., `h-[300px] md:h-auto`)
+- Add `scroll-padding` and smooth scrolling for native feel
 
 ---
 
-### 6. Skeleton Screen Components
+### 4. General Mobile-Native UX Improvements
 
-Create `src/components/ui/content-skeleton.tsx` with reusable skeleton patterns:
+**Hero Section (`src/components/home/Hero.tsx`):**
+- Make the hero CTA card stack vertically on very small screens: the pill with avatars + "Join X members" + Apply button should wrap gracefully
+- Ensure text sizes are optimized for mobile readability
 
-- **CardSkeleton**: Mimics a card with image placeholder, title bar, and text lines
-- **ListSkeleton**: Multiple row items with avatar circle + text lines
-- **ProfileSkeleton**: Avatar + name + bio layout
-- **EventCardSkeleton**: Image header + event details skeleton
-- **DashboardSkeleton**: Stats cards row + content area
+**Homepage (`src/pages/HomePage.tsx`):**
+- Reduce vertical padding on mobile for sections (`py-12 md:py-24` instead of `py-16 md:py-24`) to make content feel tighter and more app-like
 
-All use the existing `Skeleton` component from `src/components/ui/skeleton.tsx` which already has `animate-pulse` styling. These are composition patterns for common layouts.
+**Global Mobile Styles (`src/index.css`):**
+- Add `.no-scrollbar` utility if not already present (for hiding scrollbars on horizontal scroll areas)
+- Ensure section headings have mobile-optimized font sizes
 
----
-
-### 7. Standalone PWA Detection Hook
-
-Create `src/hooks/useStandalonePWA.ts`:
-- Detects if the app is running in standalone mode (installed PWA)
-- Returns `isStandalone` boolean
-- Used to conditionally apply PWA-specific behaviors (e.g., hiding browser-only UI, adjusting padding)
+**Header (`src/components/layout/Header.tsx`):**
+- No structural changes needed, but ensure the hamburger menu panel feels snappy (already uses spring animation)
 
 ---
 
 ### Files Modified
-- `src/index.css` -- Native interaction CSS + safe area utilities
-- `index.html` -- Additional mobile meta tag
-- `vite.config.ts` -- PWA workbox denylist for OAuth
-- `src/pages/portal/PortalDashboard.tsx` -- Fix build error (explorer -> patron)
-- `src/pages/portal/PortalSlowDating.tsx` -- Fix build error (explorer -> patron)
-- `src/components/portal/PortalLayout.tsx` -- Integrate bottom nav + safe area + bottom padding
-
-### Files Created
-- `src/components/portal/PortalBottomNav.tsx` -- Mobile bottom navigation
-- `src/components/ui/content-skeleton.tsx` -- Skeleton screen patterns
-- `src/hooks/useStandalonePWA.ts` -- PWA detection hook
+- `src/pages/AuthPage.tsx` -- Remove mobile video overlay, show solid gradient on all screens
+- `src/components/home/WhyChooseSection.tsx` -- 2x2 grid always, centered icons and text
+- `src/components/home/ClubShowcaseSection.tsx` -- Less rounded cards, horizontal scroll on mobile
+- `src/components/home/Hero.tsx` -- Better mobile CTA wrapping
+- `src/index.css` -- Ensure no-scrollbar utility exists
 
