@@ -276,7 +276,8 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
 
   const { error: upsertError } = await supabaseAdmin
     .from("memberships")
-    .update({
+    .upsert({
+      user_id: userId,
       tier,
       status: membershipStatus,
       stripe_customer_id: customerId,
@@ -284,8 +285,7 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
       started_at: new Date(subscription.start_date * 1000).toISOString(),
       expires_at: new Date(subscription.current_period_end * 1000).toISOString(),
       updated_at: new Date().toISOString(),
-    })
-    .eq("user_id", userId);
+    }, { onConflict: 'user_id' });
 
   if (upsertError) {
     logStep("Error updating membership", { error: upsertError.message });
