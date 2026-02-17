@@ -1,11 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { getCorsHeaders } from '../_shared/cors.ts';
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+
 
 interface BusinessNotificationRequest {
   email: string;
@@ -52,6 +50,7 @@ const getStatusDetails = (status: string, businessName: string) => {
 };
 
 const handler = async (req: Request): Promise<Response> => {
+  const corsHeaders = getCorsHeaders(req);
   console.log("Business notification function called");
 
   if (req.method === "OPTIONS") {
