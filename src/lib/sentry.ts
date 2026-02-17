@@ -12,6 +12,8 @@ export function initSentry() {
   Sentry.init({
     dsn,
     environment: import.meta.env.MODE,
+    release: import.meta.env.VITE_APP_VERSION || '1.0.0',
+    debug: false,
     integrations: [
       Sentry.browserTracingIntegration(),
       Sentry.replayIntegration({
@@ -20,7 +22,7 @@ export function initSentry() {
       }),
     ],
     // Performance Monitoring
-    tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0, // 10% in production, 100% in development
+    tracesSampleRate: import.meta.env.PROD ? 0.05 : 1.0, // Reduced to 5% in production for budget safety
 
     // Session Replay
     replaysSessionSampleRate: 0.1, // 10% of sessions
@@ -32,16 +34,28 @@ export function initSentry() {
     // Filter out common non-actionable errors
     beforeSend(event, hint) {
       const error = hint.originalException as Error;
+      const message = error?.message?.toLowerCase() || '';
 
-      // Ignore network errors that are expected
-      if (error?.message?.includes('Failed to fetch')) {
+      // Ignore network connectivity issues
+      if (
+        message.includes('failed to fetch') ||
+        message.includes('networkerror') ||
+        message.includes('load failed')
+      ) {
         return null;
       }
 
       // Ignore cancelled requests
-      if (error?.message?.includes('AbortError')) {
+      if (message.includes('aborterror') || message.includes('request was aborted')) {
         return null;
       }
+
+      // Add deployment metadata to the event
+      event.tags = {
+        ...event.tags,
+        'app.platform': 'web',
+        'app.version': import.meta.env.VITE_APP_VERSION || 'unknown'
+      };
 
       return event;
     },

@@ -24,6 +24,16 @@ export const LazyImage = ({
   const [isInView, setIsInView] = useState(priority);
   const imgRef = useRef<HTMLImageElement>(null);
 
+  // Development-only URL optimization check
+  useEffect(() => {
+    if (import.meta.env.DEV && typeof src === 'string' && src.includes('googleusercontent.com')) {
+      const isOptimized = src.includes('=w') || src.includes('=s') || src.includes('=h');
+      if (!isOptimized) {
+        console.warn(`[LazyImage] Unoptimized Google Image detected: ${src}. Consider using optimizeGoogleImageUrl() or adding size parameters.`);
+      }
+    }
+  }, [src]);
+
   useEffect(() => {
     if (priority) {
       setIsInView(true);

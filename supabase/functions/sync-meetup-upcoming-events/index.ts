@@ -75,6 +75,14 @@ serve(async (req) => {
 
     const scrapeData = await scrapeResponse.json();
 
+    // Log Firecrawl Usage for budget monitoring
+    const usage = {
+      cost: scrapeResponse.headers.get('x-firecrawl-cost'),
+      remaining: scrapeResponse.headers.get('x-firecrawl-remaining'),
+      quota: scrapeResponse.headers.get('x-firecrawl-quota'),
+    };
+    console.log('Firecrawl Usage:', usage);
+
     if (!scrapeResponse.ok) {
       console.error('Firecrawl API error:', scrapeData);
       return new Response(
@@ -84,6 +92,12 @@ serve(async (req) => {
     }
 
     console.log('Scrape successful, processing extracted data...');
+
+    // Safety check: Log warning if extraction seems excessive
+    const rawEventsCount = (scrapeData.data?.extract?.events || scrapeData.extract?.events || []).length;
+    if (rawEventsCount > 30) {
+      console.warn(`WARNING: High event count detected (${rawEventsCount}). This may include irrelevant "Suggested" items. Check extraction prompt.`);
+    }
 
     // Get the extracted data
     const extractedData = scrapeData.data?.extract || scrapeData.extract || {};
@@ -249,17 +263,17 @@ serve(async (req) => {
 
       // STRICT VALIDATION: Only accept events from "Make Friends and Socialize" group
       const venue = (event.venueName || event.location || '').toLowerCase();
-      
-      const isValidVenue = venue.includes('havn') || 
-                           venue.includes('salt lake') || 
-                           venue.includes('slc') ||
-                           venue === '';
-      
+
+      const isValidVenue = venue.includes('havn') ||
+        venue.includes('salt lake') ||
+        venue.includes('slc') ||
+        venue === '';
+
       // Skip events that are clearly from other groups (suggested events)
       const suspiciousKeywords = ['singles mix', 'mingle', 'quiet conversation', 'speed dating', 'christian', 'jewish', 'muslim', 'hindu', 'senior', 'over 40', 'over 50', 'lgbtq', 'divorce', 'widowed'];
       const titleLower = title.toLowerCase();
       const isSuspiciousEvent = suspiciousKeywords.some(kw => titleLower.includes(kw));
-      
+
       if (isSuspiciousEvent && !isValidVenue) {
         console.log('Skipping event from another group:', title);
         continue;
