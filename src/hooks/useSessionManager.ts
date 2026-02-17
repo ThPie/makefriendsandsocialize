@@ -84,10 +84,10 @@ export function useSessionManager(): UseSessionManagerResult {
 
   const fetchSessions = useCallback(async () => {
     if (!user) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const { data, error: fetchError } = await supabase
         .from('user_sessions')
@@ -146,7 +146,7 @@ export function useSessionManager(): UseSessionManagerResult {
       });
 
       if (revokeError) throw revokeError;
-      
+
       // Refresh sessions list
       await fetchSessions();
       return true;
@@ -163,7 +163,7 @@ export function useSessionManager(): UseSessionManagerResult {
     try {
       // Get all non-current sessions and revoke them
       const currentSessionToken = localStorage.getItem('session_token');
-      
+
       const { data: otherSessions } = await supabase
         .from('user_sessions')
         .select('id')
@@ -191,7 +191,18 @@ export function useSessionManager(): UseSessionManagerResult {
     if (!sessionToken || !user) return;
 
     const updateActivity = async () => {
-      await supabase.rpc('update_session_activity', { _session_token: sessionToken });
+      try {
+        const { error } = await supabase.rpc('update_session_activity', {
+          _session_token: sessionToken,
+          _user_agent: navigator.userAgent
+        });
+
+        if (error) {
+          console.error('Error updating session activity:', error);
+        }
+      } catch (err) {
+        console.error('Failed to update session activity:', err);
+      }
     };
 
     // Update immediately
