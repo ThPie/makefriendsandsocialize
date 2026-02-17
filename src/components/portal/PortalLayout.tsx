@@ -43,6 +43,7 @@ import { canAccessProtectedFeatures, getRestrictedRoutesForPending } from '@/lib
 import { InactivityWarningModal } from '@/components/auth/InactivityWarningModal';
 import { MobileDashboardNav } from './MobileDashboardNav';
 import { SkipLink } from '@/components/ui/skip-link';
+import { PortalBottomNav } from './PortalBottomNav';
 
 interface PortalLayoutProps {
   children: ReactNode;
@@ -291,7 +292,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
               </div>
             </header>
 
-            <div className="flex-1 overflow-auto p-4 md:p-8 lg:p-12 scroll-smooth">
+            <div className="flex-1 overflow-auto p-4 md:p-8 lg:p-12 pb-24 md:pb-12 scroll-smooth scroll-touch">
               <div className="max-w-7xl mx-auto space-y-8">
                 {/* Pending Member Banner */}
                 {isPending && <PendingMemberBanner className="mb-6" />}
@@ -314,6 +315,9 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                 </PageTransition>
               </div>
             </div>
+
+            {/* Mobile Bottom Navigation */}
+            <PortalBottomNav />
           </main>
         </div>
       </SidebarProvider>

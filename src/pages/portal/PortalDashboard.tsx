@@ -100,7 +100,7 @@ export default function PortalDashboard() {
       </div>
 
       {/* Upgrade Banner for Free Users */}
-      {(!subscription?.subscribed || subscription?.tier === 'explorer') && !subscription?.is_trialing && (
+      {(!subscription?.subscribed || subscription?.tier === 'patron') && !subscription?.is_trialing && (
         <UpgradePromptCard variant="compact" context="general" />
       )}
 

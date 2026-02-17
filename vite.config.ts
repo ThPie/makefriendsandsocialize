@@ -40,12 +40,17 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      workbox: {
+        navigateFallbackDenylist: [/^\/~oauth/],
+      },
       manifest: {
         name: 'MakeFriends Social Club',
         short_name: 'MakeFriends',
         description: 'Private social club for professionals.',
-        theme_color: '#052e16',
-        background_color: '#052e16',
+        start_url: '/',
+        scope: '/',
+        theme_color: '#1a2e1a',
+        background_color: '#1a2e1a',
         display: 'standalone',
         orientation: 'portrait',
         icons: [
