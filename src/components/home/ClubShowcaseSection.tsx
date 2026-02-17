@@ -80,12 +80,12 @@ export const ClubShowcaseSection = () => {
 
                 {/* Bento Grid Container */}
                 <div className="container max-w-[1400px] px-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
+                    <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar scroll-touch md:grid md:grid-cols-3 md:auto-rows-[300px]">
                         {clubs.map((club, index) => (
                             <Link
                                 key={club.id}
                                 to={club.link}
-                                className={`group relative rounded-[2rem] overflow-hidden cursor-pointer ${club.className}`}
+                                className={`group relative rounded-2xl overflow-hidden cursor-pointer min-w-[280px] h-[300px] snap-center shrink-0 md:min-w-0 md:shrink md:snap-align-none ${club.className}`}
                             >
                                 {/* Background Image */}
                                 <img
@@ -99,7 +99,7 @@ export const ClubShowcaseSection = () => {
                                 <div className="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/50" />
 
                                 {/* Content */}
-                                <div className="absolute inset-0 p-8 flex flex-col justify-between">
+                                <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
                                     {/* Top Area */}
                                     <div className="flex justify-between items-start">
                                         <span className="inline-flex items-center justify-center px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-medium text-white/90 uppercase tracking-wider border border-white/10">

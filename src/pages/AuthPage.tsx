@@ -644,31 +644,15 @@ export default function AuthPage() {
   if (step === 1) {
     return (
       <div className="min-h-screen flex relative">
-        {/* Background Video for Mobile/Tablet */}
-        <div className="absolute inset-0 lg:hidden">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-            poster="/images/hero-poster.webp"
-          >
-            <source src="/videos/auth-chess.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/85 via-[hsl(180,50%,12%)]/75 to-[hsl(180,55%,15%)]/65" />
-          <FloatingParticles count={15} />
-        </div>
-
-        {/* Floating Particles - Desktop */}
-        <div className="absolute inset-0 hidden lg:block pointer-events-none">
+        {/* Floating Particles - All screens */}
+        <div className="absolute inset-0 pointer-events-none">
           <FloatingParticles count={12} />
         </div>
 
         {/* Left Side - Form with Gradient Background */}
         <div className="w-full lg:w-1/2 relative flex flex-col justify-center px-8 md:px-16 lg:px-20 py-12 overflow-hidden">
-          {/* Layered Gradient Background - Desktop only */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)] hidden lg:block" />
+          {/* Layered Gradient Background - All screens */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)]" />
 
           {/* Radial Glow Effects */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -684,7 +668,7 @@ export default function AuthPage() {
 
           {/* Glassmorphism Form Container */}
           <div className="relative z-10 max-w-md mx-auto w-full">
-            <div className="bg-white/[0.03] lg:backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl animate-fade-in">
+            <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl animate-fade-in">
               {/* Logo */}
               <Link to="/" className="inline-block mb-10">
                 <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10" />
