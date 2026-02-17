@@ -59,8 +59,9 @@ export function usePushNotifications() {
 
     const checkSubscription = async () => {
       try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
-        if (import.meta.env.DEV) console.log('Service Worker registered:', registration);
+        // Wait for service worker to be ready (handled by vite-plugin-pwa)
+        const registration = await navigator.serviceWorker.ready;
+        if (import.meta.env.DEV) console.log('Service Worker ready:', registration);
 
         const subscription = await (registration as any).pushManager.getSubscription();
 
