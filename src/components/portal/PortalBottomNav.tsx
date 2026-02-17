@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Calendar, Users, Heart, User } from 'lucide-react';
+import { haptic } from '@/lib/haptics';
 
 const tabs = [
   { label: 'Home', icon: LayoutDashboard, path: '/portal' },
@@ -25,6 +26,7 @@ export function PortalBottomNav() {
             <Link
               key={tab.path}
               to={tab.path}
+              onClick={() => haptic('selection')}
               className={`flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors ${
                 isActive
                   ? 'text-primary'
