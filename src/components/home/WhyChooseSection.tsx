@@ -48,19 +48,19 @@ export const WhyChooseSection = () => {
           </div>
 
           {/* Right Column: 2x2 Grid of Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-3 sm:gap-6">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className={`group flex flex-col items-start p-6 rounded-2xl transition-all duration-500 hover:bg-background/50 border border-transparent hover:border-border/60 hover:shadow-sm scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+                className={`group flex flex-col items-center text-center p-4 sm:p-6 rounded-2xl transition-all duration-500 hover:bg-background/50 border border-transparent hover:border-border/60 hover:shadow-sm scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
               >
-                <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
+                <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-4 sm:mb-5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
                   <feature.icon className="w-5 h-5" />
                 </div>
-                <h3 className="font-display text-lg font-semibold text-foreground mb-2">
+                <h3 className="font-display text-base sm:text-lg font-semibold text-foreground mb-1 sm:mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
+                <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
                   {feature.description}
                 </p>
               </div>

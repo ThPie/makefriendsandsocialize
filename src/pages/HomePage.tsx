@@ -16,7 +16,7 @@ const ClubShowcaseSection = lazy(() => import('@/components/home/ClubShowcaseSec
 
 // Minimal skeleton for lazy loaded sections
 const SectionSkeleton = memo(() => (
-  <div className="w-full py-16 md:py-24 flex items-center justify-center">
+  <div className="w-full py-12 md:py-24 flex items-center justify-center">
     <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
   </div>
 ));
