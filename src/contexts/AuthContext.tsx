@@ -207,6 +207,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
     const { clearAllCache } = await import('@/hooks/useCachedData');
     clearAllCache();
+
+    // Clear React Query cache
+    const { queryClient } = await import('@/lib/queryClient');
+    queryClient.clear();
+
     setUser(null);
     setSession(null);
     setProfile(null);

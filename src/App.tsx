@@ -1,7 +1,8 @@
 import { useEffect, lazy, Suspense } from "react";
 import { BrandedLoader } from "@/components/ui/branded-loader";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ThemeProvider } from "next-themes";
@@ -89,7 +90,7 @@ const PortalEventCheckin = lazy(() => import("@/pages/portal/PortalEventCheckin"
 const AdminPerks = lazy(() => import("@/pages/admin/AdminPerks"));
 const AdminConcierge = lazy(() => import("@/pages/admin/AdminConcierge"));
 
-const queryClient = new QueryClient();
+
 
 // Component that handles password recovery redirect
 // When the user lands on the home page with recovery tokens, this detects
