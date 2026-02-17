@@ -172,8 +172,8 @@ export const Header = () => {
         : 'border-b border-border bg-background/95 backdrop-blur-md'
         }`}
       style={{
-        // Add safe area padding for iOS notch/dynamic island in native apps
-        paddingTop: isNative && isIOS ? 'env(safe-area-inset-top)' : undefined,
+        // Add safe area padding for PWA/Native app notch clearance
+        paddingTop: 'env(safe-area-inset-top, 0px)',
         boxShadow: isTransparent
           ? 'none'
           : `0 ${4 + scrollDepth * 8}px ${12 + scrollDepth * 20}px -${4 - scrollDepth * 2}px hsl(var(--foreground) / ${0.05 + scrollDepth * 0.1})`
@@ -187,7 +187,7 @@ export const Header = () => {
             alt="MakeFriends & Socialize"
             width={160}
             height={48}
-            className={`w-auto object-contain transition-all duration-300 ${isTransparent ? 'h-12 md:h-14' : 'h-10 md:h-12'
+            className={`w-auto object-contain transition-all duration-300 ${isTransparent ? 'h-10 md:h-14' : 'h-8 md:h-12'
               }`}
           />
         </Link>
@@ -201,12 +201,12 @@ export const Header = () => {
           {user ? (
             <Link
               to="/portal"
-              className="ml-2 transition-transform hover:scale-105"
+              className="ml-1 md:ml-2 transition-transform hover:scale-105"
               title="Go to your profile"
             >
-              <Avatar className="h-10 w-10 border-2 border-primary/30 hover:border-primary transition-colors">
+              <Avatar className="h-9 w-9 md:h-10 md:w-10 border-2 border-primary/30 hover:border-primary transition-colors">
                 <AvatarImage src={getAvatarUrl()} alt={getFullName() || 'Profile'} />
-                <AvatarFallback className="bg-primary/20 text-primary font-medium">
+                <AvatarFallback className="bg-primary/20 text-primary font-medium text-xs">
                   {getUserInitials()}
                 </AvatarFallback>
               </Avatar>
@@ -215,33 +215,40 @@ export const Header = () => {
             <Button
               asChild
               variant="outline"
-              className={isTransparent ? "border-white/60 text-white hover:bg-white/10 hover:border-white" : ""}
+              size="sm"
+              className={`h-9 md:h-10 px-3 md:px-4 ${isTransparent ? "border-white/60 text-white hover:bg-white/10 hover:border-white" : ""}`}
             >
-              <Link to="/auth">Sign In</Link>
+              <Link to="/auth">
+                <span className="hidden sm:inline">Sign In</span>
+                <User className="w-4 h-4 sm:hidden" />
+              </Link>
             </Button>
           )}
 
           {/* Hamburger Menu Button - Visible on ALL screens */}
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`relative z-50 flex ml-2 items-center justify-center w-11 h-11 rounded-lg transition-colors pointer-events-auto ${isTransparent
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMenuOpen(!isMenuOpen);
+            }}
+            className={`relative z-50 flex ml-1 md:ml-2 items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-lg transition-colors pointer-events-auto ${isTransparent
               ? 'text-white hover:bg-white/10 bg-black/20 backdrop-blur-sm'
               : 'text-foreground hover:bg-muted bg-background/80'
               }`}
             aria-label="Toggle menu"
             aria-expanded={isMenuOpen}
           >
-            <div className="w-6 h-5 flex flex-col justify-center items-center">
+            <div className="w-5 h-4 md:w-6 md:h-5 flex flex-col justify-center items-center">
               <span
-                className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-0.5' : '-translate-y-1.5'
+                className={`block h-0.5 w-5 md:w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-0.5' : '-translate-y-1'
                   }`}
               />
               <span
-                className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100'
+                className={`block h-0.5 w-5 md:w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 mt-1'
                   }`}
               />
               <span
-                className={`block h-0.5 w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-0.5' : 'translate-y-1.5'
+                className={`block h-0.5 w-5 md:w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-0.5' : 'translate-y-1 mt-1'
                   }`}
               />
             </div>
