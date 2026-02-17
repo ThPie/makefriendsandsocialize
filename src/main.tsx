@@ -8,26 +8,19 @@ import "./index.css";
 
 // Redirect vanity preview hosts to published host before app initialization
 // This prevents blank pages on preview-- hosts that don't serve the app bundle
-if (redirectVanityPreviewToPublished()) {
-  // Stop execution if redirecting - page will reload on published host
-  throw new Error('Redirecting to published host');
+// Check for redirects before initialization
+const isRedirecting = redirectVanityPreviewToPublished() || redirectWwwToRoot();
+
+if (!isRedirecting) {
+  // Initialize Sentry for error tracking
+  initSentry();
+
+  // Initialize analytics (GA4)
+  initAnalytics();
+
+  createRoot(document.getElementById("root")!).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
 }
-
-// Redirect www to root domain before app initialization
-// This handles both .com and .ca domains (www.makefriendsandsocialize.com -> makefriendsandsocialize.com)
-if (redirectWwwToRoot()) {
-  // Stop execution if redirecting - page will reload on root domain
-  throw new Error('Redirecting to root domain');
-}
-
-// Initialize Sentry for error tracking
-initSentry();
-
-// Initialize analytics (GA4)
-initAnalytics();
-
-createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
