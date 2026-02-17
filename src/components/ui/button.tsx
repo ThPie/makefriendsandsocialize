@@ -3,6 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
+import { haptic } from "@/lib/haptics";
 
 const buttonVariants = cva(
   // Base styles with 44px min height (h-11) for touch targets and touch-manipulation
@@ -35,12 +36,32 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
   VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  /** Haptic feedback style on tap. Set to false to disable. */
+  hapticStyle?: 'light' | 'medium' | 'heavy' | 'selection' | false;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, hapticStyle = 'light', onClick, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+
+    const handleClick = React.useCallback(
+      (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (hapticStyle !== false) {
+          haptic(hapticStyle);
+        }
+        onClick?.(e);
+      },
+      [hapticStyle, onClick],
+    );
+
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        onClick={asChild ? onClick : handleClick}
+        {...props}
+      />
+    );
   },
 );
 Button.displayName = "Button";
