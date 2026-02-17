@@ -2,7 +2,7 @@ import { useEffect, lazy, Suspense } from "react";
 import { BrandedLoader } from "@/components/ui/branded-loader";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "@/lib/queryClient";
+import { appQueryClient } from "@/lib/queryClient";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ThemeProvider } from "next-themes";
@@ -241,7 +241,7 @@ const App = () => {
   return (
     <ErrorBoundary>
       <HelmetProvider>
-        <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={appQueryClient}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <AuthProvider>
               <TooltipProvider>

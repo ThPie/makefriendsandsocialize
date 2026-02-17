@@ -209,8 +209,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     clearAllCache();
 
     // Clear React Query cache
-    const { queryClient } = await import('@/lib/queryClient');
-    queryClient.clear();
+    const { appQueryClient } = await import('@/lib/queryClient');
+    appQueryClient.clear();
 
     setUser(null);
     setSession(null);
