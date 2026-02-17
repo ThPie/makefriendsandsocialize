@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { getTierDisplayName } from '@/lib/tier-utils';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -94,13 +95,13 @@ export default function PortalNetwork() {
 
   // Filter members
   const filteredMembers = members.filter(member => {
-    const matchesSearch = !searchTerm || 
+    const matchesSearch = !searchTerm ||
       member.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.signature_style?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.industry?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.job_title?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesInterest = !selectedInterest || 
+
+    const matchesInterest = !selectedInterest ||
       member.interests?.includes(selectedInterest);
 
     const matchesIndustry = !selectedIndustry ||
@@ -121,7 +122,7 @@ export default function PortalNetwork() {
             Unlock The Network
           </h1>
           <p className="text-muted-foreground text-lg mb-8">
-            The Network is where meaningful connections begin. Upgrade to Fellow membership 
+            The Network is where meaningful connections begin. Upgrade to Fellow membership
             to browse member profiles and request curated introductions.
           </p>
         </div>
@@ -157,7 +158,7 @@ export default function PortalNetwork() {
         </Card>
 
         <p className="text-sm text-muted-foreground">
-          Current membership: <span className="text-foreground capitalize">{membership?.tier || 'Patron'}</span>
+          Current membership: <span className="text-foreground">{getTierDisplayName(membership?.tier)}</span>
         </p>
       </div>
     );
@@ -307,7 +308,7 @@ export default function PortalNetwork() {
                 <h3 className="font-display text-xl text-foreground mb-1">
                   {member.first_name || 'Anonymous'}
                 </h3>
-                
+
                 {(member.job_title || member.industry) && (
                   <p className="text-sm text-primary font-medium mb-2">
                     {member.job_title}{member.job_title && member.industry ? ' · ' : ''}{member.industry}

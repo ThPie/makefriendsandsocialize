@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { getTierDisplayName } from '@/lib/tier-utils';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useInactivityLogout } from '@/hooks/useInactivityLogout';
 import {
@@ -134,7 +135,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
         : 'bg-muted text-muted-foreground'
       }`}>
       {membership.tier === 'founder' && <Crown className="h-3 w-3" />}
-      {membership.tier.charAt(0).toUpperCase() + membership.tier.slice(1)}
+      {getTierDisplayName(membership.tier)}
     </span>
   ) : null;
 
@@ -268,7 +269,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                   <div className="text-right hidden lg:block">
                     <p className="text-sm font-medium leading-none">{profile?.first_name || 'Member'}</p>
                     <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-bold text-[10px]">
-                      {membership?.tier || 'Explorer'} Member
+                      {getTierDisplayName(membership?.tier)} Member
                     </p>
                   </div>
                   <Avatar className="h-10 w-10 border-2 border-primary/20">

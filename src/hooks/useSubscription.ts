@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { type DBTier, isTierAtLeast, toStripeCheckoutTier } from '@/lib/tier-utils';
 
 export interface SubscriptionStatus {
   subscribed: boolean;
-  tier: 'explorer' | 'member' | 'fellow';
+  tier: DBTier;
   subscription_end: string | null;
   is_trialing: boolean;
   trial_ends_at: string | null;
@@ -34,7 +35,7 @@ export function useSubscription() {
     }
 
     const now = Date.now();
-    
+
     // Use cache if still valid and not forcing refresh
     if (!force && subscriptionCache.data && (now - subscriptionCache.timestamp) < CACHE_DURATION) {
       setSubscription(subscriptionCache.data);
@@ -44,10 +45,10 @@ export function useSubscription() {
 
     // Prevent duplicate calls
     if (isCheckingRef.current) return;
-    
+
     // Debounce rapid calls
     if (now - lastCheckRef.current < 5000) return;
-    
+
     isCheckingRef.current = true;
     lastCheckRef.current = now;
 
@@ -60,7 +61,7 @@ export function useSubscription() {
       // Update cache
       subscriptionCache.data = data;
       subscriptionCache.timestamp = now;
-      
+
       setSubscription(data);
       setError(null);
     } catch (err) {
@@ -69,7 +70,7 @@ export function useSubscription() {
       // Default to free tier on error
       const defaultData: SubscriptionStatus = {
         subscribed: false,
-        tier: 'explorer',
+        tier: 'patron',
         subscription_end: null,
         is_trialing: false,
         trial_ends_at: null,
@@ -147,9 +148,9 @@ export function useSubscription() {
     checkSubscription: () => checkSubscription(true),
     openCheckout,
     openCustomerPortal,
-    hasUnlimitedReveals: subscription?.tier === 'member' || subscription?.tier === 'fellow',
-    canListBusiness: subscription?.tier === 'fellow',
-    eventDiscount: subscription?.tier === 'fellow' ? 30 : subscription?.tier === 'member' ? 20 : 0,
-    canBringGuest: subscription?.tier === 'fellow',
+    hasUnlimitedReveals: isTierAtLeast(subscription?.tier, 'fellow'),
+    canListBusiness: subscription?.tier === 'founder',
+    eventDiscount: subscription?.tier === 'founder' ? 30 : subscription?.tier === 'fellow' ? 20 : 0,
+    canBringGuest: subscription?.tier === 'founder',
   }), [subscription, isLoading, error, checkSubscription, openCheckout, openCustomerPortal]);
 }

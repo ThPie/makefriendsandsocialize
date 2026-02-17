@@ -18,6 +18,7 @@ import {
     Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getTierDisplayName } from '@/lib/tier-utils';
 
 interface MobileDashboardNavProps {
     onSignOut: () => void;
@@ -76,7 +77,7 @@ export function MobileDashboardNav({ onSignOut, className }: MobileDashboardNavP
                                         'bg-muted text-muted-foreground'
                             )}>
                                 {membership.tier === 'founder' && <Crown className="h-3 w-3" />}
-                                {membership.tier.charAt(0).toUpperCase() + membership.tier.slice(1)}
+                                {getTierDisplayName(membership.tier)}
                             </span>
                         )}
                     </div>

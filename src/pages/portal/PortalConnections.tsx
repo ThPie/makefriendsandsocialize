@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { getTierDisplayName } from '@/lib/tier-utils';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,13 +9,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
-import { 
-  Loader2, 
-  Heart, 
-  Crown, 
-  ArrowRight, 
-  Check, 
-  X, 
+import {
+  Loader2,
+  Heart,
+  Crown,
+  ArrowRight,
+  Check,
+  X,
   Clock,
   MessageCircle,
   User
@@ -183,7 +184,7 @@ export default function PortalConnections() {
         </Button>
 
         <p className="text-sm text-muted-foreground mt-8">
-          Current membership: <span className="text-foreground capitalize">{membership?.tier || 'Patron'}</span>
+          Current membership: <span className="text-foreground">{getTierDisplayName(membership?.tier)}</span>
         </p>
       </div>
     );
@@ -287,9 +288,9 @@ export default function PortalConnections() {
               <Card key={connection.id}>
                 <CardContent className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4">
                   <Avatar className="h-16 w-16 rounded-lg">
-                    <AvatarImage 
-                      src={connection.profile?.avatar_urls?.[0]} 
-                      className="object-cover" 
+                    <AvatarImage
+                      src={connection.profile?.avatar_urls?.[0]}
+                      className="object-cover"
                     />
                     <AvatarFallback className="rounded-lg">
                       {connection.profile?.first_name?.[0] || 'M'}
@@ -363,9 +364,9 @@ export default function PortalConnections() {
               <Card key={connection.id}>
                 <CardContent className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4">
                   <Avatar className="h-16 w-16 rounded-lg">
-                    <AvatarImage 
-                      src={connection.profile?.avatar_urls?.[0]} 
-                      className="object-cover" 
+                    <AvatarImage
+                      src={connection.profile?.avatar_urls?.[0]}
+                      className="object-cover"
                     />
                     <AvatarFallback className="rounded-lg">
                       {connection.profile?.first_name?.[0] || 'M'}
@@ -431,9 +432,9 @@ export default function PortalConnections() {
               <Card key={connection.id}>
                 <CardContent className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4">
                   <Avatar className="h-16 w-16 rounded-lg">
-                    <AvatarImage 
-                      src={connection.profile?.avatar_urls?.[0]} 
-                      className="object-cover" 
+                    <AvatarImage
+                      src={connection.profile?.avatar_urls?.[0]}
+                      className="object-cover"
                     />
                     <AvatarFallback className="rounded-lg">
                       {connection.profile?.first_name?.[0] || 'M'}

@@ -11,12 +11,12 @@ const corsHeaders = {
 const MAX_REQUESTS = 100;
 const WINDOW_MINUTES = 15;
 
-// Price IDs mapping to tiers
+// Price IDs mapping to DB tiers (canonical names: patron, fellow, founder)
 const PRICE_TO_TIER: Record<string, string> = {
-  "price_1SoDkp00I3YCY0DeDrniU1d6": "member", // Member Monthly
-  "price_1SoDl700I3YCY0DezLxSxVBL": "member", // Member Annual
-  "price_1SoDli00I3YCY0DeVOlNtHl7": "fellow", // Fellow Monthly
-  "price_1SoDlv00I3YCY0De33VrYzjX": "fellow", // Fellow Annual
+  "price_1SoDkp00I3YCY0DeDrniU1d6": "fellow",  // Insider Monthly (DB: fellow)
+  "price_1SoDl700I3YCY0DezLxSxVBL": "fellow",  // Insider Annual  (DB: fellow)
+  "price_1SoDli00I3YCY0DeVOlNtHl7": "founder", // Patron Monthly  (DB: founder)
+  "price_1SoDlv00I3YCY0De33VrYzjX": "founder", // Patron Annual   (DB: founder)
 };
 
 const logStep = (step: string, details?: any) => {
@@ -42,10 +42,10 @@ async function checkRateLimit(supabase: any, ipAddress: string, endpoint: string
     }
 
     const status = data?.[0] || { allowed: true, remaining_requests: MAX_REQUESTS, reset_at: null };
-    return { 
-      allowed: status.allowed, 
-      remaining: status.remaining_requests, 
-      resetAt: status.reset_at 
+    return {
+      allowed: status.allowed,
+      remaining: status.remaining_requests,
+      resetAt: status.reset_at
     };
   } catch (err) {
     console.error('Rate limit check failed:', err);
@@ -82,7 +82,7 @@ serve(async (req) => {
     logStep("Function started");
 
     // Get IP address for rate limiting
-    const ipAddress = 
+    const ipAddress =
       req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
       req.headers.get('cf-connecting-ip') ||
       req.headers.get('x-real-ip') ||
@@ -90,18 +90,18 @@ serve(async (req) => {
 
     // Check rate limit
     const rateLimit = await checkRateLimit(supabaseClient, ipAddress, 'check-subscription');
-    
+
     if (!rateLimit.allowed) {
       logStep("Rate limit exceeded", { ip: ipAddress });
       return new Response(
-        JSON.stringify({ 
+        JSON.stringify({
           error: "Rate limit exceeded. Please try again later.",
           resetAt: rateLimit.resetAt
-        }), 
+        }),
         {
           status: 429,
-          headers: { 
-            ...corsHeaders, 
+          headers: {
+            ...corsHeaders,
             "Content-Type": "application/json",
             "Retry-After": "900"
           },
@@ -121,7 +121,7 @@ serve(async (req) => {
     const token = authHeader.replace("Bearer ", "");
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError) throw new Error(`Authentication error: ${userError.message}`);
-    
+
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
@@ -132,9 +132,9 @@ serve(async (req) => {
     if (customers.data.length === 0) {
       logStep("No customer found");
       return new Response(
-        JSON.stringify({ 
-          subscribed: false, 
-          tier: "explorer",
+        JSON.stringify({
+          subscribed: false,
+          tier: "patron",
           available_reveals: await getAvailableReveals(user.id, supabaseClient),
           has_trial: false,
         }),
@@ -162,7 +162,7 @@ serve(async (req) => {
     const allSubs = [...subscriptions.data, ...trialingSubscriptions.data];
     const hasActiveSub = allSubs.length > 0;
 
-    let tier = "explorer";
+    let tier = "patron";
     let subscriptionEnd = null;
     let isTrialing = false;
     let trialEndsAt = null;
@@ -173,16 +173,16 @@ serve(async (req) => {
       const priceId = subscription.items.data[0]?.price?.id;
       tier = PRICE_TO_TIER[priceId] || "explorer";
       isTrialing = subscription.status === "trialing";
-      
+
       if (isTrialing && subscription.trial_end) {
         trialEndsAt = new Date(subscription.trial_end * 1000).toISOString();
       }
-      
-      logStep("Active subscription found", { 
-        subscriptionId: subscription.id, 
-        tier, 
+
+      logStep("Active subscription found", {
+        subscriptionId: subscription.id,
+        tier,
         isTrialing,
-        endDate: subscriptionEnd 
+        endDate: subscriptionEnd
       });
     }
 

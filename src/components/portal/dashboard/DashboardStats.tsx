@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Crown, Bell, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { getTierDisplayName } from '@/lib/tier-utils';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -126,7 +127,7 @@ export function DashboardStats() {
             icon: Crown,
             color: 'text-amber-400',
             bg: 'bg-amber-500/10',
-            tierBadge: membership?.tier?.toUpperCase() || 'MEMBER',
+            tierBadge: getTierDisplayName(membership?.tier).toUpperCase(),
             showProgress: true,
             progressValue: progress,
             progressText: `${nextTierPoints - displayPoints} pts to Platinum`
