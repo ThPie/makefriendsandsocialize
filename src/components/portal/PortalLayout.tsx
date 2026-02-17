@@ -30,7 +30,6 @@ import {
   Shield,
   Home,
   Gift,
-  Search,
   Mail
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -245,15 +244,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
           <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
             {/* Desktop Top Bar */}
             <header className="hidden md:flex items-center justify-between h-20 px-8 border-b border-border bg-background/95 backdrop-blur z-40">
-              <div className="flex-1 max-w-xl">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search events, members, or news..."
-                    className="pl-10 bg-muted/50 border-transparent focus:bg-background transition-all rounded-full"
-                  />
-                </div>
-              </div>
+              <div className="flex-1" />
 
               <div className="flex items-center gap-6 ml-4">
                 <NotificationBell />
