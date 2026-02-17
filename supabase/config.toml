@@ -4,28 +4,28 @@ project_id = "qzqomqctuqldexnxgmlh"
 verify_jwt = true
 
 [functions.scrape-meetup]
-verify_jwt = false
+verify_jwt = true
 
 [functions.scrape-meetup-reviews]
-verify_jwt = false
+verify_jwt = true
 
 [functions.scrape-meetup-events]
-verify_jwt = false
+verify_jwt = true
 
 [functions.find-matches]
 verify_jwt = true
 
 [functions.send-dating-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-push-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.verify-social-profiles]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-profile-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-event-image]
 verify_jwt = true
@@ -40,70 +40,70 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.send-security-alert]
-verify_jwt = false
+verify_jwt = true
 
 [functions.trigger-periodic-osint-scan]
-verify_jwt = false
+verify_jwt = true
 
 [functions.find-leads]
 verify_jwt = true
 
 [functions.scheduled-lead-discovery]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-event-reminders]
-verify_jwt = false
+verify_jwt = true
 
 [functions.track-referral]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-referral-invite]
 verify_jwt = true
 
 [functions.send-referral-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-appeal-confirmation]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-business-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.sync-meetup-upcoming-events]
-verify_jwt = false
+verify_jwt = true
 
 [functions.scheduled-event-sync]
-verify_jwt = false
+verify_jwt = true
 
 [functions.elevenlabs-scribe-token]
 verify_jwt = true
 
 [functions.preprocess-dating-profile]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-sms]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-dating-reminders]
-verify_jwt = false
+verify_jwt = true
 
 [functions.notification-throttle]
-verify_jwt = false
+verify_jwt = true
 
 [functions.process-notification-bundles]
-verify_jwt = false
+verify_jwt = true
 
 [functions.handle-date-confirmation]
-verify_jwt = false
+verify_jwt = true
 
 [functions.test-push-notification]
 verify_jwt = true
 
 [functions.send-appeal-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-2hour-meeting-reminders]
-verify_jwt = false
+verify_jwt = true
 
 [functions.stripe-webhook]
 verify_jwt = false
@@ -127,40 +127,40 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.send-admin-access-alert]
-verify_jwt = false
+verify_jwt = true
 
 [functions.verify-admin-mfa]
-verify_jwt = false
+verify_jwt = true
 
 [functions.admin-rate-limiter]
-verify_jwt = false
+verify_jwt = true
 
 [functions.encrypt-sensitive-data]
 verify_jwt = true
 
 [functions.api-rate-limiter]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-daily-quote]
-verify_jwt = false
+verify_jwt = true
 
 [functions.check-password-strength]
-verify_jwt = false
+verify_jwt = true
 
 [functions.detect-location]
-verify_jwt = false
+verify_jwt = true
 
 [functions.submit-business-lead]
 verify_jwt = true
 
 [functions.send-business-lead-notification]
-verify_jwt = false
+verify_jwt = true
 
 [functions.match-leads-to-businesses]
 verify_jwt = true
 
 [functions.send-lead-followup-reminders]
-verify_jwt = false
+verify_jwt = true
 
 [functions.fetch-instagram-photos]
-verify_jwt = false
+verify_jwt = true
