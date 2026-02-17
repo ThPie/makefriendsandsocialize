@@ -120,9 +120,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    let mounted = true;
+
+    // Set up auth state listener
+    // This handles both initial session load and subsequent changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
+        if (!mounted) return;
+
         console.log('Auth event:', event);
         setSession(session);
         setUser(session?.user ?? null);
@@ -132,32 +137,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsRecoveryMode(true);
         }
 
-        // Defer Supabase calls with setTimeout
-        if (session?.user) {
-          setTimeout(() => {
-            fetchUserData(session.user.id);
-          }, 0);
-        } else {
-          setProfile(null);
-          setMembership(null);
-          setApplicationStatus(null);
-          setIsAdmin(false);
+        try {
+          if (session?.user) {
+            // CRITICAL FIX: Wait for profile data to fetch BEFORE setting loading=false
+            // This prevents "flash of null profile" where user exists but profile is null
+            await fetchUserData(session.user.id);
+          } else {
+            setProfile(null);
+            setMembership(null);
+            setApplicationStatus(null);
+            setIsAdmin(false);
+          }
+        } catch (error) {
+          console.error('Error handling auth state change:', error);
+        } finally {
+          if (mounted) {
+            setIsLoading(false);
+          }
         }
-        setIsLoading(false);
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchUserData(session.user.id);
-      }
-      setIsLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string) => {
