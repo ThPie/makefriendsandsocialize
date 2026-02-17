@@ -14,11 +14,23 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   build: {
-    chunkSizeWarningLimit: 3000,
+    chunkSizeWarningLimit: 1000,
     // Ensure assets use relative paths for Capacitor
     assetsDir: 'assets',
     // Generate sourcemaps for debugging native issues
     sourcemap: mode === 'development',
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('recharts')) return 'charts';
+            if (id.includes('framer-motion')) return 'framer';
+            if (id.includes('lucide-react')) return 'icons';
+            if (id.includes('@radix-ui')) return 'ui-libs';
+          }
+        },
+      },
+    },
   },
   // Base path for Capacitor (relative paths for native app compatibility)
   base: './',
