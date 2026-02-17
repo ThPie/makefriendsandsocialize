@@ -44,6 +44,7 @@ import { InactivityWarningModal } from '@/components/auth/InactivityWarningModal
 import { MobileDashboardNav } from './MobileDashboardNav';
 import { SkipLink } from '@/components/ui/skip-link';
 import { PortalBottomNav } from './PortalBottomNav';
+import { BottomNav } from '@/components/layout/BottomNav';
 
 interface PortalLayoutProps {
   children: ReactNode;
@@ -275,7 +276,10 @@ export function PortalLayout({ children }: PortalLayoutProps) {
             </header>
 
             {/* Mobile Header */}
-            <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden">
+            <header
+              className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden"
+              style={{ paddingTop: 'var(--safe-top, 0px)' }}
+            >
               <div className="flex items-center gap-3">
                 <Link to="/" className="flex items-center gap-2">
                   <BrandLogo className="h-8 w-auto" height={32} width={96} />
@@ -292,7 +296,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
               </div>
             </header>
 
-            <div className="flex-1 overflow-auto p-4 md:p-8 lg:p-12 pb-24 md:pb-12 scroll-smooth scroll-touch">
+            <div className="flex-1 overflow-auto p-4 md:p-8 lg:p-12 scroll-smooth scroll-touch pb-bottom-nav md:pb-8 lg:pb-12">
               <div className="max-w-7xl mx-auto space-y-8">
                 {/* Pending Member Banner */}
                 {isPending && <PendingMemberBanner className="mb-6" />}
@@ -320,6 +324,8 @@ export function PortalLayout({ children }: PortalLayoutProps) {
             <PortalBottomNav />
           </main>
         </div>
+        {/* Mobile Bottom Navigation */}
+        <BottomNav />
       </SidebarProvider>
     </>
   );

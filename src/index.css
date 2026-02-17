@@ -126,12 +126,15 @@
   html {
     scroll-behavior: smooth;
     touch-action: pan-x pan-y;
+    overscroll-behavior-y: contain;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
     overscroll-behavior-y: contain;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Standalone PWA safe area */
@@ -141,15 +144,49 @@
     }
   }
 
-  /* Disable text selection on interactive elements */
+  /* ===== Native App Feel ===== */
+
+  /* Remove tap highlight on all touch targets */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent text selection on interactive elements */
   button,
   a,
   nav,
   [role="button"],
   [role="tab"],
-  [role="menuitem"] {
+  [role="menuitem"],
+  .no-select {
     -webkit-user-select: none;
     user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Prevent double-tap zoom on interactive elements */
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
+  /* Prevent long-press context menu on images in app context */
+  img {
+    -webkit-touch-callout: none;
+  }
+
+  /* ===== Safe Area Custom Properties ===== */
+  :root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --bottom-nav-height: 4.5rem;
+    /* 72px — height of the mobile bottom nav */
   }
 
   /* Scroll margin for fixed header */
@@ -301,17 +338,44 @@
     animation: spin 3s linear infinite;
   }
 
-  /* Safe area utilities */
-  .safe-area-top {
-    padding-top: env(safe-area-inset-top, 0px);
+  /* Premium shimmer for skeleton screens */
+  .skeleton-shimmer {
+    background: linear-gradient(90deg,
+        hsl(var(--muted)) 0%,
+        hsl(var(--muted-foreground) / 0.08) 50%,
+        hsl(var(--muted)) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
   }
 
-  .safe-area-bottom {
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Safe area utilities */
+  .safe-area-top,
+  .safe-top {
+    padding-top: var(--safe-top);
+  }
+
+  .safe-area-bottom,
+  .safe-bottom {
+    padding-bottom: var(--safe-bottom);
   }
 
   /* Smooth scrolling momentum for scroll containers */
   .scroll-touch {
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Bottom nav spacing — adds padding so content doesn't hide behind mobile bottom nav */
+  .pb-bottom-nav {
+    padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
   }
 }

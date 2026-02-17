@@ -46,13 +46,30 @@ export default defineConfig(({ mode }) => ({
       manifest: {
         name: 'MakeFriends Social Club',
         short_name: 'MakeFriends',
-        description: 'Private social club for professionals.',
-        start_url: '/',
-        scope: '/',
-        theme_color: '#1a2e1a',
-        background_color: '#1a2e1a',
+        description: 'Private social club for professionals seeking genuine friendships and meaningful connections.',
+        theme_color: '#052e16',
+        background_color: '#052e16',
         display: 'standalone',
         orientation: 'portrait',
+        start_url: '/',
+        scope: '/',
+        categories: ['social', 'lifestyle'],
+        shortcuts: [
+          {
+            name: 'Events',
+            short_name: 'Events',
+            url: '/events',
+            description: 'Browse upcoming curated events',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }]
+          },
+          {
+            name: 'My Dashboard',
+            short_name: 'Dashboard',
+            url: '/portal',
+            description: 'View your member dashboard',
+            icons: [{ src: 'pwa-192x192.png', sizes: '192x192' }]
+          }
+        ],
         icons: [
           {
             src: 'pwa-192x192.png',
