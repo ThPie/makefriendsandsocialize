@@ -168,7 +168,9 @@ const MainRoutes = () => (
     <Route path="/health" element={<HealthCheckPage />} />
 
     {/* Dev testing route for subdomain landing page */}
-    <Route path="/dev/slowdating-landing" element={<SlowDatingLandingPage />} />
+    {import.meta.env.DEV && (
+      <Route path="/dev/slowdating-landing" element={<SlowDatingLandingPage />} />
+    )}
 
     {/* Auth routes */}
     <Route path="/auth" element={<AuthPage />} />
