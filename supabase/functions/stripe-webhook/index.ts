@@ -27,7 +27,7 @@ const PRICE_IDS = {
 function sanitizeForLogs(obj: Record<string, unknown>): Record<string, unknown> {
   const sensitiveFields = ['email', 'customer_email', 'payment_method', 'card', 'bank_account', 'name', 'address'];
   const sanitized: Record<string, unknown> = {};
-  
+
   for (const [key, value] of Object.entries(obj)) {
     if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
       sanitized[key] = '[REDACTED]';
@@ -37,7 +37,7 @@ function sanitizeForLogs(obj: Record<string, unknown>): Record<string, unknown> 
       sanitized[key] = value;
     }
   }
-  
+
   return sanitized;
 }
 
@@ -47,6 +47,76 @@ const logStep = (step: string, details?: { type?: string; id?: string; status?: 
   const detailsStr = safeDetails ? ` - ${JSON.stringify(safeDetails)}` : "";
   console.log(`[STRIPE-WEBHOOK] ${step}${detailsStr}`);
 };
+
+/**
+ * Find a user ID by Stripe customer ID — O(1) lookup via memberships table.
+ * Falls back to auth.users email lookup if no membership mapping exists yet.
+ */
+async function findUserIdByStripeCustomer(stripeCustomerId: string): Promise<string | null> {
+  // 1. Try direct lookup via memberships.stripe_customer_id
+  const { data: membership } = await supabaseAdmin
+    .from("memberships")
+    .select("user_id")
+    .eq("stripe_customer_id", stripeCustomerId)
+    .limit(1)
+    .single();
+
+  if (membership?.user_id) {
+    logStep("User found via stripe_customer_id", { id: stripeCustomerId });
+    return membership.user_id;
+  }
+
+  // 2. Fallback: get email from Stripe customer, then look up in auth.users
+  const customer = await stripe.customers.retrieve(stripeCustomerId) as Stripe.Customer;
+  if (!customer.email) {
+    logStep("No email on Stripe customer", { id: stripeCustomerId });
+    return null;
+  }
+
+  return await findUserIdByEmail(customer.email);
+}
+
+/**
+ * Find a user ID by email — paginated lookup via admin API.
+ * Uses small pages (50) to avoid loading all users into memory.
+ * 
+ * For truly O(1) lookups, create a DB function:
+ *   CREATE FUNCTION get_user_id_by_email(_email text) RETURNS uuid AS $$
+ *     SELECT id FROM auth.users WHERE email = _email LIMIT 1;
+ *   $$ LANGUAGE sql SECURITY DEFINER;
+ * Then replace this with: supabaseAdmin.rpc('get_user_id_by_email', { _email: email })
+ */
+async function findUserIdByEmail(email: string): Promise<string | null> {
+  let page = 1;
+  const perPage = 50;
+
+  while (true) {
+    const { data: pageData, error: pageError } = await supabaseAdmin.auth.admin.listUsers({
+      page,
+      perPage,
+    });
+
+    if (pageError || !pageData?.users?.length) {
+      logStep("User not found by email");
+      return null;
+    }
+
+    const found = pageData.users.find((u: { email?: string }) => u.email === email);
+    if (found) {
+      logStep("User found via paginated email lookup");
+      return found.id;
+    }
+
+    // If we got fewer results than requested, we've exhausted all users
+    if (pageData.users.length < perPage) {
+      logStep("User not found after exhausting all pages");
+      return null;
+    }
+
+    page++;
+  }
+}
+
 
 serve(async (req) => {
   const signature = req.headers.get("stripe-signature");
@@ -126,22 +196,26 @@ serve(async (req) => {
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   logStep("Processing checkout.session.completed", { id: session.id });
 
-  const customerEmail = session.customer_email || session.customer_details?.email;
-  if (!customerEmail) {
-    logStep("No customer email found in session");
-    return;
+  // Prefer user_id from session metadata (set during checkout creation)
+  let userId = session.metadata?.user_id;
+
+  if (!userId) {
+    // Fallback: resolve user via Stripe customer ID or email
+    const stripeCustomerId = session.customer as string;
+    if (stripeCustomerId) {
+      userId = await findUserIdByStripeCustomer(stripeCustomerId);
+    }
+
+    if (!userId) {
+      const customerEmail = session.customer_email || session.customer_details?.email;
+      if (customerEmail) {
+        userId = await findUserIdByEmail(customerEmail);
+      }
+    }
   }
 
-  // Find user by email (email is not logged)
-  const { data: userData, error: userError } = await supabaseAdmin.auth.admin.listUsers();
-  if (userError) {
-    logStep("Error fetching users", { error: userError.message });
-    return;
-  }
-
-  const user = userData.users.find(u => u.email === customerEmail);
-  if (!user) {
-    logStep("User not found");
+  if (!userId) {
+    logStep("Could not resolve user for checkout session");
     return;
   }
 
@@ -151,13 +225,13 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     const priceId = lineItems.data[0]?.price?.id;
 
     if (priceId === PRICE_IDS.SINGLE_REVEAL) {
-      await createRevealPurchase(user.id, "single", 1, session.id);
+      await createRevealPurchase(userId, "single", 1, session.id);
       logStep("Created single reveal purchase");
     } else if (priceId === PRICE_IDS.PACK_3_REVEAL) {
-      await createRevealPurchase(user.id, "pack_3", 3, session.id);
+      await createRevealPurchase(userId, "pack_3", 3, session.id);
       logStep("Created 3-pack reveal purchase");
     } else if (priceId === PRICE_IDS.PACK_5_REVEAL) {
-      await createRevealPurchase(user.id, "pack_5", 5, session.id);
+      await createRevealPurchase(userId, "pack_5", 5, session.id);
       logStep("Created 5-pack reveal purchase");
     }
     return;
@@ -171,33 +245,25 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
 }
 
 async function handleSubscriptionChange(subscription: Stripe.Subscription) {
-  logStep("Processing subscription change", { 
-    id: subscription.id, 
-    status: subscription.status 
+  logStep("Processing subscription change", {
+    id: subscription.id,
+    status: subscription.status
   });
 
   const customerId = subscription.customer as string;
-  const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
-  const customerEmail = customer.email;
 
-  if (!customerEmail) {
-    logStep("No customer email found");
-    return;
-  }
+  // O(1) lookup: find user via stripe_customer_id or email fallback
+  const userId = await findUserIdByStripeCustomer(customerId);
 
-  // Find user by email
-  const { data: userData } = await supabaseAdmin.auth.admin.listUsers();
-  const user = userData?.users.find(u => u.email === customerEmail);
-
-  if (!user) {
-    logStep("User not found");
+  if (!userId) {
+    logStep("User not found for Stripe customer", { id: customerId });
     return;
   }
 
   // Determine tier based on price
   const priceId = subscription.items.data[0]?.price?.id;
   let tier: "patron" | "fellow" | "founder" = "patron";
-  
+
   if (priceId === PRICE_IDS.MEMBER_MONTHLY || priceId === PRICE_IDS.MEMBER_ANNUAL) {
     tier = "fellow"; // DB tier 'fellow' = UI tier 'Member'
   } else if (priceId === PRICE_IDS.FELLOW_MONTHLY || priceId === PRICE_IDS.FELLOW_ANNUAL) {
@@ -205,8 +271,8 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
   }
 
   // Update or create membership
-  const membershipStatus = subscription.status === "active" ? "active" : 
-                           subscription.status === "trialing" ? "active" : "pending";
+  const membershipStatus = subscription.status === "active" ? "active" :
+    subscription.status === "trialing" ? "active" : "pending";
 
   const { error: upsertError } = await supabaseAdmin
     .from("memberships")
@@ -219,7 +285,7 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
       expires_at: new Date(subscription.current_period_end * 1000).toISOString(),
       updated_at: new Date().toISOString(),
     })
-    .eq("user_id", user.id);
+    .eq("user_id", userId);
 
   if (upsertError) {
     logStep("Error updating membership", { error: upsertError.message });
@@ -231,7 +297,7 @@ async function handleSubscriptionChange(subscription: Stripe.Subscription) {
     await supabaseAdmin
       .from("membership_trials")
       .update({ converted_at: new Date().toISOString(), stripe_subscription_id: subscription.id })
-      .eq("user_id", user.id);
+      .eq("user_id", userId);
   }
 
   logStep("Membership updated successfully", { status: membershipStatus });
@@ -241,20 +307,12 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   logStep("Processing subscription deletion", { id: subscription.id });
 
   const customerId = subscription.customer as string;
-  const customer = await stripe.customers.retrieve(customerId) as Stripe.Customer;
-  const customerEmail = customer.email;
 
-  if (!customerEmail) {
-    logStep("No customer email found");
-    return;
-  }
+  // O(1) lookup: find user via stripe_customer_id or email fallback
+  const userId = await findUserIdByStripeCustomer(customerId);
 
-  // Find user by email
-  const { data: userData } = await supabaseAdmin.auth.admin.listUsers();
-  const user = userData?.users.find(u => u.email === customerEmail);
-
-  if (!user) {
-    logStep("User not found");
+  if (!userId) {
+    logStep("User not found for Stripe customer", { id: customerId });
     return;
   }
 
@@ -266,7 +324,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
       status: "cancelled",
       updated_at: new Date().toISOString(),
     })
-    .eq("user_id", user.id);
+    .eq("user_id", userId);
 
   if (error) {
     logStep("Error downgrading membership", { error: error.message });
@@ -287,8 +345,8 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
 }
 
 async function createRevealPurchase(
-  userId: string, 
-  purchaseType: "single" | "pack_3" | "pack_5", 
+  userId: string,
+  purchaseType: "single" | "pack_3" | "pack_5",
   revealsTotal: number,
   sessionId: string
 ) {
