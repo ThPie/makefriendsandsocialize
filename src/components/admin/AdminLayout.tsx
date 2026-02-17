@@ -44,6 +44,7 @@ import { RateLimitIndicator } from './RateLimitIndicator';
 import { PortalBreadcrumb } from '../portal/PortalBreadcrumb';
 import { InactivityWarningModal } from '@/components/auth/InactivityWarningModal';
 import { BrandLogo } from '@/components/common/BrandLogo';
+import { SkipLink } from '@/components/ui/skip-link';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -147,7 +148,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-background">
-          <Sidebar className="border-r border-border">
+          <SkipLink />
+          <Sidebar className="border-r border-border" aria-label="Admin Sidebar">
             <SidebarHeader className="p-4 border-b border-border">
               <Link to="/" className="flex items-center gap-3 mb-3">
                 <BrandLogo className="h-10 w-auto" width={120} height={40} />
@@ -221,7 +223,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           </Sidebar>
 
-          <main className="flex-1 overflow-auto">
+          <main id="main-content" className="flex-1 overflow-auto">
             <header className="sticky top-0 z-40 flex items-center h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden">
               <SidebarTrigger />
               <BrandLogo className="ml-3 h-8 w-auto" height={32} width={96} />

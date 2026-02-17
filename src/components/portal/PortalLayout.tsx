@@ -42,6 +42,7 @@ import { PortalBreadcrumb } from './PortalBreadcrumb';
 import { canAccessProtectedFeatures, getRestrictedRoutesForPending } from '@/lib/auth-redirect';
 import { InactivityWarningModal } from '@/components/auth/InactivityWarningModal';
 import { MobileDashboardNav } from './MobileDashboardNav';
+import { SkipLink } from '@/components/ui/skip-link';
 
 interface PortalLayoutProps {
   children: ReactNode;
@@ -148,7 +149,8 @@ export function PortalLayout({ children }: PortalLayoutProps) {
 
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-background">
-          <Sidebar className="border-r border-border">
+          <SkipLink />
+          <Sidebar className="border-r border-border" aria-label="Portal Sidebar">
             <SidebarHeader className="p-4 border-b border-border">
               <Link to="/" className="block mb-3">
                 <BrandLogo className="h-10 w-auto" width={120} height={40} />
@@ -241,7 +243,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
             </div>
           </Sidebar>
 
-          <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
+          <main id="main-content" className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
             {/* Desktop Top Bar */}
             <header className="hidden md:flex items-center justify-between h-20 px-8 border-b border-border bg-background/95 backdrop-blur z-40">
               <div className="flex-1" />
