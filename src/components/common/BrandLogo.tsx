@@ -1,6 +1,6 @@
 import { useTheme } from "next-themes";
-import logoDark from "@/assets/logo-dark.png";
-import logoWhite from "@/assets/logo-white.png";
+import logoDark from "@/assets/logo-dark.svg";
+import logoWhite from "@/assets/logo-white.svg";
 
 interface BrandLogoProps {
     className?: string;

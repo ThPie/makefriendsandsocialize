@@ -1,0 +1,18 @@
+<svg width="240" height="80" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&amp;display=swap');
+      .logo-text {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 600;
+        fill: #052e16;
+      }
+      .ampersand {
+        fill: #C5A059;
+      }
+    </style>
+  </defs>
+  <text x="120" y="50" text-anchor="middle" class="logo-text" font-size="28">
+    Make Friends <tspan class="ampersand">&amp;</tspan> Socialize
+  </text>
+</svg>
