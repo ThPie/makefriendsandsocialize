@@ -115,15 +115,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     },
     enabled: !!user && isAdmin,
   });
-  useEffect(() => {
-    if (!isLoading && !user) {
-      navigate('/auth');
-    }
-
-    if (!isLoading && user && !isAdmin) {
-      navigate('/portal');
-    }
-  }, [user, isAdmin, isLoading, navigate]);
+  // Note: ProtectedRoute (requireAdmin) already guarantees user is authenticated
+  // and has admin privileges. No useEffect redirect needed.
 
   const handleSignOut = async () => {
     await signOut();

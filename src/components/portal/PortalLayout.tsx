@@ -89,10 +89,8 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   const restrictedRoutes = getRestrictedRoutesForPending();
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      navigate('/auth');
-      return;
-    }
+    // ProtectedRoute already guarantees user is authenticated.
+    // These are business-logic redirects only.
 
     // Check if onboarding is complete first
     if (!isLoading && profile && !profile.onboarding_completed) {

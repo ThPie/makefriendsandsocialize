@@ -10,6 +10,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Layout } from "@/components/layout/Layout";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { isSlowDatingSubdomain, isCanadianDomain } from "@/lib/subdomain-utils";
 import { CountryRedirectBanner } from "@/components/ui/country-redirect-banner";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -179,50 +180,50 @@ const MainRoutes = () => (
     {/* Date confirmation (public route with token) */}
     <Route path="/confirm-date/:token" element={<DateConfirmationPage />} />
 
-    {/* Portal routes with portal layout */}
-    <Route path="/portal/onboarding" element={<PortalOnboarding />} />
-    <Route path="/portal" element={<PortalLayout><PortalDashboard /></PortalLayout>} />
-    <Route path="/portal/profile" element={<PortalLayout><PortalProfile /></PortalLayout>} />
-    <Route path="/portal/network" element={<PortalLayout><PortalNetwork /></PortalLayout>} />
-    <Route path="/portal/connections" element={<PortalLayout><PortalConnections /></PortalLayout>} />
-    <Route path="/portal/slow-dating" element={<PortalLayout><PortalSlowDating /></PortalLayout>} />
-    <Route path="/portal/match/:matchId" element={<PortalLayout><PortalMatchDetail /></PortalLayout>} />
-    <Route path="/portal/events" element={<PortalLayout><PortalEvents /></PortalLayout>} />
-    <Route path="/portal/billing" element={<PortalLayout><PortalBilling /></PortalLayout>} />
-    <Route path="/portal/referrals" element={<PortalLayout><PortalReferrals /></PortalLayout>} />
-    <Route path="/portal/business" element={<PortalLayout><PortalBusiness /></PortalLayout>} />
-    <Route path="/portal/perks" element={<PortalLayout><PortalPerks /></PortalLayout>} />
-    <Route path="/portal/concierge" element={<PortalLayout><PortalConcierge /></PortalLayout>} />
-    <Route path="/portal/checkin/:eventId/:code" element={<PortalEventCheckin />} />
+    {/* Portal routes with portal layout — ProtectedRoute blocks rendering until auth confirmed */}
+    <Route path="/portal/onboarding" element={<ProtectedRoute><PortalOnboarding /></ProtectedRoute>} />
+    <Route path="/portal" element={<ProtectedRoute><PortalLayout><PortalDashboard /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/profile" element={<ProtectedRoute><PortalLayout><PortalProfile /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/network" element={<ProtectedRoute><PortalLayout><PortalNetwork /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/connections" element={<ProtectedRoute><PortalLayout><PortalConnections /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/slow-dating" element={<ProtectedRoute><PortalLayout><PortalSlowDating /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/match/:matchId" element={<ProtectedRoute><PortalLayout><PortalMatchDetail /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/events" element={<ProtectedRoute><PortalLayout><PortalEvents /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/billing" element={<ProtectedRoute><PortalLayout><PortalBilling /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/referrals" element={<ProtectedRoute><PortalLayout><PortalReferrals /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/business" element={<ProtectedRoute><PortalLayout><PortalBusiness /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/perks" element={<ProtectedRoute><PortalLayout><PortalPerks /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/concierge" element={<ProtectedRoute><PortalLayout><PortalConcierge /></PortalLayout></ProtectedRoute>} />
+    <Route path="/portal/checkin/:eventId/:code" element={<ProtectedRoute><PortalEventCheckin /></ProtectedRoute>} />
 
     {/* Dating intake route */}
     <Route path="/dating/apply" element={<Layout><DatingIntakePage /></Layout>} />
 
-    {/* Admin routes with admin layout */}
-    <Route path="/admin" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
-    <Route path="/admin/applications" element={<AdminLayout><AdminApplications /></AdminLayout>} />
-    <Route path="/admin/members" element={<AdminLayout><AdminMembers /></AdminLayout>} />
-    <Route path="/admin/leads" element={<AdminLayout><AdminLeads /></AdminLayout>} />
-    <Route path="/admin/security" element={<AdminLayout><AdminSecurityReports /></AdminLayout>} />
-    <Route path="/admin/security-dashboard" element={<AdminLayout><AdminSecurityDashboard /></AdminLayout>} />
-    <Route path="/admin/dating" element={<AdminLayout><AdminDating /></AdminLayout>} />
-    <Route path="/admin/dating/:id" element={<AdminLayout><AdminDatingProfile /></AdminLayout>} />
-    <Route path="/admin/matches" element={<AdminLayout><AdminMatches /></AdminLayout>} />
-    <Route path="/admin/analytics" element={<AdminLayout><AdminAnalytics /></AdminLayout>} />
-    <Route path="/admin/event-analytics" element={<AdminLayout><AdminEventAnalytics /></AdminLayout>} />
-    <Route path="/admin/events" element={<AdminLayout><AdminEvents /></AdminLayout>} />
-    <Route path="/admin/photos" element={<AdminLayout><AdminPhotos /></AdminLayout>} />
-    <Route path="/admin/connections" element={<AdminLayout><AdminConnections /></AdminLayout>} />
-    <Route path="/admin/testimonials" element={<AdminLayout><AdminTestimonials /></AdminLayout>} />
-    <Route path="/admin/content" element={<AdminLayout><AdminContent /></AdminLayout>} />
-    <Route path="/admin/roles" element={<AdminLayout><AdminRoles /></AdminLayout>} />
-    <Route path="/admin/settings" element={<AdminLayout><AdminSettings /></AdminLayout>} />
-    <Route path="/admin/referrals" element={<AdminLayout><AdminReferrals /></AdminLayout>} />
-    <Route path="/admin/appeals" element={<AdminLayout><AdminAppeals /></AdminLayout>} />
-    <Route path="/admin/circles" element={<AdminLayout><AdminCircles /></AdminLayout>} />
-    <Route path="/admin/businesses" element={<AdminLayout><AdminBusinesses /></AdminLayout>} />
-    <Route path="/admin/perks" element={<AdminLayout><AdminPerks /></AdminLayout>} />
-    <Route path="/admin/concierge" element={<AdminLayout><AdminConcierge /></AdminLayout>} />
+    {/* Admin routes with admin layout — ProtectedRoute requireAdmin blocks non-admin access */}
+    <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/applications" element={<ProtectedRoute requireAdmin><AdminLayout><AdminApplications /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/members" element={<ProtectedRoute requireAdmin><AdminLayout><AdminMembers /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/leads" element={<ProtectedRoute requireAdmin><AdminLayout><AdminLeads /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/security" element={<ProtectedRoute requireAdmin><AdminLayout><AdminSecurityReports /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/security-dashboard" element={<ProtectedRoute requireAdmin><AdminLayout><AdminSecurityDashboard /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/dating" element={<ProtectedRoute requireAdmin><AdminLayout><AdminDating /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/dating/:id" element={<ProtectedRoute requireAdmin><AdminLayout><AdminDatingProfile /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/matches" element={<ProtectedRoute requireAdmin><AdminLayout><AdminMatches /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/analytics" element={<ProtectedRoute requireAdmin><AdminLayout><AdminAnalytics /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/event-analytics" element={<ProtectedRoute requireAdmin><AdminLayout><AdminEventAnalytics /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/events" element={<ProtectedRoute requireAdmin><AdminLayout><AdminEvents /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/photos" element={<ProtectedRoute requireAdmin><AdminLayout><AdminPhotos /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/connections" element={<ProtectedRoute requireAdmin><AdminLayout><AdminConnections /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/testimonials" element={<ProtectedRoute requireAdmin><AdminLayout><AdminTestimonials /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/content" element={<ProtectedRoute requireAdmin><AdminLayout><AdminContent /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/roles" element={<ProtectedRoute requireAdmin><AdminLayout><AdminRoles /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/settings" element={<ProtectedRoute requireAdmin><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/referrals" element={<ProtectedRoute requireAdmin><AdminLayout><AdminReferrals /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/appeals" element={<ProtectedRoute requireAdmin><AdminLayout><AdminAppeals /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/circles" element={<ProtectedRoute requireAdmin><AdminLayout><AdminCircles /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/businesses" element={<ProtectedRoute requireAdmin><AdminLayout><AdminBusinesses /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/perks" element={<ProtectedRoute requireAdmin><AdminLayout><AdminPerks /></AdminLayout></ProtectedRoute>} />
+    <Route path="/admin/concierge" element={<ProtectedRoute requireAdmin><AdminLayout><AdminConcierge /></AdminLayout></ProtectedRoute>} />
 
     <Route path="*" element={<Layout><NotFound /></Layout>} />
   </Routes>
