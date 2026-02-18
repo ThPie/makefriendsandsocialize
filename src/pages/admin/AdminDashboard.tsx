@@ -1,9 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, FileText, Users, Heart, Crown, TrendingUp } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  FileText,
+  Users,
+  Heart,
+  Crown,
+  TrendingUp,
+  UserPlus,
+  DollarSign,
+} from 'lucide-react';
+import { format } from 'date-fns';
 
 interface Stats {
   pendingApplications: number;
@@ -72,125 +81,137 @@ export default function AdminDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="space-y-8 animate-in fade-in duration-300">
+        {/* Header skeleton */}
+        <div>
+          <Skeleton className="h-4 w-32 mb-2" />
+          <Skeleton className="h-9 w-56" />
+        </div>
+        {/* Stat cards skeleton */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5 space-y-3"
+            >
+              <Skeleton className="h-10 w-10 rounded-lg" />
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-8 w-16" />
+            </div>
+          ))}
+        </div>
+        {/* Tier breakdown skeleton */}
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-6">
+          <Skeleton className="h-6 w-40 mb-4" />
+          <div className="grid grid-cols-3 gap-4">
+            <Skeleton className="h-20 rounded-lg" />
+            <Skeleton className="h-20 rounded-lg" />
+            <Skeleton className="h-20 rounded-lg" />
+          </div>
+        </div>
       </div>
     );
   }
 
+  const statCards = [
+    {
+      label: 'Pending Apps',
+      value: stats?.pendingApplications ?? 0,
+      icon: UserPlus,
+      iconBg: 'bg-primary/10',
+      iconColor: 'text-primary',
+      badge: 'ACTION',
+      badgeColor: 'text-primary',
+      sub: 'Awaiting review',
+    },
+    {
+      label: 'Total Members',
+      value: stats?.totalMembers ?? 0,
+      icon: Users,
+      iconBg: 'bg-white/[0.06]',
+      iconColor: 'text-muted-foreground',
+      sub: 'Active memberships',
+    },
+    {
+      label: 'Active Conn.',
+      value: stats?.activeConnections ?? 0,
+      icon: Heart,
+      iconBg: 'bg-white/[0.06]',
+      iconColor: 'text-muted-foreground',
+      sub: 'Accepted intros',
+    },
+    {
+      label: 'Revenue',
+      value: '$' + ((stats?.totalMembers ?? 0) * 15).toLocaleString(),
+      icon: DollarSign,
+      iconBg: 'bg-white/[0.06]',
+      iconColor: 'text-muted-foreground',
+      sub: 'Est. monthly',
+      isString: true,
+    },
+  ];
+
   return (
     <div className="space-y-8">
+      {/* Header */}
       <div>
-        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-          Admin Dashboard
-        </h1>
-        <p className="text-muted-foreground">
-          Manage applications, members, and monitor activity
+        <p className="text-sm text-muted-foreground">
+          {format(new Date(), 'EEEE, d MMM')}
         </p>
+        <h1 className="font-display text-3xl md:text-4xl text-foreground">
+          Hello, Admin 👋
+        </h1>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Pending Applications
-            </CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-display text-foreground">
-              {stats?.pendingApplications}
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {statCards.map((card) => (
+          <div
+            key={card.label}
+            className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5 space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <div className={`p-2 rounded-lg ${card.iconBg}`}>
+                <card.icon className={`h-5 w-5 ${card.iconColor}`} />
+              </div>
+              {card.badge && (
+                <span
+                  className={`text-xs font-semibold uppercase tracking-wider ${card.badgeColor}`}
+                >
+                  {card.badge}
+                </span>
+              )}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Awaiting review
+            <p className="text-sm text-muted-foreground">{card.label}</p>
+            <p className="text-3xl font-display text-foreground">
+              {card.isString ? card.value : (card.value as number).toLocaleString()}
             </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Active Members
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-display text-foreground">
-              {stats?.totalMembers}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              With active membership
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Connections Made
-            </CardTitle>
-            <Heart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-display text-foreground">
-              {stats?.activeConnections}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Accepted introductions
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Growth
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-display text-foreground">
-              +{stats?.pendingApplications || 0}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              New applications
-            </p>
-          </CardContent>
-        </Card>
+          </div>
+        ))}
       </div>
 
       {/* Tier Breakdown */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-display text-xl flex items-center gap-2">
-            <Crown className="h-5 w-5 text-primary" />
-            Membership Tiers
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-4 rounded-lg bg-muted/50">
-              <p className="text-2xl font-display text-foreground">
-                {stats?.tierBreakdown.patron}
-              </p>
-              <p className="text-sm text-muted-foreground">Patron</p>
+      <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-6">
+        <h2 className="font-display text-xl text-foreground flex items-center gap-2 mb-4">
+          <Crown className="h-5 w-5 text-[#d4af37]" />
+          Membership Tiers
+        </h2>
+        <div className="grid grid-cols-3 gap-4">
+          {[
+            { label: 'Patron', count: stats?.tierBreakdown.patron ?? 0, color: 'bg-primary/10 text-primary' },
+            { label: 'Fellow', count: stats?.tierBreakdown.fellow ?? 0, color: 'bg-[#d4af37]/10 text-[#d4af37]' },
+            { label: 'Founder', count: stats?.tierBreakdown.founder ?? 0, color: 'bg-emerald-500/10 text-emerald-400' },
+          ].map((tier) => (
+            <div
+              key={tier.label}
+              className={`text-center p-4 rounded-lg ${tier.color}`}
+            >
+              <p className="text-2xl font-display">{tier.count}</p>
+              <p className="text-sm opacity-80">{tier.label}</p>
             </div>
-            <div className="text-center p-4 rounded-lg bg-accent/10">
-              <p className="text-2xl font-display text-foreground">
-                {stats?.tierBreakdown.fellow}
-              </p>
-              <p className="text-sm text-muted-foreground">Fellow</p>
-            </div>
-            <div className="text-center p-4 rounded-lg bg-primary/10">
-              <p className="text-2xl font-display text-foreground">
-                {stats?.tierBreakdown.founder}
-              </p>
-              <p className="text-sm text-muted-foreground">Founder</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          ))}
+        </div>
+      </div>
 
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-4">
@@ -200,16 +221,24 @@ export default function AdminDashboard() {
             Review Applications
           </Link>
         </Button>
-        <Button variant="outline" asChild>
+        <Button
+          variant="outline"
+          asChild
+          className="dark:border-white/[0.12] dark:hover:bg-white/[0.04]"
+        >
           <Link to="/admin/members">
             <Users className="h-4 w-4 mr-2" />
             View Members
           </Link>
         </Button>
-        <Button variant="outline" asChild>
-          <Link to="/admin/connections">
-            <Heart className="h-4 w-4 mr-2" />
-            Connection Activity
+        <Button
+          variant="outline"
+          asChild
+          className="dark:border-white/[0.12] dark:hover:bg-white/[0.04]"
+        >
+          <Link to="/admin/analytics">
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Analytics
           </Link>
         </Button>
       </div>

@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { Loader2, Check, X, Eye, FileText, Shield, AlertTriangle, Scan } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import { format } from 'date-fns';
 
 interface SecurityReport {
@@ -71,7 +73,7 @@ export default function AdminApplications() {
           .order('scanned_at', { ascending: false })
           .limit(1)
           .maybeSingle();
-        
+
         return { ...app, security_report: report };
       })
     );
@@ -148,7 +150,7 @@ export default function AdminApplications() {
 
   async function handleRunScan(app: Application) {
     setIsScanning(true);
-    
+
     try {
       // Fetch profile data for this user
       const { data: profile, error: profileError } = await supabase
@@ -183,7 +185,7 @@ export default function AdminApplications() {
 
       toast.success('Security scan completed');
       fetchApplications();
-      
+
       // Update the selected app with new security report
       if (data?.report) {
         setSelectedApp(prev => prev ? {
@@ -210,8 +212,27 @@ export default function AdminApplications() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="space-y-8 animate-in fade-in duration-300">
+        <div>
+          <Skeleton className="h-9 w-48 mb-2" />
+          <Skeleton className="h-5 w-64" />
+        </div>
+        <Skeleton className="h-10 w-80 rounded-lg" />
+        <div className="space-y-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5 space-y-3">
+              <div className="flex items-center gap-4">
+                <Skeleton className="h-12 w-12 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-5 w-36" />
+                  <Skeleton className="h-4 w-48" />
+                </div>
+                <Skeleton className="h-6 w-20 rounded-full" />
+              </div>
+              <Skeleton className="h-10 w-full rounded-lg" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -220,14 +241,14 @@ export default function AdminApplications() {
     if (!report) {
       return <Badge variant="outline" className="text-muted-foreground">No Scan</Badge>;
     }
-    
+
     const severityColors: Record<string, string> = {
       critical: 'bg-red-500/10 text-red-500 border-red-500/20',
       high: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
       medium: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20',
       low: 'bg-green-500/10 text-green-500 border-green-500/20',
     };
-    
+
     const statusIcons: Record<string, JSX.Element> = {
       clean: <Shield className="h-3 w-3 text-green-500" />,
       flagged: <AlertTriangle className="h-3 w-3 text-red-500" />,
@@ -236,8 +257,8 @@ export default function AdminApplications() {
     };
 
     return (
-      <Badge 
-        variant="outline" 
+      <Badge
+        variant="outline"
         className={`gap-1 ${severityColors[report.severity || 'low'] || ''}`}
       >
         {statusIcons[report.status] || statusIcons.pending}
@@ -247,7 +268,7 @@ export default function AdminApplications() {
   };
 
   const ApplicationRow = ({ app }: { app: Application }) => (
-    <div className="flex items-center justify-between p-4 border-b border-border last:border-0">
+    <div className="flex items-center justify-between p-4 border-b border-white/[0.06] last:border-0">
       <div className="flex-1">
         <p className="font-medium text-foreground">
           Application #{app.id.slice(0, 8)}
@@ -270,8 +291,8 @@ export default function AdminApplications() {
             app.status === 'approved'
               ? 'default'
               : app.status === 'rejected'
-              ? 'destructive'
-              : 'secondary'
+                ? 'destructive'
+                : 'secondary'
           }
         >
           {app.status}
@@ -318,51 +339,51 @@ export default function AdminApplications() {
         </TabsList>
 
         <TabsContent value="pending" className="mt-6">
-          <Card>
-            <CardContent className="p-0">
-              {pendingApps.length === 0 ? (
-                <div className="p-8 text-center text-muted-foreground">
-                  No pending applications
-                </div>
-              ) : (
-                pendingApps.map((app) => (
-                  <ApplicationRow key={app.id} app={app} />
-                ))
-              )}
-            </CardContent>
-          </Card>
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
+            {pendingApps.length === 0 ? (
+              <EmptyState
+                icon={FileText}
+                heading="No Pending Applications"
+                description="All applications have been reviewed"
+              />
+            ) : (
+              pendingApps.map((app) => (
+                <ApplicationRow key={app.id} app={app} />
+              ))
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="approved" className="mt-6">
-          <Card>
-            <CardContent className="p-0">
-              {approvedApps.length === 0 ? (
-                <div className="p-8 text-center text-muted-foreground">
-                  No approved applications
-                </div>
-              ) : (
-                approvedApps.map((app) => (
-                  <ApplicationRow key={app.id} app={app} />
-                ))
-              )}
-            </CardContent>
-          </Card>
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
+            {approvedApps.length === 0 ? (
+              <EmptyState
+                icon={Check}
+                heading="No Approved Applications"
+                description="No applications have been approved yet"
+              />
+            ) : (
+              approvedApps.map((app) => (
+                <ApplicationRow key={app.id} app={app} />
+              ))
+            )}
+          </div>
         </TabsContent>
 
         <TabsContent value="rejected" className="mt-6">
-          <Card>
-            <CardContent className="p-0">
-              {rejectedApps.length === 0 ? (
-                <div className="p-8 text-center text-muted-foreground">
-                  No rejected applications
-                </div>
-              ) : (
-                rejectedApps.map((app) => (
-                  <ApplicationRow key={app.id} app={app} />
-                ))
-              )}
-            </CardContent>
-          </Card>
+          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
+            {rejectedApps.length === 0 ? (
+              <EmptyState
+                icon={X}
+                heading="No Rejected Applications"
+                description="No applications have been rejected"
+              />
+            ) : (
+              rejectedApps.map((app) => (
+                <ApplicationRow key={app.id} app={app} />
+              ))
+            )}
+          </div>
         </TabsContent>
       </Tabs>
 
@@ -389,8 +410,8 @@ export default function AdminApplications() {
                       selectedApp.status === 'approved'
                         ? 'default'
                         : selectedApp.status === 'rejected'
-                        ? 'destructive'
-                        : 'secondary'
+                          ? 'destructive'
+                          : 'secondary'
                     }
                   >
                     {selectedApp.status}
@@ -464,7 +485,7 @@ export default function AdminApplications() {
               )}
 
               {/* Security Status Section */}
-              <div className="border border-border rounded-lg p-4 bg-muted/30">
+              <div className="border border-white/[0.08] rounded-xl p-4 bg-white/[0.02]">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-medium text-foreground flex items-center gap-2">
                     <Shield className="h-4 w-4" />
@@ -489,13 +510,13 @@ export default function AdminApplications() {
                     )}
                   </Button>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-muted-foreground">Status:</span>
                     {getSecurityBadge(selectedApp.security_report)}
                   </div>
-                  
+
                   {selectedApp.security_report?.severity && (
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-muted-foreground">Severity:</span>
@@ -504,7 +525,7 @@ export default function AdminApplications() {
                       </Badge>
                     </div>
                   )}
-                  
+
                   {selectedApp.security_report?.red_flags && selectedApp.security_report.red_flags.length > 0 && (
                     <div>
                       <span className="text-sm text-muted-foreground">Red Flags:</span>
@@ -520,7 +541,7 @@ export default function AdminApplications() {
                       </ul>
                     </div>
                   )}
-                  
+
                   {selectedApp.security_report?.id && (
                     <Button variant="link" size="sm" className="p-0 h-auto" asChild>
                       <Link to={`/admin/security?report=${selectedApp.security_report.id}`}>
@@ -543,7 +564,7 @@ export default function AdminApplications() {
               </div>
 
               {selectedApp.status === 'pending' && (
-                <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                <div className="flex justify-end gap-3 pt-4 border-t border-white/[0.08]">
                   <Button
                     variant="destructive"
                     onClick={() => handleReject(selectedApp)}

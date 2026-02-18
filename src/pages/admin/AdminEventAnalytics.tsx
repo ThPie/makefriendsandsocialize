@@ -7,13 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
+import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts';
 import { format, subMonths, startOfMonth, endOfMonth, parseISO } from 'date-fns';
-import { 
-  TrendingUp, Users, Calendar, Star, MapPin, Clock, 
+import {
+  TrendingUp, Users, Calendar, Star, MapPin, Clock,
   ArrowUpRight, ArrowDownRight, Loader2
 } from 'lucide-react';
 
@@ -68,7 +68,7 @@ export default function AdminEventAnalytics() {
   const totalRSVPs = events.reduce((sum, e) => sum + e.rsvp_count, 0);
   const upcomingEvents = events.filter(e => e.status === 'upcoming').length;
   const avgRSVPsPerEvent = totalEvents > 0 ? Math.round(totalRSVPs / totalEvents) : 0;
-  
+
   const topEvents = [...events]
     .sort((a, b) => b.rsvp_count - a.rsvp_count)
     .slice(0, 5);
@@ -88,12 +88,12 @@ export default function AdminEventAnalytics() {
   for (let i = 5; i >= 0; i--) {
     const monthStart = startOfMonth(subMonths(new Date(), i));
     const monthEnd = endOfMonth(subMonths(new Date(), i));
-    
+
     const monthEvents = events.filter(e => {
       const eventDate = parseISO(e.date);
       return eventDate >= monthStart && eventDate <= monthEnd;
     });
-    
+
     monthlyData.push({
       month: format(monthStart, 'MMM'),
       events: monthEvents.length,
@@ -151,7 +151,7 @@ export default function AdminEventAnalytics() {
       </motion.div>
 
       {/* Overview Stats */}
-      <motion.div 
+      <motion.div
         className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
         variants={containerVariants}
         initial="hidden"
@@ -237,7 +237,7 @@ export default function AdminEventAnalytics() {
       {/* Charts Row */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Attendance Trend */}
-        <Card className="border-border">
+        <Card className="border-white/[0.08] bg-white/[0.04]">
           <CardHeader>
             <CardTitle className="font-display text-lg">Attendance Trend</CardTitle>
           </CardHeader>
@@ -247,28 +247,28 @@ export default function AdminEventAnalytics() {
                 <AreaChart data={monthlyData}>
                   <defs>
                     <linearGradient id="colorRsvps" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(45, 80%, 55%)" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="hsl(45, 80%, 55%)" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="hsl(45, 80%, 55%)" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(45, 80%, 55%)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(160, 20%, 15%)" />
                   <XAxis dataKey="month" stroke="hsl(160, 15%, 55%)" fontSize={12} />
                   <YAxis stroke="hsl(160, 15%, 55%)" fontSize={12} />
-                  <Tooltip 
-                    contentStyle={{ 
-                      background: 'hsl(160, 30%, 8%)', 
+                  <Tooltip
+                    contentStyle={{
+                      background: 'hsl(160, 30%, 8%)',
                       border: '1px solid hsl(160, 20%, 15%)',
                       borderRadius: '8px'
                     }}
                     labelStyle={{ color: 'hsl(45, 20%, 95%)' }}
                   />
-                  <Area 
-                    type="monotone" 
-                    dataKey="rsvps" 
-                    stroke="hsl(45, 80%, 55%)" 
+                  <Area
+                    type="monotone"
+                    dataKey="rsvps"
+                    stroke="hsl(45, 80%, 55%)"
                     strokeWidth={2}
-                    fillOpacity={1} 
-                    fill="url(#colorRsvps)" 
+                    fillOpacity={1}
+                    fill="url(#colorRsvps)"
                     name="RSVPs"
                   />
                 </AreaChart>
@@ -278,7 +278,7 @@ export default function AdminEventAnalytics() {
         </Card>
 
         {/* Events by Tier */}
-        <Card className="border-border">
+        <Card className="border-white/[0.08] bg-white/[0.04]">
           <CardHeader>
             <CardTitle className="font-display text-lg">Events by Tier</CardTitle>
           </CardHeader>
@@ -301,9 +301,9 @@ export default function AdminEventAnalytics() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip 
-                    contentStyle={{ 
-                      background: 'hsl(160, 30%, 8%)', 
+                  <Tooltip
+                    contentStyle={{
+                      background: 'hsl(160, 30%, 8%)',
                       border: '1px solid hsl(160, 20%, 15%)',
                       borderRadius: '8px'
                     }}
@@ -318,7 +318,7 @@ export default function AdminEventAnalytics() {
       {/* Bottom Row */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Top Events */}
-        <Card className="border-border">
+        <Card className="border-white/[0.08] bg-white/[0.04]">
           <CardHeader>
             <CardTitle className="font-display text-lg">Most Popular Events</CardTitle>
           </CardHeader>
@@ -356,7 +356,7 @@ export default function AdminEventAnalytics() {
         </Card>
 
         {/* Events by Location */}
-        <Card className="border-border">
+        <Card className="border-white/[0.08] bg-white/[0.04]">
           <CardHeader>
             <CardTitle className="font-display text-lg flex items-center gap-2">
               <MapPin className="h-5 w-5 text-primary" />
@@ -369,23 +369,23 @@ export default function AdminEventAnalytics() {
                 <BarChart data={cityData} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(160, 20%, 15%)" horizontal={false} />
                   <XAxis type="number" stroke="hsl(160, 15%, 55%)" fontSize={12} />
-                  <YAxis 
-                    dataKey="city" 
-                    type="category" 
-                    stroke="hsl(160, 15%, 55%)" 
+                  <YAxis
+                    dataKey="city"
+                    type="category"
+                    stroke="hsl(160, 15%, 55%)"
                     fontSize={12}
                     width={100}
                   />
-                  <Tooltip 
-                    contentStyle={{ 
-                      background: 'hsl(160, 30%, 8%)', 
+                  <Tooltip
+                    contentStyle={{
+                      background: 'hsl(160, 30%, 8%)',
                       border: '1px solid hsl(160, 20%, 15%)',
                       borderRadius: '8px'
                     }}
                   />
-                  <Bar 
-                    dataKey="count" 
-                    fill="hsl(160, 35%, 40%)" 
+                  <Bar
+                    dataKey="count"
+                    fill="hsl(160, 35%, 40%)"
                     radius={[0, 4, 4, 0]}
                     name="Events"
                   />
@@ -397,7 +397,7 @@ export default function AdminEventAnalytics() {
       </div>
 
       {/* Monthly Events Chart */}
-      <Card className="border-border">
+      <Card className="border-white/[0.08] bg-white/[0.04]">
         <CardHeader>
           <CardTitle className="font-display text-lg">Monthly Event Distribution</CardTitle>
         </CardHeader>
@@ -408,9 +408,9 @@ export default function AdminEventAnalytics() {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(160, 20%, 15%)" />
                 <XAxis dataKey="month" stroke="hsl(160, 15%, 55%)" fontSize={12} />
                 <YAxis stroke="hsl(160, 15%, 55%)" fontSize={12} />
-                <Tooltip 
-                  contentStyle={{ 
-                    background: 'hsl(160, 30%, 8%)', 
+                <Tooltip
+                  contentStyle={{
+                    background: 'hsl(160, 30%, 8%)',
                     border: '1px solid hsl(160, 20%, 15%)',
                     borderRadius: '8px'
                   }}

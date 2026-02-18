@@ -7,9 +7,11 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import { toast } from 'sonner';
-import { 
-  Shield, 
+import {
+  Shield,
   ShieldCheck,
   Clock,
   Loader2,
@@ -47,7 +49,7 @@ export default function AdminSecurityDashboard() {
     queryKey: ['members-due-for-scan'],
     queryFn: async () => {
       const cutoffDate = subDays(new Date(), 90).toISOString();
-      
+
       const { data, error } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, avatar_urls, city, country, job_title, industry, bio, last_scanned_at, created_at')
@@ -58,7 +60,7 @@ export default function AdminSecurityDashboard() {
 
       return (data || []).map(member => ({
         ...member,
-        days_since_scan: member.last_scanned_at 
+        days_since_scan: member.last_scanned_at
           ? differenceInDays(new Date(), new Date(member.last_scanned_at))
           : differenceInDays(new Date(), new Date(member.created_at)),
       })) as MemberDueForScan[];
@@ -70,7 +72,7 @@ export default function AdminSecurityDashboard() {
     queryKey: ['recent-scan-stats'],
     queryFn: async () => {
       const last30Days = subDays(new Date(), 30).toISOString();
-      
+
       const { data, error } = await supabase
         .from('member_security_reports')
         .select('id, status, severity, scanned_at')
@@ -165,207 +167,170 @@ export default function AdminSecurityDashboard() {
 
   return (
     <div className="space-y-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-3">
-              <Shield className="h-8 w-8 text-primary" />
-              Security Dashboard
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Monitor and manage periodic security scans
-            </p>
-          </div>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl flex items-center gap-3">
+            <Shield className="h-8 w-8 text-[#d4af37]" />
+            Security Dashboard
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Monitor and manage periodic security scans
+          </p>
         </div>
+      </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-amber-500/10">
-                  <Clock className="h-5 w-5 text-amber-500" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.dueForScan}</p>
-                  <p className="text-sm text-muted-foreground">Due for Scan</p>
-                </div>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        {[
+          { icon: Clock, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500', value: stats.dueForScan, label: 'Due for Scan' },
+          { icon: AlertCircle, iconBg: 'bg-destructive/10', iconColor: 'text-destructive', value: stats.neverScanned, label: 'Never Scanned' },
+          { icon: Calendar, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500', value: stats.overdue90Days, label: '90+ Days Overdue' },
+          { icon: ShieldCheck, iconBg: 'bg-primary/10', iconColor: 'text-primary', value: stats.scansLast30Days, label: 'Scans (30 days)' },
+          { icon: AlertCircle, iconBg: 'bg-red-500/10', iconColor: 'text-red-500', value: stats.flaggedLast30Days, label: 'Flagged (30 days)' },
+        ].map((stat) => (
+          <div key={stat.label} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-lg ${stat.iconBg}`}>
+                <stat.icon className={`h-5 w-5 ${stat.iconColor}`} />
               </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-destructive/10">
-                  <AlertCircle className="h-5 w-5 text-destructive" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.neverScanned}</p>
-                  <p className="text-sm text-muted-foreground">Never Scanned</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-orange-500/10">
-                  <Calendar className="h-5 w-5 text-orange-500" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.overdue90Days}</p>
-                  <p className="text-sm text-muted-foreground">90+ Days Overdue</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <ShieldCheck className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.scansLast30Days}</p>
-                  <p className="text-sm text-muted-foreground">Scans (30 days)</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-red-500/10">
-                  <AlertCircle className="h-5 w-5 text-red-500" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.flaggedLast30Days}</p>
-                  <p className="text-sm text-muted-foreground">Flagged (30 days)</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Members Due for Scan */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Members Due for Periodic Scan
-                </CardTitle>
-                <CardDescription>
-                  Members who haven't been scanned in 90+ days or never scanned
-                </CardDescription>
-              </div>
-              <div className="flex items-center gap-2">
-                {selectedMembers.size > 0 && (
-                  <Badge variant="secondary">
-                    {selectedMembers.size} selected
-                  </Badge>
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={selectedMembers.size === membersDueForScan?.length ? deselectAll : selectAll}
-                >
-                  {selectedMembers.size === membersDueForScan?.length ? 'Deselect All' : 'Select All'}
-                </Button>
-                <Button
-                  onClick={runBulkScan}
-                  disabled={isBulkScanning || selectedMembers.size === 0}
-                >
-                  {isBulkScanning ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Scanning {scanProgress.current}/{scanProgress.total}
-                    </>
-                  ) : (
-                    <>
-                      <Scan className="h-4 w-4 mr-2" />
-                      Run Bulk Scan
-                    </>
-                  )}
-                </Button>
+                <p className="text-2xl font-display">{stat.value}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
               </div>
             </div>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-              </div>
-            ) : membersDueForScan?.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <CheckCircle2 className="h-12 w-12 mx-auto mb-3 text-green-500 opacity-50" />
-                <p className="font-medium">All members are up to date</p>
-                <p className="text-sm">No members require a periodic security scan</p>
-              </div>
-            ) : (
-              <ScrollArea className="h-[500px]">
-                <div className="space-y-2">
-                  {membersDueForScan?.map((member) => {
-                    const initials = `${member.first_name?.[0] || ''}${member.last_name?.[0] || ''}`.toUpperCase() || 'M';
-                    const isSelected = selectedMembers.has(member.id);
+          </div>
+        ))}
+      </div>
 
-                    return (
-                      <div
-                        key={member.id}
-                        className={`flex items-center gap-4 p-4 rounded-lg border transition-colors cursor-pointer ${
-                          isSelected 
-                            ? 'border-primary bg-primary/5' 
-                            : 'border-border hover:bg-muted/50'
-                        }`}
-                        onClick={() => toggleMemberSelection(member.id)}
-                      >
-                        <Checkbox
-                          checked={isSelected}
-                          onCheckedChange={() => toggleMemberSelection(member.id)}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={member.avatar_urls?.[0]} />
-                          <AvatarFallback className="bg-primary/10 text-primary">
-                            {initials}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">
-                            {member.first_name || ''} {member.last_name || 'Unknown'}
-                          </p>
-                          <p className="text-sm text-muted-foreground truncate">
-                            {member.job_title || 'No job title'} • {member.city || 'Unknown location'}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          {member.last_scanned_at ? (
-                            <>
-                              <Badge 
-                                variant="outline" 
-                                className={member.days_since_scan > 90 ? 'border-amber-500/50 text-amber-500' : ''}
-                              >
-                                {member.days_since_scan} days ago
-                              </Badge>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {format(new Date(member.last_scanned_at), 'MMM d, yyyy')}
-                              </p>
-                            </>
-                          ) : (
-                            <Badge variant="destructive" className="bg-destructive/10 text-destructive border-destructive/20">
-                              Never scanned
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
+      {/* Members Due for Scan */}
+      <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
+        <CardHeader>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 className="font-display text-lg flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Members Due for Periodic Scan
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Members who haven't been scanned in 90+ days or never scanned
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              {selectedMembers.size > 0 && (
+                <Badge variant="secondary">
+                  {selectedMembers.size} selected
+                </Badge>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                className="dark:border-white/[0.12]"
+                onClick={selectedMembers.size === membersDueForScan?.length ? deselectAll : selectAll}
+              >
+                {selectedMembers.size === membersDueForScan?.length ? 'Deselect All' : 'Select All'}
+              </Button>
+              <Button
+                onClick={runBulkScan}
+                disabled={isBulkScanning || selectedMembers.size === 0}
+              >
+                {isBulkScanning ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Scanning {scanProgress.current}/{scanProgress.total}
+                  </>
+                ) : (
+                  <>
+                    <Scan className="h-4 w-4 mr-2" />
+                    Run Bulk Scan
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="space-y-3 py-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 p-4 rounded-lg border border-white/[0.06]">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-48" />
+                  </div>
+                  <Skeleton className="h-6 w-20 rounded-full" />
                 </div>
-              </ScrollArea>
-            )}
-          </CardContent>
-        </Card>
+              ))}
+            </div>
+          ) : membersDueForScan?.length === 0 ? (
+            <EmptyState
+              icon={CheckCircle2}
+              heading="All Members Up to Date"
+              description="No members require a periodic security scan"
+            />
+          ) : (
+            <ScrollArea className="h-[500px]">
+              <div className="space-y-2">
+                {membersDueForScan?.map((member) => {
+                  const initials = `${member.first_name?.[0] || ''}${member.last_name?.[0] || ''}`.toUpperCase() || 'M';
+                  const isSelected = selectedMembers.has(member.id);
+
+                  return (
+                    <div
+                      key={member.id}
+                      className={`flex items-center gap-4 p-4 rounded-lg border transition-colors cursor-pointer ${isSelected
+                          ? 'border-primary bg-primary/5'
+                          : 'border-white/[0.08] hover:bg-white/[0.04]'
+                        }`}
+                      onClick={() => toggleMemberSelection(member.id)}
+                    >
+                      <Checkbox
+                        checked={isSelected}
+                        onCheckedChange={() => toggleMemberSelection(member.id)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={member.avatar_urls?.[0]} />
+                        <AvatarFallback className="bg-primary/10 text-primary">
+                          {initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">
+                          {member.first_name || ''} {member.last_name || 'Unknown'}
+                        </p>
+                        <p className="text-sm text-muted-foreground truncate">
+                          {member.job_title || 'No job title'} • {member.city || 'Unknown location'}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        {member.last_scanned_at ? (
+                          <>
+                            <Badge
+                              variant="outline"
+                              className={member.days_since_scan > 90 ? 'border-amber-500/50 text-amber-500' : ''}
+                            >
+                              {member.days_since_scan} days ago
+                            </Badge>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {format(new Date(member.last_scanned_at), 'MMM d, yyyy')}
+                            </p>
+                          </>
+                        ) : (
+                          <Badge variant="destructive" className="bg-destructive/10 text-destructive border-destructive/20">
+                            Never scanned
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          )}
+        </CardContent>
+      </div>
     </div>
   );
 }

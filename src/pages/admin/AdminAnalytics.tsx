@@ -68,7 +68,7 @@ export default function AdminAnalytics() {
         const completedMatches = matches?.filter(
           m => m.status === 'mutual_yes' || m.status === 'declined'
         ) || [];
-        
+
         let avgDecisionDays = 0;
         if (completedMatches.length > 0) {
           const totalDays = completedMatches.reduce((sum, match) => {
@@ -129,174 +129,129 @@ export default function AdminAnalytics() {
 
   return (
     <div className="space-y-8">
-        <div>
-          <h1 className="font-display text-3xl text-foreground">Analytics</h1>
-          <p className="text-muted-foreground mt-2">
-            Match success rates, decision times, and connection trends
-          </p>
+      <div>
+        <h1 className="font-display text-3xl text-foreground">Analytics</h1>
+        <p className="text-muted-foreground mt-2">
+          Match success rates, decision times, and connection trends
+        </p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {[
+          { label: 'Total Matches', value: isLoading ? '...' : stats.total, sub: 'All time matches created', icon: Users, iconColor: 'text-muted-foreground', valueColor: 'text-foreground' },
+          { label: 'Success Rate', value: isLoading ? '...' : `${stats.successRate}%`, sub: 'Mutual yes after meeting', icon: TrendingUp, iconColor: 'text-primary', valueColor: 'text-primary' },
+          { label: 'Avg Decision Time', value: isLoading ? '...' : `${stats.avgDecisionDays} days`, sub: 'From match to decision', icon: Clock, iconColor: 'text-[#d4af37]', valueColor: 'text-foreground' },
+          { label: 'Connections Made', value: isLoading ? '...' : stats.mutualYes, sub: 'Successful mutual matches', icon: Heart, iconColor: 'text-primary', valueColor: 'text-primary' },
+        ].map((stat) => (
+          <div key={stat.label} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm text-muted-foreground">{stat.label}</p>
+              <stat.icon className={`h-4 w-4 ${stat.iconColor}`} />
+            </div>
+            <p className={`text-2xl font-display ${stat.valueColor}`}>{stat.value}</p>
+            <p className="text-xs text-muted-foreground mt-1">{stat.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Charts */}
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* Pie Chart - Match Outcomes */}
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
+          <div className="p-6 border-b border-white/[0.06]">
+            <h3 className="font-display text-lg">Match Outcomes</h3>
+          </div>
+          <div className="p-6">
+            {pieData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    labelLine={{ stroke: 'hsl(160, 15%, 55%)' }}
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      background: 'hsl(160, 30%, 8%)',
+                      border: '1px solid hsl(160, 20%, 15%)',
+                      borderRadius: '8px'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[250px] flex items-center justify-center text-muted-foreground">
+                No match data available
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Matches
-              </CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                {isLoading ? '...' : stats.total}
+        {/* Line Chart - Monthly Trends */}
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
+          <div className="p-6 border-b border-white/[0.06]">
+            <h3 className="font-display text-lg">Monthly Trends</h3>
+          </div>
+          <div className="p-6">
+            {monthlyTrends.some(t => t.matches > 0) ? (
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={monthlyTrends}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(160, 20%, 15%)" />
+                  <XAxis
+                    dataKey="month"
+                    stroke="hsl(160, 15%, 55%)" fontSize={12}
+                  />
+                  <YAxis stroke="hsl(160, 15%, 55%)" fontSize={12} />
+                  <Tooltip
+                    contentStyle={{
+                      background: 'hsl(160, 30%, 8%)',
+                      border: '1px solid hsl(160, 20%, 15%)',
+                      borderRadius: '8px',
+                    }}
+                  />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="matches"
+                    stroke="hsl(160, 15%, 55%)"
+                    strokeWidth={2}
+                    name="Matches"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="meetings"
+                    stroke="hsl(45, 80%, 55%)"
+                    strokeWidth={2}
+                    name="Meetings"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="connections"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    name="Connections"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[250px] flex items-center justify-center text-muted-foreground">
+                No trend data available
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                All time matches created
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Success Rate
-              </CardTitle>
-              <TrendingUp className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-primary">
-                {isLoading ? '...' : `${stats.successRate}%`}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Mutual yes after meeting
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Avg Decision Time
-              </CardTitle>
-              <Clock className="h-4 w-4 text-accent" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                {isLoading ? '...' : `${stats.avgDecisionDays} days`}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                From match to decision
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Connections Made
-              </CardTitle>
-              <Heart className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-primary">
-                {isLoading ? '...' : stats.mutualYes}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Successful mutual matches
-              </p>
-            </CardContent>
-          </Card>
+            )}
+          </div>
         </div>
-
-        {/* Charts */}
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Pie Chart - Match Outcomes */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Match Outcomes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {pieData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-[250px] flex items-center justify-center text-muted-foreground">
-                  No match data available
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Line Chart - Monthly Trends */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Monthly Trends</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {monthlyTrends.some(t => t.matches > 0) ? (
-                <ResponsiveContainer width="100%" height={250}>
-                  <LineChart data={monthlyTrends}>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                    <XAxis 
-                      dataKey="month" 
-                      className="text-xs fill-muted-foreground"
-                    />
-                    <YAxis className="text-xs fill-muted-foreground" />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: 'hsl(var(--card))',
-                        border: '1px solid hsl(var(--border))',
-                        borderRadius: '8px',
-                      }}
-                    />
-                    <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="matches"
-                      stroke="hsl(var(--muted-foreground))"
-                      strokeWidth={2}
-                      name="Matches"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="meetings"
-                      stroke="hsl(var(--accent))"
-                      strokeWidth={2}
-                      name="Meetings"
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="connections"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth={2}
-                      name="Connections"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-[250px] flex items-center justify-center text-muted-foreground">
-                  No trend data available
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+      </div>
     </div>
   );
 }
