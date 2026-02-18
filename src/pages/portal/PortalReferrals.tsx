@@ -4,12 +4,12 @@ export default function PortalReferrals() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-display font-light">Referral Program</h1>
+        <h1 className="font-display text-3xl md:text-4xl text-foreground">Referrals & Rewards</h1>
         <p className="text-muted-foreground mt-2">
-          Invite friends and earn exclusive rewards
+          Share the experience, earn exclusive perks
         </p>
       </div>
-      
+
       <ReferralDashboard />
     </div>
   );

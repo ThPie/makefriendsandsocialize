@@ -7,11 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { 
-  CreditCard, 
-  Download, 
-  ExternalLink, 
-  Calendar, 
+import {
+  CreditCard,
+  Download,
+  ExternalLink,
+  Calendar,
   DollarSign,
   AlertCircle,
   CheckCircle,
@@ -48,7 +48,7 @@ export default function PortalBilling() {
         .from('invoice_history')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
       return data as Invoice[];
     },
@@ -69,9 +69,9 @@ export default function PortalBilling() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'paid':
-        return <Badge className="bg-green-500/10 text-green-500 border-green-500/20"><CheckCircle className="w-3 h-3 mr-1" />Paid</Badge>;
+        return <Badge className="bg-primary/15 text-primary border-primary/25 text-[10px] uppercase tracking-widest font-bold"><CheckCircle className="w-3 h-3 mr-1" />Paid</Badge>;
       case 'open':
-        return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20"><Clock className="w-3 h-3 mr-1" />Open</Badge>;
+        return <Badge className="bg-[#d4af37]/15 text-[#d4af37] border-[#d4af37]/25 text-[10px] uppercase tracking-widest font-bold"><Clock className="w-3 h-3 mr-1" />Open</Badge>;
       case 'uncollectible':
       case 'void':
         return <Badge className="bg-red-500/10 text-red-500 border-red-500/20"><AlertCircle className="w-3 h-3 mr-1" />Failed</Badge>;
@@ -89,24 +89,24 @@ export default function PortalBilling() {
 
   return (
     <>
-      <SEOHead 
-        title="Billing & Invoices" 
+      <SEOHead
+        title="Billing & Invoices"
         description="Manage your subscription and view invoice history"
         noIndex
       />
-      
+
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">Billing & Invoices</h1>
-          <p className="text-muted-foreground">Manage your subscription and view payment history</p>
+          <h1 className="font-display text-2xl md:text-3xl text-foreground">Billing & Subscriptions</h1>
+          <p className="text-muted-foreground">Manage your plan and payment history</p>
         </div>
 
         {/* Current Subscription */}
-        <Card>
+        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5" />
-              Current Subscription
+              <CreditCard className="w-5 h-5 text-primary" />
+              Current Plan
             </CardTitle>
             <CardDescription>Your current membership plan and billing details</CardDescription>
           </CardHeader>
@@ -120,7 +120,7 @@ export default function PortalBilling() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium capitalize">{subscription.tier} Plan</p>
+                    <p className="font-display text-xl font-semibold capitalize">{subscription.tier} Plan</p>
                     <p className="text-sm text-muted-foreground">
                       {subscription.subscribed ? 'Active subscription' : 'Free tier'}
                     </p>
@@ -136,15 +136,15 @@ export default function PortalBilling() {
                 </div>
 
                 {subscription.is_trialing && subscription.trial_ends_at && (
-                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
                     <p className="text-sm font-medium text-primary">
                       Trial ends {format(new Date(subscription.trial_ends_at), 'MMM d, yyyy')}
                     </p>
                   </div>
                 )}
 
-                <Button 
-                  onClick={handleManageSubscription} 
+                <Button
+                  onClick={handleManageSubscription}
                   disabled={portalLoading}
                   className="gap-2"
                 >
@@ -159,10 +159,10 @@ export default function PortalBilling() {
         </Card>
 
         {/* Invoice History */}
-        <Card>
+        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5" />
+              <DollarSign className="w-5 h-5 text-[#d4af37]" />
               Invoice History
             </CardTitle>
             <CardDescription>View and download your past invoices</CardDescription>
@@ -171,7 +171,7 @@ export default function PortalBilling() {
             {invoicesLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex items-center justify-between py-3 border-b border-border last:border-0">
+                  <div key={i} className="flex items-center justify-between py-3 border-b border-white/[0.08] last:border-0">
                     <div className="space-y-1">
                       <Skeleton className="h-4 w-32" />
                       <Skeleton className="h-3 w-24" />
@@ -181,7 +181,7 @@ export default function PortalBilling() {
                 ))}
               </div>
             ) : invoices && invoices.length > 0 ? (
-              <div className="divide-y divide-border">
+              <div className="divide-y divide-white/[0.08]">
                 {invoices.map((invoice) => (
                   <div key={invoice.id} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
                     <div className="space-y-1">
@@ -206,9 +206,9 @@ export default function PortalBilling() {
                     </div>
                     <div className="flex items-center gap-2">
                       {invoice.pdf_url && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           asChild
                           className="gap-1"
                         >
@@ -219,9 +219,9 @@ export default function PortalBilling() {
                         </Button>
                       )}
                       {invoice.hosted_invoice_url && (
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           asChild
                         >
                           <a href={invoice.hosted_invoice_url} target="_blank" rel="noopener noreferrer">

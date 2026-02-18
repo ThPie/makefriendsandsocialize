@@ -50,13 +50,13 @@ export const EventCard = ({
 }: EventCardProps) => {
     const getTierBadge = (tier: 'patron' | 'fellow' | 'founder') => {
         const colors = {
-            patron: 'bg-muted text-muted-foreground',
-            fellow: 'bg-accent/10 text-accent-foreground',
-            founder: 'bg-primary/10 text-primary',
+            patron: 'bg-white/10 text-white/70 border border-white/20',
+            fellow: 'bg-primary/20 text-primary border border-primary/30',
+            founder: 'bg-[#d4af37]/20 text-[#d4af37] border border-[#d4af37]/30',
         };
 
         return (
-            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs ${colors[tier]}`}>
+            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${colors[tier]}`}>
                 {tier === 'founder' && <Crown className="h-3 w-3" />}
                 {tier.charAt(0).toUpperCase() + tier.slice(1)} & Above
             </span>
@@ -72,7 +72,7 @@ export const EventCard = ({
     };
 
     return (
-        <Card className="overflow-hidden group">
+        <Card className="overflow-hidden group border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
             {/* Image */}
             <div className="aspect-[16/9] relative overflow-hidden">
                 <img
@@ -81,7 +81,13 @@ export const EventCard = ({
                     className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${!canAccess ? 'opacity-50' : ''
                         }`}
                 />
-                <div className="absolute top-4 left-4 flex gap-2">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                {/* Date badge */}
+                <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-md rounded-xl px-3 py-2 text-center border border-white/30">
+                    <div className="text-[10px] uppercase tracking-wider text-white/80 font-medium">{parseLocalDate(event.date).toLocaleDateString('en-US', { month: 'short' })}</div>
+                    <div className="text-xl font-bold text-white leading-none">{parseLocalDate(event.date).getDate()}</div>
+                </div>
+                <div className="absolute top-4 right-4 flex gap-2">
                     {getTierBadge(event.tier)}
                     {isFull && (
                         <Badge variant="destructive" className="gap-1">
@@ -90,52 +96,49 @@ export const EventCard = ({
                         </Badge>
                     )}
                 </div>
+                {/* Event title overlay on image */}
+                <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="font-display text-xl text-white font-semibold mb-1 drop-shadow-lg">{event.title}</h3>
+                    <div className="flex items-center gap-1.5 text-white/80 text-sm">
+                        <MapPin className="h-3.5 w-3.5" />
+                        <span>{event.venue_name || event.location}{event.city && `, ${event.city}`}</span>
+                    </div>
+                </div>
                 {!canAccess && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-background/50">
-                        <Crown className="h-12 w-12 text-primary" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                        <Crown className="h-12 w-12 text-[#d4af37]" />
                     </div>
                 )}
             </div>
 
-            <CardContent className="p-6">
-                <h3 className="font-display text-xl text-foreground mb-3">{event.title}</h3>
-
+            <CardContent className="p-5">
                 <div className="space-y-2 mb-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        <span>{formatDate(event.date)}</span>
-                    </div>
+
                     {event.time && (
                         <div className="flex items-center gap-2">
                             <Clock className="h-4 w-4" />
                             <span>{event.time}</span>
                         </div>
                     )}
-                    <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
-                        <span>
-                            {event.venue_name || event.location}
-                            {event.city && `, ${event.city}`}
-                        </span>
-                    </div>
+
                     <div className="flex items-center gap-2">
                         <Users className="h-4 w-4" />
                         {(() => {
                             const spotsLeft = event.capacity ? event.capacity - attending : null;
                             if (isFull) {
                                 return (
-                                    <span className="text-destructive font-medium">
+                                    <span className="text-[#d4af37] font-medium">
                                         Sold Out
                                         {waitlistCount > 0 && (
-                                            <span className="text-amber-600 ml-2">({waitlistCount} on waitlist)</span>
+                                            <span className="text-white/50 ml-2">({waitlistCount} on waitlist)</span>
                                         )}
                                     </span>
                                 );
                             }
                             if (spotsLeft !== null && spotsLeft <= 5) {
                                 return (
-                                    <span className="text-amber-500 font-medium">
-                                        {spotsLeft} spot{spotsLeft !== 1 ? 's' : ''} left!
+                                    <span className="text-[#d4af37] font-medium">
+                                        Only {spotsLeft} spot{spotsLeft !== 1 ? 's' : ''} left!
                                         {waitlistCount > 0 && (
                                             <span className="text-muted-foreground ml-2">({waitlistCount} on waitlist)</span>
                                         )}
@@ -165,8 +168,8 @@ export const EventCard = ({
 
                 {/* Waitlist status */}
                 {waitlistEntry && (
-                    <div className="mb-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                        <div className="flex items-center gap-2 text-amber-600">
+                    <div className="mb-4 p-3 bg-[#d4af37]/10 border border-[#d4af37]/20 rounded-lg">
+                        <div className="flex items-center gap-2 text-[#d4af37]">
                             <Clock3 className="h-4 w-4" />
                             <span className="text-sm font-medium">
                                 {waitlistEntry.status === 'notified'
@@ -202,7 +205,7 @@ export const EventCard = ({
                 ) : (
                     <Button
                         variant={isRSVPd ? 'outline' : canAccess ? 'default' : 'outline'}
-                        className="w-full"
+                        className="w-full uppercase tracking-wider text-xs font-bold"
                         onClick={() => onRSVP(event)}
                         disabled={isRSVPPending || isWaitlistPending}
                     >

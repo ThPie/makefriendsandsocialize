@@ -339,10 +339,10 @@ export default function PortalEvents() {
       {/* Header */}
       <div>
         <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-          Events
+          Exclusive Events
         </h1>
         <p className="text-muted-foreground">
-          Exclusive gatherings for members of Make Friends and Socialize
+          Curated gatherings for distinguished members
         </p>
       </div>
 
@@ -362,7 +362,7 @@ export default function PortalEvents() {
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary" />
             </div>
           ) : upcomingEvents.length === 0 ? (
-            <Card className="p-12 text-center">
+            <Card className="p-12 text-center border-white/[0.08] bg-white/[0.04]">
               <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
               <h3 className="font-display text-xl mb-2 text-foreground">No Upcoming Events</h3>
               <p className="text-muted-foreground mb-4">
@@ -402,7 +402,7 @@ export default function PortalEvents() {
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary" />
             </div>
           ) : pastEvents.length === 0 ? (
-            <Card className="p-12 text-center">
+            <Card className="p-12 text-center border-white/[0.08] bg-white/[0.04]">
               <ImageIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
               <h3 className="font-display text-xl mb-2">No Past Events Yet</h3>
               <p className="text-muted-foreground">Event memories will appear here after they happen!</p>

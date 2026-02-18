@@ -136,21 +136,21 @@ export default function PortalConnections() {
     switch (status) {
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-amber-500/10 text-amber-500">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#d4af37]/15 text-[#d4af37] border border-[#d4af37]/25">
             <Clock className="h-3 w-3" />
             Pending
           </span>
         );
       case 'accepted':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-500/10 text-green-500">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-primary/15 text-primary border border-primary/25">
             <Check className="h-3 w-3" />
             Accepted
           </span>
         );
       case 'declined':
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-red-500/10 text-red-500">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-red-500/15 text-red-400 border border-red-500/25">
             <X className="h-3 w-3" />
             Declined
           </span>
@@ -165,11 +165,11 @@ export default function PortalConnections() {
     return (
       <div className="max-w-2xl mx-auto text-center py-16">
         <div className="mb-8">
-          <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
-            <Crown className="h-10 w-10 text-primary" />
+          <div className="w-20 h-20 mx-auto rounded-full bg-[#d4af37]/10 flex items-center justify-center mb-6 border border-[#d4af37]/20">
+            <Crown className="h-10 w-10 text-[#d4af37]" />
           </div>
           <h1 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-            Unlock Connections
+            The Network
           </h1>
           <p className="text-muted-foreground text-lg mb-8">
             Upgrade to Fellow membership to request and receive introductions from fellow members.
@@ -227,16 +227,16 @@ export default function PortalConnections() {
       {/* Header */}
       <div>
         <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-          Connections
+          The Network
         </h1>
         <p className="text-muted-foreground">
-          Manage your introduction requests
+          Manage introductions & connect with members
         </p>
       </div>
 
       {/* Pending Requests Alert */}
       {pendingReceived.length > 0 && (
-        <Card className="bg-primary/5 border-primary/20">
+        <Card className="bg-primary/5 border-primary/20 backdrop-blur-sm">
           <CardContent className="flex items-center gap-4 p-4">
             <div className="p-2 rounded-full bg-primary/10">
               <Heart className="h-5 w-5 text-primary" />
@@ -269,7 +269,7 @@ export default function PortalConnections() {
 
         <TabsContent value="received" className="space-y-4">
           {receivedConnections.length === 0 ? (
-            <Card>
+            <Card className="border-white/[0.08] bg-white/[0.04]">
               <CardContent className="py-12 text-center">
                 <Heart className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
                 <h3 className="font-display text-lg mb-2 text-foreground">No Requests Yet</h3>
@@ -347,7 +347,7 @@ export default function PortalConnections() {
         {/* Sent Tab */}
         <TabsContent value="sent" className="space-y-4">
           {sentConnections.length === 0 ? (
-            <Card>
+            <Card className="border-white/[0.08] bg-white/[0.04]">
               <CardContent className="py-12 text-center">
                 <MessageCircle className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
                 <p className="text-muted-foreground mb-4">No introduction requests sent yet</p>
@@ -409,7 +409,7 @@ export default function PortalConnections() {
 
         <TabsContent value="accepted" className="space-y-4">
           {acceptedConnections.length === 0 ? (
-            <Card>
+            <Card className="border-white/[0.08] bg-white/[0.04]">
               <CardContent className="py-12 text-center">
                 <Heart className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
                 <h3 className="font-display text-lg mb-2 text-foreground">No Connections Yet</h3>

@@ -85,10 +85,10 @@ const TIME_SLOTS = [
 ];
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof Clock }> = {
-  pending: { label: 'Pending', color: 'bg-amber-500/10 text-amber-600', icon: Clock },
-  confirmed: { label: 'Confirmed', color: 'bg-green-500/10 text-green-600', icon: CheckCircle },
-  completed: { label: 'Completed', color: 'bg-muted text-muted-foreground', icon: CheckCircle },
-  cancelled: { label: 'Cancelled', color: 'bg-destructive/10 text-destructive', icon: XCircle },
+  pending: { label: 'Pending', color: 'bg-[#d4af37]/15 text-[#d4af37] border-[#d4af37]/25', icon: Clock },
+  confirmed: { label: 'Confirmed', color: 'bg-primary/15 text-primary border-primary/25', icon: CheckCircle },
+  completed: { label: 'Completed', color: 'bg-white/10 text-white/50', icon: CheckCircle },
+  cancelled: { label: 'Cancelled', color: 'bg-red-500/15 text-red-400 border-red-500/25', icon: XCircle },
 };
 
 export default function PortalConcierge() {
@@ -178,7 +178,7 @@ export default function PortalConcierge() {
             1:1 Concierge Support
           </h1>
           <p className="text-muted-foreground text-lg mb-8">
-            Get personalized guidance from our concierge team. Upgrade to Insider or Patron 
+            Get personalized guidance from our concierge team. Upgrade to Insider or Patron
             to unlock dedicated support for networking, introductions, and membership questions.
           </p>
         </div>
@@ -225,10 +225,10 @@ export default function PortalConcierge() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-            Concierge
+            Concierge Services
           </h1>
           <p className="text-muted-foreground">
-            Your personal guide to maximizing your membership experience
+            Your personal guide to an exceptional membership
           </p>
         </div>
         {!showForm && upcomingBookings.length === 0 && (
@@ -241,17 +241,17 @@ export default function PortalConcierge() {
 
       {/* Service Overview - Show when no form and no bookings */}
       {!showForm && bookings.length === 0 && (
-        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-primary/20">
+        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-white/[0.08] backdrop-blur-sm">
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row gap-8">
               <div className="flex-1 space-y-4">
                 <h2 className="font-display text-xl text-foreground">What is Concierge?</h2>
                 <p className="text-muted-foreground">
-                  Our Concierge service provides personalized, 1:1 support to help you make the most 
-                  of your MakeFriends membership. Whether you need networking advice, help with 
+                  Our Concierge service provides personalized, 1:1 support to help you make the most
+                  of your MakeFriends membership. Whether you need networking advice, help with
                   introductions, or guidance on events, our team is here to assist.
                 </p>
-                
+
                 <div className="grid gap-4 sm:grid-cols-2 pt-4">
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -291,7 +291,7 @@ export default function PortalConcierge() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="md:w-64 flex flex-col justify-center">
                 <Button onClick={() => setShowForm(true)} size="lg" className="w-full">
                   <Headphones className="h-4 w-4 mr-2" />
@@ -308,7 +308,7 @@ export default function PortalConcierge() {
 
       {/* Booking Form */}
       {showForm && (
-        <Card>
+        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Book a Concierge Session</CardTitle>
             <CardDescription>
@@ -502,7 +502,7 @@ export default function PortalConcierge() {
 
       {/* Empty State */}
       {bookings.length === 0 && !showForm && !isLoading && (
-        <Card className="p-12 text-center">
+        <Card className="p-12 text-center border-white/[0.08] bg-white/[0.04]">
           <Headphones className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
           <h3 className="font-display text-xl mb-2">No Sessions Yet</h3>
           <p className="text-muted-foreground mb-6">
@@ -530,7 +530,7 @@ function BookingCard({ booking, onCancel, cancelling }: BookingCardProps) {
   const bookingType = BOOKING_TYPES.find((t) => t.value === booking.booking_type)?.label || booking.booking_type;
 
   return (
-    <Card>
+    <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div className="space-y-1">

@@ -94,7 +94,7 @@ export function DashboardStats() {
         return (
             <div className="grid gap-6 md:grid-cols-3">
                 {[1, 2, 3].map(i => (
-                    <Card key={i} className="h-48 bg-card/50 backdrop-blur-sm border-border/50">
+                    <Card key={i} className="h-48 bg-white/[0.04] backdrop-blur-sm border-white/[0.08]">
                         <CardContent className="p-6">
                             <Skeleton className="h-12 w-12 rounded-xl mb-4" />
                             <Skeleton className="h-8 w-16 mb-2" />
@@ -113,8 +113,8 @@ export function DashboardStats() {
             value: String(eventCount).padStart(2, '0'),
             subtext: '+1 this week', // Placeholder
             icon: Calendar,
-            color: 'text-blue-400',
-            bg: 'bg-blue-500/10',
+            color: 'text-primary',
+            bg: 'bg-primary/10',
             link: '/portal/events',
             linkText: 'VIEW CALENDAR',
             showProgress: false,
@@ -125,8 +125,8 @@ export function DashboardStats() {
             value: displayPoints.toLocaleString(),
             subtext: null,
             icon: Crown,
-            color: 'text-amber-400',
-            bg: 'bg-amber-500/10',
+            color: 'text-[#d4af37]',
+            bg: 'bg-[#d4af37]/10',
             tierBadge: getTierDisplayName(membership?.tier).toUpperCase(),
             showProgress: true,
             progressValue: progress,
@@ -138,8 +138,8 @@ export function DashboardStats() {
             value: String(notificationCount).padStart(2, '0'),
             subtext: 'Last: 2h ago',
             icon: Bell,
-            color: 'text-rose-400',
-            bg: 'bg-rose-500/10',
+            color: 'text-primary',
+            bg: 'bg-primary/10',
             link: '/portal/notifications', // Placeholder route if exists or just triggers bell
             showProgress: false,
             preview: true,
@@ -149,7 +149,7 @@ export function DashboardStats() {
     return (
         <div className="grid gap-6 md:grid-cols-3">
             {stats.map((stat) => (
-                <Card key={stat.id} className="relative overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <Card key={stat.id} className="relative overflow-hidden border-white/[0.08] bg-white/[0.04] backdrop-blur-sm hover:bg-white/[0.06] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                     <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-6">
                             <div className={cn("p-3 rounded-xl", stat.bg)}>
@@ -181,7 +181,7 @@ export function DashboardStats() {
                             <div className="mt-6 space-y-2">
                                 <div className="h-2 w-full bg-secondary/50 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-gradient-to-r from-primary to-amber-300 rounded-full transition-all duration-1000 ease-out"
+                                        className="h-full bg-gradient-to-r from-primary to-[#d4af37] rounded-full transition-all duration-1000 ease-out"
                                         style={{ width: `${stat.progressValue}%` }}
                                     />
                                 </div>

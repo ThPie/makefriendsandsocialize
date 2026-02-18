@@ -378,7 +378,7 @@ export default function PortalProfile() {
         )}
 
         {/* Visibility */}
-        <div className="bg-card border border-border/50 rounded-2xl p-6">
+        <div className="bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm rounded-2xl p-6">
           <h2 className="font-display text-xl text-foreground mb-4">Profile Visibility</h2>
           <label className="flex items-center gap-3 cursor-pointer">
             <input

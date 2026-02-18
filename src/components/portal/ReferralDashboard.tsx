@@ -39,7 +39,7 @@ export function ReferralDashboard() {
         .select('*')
         .eq('referrer_id', user.id)
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
       return data as Referral[];
     },
@@ -125,10 +125,10 @@ export function ReferralDashboard() {
   return (
     <div className="space-y-6">
       {/* Referral Code Card */}
-      <Card>
+      <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="font-display font-light text-xl flex items-center gap-2">
-            <Gift className="h-5 w-5 text-primary" />
+          <CardTitle className="font-display text-xl flex items-center gap-2">
+            <Gift className="h-5 w-5 text-[#d4af37]" />
             Your Referral Code
           </CardTitle>
           <CardDescription>
@@ -138,7 +138,7 @@ export function ReferralDashboard() {
         <CardContent className="space-y-4">
           {/* Code Display */}
           <div className="flex items-center gap-3">
-            <div className="flex-1 bg-muted rounded-lg p-4 text-center">
+            <div className="flex-1 bg-white/[0.06] border border-white/[0.08] rounded-lg p-4 text-center">
               <span className="text-2xl font-mono font-bold tracking-wider">{referralCode}</span>
             </div>
             <Button variant="outline" size="icon" onClick={copyToClipboard}>
@@ -170,41 +170,41 @@ export function ReferralDashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
+        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
           <CardContent className="pt-6 text-center">
             <Users className="h-8 w-8 mx-auto mb-2 text-primary" />
             <p className="text-3xl font-bold">{totalReferrals}</p>
-            <p className="text-sm text-muted-foreground">Total Referrals</p>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">Total Referrals</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
           <CardContent className="pt-6 text-center">
-            <Mail className="h-8 w-8 mx-auto mb-2 text-amber-500" />
+            <Mail className="h-8 w-8 mx-auto mb-2 text-[#d4af37]" />
             <p className="text-3xl font-bold">{pendingReferrals}</p>
-            <p className="text-sm text-muted-foreground">Pending</p>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">Pending</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
           <CardContent className="pt-6 text-center">
-            <Check className="h-8 w-8 mx-auto mb-2 text-green-500" />
+            <Check className="h-8 w-8 mx-auto mb-2 text-primary" />
             <p className="text-3xl font-bold">{signedUpReferrals}</p>
-            <p className="text-sm text-muted-foreground">Signed Up</p>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">Signed Up</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
           <CardContent className="pt-6 text-center">
-            <Trophy className="h-8 w-8 mx-auto mb-2 text-purple-500" />
+            <Trophy className="h-8 w-8 mx-auto mb-2 text-[#d4af37]" />
             <p className="text-3xl font-bold">{convertedReferrals}</p>
-            <p className="text-sm text-muted-foreground">Converted</p>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">Converted</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Reward Progress */}
-      <Card>
+      <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="font-display font-light text-xl flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-primary" />
+          <CardTitle className="font-display text-xl flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-[#d4af37]" />
             Reward Progress
           </CardTitle>
         </CardHeader>
@@ -221,7 +221,7 @@ export function ReferralDashboard() {
               </p>
             )}
           </div>
-          
+
           {/* Tier Progress */}
           <div className="flex items-center gap-2 mb-6">
             {[1, 3, 5, 10].map((milestone, index) => (
@@ -236,7 +236,7 @@ export function ReferralDashboard() {
 
           {/* Rewards List */}
           <div className="space-y-3">
-            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 1 ? 'bg-primary/10' : 'bg-muted/50'}`}>
+            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 1 ? 'bg-primary/10 border border-primary/20' : 'bg-white/[0.04] border border-white/[0.08]'}`}>
               <div className="flex items-center gap-3">
                 <span className="text-lg">🤝</span>
                 <div>
@@ -246,7 +246,7 @@ export function ReferralDashboard() {
               </div>
               {totalReferrals >= 1 && <Check className="h-5 w-5 text-green-500" />}
             </div>
-            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 3 ? 'bg-primary/10' : 'bg-muted/50'}`}>
+            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 3 ? 'bg-primary/10 border border-primary/20' : 'bg-white/[0.04] border border-white/[0.08]'}`}>
               <div className="flex items-center gap-3">
                 <span className="text-lg">🎁</span>
                 <div>
@@ -256,7 +256,7 @@ export function ReferralDashboard() {
               </div>
               {totalReferrals >= 3 && <Check className="h-5 w-5 text-green-500" />}
             </div>
-            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 5 ? 'bg-primary/10' : 'bg-muted/50'}`}>
+            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 5 ? 'bg-primary/10 border border-primary/20' : 'bg-white/[0.04] border border-white/[0.08]'}`}>
               <div className="flex items-center gap-3">
                 <span className="text-lg">🏆</span>
                 <div>
@@ -266,7 +266,7 @@ export function ReferralDashboard() {
               </div>
               {totalReferrals >= 5 && <Check className="h-5 w-5 text-green-500" />}
             </div>
-            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 10 ? 'bg-primary/10' : 'bg-muted/50'}`}>
+            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 10 ? 'bg-[#d4af37]/10 border border-[#d4af37]/20' : 'bg-white/[0.04] border border-white/[0.08]'}`}>
               <div className="flex items-center gap-3">
                 <span className="text-lg">👑</span>
                 <div>
@@ -281,9 +281,9 @@ export function ReferralDashboard() {
       </Card>
 
       {/* Send Invite Card */}
-      <Card>
+      <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="font-display font-light text-xl">Send Personal Invite</CardTitle>
+          <CardTitle className="font-display text-xl">Send Personal Invite</CardTitle>
           <CardDescription>
             Send a personalized invitation email to a friend
           </CardDescription>
@@ -301,8 +301,8 @@ export function ReferralDashboard() {
             onChange={(e) => setPersonalMessage(e.target.value)}
             rows={3}
           />
-          <Button 
-            onClick={sendInvite} 
+          <Button
+            onClick={sendInvite}
             disabled={!inviteEmail || isSending}
             className="w-full"
           >
@@ -313,14 +313,14 @@ export function ReferralDashboard() {
 
       {/* Recent Referrals */}
       {referrals.length > 0 && (
-        <Card>
+        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="font-display font-light text-xl">Recent Activity</CardTitle>
+            <CardTitle className="font-display text-xl">Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {referrals.slice(0, 5).map((referral) => (
-                <div key={referral.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                <div key={referral.id} className="flex items-center justify-between p-3 bg-white/[0.04] border border-white/[0.08] rounded-lg">
                   <div>
                     <p className="font-medium text-sm">
                       {referral.referred_email || 'Anonymous'}
@@ -329,7 +329,7 @@ export function ReferralDashboard() {
                       {new Date(referral.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <Badge 
+                  <Badge
                     variant={referral.status === 'converted' ? 'default' : 'secondary'}
                     className="capitalize"
                   >
