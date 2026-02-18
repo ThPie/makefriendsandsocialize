@@ -343,7 +343,7 @@ export default function AdminApplications() {
             {pendingApps.length === 0 ? (
               <EmptyState
                 icon={FileText}
-                title="No Pending Applications"
+                heading="No Pending Applications"
                 description="All applications have been reviewed"
               />
             ) : (
@@ -359,7 +359,7 @@ export default function AdminApplications() {
             {approvedApps.length === 0 ? (
               <EmptyState
                 icon={Check}
-                title="No Approved Applications"
+                heading="No Approved Applications"
                 description="No applications have been approved yet"
               />
             ) : (
@@ -375,7 +375,7 @@ export default function AdminApplications() {
             {rejectedApps.length === 0 ? (
               <EmptyState
                 icon={X}
-                title="No Rejected Applications"
+                heading="No Rejected Applications"
                 description="No applications have been rejected"
               />
             ) : (

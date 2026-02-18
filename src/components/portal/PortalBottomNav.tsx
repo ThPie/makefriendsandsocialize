@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 const tabs = [
   { label: 'Home', icon: Home, path: '/portal' },
   { label: 'Events', icon: Calendar, path: '/portal/events' },
-  { label: 'Network', icon: Users, path: '/portal/network' },
+  { label: 'Network', icon: Users, path: '/portal/connections' },
   { label: 'Profile', icon: User, path: '/portal/profile' },
 ];
 

@@ -2,113 +2,420 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Make Friends and Socialize - Premium Design System */
+/* Fonts loaded via index.html for performance */
+
 @layer base {
+
+  /* Page transition animations */
+  .page-transition-enter {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  .page-transition-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms ease-out, transform 300ms ease-out;
+  }
+
+  /* ===== Light Theme — Cream & Forest ===== */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 142 86% 23%;
-    --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 142 86% 23%;
-    --radius: 0.5rem;
+    --background: 90 14% 96%;
+    /* #f6f8f6 */
+    --foreground: 150 30% 12%;
+    /* dark forest text */
+
+    --card: 90 10% 98%;
+    /* near-white card */
+    --card-foreground: 150 30% 12%;
+
+    --popover: 90 10% 98%;
+    --popover-foreground: 150 30% 12%;
+
+    /* Primary — Forest Green (Stitch #1a5b2a) */
+    --primary: 143 55% 23%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary — muted sage */
+    --secondary: 140 12% 90%;
+    --secondary-foreground: 150 25% 20%;
+
+    --muted: 140 8% 92%;
+    --muted-foreground: 150 10% 45%;
+
+    --accent: 140 10% 88%;
+    --accent-foreground: 150 30% 12%;
+
+    /* Gold accent — always available */
+    --accent-gold: 43 76% 52%;
+    /* #d4af37 */
+    --accent-gold-light: 47 80% 78%;
+    /* #f3e5ab */
+
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 140 10% 86%;
+    --input: 140 10% 86%;
+    --ring: 143 55% 23%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar — light */
+    --sidebar-background: 90 14% 97%;
+    --sidebar-foreground: 150 30% 12%;
+    --sidebar-primary: 143 55% 23%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 140 8% 92%;
+    --sidebar-accent-foreground: 150 30% 12%;
+    --sidebar-border: 140 10% 86%;
+    --sidebar-ring: 143 55% 23%;
   }
 
+  /* ===== Dark Theme — Premium Forest ===== */
+  /* Stitch palette: bg #131f16, card #1e2b21, primary #1a5b2a, gold #d4af37 */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 142 86% 23%;
-    --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 142 86% 23%;
-  }
+    --background: 148 24% 10%;
+    /* #131f16 */
+    --foreground: 40 15% 88%;
+    /* cream-white text */
 
+    --card: 148 20% 14%;
+    /* #1e2b21 — card/surface */
+    --card-foreground: 40 15% 88%;
+
+    --popover: 148 20% 14%;
+    --popover-foreground: 40 15% 88%;
+
+    /* Primary — Bright Forest Green */
+    --primary: 143 55% 23%;
+    /* #1a5b2a */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary — deeper forest */
+    --secondary: 148 22% 17%;
+    --secondary-foreground: 40 15% 88%;
+
+    --muted: 148 20% 15%;
+    --muted-foreground: 148 10% 55%;
+
+    --accent: 148 20% 18%;
+    --accent-foreground: 40 15% 88%;
+
+    /* Gold accent */
+    --accent-gold: 43 76% 52%;
+    /* #d4af37 */
+    --accent-gold-light: 47 80% 78%;
+
+    --destructive: 0 55% 38%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 148 15% 20%;
+    --input: 148 15% 20%;
+    --ring: 143 55% 23%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar — forest dark */
+    --sidebar-background: 148 24% 8%;
+    --sidebar-foreground: 40 15% 88%;
+    --sidebar-primary: 143 55% 23%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 148 20% 14%;
+    --sidebar-accent-foreground: 40 15% 88%;
+    --sidebar-border: 148 15% 18%;
+    --sidebar-ring: 143 55% 23%;
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    touch-action: pan-x pan-y;
+    overscroll-behavior-y: contain;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+    overscroll-behavior-y: contain;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Standalone PWA safe area */
+  @media (display-mode: standalone) {
+    body {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+  }
+
+  /* ===== Native App Feel ===== */
+
+  /* Remove tap highlight on all touch targets */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent text selection on interactive elements */
+  button,
+  a,
+  nav,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"],
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Prevent double-tap zoom on interactive elements */
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
+  /* Prevent long-press context menu on images in app context */
+  img {
+    -webkit-touch-callout: none;
+  }
+
+  /* ===== Safe Area Custom Properties ===== */
+  :root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --bottom-nav-height: 4.5rem;
+    /* 72px — height of the mobile bottom nav */
+  }
+
+  /* Scroll margin for fixed header */
+  section[id] {
+    scroll-margin-top: 100px;
+  }
+
+  /* Display font for headings - apply to all headings by default */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .font-display {
+    font-family: 'Newsreader', 'Cormorant Garamond', serif;
+  }
+
+  /* Refined heading weights */
+  h1,
+  h2,
+  h3 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  /* Hide scrollbar but allow scrolling */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
-/* Custom Styles for Glossy/Glass effects from Stitch */
-.glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-}
+@layer utilities {
 
-.input-glass {
-  background: rgba(20, 31, 23, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-}
+  /* Premium text gradient - gold accent */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary via-[hsl(var(--accent-gold))] to-primary bg-clip-text text-transparent;
+  }
 
-.input-glass:focus {
-  background: rgba(20, 31, 23, 0.9);
-  border-color: #D4AF37;
-  /* Gold border on focus */
-  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2);
-}
+  /* Elegant shadow - very subtle and refined */
+  .shadow-elegant {
+    box-shadow: 0 8px 30px -12px hsl(160 30% 10% / 0.12);
+  }
 
-/* Abstract Background Pattern */
-.bg-pattern {
-  background-color: #0d1610;
-  background-image:
-    radial-gradient(at 0% 0%, hsla(135, 45%, 25%, 1) 0, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(135, 45%, 15%, 1) 0, transparent 50%),
-    radial-gradient(at 100% 100%, hsla(135, 45%, 10%, 1) 0, transparent 50%),
-    radial-gradient(at 0% 100%, hsla(135, 45%, 20%, 1) 0, transparent 50%);
-}
+  /* Premium card shadow - minimal */
+  .shadow-premium {
+    box-shadow: 0 2px 16px -6px hsl(160 30% 10% / 0.1);
+  }
 
-.floating-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.4;
-  z-index: 0;
-}
+  /* Glass effect — light mode */
+  .glass {
+    @apply bg-background/80 backdrop-blur-md;
+  }
 
-/* Gradient Text */
-.text-gradient-gold {
-  background: linear-gradient(to right, #F3E5AB, #D4AF37, #F3E5AB);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  background-size: 200% auto;
-  animation: shine 5s linear infinite;
-}
+  /* Stitch glass-panel — dark mode glassmorphism for cards */
+  .glass-panel {
+    background: rgba(30, 43, 33, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
 
-@keyframes shine {
-  to {
-    background-position: 200% center;
+  /* Gold gradient text — luxury accent for headings & badges */
+  .gold-gradient-text {
+    background: linear-gradient(to bottom right, #f3e5ab, #d4af37, #b8860b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Gold gradient background — buttons, badges, CTAs */
+  .gold-gradient-bg {
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+  }
+
+  /* Stitch surface card — subtle dark mode surface */
+  .surface-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+  }
+
+  /* Hover lift - refined */
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-0.5 hover:shadow-premium;
+  }
+
+  /* Scroll animation utilities */
+  .scroll-animate {
+    @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+  }
+
+  .scroll-animate.visible {
+    @apply opacity-100 translate-y-0;
+  }
+
+  .scroll-animate-delay-1 {
+    transition-delay: 100ms;
+  }
+
+  .scroll-animate-delay-2 {
+    transition-delay: 200ms;
+  }
+
+  .scroll-animate-delay-3 {
+    transition-delay: 300ms;
+  }
+
+  .scroll-animate-delay-4 {
+    transition-delay: 400ms;
+  }
+
+  .scroll-animate-delay-5 {
+    transition-delay: 500ms;
+  }
+
+  /* Card hover animations */
+  .card-animate {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  .card-animate:hover {
+    @apply -translate-y-2 shadow-elegant;
+  }
+
+  /* Staggered fade-in for lists */
+  .stagger-animate>* {
+    @apply opacity-0 translate-y-6 transition-all duration-500 ease-out;
+  }
+
+  .stagger-animate.visible>*:nth-child(1) {
+    @apply opacity-100 translate-y-0;
+    transition-delay: 0ms;
+  }
+
+  .stagger-animate.visible>*:nth-child(2) {
+    @apply opacity-100 translate-y-0;
+    transition-delay: 100ms;
+  }
+
+  .stagger-animate.visible>*:nth-child(3) {
+    @apply opacity-100 translate-y-0;
+    transition-delay: 200ms;
+  }
+
+  .stagger-animate.visible>*:nth-child(4) {
+    @apply opacity-100 translate-y-0;
+    transition-delay: 300ms;
+  }
+
+  .stagger-animate.visible>*:nth-child(5) {
+    @apply opacity-100 translate-y-0;
+    transition-delay: 400ms;
+  }
+
+  .stagger-animate.visible>*:nth-child(6) {
+    @apply opacity-100 translate-y-0;
+    transition-delay: 500ms;
+  }
+
+  /* Scale-in animation */
+  .scroll-scale {
+    @apply opacity-0 scale-95 transition-all duration-700 ease-out;
+  }
+
+  .scroll-scale.visible {
+    @apply opacity-100 scale-100;
+  }
+
+  /* PWA slow spin animation */
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
+
+  /* Premium shimmer for skeleton screens */
+  .skeleton-shimmer {
+    background: linear-gradient(90deg,
+        hsl(var(--muted)) 0%,
+        hsl(var(--muted-foreground) / 0.08) 50%,
+        hsl(var(--muted)) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Safe area utilities */
+  .safe-area-top,
+  .safe-top {
+    padding-top: var(--safe-top);
+  }
+
+  .safe-area-bottom,
+  .safe-bottom {
+    padding-bottom: var(--safe-bottom);
+  }
+
+  /* Smooth scrolling momentum for scroll containers */
+  .scroll-touch {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Bottom nav spacing — adds padding so content doesn't hide behind mobile bottom nav */
+  .pb-bottom-nav {
+    padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
   }
 }

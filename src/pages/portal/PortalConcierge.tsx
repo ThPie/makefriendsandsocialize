@@ -36,13 +36,6 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  PlaneTakeoff,
-  Ticket,
-  Utensils,
-  Shirt,
-  CalendarDays,
-  ChevronLeft,
-  Info
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -177,7 +170,6 @@ export default function PortalConcierge() {
   if (!canBook) {
     return (
       <div className="max-w-2xl mx-auto text-center py-16">
-        {/* Same Upgrade UI as before, omitted for brevity as it's fine */}
         <div className="mb-8">
           <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
             <Crown className="h-10 w-10 text-primary" />
@@ -190,12 +182,36 @@ export default function PortalConcierge() {
             to unlock dedicated support for networking, introductions, and membership questions.
           </p>
         </div>
-        <Button asChild size="lg" className="w-full">
-          <Link to="/membership">
-            Upgrade to Access
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </Button>
+
+        <Card className="bg-card border-primary/20 mb-8">
+          <CardContent className="p-8">
+            <h3 className="font-display text-xl text-foreground mb-4">Concierge Benefits</h3>
+            <ul className="text-left space-y-3 text-muted-foreground mb-6">
+              <li className="flex items-center gap-3">
+                <Headphones className="h-5 w-5 text-primary" />
+                <span>30-minute video consultations</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Headphones className="h-5 w-5 text-primary" />
+                <span>Personalized networking advice</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Headphones className="h-5 w-5 text-primary" />
+                <span>Introduction assistance</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Headphones className="h-5 w-5 text-primary" />
+                <span>Event planning support</span>
+              </li>
+            </ul>
+            <Button asChild size="lg" className="w-full">
+              <Link to="/membership">
+                Upgrade to Access
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -204,174 +220,126 @@ export default function PortalConcierge() {
   const pastBookings = bookings.filter((b) => b.status === 'completed' || b.status === 'cancelled');
 
   return (
-    <div className="space-y-8 pb-32">
-      {/* Header - Only hide if in form mode for immersion */}
-      {!showForm && (
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-              Concierge
-            </h1>
-          </div>
-          {/* Notification bell could go here */}
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+            Concierge Services
+          </h1>
+          <p className="text-muted-foreground">
+            Your personal guide to an exceptional membership
+          </p>
         </div>
-      )}
+        {!showForm && upcomingBookings.length === 0 && (
+          <Button onClick={() => setShowForm(true)}>
+            <Headphones className="h-4 w-4 mr-2" />
+            Book Session
+          </Button>
+        )}
+      </div>
 
-      {/* Main View */}
-      {!showForm && (
-        <div className="space-y-6">
-          {/* Hero Section */}
-          <div className="relative w-full overflow-hidden rounded-2xl bg-[#1c261c] shadow-lg ring-1 ring-[#3c533c]">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent z-10"></div>
-            <img
-              alt="Luxury hotel lobby"
-              className="h-48 w-full object-cover opacity-80"
-              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80"
-            />
-            <div className="relative z-20 p-5 flex flex-col h-48 justify-end">
-              <div className="mb-2 inline-flex items-center gap-1 rounded-full bg-[#D4AF37]/20 px-2 py-0.5 w-fit border border-[#D4AF37]/30 backdrop-blur-sm">
-                <Crown className="h-3 w-3 text-[#D4AF37]" />
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#D4AF37]">Premium Member</span>
-              </div>
-              <h2 className="text-2xl font-bold text-white mb-1">Dedicated to Your Lifestyle</h2>
-              <p className="text-gray-300 text-sm leading-relaxed max-w-[90%]">Experience 1:1 support for global travel, exclusive dining, and VIP access tailored just for you.</p>
-            </div>
-          </div>
+      {/* Service Overview - Show when no form and no bookings */}
+      {!showForm && bookings.length === 0 && (
+        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-white/[0.08] backdrop-blur-sm">
+          <CardContent className="p-8">
+            <div className="flex flex-col md:flex-row gap-8">
+              <div className="flex-1 space-y-4">
+                <h2 className="font-display text-xl text-foreground">What is Concierge?</h2>
+                <p className="text-muted-foreground">
+                  Our Concierge service provides personalized, 1:1 support to help you make the most
+                  of your MakeFriends membership. Whether you need networking advice, help with
+                  introductions, or guidance on events, our team is here to assist.
+                </p>
 
-          {/* Benefits Grid */}
-          <div>
-            <h3 className="mb-3 px-1 text-base font-semibold text-foreground flex items-center gap-2">
-              <span className="h-4 w-1 rounded-full bg-[#D4AF37]"></span>
-              Premium Benefits
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { icon: PlaneTakeoff, title: "Bespoke Travel", sub: "Custom itineraries" },
-                { icon: Ticket, title: "VIP Access", sub: "Events & galas" },
-                { icon: Utensils, title: "Reservations", sub: "Michelin dining" },
-                { icon: Shirt, title: "Styling", sub: "Personal shopping" }
-              ].map((item, idx) => (
-                <div key={idx} className="group flex flex-col items-start gap-3 rounded-xl border border-white/5 bg-[#1c261c] p-4 transition-all hover:border-primary/50">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                    <item.icon className="h-6 w-6" />
+                <div className="grid gap-4 sm:grid-cols-2 pt-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Headphones className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">30-Min Video Calls</p>
+                      <p className="text-xs text-muted-foreground">Face-to-face guidance sessions</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-sm text-white">{item.title}</h4>
-                    <p className="text-[10px] text-gray-400 mt-0.5">{item.sub}</p>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <CalendarIcon className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Flexible Scheduling</p>
+                      <p className="text-xs text-muted-foreground">Book at your convenience</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Crown className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Included in Membership</p>
+                      <p className="text-xs text-muted-foreground">No additional cost for Fellows & Founders</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <CheckCircle className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">Confirmation in 24h</p>
+                      <p className="text-xs text-muted-foreground">Quick response guaranteed</p>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Primary Action */}
-          <Button
-            className="w-full h-14 text-base font-bold shadow-lg shadow-primary/20 rounded-xl"
-            onClick={() => setShowForm(true)}
-          >
-            <CalendarDays className="mr-2 h-5 w-5" />
-            Book Your Session
-          </Button>
-
-          {/* Upcoming Bookings List */}
-          {upcomingBookings.length > 0 && (
-            <div className="mt-6">
-              <div className="flex items-center justify-between mb-3 px-1">
-                <h3 className="text-base font-semibold text-foreground flex items-center gap-2">Upcoming Bookings</h3>
               </div>
-              <div className="grid gap-4">
-                {upcomingBookings.map((booking) => (
-                  <BookingCard
-                    key={booking.id}
-                    booking={booking}
-                    onCancel={() => cancelBooking.mutate(booking.id)}
-                    cancelling={cancelBooking.isPending}
-                  />
-                ))}
+
+              <div className="md:w-64 flex flex-col justify-center">
+                <Button onClick={() => setShowForm(true)} size="lg" className="w-full">
+                  <Headphones className="h-4 w-4 mr-2" />
+                  Book Your Session
+                </Button>
+                <p className="text-xs text-muted-foreground text-center mt-3">
+                  Average response time: 12 hours
+                </p>
               </div>
             </div>
-          )}
-        </div>
+          </CardContent>
+        </Card>
       )}
 
-      {/* Booking Form Overlay */}
+      {/* Booking Form */}
       {showForm && (
-        <div className="fixed inset-0 z-50 bg-background-light dark:bg-[#111811] flex flex-col animate-in slide-in-from-bottom-5">
-          {/* Header */}
-          <header className="sticky top-0 z-50 bg-background-light/95 dark:bg-[#111811]/95 backdrop-blur-md px-4 py-3 border-b border-gray-200 dark:border-white/5">
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setShowForm(false)}
-                className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-foreground"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-              <div className="flex-1 text-center">
-                <span className="text-xs font-medium uppercase tracking-widest text-primary">New Request</span>
-              </div>
-              <div className="w-10"></div>
-            </div>
-          </header>
-
-          <main className="flex-1 overflow-y-auto p-6 max-w-md mx-auto w-full pb-24">
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-foreground tracking-tight mb-2">When shall we meet?</h1>
-              <p className="text-muted-foreground text-sm">Select a date and time for your concierge session.</p>
-            </div>
-
+        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle>Book a Concierge Session</CardTitle>
+            <CardDescription>
+              Choose your preferred time and we'll confirm within 24 hours
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit((data) => createBooking.mutate(data))} className="space-y-8">
-
-                {/* Calendar */}
+              <form onSubmit={form.handleSubmit((data) => createBooking.mutate(data))} className="space-y-6">
+                {/* Booking Type */}
                 <FormField
                   control={form.control}
-                  name="preferred_date"
+                  name="booking_type"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="bg-white dark:bg-[#1c261c] rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-white/5">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date < new Date() || date.getDay() === 0 || date.getDay() === 6}
-                          className="rounded-md border-none w-full flex justify-center"
-                          classNames={{
-                            day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-                            day_today: "bg-accent text-accent-foreground",
-                            head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-                            cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20"
-                          }}
-                        />
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Available Times */}
-                <FormField
-                  control={form.control}
-                  name="preferred_time"
-                  render={({ field }) => (
-                    <FormItem>
-                      <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-                        <Clock className="h-5 w-5 text-primary" />
-                        Available Times
-                      </h3>
-                      <div className="flex gap-3 overflow-x-auto pb-4 -mx-6 px-6 no-scrollbar snap-x">
-                        {TIME_SLOTS.map((time) => (
+                      <FormLabel>Session Type</FormLabel>
+                      <div className="grid grid-cols-3 gap-4">
+                        {BOOKING_TYPES.map((type) => (
                           <button
-                            key={time}
+                            key={type.value}
                             type="button"
-                            onClick={() => field.onChange(time)}
+                            onClick={() => field.onChange(type.value)}
                             className={cn(
-                              "snap-start shrink-0 flex items-center justify-center h-12 px-6 rounded-xl font-medium text-sm transition-all",
-                              field.value === time
-                                ? "bg-primary text-[#111811] font-semibold shadow-lg shadow-primary/20 scale-[1.02]"
-                                : "bg-white dark:bg-[#1c261c] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:border-primary/50"
+                              'p-4 rounded-lg border-2 text-left transition-all',
+                              field.value === type.value
+                                ? 'border-primary bg-primary/5'
+                                : 'border-border hover:border-primary/50'
                             )}
                           >
-                            {time}
+                            <p className="font-medium">{type.label}</p>
+                            <p className="text-xs text-muted-foreground">{type.description}</p>
                           </button>
                         ))}
                       </div>
@@ -389,13 +357,15 @@ export default function PortalConcierge() {
                       <FormLabel>Topic</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger className="bg-white dark:bg-[#1c261c] border-white/10 h-12">
+                          <SelectTrigger>
                             <SelectValue placeholder="What would you like to discuss?" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {TOPICS.map((topic) => (
-                            <SelectItem key={topic.value} value={topic.value}>{topic.label}</SelectItem>
+                            <SelectItem key={topic.value} value={topic.value}>
+                              {topic.label}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -404,65 +374,145 @@ export default function PortalConcierge() {
                   )}
                 />
 
-                {/* Booking Type */}
+                {/* Date and Time */}
+                <div className="grid gap-6 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="preferred_date"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Preferred Date</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  'w-full pl-3 text-left font-normal',
+                                  !field.value && 'text-muted-foreground'
+                                )}
+                              >
+                                {field.value ? format(field.value, 'PPP') : 'Pick a date'}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) => date < new Date() || date.getDay() === 0 || date.getDay() === 6}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="preferred_time"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Preferred Time</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select time" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {TIME_SLOTS.map((time) => (
+                              <SelectItem key={time} value={time}>
+                                {time}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Notes */}
                 <FormField
                   control={form.control}
-                  name="booking_type"
+                  name="notes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Session Type</FormLabel>
-                      <div className="grid grid-cols-3 gap-3">
-                        {BOOKING_TYPES.map((type) => (
-                          <button
-                            key={type.value}
-                            type="button"
-                            onClick={() => field.onChange(type.value)}
-                            className={cn(
-                              'p-3 rounded-lg border text-left transition-all text-xs',
-                              field.value === type.value
-                                ? 'border-primary bg-primary/5 text-primary'
-                                : 'border-white/10 bg-[#1c261c] text-muted-foreground hover:border-primary/50'
-                            )}
-                          >
-                            <div className="font-semibold mb-1">{type.label}</div>
-                          </button>
-                        ))}
-                      </div>
+                      <FormLabel>Additional Notes (Optional)</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Anything specific you'd like to discuss?"
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* Summary Note */}
-                {form.watch('preferred_date') && form.watch('preferred_time') && (
-                  <div className="p-4 bg-primary/5 border border-primary/10 rounded-lg flex items-start gap-3">
-                    <Info className="h-5 w-5 text-primary mt-0.5" />
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      <p>Booking for <strong className="text-foreground">{format(form.watch('preferred_date'), 'EEE, MMM d')}</strong> at <strong className="text-foreground">{form.watch('preferred_time')}</strong>.</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Bottom Action Bar */}
-                <div className="fixed bottom-0 left-0 right-0 p-6 bg-background-light/80 dark:bg-[#111811]/90 backdrop-blur-xl border-t border-gray-200 dark:border-white/5 z-40">
-                  <div className="max-w-md mx-auto">
-                    <Button
-                      type="submit"
-                      className="w-full h-14 text-base font-bold shadow-lg shadow-primary/20 rounded-xl"
-                      disabled={createBooking.isPending}
-                    >
-                      {createBooking.isPending ? 'Confirming...' : 'Submit Booking'}
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </div>
+                <div className="flex gap-4">
+                  <Button type="submit" disabled={createBooking.isPending}>
+                    {createBooking.isPending ? 'Submitting...' : 'Submit Request'}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                    Cancel
+                  </Button>
                 </div>
-
               </form>
             </Form>
-          </main>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Upcoming Bookings */}
+      {upcomingBookings.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="font-display text-xl text-foreground">Upcoming Sessions</h2>
+          <div className="grid gap-4">
+            {upcomingBookings.map((booking) => (
+              <BookingCard
+                key={booking.id}
+                booking={booking}
+                onCancel={() => cancelBooking.mutate(booking.id)}
+                cancelling={cancelBooking.isPending}
+              />
+            ))}
+          </div>
         </div>
       )}
 
+      {/* Past Bookings */}
+      {pastBookings.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="font-display text-xl text-foreground">Past Sessions</h2>
+          <div className="grid gap-4">
+            {pastBookings.map((booking) => (
+              <BookingCard key={booking.id} booking={booking} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {bookings.length === 0 && !showForm && !isLoading && (
+        <Card className="p-12 text-center border-white/[0.08] bg-white/[0.04]">
+          <Headphones className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+          <h3 className="font-display text-xl mb-2">No Sessions Yet</h3>
+          <p className="text-muted-foreground mb-6">
+            Book your first concierge session to get personalized support
+          </p>
+          <Button onClick={() => setShowForm(true)}>
+            Book Your First Session
+          </Button>
+        </Card>
+      )}
     </div>
   );
 }
@@ -480,20 +530,23 @@ function BookingCard({ booking, onCancel, cancelling }: BookingCardProps) {
   const bookingType = BOOKING_TYPES.find((t) => t.value === booking.booking_type)?.label || booking.booking_type;
 
   return (
-    <Card className="border-white/[0.08] bg-[#1c261c] backdrop-blur-sm">
+    <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h4 className="font-medium text-white">{topic}</h4>
+              <h4 className="font-medium">{topic}</h4>
               <Badge className={statusConfig.color}>
                 <Icon className="h-3 w-3 mr-1" />
                 {statusConfig.label}
               </Badge>
             </div>
-            <p className="text-sm text-gray-400">
-              {bookingType} • {format(new Date(booking.preferred_date), 'MMM d, yyyy')} at {booking.preferred_time}
+            <p className="text-sm text-muted-foreground">
+              {bookingType} • {new Date(booking.preferred_date).toLocaleDateString()} at {booking.preferred_time}
             </p>
+            {booking.notes && (
+              <p className="text-sm text-muted-foreground mt-2">{booking.notes}</p>
+            )}
           </div>
           {onCancel && booking.status === 'pending' && (
             <Button
@@ -501,7 +554,7 @@ function BookingCard({ booking, onCancel, cancelling }: BookingCardProps) {
               size="sm"
               onClick={onCancel}
               disabled={cancelling}
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="text-destructive hover:text-destructive"
             >
               Cancel
             </Button>
