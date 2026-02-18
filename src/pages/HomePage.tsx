@@ -27,7 +27,7 @@ import { generateOrganizationSchema } from '@/lib/seo-schema';
 
 const HomePage = () => {
   return (
-    <main className="flex flex-col min-h-screen bg-[#051008]">
+    <main className="flex flex-col min-h-screen bg-[#0a0f0a]">
       <SEO
         title="Experience Meaningful Connection"
         description="Join an exclusive community of professionals in NYC. Weekly curated events, authentic networking, and slow dating for high-achievers."

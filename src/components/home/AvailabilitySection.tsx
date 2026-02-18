@@ -4,8 +4,8 @@ import { Star } from 'lucide-react';
 
 export const AvailabilitySection = () => {
     return (
-        <section className="w-full px-6 py-24 bg-[#051008] flex justify-center">
-            <div className="max-w-md w-full p-12 rounded-3xl bg-[#0a1f0f] border border-[#d4af37]/10 text-center relative overflow-hidden group hover:border-[#d4af37]/30 transition-colors duration-500 shadow-2xl">
+        <section className="w-full px-6 py-24 bg-[#0a0f0a] flex justify-center">
+            <div className="max-w-md w-full p-12 rounded-3xl bg-[#141f17] border border-white/5 text-center relative overflow-hidden group hover:bg-[#141f17]/80 transition-colors duration-500 shadow-2xl">
 
                 {/* Glow Effect */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-[#d4af37]/10 blur-[50px] rounded-full pointer-events-none" />

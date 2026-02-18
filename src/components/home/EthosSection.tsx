@@ -1,26 +1,26 @@
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Lock, Gem, Globe, Wine } from 'lucide-react';
+import { Lock, Gem, Globe, MessageSquare } from 'lucide-react';
 
 const ethosItems = [
   {
     icon: Lock,
     title: 'Privacy First',
-    description: 'Your data is yours alone. Encrypted sanctuary.',
+    description: 'Discretion is our currency. Your data is sovereign.',
   },
   {
     icon: Gem,
     title: 'Curated Events',
-    description: 'Exclusive gatherings for the chosen few.',
+    description: 'Access to exclusive gatherings worldwide.',
   },
   {
     icon: Globe,
     title: 'Global Access',
-    description: 'Worldwide reciprocity at partner houses.',
+    description: 'A network that travels with you, everywhere.',
   },
   {
-    icon: Wine,
-    title: 'Fine Dining',
-    description: 'Culinary excellence in every encounter.',
+    icon: MessageSquare,
+    title: 'True Discourse',
+    description: 'Meaningful conversations with peers.',
   },
 ];
 
@@ -28,30 +28,28 @@ export const EthosSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 bg-[#051008]" id="ethos">
-      <div ref={ref} className="mx-auto max-w-7xl">
+    <section className="w-full px-6 py-12 bg-gradient-to-b from-transparent to-[#0a0f0a]" id="ethos">
+      <div ref={ref} className="mx-auto max-w-4xl">
 
         {/* Section Header */}
-        <div className={`mb-16 text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-normal text-white italic">
-            Our Ethos
-            <span className="block h-px w-24 bg-[#d4af37]/50 mx-auto mt-6" />
-          </h2>
+        <div className={`flex items-center justify-between mb-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h3 className="text-2xl text-white font-medium italic font-display">Our Ethos</h3>
+          <div className="h-[1px] flex-1 bg-white/10 ml-4" />
         </div>
 
-        {/* 4-Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Grid matching HTML reference (grid-cols-2 gap-4) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {ethosItems.map((item, index) => (
             <div
               key={index}
-              className={`group relative p-8 rounded-2xl bg-[#0a1f0f] border border-[#d4af37]/10 hover:border-[#d4af37]/30 transition-all duration-700 delay-[${index * 100}ms] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              className={`group bg-[#141f17] border border-white/5 rounded-lg p-5 flex flex-col items-start gap-3 hover:bg-[#141f17]/80 transition-all duration-500 delay-[${index * 100}ms] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
             >
-              <div className="mb-6 inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#d4af37]/10 text-[#d4af37] group-hover:scale-110 transition-transform duration-500">
-                <item.icon className="w-6 h-6" />
+              <div className="p-2 rounded-full bg-[#1a5b2a]/20 text-[#d4af37]">
+                <item.icon className="w-5 h-5" />
               </div>
 
-              <h3 className="font-display text-2xl text-white mb-3 group-hover:text-[#d4af37] transition-colors">{item.title}</h3>
-              <p className="text-white/60 text-sm leading-relaxed font-light">
+              <h4 className="text-white text-lg font-medium leading-tight font-display">{item.title}</h4>
+              <p className="text-white/50 text-xs font-sans leading-relaxed">
                 {item.description}
               </p>
             </div>
