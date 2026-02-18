@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Application Review Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#17cf45",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#112115",
+                        "surface-dark": "#1a2e1f", // Slightly lighter than background-dark for cards
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for clean UI */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-gray-100 antialiased overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between px-4 pt-12 pb-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200 dark:border-white/5">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-gray-900 dark:text-white" style="font-size: 24px;">arrow_back</span>
+</button>
+<h1 class="text-base font-semibold tracking-wide uppercase text-gray-500 dark:text-gray-400">Application Review</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-gray-900 dark:text-white" style="font-size: 24px;">more_horiz</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto scrollbar-hide pb-28">
+<!-- Hero Profile Section -->
+<div class="px-4 pt-2 pb-6">
+<!-- Photo Carousel -->
+<div class="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4">
+<div class="snap-center shrink-0 w-[85%] aspect-[3/4] rounded-2xl overflow-hidden relative shadow-lg">
+<img alt="Portrait of a young asian man smiling in a casual shirt" class="w-full h-full object-cover" data-alt="Portrait of a young asian man smiling in a casual shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuQPdnH2PH5OsqUowfp4cDIFZv0ZPy_RKhraEALJBUwNw9-dAK7RCPE_rqJFcf_-QjJZsnMRlhT44VMTYzXsQdDBJH0csBzsnX1nTpxkBUPzX_-Q8srTqm0fDv37d7lIFCVKBvjXGBzLEOf5Y1oblVAYl-RveIpmfTld_egoR2wq6AUgJrX58pImo7kBnbpSrCgjbn8r__zuUQYhegnl0_tA_X4WL7snhOMYqSzydX_mz-iYbwtBLCUmpIvi7l3CemwBAxcIyWj7o"/>
+<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 pt-20">
+<div class="flex items-center gap-2 mb-1">
+<h2 class="text-2xl font-bold text-white">Alex Chen, 28</h2>
+<span class="material-symbols-outlined text-blue-400 bg-white rounded-full" style="font-size: 16px; font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div class="flex items-center gap-1 text-gray-300 text-sm font-medium">
+<span class="material-symbols-outlined" style="font-size: 16px;">location_on</span>
+<span>San Francisco, CA</span>
+</div>
+</div>
+</div>
+<div class="snap-center shrink-0 w-[85%] aspect-[3/4] rounded-2xl overflow-hidden relative shadow-lg">
+<img alt="Man working at a modern office desk with laptop" class="w-full h-full object-cover" data-alt="Man working at a modern office desk with laptop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSMqezXPtKGzzSDTgHG2YKxaXPgnx6bwEJdtlhxfF5eq9Ugnq35PwuqbVLdnXB3FoZvCA3NX0okfFwZtGeFwxTIZ0zoiZyNvtKDo8o4NsmmSzng_-Df4h3SpTKZY2E9-RCXSX1Ok-7e9YIfsX_msTAc5nveZyHuvwwP2LUwQDgh1MjV-PCg-CHj3j9CzcvqEFcmjQyXDVAeVZ1z7yRUZtvqT7pBlsn09f5J2Blz7ut16WJSzBHTqud3ogOyp2mW3tA5of69ig7zXQ"/>
+</div>
+<div class="snap-center shrink-0 w-[85%] aspect-[3/4] rounded-2xl overflow-hidden relative shadow-lg">
+<img alt="Team meeting discussion around a whiteboard" class="w-full h-full object-cover" data-alt="Team meeting discussion around a whiteboard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8uoPtd51_udEEiTQUdKJ5p9MosM4pvLbFMdwjVVfomjyeKIDS-iCEBBCVhEvJMOmF7-nBcYP7virrPLgg-j2bhH_xXeAAsZm06N-qVFCvXi1dfR6GfKN6aSzmNMhWUncRgQnJMg8RhVblOWRD2FkYzSJvC9ko511DWmZNev4ntk-JkhxSsXV7unawGRK3iBh7Q0WyOS9APEIuKmfPtoBhqFpt2zsi_7CFYddvgaxSD_jIcRLMtMkWPapU6lorxdy3VsUXoQqnLDw"/>
+</div>
+</div>
+<!-- Professional Identity Card -->
+<div class="mt-4 bg-white dark:bg-surface-dark rounded-xl p-5 border border-gray-100 dark:border-white/5 shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<div class="p-2 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined" style="font-size: 24px;">work</span>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Professional Identity</h3>
+</div>
+<div class="space-y-4">
+<div class="grid grid-cols-[100px_1fr] gap-4 items-baseline">
+<span class="text-sm font-medium text-gray-500 dark:text-gray-400">Current Role</span>
+<span class="text-sm font-medium text-gray-900 dark:text-white">Product Designer at Stripe</span>
+</div>
+<div class="grid grid-cols-[100px_1fr] gap-4 items-baseline">
+<span class="text-sm font-medium text-gray-500 dark:text-gray-400">Industry</span>
+<div class="flex flex-wrap gap-2">
+<span class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10 text-xs font-medium text-gray-600 dark:text-gray-300">FinTech</span>
+<span class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10 text-xs font-medium text-gray-600 dark:text-gray-300">SaaS</span>
+<span class="px-2 py-1 rounded bg-gray-100 dark:bg-white/10 text-xs font-medium text-gray-600 dark:text-gray-300">Design Systems</span>
+</div>
+</div>
+<div class="border-t border-gray-100 dark:border-white/10 my-3"></div>
+<div>
+<p class="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                            I specialize in design systems and accessibility. I've been working in the fintech space for 5 years and am passionate about making complex financial tools easy to use.
+                        </p>
+</div>
+<div class="flex gap-3 pt-2">
+<a class="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" href="#">
+<img alt="LinkedIn Logo" class="w-4 h-4 grayscale opacity-70" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdlwTNZSjMSMF9bpCmZ23-Jnl4D8RH4jHYmsh_gXYbzUa2dx3xn0I2s2CuOqmT5lvI1RSN_bZuiZjgD6izOv6HK0b0zZDFjU20nQQCUn-txTQreYzVsrUay5_lliBXzWIIK71yI-DPB7QPS_D1zb7pPak8tpqWxs2Oz7kjFE6Gjv8B6tBEVoSkOEAU1eYCaFyKHE84bRkg2oJnlA260RwhQHqgaBjld0m_YSGl3_tBVGaGmcydzDmZyfp48SjbOlbcwZvs_4Bq9gE"/>
+                            LinkedIn Profile
+                         </a>
+<a class="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-size: 16px;">language</span>
+                            Portfolio
+                         </a>
+</div>
+</div>
+</div>
+<!-- Community Goals Card -->
+<div class="mt-4 bg-white dark:bg-surface-dark rounded-xl p-5 border border-gray-100 dark:border-white/5 shadow-sm">
+<div class="flex items-center gap-3 mb-4">
+<div class="p-2 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined" style="font-size: 24px;">diversity_3</span>
+</div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Community Goals</h3>
+</div>
+<div class="space-y-5">
+<div>
+<span class="text-xs uppercase tracking-wider font-semibold text-gray-400 dark:text-gray-500 block mb-2">Looking For</span>
+<div class="flex flex-wrap gap-2">
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-sm font-medium">
+<span class="material-symbols-outlined" style="font-size: 16px;">school</span>
+                                Mentorship
+                            </div>
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-sm font-medium">
+<span class="material-symbols-outlined" style="font-size: 16px;">handshake</span>
+                                Co-founder Matching
+                            </div>
+</div>
+</div>
+<div>
+<span class="text-xs uppercase tracking-wider font-semibold text-gray-400 dark:text-gray-500 block mb-2">Can Offer</span>
+<ul class="space-y-2">
+<li class="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined text-primary mt-0.5" style="font-size: 16px;">check_circle</span>
+                                UI/UX Design Critiques
+                            </li>
+<li class="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined text-primary mt-0.5" style="font-size: 16px;">check_circle</span>
+                                Introductions to Seed Investors
+                            </li>
+<li class="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined text-primary mt-0.5" style="font-size: 16px;">check_circle</span>
+                                Accessibility Workshops
+                            </li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Reference / Social Proof -->
+<div class="mt-4 bg-white dark:bg-surface-dark rounded-xl p-5 border border-gray-100 dark:border-white/5 shadow-sm mb-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-gray-100 dark:bg-white/5 rounded-lg text-gray-500 dark:text-gray-400">
+<span class="material-symbols-outlined" style="font-size: 20px;">group</span>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-900 dark:text-white">Mutual Connections</p>
+<p class="text-xs text-gray-500 dark:text-gray-400">3 Members know Alex</p>
+</div>
+</div>
+<div class="flex -space-x-2">
+<img alt="Member Avatar" class="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-[#112115]" data-alt="Avatar of female member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmcpBqSHK3KU8emd8qtfYAHC2yimR_0pgSm3RAZJ3aPOMNro0ykP9IBXHBncTomenmoAKeU5PYRnY0jrQAiUkbbsX0WMuRMNDXLWOQjiS7VjBjEiSHQAbiDuE2eFZufeqIqSglZmntevjTA3Q0ZNTaHQHIJYtWHuQUgis_MjbjffwwzcCdNtb7feD6_lingRnr86F1wd9stXFZz_AEarOuObvb1OeGVsDaGkvlVqpenj9QDFUvjHj-tooqBiBjV8CqViFOZ-Cvn2g"/>
+<img alt="Member Avatar" class="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-[#112115]" data-alt="Avatar of male member" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZHPqOZLcqBxrv9gF6cM9qm_bADtfi_7uOM9sWm1hodb5ekDdI9hbdytM2IyN8OBW5VEioflYVCW3NW337-01WySV0p1aniM4jS7cE78Srq8seiZ5R_u7wrTmFrZwCcyb4N1s3fM96vqf68h-pgZtChXblwJw1dFaWV71CDGpile-GxKXS_fmUa9zBIODtFUJC6BpKJlwt1VFyp--ONn7ruxFisqwVD7lzU-bg3w1Xp1XrvOKRocxhoopkG38IwInmL2vZsLLxu6g"/>
+<div class="h-8 w-8 rounded-full ring-2 ring-white dark:ring-[#112115] bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[10px] font-bold text-gray-600 dark:text-gray-300">+1</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Sticky Action Bar -->
+<footer class="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-xl border-t border-gray-200 dark:border-white/5 z-40">
+<div class="flex gap-4 max-w-md mx-auto">
+<button class="flex-1 flex items-center justify-center gap-2 h-14 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 font-bold text-base active:scale-[0.98] transition-transform border border-transparent dark:border-red-500/20 hover:bg-red-100 dark:hover:bg-red-500/20">
+<span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+                Reject
+            </button>
+<button class="flex-1 flex items-center justify-center gap-2 h-14 rounded-xl bg-primary text-black font-bold text-base active:scale-[0.98] transition-transform shadow-[0_0_15px_rgba(23,207,69,0.3)] hover:brightness-110">
+<span class="material-symbols-outlined" style="font-size: 20px;">check</span>
+                Approve
+            </button>
+</div>
+</footer>
+</body></html>

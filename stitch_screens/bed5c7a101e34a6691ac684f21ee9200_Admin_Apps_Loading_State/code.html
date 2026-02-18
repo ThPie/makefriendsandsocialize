@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Apps Loading State</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' }
+                        }
+                    },
+                    animation: {
+                        shimmer: 'shimmer 2s infinite linear'
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Shimmer Effect Class */
+        .shimmer {
+            background: linear-gradient(to right, #1c2127 8%, #2d353f 18%, #1c2127 33%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-white font-display antialiased overflow-hidden">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto border-x border-[#283039]">
+<!-- Header -->
+<div class="flex items-center bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-[#283039]">
+<div class="text-white flex size-12 shrink-0 items-center justify-center rounded-full hover:bg-[#283039] transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Applications</h2>
+<div class="flex size-12 items-center justify-center shrink-0">
+<div class="shimmer h-6 w-6 rounded-full"></div>
+</div>
+</div>
+<!-- Tab Bar Skeleton -->
+<div class="pb-3 bg-background-dark">
+<div class="flex border-b border-[#3b4754] px-4 gap-8">
+<!-- Tab 1 -->
+<div class="flex flex-col items-center justify-center border-b-[3px] border-b-primary/50 pb-[13px] pt-4 flex-1">
+<div class="shimmer h-4 w-20 rounded-full"></div>
+</div>
+<!-- Tab 2 -->
+<div class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent pb-[13px] pt-4 flex-1">
+<div class="shimmer h-4 w-16 rounded-full opacity-60"></div>
+</div>
+<!-- Tab 3 -->
+<div class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent pb-[13px] pt-4 flex-1">
+<div class="shimmer h-4 w-16 rounded-full opacity-60"></div>
+</div>
+</div>
+</div>
+<!-- List Content Skeleton -->
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<!-- Item 1 -->
+<div class="flex gap-4 bg-background-dark px-4 py-4 justify-between border-b border-[#283039]/50">
+<div class="flex items-center gap-4 w-full">
+<div class="shimmer rounded-full h-[60px] w-[60px] shrink-0"></div>
+<div class="flex flex-1 flex-col justify-center gap-2">
+<div class="shimmer h-4 w-3/4 rounded-full"></div>
+<div class="shimmer h-3 w-1/3 rounded-full opacity-70"></div>
+<div class="shimmer h-3 w-1/2 rounded-full opacity-70"></div>
+</div>
+</div>
+<div class="shrink-0 self-center">
+<div class="shimmer h-6 w-6 rounded-full opacity-50"></div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-4 bg-background-dark px-4 py-4 justify-between border-b border-[#283039]/50">
+<div class="flex items-center gap-4 w-full">
+<div class="shimmer rounded-full h-[60px] w-[60px] shrink-0"></div>
+<div class="flex flex-1 flex-col justify-center gap-2">
+<div class="shimmer h-4 w-2/3 rounded-full"></div>
+<div class="shimmer h-3 w-1/4 rounded-full opacity-70"></div>
+<div class="shimmer h-3 w-3/5 rounded-full opacity-70"></div>
+</div>
+</div>
+<div class="shrink-0 self-center">
+<div class="shimmer h-6 w-6 rounded-full opacity-50"></div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex gap-4 bg-background-dark px-4 py-4 justify-between border-b border-[#283039]/50">
+<div class="flex items-center gap-4 w-full">
+<div class="shimmer rounded-full h-[60px] w-[60px] shrink-0"></div>
+<div class="flex flex-1 flex-col justify-center gap-2">
+<div class="shimmer h-4 w-1/2 rounded-full"></div>
+<div class="shimmer h-3 w-1/3 rounded-full opacity-70"></div>
+<div class="shimmer h-3 w-2/3 rounded-full opacity-70"></div>
+</div>
+</div>
+<div class="shrink-0 self-center">
+<div class="shimmer h-6 w-6 rounded-full opacity-50"></div>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex gap-4 bg-background-dark px-4 py-4 justify-between border-b border-[#283039]/50">
+<div class="flex items-center gap-4 w-full">
+<div class="shimmer rounded-full h-[60px] w-[60px] shrink-0"></div>
+<div class="flex flex-1 flex-col justify-center gap-2">
+<div class="shimmer h-4 w-3/5 rounded-full"></div>
+<div class="shimmer h-3 w-1/4 rounded-full opacity-70"></div>
+<div class="shimmer h-3 w-1/2 rounded-full opacity-70"></div>
+</div>
+</div>
+<div class="shrink-0 self-center">
+<div class="shimmer h-6 w-6 rounded-full opacity-50"></div>
+</div>
+</div>
+<!-- Item 5 -->
+<div class="flex gap-4 bg-background-dark px-4 py-4 justify-between border-b border-[#283039]/50">
+<div class="flex items-center gap-4 w-full">
+<div class="shimmer rounded-full h-[60px] w-[60px] shrink-0"></div>
+<div class="flex flex-1 flex-col justify-center gap-2">
+<div class="shimmer h-4 w-4/5 rounded-full"></div>
+<div class="shimmer h-3 w-1/3 rounded-full opacity-70"></div>
+<div class="shimmer h-3 w-2/5 rounded-full opacity-70"></div>
+</div>
+</div>
+<div class="shrink-0 self-center">
+<div class="shimmer h-6 w-6 rounded-full opacity-50"></div>
+</div>
+</div>
+<!-- Item 6 -->
+<div class="flex gap-4 bg-background-dark px-4 py-4 justify-between border-b border-[#283039]/50">
+<div class="flex items-center gap-4 w-full">
+<div class="shimmer rounded-full h-[60px] w-[60px] shrink-0"></div>
+<div class="flex flex-1 flex-col justify-center gap-2">
+<div class="shimmer h-4 w-2/3 rounded-full"></div>
+<div class="shimmer h-3 w-1/5 rounded-full opacity-70"></div>
+<div class="shimmer h-3 w-1/2 rounded-full opacity-70"></div>
+</div>
+</div>
+<div class="shrink-0 self-center">
+<div class="shimmer h-6 w-6 rounded-full opacity-50"></div>
+</div>
+</div>
+<!-- Item 7 -->
+<div class="flex gap-4 bg-background-dark px-4 py-4 justify-between border-b border-[#283039]/50">
+<div class="flex items-center gap-4 w-full">
+<div class="shimmer rounded-full h-[60px] w-[60px] shrink-0"></div>
+<div class="flex flex-1 flex-col justify-center gap-2">
+<div class="shimmer h-4 w-1/2 rounded-full"></div>
+<div class="shimmer h-3 w-1/4 rounded-full opacity-70"></div>
+<div class="shimmer h-3 w-3/5 rounded-full opacity-70"></div>
+</div>
+</div>
+<div class="shrink-0 self-center">
+<div class="shimmer h-6 w-6 rounded-full opacity-50"></div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex gap-2 border-t border-[#283039] bg-[#1c2127] px-4 pb-6 pt-2 shrink-0 z-20">
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#9dabb9]" href="#">
+<div class="text-[#9dabb9] flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</div>
+<p class="text-[#9dabb9] text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-white" href="#">
+<div class="text-white flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px] filled">grid_view</span>
+</div>
+<p class="text-white text-xs font-medium leading-normal tracking-[0.015em]">Apps</p>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#9dabb9]" href="#">
+<div class="text-[#9dabb9] flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">group</span>
+</div>
+<p class="text-[#9dabb9] text-xs font-medium leading-normal tracking-[0.015em]">Team</p>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#9dabb9]" href="#">
+<div class="text-[#9dabb9] flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</div>
+<p class="text-[#9dabb9] text-xs font-medium leading-normal tracking-[0.015em]">Settings</p>
+</a>
+</div>
+</div>
+</body></html>

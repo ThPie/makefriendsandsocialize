@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Security Verification Challenge</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0fbd0f",
+                        "primary-dark": "#0a8a0a",
+                        "accent-gold": "#FFD700",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210", // Dark green-black base
+                        "card-dark": "#162e16", // Slightly lighter for cards
+                        "surface-dark": "#1a361a", // Input fields
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #2a4a2a 1px, transparent 1px), linear-gradient(to bottom, #2a4a2a 1px, transparent 1px)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom styles for grid background */
+        .bg-grid {
+            background-size: 40px 40px;
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
+        /* Remove arrows from number inputs */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-white selection:bg-primary selection:text-white min-h-screen flex flex-col relative overflow-hidden">
+<!-- Subtle Grid Background -->
+<div class="absolute inset-0 z-0 pointer-events-none opacity-[0.07] dark:opacity-[0.15] bg-grid-pattern bg-grid"></div>
+<!-- Header / Nav -->
+<div class="relative z-10 flex items-center justify-between p-4 pb-2">
+<button class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors flex size-10 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-card-dark">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h2 class="text-slate-900 dark:text-white text-sm font-semibold uppercase tracking-wider opacity-70">Security Check</h2>
+<div class="size-10"></div> <!-- Spacer for centering -->
+</div>
+<!-- Main Content -->
+<main class="relative z-10 flex-1 flex flex-col items-center justify-center px-4 w-full max-w-md mx-auto pb-12">
+<!-- Security Card -->
+<div class="w-full bg-white dark:bg-card-dark rounded-2xl shadow-2xl shadow-black/40 border border-slate-200 dark:border-slate-700/50 p-6 flex flex-col items-center gap-6">
+<!-- Icon Area -->
+<div class="size-20 rounded-full bg-gradient-to-b from-slate-50 to-slate-100 dark:from-surface-dark dark:to-card-dark border border-slate-200 dark:border-slate-600 flex items-center justify-center shadow-inner mt-2">
+<span class="material-symbols-outlined text-amber-500 dark:text-accent-gold text-[40px] drop-shadow-sm" style="font-variation-settings: 'FILL' 1, 'wght' 600;">
+                    security
+                </span>
+</div>
+<!-- Text Content -->
+<div class="text-center space-y-2">
+<h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Verification Required</h1>
+<p class="text-slate-500 dark:text-slate-300 text-sm leading-relaxed px-2">
+                    We've detected a login attempt from a new device. Please enter the 6-digit code from your authenticator app.
+                </p>
+</div>
+<!-- 6-Digit Input -->
+<div class="w-full py-2">
+<div class="flex justify-center gap-2 sm:gap-3">
+<fieldset class="contents">
+<!-- Input 1 -->
+<input autofocus="" class="w-10 h-14 sm:w-12 sm:h-16 text-center text-xl sm:text-2xl font-bold bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:border-primary dark:focus:border-primary focus:ring-1 focus:ring-primary dark:focus:ring-primary transition-all placeholder-transparent caret-primary" maxlength="1" oninput="if(this.value.length &gt; 1) this.value = this.value.slice(0,1); if(this.value.length === 1) this.nextElementSibling.focus();" onkeydown="if(event.key === 'Backspace' &amp;&amp; this.value === '') { this.previousElementSibling?.focus(); }" placeholder="0" type="number"/>
+<!-- Input 2 -->
+<input class="w-10 h-14 sm:w-12 sm:h-16 text-center text-xl sm:text-2xl font-bold bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:border-primary dark:focus:border-primary focus:ring-1 focus:ring-primary dark:focus:ring-primary transition-all placeholder-transparent caret-primary" maxlength="1" oninput="if(this.value.length &gt; 1) this.value = this.value.slice(0,1); if(this.value.length === 1) this.nextElementSibling.focus();" onkeydown="if(event.key === 'Backspace' &amp;&amp; this.value === '') { this.previousElementSibling?.focus(); }" placeholder="0" type="number"/>
+<!-- Input 3 -->
+<input class="w-10 h-14 sm:w-12 sm:h-16 text-center text-xl sm:text-2xl font-bold bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:border-primary dark:focus:border-primary focus:ring-1 focus:ring-primary dark:focus:ring-primary transition-all placeholder-transparent caret-primary mr-1 sm:mr-2" maxlength="1" oninput="if(this.value.length &gt; 1) this.value = this.value.slice(0,1); if(this.value.length === 1) this.nextElementSibling.focus();" onkeydown="if(event.key === 'Backspace' &amp;&amp; this.value === '') { this.previousElementSibling?.focus(); }" placeholder="0" type="number"/>
+<!-- Dash Separator Visual (CSS Pseudo-element approach or spacer) -->
+<div class="hidden"></div>
+<!-- Input 4 -->
+<input class="w-10 h-14 sm:w-12 sm:h-16 text-center text-xl sm:text-2xl font-bold bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:border-primary dark:focus:border-primary focus:ring-1 focus:ring-primary dark:focus:ring-primary transition-all placeholder-transparent caret-primary ml-1 sm:ml-2" maxlength="1" oninput="if(this.value.length &gt; 1) this.value = this.value.slice(0,1); if(this.value.length === 1) this.nextElementSibling.focus();" onkeydown="if(event.key === 'Backspace' &amp;&amp; this.value === '') { this.previousElementSibling?.focus(); }" placeholder="0" type="number"/>
+<!-- Input 5 -->
+<input class="w-10 h-14 sm:w-12 sm:h-16 text-center text-xl sm:text-2xl font-bold bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:border-primary dark:focus:border-primary focus:ring-1 focus:ring-primary dark:focus:ring-primary transition-all placeholder-transparent caret-primary" maxlength="1" oninput="if(this.value.length &gt; 1) this.value = this.value.slice(0,1); if(this.value.length === 1) this.nextElementSibling.focus();" onkeydown="if(event.key === 'Backspace' &amp;&amp; this.value === '') { this.previousElementSibling?.focus(); }" placeholder="0" type="number"/>
+<!-- Input 6 -->
+<input class="w-10 h-14 sm:w-12 sm:h-16 text-center text-xl sm:text-2xl font-bold bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:border-primary dark:focus:border-primary focus:ring-1 focus:ring-primary dark:focus:ring-primary transition-all placeholder-transparent caret-primary" maxlength="1" oninput="if(this.value.length &gt; 1) this.value = this.value.slice(0,1);" onkeydown="if(event.key === 'Backspace' &amp;&amp; this.value === '') { this.previousElementSibling?.focus(); }" placeholder="0" type="number"/>
+</fieldset>
+</div>
+<div class="flex justify-between mt-2 px-1">
+<!-- Helper text could go here -->
+</div>
+</div>
+<!-- Actions -->
+<div class="w-full flex flex-col gap-3">
+<button class="w-full bg-primary hover:bg-primary-dark text-white font-semibold h-12 rounded-lg shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+                    Verify Identity
+                </button>
+<button class="w-full bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 font-medium h-12 rounded-lg transition-colors text-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+                    Resend Code (30s)
+                </button>
+</div>
+</div>
+<!-- Footer / Support -->
+<div class="mt-8 text-center">
+<p class="text-xs text-slate-500 dark:text-slate-400">
+                Can't access your authenticator? 
+                <a class="text-primary hover:text-primary-dark hover:underline font-medium" href="#">Try another method</a>
+</p>
+</div>
+</main>
+<!-- Bottom Status Indicator (Optional Visual Flair) -->
+<div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+</body></html>

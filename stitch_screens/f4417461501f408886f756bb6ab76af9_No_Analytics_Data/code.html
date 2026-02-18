@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>No Analytics Data</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0fbd0f",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white min-h-screen flex flex-col overflow-hidden">
+<!-- Header -->
+<header class="flex items-center justify-between px-4 py-4 border-b border-gray-200 dark:border-white/10 bg-background-light dark:bg-background-dark sticky top-0 z-10">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-gray-900 dark:text-white">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold">Analytics</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-gray-900 dark:text-white">
+<span class="material-symbols-outlined text-2xl">filter_list</span>
+</button>
+</header>
+<!-- Main Content: Empty State -->
+<main class="flex-1 flex flex-col items-center justify-center px-6 pb-20 pt-10 text-center w-full max-w-md mx-auto">
+<!-- Icon Container -->
+<div class="relative w-32 h-32 mb-8 flex items-center justify-center">
+<!-- Background Glow -->
+<div class="absolute inset-0 bg-primary/20 rounded-full blur-2xl"></div>
+<!-- Icon Circle -->
+<div class="relative z-10 bg-white/5 border border-white/10 w-24 h-24 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-5xl">bar_chart_off</span>
+</div>
+</div>
+<!-- Text Content -->
+<h2 class="text-2xl font-bold mb-3 tracking-tight">Insufficient Data</h2>
+<p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed max-w-[280px] mb-10">
+            There is not enough data for this date range to generate a report. Try selecting a broader timeframe.
+        </p>
+<!-- Primary Action -->
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-xl">refresh</span>
+            Reset Filters
+        </button>
+<!-- Secondary hint (Optional decorative element) -->
+<div class="mt-8 flex gap-2 justify-center">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-white/20"></div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="border-t border-gray-200 dark:border-white/10 bg-background-light dark:bg-[#152a15] px-4 pb-6 pt-3">
+<div class="flex justify-between items-end">
+<!-- Home -->
+<a class="flex flex-1 flex-col items-center justify-end gap-1 group" href="#">
+<div class="text-gray-500 dark:text-[#9db99d] group-hover:text-primary transition-colors flex h-7 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</div>
+<p class="text-gray-500 dark:text-[#9db99d] group-hover:text-primary transition-colors text-[10px] font-medium leading-normal tracking-wide">Home</p>
+</a>
+<!-- Analytics (Active) -->
+<a class="flex flex-1 flex-col items-center justify-end gap-1 group" href="#">
+<div class="text-primary dark:text-white flex h-7 items-center justify-center relative">
+<span class="absolute -top-1 right-2 w-2 h-2 bg-primary rounded-full"></span>
+<span class="material-symbols-outlined text-[24px] font-variation-settings-'FILL'1">bar_chart</span>
+</div>
+<p class="text-primary dark:text-white text-[10px] font-medium leading-normal tracking-wide">Analytics</p>
+</a>
+<!-- Reports -->
+<a class="flex flex-1 flex-col items-center justify-end gap-1 group" href="#">
+<div class="text-gray-500 dark:text-[#9db99d] group-hover:text-primary transition-colors flex h-7 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">description</span>
+</div>
+<p class="text-gray-500 dark:text-[#9db99d] group-hover:text-primary transition-colors text-[10px] font-medium leading-normal tracking-wide">Reports</p>
+</a>
+<!-- Settings -->
+<a class="flex flex-1 flex-col items-center justify-end gap-1 group" href="#">
+<div class="text-gray-500 dark:text-[#9db99d] group-hover:text-primary transition-colors flex h-7 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</div>
+<p class="text-gray-500 dark:text-[#9db99d] group-hover:text-primary transition-colors text-[10px] font-medium leading-normal tracking-wide">Settings</p>
+</a>
+</div>
+</nav>
+</body></html>

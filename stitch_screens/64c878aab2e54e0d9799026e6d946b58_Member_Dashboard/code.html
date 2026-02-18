@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Member Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a5b2a",
+                        "primary-light": "#2a8540",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#0a0f0a",
+                        "surface-dark": "#131f16",
+                        "surface-darker": "#0e1610",
+                        "gold": "#D4AF37",
+                        "gold-light": "#E5C560",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white min-h-screen flex flex-col antialiased selection:bg-gold selection:text-surface-darker">
+<!-- Status Bar Area Placeholder -->
+<div class="h-12 w-full bg-background-dark/95 backdrop-blur-md fixed top-0 z-50"></div>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col pt-12 pb-[90px] relative overflow-y-auto overflow-x-hidden">
+<!-- Header -->
+<header class="flex items-center justify-between px-6 py-4 sticky top-12 z-40 bg-background-dark/80 backdrop-blur-sm">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-gold">
+<span class="material-symbols-outlined !text-[24px]">spa</span>
+</div>
+<span class="text-xl font-medium tracking-tight text-white/90">The Grove</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-white/70 hover:text-gold transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-gold animate-pulse"></span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border border-white/10 ring-2 ring-primary/20">
+<img alt="Profile of a man in a suit" class="h-full w-full object-cover" data-alt="Portrait of Julian, a member of the club" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBUyVex6KFFq6icm7u1ySUQvQ7hEWI6hPCwAGXc1Non_ILl8O_hzr2MAEG5HdnxPGFEsluAyiSMGUsN-3WncRVZNpAe3rSBzqueWtxFpdS61RnZsWHCJ9hFFxyoeBiH-kTBspS4N629wLcpxXfhOIH9SFWp5f8m-qXZVXR3DDUJxvi1EteNbPUlJB-Km4Qhq_Ftv4akqBpPQeShk9OoSEEELoH0bpVCNrA2aQ59sTqgfdAFY9KrS_G06DjDaYR0J6lFqPDXRFV8io"/>
+</div>
+</div>
+</header>
+<!-- Welcome Section -->
+<section class="px-6 pt-4 pb-6">
+<div class="flex flex-col gap-1">
+<h1 class="text-4xl font-light text-white leading-tight">
+                    Welcome back,<br/><span class="font-medium italic text-gold-light">Julian</span>
+</h1>
+<div class="flex items-center gap-2 mt-2">
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface-dark border border-white/5 text-xs font-body tracking-wider uppercase text-gold">
+<span class="material-symbols-outlined !text-[14px]">stars</span> Gold Member
+                    </span>
+</div>
+</div>
+</section>
+<!-- Stats Row -->
+<section class="px-6 mb-8">
+<div class="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6 snap-x scrollbar-hide">
+<!-- Card 1 -->
+<div class="snap-start shrink-0 w-[140px] p-5 rounded-2xl bg-surface-dark border border-white/5 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-primary/20 rounded-full blur-2xl group-hover:bg-primary/30 transition-all duration-500"></div>
+<p class="text-white/60 text-sm font-body font-medium mb-3">Events</p>
+<p class="text-3xl font-bold text-white tracking-tight">2</p>
+<div class="mt-4 flex items-center text-gold text-xs font-body gap-1">
+<span>Upcoming</span>
+<span class="material-symbols-outlined !text-[14px]">arrow_forward</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="snap-start shrink-0 w-[140px] p-5 rounded-2xl bg-surface-dark border border-white/5 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-gold/10 rounded-full blur-2xl group-hover:bg-gold/20 transition-all duration-500"></div>
+<p class="text-white/60 text-sm font-body font-medium mb-3">Network</p>
+<p class="text-3xl font-bold text-white tracking-tight">48</p>
+<div class="mt-4 flex items-center text-primary-light text-xs font-body gap-1">
+<span>Connections</span>
+<span class="material-symbols-outlined !text-[14px]">group</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="snap-start shrink-0 w-[140px] p-5 rounded-2xl bg-surface-dark border border-white/5 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all duration-500"></div>
+<p class="text-white/60 text-sm font-body font-medium mb-3">Profile</p>
+<p class="text-3xl font-bold text-white tracking-tight">85<span class="text-lg align-top text-white/50">%</span></p>
+<div class="mt-4 w-full bg-white/10 h-1 rounded-full overflow-hidden">
+<div class="bg-gold h-full w-[85%] rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Upcoming Schedule -->
+<section class="px-6 flex-1">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-xl font-medium text-white">Upcoming Schedule</h2>
+<a class="text-sm font-body text-primary-light hover:text-white transition-colors" href="#">View all</a>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Event Card 1 -->
+<div class="group relative flex items-center gap-4 p-4 rounded-xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all active:scale-[0.98]">
+<div class="shrink-0 flex flex-col items-center justify-center w-14 h-14 rounded-lg bg-surface-darker border border-white/10 font-body">
+<span class="text-xs text-white/50 uppercase font-bold">Oct</span>
+<span class="text-xl font-bold text-white">12</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-lg font-medium text-white truncate group-hover:text-gold transition-colors">Wine Tasting Gala</h3>
+<div class="flex items-center gap-1 mt-1 text-white/50 text-sm font-body truncate">
+<span class="material-symbols-outlined !text-[16px]">location_on</span>
+<span>The Grand Hall, NYC</span>
+</div>
+</div>
+<div class="shrink-0">
+<button class="h-8 w-8 rounded-full flex items-center justify-center bg-primary/10 text-primary-light group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined !text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="group relative flex items-center gap-4 p-4 rounded-xl bg-surface-dark border border-white/5 hover:border-primary/30 transition-all active:scale-[0.98]">
+<div class="shrink-0 flex flex-col items-center justify-center w-14 h-14 rounded-lg bg-surface-darker border border-white/10 font-body">
+<span class="text-xs text-white/50 uppercase font-bold">Oct</span>
+<span class="text-xl font-bold text-white">15</span>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-lg font-medium text-white truncate group-hover:text-gold transition-colors">Executive Networking</h3>
+<div class="flex items-center gap-1 mt-1 text-white/50 text-sm font-body truncate">
+<span class="material-symbols-outlined !text-[16px]">location_on</span>
+<span>Club Lounge, Member's Area</span>
+</div>
+</div>
+<div class="shrink-0">
+<button class="h-8 w-8 rounded-full flex items-center justify-center bg-primary/10 text-primary-light group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined !text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Concierge Promo -->
+<div class="mt-4 relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-primary to-surface-dark border border-white/10">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined !text-[120px]">concierge</span>
+</div>
+<div class="relative z-10">
+<p class="text-gold text-xs font-body uppercase tracking-wider font-bold mb-1">Concierge Service</p>
+<h3 class="text-xl font-medium text-white mb-2 w-2/3">Need a reservation for tonight?</h3>
+<button class="mt-2 text-sm bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg backdrop-blur-sm transition-colors font-body">
+                            Contact Concierge
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-dark/90 backdrop-blur-xl border-t border-white/5 pb-5 pt-2 px-6">
+<div class="flex justify-between items-end">
+<a class="flex flex-col items-center gap-1 group w-1/5" href="#">
+<span class="material-symbols-outlined text-primary group-hover:text-primary-light transition-colors !text-[26px]">home</span>
+<span class="text-[10px] font-body text-primary font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 group w-1/5 text-white/40 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined !text-[26px]">calendar_month</span>
+<span class="text-[10px] font-body font-medium">Events</span>
+</a>
+<a class="flex flex-col items-center gap-1 group w-1/5 text-white/40 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined !text-[26px]">contacts</span>
+<span class="text-[10px] font-body font-medium">Directory</span>
+</a>
+<a class="flex flex-col items-center gap-1 group w-1/5 text-white/40 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined !text-[26px]">diamond</span>
+<span class="text-[10px] font-body font-medium">Perks</span>
+</a>
+<a class="flex flex-col items-center gap-1 group w-1/5 text-white/40 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined !text-[26px]">person</span>
+<span class="text-[10px] font-body font-medium">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

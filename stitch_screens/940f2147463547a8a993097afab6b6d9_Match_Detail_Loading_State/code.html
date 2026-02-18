@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Match Detail Loading State</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d421",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102212",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                    animation: {
+                        shimmer: 'shimmer 1.5s infinite linear',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom shimmer utility class since Tailwind config in script tag has limits */
+        .animate-shimmer {
+            background: linear-gradient(to right, #1f2e21 4%, #2a3f2d 25%, #1f2e21 36%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+        }
+        /* Slightly lighter shimmer for primary color hints */
+        .animate-shimmer-primary {
+            background: linear-gradient(to right, #1f2e21 4%, #184220 25%, #1f2e21 36%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display flex items-center justify-center min-h-screen">
+<!-- Mobile Container -->
+<div class="w-full max-w-md h-full min-h-screen bg-background-light dark:bg-background-dark flex flex-col relative overflow-hidden shadow-2xl">
+<!-- Top App Bar Skeleton -->
+<div class="flex items-center p-4 pb-2 justify-between z-10">
+<div class="size-10 rounded-full animate-shimmer"></div>
+<div class="h-6 w-32 rounded animate-shimmer"></div>
+<div class="size-10 rounded-full animate-shimmer"></div>
+</div>
+<!-- Main Content Area -->
+<div class="flex-1 overflow-y-auto pb-24"> <!-- Padding bottom for fixed action button -->
+<!-- Header Hero Skeleton -->
+<div class="px-4 py-3">
+<div class="w-full aspect-[4/3] rounded-xl animate-shimmer relative">
+<!-- Data Alt for Accessibility/Context -->
+<div class="sr-only" data-alt="Loading placeholder for user profile cover photo">Loading profile photo</div>
+</div>
+</div>
+<!-- Score & Title Section -->
+<div class="px-4 -mt-10 relative flex flex-col items-center">
+<!-- Circular Shimmer Score -->
+<div class="size-24 rounded-full animate-shimmer-primary border-4 border-background-dark flex items-center justify-center mb-4 shadow-lg"></div>
+<!-- Title/Name Placeholders -->
+<div class="h-8 w-48 rounded-lg animate-shimmer mb-2"></div>
+<div class="h-4 w-32 rounded animate-shimmer mb-6"></div>
+</div>
+<!-- Compatibility Breakdown Charts Skeleton -->
+<div class="px-6 flex flex-col gap-6 mt-2">
+<!-- Chart Group 1 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<div class="h-4 w-24 rounded animate-shimmer"></div>
+<div class="h-4 w-8 rounded animate-shimmer"></div>
+</div>
+<div class="w-full bg-[#1f2e21] rounded-full h-3 overflow-hidden">
+<div class="h-full w-3/4 rounded-full animate-shimmer-primary opacity-50"></div>
+</div>
+</div>
+<!-- Chart Group 2 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<div class="h-4 w-32 rounded animate-shimmer"></div>
+<div class="h-4 w-8 rounded animate-shimmer"></div>
+</div>
+<div class="w-full bg-[#1f2e21] rounded-full h-3 overflow-hidden">
+<div class="h-full w-1/2 rounded-full animate-shimmer-primary opacity-50"></div>
+</div>
+</div>
+<!-- Chart Group 3 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<div class="h-4 w-20 rounded animate-shimmer"></div>
+<div class="h-4 w-8 rounded animate-shimmer"></div>
+</div>
+<div class="w-full bg-[#1f2e21] rounded-full h-3 overflow-hidden">
+<div class="h-full w-4/5 rounded-full animate-shimmer-primary opacity-50"></div>
+</div>
+</div>
+<!-- Chart Group 4 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<div class="h-4 w-28 rounded animate-shimmer"></div>
+<div class="h-4 w-8 rounded animate-shimmer"></div>
+</div>
+<div class="w-full bg-[#1f2e21] rounded-full h-3 overflow-hidden">
+<div class="h-full w-2/3 rounded-full animate-shimmer-primary opacity-50"></div>
+</div>
+</div>
+</div>
+<!-- Extra filler content -->
+<div class="px-6 mt-8 flex flex-col gap-3">
+<div class="h-32 w-full rounded-xl animate-shimmer"></div>
+</div>
+</div>
+<!-- Fixed Action Button Placeholder -->
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background-dark to-transparent pt-8">
+<div class="w-full h-14 rounded-xl animate-shimmer-primary opacity-80 shadow-lg"></div>
+<!-- Home Indicator Safe Area -->
+<div class="h-1 w-32 bg-white/10 rounded-full mx-auto mt-4"></div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MFA Configuration</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1111d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101022",
+                        "surface-dark": "#16162a", // Derived from background-dark for list items
+                        "surface-highlight": "#1c1c33", // Lighter surface
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #1111d4;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #1111d4;
+        }
+        
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+        
+        /* Hide scrollbar for cleaner look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen flex flex-col items-center justify-center">
+<!-- Mobile Container -->
+<div class="relative w-full max-w-md min-h-screen bg-background-light dark:bg-background-dark overflow-hidden flex flex-col shadow-2xl">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+<div class="flex items-center justify-between px-4 py-3">
+<button class="text-gray-900 dark:text-white flex items-center justify-center size-10 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+</button>
+<h1 class="text-gray-900 dark:text-white text-lg font-bold tracking-tight">MFA Configuration</h1>
+<div class="size-10"></div> <!-- Spacer for centering -->
+</div>
+</header>
+<!-- Scrollable Content -->
+<main class="flex-1 overflow-y-auto no-scrollbar pb-24">
+<!-- Hero Status Card -->
+<div class="px-4 py-6">
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-surface-dark to-primary/20 border border-gray-200 dark:border-white/5 p-6 shadow-lg">
+<!-- Abstract Background decoration -->
+<div class="absolute top-0 right-0 -mr-4 -mt-4 size-32 rounded-full bg-primary/20 blur-3xl"></div>
+<div class="relative z-10 flex flex-col items-center text-center">
+<div class="mb-4 flex size-16 items-center justify-center rounded-full bg-primary/20 text-primary ring-4 ring-primary/10 shadow-[0_0_15px_rgba(17,17,212,0.3)]">
+<span class="material-symbols-outlined text-3xl">shield_lock</span>
+</div>
+<h2 class="text-xl font-bold text-gray-900 dark:text-white">Partially Secured</h2>
+<p class="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-[260px]">
+                            Your account security is good, but could be stronger. Consider adding backup codes.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Intro Text -->
+<div class="px-6 pb-2">
+<h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Your Security Methods</h3>
+</div>
+<!-- Security Methods List -->
+<div class="px-4 space-y-3">
+<!-- Authenticator App -->
+<div class="group flex flex-col rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/5 overflow-hidden transition-all hover:border-primary/50">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-4">
+<div class="flex size-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-white/5 text-primary">
+<span class="material-symbols-outlined">perm_device_information</span>
+</div>
+<div>
+<h4 class="text-base font-semibold text-gray-900 dark:text-white">Authenticator App</h4>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="flex size-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
+<p class="text-xs text-gray-500 dark:text-gray-400">Connected</p>
+</div>
+</div>
+</div>
+<button class="px-4 py-2 text-xs font-medium text-primary hover:text-white border border-primary/20 hover:bg-primary rounded-lg transition-all duration-200">
+                            Edit
+                        </button>
+</div>
+</div>
+<!-- SMS Recovery -->
+<div class="group flex flex-col rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/5 overflow-hidden transition-all hover:border-primary/50">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-4">
+<div class="flex size-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-white/5 text-primary">
+<span class="material-symbols-outlined">sms</span>
+</div>
+<div>
+<h4 class="text-base font-semibold text-gray-900 dark:text-white">SMS Recovery</h4>
+<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1">••• ••• 4829</p>
+</div>
+</div>
+<button class="px-4 py-2 text-xs font-medium text-primary hover:text-white border border-primary/20 hover:bg-primary rounded-lg transition-all duration-200">
+                            Configure
+                        </button>
+</div>
+</div>
+<!-- Backup Codes -->
+<div class="group flex flex-col rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/5 overflow-hidden transition-all hover:border-primary/50">
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-4">
+<div class="flex size-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-white/5 text-primary">
+<span class="material-symbols-outlined">key</span>
+</div>
+<div>
+<h4 class="text-base font-semibold text-gray-900 dark:text-white">Backup Codes</h4>
+<p class="text-xs text-red-400 mt-0.5">Not configured</p>
+</div>
+</div>
+<button class="px-4 py-2 text-xs font-medium text-white bg-primary rounded-lg shadow-lg shadow-primary/30 transition-all hover:bg-blue-600">
+                            Setup
+                        </button>
+</div>
+</div>
+</div>
+<!-- Divider / Spacer -->
+<div class="my-8 flex items-center justify-center px-10 opacity-50">
+<div class="h-px w-full bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent"></div>
+</div>
+<!-- Organization Settings Section -->
+<div class="px-6 pb-2">
+<h3 class="text-xs font-semibold uppercase tracking-wider text-primary">Global Policy</h3>
+</div>
+<div class="px-4 pb-8">
+<div class="rounded-xl bg-surface-dark border border-primary/20 relative overflow-hidden">
+<!-- Subtle highlight background -->
+<div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
+<div class="p-4 flex items-center justify-between gap-4">
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<h4 class="text-base font-bold text-gray-900 dark:text-white">Enforce MFA</h4>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary text-white">ADMIN</span>
+</div>
+<p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Require all administrators to enable two-factor authentication on next login.
+                            </p>
+</div>
+<!-- Toggle Switch -->
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 border-surface-dark appearance-none cursor-pointer transition-all duration-300 shadow-sm top-0 left-0" id="toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer" for="toggle"></label>
+</div>
+</div>
+<!-- Info footer for card -->
+<div class="bg-primary/10 px-4 py-2 flex items-start gap-2 border-t border-primary/10">
+<span class="material-symbols-outlined text-primary text-sm mt-0.5">info</span>
+<p class="text-[11px] text-gray-400">
+                             Changing this setting will log out all admins who haven't set up MFA yet.
+                         </p>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Tab Bar (Simulated for iOS feel) -->
+<nav class="bg-white dark:bg-surface-dark border-t border-gray-200 dark:border-white/5 pb-6 pt-2 px-6 flex justify-between items-center text-xs font-medium text-gray-500 dark:text-gray-400">
+<button class="flex flex-col items-center gap-1 p-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">group</span>
+<span>Users</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-primary">
+<span class="material-symbols-outlined filled">shield</span>
+<span>Security</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</button>
+</nav>
+</div>
+</body></html>

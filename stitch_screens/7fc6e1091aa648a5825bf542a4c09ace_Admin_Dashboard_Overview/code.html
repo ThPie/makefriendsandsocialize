@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Dashboard Overview</title>
+<!-- Fonts and Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0fbd3b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102215",
+                        "surface-dark": "#1c2e21",
+                        "surface-highlight": "#283e2e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #102215; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #283e2e; 
+            border-radius: 4px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen flex flex-col font-display antialiased selection:bg-primary selection:text-white overflow-x-hidden">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-20 flex items-center justify-between px-5 py-4 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-black/5 dark:border-white/5">
+<button class="flex items-center justify-center p-2 -ml-2 rounded-full text-slate-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[28px]">menu</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Dashboard</h1>
+<div class="relative">
+<div class="h-10 w-10 rounded-full bg-surface-highlight overflow-hidden border-2 border-primary/20 p-0.5">
+<img alt="Admin Avatar" class="h-full w-full rounded-full object-cover" data-alt="Professional man in suit portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfl6vkZpvv8mteK5YUuvaPX4CfR-kT8geggXsx_owZxHMePJ09BHG7fXeWZ_wtZK6loHoBan6ggmhc2bMJS9WPMG-ZzrtAVd1J42E0usAU8rAqoW_cXwMVtyElK_EDCDcWIh2GhS_uqmsNOvd69A74tiqu5czknxAPfzoEk7Km22q548_NkhyscXEL0_9N2WvntHddI62wAeqzlMCbsofOqOg6AN8lcDzT9DKt-E41UFzB8t55eEcd-QguJQy4VOU27NDqkPF9lRg"/>
+</div>
+<span class="absolute top-0 right-0 h-3 w-3 rounded-full bg-primary border-2 border-background-light dark:border-background-dark"></span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col p-5 gap-6 max-w-lg mx-auto w-full">
+<!-- Welcome Section -->
+<div>
+<p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Monday, 24 Oct</p>
+<h2 class="text-2xl font-bold mt-1">Hello, Admin 👋</h2>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Pending Apps Card (Highlighted) -->
+<div class="group relative overflow-hidden bg-surface-dark rounded-2xl p-4 border border-primary/20 shadow-lg shadow-primary/5">
+<div class="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-primary/10 blur-2xl group-hover:bg-primary/20 transition-all"></div>
+<div class="flex items-center gap-3 mb-3">
+<div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+</div>
+<span class="text-xs font-semibold uppercase tracking-wider text-primary">Action</span>
+</div>
+<div class="space-y-1">
+<p class="text-sm text-gray-400 font-medium">Pending Apps</p>
+<p class="text-3xl font-bold text-white tracking-tight">24</p>
+</div>
+</div>
+<!-- Total Members Card -->
+<div class="bg-surface-dark rounded-2xl p-4 border border-white/5">
+<div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-gray-300 mb-4">
+<span class="material-symbols-outlined text-[20px]">group</span>
+</div>
+<div class="space-y-1">
+<p class="text-sm text-gray-400 font-medium">Total Members</p>
+<p class="text-2xl font-bold text-white tracking-tight">1,240</p>
+</div>
+</div>
+<!-- Active Connections Card -->
+<div class="bg-surface-dark rounded-2xl p-4 border border-white/5">
+<div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-gray-300 mb-4">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+</div>
+<div class="space-y-1">
+<p class="text-sm text-gray-400 font-medium">Active Conn.</p>
+<p class="text-2xl font-bold text-white tracking-tight">412</p>
+</div>
+</div>
+<!-- Revenue Card -->
+<div class="bg-surface-dark rounded-2xl p-4 border border-white/5">
+<div class="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-gray-300 mb-4">
+<span class="material-symbols-outlined text-[20px]">attach_money</span>
+</div>
+<div class="space-y-1">
+<p class="text-sm text-gray-400 font-medium">Revenue</p>
+<p class="text-2xl font-bold text-white tracking-tight">$12k</p>
+</div>
+</div>
+</div>
+<!-- Recent Activity Feed -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold">Recent Activity</h3>
+<a class="text-sm font-semibold text-primary hover:text-primary/80 transition-colors" href="#">View All</a>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Activity Item 1 -->
+<div class="flex items-center justify-between p-3 bg-surface-dark rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Jane Doe" class="h-12 w-12 rounded-full object-cover bg-surface-highlight" data-alt="Young woman smiling portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClow8_O-rpz_YoYIsZZJkXwwtJf-X6NHQFs58NfASw84Co49ReWjnLWvU-EoNEba7sebY3hb7P5R-nlzx0plvmncikl5YRCdDoE-_G_mk_c_ArdJ_r3fu6T7zW9vKcjqCsHMKyAoljL_ktZOZKoi9G5JJMkn-XbqXwkZepxgC_NqhVXtRvaQ_N7Dr6Wk5bXBUTL9gRJ6DKfxd-JOmSh1EpcO8EntZcTQ3rVWgJWus6dVWxLUmWej_VJ_G3kVtJiQIb_ZCJXcmuJU4"/>
+<div class="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-background-dark flex items-center justify-center">
+<div class="h-2.5 w-2.5 rounded-full bg-yellow-500"></div>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">Jane Doe</span>
+<span class="text-xs text-gray-400">Applied 2 mins ago</span>
+</div>
+</div>
+<button class="px-4 py-1.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors">
+                        Review
+                    </button>
+</div>
+<!-- Activity Item 2 -->
+<div class="flex items-center justify-between p-3 bg-surface-dark rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="John Smith" class="h-12 w-12 rounded-full object-cover bg-surface-highlight" data-alt="Young man smiling portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm65-GiSrQ5sIT5YnoViwazvp-3P3JMfOXnq3DfXwzeynp12Fn0qwOGmkmyP6MyBn3HA2TyoryrY4E_Mge_gq5LUOXnOMtItdUjSH2RI2VDsIes0PLmZqpYviUAtufOsYiDPYlDqaRig0sr-_Ga2z5gA2hfYBJfSi0FLcNxFy6vw1gYRQnJkwcyAoTEXfSw5rO6_5ztUXEQVlEue9Wwtx0kHtDRj_Nddoli62ULVMQFb725sfLG38AjkiO5SI-txAqXMx1jo-Q320"/>
+<div class="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-background-dark flex items-center justify-center">
+<div class="h-2.5 w-2.5 rounded-full bg-yellow-500"></div>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">John Smith</span>
+<span class="text-xs text-gray-400">Applied 15 mins ago</span>
+</div>
+</div>
+<button class="px-4 py-1.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors">
+                        Review
+                    </button>
+</div>
+<!-- Activity Item 3 -->
+<div class="flex items-center justify-between p-3 bg-surface-dark rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Sarah Lee" class="h-12 w-12 rounded-full object-cover bg-surface-highlight" data-alt="Woman with short hair portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAf5JsoSPq-oI35nQvTmRY_WX86W42VMKNYDCXQPNJdrDspC_QpxuecVAcQRntWf6ME4HRVvTilOUETzZhNG_UrD3xMxSlAyVYp0xyDPY2n57q19FzE7RGaNBKsmN2yiVZs1oBFRK1kKMRNgUWHBPyaaOdAGev-AiEXKS7UYAbtik8DNHbWlmZVOnIQnQX-3b4UWVNA32R1qJbtCLfu7DgLX5pZsdb9tj5Wn5kqf3jLgpoqnc6W8f_xXFNfNXASvYypLfUtLy_i--8"/>
+<div class="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-background-dark flex items-center justify-center">
+<div class="h-2.5 w-2.5 rounded-full bg-yellow-500"></div>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">Sarah Lee</span>
+<span class="text-xs text-gray-400">Applied 1 hour ago</span>
+</div>
+</div>
+<button class="px-4 py-1.5 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors">
+                        Review
+                    </button>
+</div>
+<!-- Activity Item 4 -->
+<div class="flex items-center justify-between p-3 bg-surface-dark rounded-xl border border-white/5 hover:border-white/10 transition-colors opacity-60">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img alt="Michael Chen" class="h-12 w-12 rounded-full object-cover bg-surface-highlight" data-alt="Man looking to the side portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZT4fiwBFBC8Mm0iuJZ8LncN8LDW5AtwTRHf3cXAgpMbthcP3bfODYdhoHhSd5kaShNlgwJ9vLFVeOMEfTJfmjbOHQBW_xanCdruwn6sJkX-BDb6xqu4GVBNRLpI2v-oquQ_TYaHMN2EfkN9uSzWkCZGxJRsbANA-MJ0gRHPd8c31Why8RWA0x0n5fIky4LUZCx6bnjF8hsHHzUy8qQEQ6PZ1K_jnn5NRtZd9x6bybpDw_o-h-MXH8TQAdNsli1EGLTGBP0eyJMII"/>
+<div class="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-background-dark flex items-center justify-center">
+<div class="h-2.5 w-2.5 rounded-full bg-green-500"></div>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-white">Michael Chen</span>
+<span class="text-xs text-gray-400">Approved 2 hours ago</span>
+</div>
+</div>
+<span class="flex items-center justify-center h-8 w-8 rounded-full bg-white/5 text-gray-400">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</span>
+</div>
+</div>
+</div>
+<!-- Bottom spacing for Navbar -->
+<div class="h-20"></div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full bg-background-light/95 dark:bg-background-dark/95 border-t border-black/5 dark:border-white/5 pb-5 pt-3 px-6 backdrop-blur-lg">
+<div class="flex justify-between items-center max-w-lg mx-auto">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center gap-1 min-w-[64px] group" href="#">
+<div class="flex items-center justify-center text-primary transition-transform group-active:scale-95">
+<span class="material-symbols-outlined fill-current" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;">home</span>
+</div>
+<span class="text-[10px] font-medium text-primary">Home</span>
+</a>
+<!-- Members -->
+<a class="flex flex-col items-center justify-center gap-1 min-w-[64px] group" href="#">
+<div class="flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors group-active:scale-95">
+<span class="material-symbols-outlined">group</span>
+</div>
+<span class="text-[10px] font-medium text-gray-400 group-hover:text-primary transition-colors">Members</span>
+</a>
+<!-- Reports -->
+<a class="flex flex-col items-center justify-center gap-1 min-w-[64px] group" href="#">
+<div class="flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors group-active:scale-95">
+<span class="material-symbols-outlined">bar_chart</span>
+</div>
+<span class="text-[10px] font-medium text-gray-400 group-hover:text-primary transition-colors">Reports</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center gap-1 min-w-[64px] group" href="#">
+<div class="flex items-center justify-center text-gray-400 group-hover:text-primary transition-colors group-active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+</div>
+<span class="text-[10px] font-medium text-gray-400 group-hover:text-primary transition-colors">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>

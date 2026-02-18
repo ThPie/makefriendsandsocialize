@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile Loading State</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Noto+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a5b2a",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#131f16",
+                        "shimmer-base": "#1e2f22",
+                        "shimmer-highlight": "#2a4130",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "sans": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
+                    },
+                    animation: {
+                        shimmer: 'shimmer 2s infinite linear',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .animate-shimmer {
+            background: linear-gradient(90deg, #1e2f22 0%, #2a4130 50%, #1e2f22 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white antialiased overflow-hidden">
+<div class="relative flex h-full min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-hidden max-w-md mx-auto border-x border-white/5">
+<!-- Header -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10">
+<div class="flex items-center justify-center w-10 h-10 rounded-full bg-shimmer-base/50">
+<span class="material-symbols-outlined text-white/50">arrow_back</span>
+</div>
+<div class="h-6 w-32 rounded-full animate-shimmer"></div>
+<div class="flex w-10 items-center justify-end">
+<div class="h-10 w-10 rounded-full animate-shimmer"></div>
+</div>
+</div>
+<!-- Main Content (Scrollable) -->
+<div class="flex-1 overflow-y-auto no-scrollbar pb-24">
+<div class="p-4 flex flex-col gap-6">
+<!-- Main Profile Image Skeleton -->
+<div class="w-full aspect-[4/5] rounded-xl animate-shimmer relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent"></div>
+</div>
+<!-- Bio Text Skeleton -->
+<div class="flex flex-col gap-4">
+<!-- Name -->
+<div class="h-8 w-3/4 rounded-lg animate-shimmer"></div>
+<!-- Role/Subtitle -->
+<div class="h-5 w-1/2 rounded-lg animate-shimmer bg-opacity-70"></div>
+<!-- Divider -->
+<div class="h-px w-full bg-[#2a4130] my-2"></div>
+<!-- Paragraph Lines -->
+<div class="space-y-3 pt-1">
+<div class="h-4 w-full rounded-full animate-shimmer bg-opacity-60"></div>
+<div class="h-4 w-[95%] rounded-full animate-shimmer bg-opacity-60"></div>
+<div class="h-4 w-[90%] rounded-full animate-shimmer bg-opacity-60"></div>
+<div class="h-4 w-[60%] rounded-full animate-shimmer bg-opacity-60"></div>
+</div>
+</div>
+<!-- Stats Grid Skeleton -->
+<div class="grid grid-cols-[20%_1fr] gap-x-6 py-2">
+<div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3c5d44]/30 py-5">
+<div class="h-4 w-16 rounded-full animate-shimmer bg-opacity-50"></div>
+<div class="h-4 w-32 rounded-full animate-shimmer bg-opacity-50 justify-self-end sm:justify-self-start"></div>
+</div>
+<div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3c5d44]/30 py-5">
+<div class="h-4 w-20 rounded-full animate-shimmer bg-opacity-50"></div>
+<div class="h-4 w-24 rounded-full animate-shimmer bg-opacity-50 justify-self-end sm:justify-self-start"></div>
+</div>
+<div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3c5d44]/30 py-5">
+<div class="h-4 w-14 rounded-full animate-shimmer bg-opacity-50"></div>
+<div class="h-4 w-40 rounded-full animate-shimmer bg-opacity-50 justify-self-end sm:justify-self-start"></div>
+</div>
+</div>
+<!-- Interest Chips Skeleton -->
+<div class="space-y-3">
+<div class="h-4 w-24 rounded-full animate-shimmer mb-4"></div>
+<div class="flex gap-3 flex-wrap">
+<div class="h-8 w-24 rounded-xl animate-shimmer"></div>
+<div class="h-8 w-32 rounded-xl animate-shimmer"></div>
+<div class="h-8 w-20 rounded-xl animate-shimmer"></div>
+<div class="h-8 w-28 rounded-xl animate-shimmer"></div>
+</div>
+</div>
+<!-- Action Button Area Skeleton -->
+<div class="pt-4 pb-8">
+<div class="h-12 w-full rounded-xl animate-shimmer opacity-80"></div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex gap-2 border-t border-[#2a4130] bg-[#1e2f22] px-4 pb-6 pt-2 sticky bottom-0 z-20">
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#9bbfa4]" href="#">
+<div class="text-[#9bbfa4] flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</div>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#9bbfa4]" href="#">
+<div class="text-[#9bbfa4] flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</div>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#9bbfa4]" href="#">
+<div class="text-[#9bbfa4] flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">chat_bubble</span>
+</div>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-white" href="#">
+<div class="text-white flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px] font-variation-settings-'FILL'1">person</span>
+</div>
+</a>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Society FAQ Access</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec13",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#0a0f0a", // Updated to requested brand color
+                        "surface-dark": "#111811",
+                        "surface-light": "#1c271c",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for hidden feel */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Glassmorphism utility */
+        .glass {
+            background: rgba(16, 34, 16, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(19, 236, 19, 0.1);
+        }
+        
+        /* Accordion transition logic via CSS peer-checked */
+        .accordion-content {
+            transition: grid-template-rows 0.3s ease-out;
+        }
+        .accordion-input:checked + .accordion-label .icon-chevron {
+            transform: rotate(180deg);
+        }
+        .accordion-input:checked ~ .accordion-content {
+            grid-template-rows: 1fr;
+            padding-bottom: 1rem;
+        }
+        .accordion-input:not(:checked) ~ .accordion-content {
+            grid-template-rows: 0fr;
+            padding-bottom: 0;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col antialiased">
+<!-- Sticky Header & Search -->
+<header class="sticky top-0 z-50 w-full glass">
+<!-- Top Bar -->
+<div class="flex items-center justify-between px-4 pt-14 pb-2">
+<button class="flex size-10 items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<div class="flex size-10 items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">more_vert</span>
+</div>
+</div>
+<!-- Title -->
+<div class="px-5 pb-4">
+<h1 class="font-serif text-3xl font-medium text-white tracking-wide">Frequently Asked<br/>Questions</h1>
+</div>
+<!-- Search Input -->
+<div class="px-4 pb-4">
+<div class="relative group">
+<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-primary/70 group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="block w-full rounded-xl border-none bg-surface-light/50 py-3 pl-10 pr-3 text-white placeholder-white/40 focus:ring-1 focus:ring-primary/50 focus:bg-surface-light/80 transition-all text-sm leading-6" placeholder="Search for answers..." type="text"/>
+</div>
+</div>
+<!-- Categories Scroller -->
+<div class="flex gap-2 overflow-x-auto px-4 pb-4 no-scrollbar items-center">
+<button class="whitespace-nowrap rounded-full bg-primary px-5 py-2 text-sm font-semibold text-black shadow-lg shadow-primary/20">
+                All
+            </button>
+<button class="whitespace-nowrap rounded-full bg-surface-light border border-white/10 px-5 py-2 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                Membership
+            </button>
+<button class="whitespace-nowrap rounded-full bg-surface-light border border-white/10 px-5 py-2 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                Events
+            </button>
+<button class="whitespace-nowrap rounded-full bg-surface-light border border-white/10 px-5 py-2 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                Dating
+            </button>
+<button class="whitespace-nowrap rounded-full bg-surface-light border border-white/10 px-5 py-2 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white transition-colors">
+                Privacy
+            </button>
+</div>
+</header>
+<!-- Main Content: Accordion List -->
+<main class="flex-1 px-4 py-6 space-y-4">
+<!-- Accordion Item 1 -->
+<div class="group rounded-xl bg-surface-light/30 border border-white/5 overflow-hidden transition-colors hover:bg-surface-light/50">
+<input class="accordion-input peer hidden" id="faq-1" type="checkbox"/>
+<label class="accordion-label flex w-full cursor-pointer items-center justify-between p-4 text-left" for="faq-1">
+<span class="text-base font-medium text-white pr-4">What is the vetting process for new members?</span>
+<span class="icon-chevron material-symbols-outlined text-primary transition-transform duration-300">expand_more</span>
+</label>
+<div class="accordion-content grid grid-rows-[0fr] px-4">
+<div class="overflow-hidden text-sm leading-relaxed text-gray-300/90 font-light">
+                    Prospective members must be nominated by two existing members and undergo a brief interview with the membership committee. We ensure alignment with our society's core values of discretion and elegance.
+                </div>
+</div>
+</div>
+<!-- Accordion Item 2 -->
+<div class="group rounded-xl bg-surface-light/30 border border-white/5 overflow-hidden transition-colors hover:bg-surface-light/50">
+<input class="accordion-input peer hidden" id="faq-2" type="checkbox"/>
+<label class="accordion-label flex w-full cursor-pointer items-center justify-between p-4 text-left" for="faq-2">
+<span class="text-base font-medium text-white pr-4">Can I bring a guest to the Autumn Gala?</span>
+<span class="icon-chevron material-symbols-outlined text-primary transition-transform duration-300">expand_more</span>
+</label>
+<div class="accordion-content grid grid-rows-[0fr] px-4">
+<div class="overflow-hidden text-sm leading-relaxed text-gray-300/90 font-light">
+                    Yes, +1s are permitted for the Gala, provided they are registered 48 hours in advance via the member portal. Please ensure your guest adheres to the strict black-tie dress code.
+                </div>
+</div>
+</div>
+<!-- Accordion Item 3 -->
+<div class="group rounded-xl bg-surface-light/30 border border-white/5 overflow-hidden transition-colors hover:bg-surface-light/50">
+<input class="accordion-input peer hidden" id="faq-3" type="checkbox"/>
+<label class="accordion-label flex w-full cursor-pointer items-center justify-between p-4 text-left" for="faq-3">
+<span class="text-base font-medium text-white pr-4">How is my data privacy handled?</span>
+<span class="icon-chevron material-symbols-outlined text-primary transition-transform duration-300">expand_more</span>
+</label>
+<div class="accordion-content grid grid-rows-[0fr] px-4">
+<div class="overflow-hidden text-sm leading-relaxed text-gray-300/90 font-light">
+                    We employ end-to-end encryption for all member communications. Your personal details are never shared with third parties and are stored on secure, private servers located in Switzerland.
+                </div>
+</div>
+</div>
+<!-- Accordion Item 4 -->
+<div class="group rounded-xl bg-surface-light/30 border border-white/5 overflow-hidden transition-colors hover:bg-surface-light/50">
+<input class="accordion-input peer hidden" id="faq-4" type="checkbox"/>
+<label class="accordion-label flex w-full cursor-pointer items-center justify-between p-4 text-left" for="faq-4">
+<span class="text-base font-medium text-white pr-4">Is the dating feature anonymous?</span>
+<span class="icon-chevron material-symbols-outlined text-primary transition-transform duration-300">expand_more</span>
+</label>
+<div class="accordion-content grid grid-rows-[0fr] px-4">
+<div class="overflow-hidden text-sm leading-relaxed text-gray-300/90 font-light">
+                    Absolutely. Browsing profiles is completely anonymous. Your identity is only revealed to another member once a mutual interest is confirmed and you both agree to connect.
+                </div>
+</div>
+</div>
+<!-- Accordion Item 5 -->
+<div class="group rounded-xl bg-surface-light/30 border border-white/5 overflow-hidden transition-colors hover:bg-surface-light/50">
+<input class="accordion-input peer hidden" id="faq-5" type="checkbox"/>
+<label class="accordion-label flex w-full cursor-pointer items-center justify-between p-4 text-left" for="faq-5">
+<span class="text-base font-medium text-white pr-4">What happens if I miss my monthly dues?</span>
+<span class="icon-chevron material-symbols-outlined text-primary transition-transform duration-300">expand_more</span>
+</label>
+<div class="accordion-content grid grid-rows-[0fr] px-4">
+<div class="overflow-hidden text-sm leading-relaxed text-gray-300/90 font-light">
+                    A grace period of 7 days is provided. After this, membership privileges are temporarily suspended. Repeated missed payments may result in a review by the committee.
+                </div>
+</div>
+</div>
+<!-- Support Contact -->
+<div class="mt-8 px-4 py-8 text-center border-t border-white/5">
+<p class="text-sm text-gray-400 mb-3">Still have questions?</p>
+<button class="text-primary hover:text-white transition-colors font-medium text-sm flex items-center justify-center gap-2 mx-auto">
+<span class="material-symbols-outlined text-lg">mail</span>
+                Contact Concierge
+             </button>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="sticky bottom-0 z-50 w-full bg-[#1c271c]/90 backdrop-blur-md border-t border-[#283928]">
+<div class="flex justify-between px-6 pb-6 pt-3">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-[#9db99d] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">home</span>
+<span class="text-[10px] font-medium opacity-70">Home</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-[#9db99d] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">calendar_month</span>
+<span class="text-[10px] font-medium opacity-70">Events</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-[#9db99d] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">groups</span>
+<span class="text-[10px] font-medium opacity-70">Connect</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<div class="bg-primary/20 p-1 rounded-full px-4 mb-0.5">
+<span class="material-symbols-outlined text-2xl">help</span>
+</div>
+<span class="text-[10px] font-semibold">FAQ</span>
+</a>
+</div>
+</nav>
+</body></html>

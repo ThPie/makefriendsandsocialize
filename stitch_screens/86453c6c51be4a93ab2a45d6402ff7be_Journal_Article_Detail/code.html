@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Journal Article Detail</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&amp;family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f2b90d",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#0B1C15", // Dark Forest Green
+                        "surface-dark": "#132a21", // Slightly lighter green for cards/surfaces
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B1C15;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #132a21;
+            border-radius: 4px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-gray-900 dark:text-white font-display antialiased selection:bg-primary/30">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden pb-24">
+<!-- Top Navigation (Absolute/Sticky) -->
+<div class="fixed top-0 left-0 w-full z-50 p-4 pt-12 flex justify-between items-center bg-gradient-to-b from-black/50 to-transparent pointer-events-none">
+<button class="pointer-events-auto h-10 w-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex gap-3 pointer-events-auto">
+<button class="h-10 w-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+</div>
+<!-- Hero Image Section -->
+<div class="relative w-full aspect-[4/5] sm:aspect-video md:h-[60vh] md:aspect-auto">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Elegant dimly lit private dining room with crystal glasses" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB7XKr8cnX0zLx7IDirfWXzEmSLsmaQle7XawtKOMbmPH7BFI_1o832Gk9VGbPZgzNw4KdJnLzbY6mIt1I1osHB-_U0zTWCPXUTXW0GWSn967VdtKxTzFshqurOeL8zm7mzWjie_2dl6HpWUOIEgOz_sTWQFEtXERIQfvbRUCbdlgxwrT8-ZyNz62zkmeQhcJ-Jk_t0CeKdUZWbzQVC2VKGMiTaAsH9cyrjhAtKr7a3piq5T0GwA_Y4pXVuZWGuP_8RdZgy-i4l0L8');"></div>
+<!-- Gradient Overlay for readability -->
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/60 to-transparent"></div>
+<!-- Hero Text Content -->
+<div class="absolute bottom-0 left-0 w-full p-6 pb-8">
+<div class="inline-flex items-center gap-2 mb-4">
+<span class="px-3 py-1 text-xs font-medium uppercase tracking-wider text-primary bg-primary/10 backdrop-blur-sm rounded-full border border-primary/20">Culinary</span>
+<span class="text-white/60 text-xs uppercase tracking-wider">5 min read</span>
+</div>
+<h1 class="text-white font-serif text-4xl md:text-5xl font-bold leading-tight mb-2 shadow-sm">
+                    The Future of Private Dining: Trends to Watch
+                </h1>
+</div>
+</div>
+<!-- Main Content Container -->
+<div class="px-6 relative z-10 -mt-4">
+<!-- Author Metadata -->
+<div class="flex items-center gap-4 py-6 border-b border-white/10">
+<div class="relative h-12 w-12 rounded-full overflow-hidden ring-2 ring-primary/20">
+<img alt="Author Alexander Sterling" class="h-full w-full object-cover" data-alt="Portrait of a distinguished man in a suit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNR2lBtsCtPCCsThx0C5mbA_KvHNR1Rc_xM7ZwMHe5hqtfR2R1HOiHbUw9iGSqt_ds6ou5AuVs9WCWynjbaib2WMPqf1AdiJ97zrFcZSrW3CY_dTPASQd220JI5lSEhDRCdDS1VXqFxPG3TjNrpWPqzTvmPOP2zX4T-VBSh50Jfl1FHSsIag53jQFyu820rojOfYw198cVhNuomiBO7tanEt8iGS6F38fVHhN72t_7WC7f8y2pY9fXjdg817G-jNuB4NA0JluLnHk"/>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-white text-lg font-medium leading-none mb-1">Alexander Sterling</p>
+<p class="text-white/60 text-sm font-normal">Oct 12, 2023</p>
+</div>
+</div>
+<!-- Article Body -->
+<div class="mt-8 mb-12 max-w-2xl mx-auto space-y-6">
+<!-- Intro Paragraph -->
+<p class="text-xl md:text-2xl text-white/90 leading-relaxed font-serif italic border-l-4 border-primary pl-4 py-1">
+                    An exploration into how exclusivity is redefining the culinary experience. In the heart of the city, private dining has evolved from a mere necessity to a curated art form.
+                </p>
+<!-- Body Text 1 -->
+<p class="text-base md:text-lg text-white/80 leading-loose font-light">
+                    The concept of luxury is undergoing a profound transformation. It is no longer defined solely by opulence or price tags, but rather by the scarcity of the experience itself. In an age of digital overexposure, privacy has become the ultimate commodity. Private clubs are responding by creating intimate, hyper-personalized dining environments that shield members from the outside world while offering unparalleled gastronomic adventures.
+                </p>
+<!-- Inline Image 1 -->
+<figure class="my-8 rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/5 bg-surface-dark">
+<div class="w-full aspect-video bg-cover bg-center" data-alt="Chef plating a gourmet dish with precision" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAXmZe-kmhkMKfrfQzIDpF1ffkzHRgYtrjplEpXbL0WD-g8xby7G3OucxNRrObwP7OYY7DKeYEs6kWARDwi91sCA09-E0uF_pnqnoo4N0Bymkd1hJU6QvgOjp0kQWxvvy4Zos7siIwBbguPu2Bw5gLoc6uEmqIIgoJfTYVP8_WYZsdC8Iy_MuAgCAsNgOyMGcJlhicHfUlRCoh1OezMOdZGMAa9N2VtktKSMPs8-4bH7gPc09c4LlnVFMFWjgKWAkKC1v2NAnJ7Pro');"></div>
+<figcaption class="p-3 text-xs text-center text-white/50 bg-surface-dark font-medium tracking-wide uppercase">The Art of Plating at The Obsidian Room</figcaption>
+</figure>
+<!-- Section Header -->
+<h2 class="text-2xl md:text-3xl text-white font-serif font-bold pt-4 pb-2">Curated Intimacy</h2>
+<!-- Body Text 2 -->
+<p class="text-base md:text-lg text-white/80 leading-loose font-light">
+                    Members are seeking more than just a meal; they desire a narrative. The new wave of private dining focuses on storytelling, where every course is a chapter and the chef is the narrator. We are seeing a shift towards 'micro-restaurants' within larger club venues—spaces that seat no more than eight guests, offering menus that change daily based on the freshest, rarest ingredients available globally.
+                </p>
+<!-- Blockquote -->
+<blockquote class="relative p-8 my-8 bg-surface-dark rounded-2xl border border-white/5">
+<span class="absolute top-4 left-4 text-6xl text-primary/20 font-serif leading-none">“</span>
+<p class="relative z-10 text-xl text-primary font-serif text-center italic leading-relaxed">
+                        True luxury is about the scarcity of the experience. It is the feeling that this moment belongs only to you and your chosen few.
+                    </p>
+<footer class="mt-4 text-center text-sm text-white/50 uppercase tracking-widest font-medium">— Chef Marco Pierre</footer>
+</blockquote>
+<!-- Body Text 3 -->
+<p class="text-base md:text-lg text-white/80 leading-loose font-light">
+                    Technology plays a silent but pivotal role. From AI-driven wine pairing suggestions tailored to individual member palates to acoustic engineering that ensures conversations remain strictly private, the modern dining room is a marvel of invisible innovation. Yet, the human touch remains paramount. Service is anticipatory, not reactive—a ballet of hospitality performed with silent precision.
+                </p>
+<!-- Inline Image 2 -->
+<div class="grid grid-cols-2 gap-3 my-6">
+<div class="w-full aspect-[3/4] rounded-lg bg-cover bg-center" data-alt="Close up of wine being poured into a crystal glass" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDEeIPB59r2wRWfgtROX5eX_WiU7G1CDp-dUJrM0ZyDXtR8iM6VHTU9As-FGKp2noo-w9tQsrDiE0Es-J5F4NGl7S7VIT75fTzVn139cjORDk5beCFIpJgf13WVOjelwhtKQMLLqBe4GkDc2lRz1NMKmg8-bIZmqb1S9YJLYSwwGP8kpS-f_xu_S-eHUByK7eMuKIx1x8lsjf0CpBLqeYymkSNfKYF9gQxQfxpXSYSNVaqMD9VX491iAbzCkryTmJROU8KXCqzbEwI');"></div>
+<div class="w-full aspect-[3/4] rounded-lg bg-cover bg-center" data-alt="Top down view of a beautifully set table with candles" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCdpaStfPNWm6-eSwrsj4rzD9Vq95FCqhWSmCUesB_4MplnYbRTqfyMRhvDoLilDfHVR228H0QZcXhl5bV48xai7iBHtdVYabvynJwS9j-l7fRTUBYfMwohDKgqeZPCujAfWvfVqz25jpadVWEgD5AEuOhpPbMPjqM_Hwv0I6Gi9qhRfv7yaceQrlybq8hhoSMRTt41kgKeAbbnY9efAE0-5ZhfvCm9kLKUzSvhtpMiS38KI9gGdqGZ9Fd38diNw1AiTWzHZkUYZ7M');"></div>
+</div>
+<p class="text-base md:text-lg text-white/80 leading-loose font-light">
+                    As we look to the horizon, the definition of fine dining will continue to narrow in scope but deepen in quality. The future is small, secret, and spectacular.
+                </p>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-2 mb-20 max-w-2xl mx-auto">
+<span class="px-4 py-1.5 rounded-full border border-white/10 text-white/60 text-sm hover:border-primary/50 hover:text-primary transition-colors cursor-pointer">#PrivateDining</span>
+<span class="px-4 py-1.5 rounded-full border border-white/10 text-white/60 text-sm hover:border-primary/50 hover:text-primary transition-colors cursor-pointer">#LuxuryLifestyle</span>
+<span class="px-4 py-1.5 rounded-full border border-white/10 text-white/60 text-sm hover:border-primary/50 hover:text-primary transition-colors cursor-pointer">#CulinaryArts</span>
+</div>
+</div>
+<!-- Sticky Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 w-full p-4 pb-8 bg-background-dark/80 backdrop-blur-xl border-t border-white/5 z-40 flex justify-between items-center px-8 sm:justify-center sm:gap-12">
+<!-- Share Action -->
+<button class="flex flex-col items-center gap-1 group">
+<div class="h-12 w-12 rounded-full flex items-center justify-center bg-surface-dark border border-primary/20 text-primary group-active:scale-95 transition-transform shadow-lg shadow-black/40">
+<span class="material-symbols-outlined">ios_share</span>
+</div>
+<span class="text-[10px] uppercase tracking-wider text-primary font-medium opacity-80">Share</span>
+</button>
+<!-- Like Action (Visual feedback only) -->
+<button class="flex flex-col items-center gap-1 group">
+<div class="h-12 w-12 rounded-full flex items-center justify-center bg-surface-dark border border-white/10 text-white/40 group-hover:text-red-500 group-hover:border-red-500/30 transition-colors group-active:scale-95 shadow-lg shadow-black/40">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<span class="text-[10px] uppercase tracking-wider text-white/40 font-medium opacity-80 group-hover:text-red-400">Like</span>
+</button>
+<!-- Bookmark Action -->
+<button class="flex flex-col items-center gap-1 group">
+<div class="h-12 w-12 rounded-full flex items-center justify-center bg-primary text-background-dark font-bold group-active:scale-95 transition-transform shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined filled">bookmark</span>
+</div>
+<span class="text-[10px] uppercase tracking-wider text-primary font-medium opacity-80">Save</span>
+</button>
+</div>
+</div>
+</body></html>

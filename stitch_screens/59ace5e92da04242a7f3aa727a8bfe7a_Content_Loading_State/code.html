@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Content Loading State</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0fbd0f",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    animation: {
+                        shimmer: "shimmer 1.5s infinite linear",
+                    },
+                    keyframes: {
+                        shimmer: {
+                            "0%": { backgroundPosition: "-1000px 0" },
+                            "100%": { backgroundPosition: "1000px 0" },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .animate-shimmer {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(to right, #1f2e1f 4%, #283928 25%, #1f2e1f 36%);
+            background-size: 1000px 100%;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased overflow-x-hidden">
+<div class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto border-x border-white/5">
+<!-- Header -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-20">
+<div class="text-black dark:text-white flex size-12 shrink-0 items-center justify-start">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</div>
+<h2 class="text-black dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Gallery &amp; Journal</h2>
+</div>
+<!-- Tabs -->
+<div class="sticky top-[60px] z-20 bg-background-light dark:bg-background-dark pb-3">
+<div class="flex border-b border-[#3b543b] px-4 gap-8">
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-black dark:text-white pb-[13px] pt-4 flex-1">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Gallery</p>
+</button>
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-gray-500 dark:text-[#9db99d] pb-[13px] pt-4 flex-1">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Journal</p>
+</button>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col gap-8 pb-20">
+<!-- Gallery Loading Section -->
+<section class="flex flex-col">
+<div class="flex items-center justify-between px-4 pb-3 pt-5">
+<!-- Skeleton Title -->
+<div class="h-8 w-32 rounded bg-[#1f2e1f] animate-shimmer"></div>
+<!-- Skeleton Action/Icon -->
+<div class="h-6 w-6 rounded-full bg-[#1f2e1f] animate-shimmer"></div>
+</div>
+<!-- Masonry Grid Skeleton -->
+<div class="grid grid-cols-2 gap-3 px-4">
+<!-- Column 1 -->
+<div class="flex flex-col gap-3">
+<div class="w-full aspect-[3/4] rounded-lg bg-[#1f2e1f] animate-shimmer"></div>
+<div class="w-full aspect-[1/1] rounded-lg bg-[#1f2e1f] animate-shimmer"></div>
+<div class="w-full aspect-[3/2] rounded-lg bg-[#1f2e1f] animate-shimmer"></div>
+</div>
+<!-- Column 2 -->
+<div class="flex flex-col gap-3">
+<div class="w-full aspect-[1/1] rounded-lg bg-[#1f2e1f] animate-shimmer"></div>
+<div class="w-full aspect-[3/5] rounded-lg bg-[#1f2e1f] animate-shimmer"></div>
+<div class="w-full aspect-[4/3] rounded-lg bg-[#1f2e1f] animate-shimmer"></div>
+</div>
+</div>
+</section>
+<!-- Journal Loading Section -->
+<section class="flex flex-col">
+<div class="flex items-center justify-between px-4 pb-3 pt-2 border-t border-white/5">
+<!-- Skeleton Title -->
+<div class="h-8 w-32 rounded bg-[#1f2e1f] animate-shimmer mt-5"></div>
+</div>
+<div class="px-4 flex flex-col gap-6">
+<!-- Featured Hero Post Skeleton -->
+<div class="flex flex-col gap-3">
+<div class="w-full aspect-[16/9] rounded-xl bg-[#1f2e1f] animate-shimmer"></div>
+<div class="space-y-2 mt-1">
+<div class="h-5 w-3/4 rounded bg-[#1f2e1f] animate-shimmer"></div>
+<div class="h-4 w-1/2 rounded bg-[#1f2e1f] animate-shimmer"></div>
+</div>
+</div>
+<!-- Journal List Items Skeleton -->
+<div class="flex gap-4 items-start">
+<div class="size-20 shrink-0 rounded-lg bg-[#1f2e1f] animate-shimmer"></div>
+<div class="flex flex-col gap-2 w-full pt-1">
+<div class="h-4 w-full rounded bg-[#1f2e1f] animate-shimmer"></div>
+<div class="h-4 w-2/3 rounded bg-[#1f2e1f] animate-shimmer"></div>
+<div class="h-3 w-1/4 rounded bg-[#1f2e1f] animate-shimmer mt-1"></div>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="size-20 shrink-0 rounded-lg bg-[#1f2e1f] animate-shimmer"></div>
+<div class="flex flex-col gap-2 w-full pt-1">
+<div class="h-4 w-11/12 rounded bg-[#1f2e1f] animate-shimmer"></div>
+<div class="h-4 w-1/2 rounded bg-[#1f2e1f] animate-shimmer"></div>
+<div class="h-3 w-1/4 rounded bg-[#1f2e1f] animate-shimmer mt-1"></div>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="size-20 shrink-0 rounded-lg bg-[#1f2e1f] animate-shimmer"></div>
+<div class="flex flex-col gap-2 w-full pt-1">
+<div class="h-4 w-full rounded bg-[#1f2e1f] animate-shimmer"></div>
+<div class="h-4 w-3/4 rounded bg-[#1f2e1f] animate-shimmer"></div>
+<div class="h-3 w-1/4 rounded bg-[#1f2e1f] animate-shimmer mt-1"></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t border-[#283928] bg-[#1c271c] px-4 pb-3 pt-2 flex gap-2 z-50">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99d] hover:text-white transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">home</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99d] hover:text-white transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">search</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Search</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-white" href="#">
+<div class="flex h-8 items-center justify-center bg-primary/20 rounded-full w-12 text-primary">
+<span class="material-symbols-outlined fill-1">book_2</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em] text-primary">Journal</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99d] hover:text-white transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">person</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

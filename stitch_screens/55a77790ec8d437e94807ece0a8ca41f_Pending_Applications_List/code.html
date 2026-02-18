@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pending Applications List</title>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec49",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102215",
+                        "card-dark": "#1c271e", // Slightly lighter than bg-dark for cards
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white antialiased overflow-x-hidden">
+<div class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-xl overflow-hidden">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-gray-200 dark:border-white/10 px-4 py-3">
+<div class="flex items-center justify-between mb-4 mt-2">
+<button class="flex items-center justify-center w-10 h-10 rounded-full text-gray-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold">Applications</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full text-gray-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+<!-- Segmented Control (Tabs) -->
+<div class="flex p-1 bg-gray-200 dark:bg-[#1c271e] rounded-lg">
+<button class="flex-1 py-1.5 px-3 rounded text-sm font-medium bg-white dark:bg-primary text-gray-900 dark:text-background-dark shadow-sm transition-all">
+                    Pending
+                </button>
+<button class="flex-1 py-1.5 px-3 rounded text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all">
+                    Approved
+                </button>
+<button class="flex-1 py-1.5 px-3 rounded text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all">
+                    Rejected
+                </button>
+</div>
+</header>
+<!-- Main Content List -->
+<main class="flex-1 px-4 py-4 space-y-4 overflow-y-auto pb-24">
+<!-- List Item 1 -->
+<div class="flex flex-col gap-3 p-4 bg-white dark:bg-card-dark rounded-xl border border-gray-100 dark:border-primary/20 shadow-sm active:scale-[0.99] transition-transform duration-100">
+<div class="flex items-start justify-between gap-3">
+<div class="flex gap-3">
+<img alt="Profile picture of Sarah Jenkins" class="w-12 h-12 rounded-full object-cover border-2 border-transparent dark:border-primary/30" data-alt="Young woman smiling profile photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxHu4etjqcE8a_OxdfUwAGgfrMyxvh8-hkql02CTQQ-FIEdSy7UMuwLb2ZevC3c7fCYvf2D72bHCGTw3Hv3z0FOt-VxW5TdtqKmYgIYEg-Ty69rpad7qlrc6k--ScJaMg6ajwgQ50oUJtl6FTaZNkrX6YUGo_hBcf8uLEDMklhlcRaaclzJvdePdkMzuh0zpAyG1hZy_HXxoT6jqxt85D1lN7vmAZABliaxLNfDTtBcGHiJlxJ0BlweoJY4D7J5Wf7nLlqAIHRByQ"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<h3 class="text-base font-bold text-gray-900 dark:text-white">Sarah Jenkins</h3>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</div>
+<p class="text-sm text-gray-500 dark:text-gray-400">sarah.j@example.com</p>
+<p class="text-xs text-primary font-mono mt-1">Applied 2 hrs ago</p>
+</div>
+</div>
+</div>
+<div class="flex justify-end pt-2 border-t border-gray-100 dark:border-white/5">
+<button class="flex items-center justify-center px-4 py-2 bg-gray-900 dark:bg-primary text-white dark:text-background-dark text-sm font-bold rounded-lg hover:opacity-90 transition-opacity w-full sm:w-auto">
+                        Review Application
+                    </button>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="flex flex-col gap-3 p-4 bg-white dark:bg-card-dark rounded-xl border border-gray-100 dark:border-primary/20 shadow-sm active:scale-[0.99] transition-transform duration-100">
+<div class="flex items-start justify-between gap-3">
+<div class="flex gap-3">
+<img alt="Profile picture of Marcus Thorne" class="w-12 h-12 rounded-full object-cover border-2 border-transparent dark:border-primary/30" data-alt="Man with glasses portrait photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqcAVoRSIEblEQNyScus1ry6JYYBDqzbVPp1Gju9TaHaoyquoa2QKE5bzb9Qtf_ONAQvu_SAX-S9l5KnrQ99SRadMvWPkZzNqITvTRhyyKmNSnaNrW3ki6WDnCw9bu-SzhfyrFDErbiiR3rynAvbgVlyJqMwWSelZNg5QAqsxTRqaD6uQurHx2TG4c_d1tgYPpGms9ptopybjHjoCJ7xO0BA5rbpgY55qfRCWcmJZZRHq_XgiECyJrJddNa86icTWnTdoLPtnZuj4"/>
+<div class="flex flex-col">
+<h3 class="text-base font-bold text-gray-900 dark:text-white">Marcus Thorne</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400">m.thorne99@webmail.com</p>
+<p class="text-xs text-gray-400 dark:text-gray-500 font-mono mt-1">Applied Yesterday</p>
+</div>
+</div>
+</div>
+<div class="flex justify-end pt-2 border-t border-gray-100 dark:border-white/5">
+<button class="flex items-center justify-center px-4 py-2 bg-gray-900 dark:bg-primary text-white dark:text-background-dark text-sm font-bold rounded-lg hover:opacity-90 transition-opacity w-full sm:w-auto">
+                        Review Application
+                    </button>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="flex flex-col gap-3 p-4 bg-white dark:bg-card-dark rounded-xl border border-gray-100 dark:border-primary/20 shadow-sm active:scale-[0.99] transition-transform duration-100">
+<div class="flex items-start justify-between gap-3">
+<div class="flex gap-3">
+<img alt="Profile picture of David Kim" class="w-12 h-12 rounded-full object-cover border-2 border-transparent dark:border-primary/30" data-alt="Professional headshot of asian man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKHGXJOm_JLhzVfewmICXxgqmyR0u3j4L5ZpzVVgLKoFJzAQT_68Napt9n_az9ifYJ_3Z0JNzyMcYnSSElPi7G6rJ1RrLalAQbJcO6IAgqkuU9yD53bAo3DrHNZED84Jml-rsyVSdkitFMDAIyRzme4_-3xjsuA4i4tn1o-A-AqnZsy47x29LVLro4jOgOoO_lEWK4rqd_ITXkMnsKv5FG0hIdS7bwsxVwsemIYxL7k3amuB5GqDW8y9557xe7IfFmw5FArM1ZN9s"/>
+<div class="flex flex-col">
+<h3 class="text-base font-bold text-gray-900 dark:text-white">David Kim</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400">david.kim.dev@gmail.com</p>
+<p class="text-xs text-gray-400 dark:text-gray-500 font-mono mt-1">Applied 2 days ago</p>
+</div>
+</div>
+</div>
+<div class="flex justify-end pt-2 border-t border-gray-100 dark:border-white/5">
+<button class="flex items-center justify-center px-4 py-2 bg-gray-900 dark:bg-primary text-white dark:text-background-dark text-sm font-bold rounded-lg hover:opacity-90 transition-opacity w-full sm:w-auto">
+                        Review Application
+                    </button>
+</div>
+</div>
+<!-- List Item 4 -->
+<div class="flex flex-col gap-3 p-4 bg-white dark:bg-card-dark rounded-xl border border-gray-100 dark:border-primary/20 shadow-sm active:scale-[0.99] transition-transform duration-100">
+<div class="flex items-start justify-between gap-3">
+<div class="flex gap-3">
+<div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-green-800 flex items-center justify-center text-background-dark font-bold text-lg border-2 border-transparent dark:border-primary/30">
+                            EL
+                        </div>
+<div class="flex flex-col">
+<h3 class="text-base font-bold text-gray-900 dark:text-white">Elena Rodriguez</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400">elena.rod@design.io</p>
+<p class="text-xs text-gray-400 dark:text-gray-500 font-mono mt-1">Applied 3 days ago</p>
+</div>
+</div>
+</div>
+<div class="flex justify-end pt-2 border-t border-gray-100 dark:border-white/5">
+<button class="flex items-center justify-center px-4 py-2 bg-gray-900 dark:bg-primary text-white dark:text-background-dark text-sm font-bold rounded-lg hover:opacity-90 transition-opacity w-full sm:w-auto">
+                        Review Application
+                    </button>
+</div>
+</div>
+<div class="h-4"></div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto z-20 border-t border-gray-200 dark:border-white/10 bg-background-light dark:bg-[#1c271e] pb-safe pt-2 px-6">
+<div class="flex justify-between items-end pb-2">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-400 dark:text-[#9db9a4] hover:text-primary dark:hover:text-primary transition-colors group" href="#">
+<div class="flex h-6 items-center justify-center mb-1 group-hover:-translate-y-0.5 transition-transform duration-200">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</div>
+<p class="text-[10px] font-medium leading-none tracking-wide uppercase">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-900 dark:text-white" href="#">
+<div class="flex h-6 items-center justify-center mb-1">
+<span class="material-symbols-outlined text-[24px] fill-current">description</span>
+</div>
+<p class="text-[10px] font-medium leading-none tracking-wide uppercase text-primary">Apps</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-400 dark:text-[#9db9a4] hover:text-primary dark:hover:text-primary transition-colors group" href="#">
+<div class="flex h-6 items-center justify-center mb-1 group-hover:-translate-y-0.5 transition-transform duration-200">
+<span class="material-symbols-outlined text-[24px]">group</span>
+</div>
+<p class="text-[10px] font-medium leading-none tracking-wide uppercase">Members</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-400 dark:text-[#9db9a4] hover:text-primary dark:hover:text-primary transition-colors group" href="#">
+<div class="flex h-6 items-center justify-center mb-1 group-hover:-translate-y-0.5 transition-transform duration-200">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</div>
+<p class="text-[10px] font-medium leading-none tracking-wide uppercase">Settings</p>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

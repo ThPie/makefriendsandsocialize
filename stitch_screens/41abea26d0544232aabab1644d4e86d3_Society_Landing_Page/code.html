@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Society App Home Screen</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Noto+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a5b2a",
+                        "accent": "#D4AF37", // Gold
+                        "accent-light": "#e5c558",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#0a0f0a", // Deep forest green
+                        "surface-dark": "#141f17", // Slightly lighter for cards
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem", // 16px
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "3xl": "2.5rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>.no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;scrollbar-width: none;}* {
+            -webkit-tap-highlight-color: transparent;
+        }html {
+            scroll-behavior: smooth;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display text-white antialiased overflow-x-hidden">
+<div class="relative min-h-[844px] w-full mx-auto max-w-[390px] bg-background-dark overflow-hidden pb-24">
+<nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 pt-12 pb-4 bg-background-dark/80 backdrop-blur-xl border-b border-white/5 max-w-[390px] mx-auto">
+<div class="flex items-center gap-2">
+<div class="flex items-center justify-center size-7 rounded-full border border-accent/30 bg-white/5">
+<span class="text-accent font-bold text-sm italic pt-0.5">S</span>
+</div>
+<span class="text-white text-lg font-bold tracking-tight italic">Society</span>
+</div>
+<button class="text-white/90 active:text-accent transition-colors flex items-center justify-center size-9 rounded-full active:bg-white/10">
+<span class="material-symbols-outlined text-[24px]">menu</span>
+</button>
+</nav>
+<header class="relative h-[68vh] w-full flex flex-col justify-end px-5 pb-8 overflow-hidden">
+<div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDm87aOggULG6QH0_BtwSYHhyaiLtgPO5-lKvfP-mcaTztKDULXuzLrt8K-xMnH4WwY-K8t0PsoGiFSsVnfAbkpwIY43WXveN7FOZtcyO3aFF2lBxRkuALQsZcV6327b1xY2UFnspZW9i4bwc12ulhFmqh9XDnpHqXz9hUryHs3DHnFRtlPVlptpxYz0iUQfn3w1X-MMlWi22YRGR5crxXFwxcXCML59urkupSnU4O54fXmWy1C0UfBmL-SlNT8ggp9g91hEGWhpnk');"></div>
+<div class="absolute inset-0 z-10 bg-gradient-to-b from-background-dark/40 via-transparent to-background-dark"></div>
+<div class="absolute inset-0 z-10 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent"></div>
+<div class="relative z-20 flex flex-col items-start gap-4 mb-4">
+<div class="space-y-2 w-full">
+<span class="inline-block py-1 px-3 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[10px] font-bold tracking-widest uppercase text-accent mb-2">Private Members Only</span>
+<h1 class="text-[2.75rem] leading-[1.05] font-medium tracking-tight text-white drop-shadow-sm">
+                    Meaningful<br/><span class="italic text-accent">Connection.</span>
+</h1>
+<p class="text-gray-300/90 text-sm font-body font-normal max-w-[280px] leading-relaxed mt-2">
+                    A private digital sanctuary for the modern elite.
+                </p>
+</div>
+<div class="w-full flex flex-col gap-4 mt-4">
+<button class="group active:scale-[0.98] transition-transform w-full rounded-2xl bg-accent py-3.5 px-6 shadow-lg shadow-accent/10">
+<span class="text-background-dark text-base font-bold tracking-wide uppercase">Apply for Membership</span>
+</button>
+<div class="flex items-center gap-2">
+<div class="flex -space-x-3 rtl:space-x-reverse">
+<img alt="" class="w-8 h-8 border-[1.5px] border-background-dark rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtDdXKdRZB8AOQ_oJ-suuUtxjj4RZ4zuMmAN1JnTKgfSIT3akh4b9BFOaIOLLcJy_JM86kjU1z5O35UKSQhpczbNLtDtxIRHOdCHxn_iD8-gMn3UNY3PGwirfcd13B2Hv97j3JhY77Bz1g66dNO5ssZCHQ0fAI-Tq_fxNyRbS6V51ANWQICgXiYFVIZUdiQ-EyqOjP0iskyVI3x5NCQKiIuq3SNaC1QeYqsj3RYUDrB2o838NtOsnYFn-xvWEuU-ISVPTLqxu6BGY"/>
+<img alt="" class="w-8 h-8 border-[1.5px] border-background-dark rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHXXI5zWPBwljwWkHgvya3KEcvXgcnQNlXx80t1iqI28m8AOSDsCYKfTVXPBWt_EGrqesi8Hjrgn0nRkJ7qEK3iEcEnfSjNNd5ArQUcot-74AlBmv8Lq-3B9hNUpUA9y7yw8fPb6kxNMYH5ubynozrFDHd14zz6rnl5cRhQHj1ohpg54mW4CG9jNrjHzMeAuVFIE_rq7POBZh15eAoNMw-cYZOx2anDt-qWxqRdwWvgOaxW9BDAUsygivftTmLO1Ei-GejN3NjaYc"/>
+<img alt="" class="w-8 h-8 border-[1.5px] border-background-dark rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbu4knVS0k6ljJNmf-LCVmzwuM8tR2P18bMV0981p1vUTKMOnGc2bjl8mdftfEXXMlhSuqp27q7O8bqZ498aci881LmE3Bip3PWFAsDk3AB2mDXyR_7wgpv1G3BXWKH95qxaknz2Ce2FV4M8W8DN2kF6zn8W7MfoYX4Ij5tC0kqP9HzZ4lbv3GylPyjVio_RZWpm1_AMfsZMZlJZFajkD_QDJmTTw0aLI7XFdWj9hMbXg2ybpmHW6e7YJADVaZlvphfnXwntQl3XU"/>
+<div class="flex items-center justify-center w-8 h-8 text-[9px] font-bold text-background-dark bg-white border-[1.5px] border-background-dark rounded-full">
+                            +150
+                        </div>
+</div>
+<span class="text-white/60 text-xs font-body">Joined recently</span>
+</div>
+</div>
+</div>
+</header>
+<main class="relative z-30 flex flex-col gap-10 px-0 pb-32">
+<section class="pl-5">
+<div class="flex items-center justify-between mb-4 pr-5">
+<h3 class="text-xl text-white font-medium italic">Our Ethos</h3>
+<span class="text-xs text-white/40 font-body">Swipe</span>
+</div>
+<div class="flex gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory pr-5 pb-2">
+<div class="snap-center min-w-[150px] w-[42vw] bg-surface-dark border border-white/5 rounded-2xl p-4 flex flex-col justify-between gap-8 active:bg-white/5 transition-colors">
+<div class="size-8 rounded-full bg-white/5 flex items-center justify-center text-accent">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</div>
+<div>
+<h4 class="text-white text-base font-medium leading-tight mb-1">Privacy First</h4>
+<p class="text-white/50 text-[10px] font-body leading-relaxed">Discretion is our currency.</p>
+</div>
+</div>
+<div class="snap-center min-w-[150px] w-[42vw] bg-surface-dark border border-white/5 rounded-2xl p-4 flex flex-col justify-between gap-8 active:bg-white/5 transition-colors">
+<div class="size-8 rounded-full bg-white/5 flex items-center justify-center text-accent">
+<span class="material-symbols-outlined text-[18px]">diamond</span>
+</div>
+<div>
+<h4 class="text-white text-base font-medium leading-tight mb-1">Curated Events</h4>
+<p class="text-white/50 text-[10px] font-body leading-relaxed">Exclusive gatherings worldwide.</p>
+</div>
+</div>
+<div class="snap-center min-w-[150px] w-[42vw] bg-surface-dark border border-white/5 rounded-2xl p-4 flex flex-col justify-between gap-8 active:bg-white/5 transition-colors">
+<div class="size-8 rounded-full bg-white/5 flex items-center justify-center text-accent">
+<span class="material-symbols-outlined text-[18px]">public</span>
+</div>
+<div>
+<h4 class="text-white text-base font-medium leading-tight mb-1">Global Access</h4>
+<p class="text-white/50 text-[10px] font-body leading-relaxed">A network that travels.</p>
+</div>
+</div>
+<div class="snap-center min-w-[150px] w-[42vw] bg-surface-dark border border-white/5 rounded-2xl p-4 flex flex-col justify-between gap-8 active:bg-white/5 transition-colors">
+<div class="size-8 rounded-full bg-white/5 flex items-center justify-center text-accent">
+<span class="material-symbols-outlined text-[18px]">forum</span>
+</div>
+<div>
+<h4 class="text-white text-base font-medium leading-tight mb-1">Discourse</h4>
+<p class="text-white/50 text-[10px] font-body leading-relaxed">Meaningful conversations.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="overflow-hidden w-full pl-5">
+<div class="flex items-center justify-between mb-4 pr-5">
+<h3 class="text-xl text-white font-medium italic">Curated Collections</h3>
+<div class="flex gap-1">
+<div class="size-1.5 rounded-full bg-white"></div>
+<div class="size-1.5 rounded-full bg-white/20"></div>
+<div class="size-1.5 rounded-full bg-white/20"></div>
+</div>
+</div>
+<div class="flex gap-4 overflow-x-auto no-scrollbar snap-x snap-mandatory pr-10 pb-4">
+<div class="snap-center min-w-[300px] h-[420px] relative rounded-3xl overflow-hidden active:scale-[0.98] transition-transform border border-white/10 shadow-lg">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCWQgq4ul6Ot1qxUEk1V-l3PRJlNNT2Ra0_pg1NPIFDcYi0qacMU25dbohNS-SBDobOlE26wn2MmqNpFWxX2D-EvFi3kds1jcDqVy330hwgIBfsBOYg_UDWORT4turw92rJmZDWJoVFstFYlkJY7tYy5I9gQ6p0bMExgvEP-E7K8kHoD2oR7tJoKifuvca12vE5iqYCnxEU_ibMnZvYM1R6Ta900tXMLnUVZNpkvPKTo9nvTjQq-ZG_z5UeAjkHXtKK66QcIvn8fdg');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent opacity-90"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<div class="flex items-center justify-between w-full mb-3">
+<span class="bg-accent/90 text-background-dark px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Exclusive</span>
+<span class="material-symbols-outlined text-white/80 text-[20px]">arrow_forward</span>
+</div>
+<h4 class="text-[2rem] leading-none text-white font-medium italic mb-2">The Gentlemen</h4>
+<p class="text-white/70 text-sm font-body line-clamp-2">A circle for the modern man of substance and style.</p>
+</div>
+</div>
+<div class="snap-center min-w-[300px] h-[420px] relative rounded-3xl overflow-hidden active:scale-[0.98] transition-transform border border-white/10 shadow-lg">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAF41UGDzk9sI5WNE1YVG6DQrx_0U7OCgK9rl1ej-bodBQK1pFSq9tRIru9BPs4BF5s5FiMBF7MGYHgCh_5Y4rYfxKKXEZC9GrDSit7tdFHZ-ZQhHMQw8uEuacCH5QtEpWcZ0EfJK-N4OvXFQB9jhy7HB4YSN9BZajd3ccmNK_txRyRlufKE7rkkvlm6MKd3CpFBEya7yCzfBjkB2LHsiy8Qa1iF0LufQ0oL-MdNLnIH5dFFijFXO9dsx9ZCSz_-32EIkgiMYU3Lgk');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent opacity-90"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<div class="flex items-center justify-between w-full mb-3">
+<span class="bg-accent/90 text-background-dark px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Society</span>
+<span class="material-symbols-outlined text-white/80 text-[20px]">arrow_forward</span>
+</div>
+<h4 class="text-[2rem] leading-none text-white font-medium italic mb-2">The Ladies Society</h4>
+<p class="text-white/70 text-sm font-body line-clamp-2">Empowering connections for visionary women.</p>
+</div>
+</div>
+<div class="snap-center min-w-[300px] h-[420px] relative rounded-3xl overflow-hidden active:scale-[0.98] transition-transform border border-white/10 shadow-lg">
+<div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDrhMYN-DRTL1u1_10kGQgdtg7m_aIWXa9GrHxwXMLGhXqqdn3WXCRtLeGqY8axIYUEwXPjlcznRrcNRYT2BY9XAPRamvuYfaRHFefmUUAoyQ5djXY1HxDzDUcddOUTm5niaUmRPP8ic5H4rGMR-CIPjdwMdB8zqtSZAk4EXKp2MFx-wL2nqN41avalfqoxw587ZcAsL8fpVw7CVydjBn9DKsSlV3I1VecACDKlTwB-K6J65QeEGHuUOUZJAiYtM5YXRpnZTs5EVqw');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent opacity-90"></div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<div class="flex items-center justify-between w-full mb-3">
+<span class="bg-accent/90 text-background-dark px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Social</span>
+<span class="material-symbols-outlined text-white/80 text-[20px]">arrow_forward</span>
+</div>
+<h4 class="text-[2rem] leading-none text-white font-medium italic mb-2">Les Amis</h4>
+<p class="text-white/70 text-sm font-body line-clamp-2">Casual gatherings for close friends and allies.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<div class="fixed bottom-0 left-0 right-0 z-40 max-w-[390px] mx-auto">
+<div class="absolute inset-0 bg-background-dark/80 backdrop-blur-xl border-t border-white/10"></div>
+<div class="relative z-50 px-5 pt-4 pb-8 flex flex-col gap-3">
+<button class="w-full h-14 rounded-2xl bg-white text-background-dark text-[15px] font-bold tracking-wide uppercase shadow-lg active:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+<span>Request Invitation</span>
+<span class="material-symbols-outlined text-[18px] font-bold">arrow_forward</span>
+</button>
+<div class="flex justify-center">
+<div class="w-32 h-1 bg-white/20 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

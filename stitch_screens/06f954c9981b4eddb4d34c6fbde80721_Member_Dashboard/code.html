@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Member Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a5b2a",
+                        "primary-light": "#2a8540",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#0a0f0a",
+                        "surface-dark": "#131f16",
+                        "surface-darker": "#0e1610",
+                        "gold": "#D4AF37",
+                        "gold-light": "#E5C560",
+                        "ios-gray": "#1c1c1e",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    boxShadow: {
+                        "widget": "0 4px 24px -1px rgba(0, 0, 0, 0.3), 0 2px 8px -1px rgba(0, 0, 0, 0.2)",
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {padding-bottom: 110px;
+        }.scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display text-white min-h-screen flex flex-col antialiased selection:bg-gold selection:text-surface-darker overflow-x-hidden">
+<header class="fixed top-0 w-full z-50 bg-background-dark/70 backdrop-blur-xl border-b border-white/5 pt-[max(20px,env(safe-area-inset-top))] transition-all duration-300">
+<div class="px-6 pb-4 pt-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-full bg-gradient-to-br from-primary to-primary-light shadow-lg flex items-center justify-center text-gold ring-1 ring-white/10">
+<span class="material-symbols-outlined !text-[20px]">spa</span>
+</div>
+<span class="text-lg font-medium tracking-tight text-white/95">The Grove</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-white/70 hover:text-gold transition-colors active:scale-95">
+<span class="material-symbols-outlined !text-[26px]">notifications</span>
+<span class="absolute top-2 right-2 h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-background-dark"></span>
+</button>
+<div class="h-9 w-9 rounded-full overflow-hidden border border-white/10 ring-2 ring-primary/20 shadow-lg">
+<img alt="Profile of a man in a suit" class="h-full w-full object-cover" data-alt="Portrait of Julian, a member of the club" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBUyVex6KFFq6icm7u1ySUQvQ7hEWI6hPCwAGXc1Non_ILl8O_hzr2MAEG5HdnxPGFEsluAyiSMGUsN-3WncRVZNpAe3rSBzqueWtxFpdS61RnZsWHCJ9hFFxyoeBiH-kTBspS4N629wLcpxXfhOIH9SFWp5f8m-qXZVXR3DDUJxvi1EteNbPUlJB-Km4Qhq_Ftv4akqBpPQeShk9OoSEEELoH0bpVCNrA2aQ59sTqgfdAFY9KrS_G06DjDaYR0J6lFqPDXRFV8io"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col pt-[calc(max(20px,env(safe-area-inset-top))+72px)] space-y-8 relative">
+<section class="px-6">
+<div class="flex flex-col gap-1">
+<h1 class="text-3xl font-light text-white leading-tight">
+                    Good Evening,<br/><span class="font-medium italic text-gold-light">Julian</span>
+</h1>
+<div class="flex items-center gap-2 mt-2">
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface-dark border border-white/10 text-[11px] font-body tracking-wider uppercase text-gold shadow-sm">
+<span class="material-symbols-outlined !text-[14px] fill-1">stars</span> Gold Member
+                    </span>
+</div>
+</div>
+</section>
+<section class="px-6">
+<div class="grid grid-cols-2 gap-4">
+<div class="col-span-1 aspect-square bg-ios-gray rounded-[22px] p-4 relative overflow-hidden shadow-widget border border-white/5 flex flex-col justify-between">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -mr-10 -mt-10"></div>
+<div class="flex justify-between items-start z-10">
+<div class="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-white/80 !text-[18px]">person</span>
+</div>
+<span class="text-gold text-xs font-bold font-body uppercase tracking-wide">Status</span>
+</div>
+<div class="flex flex-col items-center justify-center relative z-10 mt-1">
+<div class="relative h-20 w-20 flex items-center justify-center">
+<svg class="transform -rotate-90 w-full h-full">
+<circle class="text-white/10" cx="40" cy="40" fill="transparent" r="32" stroke="currentColor" stroke-width="6"></circle>
+<circle class="text-gold" cx="40" cy="40" fill="transparent" r="32" stroke="currentColor" stroke-dasharray="201" stroke-dashoffset="30" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<span class="absolute text-lg font-bold text-white">85%</span>
+</div>
+</div>
+<div class="z-10 text-center">
+<p class="text-white/60 text-[11px] font-body font-medium leading-tight">Profile Completion</p>
+</div>
+</div>
+<div class="col-span-1 flex flex-col gap-4">
+<div class="flex-1 bg-surface-dark rounded-[22px] p-4 relative overflow-hidden shadow-widget border border-white/5 flex flex-col justify-center gap-1 group active:scale-95 transition-transform">
+<div class="flex items-center justify-between mb-1">
+<span class="text-white/50 text-xs font-medium font-body uppercase">Upcoming</span>
+<span class="material-symbols-outlined text-primary-light !text-[18px]">calendar_month</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-3xl font-bold text-white font-body">2</span>
+<span class="text-sm text-white/40 font-body">events</span>
+</div>
+</div>
+<div class="flex-1 bg-surface-dark rounded-[22px] p-4 relative overflow-hidden shadow-widget border border-white/5 flex flex-col justify-center gap-1 group active:scale-95 transition-transform">
+<div class="flex items-center justify-between mb-1">
+<span class="text-white/50 text-xs font-medium font-body uppercase">Network</span>
+<span class="material-symbols-outlined text-primary-light !text-[18px]">group</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-3xl font-bold text-white font-body">48</span>
+<span class="text-sm text-white/40 font-body">peers</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="px-6">
+<h3 class="text-sm font-medium text-white/60 mb-4 px-1 font-body uppercase tracking-wide">Quick Actions</h3>
+<div class="grid grid-cols-4 gap-4">
+<button class="flex flex-col items-center gap-2 group">
+<div class="h-14 w-14 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center group-active:bg-primary group-active:border-primary transition-colors shadow-lg">
+<span class="material-symbols-outlined text-gold group-active:text-white !text-[24px]">concierge</span>
+</div>
+<span class="text-[10px] text-white/70 font-body text-center leading-tight">Concierge</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="h-14 w-14 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center group-active:bg-primary group-active:border-primary transition-colors shadow-lg">
+<span class="material-symbols-outlined text-gold group-active:text-white !text-[24px]">diamond</span>
+</div>
+<span class="text-[10px] text-white/70 font-body text-center leading-tight">Perks</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="h-14 w-14 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center group-active:bg-primary group-active:border-primary transition-colors shadow-lg">
+<span class="material-symbols-outlined text-gold group-active:text-white !text-[24px]">confirmation_number</span>
+</div>
+<span class="text-[10px] text-white/70 font-body text-center leading-tight">Tickets</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="h-14 w-14 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center group-active:bg-primary group-active:border-primary transition-colors shadow-lg">
+<span class="material-symbols-outlined text-gold group-active:text-white !text-[24px]">share</span>
+</div>
+<span class="text-[10px] text-white/70 font-body text-center leading-tight">Refer</span>
+</button>
+</div>
+</section>
+<section class="flex flex-col gap-3">
+<div class="flex items-center justify-between px-6">
+<h2 class="text-lg font-medium text-white">Upcoming Events</h2>
+<a class="text-xs font-body font-semibold text-primary-light hover:text-white transition-colors uppercase tracking-wide" href="#">See All</a>
+</div>
+<div class="flex overflow-x-auto snap-x snap-mandatory px-6 gap-4 pb-4 scrollbar-hide -mr-2">
+<div class="snap-center shrink-0 w-[85vw] max-w-[340px] bg-gradient-to-br from-[#1a231b] to-surface-darker rounded-2xl p-5 border border-white/5 shadow-widget relative group overflow-hidden">
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="flex items-start justify-between mb-6 relative z-10">
+<div class="flex flex-col">
+<span class="text-xs text-gold font-bold font-body uppercase mb-1">Social Gathering</span>
+<h3 class="text-xl font-medium text-white leading-tight">Wine Tasting Gala</h3>
+</div>
+<div class="flex flex-col items-center bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-2 min-w-[50px]">
+<span class="text-[10px] text-white/60 uppercase font-bold">Oct</span>
+<span class="text-lg font-bold text-white font-body">12</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-white/60 text-sm font-body mb-4 relative z-10">
+<span class="material-symbols-outlined !text-[18px]">location_on</span>
+<span class="truncate">The Grand Hall, NYC</span>
+</div>
+<div class="flex items-center justify-between relative z-10 pt-4 border-t border-white/5">
+<div class="flex -space-x-2">
+<div class="w-7 h-7 rounded-full border border-surface-dark bg-gray-600"></div>
+<div class="w-7 h-7 rounded-full border border-surface-dark bg-gray-500"></div>
+<div class="w-7 h-7 rounded-full border border-surface-dark bg-surface-dark flex items-center justify-center text-[9px] text-white">+12</div>
+</div>
+<button class="px-4 py-2 bg-primary text-white text-xs font-medium rounded-full shadow-lg hover:bg-primary-light transition-colors">
+                            RSVP
+                        </button>
+</div>
+</div>
+<div class="snap-center shrink-0 w-[85vw] max-w-[340px] bg-gradient-to-br from-[#1a231b] to-surface-darker rounded-2xl p-5 border border-white/5 shadow-widget relative group overflow-hidden">
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-gold/5 rounded-full blur-3xl"></div>
+<div class="flex items-start justify-between mb-6 relative z-10">
+<div class="flex flex-col">
+<span class="text-xs text-primary-light font-bold font-body uppercase mb-1">Business</span>
+<h3 class="text-xl font-medium text-white leading-tight">Executive Networking</h3>
+</div>
+<div class="flex flex-col items-center bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 p-2 min-w-[50px]">
+<span class="text-[10px] text-white/60 uppercase font-bold">Oct</span>
+<span class="text-lg font-bold text-white font-body">15</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-white/60 text-sm font-body mb-4 relative z-10">
+<span class="material-symbols-outlined !text-[18px]">meeting_room</span>
+<span class="truncate">Club Lounge</span>
+</div>
+<div class="flex items-center justify-between relative z-10 pt-4 border-t border-white/5">
+<div class="flex -space-x-2">
+<div class="w-7 h-7 rounded-full border border-surface-dark bg-gray-400"></div>
+<div class="w-7 h-7 rounded-full border border-surface-dark bg-gray-300"></div>
+<div class="w-7 h-7 rounded-full border border-surface-dark bg-surface-dark flex items-center justify-center text-[9px] text-white">+24</div>
+</div>
+<button class="px-4 py-2 bg-white/10 text-white text-xs font-medium rounded-full hover:bg-white/20 transition-colors border border-white/10">
+                            Details
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 w-full z-[100] bg-[#121212]/90 backdrop-blur-2xl border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
+<div class="flex justify-around items-center h-[80px] px-2">
+<a class="flex flex-col items-center justify-center w-full gap-1 group" href="#">
+<div class="relative">
+<span class="material-symbols-outlined text-primary group-hover:text-primary-light transition-colors !text-[28px] fill-1">home</span>
+</div>
+<span class="text-[10px] font-body text-primary font-medium tracking-wide">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full gap-1 group" href="#">
+<span class="material-symbols-outlined text-white/40 group-hover:text-white transition-colors !text-[28px]">calendar_month</span>
+<span class="text-[10px] font-body text-white/40 group-hover:text-white transition-colors font-medium tracking-wide">Events</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full gap-1 group" href="#">
+<div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/50 group-active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white !text-[24px]">add</span>
+</div>
+</a>
+<a class="flex flex-col items-center justify-center w-full gap-1 group" href="#">
+<span class="material-symbols-outlined text-white/40 group-hover:text-white transition-colors !text-[28px]">diamond</span>
+<span class="text-[10px] font-body text-white/40 group-hover:text-white transition-colors font-medium tracking-wide">Perks</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full gap-1 group" href="#">
+<span class="material-symbols-outlined text-white/40 group-hover:text-white transition-colors !text-[28px]">person</span>
+<span class="text-[10px] font-body text-white/40 group-hover:text-white transition-colors font-medium tracking-wide">Profile</span>
+</a>
+</div>
+</nav>
+
+</body></html>

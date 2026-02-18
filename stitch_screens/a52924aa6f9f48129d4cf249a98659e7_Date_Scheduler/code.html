@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Date Scheduler</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d421",
+                        "primary-dark": "#0ea61a",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#111812",
+                        "surface-dark": "#1c271c",
+                        "surface-light": "#eef0ee",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "sans": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for horizontal scrolling areas */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased selection:bg-primary selection:text-black">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Header -->
+<div class="sticky top-0 z-20 flex items-center bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md px-4 py-4 border-b border-primary/10">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-white">arrow_back</span>
+</button>
+<h2 class="flex-1 text-center text-lg font-bold leading-tight tracking-tight pr-10">Plan Your First Meeting</h2>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto pb-32">
+<!-- Calendar Section -->
+<div class="flex flex-col gap-4 p-4">
+<!-- Month Navigator -->
+<div class="flex items-center justify-between px-2">
+<button class="p-2 hover:bg-surface-light dark:hover:bg-surface-dark rounded-full transition-colors">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">chevron_left</span>
+</button>
+<p class="text-base font-bold">October 2023</p>
+<button class="p-2 hover:bg-surface-light dark:hover:bg-surface-dark rounded-full transition-colors">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">chevron_right</span>
+</button>
+</div>
+<!-- Days Grid -->
+<div class="grid grid-cols-7 gap-y-2 text-center mb-2">
+<!-- Weekday Headers -->
+<div class="text-xs font-bold text-slate-400 dark:text-slate-500 py-2">S</div>
+<div class="text-xs font-bold text-slate-400 dark:text-slate-500 py-2">M</div>
+<div class="text-xs font-bold text-slate-400 dark:text-slate-500 py-2">T</div>
+<div class="text-xs font-bold text-slate-400 dark:text-slate-500 py-2">W</div>
+<div class="text-xs font-bold text-slate-400 dark:text-slate-500 py-2">T</div>
+<div class="text-xs font-bold text-slate-400 dark:text-slate-500 py-2">F</div>
+<div class="text-xs font-bold text-slate-400 dark:text-slate-500 py-2">S</div>
+<!-- Days -->
+<!-- Empty slots for alignment -->
+<div class="col-span-3"></div>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">1</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">2</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">3</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">4</span>
+</button>
+<!-- Selected Date -->
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-9 items-center justify-center rounded-full bg-primary text-background-dark font-bold shadow-[0_0_15px_rgba(17,212,33,0.4)]">5</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">6</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">7</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">8</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">9</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">10</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">11</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">12</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">13</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">14</span>
+</button>
+<button class="group relative flex h-10 w-full items-center justify-center text-sm">
+<span class="flex size-8 items-center justify-center rounded-full text-slate-600 dark:text-slate-300 group-hover:bg-surface-light dark:group-hover:bg-surface-dark transition-all">15</span>
+</button>
+</div>
+</div>
+<!-- Time Selection -->
+<div class="px-4 mb-8">
+<p class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3 ml-1">Available Times</p>
+<div class="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+<button class="flex-shrink-0 px-5 py-2.5 rounded-full border border-slate-200 dark:border-surface-dark bg-white dark:bg-surface-dark text-slate-600 dark:text-slate-300 text-sm font-medium hover:border-primary dark:hover:border-primary hover:text-primary dark:hover:text-primary transition-all">
+                        6:30 PM
+                    </button>
+<button class="flex-shrink-0 px-5 py-2.5 rounded-full bg-primary text-background-dark text-sm font-bold shadow-[0_0_15px_rgba(17,212,33,0.3)] border border-primary">
+                        7:00 PM
+                    </button>
+<button class="flex-shrink-0 px-5 py-2.5 rounded-full border border-slate-200 dark:border-surface-dark bg-white dark:bg-surface-dark text-slate-600 dark:text-slate-300 text-sm font-medium hover:border-primary dark:hover:border-primary hover:text-primary dark:hover:text-primary transition-all">
+                        7:30 PM
+                    </button>
+<button class="flex-shrink-0 px-5 py-2.5 rounded-full border border-slate-200 dark:border-surface-dark bg-white dark:bg-surface-dark text-slate-600 dark:text-slate-300 text-sm font-medium hover:border-primary dark:hover:border-primary hover:text-primary dark:hover:text-primary transition-all">
+                        8:00 PM
+                    </button>
+<button class="flex-shrink-0 px-5 py-2.5 rounded-full border border-slate-200 dark:border-surface-dark bg-white dark:bg-surface-dark text-slate-600 dark:text-slate-300 text-sm font-medium hover:border-primary dark:hover:border-primary hover:text-primary dark:hover:text-primary transition-all">
+                        8:30 PM
+                    </button>
+</div>
+</div>
+<!-- Curated Venues -->
+<div class="px-0 mb-8">
+<div class="flex items-center justify-between px-5 mb-4">
+<h3 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Curated Venues</h3>
+<a class="text-xs font-medium text-primary hover:underline" href="#">View All</a>
+</div>
+<div class="flex gap-4 overflow-x-auto scrollbar-hide px-4 pb-4 snap-x snap-mandatory">
+<!-- Card 1 -->
+<div class="relative flex-shrink-0 w-64 h-80 rounded-2xl overflow-hidden snap-center group cursor-pointer border-2 border-transparent hover:border-primary transition-all duration-300">
+<img alt="Dimly lit upscale lounge with bookshelves" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2-oG47bWT3GS5cXbpdi3PAcyZ_8GeCiDVFN3dwfQpeakoHIp2YMfzG434KUCXcdyqRqo3vpZxBrJQjt5kvxqBiBK4Eq3rt-W-PrwIT9vobDeRommnRSujHChAQ15eYMqxFREtBflq6h-JI93sRwZKyJG8mU_v9QvAMlzmt-PI3vZC6ij06G2Vc02XIyXkHh2foTanAIRdJNx36xxTpK3zhSWS5UcmzL_CJBjF_KYNs3ih3CFnrA1lmkvkXyDW7HsHfefVHeYt7_4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent"></div>
+<div class="absolute top-3 right-3 bg-background-dark/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[14px]">local_bar</span>
+<span class="text-[10px] font-bold text-white uppercase tracking-wider">Cocktails</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-5">
+<p class="text-xs font-bold text-primary mb-1 uppercase tracking-widest">Private Booth Access</p>
+<h4 class="text-xl font-bold text-white mb-1">The Library Lounge</h4>
+<div class="flex items-center gap-1 text-slate-300">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="text-xs">SoHo, Manhattan</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="relative flex-shrink-0 w-64 h-80 rounded-2xl overflow-hidden snap-center group cursor-pointer border-2 border-transparent hover:border-primary transition-all duration-300">
+<img alt="Rooftop terrace with warm lighting at night" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAznFE4VaOVVmnYEpYthzWQRu54jTrlku4cUz8xzsIRe90buuCnO5OV0H2kL9GdkUcFh8mbtWd3rjLvclps0Ps9A9kncaJcqEnmm07OfryuUrEdFHt6Vhv-QujwUanYGNXp51m1s7utbJjHfh0VPiyH8ujGHd9ethxJIIoVRJMJPNrhcsr2qKr5iTDKuBUOoopJtX660rbgL42UlJADrwW7k02K7sv6_cV6iS7nEnOetrBtqoUfzqYVoGrHwmTU_si05WO-7J_N0tc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent"></div>
+<div class="absolute top-3 right-3 bg-background-dark/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[14px]">restaurant</span>
+<span class="text-[10px] font-bold text-white uppercase tracking-wider">Dining</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-5">
+<p class="text-xs font-bold text-primary mb-1 uppercase tracking-widest">Comp. Champagne</p>
+<h4 class="text-xl font-bold text-white mb-1">Terrace Grill</h4>
+<div class="flex items-center gap-1 text-slate-300">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="text-xs">Upper East Side</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="relative flex-shrink-0 w-64 h-80 rounded-2xl overflow-hidden snap-center group cursor-pointer border-2 border-transparent hover:border-primary transition-all duration-300">
+<img alt="Sleek modern bar interior with onyx stone" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxXf6P2uC3c6PEMCvoZ1SeNG6kfUao2O6Yf2FwiHXBm7s1C6VlDnD2opwLW67763AYc80HpQmfANTcxJOudL647UESMQc6dOtYSNqBQw81vVFINVSb3PDCWx_UC-cU4h-LWD1oBkcXupXWaGtVY2s5vfKrFBxOVP75CuImSdjTZNUPlQxdZtXxiqwaH7OqsEB7itwCLzXjUAPvVDVkT10b2EZGnmUThC3U0l6FecH9qMcTPzogz4p5mmdmMZH9LtU2ogjUnjBHfFU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent"></div>
+<div class="absolute top-3 right-3 bg-background-dark/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[14px]">music_note</span>
+<span class="text-[10px] font-bold text-white uppercase tracking-wider">Jazz</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-5">
+<p class="text-xs font-bold text-primary mb-1 uppercase tracking-widest">Priority Seating</p>
+<h4 class="text-xl font-bold text-white mb-1">Onyx Bar</h4>
+<div class="flex items-center gap-1 text-slate-300">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="text-xs">Tribeca</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Confirmation Button Area -->
+<div class="px-4 pb-6">
+<button class="w-full bg-primary hover:bg-primary-dark text-background-dark text-base font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(17,212,33,0.25)] hover:shadow-[0_0_30px_rgba(17,212,33,0.4)] transition-all transform active:scale-[0.98] flex items-center justify-center gap-2">
+<span>Confirm Meeting Request</span>
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+</button>
+</div>
+</div>
+<!-- Bottom Navigation -->
+<div class="absolute bottom-0 w-full bg-surface-dark/95 backdrop-blur-md border-t border-white/5 z-30">
+<div class="flex justify-around items-center px-2 py-2 pb-5">
+<a class="flex flex-1 flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors text-[24px]">home</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary transition-colors">Home</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors text-[24px]">favorite</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary transition-colors">Matches</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 group" href="#">
+<div class="relative">
+<span class="material-symbols-outlined text-primary text-[24px] fill-current">calendar_month</span>
+<span class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+</span>
+</div>
+<span class="text-[10px] font-medium text-primary">Scheduler</span>
+</a>
+<a class="flex flex-1 flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors text-[24px]">person</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary transition-colors">Profile</span>
+</a>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Partner Perks Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0fbd1e",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102212",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for horizontal scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased selection:bg-primary/30">
+<div class="relative flex min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-background-light dark:bg-[#050f06] shadow-2xl">
+<!-- Top Navigation / Header -->
+<header class="sticky top-0 z-50 w-full px-4 pt-12 pb-4 backdrop-blur-xl bg-background-light/80 dark:bg-[#102212]/80 border-b border-white/5 dark:border-white/5">
+<div class="flex items-center justify-between mb-4">
+<h1 class="text-2xl font-bold tracking-tight">Portal Perks</h1>
+<button class="relative p-2 rounded-full hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+</div>
+<!-- Search Bar -->
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500">search</span>
+</div>
+<input class="block w-full pl-10 pr-4 py-3 border-none rounded-xl bg-slate-200/50 dark:bg-white/10 text-sm placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 text-slate-900 dark:text-white transition-all" placeholder="Search for brands or offers..." type="text"/>
+<div class="absolute inset-y-0 right-0 pr-2 flex items-center">
+<button class="p-1 rounded-lg hover:bg-white/10 text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Filter Chips -->
+<div class="w-full overflow-x-auto no-scrollbar py-2 pl-4">
+<div class="flex gap-3 pr-4">
+<button class="shrink-0 px-5 py-2 rounded-full bg-primary text-white text-sm font-medium shadow-lg shadow-primary/20 transition-transform active:scale-95">
+                        All
+                    </button>
+<button class="shrink-0 px-5 py-2 rounded-full bg-white dark:bg-[#1c2e1e] border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-transform active:scale-95">
+                        Dining
+                    </button>
+<button class="shrink-0 px-5 py-2 rounded-full bg-white dark:bg-[#1c2e1e] border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-transform active:scale-95">
+                        Travel
+                    </button>
+<button class="shrink-0 px-5 py-2 rounded-full bg-white dark:bg-[#1c2e1e] border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-transform active:scale-95">
+                        Wellness
+                    </button>
+<button class="shrink-0 px-5 py-2 rounded-full bg-white dark:bg-[#1c2e1e] border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-transform active:scale-95">
+                        Shopping
+                    </button>
+</div>
+</div>
+<!-- Featured Perks Section -->
+<section class="mt-6">
+<div class="px-4 mb-3 flex items-center justify-between">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white">Featured Perks</h2>
+<a class="text-xs font-medium text-primary hover:text-primary/80" href="#">View all</a>
+</div>
+<div class="w-full overflow-x-auto no-scrollbar pl-4 pb-4">
+<div class="flex gap-4 pr-4">
+<!-- Featured Card 1 -->
+<div class="relative shrink-0 w-64 h-80 rounded-2xl overflow-hidden group shadow-xl">
+<img alt="Luxury hotel room interior with warm lighting" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Luxury hotel room interior with warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqZQj63kzTjo_bT9RCOU2G1W3EmLWLcIDzxS7t-0c802LM8dw0RCv_dVd19Dj70GLsKcnJNAg6zptEhSNVQYVEBNWmm39wkIa2GegnxqIVCW2-7c-xXkVDefml0gWWKrukPNzjRcCoMkNgD_JqujpgXwTvFetAN-mwE6TVq7LgC9xiKlydFNMegT5qBwlzYIKn8OznRsrCAGF-3pBo6OZtD4Xyl_zQJUBUWFcEn-_abR0c5MSyOuf7OYI-Xklr3ntWLYZh2YGIdoQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+<!-- Gold Overlay Effect -->
+<div class="absolute inset-0 bg-gradient-to-tr from-[#FFD700]/10 to-transparent opacity-30 mix-blend-overlay"></div>
+<div class="absolute top-3 left-3 bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/20">
+<span class="text-[10px] font-bold text-white uppercase tracking-wider">Exclusive</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-5">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-black">flight</span>
+</div>
+<span class="text-xs font-medium text-white/90">Global Travel</span>
+</div>
+<h3 class="text-xl font-bold text-white leading-tight mb-1">25% Off 5-Star Hotels</h3>
+<p class="text-xs text-white/70 line-clamp-2 mb-3">Experience luxury for less at over 500 partner locations worldwide.</p>
+</div>
+</div>
+<!-- Featured Card 2 -->
+<div class="relative shrink-0 w-64 h-80 rounded-2xl overflow-hidden group shadow-xl">
+<img alt="Close up of a person holding a yoga mat in a gym" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Close up of a person holding a yoga mat in a gym" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIViaAH_56rNRWvS7X8eN44-I3yqd06qwSZDF3hX2P_tFL9_HvhpI225GM0GeDhxy2G7GziGxN-J8_yIcNCY8Ak7ZSH10tBhu1ridJ0KC15rFBKhjGGnv2lUonUyj_AQaSJorstrJxd-zBr8DNo2ZLLaT1tYV8lWA2TINyz9csBxK5-GdoCZgJhSF1_uCkQyrk1Lno2IrwZFt2g0Vmsa42xJEtZTgdLau4ZTbLSftFcqhw4Z1Rc4qSSjjDeHsxEeifqLF6fAFpZFU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+<div class="absolute top-3 left-3 bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/20">
+<span class="text-[10px] font-bold text-white uppercase tracking-wider">Premium</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-5">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-black">spa</span>
+</div>
+<span class="text-xs font-medium text-white/90">Equinox</span>
+</div>
+<h3 class="text-xl font-bold text-white leading-tight mb-1">Free 30-Day Pass</h3>
+<p class="text-xs text-white/70 line-clamp-2 mb-3">Unlock your potential with premium access to all club amenities.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- All Perks List -->
+<section class="mt-4 px-4">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white">All Perks</h2>
+<button class="p-1 text-slate-400 hover:text-white">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Perk Item 1 -->
+<div class="relative flex flex-col sm:flex-row gap-4 p-4 rounded-xl bg-white dark:bg-[#162618] border border-slate-200 dark:border-white/5 shadow-sm">
+<div class="flex items-start justify-between w-full">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-slate-600 dark:text-primary">restaurant</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300">DINING</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Chez Pierre</span>
+</div>
+<h3 class="text-base font-semibold text-slate-900 dark:text-white mb-1">Free Appetizer with Entree</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Valid for dinner service only.</p>
+</div>
+</div>
+</div>
+<div class="mt-2 sm:mt-0 sm:ml-auto self-center w-full sm:w-auto">
+<button class="w-full sm:w-auto px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-xs font-bold transition-colors shadow-lg shadow-primary/20 active:scale-95">
+                                Reveal Offer
+                            </button>
+</div>
+</div>
+<!-- Perk Item 2 -->
+<div class="relative flex flex-col sm:flex-row gap-4 p-4 rounded-xl bg-white dark:bg-[#162618] border border-slate-200 dark:border-white/5 shadow-sm">
+<div class="flex items-start justify-between w-full">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-slate-600 dark:text-primary">shopping_bag</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">SHOPPING</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Tech Haven</span>
+</div>
+<h3 class="text-base font-semibold text-slate-900 dark:text-white mb-1">15% Off Tech Accessories</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Online only. Minimum purchase $50.</p>
+</div>
+</div>
+</div>
+<div class="mt-2 sm:mt-0 sm:ml-auto self-center w-full sm:w-auto">
+<button class="w-full sm:w-auto px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-xs font-bold transition-colors shadow-lg shadow-primary/20 active:scale-95">
+                                Reveal Offer
+                            </button>
+</div>
+</div>
+<!-- Perk Item 3 (Locked) -->
+<div class="relative flex flex-col sm:flex-row gap-4 p-4 rounded-xl bg-slate-50 dark:bg-[#162618]/60 border border-slate-200 dark:border-white/5 shadow-sm opacity-80">
+<div class="flex items-start justify-between w-full">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/5 flex items-center justify-center shrink-0 grayscale opacity-50">
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">flight_takeoff</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300 opacity-70">TRAVEL</span>
+<span class="text-xs text-slate-500 dark:text-slate-500">Sky Lounge</span>
+</div>
+<h3 class="text-base font-semibold text-slate-700 dark:text-slate-300 mb-1">Access to VIP Lounges</h3>
+<div class="flex items-center gap-1 text-slate-500 dark:text-slate-500">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+<p class="text-xs">Platinum Tier Required</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-2 sm:mt-0 sm:ml-auto self-center w-full sm:w-auto">
+<button class="w-full sm:w-auto px-4 py-2 rounded-lg border border-primary/30 text-primary hover:bg-primary/10 text-xs font-bold transition-colors">
+                                Upgrade
+                            </button>
+</div>
+</div>
+<!-- Perk Item 4 -->
+<div class="relative flex flex-col sm:flex-row gap-4 p-4 rounded-xl bg-white dark:bg-[#162618] border border-slate-200 dark:border-white/5 shadow-sm">
+<div class="flex items-start justify-between w-full">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-slate-600 dark:text-primary">directions_car</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300">TRAVEL</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Zoom Rentals</span>
+</div>
+<h3 class="text-base font-semibold text-slate-900 dark:text-white mb-1">Double Points on Weekends</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400">Valid at airport locations.</p>
+</div>
+</div>
+</div>
+<div class="mt-2 sm:mt-0 sm:ml-auto self-center w-full sm:w-auto">
+<button class="w-full sm:w-auto px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-xs font-bold transition-colors shadow-lg shadow-primary/20 active:scale-95">
+                                Reveal Offer
+                            </button>
+</div>
+</div>
+</div>
+<!-- Spacer for bottom nav -->
+<div class="h-8"></div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="absolute bottom-0 left-0 w-full z-50 bg-[#102212]/90 backdrop-blur-lg border-t border-white/10 px-6 pb-6 pt-3">
+<div class="flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors text-[24px]">home</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary transition-colors">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="relative">
+<span class="material-symbols-outlined text-primary text-[24px] fill-current">redeem</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full"></span>
+</div>
+<span class="text-[10px] font-medium text-primary">Perks</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors text-[24px]">account_balance_wallet</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary transition-colors">Wallet</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors text-[24px]">person</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary transition-colors">Profile</span>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

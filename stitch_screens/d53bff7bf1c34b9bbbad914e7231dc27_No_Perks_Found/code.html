@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>No Perks Found</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d421",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102212",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white overflow-x-hidden">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Header -->
+<div class="flex items-center justify-between px-4 py-3 bg-[#111812] dark:bg-[#111812] border-b border-[#28392a] shrink-0">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 text-white transition-colors">
+<span class="material-symbols-outlined text-[24px]">arrow_back_ios_new</span>
+</button>
+<h1 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Partner Perks</h1>
+<div class="w-10"></div> <!-- Spacer for centering title -->
+</div>
+<!-- Main Content -->
+<div class="flex-1 flex flex-col items-center justify-center px-6 py-8 relative">
+<!-- Abstract background effect for depth -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-col items-center gap-8 max-w-sm z-10">
+<!-- Icon: Ticket with Slash -->
+<div class="relative flex items-center justify-center w-24 h-24 rounded-full bg-[#1c271c] border border-[#28392a]">
+<span class="material-symbols-outlined text-white/40 text-[48px]">local_activity</span>
+<!-- Slash Overlay -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-16 h-1 bg-red-500/80 rotate-45 rounded-full transform translate-y-[1px]"></div>
+</div>
+</div>
+<!-- Text Content -->
+<div class="flex flex-col items-center gap-3 text-center">
+<h2 class="text-2xl font-bold text-white tracking-tight">No Perks Found</h2>
+<p class="text-[#9db99f] text-base font-normal leading-relaxed">
+                        Try adjusting your filters or search terms to find available partner offers.
+                    </p>
+</div>
+<!-- Action Button -->
+<button class="w-full max-w-[240px] h-12 flex items-center justify-center gap-2 rounded-lg bg-[#1c3a21] hover:bg-[#234829] active:bg-[#1c3a21] text-primary border border-primary/20 transition-all shadow-lg shadow-black/20">
+<span class="material-symbols-outlined text-[20px]">filter_alt_off</span>
+<span class="text-sm font-bold tracking-wide">Clear All Filters</span>
+</button>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="shrink-0 border-t border-[#28392a] bg-[#1c271c]">
+<div class="flex gap-2 px-4 pb-6 pt-2">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99f] hover:text-white transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:-translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</div>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px] font-variation-settings-'FILL'1">search</span>
+</div>
+<span class="text-[10px] font-medium">Search</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99f] hover:text-white transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:-translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</div>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99f] hover:text-white transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:-translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</div>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+</div>
+</div>
+</body></html>

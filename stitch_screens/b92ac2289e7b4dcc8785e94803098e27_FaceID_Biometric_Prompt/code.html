@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FaceID Biometric Prompt</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d411",
+                        "primary-dark": "#0ea60e",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210", // Deep forest green
+                        "surface-dark": "#1a2e1a",
+                        "gold-accent": "#d4af37", // Luxury accent for underlying screen
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "system": ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica", "Arial", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom styles to simulate native iOS blur and materials */
+        .ios-blur-bg {
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background-color: rgba(30, 30, 30, 0.65);
+        }
+        
+        .face-id-glyph-spin {
+            animation: spin-pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes spin-pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        /* Simulating the underlying screen blur */
+        .background-blur-layer {
+            filter: blur(8px);
+            -webkit-filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Underlying "Member Authentication" Screen (Blurred Background) -->
+<!-- This section represents the app state underneath the modal -->
+<div class="background-blur-layer absolute inset-0 z-0 flex flex-col w-full h-full bg-background-dark">
+<!-- Header -->
+<div class="flex items-center justify-between p-4 pt-12 pb-2">
+<div class="text-white/80 flex size-12 shrink-0 items-center justify-center rounded-full bg-white/5">
+<span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+</div>
+<div class="flex items-center gap-2">
+<!-- Abstract logo placeholder -->
+<div class="h-8 w-8 rounded-full bg-gradient-to-tr from-primary to-gold-accent opacity-80" data-alt="Luxury private society logo icon"></div>
+<h2 class="text-white text-lg font-bold tracking-tight">PRIVATE SOCIETY</h2>
+</div>
+<div class="w-12"></div>
+</div>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col px-6 pt-10">
+<div class="text-center mb-10">
+<p class="text-primary text-sm font-bold uppercase tracking-widest mb-2">Exclusive Access</p>
+<h1 class="text-white text-3xl font-light">Welcome, Member.</h1>
+</div>
+<div class="space-y-6 w-full max-w-sm mx-auto opacity-70">
+<!-- Username Input Simulation -->
+<div class="space-y-2">
+<label class="text-gray-400 text-sm font-medium ml-1">Membership ID</label>
+<div class="h-14 w-full bg-surface-dark rounded-xl border border-white/10 flex items-center px-4">
+<span class="text-white/50 text-lg">•••• •••• •••• 9021</span>
+</div>
+</div>
+<!-- Password Input Simulation -->
+<div class="space-y-2">
+<label class="text-gray-400 text-sm font-medium ml-1">Passcode</label>
+<div class="h-14 w-full bg-surface-dark rounded-xl border border-white/10 flex items-center px-4 justify-between">
+<span class="text-white text-lg tracking-[0.5em] mt-1">••••••</span>
+<span class="material-symbols-outlined text-gray-500">visibility_off</span>
+</div>
+</div>
+<!-- Sign In Button -->
+<div class="pt-4">
+<div class="h-14 w-full bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="text-background-dark font-bold text-lg">Enter Portal</span>
+</div>
+</div>
+<div class="flex justify-center pt-4">
+<p class="text-primary/80 text-sm font-medium">Forgot Access Credentials?</p>
+</div>
+</div>
+</div>
+<!-- Bottom Pattern Decoration -->
+<div class="h-32 bg-gradient-to-t from-black/40 to-transparent w-full mt-auto"></div>
+</div>
+<!-- Overlay Tint (Darkens the blurred background slightly for focus) -->
+<div class="absolute inset-0 bg-black/40 z-10"></div>
+<!-- iOS Native FaceID Modal -->
+<div class="relative z-20 w-[80%] max-w-[300px] ios-blur-bg rounded-3xl flex flex-col items-center p-6 text-center shadow-2xl ring-1 ring-white/10">
+<!-- FaceID Icon / Animation Container -->
+<div class="my-6 relative size-16 flex items-center justify-center">
+<!-- Animated FaceID Glyph Simulation -->
+<!-- Using SVG for precise control over the 'FaceID' look -->
+<svg class="text-white face-id-glyph-spin" fill="none" height="60" viewbox="0 0 24 24" width="60" xmlns="http://www.w3.org/2000/svg">
+<!-- Face Outline -->
+<path d="M7 3H5C3.89543 3 3 3.89543 3 5V7" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M17 3H19C20.1046 3 21 3.89543 21 5V7" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M21 17V19C21 20.1046 20.1046 21 19 21H17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M7 21H5C3.89543 21 3 20.1046 3 19V17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<!-- Eyes -->
+<path d="M8 10V10.01" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<path d="M16 10V10.01" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+<!-- Nose/Mouth curve -->
+<path d="M9 15C9 15 10 16.5 12 16.5C14 16.5 15 15 15 15" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Text Content -->
+<div class="space-y-1 mb-8">
+<!-- App Name Context -->
+<p class="text-white text-[17px] font-semibold leading-tight font-system">
+                Face ID for "Private Society"
+            </p>
+<!-- Instruction -->
+<p class="text-white/80 text-[13px] font-normal leading-normal font-system">
+                Confirm your identity to enter the portal
+            </p>
+</div>
+<!-- Action Button (Cancel) -->
+<button class="w-full py-3 text-[#0A84FF] text-[17px] font-semibold active:opacity-60 transition-opacity font-system uppercase tracking-wide">
+            Cancel
+        </button>
+</div>
+</body></html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Referrals Loading State</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d421",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102212",
+                        "surface-dark": "#1c2e1f", // Slightly lighter than bg-dark for cards
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                    animation: {
+                        shimmer: "shimmer 1.5s infinite linear",
+                    },
+                    keyframes: {
+                        shimmer: {
+                            "0%": { backgroundPosition: "-200% 0" },
+                            "100%": { backgroundPosition: "200% 0" },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Shimmer effect utility class */
+        .animate-shimmer {
+            background: linear-gradient(90deg, #1c2e1f 25%, #2a3f2d 50%, #1c2e1f 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-white">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto border-x border-surface-dark/50">
+<!-- Header -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10">
+<div class="text-white flex size-12 shrink-0 items-center justify-center rounded-full hover:bg-surface-dark/50 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Referrals</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex size-12 cursor-pointer items-center justify-center rounded-full hover:bg-surface-dark/50 transition-colors">
+<span class="material-symbols-outlined text-2xl">more_horiz</span>
+</button>
+</div>
+</div>
+<!-- Main Content Scroll Area -->
+<div class="flex-1 overflow-y-auto pb-20">
+<!-- Hero Card Skeleton -->
+<div class="p-4">
+<div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden bg-surface-dark/50 relative">
+<!-- Image Placeholder -->
+<div class="w-full aspect-video bg-surface-dark animate-shimmer"></div>
+<!-- Content Placeholder -->
+<div class="flex w-full grow flex-col gap-3 py-4 px-4">
+<div class="h-6 w-3/4 bg-surface-dark rounded animate-shimmer"></div>
+<div class="flex items-end justify-between">
+<div class="h-4 w-1/2 bg-surface-dark rounded animate-shimmer"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Stats Blocks Skeleton -->
+<div class="grid grid-cols-3 gap-4 px-4 mb-6">
+<!-- Stat 1 -->
+<div class="flex flex-col gap-3 rounded-xl p-4 bg-surface-dark/30 border border-surface-dark/50">
+<div class="h-4 w-16 bg-surface-dark rounded animate-shimmer"></div>
+<div class="h-8 w-12 bg-surface-dark rounded animate-shimmer"></div>
+</div>
+<!-- Stat 2 -->
+<div class="flex flex-col gap-3 rounded-xl p-4 bg-surface-dark/30 border border-surface-dark/50">
+<div class="h-4 w-16 bg-surface-dark rounded animate-shimmer"></div>
+<div class="h-8 w-12 bg-surface-dark rounded animate-shimmer"></div>
+</div>
+<!-- Stat 3 -->
+<div class="flex flex-col gap-3 rounded-xl p-4 bg-surface-dark/30 border border-surface-dark/50">
+<div class="h-4 w-16 bg-surface-dark rounded animate-shimmer"></div>
+<div class="h-8 w-12 bg-surface-dark rounded animate-shimmer"></div>
+</div>
+</div>
+<!-- Recent Referrals Section -->
+<div class="px-4">
+<h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-4">Recent Referrals</h3>
+<div class="flex flex-col gap-3">
+<!-- List Item Skeleton 1 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-dark/20 border border-surface-dark/30">
+<div class="flex items-center gap-4 flex-1">
+<div class="size-10 rounded-full bg-surface-dark animate-shimmer shrink-0"></div>
+<div class="flex flex-col gap-2 flex-1">
+<div class="h-4 w-32 bg-surface-dark rounded animate-shimmer"></div>
+<div class="h-3 w-20 bg-surface-dark/70 rounded animate-shimmer"></div>
+</div>
+</div>
+<div class="h-6 w-16 bg-surface-dark rounded-full animate-shimmer"></div>
+</div>
+<!-- List Item Skeleton 2 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-dark/20 border border-surface-dark/30">
+<div class="flex items-center gap-4 flex-1">
+<div class="size-10 rounded-full bg-surface-dark animate-shimmer shrink-0"></div>
+<div class="flex flex-col gap-2 flex-1">
+<div class="h-4 w-24 bg-surface-dark rounded animate-shimmer"></div>
+<div class="h-3 w-16 bg-surface-dark/70 rounded animate-shimmer"></div>
+</div>
+</div>
+<div class="h-6 w-16 bg-surface-dark rounded-full animate-shimmer"></div>
+</div>
+<!-- List Item Skeleton 3 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-dark/20 border border-surface-dark/30">
+<div class="flex items-center gap-4 flex-1">
+<div class="size-10 rounded-full bg-surface-dark animate-shimmer shrink-0"></div>
+<div class="flex flex-col gap-2 flex-1">
+<div class="h-4 w-40 bg-surface-dark rounded animate-shimmer"></div>
+<div class="h-3 w-24 bg-surface-dark/70 rounded animate-shimmer"></div>
+</div>
+</div>
+<div class="h-6 w-16 bg-surface-dark rounded-full animate-shimmer"></div>
+</div>
+<!-- List Item Skeleton 4 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-dark/20 border border-surface-dark/30">
+<div class="flex items-center gap-4 flex-1">
+<div class="size-10 rounded-full bg-surface-dark animate-shimmer shrink-0"></div>
+<div class="flex flex-col gap-2 flex-1">
+<div class="h-4 w-28 bg-surface-dark rounded animate-shimmer"></div>
+<div class="h-3 w-14 bg-surface-dark/70 rounded animate-shimmer"></div>
+</div>
+</div>
+<div class="h-6 w-16 bg-surface-dark rounded-full animate-shimmer"></div>
+</div>
+<!-- List Item Skeleton 5 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-dark/20 border border-surface-dark/30">
+<div class="flex items-center gap-4 flex-1">
+<div class="size-10 rounded-full bg-surface-dark animate-shimmer shrink-0"></div>
+<div class="flex flex-col gap-2 flex-1">
+<div class="h-4 w-36 bg-surface-dark rounded animate-shimmer"></div>
+<div class="h-3 w-20 bg-surface-dark/70 rounded animate-shimmer"></div>
+</div>
+</div>
+<div class="h-6 w-16 bg-surface-dark rounded-full animate-shimmer"></div>
+</div>
+</div>
+</div>
+<!-- Spacer for Bottom Nav -->
+<div class="h-8"></div>
+</div>
+<!-- Bottom Navigation -->
+<div class="flex gap-2 border-t border-surface-dark bg-background-dark px-4 pb-6 pt-2 fixed bottom-0 left-0 right-0 max-w-md mx-auto z-20">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="text-primary flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">home</span>
+</div>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-500 hover:text-gray-300 transition-colors" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-2xl">search</span>
+</div>
+<span class="text-[10px] font-medium">Search</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-500 hover:text-gray-300 transition-colors" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+</div>
+<span class="text-[10px] font-medium">Alerts</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-gray-500 hover:text-gray-300 transition-colors" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-2xl">person</span>
+</div>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+</div>
+</body></html>

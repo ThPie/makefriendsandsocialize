@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Analytics Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#eebd2b",
+                        "primary-dark": "#cda11f",
+                        "forest": "#2e7d32",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#181611",
+                        "surface-dark": "#27241c",
+                        "surface-border": "#393528",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-x-hidden">
+<div class="relative flex h-full min-h-screen w-full flex-col max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-2xl overflow-hidden">
+<!-- Header -->
+<div class="flex items-center justify-between px-4 pt-6 pb-2 sticky top-0 z-20 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md">
+<h1 class="text-xl font-bold tracking-tight">Analytics Overview</h1>
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-slate-500 dark:text-[#b9b29d]" style="font-size: 24px;">ios_share</span>
+</button>
+</div>
+<!-- Date Filter -->
+<div class="px-4 py-2">
+<button class="flex items-center gap-2 bg-surface-dark border border-surface-border rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm active:scale-95 transition-transform">
+<span>Last 30 Days</span>
+<span class="material-symbols-outlined" style="font-size: 18px;">expand_more</span>
+</button>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto pb-24 no-scrollbar">
+<!-- Key Metrics Highlights (Horizontal Scroll) -->
+<div class="flex gap-4 overflow-x-auto px-4 py-4 no-scrollbar snap-x">
+<!-- Card 1: Revenue -->
+<div class="min-w-[160px] snap-center flex flex-col justify-between p-4 rounded-xl bg-surface-dark border border-surface-border shadow-sm">
+<div class="flex items-start justify-between">
+<div class="p-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">payments</span>
+</div>
+<span class="flex items-center text-xs font-bold text-forest bg-forest/10 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined" style="font-size: 14px;">trending_up</span> 8%
+                        </span>
+</div>
+<div class="mt-3">
+<p class="text-xs text-slate-400">Total Revenue</p>
+<p class="text-xl font-bold text-white">$24.5k</p>
+</div>
+</div>
+<!-- Card 2: Active Users -->
+<div class="min-w-[160px] snap-center flex flex-col justify-between p-4 rounded-xl bg-surface-dark border border-surface-border shadow-sm">
+<div class="flex items-start justify-between">
+<div class="p-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">group</span>
+</div>
+<span class="flex items-center text-xs font-bold text-forest bg-forest/10 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined" style="font-size: 14px;">trending_up</span> 2%
+                        </span>
+</div>
+<div class="mt-3">
+<p class="text-xs text-slate-400">Active Users</p>
+<p class="text-xl font-bold text-white">84%</p>
+</div>
+</div>
+<!-- Card 3: New Signups -->
+<div class="min-w-[160px] snap-center flex flex-col justify-between p-4 rounded-xl bg-surface-dark border border-surface-border shadow-sm">
+<div class="flex items-start justify-between">
+<div class="p-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined" style="font-size: 20px;">person_add</span>
+</div>
+<span class="flex items-center text-xs font-bold text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined" style="font-size: 14px;">trending_down</span> 1%
+                        </span>
+</div>
+<div class="mt-3">
+<p class="text-xs text-slate-400">New Signups</p>
+<p class="text-xl font-bold text-white">+120</p>
+</div>
+</div>
+</div>
+<!-- Chart Section 1: Member Growth -->
+<div class="px-4 py-3">
+<div class="p-5 rounded-xl bg-surface-dark border border-surface-border shadow-sm">
+<div class="flex justify-between items-end mb-4">
+<div>
+<h3 class="text-base font-semibold text-white">Member Growth</h3>
+<p class="text-xs text-slate-400 mt-1">Total members over time</p>
+</div>
+<div class="text-right">
+<p class="text-2xl font-bold text-primary">1,245</p>
+<p class="text-xs text-slate-400">Total Members</p>
+</div>
+</div>
+<!-- Line Chart SVG -->
+<div class="relative h-48 w-full">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 50">
+<!-- Grid Lines -->
+<line stroke="#393528" stroke-dasharray="1 1" stroke-width="0.2" x1="0" x2="100" y1="0" y2="0"></line>
+<line stroke="#393528" stroke-dasharray="1 1" stroke-width="0.2" x1="0" x2="100" y1="12.5" y2="12.5"></line>
+<line stroke="#393528" stroke-dasharray="1 1" stroke-width="0.2" x1="0" x2="100" y1="25" y2="25"></line>
+<line stroke="#393528" stroke-dasharray="1 1" stroke-width="0.2" x1="0" x2="100" y1="37.5" y2="37.5"></line>
+<line stroke="#393528" stroke-dasharray="1 1" stroke-width="0.2" x1="0" x2="100" y1="50" y2="50"></line>
+<!-- Area Gradient -->
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#eebd2b" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#eebd2b" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,45 C10,40 20,42 30,35 C40,28 50,32 60,25 C70,18 80,20 90,10 L100,5 L100,50 L0,50 Z" fill="url(#chartGradient)"></path>
+<!-- Line Path -->
+<path d="M0,45 C10,40 20,42 30,35 C40,28 50,32 60,25 C70,18 80,20 90,10 L100,5" fill="none" stroke="#eebd2b" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+<!-- Data Point -->
+<circle cx="100" cy="5" fill="#eebd2b" r="1.5" stroke="#181611" stroke-width="0.5"></circle>
+</svg>
+</div>
+<div class="flex justify-between mt-2 text-[10px] text-slate-500 font-medium">
+<span>Nov 1</span>
+<span>Nov 8</span>
+<span>Nov 15</span>
+<span>Nov 22</span>
+<span>Nov 29</span>
+</div>
+</div>
+</div>
+<!-- Chart Section 2: Membership Tiers (Donut) -->
+<div class="px-4 py-3">
+<div class="p-5 rounded-xl bg-surface-dark border border-surface-border shadow-sm">
+<h3 class="text-base font-semibold text-white mb-6">Membership Tier Distribution</h3>
+<div class="flex items-center justify-between gap-4">
+<!-- Donut Chart -->
+<div class="relative w-32 h-32 flex-shrink-0">
+<svg class="w-full h-full rotate-[-90deg]" viewbox="0 0 36 36">
+<!-- Background Circle -->
+<path class="text-surface-border" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4.5"></path>
+<!-- Segment 1: Fellow (Grey) -->
+<path class="text-slate-600" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="30, 100" stroke-width="4.5"></path>
+<!-- Segment 2: Patron (Green) -->
+<path class="text-forest" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="45, 100" stroke-dashoffset="-30" stroke-width="4.5"></path>
+<!-- Segment 3: Founder (Gold) -->
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="25, 100" stroke-dashoffset="-75" stroke-width="4.5"></path>
+</svg>
+<!-- Center Text -->
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-xs text-slate-400">Total</span>
+<span class="text-sm font-bold text-white">842</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex-1 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="text-sm text-slate-300">Founder</span>
+</div>
+<span class="text-sm font-semibold text-white">25%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-forest"></div>
+<span class="text-sm text-slate-300">Patron</span>
+</div>
+<span class="text-sm font-semibold text-white">45%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-slate-600"></div>
+<span class="text-sm text-slate-300">Fellow</span>
+</div>
+<span class="text-sm font-semibold text-white">30%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Chart Section 3: Event RSVP Trends (Bar) -->
+<div class="px-4 py-3">
+<div class="p-5 rounded-xl bg-surface-dark border border-surface-border shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-base font-semibold text-white">Event RSVP Trends</h3>
+<button class="p-1 rounded hover:bg-white/5">
+<span class="material-symbols-outlined text-slate-400" style="font-size: 20px;">more_horiz</span>
+</button>
+</div>
+<div class="flex items-end justify-between h-40 gap-2">
+<!-- Bar 1 -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full bg-primary/20 rounded-t-sm h-[40%] group-hover:bg-primary/40 transition-colors relative">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-sm h-[60%]"></div>
+</div>
+<span class="text-[10px] text-slate-500">W1</span>
+</div>
+<!-- Bar 2 -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full bg-primary/20 rounded-t-sm h-[55%] group-hover:bg-primary/40 transition-colors relative">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-sm h-[70%]"></div>
+</div>
+<span class="text-[10px] text-slate-500">W2</span>
+</div>
+<!-- Bar 3 -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full bg-primary/20 rounded-t-sm h-[75%] group-hover:bg-primary/40 transition-colors relative">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-sm h-[50%]"></div>
+</div>
+<span class="text-[10px] text-slate-500">W3</span>
+</div>
+<!-- Bar 4 (High) -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full bg-primary/20 rounded-t-sm h-[90%] group-hover:bg-primary/40 transition-colors relative">
+<div class="absolute bottom-0 w-full bg-forest rounded-t-sm h-[80%]"></div>
+</div>
+<span class="text-[10px] text-slate-500 font-medium text-white">W4</span>
+</div>
+<!-- Bar 5 -->
+<div class="flex flex-col items-center gap-2 w-full group cursor-pointer">
+<div class="w-full bg-primary/20 rounded-t-sm h-[65%] group-hover:bg-primary/40 transition-colors relative">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-sm h-[60%]"></div>
+</div>
+<span class="text-[10px] text-slate-500">W5</span>
+</div>
+</div>
+<div class="flex items-center gap-4 mt-4 justify-center">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="text-[10px] text-slate-400 uppercase tracking-wide">Regular</span>
+</div>
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-forest"></div>
+<span class="text-[10px] text-slate-400 uppercase tracking-wide">VIP</span>
+</div>
+</div>
+</div>
+</div>
+<div class="h-8"></div> <!-- Spacer -->
+</div>
+<!-- Bottom Navigation -->
+<div class="absolute bottom-0 left-0 w-full border-t border-surface-border bg-surface-dark px-4 pb-6 pt-2 z-30">
+<div class="flex justify-between items-center">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#b9b29d] group hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-size: 24px;">group</span>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Members</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#b9b29d] group hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-size: 24px;">calendar_month</span>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Events</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform font-bold" style="font-size: 24px; font-variation-settings: 'FILL' 1;">bar_chart</span>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Analytics</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#b9b29d] group hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-size: 24px;">settings</span>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Settings</p>
+</a>
+</div>
+</div>
+</div>
+</body></html>

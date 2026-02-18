@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Event Selection Sheet</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d411", // Neon Green
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210", // Dark Forest Green / Deep Charcoal
+                        "surface-dark": "#162b16", // Slightly lighter for inputs/cards
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem", 
+                        "lg": "2rem", 
+                        "xl": "3rem", 
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Glassmorphism utility */
+        .glass {
+            background: rgba(16, 34, 16, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-black font-display text-white overflow-hidden h-screen w-screen relative">
+<!-- Background Image / Map Context (Simulated App Background) -->
+<div class="absolute inset-0 z-0 opacity-40">
+<img alt="Event Background" class="w-full h-full object-cover grayscale" data-alt="Blurred background of a concert crowd with lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVBcuAGu2O0fLsGTVkct3wSek2CHqdnCuHKDWSSs-otSKcWofr6oE67j80I7CfLV4q-GrIotSoDL06ab0vEf-4VBjp2KkPW8eEPT1LcLZWMxTbleWgupXjTdBkoNoOLQhnzp68LWNLs7Lxox5aWzzLI1VsNYVEWYqSFk_1ZXPeOwn-_qsu_0hSVDckHSurlMEIdQc5RRC-2Wt7JBhBuZM7qr8og0Z3DKnpPauDF2FXiPV0RadbXr9hP0f81Toc9ouMRwy-4wkEzD8"/>
+<div class="absolute inset-0 bg-gradient-to-b from-black/20 to-black/80"></div>
+</div>
+<!-- Bottom Sheet Container -->
+<div class="absolute inset-x-0 bottom-0 z-10 flex flex-col justify-end h-full pointer-events-none">
+<!-- The Actual Sheet -->
+<div class="w-full bg-background-dark rounded-t-[32px] shadow-2xl overflow-hidden pointer-events-auto border-t border-white/10 flex flex-col max-h-[90vh]">
+<!-- Drag Handle Area -->
+<div class="w-full flex justify-center pt-4 pb-2">
+<div class="w-12 h-1.5 bg-white/20 rounded-full"></div>
+</div>
+<!-- Header Content -->
+<div class="px-6 pt-2 pb-6">
+<!-- Title & Date -->
+<div class="flex justify-between items-start mb-4">
+<div>
+<h1 class="text-2xl font-bold text-white tracking-tight">Annual Member Gala</h1>
+<div class="flex items-center gap-2 mt-1 text-white/60">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+<span class="text-sm font-medium">Oct 24 • 7:00 PM</span>
+</div>
+</div>
+<!-- Close Button (Optional for context) -->
+<button class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-white/60 text-sm">close</span>
+</button>
+</div>
+<!-- Capacity Indicator -->
+<div class="space-y-2">
+<div class="flex justify-between items-end">
+<span class="text-xs font-medium text-primary uppercase tracking-wider">Capacity</span>
+<span class="text-sm font-bold text-white">85% Full</span>
+</div>
+<div class="h-2 w-full bg-surface-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 85%"></div>
+</div>
+</div>
+</div>
+<!-- Scrollable Content Area -->
+<div class="px-6 overflow-y-auto no-scrollbar pb-32 flex-1">
+<!-- Ticket Type Selection -->
+<div class="mb-8">
+<h3 class="text-lg font-bold text-white mb-4">Select Ticket</h3>
+<div class="flex flex-col gap-3">
+<!-- Option 1: Selected -->
+<label class="group relative flex items-center p-4 rounded-2xl bg-surface-dark border-2 border-primary cursor-pointer transition-all">
+<input checked="" class="peer sr-only" name="ticket" type="radio"/>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="font-semibold text-white">General Admission</span>
+<span class="font-bold text-primary">Free</span>
+</div>
+<p class="text-xs text-white/50">Standard entry to the main hall and open bar.</p>
+</div>
+<div class="ml-4 w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center peer-checked:bg-primary">
+<div class="w-2.5 h-2.5 rounded-full bg-background-dark"></div>
+</div>
+</label>
+<!-- Option 2: Unselected -->
+<label class="group relative flex items-center p-4 rounded-2xl bg-surface-dark border-2 border-transparent hover:border-white/10 cursor-pointer transition-all">
+<input class="peer sr-only" name="ticket" type="radio"/>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<span class="font-semibold text-white/90">VIP Lounge</span>
+<span class="font-bold text-white">+$50</span>
+</div>
+<p class="text-xs text-white/50">Includes private seating area and premium cocktails.</p>
+</div>
+<div class="ml-4 w-6 h-6 rounded-full border-2 border-white/20 flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>
+</div>
+</label>
+</div>
+</div>
+<!-- Dietary Requirements -->
+<div class="mb-6">
+<h3 class="text-lg font-bold text-white mb-4">Dietary Requirements</h3>
+<div class="relative">
+<input class="w-full bg-surface-dark text-white placeholder-white/30 rounded-full px-6 py-4 border-none focus:ring-2 focus:ring-primary focus:bg-surface-dark/80 transition-all outline-none" placeholder="e.g., Vegan, Gluten-free..." type="text"/>
+<span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-white/30">restaurant_menu</span>
+</div>
+</div>
+</div>
+<!-- Sticky Bottom Action Area -->
+<!-- Using a gradient fade at top to smooth content scrolling behind it -->
+<div class="absolute bottom-0 left-0 right-0 bg-background-dark border-t border-white/5 p-6 pb-8 safe-area-pb">
+<button class="w-full bg-primary hover:bg-green-400 active:scale-[0.98] transition-all h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(17,212,17,0.3)]">
+<span class="text-background-dark font-bold text-lg">Secure My Spot</span>
+<span class="material-symbols-outlined ml-2 text-background-dark font-bold">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Safe Area Padding Utility for Bottom Sheet -->
+<style>
+        .safe-area-pb {
+            padding-bottom: max(2rem, env(safe-area-inset-bottom));
+        }
+    </style>
+</body></html>

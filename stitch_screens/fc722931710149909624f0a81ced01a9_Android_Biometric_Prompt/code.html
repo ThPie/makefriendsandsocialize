@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Biometric Authentication</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#11d411",
+                "background-light": "#f6f8f6",
+                "background-dark": "#102210",
+                "surface-dark": "#1E1E1E", // Standard Material Dark Surface
+                "on-surface-dark": "#E2E2E2",
+                "secondary-text": "#C7C7C7",
+              },
+              fontFamily: {
+                "display": ["Inter", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>
+        /* Custom Blur Utility for the backdrop */
+        .backdrop-blur-custom {
+            backdrop-filter: blur(8px) brightness(0.6);
+            -webkit-backdrop-filter: blur(8px) brightness(0.6);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen overflow-hidden relative selection:bg-primary selection:text-black">
+<!-- Underlying Content (The "Member Authentication" screen being obscured) -->
+<div class="absolute inset-0 z-0 h-full w-full overflow-hidden flex flex-col">
+<!-- Header -->
+<header class="flex items-center justify-between p-6 pt-12">
+<span class="material-symbols-outlined text-white text-3xl">menu</span>
+<div class="h-10 w-10 rounded-full bg-cover bg-center border-2 border-primary/50" data-alt="User profile placeholder" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDEvDVGh_QrprbZBpKvy78ZRpEfAV9NwzluZq9Whnm77DxyefI07T-g2XgYPPpwWSCNq5xKeeYdoFuFW_5GXb3AMFXK-CNvBGHJZoTi3pYoOp157ceKmu_cSO90B8Gc33iKguwbSwRcJTWku18AhiEgr9Eds0eScQ7uQhBu_GXf41KUpxjQrWA0Fut_ARSykE2EHZRGXlf_3QiEsSl9WKiO6zdogfxGaPBWbRfA6qvI19B13J7thL4PdQnpQo67mYdxl74tar0CHfg');"></div>
+</header>
+<!-- Main Content Area to be Blurred -->
+<main class="flex-1 px-6 flex flex-col gap-6">
+<h1 class="text-3xl font-bold text-white tracking-tight">Member<br/>Dashboard</h1>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-[#1a2c1a] p-4 rounded-xl aspect-square flex flex-col justify-between">
+<span class="material-symbols-outlined text-primary text-3xl">diamond</span>
+<span class="text-white font-medium">Privileges</span>
+</div>
+<div class="bg-[#1a2c1a] p-4 rounded-xl aspect-square flex flex-col justify-between">
+<span class="material-symbols-outlined text-primary text-3xl">calendar_month</span>
+<span class="text-white font-medium">Events</span>
+</div>
+</div>
+<div class="bg-[#1a2c1a] p-6 rounded-xl flex items-center gap-4 mt-2">
+<div class="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<div>
+<h3 class="text-white font-semibold">Verification Status</h3>
+<p class="text-white/60 text-sm">Active Member</p>
+</div>
+</div>
+<!-- Large Hero Image simulating content -->
+<div class="w-full h-48 rounded-xl bg-cover bg-center mt-4 opacity-80" data-alt="Abstract luxury pattern background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAw3BS_8v-hG3yq4hojJAnJj0i3cBlhp4mO8oz0cd5SlM3fZtskNe1BdAzNQTQhdiMYj14-cS5hOUEzCNdKR-BBZtsOymlpGZ6dwS3OqSw9hUZozQmW_kLwE1fvBMN-dUvBvS1R5GDonh5kga2kguWRkQxYT76tgP7ZWhFYPQ9mX29lIH12g8rw1T40Nxb691tznssV4jN4PjRSgdyhxDZchXVgj1KjBmE8BPQy0HVMnWhfIfPE9ZLZfpJEPhAr0xuqBY45LO9ILq8');"></div>
+</main>
+</div>
+<!-- Dark Overlay / Backdrop -->
+<div class="absolute inset-0 z-40 bg-black/60 backdrop-blur-custom transition-all duration-300 ease-out"></div>
+<!-- Biometric Modal (Bottom Sheet) -->
+<div class="absolute inset-x-0 bottom-0 z-50 flex flex-col justify-end items-center pointer-events-none h-full">
+<!-- Modal Card -->
+<div class="w-full max-w-md bg-surface-dark rounded-t-[1.75rem] shadow-2xl overflow-hidden pointer-events-auto animate-slide-up transform transition-transform duration-300 pb-8">
+<!-- Drag Handle (Visual Indicator) -->
+<div class="w-full flex justify-center pt-4 pb-2">
+<div class="w-12 h-1.5 bg-white/20 rounded-full"></div>
+</div>
+<div class="flex flex-col items-center px-8 pt-8 pb-6 text-center">
+<!-- Biometric Icon Container -->
+<div class="mb-6 relative">
+<!-- Ripple Effect -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-primary/10 rounded-full animate-pulse"></div>
+<span class="material-symbols-outlined text-primary text-[4rem] relative z-10" style="font-size: 64px;">fingerprint</span>
+</div>
+<!-- Text Content -->
+<h2 class="text-white text-2xl font-semibold mb-3 tracking-tight">Sign in with Biometrics</h2>
+<p class="text-secondary-text text-[0.95rem] leading-relaxed max-w-[280px]">
+                    Use your fingerprint or face to quickly access your member dashboard
+                </p>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col items-center gap-3 w-full px-6 mt-4">
+<!-- Secondary Action -->
+<button class="text-primary font-medium text-[0.95rem] py-3 px-6 rounded-full hover:bg-primary/10 transition-colors w-full">
+                    Use Password
+                </button>
+<!-- Negative Action -->
+<button class="text-white/70 font-medium text-[0.95rem] py-3 px-6 rounded-full hover:bg-white/5 transition-colors w-full">
+                    Cancel
+                </button>
+</div>
+<!-- Bottom Spacer for Home Indicator -->
+<div class="h-6 w-full"></div>
+</div>
+</div>
+</body></html>

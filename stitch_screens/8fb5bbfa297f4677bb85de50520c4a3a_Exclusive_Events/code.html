@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Exclusive Events</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Noto+Sans:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a5b2a",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#131f16",
+                        "gold-accent": "#D4AF37",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "sans": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                    animation: {
+                        'spin-slow': 'spin 3s linear infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-sans antialiased selection:bg-primary selection:text-white overflow-hidden">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto border-x border-white/5 shadow-2xl bg-[#0f1811]">
+<div class="absolute top-[160px] left-0 right-0 z-0 flex flex-col items-center justify-center pt-8 pb-4 h-32 pointer-events-none">
+<div class="relative flex items-center justify-center mb-3">
+<div class="absolute inset-0 rounded-full border border-gold-accent/20 border-t-gold-accent w-12 h-12 animate-spin"></div>
+<div class="w-8 h-8 rounded-full border border-gold-accent/40 flex items-center justify-center bg-[#131f16]">
+<span class="font-display text-gold-accent font-bold text-sm italic">PS</span>
+</div>
+</div>
+<p class="font-display text-gold-accent/60 text-sm italic tracking-wide animate-pulse-slow">Updating your exclusive calendar...</p>
+</div>
+<header class="sticky top-0 z-30 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-white/5 px-4 pt-12 pb-4 shadow-sm">
+<div class="flex items-center justify-between">
+<button class="text-slate-900 dark:text-white flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display text-2xl font-medium tracking-wide text-center flex-1">Exclusive Events</h1>
+<button class="text-slate-900 dark:text-white flex size-10 items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+<div class="mt-6 flex justify-center">
+<div class="flex h-10 w-full max-w-[300px] items-center rounded-full bg-slate-200 dark:bg-[#1e251f] p-1 shadow-inner">
+<label class="cursor-pointer relative flex-1 h-full flex items-center justify-center">
+<input checked="" class="peer sr-only" name="event-filter" type="radio" value="upcoming"/>
+<div class="absolute inset-0 rounded-full transition-all duration-300 peer-checked:bg-white dark:peer-checked:bg-primary shadow-sm opacity-0 peer-checked:opacity-100"></div>
+<span class="relative z-10 text-xs font-bold uppercase tracking-wider text-slate-500 peer-checked:text-slate-900 dark:text-slate-400 dark:peer-checked:text-white transition-colors">Upcoming</span>
+</label>
+<label class="cursor-pointer relative flex-1 h-full flex items-center justify-center">
+<input class="peer sr-only" name="event-filter" type="radio" value="past"/>
+<div class="absolute inset-0 rounded-full transition-all duration-300 peer-checked:bg-white dark:peer-checked:bg-primary shadow-sm opacity-0 peer-checked:opacity-100"></div>
+<span class="relative z-10 text-xs font-bold uppercase tracking-wider text-slate-500 peer-checked:text-slate-900 dark:text-slate-400 dark:peer-checked:text-white transition-colors">Past Events</span>
+</label>
+</div>
+</div>
+</header>
+<main class="relative z-10 flex-1 px-4 py-6 space-y-8 pb-32 transform translate-y-24 transition-transform duration-300 ease-out origin-top will-change-transform bg-background-light dark:bg-background-dark rounded-t-[2rem] shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.5)] border-t border-white/5 backdrop-blur-sm bg-opacity-95 dark:bg-opacity-90">
+<article class="group relative flex flex-col overflow-hidden rounded-[2rem] bg-white dark:bg-[#1e251f] shadow-lg dark:shadow-none transition-transform duration-300 hover:scale-[1.01]">
+<div class="relative aspect-video w-full overflow-hidden">
+<img alt="Elegant black tie gala event with chandeliers" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgzBSaxAAPu_DDMr0zSFcgLYmjWguXMKiTmogjzFzIrXVkd7yJVyYKVm-xcO5p1W8GAah3u18RShyrqwPwZF9nDzGY-wMdtqZFnWNG1H8ChrcAlw7KuWLK0sU4QhiW_XWUjZCEVk7-BGxHaQGX1eTUKfuRKfzwSAa_08Q1qkc8KcUlDn1uZQZjas56TqBzwt0XaYUWQeBLO1zICIqFAiXT3mHOgZLEBjaz5EjOP75prog8ZwX9hfbXgbKF_JnNHuTbUfs8Ob3VCqo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute top-4 left-4 flex flex-col items-center justify-center rounded-xl bg-white/10 backdrop-blur-md border border-white/20 px-3 py-2 text-white shadow-lg">
+<span class="text-[10px] font-bold uppercase tracking-wider">Dec</span>
+<span class="font-display text-xl font-bold leading-none">12</span>
+</div>
+<div class="absolute top-4 right-4 rounded-full bg-primary/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-lg border border-white/10">
+                        Founder Access
+                    </div>
+<div class="absolute bottom-4 left-4 right-4">
+<h2 class="font-display text-2xl font-bold text-white drop-shadow-md">The Winter Gala</h2>
+<div class="flex items-center gap-1 text-white/90 text-sm mt-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="font-medium">The Grand Ballroom, NYC</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-4 p-5">
+<div class="flex items-center justify-between border-b border-white/5 pb-4">
+<div class="flex items-center gap-2 text-slate-600 dark:text-[#a2b4a6]">
+<span class="material-symbols-outlined text-[20px]">schedule</span>
+<span class="text-sm font-medium">7:00 PM - Late</span>
+</div>
+<div class="flex -space-x-2 overflow-hidden">
+<img alt="Member avatar" class="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-[#1e251f]" data-alt="Member profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLP3iXXChF83VjtBqHUbIgUFvL_axTdXuETDHGMF5iyPOqthxZzM2oKx8f7mBYhTskCfHHeQj_AMxTKn8GwWC7YU7et-Dr9Ji1yzojcCBxAMnMOEic7uQiEF8zCyNWa0eT9D0ZT_t811wSJBOVUqlFa_QZvL-_aRsf7mb0GPeY7XtnJPXlqwyEEPmddXIj5DqjfzH9iCXIfIiNf9s9GPgAqMV4so8hHAGUtCO8i_JYPofamiz_ByKZ9DPYInI0pjbWtfiz3c7gQ4k"/>
+<img alt="Member avatar" class="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-[#1e251f]" data-alt="Member profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdf1ZI68yg-NyDokagGpeFVQJhR6BV9MLjpuWP4hZZn_9XJUsU7BgOTjgo2XgKTTPw4J0rKGhGjO6ce82B6kQbA4iuyC_c4-EUYpyZUKSpLia9VWnKxahIw6JqQjgRYUqLiSOpJu67N5u9qxSbEiwiqISP-yC9JoYPT2k7yhLEJu6hbMJPE_7CKeRvZHmseQc16vztQZO3kqV7MMnL33U2ig9oFCe3Djx2UAf6-Emt7_oNjXPAGPrCwTRcnDcc41HMUhye-QFoERU"/>
+<img alt="Member avatar" class="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-[#1e251f]" data-alt="Member profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCY4cv3mzwTfMtqtJHu_QccskgpEDBE8YuauSR3OSvDorrTpNSPkqvbexdVxd5Y_LRVnW11YUnMlVMCERmYS-6P6L7DLCjZblQB6pZ0IpPEeWRMlF6_hqR9eNWEZxL2-HfilqR2rfr-ZWRwYQYcZZZS63iTTFHE6DdPYzRYZXsgTh2q__N_vv6DaT7kEvJduf6l9NIegussLlNazj3sil6wO84mVZXhwNsU3f1cSWGhghDM5I5pphCDwKKt-3XOTJ9vT2zx7zUJ4dE"/>
+<span class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 dark:bg-white/10 ring-2 ring-white dark:ring-[#1e251f] text-[10px] font-medium text-slate-500 dark:text-white">
+                                +42
+                            </span>
+</div>
+</div>
+<button class="group/btn relative w-full overflow-hidden rounded-xl bg-primary py-3 text-center transition-all hover:bg-primary/90 active:scale-[0.98]">
+<span class="font-sans text-sm font-bold uppercase tracking-wider text-white">RSVP Now</span>
+</button>
+</div>
+</article>
+<article class="group relative flex flex-col overflow-hidden rounded-[2rem] bg-white dark:bg-[#1e251f] shadow-lg dark:shadow-none transition-transform duration-300 hover:scale-[1.01]">
+<div class="relative aspect-video w-full overflow-hidden">
+<img alt="Dimly lit wine cellar with barrels" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7RZryNIcVtZ-csYcfuF6O20rIt1GQ24ejFvMnmYyR2fNSx7GdRlsp9ObZEuP1weKbTYiLgSny2-d6kp8ZXZcwragm4-AcmqzD-yR4R7xAsJSQfp9s0UsngKuvxS1oxUrVWvxc2K1xozGuOJk7hR_NNB-G_8XgfDHzLzH7IIYZsgnlv2ziGEoQJZ2pS-dUfI1KvGY4HMSK1uzCg6-mW6Dr9mX_Ldp71Tm6_Xv4ZtIGwa1UFgpgQhsJ_K77RPeXpVU-4st7KmRN-HQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute top-4 left-4 flex flex-col items-center justify-center rounded-xl bg-white/10 backdrop-blur-md border border-white/20 px-3 py-2 text-white shadow-lg">
+<span class="text-[10px] font-bold uppercase tracking-wider">Jan</span>
+<span class="font-display text-xl font-bold leading-none">05</span>
+</div>
+<div class="absolute top-4 right-4 rounded-full bg-white/10 backdrop-blur-md px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-lg border border-white/20">
+                        Fellow &amp; Patron
+                    </div>
+<div class="absolute bottom-4 left-4 right-4">
+<h2 class="font-display text-2xl font-bold text-white drop-shadow-md">Vintage Bordeaux</h2>
+<div class="flex items-center gap-1 text-white/90 text-sm mt-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="font-medium">Cellar 54, London</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-4 p-5">
+<div class="flex items-center justify-between border-b border-white/5 pb-4">
+<div class="flex items-center gap-2 text-slate-600 dark:text-[#a2b4a6]">
+<span class="material-symbols-outlined text-[20px]">schedule</span>
+<span class="text-sm font-medium">6:30 PM - 9:00 PM</span>
+</div>
+<div class="text-xs text-[#a2b4a6] font-medium">
+                            Only 4 spots left
+                        </div>
+</div>
+<button class="relative w-full overflow-hidden rounded-xl border border-primary/50 bg-transparent py-3 text-center transition-all hover:bg-primary/10 active:scale-[0.98]">
+<span class="font-sans text-sm font-bold uppercase tracking-wider text-primary">Join Waitlist</span>
+</button>
+</div>
+</article>
+<article class="group relative flex flex-col overflow-hidden rounded-[2rem] bg-white dark:bg-[#1e251f] shadow-lg dark:shadow-none transition-transform duration-300 hover:scale-[1.01]">
+<div class="relative aspect-video w-full overflow-hidden">
+<img alt="Luxury yacht on dark water at night" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXyB1JdbqXw3UQuaaBO30JPtBnFm7-Mc5sh1G3OkdquDbA0RTBd3D5DIZJ7Ze0OPoldCVX5SKcnzGh7jppysrk5LDEulE_Km8elOktyqBF7soXekXeAkdRzoiY_BXTK6mnlJAJaYXXYjnonamGokCwxvuR133P3QJ_5zIYcb8ZJ0Y8jMMMZzqnK2PxV4EGigpMSEWqWGxdpQfMkaeig7JBtrSly4GfzWNgQ-0ZLEvvcKuqtjMXChNfELmjL8sYBmhBlIJwTmxv10A"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute top-4 left-4 flex flex-col items-center justify-center rounded-xl bg-white/10 backdrop-blur-md border border-white/20 px-3 py-2 text-white shadow-lg">
+<span class="text-[10px] font-bold uppercase tracking-wider">Jan</span>
+<span class="font-display text-xl font-bold leading-none">18</span>
+</div>
+<div class="absolute top-4 right-4 rounded-full bg-primary/90 backdrop-blur-sm px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-lg border border-white/10">
+                        All Members
+                    </div>
+<div class="absolute bottom-4 left-4 right-4">
+<h2 class="font-display text-2xl font-bold text-white drop-shadow-md">Midnight Yacht Club</h2>
+<div class="flex items-center gap-1 text-white/90 text-sm mt-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="font-medium">Marina Bay, Singapore</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-4 p-5">
+<div class="flex items-center justify-between border-b border-white/5 pb-4">
+<div class="flex items-center gap-2 text-slate-600 dark:text-[#a2b4a6]">
+<span class="material-symbols-outlined text-[20px]">schedule</span>
+<span class="text-sm font-medium">10:00 PM - Dawn</span>
+</div>
+<div class="flex -space-x-2 overflow-hidden">
+<img alt="Member avatar" class="inline-block h-6 w-6 rounded-full ring-2 ring-white dark:ring-[#1e251f]" data-alt="Member profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuviuk--xPHdsE9bt01Qs4rxMBorze1pc54yQQOS63-SfJiNzKfND8YSWjbetxX1RBnwBfbjFZi_DH3GX47ZwMEpWHPY8PQ1NvZPy8_DNsCe-hfuU7DPBdeV2E0MPzRiZZwD06eNEFQrrfJVmhtxDLanxaIzOQuQJv3dVB5UT99yLe_6QPyXUrgcmd-991nKULrGBoApxwpDH9oSHGsFxvNpz3WZm74OEOW9g5M5xiKD8Nv-UBGrveL9QInYQWiqXzRsNJ0id6584"/>
+<span class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 dark:bg-white/10 ring-2 ring-white dark:ring-[#1e251f] text-[10px] font-medium text-slate-500 dark:text-white">
+                                +12
+                            </span>
+</div>
+</div>
+<button class="relative w-full overflow-hidden rounded-xl bg-primary py-3 text-center transition-all hover:bg-primary/90 active:scale-[0.98]">
+<span class="font-sans text-sm font-bold uppercase tracking-wider text-white">RSVP Now</span>
+</button>
+</div>
+</article>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 z-50 border-t border-white/5 bg-[#1e251f]/95 backdrop-blur-lg pb-safe pt-2">
+<div class="mx-auto flex max-w-md items-center justify-around px-2 pb-4 pt-1">
+<a class="group flex flex-1 flex-col items-center justify-center gap-1 text-[#a2b4a6] transition-colors hover:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">home</span>
+<span class="text-[10px] font-medium tracking-wide">Home</span>
+</a>
+<a class="group flex flex-1 flex-col items-center justify-center gap-1 text-primary transition-colors" href="#">
+<span class="material-symbols-outlined fill text-[24px]">calendar_month</span>
+<span class="text-[10px] font-medium tracking-wide">Events</span>
+</a>
+<a class="group flex flex-1 flex-col items-center justify-center gap-1 text-[#a2b4a6] transition-colors hover:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">concierge</span>
+<span class="text-[10px] font-medium tracking-wide">Concierge</span>
+</a>
+<a class="group flex flex-1 flex-col items-center justify-center gap-1 text-[#a2b4a6] transition-colors hover:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<span class="text-[10px] font-medium tracking-wide">Profile</span>
+</a>
+</div>
+</nav>
+</div>
+
+</body></html>

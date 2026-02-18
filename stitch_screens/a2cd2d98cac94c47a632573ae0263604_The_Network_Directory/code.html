@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Network Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a5b2a",
+                        "primary-light": "#25803b",
+                        "primary-dark": "#0f3619",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#131f16",
+                        "gold": "#D4AF37",
+                        "gold-light": "#E5C560",
+                        "surface": "#1e2a22",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for horizontal scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-body antialiased selection:bg-primary selection:text-white">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Sticky Header Section -->
+<header class="sticky top-0 z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-primary/10 dark:border-primary/20 pb-2">
+<!-- Top Bar -->
+<div class="flex items-center justify-between px-4 pt-6 pb-2">
+<button class="flex size-10 items-center justify-center rounded-full text-slate-500 hover:bg-black/5 dark:text-slate-400 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h1 class="font-display text-2xl font-medium tracking-tight text-slate-900 dark:text-white">The Network</h1>
+<button class="flex size-10 items-center justify-center rounded-full text-slate-500 hover:bg-black/5 dark:text-slate-400 dark:hover:bg-white/10 transition-colors relative">
+<span class="absolute top-2.5 right-2.5 size-2 bg-gold rounded-full border-2 border-background-light dark:border-background-dark"></span>
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+</button>
+</div>
+<!-- Search Bar -->
+<div class="px-4 py-2">
+<div class="group relative flex items-center w-full h-12 rounded-xl bg-slate-200 dark:bg-surface border border-transparent focus-within:border-primary/50 transition-all overflow-hidden">
+<div class="flex items-center justify-center pl-4 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full h-full bg-transparent border-none focus:ring-0 text-base placeholder:text-slate-500 dark:placeholder:text-slate-500 text-slate-900 dark:text-white px-3 font-body" placeholder="Search members, companies..." type="text"/>
+<button class="flex items-center justify-center pr-4 text-slate-500 dark:text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-2 px-4 py-2 overflow-x-auto no-scrollbar w-full snap-x">
+<button class="snap-start shrink-0 h-9 px-5 rounded-full bg-primary text-white text-sm font-medium border border-primary transition-transform active:scale-95">
+                    All
+                </button>
+<button class="snap-start shrink-0 h-9 px-5 rounded-full bg-transparent border border-slate-300 dark:border-primary/30 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-primary/10 active:bg-primary/20 transition-colors">
+                    Finance
+                </button>
+<button class="snap-start shrink-0 h-9 px-5 rounded-full bg-transparent border border-slate-300 dark:border-primary/30 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-primary/10 active:bg-primary/20 transition-colors">
+                    Tech
+                </button>
+<button class="snap-start shrink-0 h-9 px-5 rounded-full bg-transparent border border-slate-300 dark:border-primary/30 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-primary/10 active:bg-primary/20 transition-colors">
+                    Real Estate
+                </button>
+<button class="snap-start shrink-0 h-9 px-5 rounded-full bg-transparent border border-slate-300 dark:border-primary/30 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-primary/10 active:bg-primary/20 transition-colors">
+                    Arts
+                </button>
+<button class="snap-start shrink-0 h-9 px-5 rounded-full bg-transparent border border-slate-300 dark:border-primary/30 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-primary/10 active:bg-primary/20 transition-colors">
+                    Legal
+                </button>
+</div>
+</header>
+<!-- Main Content Grid -->
+<main class="flex-1 overflow-y-auto px-4 py-4 pb-24">
+<div class="grid grid-cols-2 gap-4">
+<!-- Member Card 1 -->
+<div class="group flex flex-col gap-3">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface shadow-sm">
+<img alt="Portrait of Eleanor Rigby" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmBp6Y42radOcNu9CB3cY-eUQWTM1Sbb-cYA_AkpsMxtCnZPgWKJ3UO9ZEvqgGJkHTgB-0qpgQBljqB12RfkNvU64zGvgzO-aNA5KbhpKNT4QBiFpLfckzVBbZJn9kvHK-W5Yr4_vat08bgZNKhIC2b9HxPC5IuP5mD64A-9b-HovzCj_ZfT11PR9IqK840EmZbsqLZfFS08dtp__Mp120nx9q1aYwAfu-RIlZW1MiyAzOjNGikc6mLMOiAypQSpmc0ecVhWeouKI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+<button class="absolute top-3 right-3 size-8 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+</button>
+</div>
+<div class="flex flex-col px-1">
+<h3 class="font-display text-lg font-medium leading-tight text-slate-900 dark:text-white">Eleanor Rigby</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3 truncate">Partner at Sterling VC</p>
+<button class="w-full py-2 px-3 rounded-lg border border-gold/30 hover:bg-gold/10 text-gold text-xs font-semibold tracking-wide uppercase transition-colors flex items-center justify-center gap-1.5 group/btn">
+<span>Request Intro</span>
+<span class="material-symbols-outlined text-[14px] group-hover/btn:translate-x-0.5 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Member Card 2 -->
+<div class="group flex flex-col gap-3">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface shadow-sm">
+<img alt="Portrait of James Sterling" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGxNT0j19RDgdveEpMYxtHf0mv4y4VrBnhYlQLnWgW6EjLeHUHAOaeqdSPoyX-Ki2XkUtLFgOAGWjvegvX4nwooZPU0EfJdmsLedIbfZ6pc6ZjmkKwAGIFg4_c6yr5mqJw6kyxrJHda55S2F23QO78jB6bcBSg1AAbS9Hc6xOJ9qZrHXQihbHYJOpbQyn9ae-nrLgdSbyREfG1QqQYf8oEw5GVrgyelEK7jtHByWleIorJIds-sxqYJZ2XDa81gMcF23O0gjh2i2g"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+<button class="absolute top-3 right-3 size-8 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[18px] fill-current">bookmark</span>
+</button>
+</div>
+<div class="flex flex-col px-1">
+<h3 class="font-display text-lg font-medium leading-tight text-slate-900 dark:text-white">James Sterling</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3 truncate">Founder of Horizon</p>
+<button class="w-full py-2 px-3 rounded-lg border border-gold/30 hover:bg-gold/10 text-gold text-xs font-semibold tracking-wide uppercase transition-colors flex items-center justify-center gap-1.5 group/btn">
+<span>Request Intro</span>
+<span class="material-symbols-outlined text-[14px] group-hover/btn:translate-x-0.5 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Member Card 3 -->
+<div class="group flex flex-col gap-3">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface shadow-sm">
+<img alt="Portrait of Sarah Chen" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClPrVVl6UmvUa6P_v2ZqZnoFhSpAahQr6sJxwOKirfBW81is_nJ-8rkSAi3NjftAhhkHXuXo26ryqmRVGeqOWijxrkF9LJWj3VlwwQwDoviCPZrB0oWV_IxyvYcI4Qr1vwpPu3JH_etNVy0Qt5bNU0MuQacyyinB5XtqGsCQos9LrJSpsKKllbu20Pe_HHqOgPXzrOU77r4Rse0Sk0lMgjI3BS3coNO0nizlWtX8YpXU1B3Did6_7E-EGSYzbtNCD9zlSFGERbVCs"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+<button class="absolute top-3 right-3 size-8 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+</button>
+</div>
+<div class="flex flex-col px-1">
+<h3 class="font-display text-lg font-medium leading-tight text-slate-900 dark:text-white">Sarah Chen</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3 truncate">Director at MoMA</p>
+<button class="w-full py-2 px-3 rounded-lg border border-gold/30 hover:bg-gold/10 text-gold text-xs font-semibold tracking-wide uppercase transition-colors flex items-center justify-center gap-1.5 group/btn">
+<span>Request Intro</span>
+<span class="material-symbols-outlined text-[14px] group-hover/btn:translate-x-0.5 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Member Card 4 -->
+<div class="group flex flex-col gap-3">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface shadow-sm">
+<img alt="Portrait of Marcus Thorne" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDpdfr_UBvEhGY1zCZG-R04I99CP81qPOiCvNeKxo5MAB2vhGJriLqQCGC25OppLjKFK5RfDfOLuCqFYc-SyGLI19w0hUtFg05U0DjA2yEVlFpCB69V_VkujeYhKFFG38coD0dBKVGfbpOzVh-pWqxe39BPCp7sKhx92QC3MARMYjcRKYc0H4ZDkvb9MWvH0imEolgdboYXfIshmauluQ1vxytY9I3KAaH052dvcmRD7NJWOGymCZEt3bVYPdfeyGz0iCioOydYnM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+<button class="absolute top-3 right-3 size-8 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+</button>
+</div>
+<div class="flex flex-col px-1">
+<h3 class="font-display text-lg font-medium leading-tight text-slate-900 dark:text-white">Marcus Thorne</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3 truncate">CEO at Thorne Capital</p>
+<button class="w-full py-2 px-3 rounded-lg border border-gold/30 hover:bg-gold/10 text-gold text-xs font-semibold tracking-wide uppercase transition-colors flex items-center justify-center gap-1.5 group/btn">
+<span>Request Intro</span>
+<span class="material-symbols-outlined text-[14px] group-hover/btn:translate-x-0.5 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Member Card 5 -->
+<div class="group flex flex-col gap-3">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface shadow-sm">
+<img alt="Portrait of Olivia Vance" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByknsnPjkGsQxZdI968-qFfyZxZroYrbX-0_ezG3tgTMN85PCNIy7MbVDAxCcTbf7belUfDFvQSGVO8siQtKtBExEwqurSQb47od7VHCqJo3DXLJ_iDeUyxZSc7qnQb7GRa_pBZhA9CCZefE2fz2iUjon07lKXWDU7B2rrAYHPzf8SRtdiYO3t_3RroUTILCA5qufebhfTWyMcuanMkkcNgD2cOM1-w9t7tQNLwm4maSFM5x1J4JzlAxKp6BPFJsFhDEBljf8vmsg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+<button class="absolute top-3 right-3 size-8 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+</button>
+</div>
+<div class="flex flex-col px-1">
+<h3 class="font-display text-lg font-medium leading-tight text-slate-900 dark:text-white">Olivia Vance</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3 truncate">Architect at Vance Studio</p>
+<button class="w-full py-2 px-3 rounded-lg border border-gold/30 hover:bg-gold/10 text-gold text-xs font-semibold tracking-wide uppercase transition-colors flex items-center justify-center gap-1.5 group/btn">
+<span>Request Intro</span>
+<span class="material-symbols-outlined text-[14px] group-hover/btn:translate-x-0.5 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Member Card 6 -->
+<div class="group flex flex-col gap-3">
+<div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-surface shadow-sm">
+<img alt="Portrait of David Kim" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 hover:opacity-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJ0ufwDAZoWZs4m351gRbKm2nqKCntaZVYYkg3YXgrUZKYrxBU9LaL084uZ9tdwv_p01Uk24JPFGSp6o6TLfsUaeH9SuKORMSHjRqZfh5KC4-ZBwP-8MUcuBEklrNDeb9StTXGZeLoDs4U-FVaWy3zAnfMRsKH1xxfM6dViG3GLzfooszR-0IGJdITuNCA5vtnkkDybK4lYJZmdpavTSI94id-5u0uYvW_OK9D3WDGkGyC1LVkZ5ZAr31uLzdGUvRiA9jBtKTSQiY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+<button class="absolute top-3 right-3 size-8 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+</button>
+</div>
+<div class="flex flex-col px-1">
+<h3 class="font-display text-lg font-medium leading-tight text-slate-900 dark:text-white">David Kim</h3>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3 truncate">VP at Nexus Tech</p>
+<button class="w-full py-2 px-3 rounded-lg border border-gold/30 hover:bg-gold/10 text-gold text-xs font-semibold tracking-wide uppercase transition-colors flex items-center justify-center gap-1.5 group/btn">
+<span>Request Intro</span>
+<span class="material-symbols-outlined text-[14px] group-hover/btn:translate-x-0.5 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="absolute bottom-0 left-0 w-full border-t border-primary/20 bg-surface/90 backdrop-blur-xl px-4 pb-5 pt-3 z-50">
+<div class="flex justify-between items-end">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 hover:text-primary transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:-translate-y-1 transition-transform">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</div>
+<p class="text-[10px] font-medium tracking-wide uppercase">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:-translate-y-1 transition-transform">
+<span class="material-symbols-outlined text-[24px] fill-current">group</span>
+</div>
+<p class="text-[10px] font-medium tracking-wide uppercase">Network</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 hover:text-primary transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:-translate-y-1 transition-transform">
+<span class="material-symbols-outlined text-[24px]">calendar_month</span>
+</div>
+<p class="text-[10px] font-medium tracking-wide uppercase">Events</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 hover:text-primary transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:-translate-y-1 transition-transform">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</div>
+<p class="text-[10px] font-medium tracking-wide uppercase">Profile</p>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

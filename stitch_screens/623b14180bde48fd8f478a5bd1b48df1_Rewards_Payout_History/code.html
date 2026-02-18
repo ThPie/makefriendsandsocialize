@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rewards Payout History</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ecc813",
+                        "background-light": "#f8f8f6",
+                        "background-dark": "#181711", // Adjusted to match the provided component's background style more closely for seamless integration
+                        "surface-dark": "#27251c",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for hidden look on mobile but functional */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-white h-screen flex flex-col overflow-hidden">
+<!-- Header / Navigation -->
+<header class="flex items-center justify-between px-4 py-3 bg-surface-light dark:bg-background-dark border-b border-gray-200 dark:border-[#393628] shrink-0 z-10">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-surface-dark transition-colors text-slate-900 dark:text-white">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Rewards &amp; Payouts</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 dark:hover:bg-surface-dark transition-colors text-slate-900 dark:text-white">
+<span class="material-symbols-outlined text-[24px]">more_horiz</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto no-scrollbar relative flex flex-col">
+<!-- Balance Section -->
+<div class="px-5 py-8 flex flex-col items-center justify-center bg-surface-light dark:bg-background-dark shrink-0">
+<div class="text-center space-y-1">
+<p class="text-sm font-medium text-gray-500 dark:text-[#b9b49d] uppercase tracking-wider">Total Available Balance</p>
+<h2 class="text-[42px] leading-tight font-extrabold text-primary tracking-tight">$1,250.00</h2>
+</div>
+<div class="mt-8 w-full max-w-sm">
+<button class="w-full flex items-center justify-center gap-2 h-14 bg-primary hover:bg-yellow-400 text-background-dark text-base font-bold rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">credit_card</span>
+<span>Withdraw to Credit</span>
+</button>
+<p class="text-xs text-center text-gray-400 dark:text-gray-500 mt-3">Next scheduled payout: Nov 01, 2023</p>
+</div>
+</div>
+<!-- Divider/Tab Section -->
+<div class="sticky top-0 z-10 bg-surface-light dark:bg-background-dark pt-2 pb-4 px-5 border-b border-gray-200 dark:border-[#393628]">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Payout History</h3>
+<button class="text-primary text-sm font-semibold flex items-center gap-1">
+                    Filter <span class="material-symbols-outlined text-[16px]">filter_list</span>
+</button>
+</div>
+<!-- Quick Filters -->
+<div class="flex gap-2 overflow-x-auto no-scrollbar">
+<button class="px-4 py-1.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-background-dark text-sm font-bold whitespace-nowrap">All</button>
+<button class="px-4 py-1.5 rounded-full bg-gray-100 dark:bg-surface-dark text-gray-600 dark:text-[#b9b49d] text-sm font-medium whitespace-nowrap border border-transparent dark:border-[#393628]">Processed</button>
+<button class="px-4 py-1.5 rounded-full bg-gray-100 dark:bg-surface-dark text-gray-600 dark:text-[#b9b49d] text-sm font-medium whitespace-nowrap border border-transparent dark:border-[#393628]">Pending</button>
+</div>
+</div>
+<!-- History List -->
+<div class="flex-1 bg-surface-light dark:bg-background-dark pb-6">
+<div class="px-5 divide-y divide-gray-100 dark:divide-[#393628]">
+<!-- Item 1: Pending Withdrawal -->
+<div class="py-4 flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-500/10 flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
+<span class="material-symbols-outlined text-[20px]">pending</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Withdrawal Request</p>
+<p class="text-xs text-gray-500 dark:text-[#8a8676]">Today, 10:23 AM</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900 dark:text-white">-$250.00</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300">
+                            Pending
+                        </span>
+</div>
+</div>
+<!-- Item 2: Processed Reward -->
+<div class="py-4 flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-yellow-700 dark:text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">stars</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Referral Bonus - Elite Tier</p>
+<p class="text-xs text-gray-500 dark:text-[#8a8676]">Oct 24, 2023</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-primary">+$150.00</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-yellow-700 dark:text-primary">
+                            Processed
+                        </span>
+</div>
+</div>
+<!-- Item 3: Processed Reward -->
+<div class="py-4 flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-yellow-700 dark:text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">group_add</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">New Member Reward</p>
+<p class="text-xs text-gray-500 dark:text-[#8a8676]">Oct 22, 2023</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-primary">+$50.00</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-yellow-700 dark:text-primary">
+                            Processed
+                        </span>
+</div>
+</div>
+<!-- Item 4: Withdrawal Completed -->
+<div class="py-4 flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-surface-dark flex items-center justify-center text-gray-600 dark:text-gray-400 shrink-0">
+<span class="material-symbols-outlined text-[20px]">arrow_outward</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Credit Withdrawal</p>
+<p class="text-xs text-gray-500 dark:text-[#8a8676]">Oct 15, 2023</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900 dark:text-white">-$500.00</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 dark:bg-surface-dark text-gray-600 dark:text-gray-400">
+                            Completed
+                        </span>
+</div>
+</div>
+<!-- Item 5: Processed Reward -->
+<div class="py-4 flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-yellow-700 dark:text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">stars</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Monthly Activity Bonus</p>
+<p class="text-xs text-gray-500 dark:text-[#8a8676]">Oct 01, 2023</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-primary">+$75.00</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-yellow-700 dark:text-primary">
+                            Processed
+                        </span>
+</div>
+</div>
+<!-- Item 6: Processed Reward -->
+<div class="py-4 flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-yellow-700 dark:text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">stars</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Social Share Reward</p>
+<p class="text-xs text-gray-500 dark:text-[#8a8676]">Sep 28, 2023</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-primary">+$10.00</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-yellow-700 dark:text-primary">
+                            Processed
+                        </span>
+</div>
+</div>
+</div>
+<div class="py-6 text-center">
+<button class="text-xs font-semibold text-gray-500 dark:text-[#8a8676] uppercase tracking-wide hover:text-primary transition-colors">
+                    Load More History
+                </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="flex gap-2 border-t border-gray-200 dark:border-[#393628] bg-surface-light dark:bg-surface-dark px-4 pb-5 pt-2 shrink-0">
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-gray-400 dark:text-[#b9b49d]" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px] font-variation-settings-'FILL'1">credit_card</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Rewards</p>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-gray-400 dark:text-[#b9b49d]" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-gray-400 dark:text-[#b9b49d]" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Settings</p>
+</a>
+</nav>
+</body></html>

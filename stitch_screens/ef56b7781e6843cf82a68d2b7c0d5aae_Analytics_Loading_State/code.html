@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Analytics Loading State</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0fbd0f",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102210", // Using a very dark green/black base
+              "surface-dark": "#1c271c", // Slightly lighter for cards
+              "shimmer-base": "#283928", // Base color for skeletons
+              "shimmer-highlight": "#3b543b", // Highlight color for shimmer animation
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem", 
+              "lg": "0.5rem", 
+              "xl": "0.75rem", 
+              "full": "9999px"
+            },
+            animation: {
+              shimmer: "shimmer 2s infinite linear",
+            },
+            keyframes: {
+              shimmer: {
+                "0%": { backgroundPosition: "-1000px 0" },
+                "100%": { backgroundPosition: "1000px 0" },
+              },
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom Diagonal Pattern for Charts */
+        .pattern-diagonal-lines {
+            background-image: repeating-linear-gradient(
+                45deg,
+                rgba(59, 84, 59, 0.1),
+                rgba(59, 84, 59, 0.1) 10px,
+                rgba(40, 57, 40, 0.1) 10px,
+                rgba(40, 57, 40, 0.1) 20px
+            );
+        }
+
+        /* Shimmer Effect Class */
+        .animate-shimmer {
+            background: linear-gradient(
+                to right,
+                #283928 4%,
+                #3b543b 25%,
+                #283928 36%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-white font-display min-h-screen flex flex-col overflow-hidden">
+<!-- Header Area -->
+<div class="flex items-center p-4 pb-2 justify-between sticky top-0 z-10 bg-background-dark/95 backdrop-blur-sm">
+<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-surface-dark/50">
+<span class="material-symbols-outlined text-white/50">menu</span>
+</div>
+<!-- Title Skeleton -->
+<div class="h-8 w-32 rounded bg-surface-dark animate-shimmer"></div>
+<div class="flex w-12 items-center justify-end">
+<!-- User Icon Skeleton -->
+<div class="h-10 w-10 rounded-full bg-surface-dark animate-shimmer"></div>
+</div>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto overflow-x-hidden pb-24">
+<!-- Date Filter Skeleton -->
+<div class="flex gap-3 px-4 py-3">
+<div class="h-9 w-32 rounded-lg bg-surface-dark animate-shimmer"></div>
+</div>
+<!-- Metric Cards Grid -->
+<div class="grid grid-cols-2 gap-4 px-4 pb-4">
+<!-- Card 1 -->
+<div class="flex flex-col gap-3 rounded-xl p-5 border border-surface-dark bg-surface-dark/30">
+<div class="h-4 w-24 rounded bg-shimmer-base animate-shimmer"></div> <!-- Label -->
+<div class="h-8 w-32 rounded bg-shimmer-base animate-shimmer mt-1"></div> <!-- Value -->
+<div class="h-4 w-16 rounded bg-shimmer-base animate-shimmer mt-auto"></div> <!-- Trend -->
+</div>
+<!-- Card 2 -->
+<div class="flex flex-col gap-3 rounded-xl p-5 border border-surface-dark bg-surface-dark/30">
+<div class="h-4 w-20 rounded bg-shimmer-base animate-shimmer"></div>
+<div class="h-8 w-24 rounded bg-shimmer-base animate-shimmer mt-1"></div>
+<div class="h-4 w-14 rounded bg-shimmer-base animate-shimmer mt-auto"></div>
+</div>
+<!-- Card 3 -->
+<div class="flex flex-col gap-3 rounded-xl p-5 border border-surface-dark bg-surface-dark/30">
+<div class="h-4 w-28 rounded bg-shimmer-base animate-shimmer"></div>
+<div class="h-8 w-28 rounded bg-shimmer-base animate-shimmer mt-1"></div>
+<div class="h-4 w-16 rounded bg-shimmer-base animate-shimmer mt-auto"></div>
+</div>
+<!-- Card 4 -->
+<div class="flex flex-col gap-3 rounded-xl p-5 border border-surface-dark bg-surface-dark/30">
+<div class="h-4 w-24 rounded bg-shimmer-base animate-shimmer"></div>
+<div class="h-8 w-20 rounded bg-shimmer-base animate-shimmer mt-1"></div>
+<div class="h-4 w-12 rounded bg-shimmer-base animate-shimmer mt-auto"></div>
+</div>
+</div>
+<!-- Main Chart Section -->
+<div class="px-4 py-2">
+<!-- Section Title Skeleton -->
+<div class="h-7 w-48 rounded bg-surface-dark animate-shimmer mb-4 mt-2"></div>
+<!-- Chart Container -->
+<div class="w-full rounded-xl border border-surface-dark bg-surface-dark/30 p-4 h-64 relative overflow-hidden">
+<!-- Chart Header Lines -->
+<div class="flex justify-between mb-6">
+<div class="h-4 w-24 rounded bg-shimmer-base animate-shimmer"></div>
+<div class="h-4 w-32 rounded bg-shimmer-base animate-shimmer"></div>
+</div>
+<!-- Main Chart Visual Placeholder with Diagonal Pattern -->
+<div class="absolute inset-x-4 bottom-4 top-16 rounded-lg bg-shimmer-base/50 pattern-diagonal-lines">
+<!-- Moving highlight overlay on top of pattern -->
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
+</div>
+</div>
+</div>
+<!-- Secondary List/Chart Section -->
+<div class="px-4 py-4 mt-2">
+<!-- Section Title Skeleton -->
+<div class="h-6 w-36 rounded bg-surface-dark animate-shimmer mb-4"></div>
+<!-- List Items -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-4 rounded-xl border border-surface-dark bg-surface-dark/30 p-4">
+<div class="size-10 rounded-full bg-shimmer-base animate-shimmer shrink-0"></div>
+<div class="flex-1 flex flex-col gap-2">
+<div class="h-4 w-3/4 rounded bg-shimmer-base animate-shimmer"></div>
+<div class="h-3 w-1/2 rounded bg-shimmer-base animate-shimmer"></div>
+</div>
+<div class="h-6 w-12 rounded bg-shimmer-base animate-shimmer"></div>
+</div>
+<div class="flex items-center gap-4 rounded-xl border border-surface-dark bg-surface-dark/30 p-4">
+<div class="size-10 rounded-full bg-shimmer-base animate-shimmer shrink-0"></div>
+<div class="flex-1 flex flex-col gap-2">
+<div class="h-4 w-2/3 rounded bg-shimmer-base animate-shimmer"></div>
+<div class="h-3 w-1/3 rounded bg-shimmer-base animate-shimmer"></div>
+</div>
+<div class="h-6 w-12 rounded bg-shimmer-base animate-shimmer"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex gap-2 border-t border-surface-dark bg-surface-dark px-4 pb-6 pt-2 fixed bottom-0 left-0 right-0 z-20">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99d] opacity-60 hover:opacity-100 transition-opacity" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">dashboard</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Dashboard</p>
+</a>
+<!-- Active Tab: Analytics (Primary Color) -->
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center bg-primary/10 rounded-full px-3">
+<span class="material-symbols-outlined text-[24px] fill-current">pie_chart</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Analytics</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99d] opacity-60 hover:opacity-100 transition-opacity" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">shopping_bag</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Orders</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99d] opacity-60 hover:opacity-100 transition-opacity" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Settings</p>
+</a>
+</div>
+</body></html>

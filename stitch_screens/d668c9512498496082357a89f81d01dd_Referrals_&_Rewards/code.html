@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Referrals &amp; Rewards</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9d406",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#1a2c20", // Deep forest green base
+                        "surface-dark": "#243c2c",    // Slightly lighter forest green for cards
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["Space Mono", "monospace"],
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased selection:bg-primary selection:text-black">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto shadow-2xl">
+<!-- Header -->
+<div class="flex items-center justify-between px-4 py-3 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur sticky top-0 z-10 border-b border-black/5 dark:border-white/10">
+<button class="flex items-center justify-center p-2 -ml-2 text-slate-600 dark:text-gray-300 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Referrals &amp; Rewards</h1>
+<button class="flex items-center justify-center p-2 -mr-2 text-slate-600 dark:text-gray-300 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl">more_horiz</span>
+</button>
+</div>
+<!-- Main Content -->
+<div class="flex-1 flex flex-col p-5 gap-8">
+<!-- Hero Section -->
+<div class="flex flex-col gap-4">
+<div class="text-center space-y-1">
+<h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Invite Your Circle</h2>
+<p class="text-sm text-slate-500 dark:text-gray-400">Share your exclusive access with friends.</p>
+</div>
+<!-- Referral Card -->
+<div class="relative overflow-hidden rounded-xl border border-primary bg-surface-dark p-6 shadow-lg group">
+<!-- Decorative Glow -->
+<div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl"></div>
+<div class="absolute -left-10 -bottom-10 h-32 w-32 rounded-full bg-primary/5 blur-3xl"></div>
+<div class="relative z-10 flex flex-col items-center gap-4">
+<span class="text-xs uppercase tracking-widest text-primary/80 font-medium">Unique Referral Code</span>
+<div class="font-mono text-3xl font-bold tracking-wider text-white">
+                            REF-92X-LQ
+                        </div>
+<button class="flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-background-dark transition-transform active:scale-95 hover:bg-primary/90">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+                            Copy Code
+                        </button>
+</div>
+</div>
+</div>
+<!-- Stats Row -->
+<div class="grid grid-cols-3 gap-3">
+<div class="flex flex-col items-center justify-center rounded-lg bg-surface-dark p-3 text-center border border-white/5">
+<span class="text-2xl font-bold text-primary">12</span>
+<span class="text-[10px] uppercase tracking-wider text-gray-400 font-medium mt-1">Invited</span>
+</div>
+<div class="flex flex-col items-center justify-center rounded-lg bg-surface-dark p-3 text-center border border-white/5">
+<span class="text-2xl font-bold text-primary">4</span>
+<span class="text-[10px] uppercase tracking-wider text-gray-400 font-medium mt-1">Joined</span>
+</div>
+<div class="flex flex-col items-center justify-center rounded-lg bg-surface-dark p-3 text-center border border-white/5">
+<span class="text-2xl font-bold text-primary">$200</span>
+<span class="text-[10px] uppercase tracking-wider text-gray-400 font-medium mt-1">Rewards</span>
+</div>
+</div>
+<!-- Recent Referrals List -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="text-base font-bold text-white">Recent Referrals</h3>
+<a class="text-xs font-medium text-primary hover:underline" href="#">View All</a>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Item 1: Member -->
+<div class="flex items-center gap-4 rounded-lg bg-surface-dark p-3 pr-4 border border-white/5">
+<div class="h-10 w-10 overflow-hidden rounded-full bg-gray-700">
+<img alt="Portrait of Sarah Jenkins" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvFAeKFdxJeXnZOBKojZceoIHePACvwX-duwhmYS_4Z_2z-qtS13xfJvr8sKBc_Nh8AkTWcUwyDkJcRMuhmMa-mcdbxf_CTw5O1q9w3EtJRNy1D_F39rnq1yd8W-XOrzZoYQHEN-4384SGdO_DN6k-dhW9Ewoi8ZlvlXxXOztEIf1TeaTxR06xMqRa_enWnxv3jDzZ5t2iOebPYnP4qLWFLUyPi0QK4YNRm43Nx2WQ6RybwC4T_AtMoROPK8kc7nE_gOEEh34dTUo"/>
+</div>
+<div class="flex flex-1 flex-col">
+<p class="text-sm font-bold text-white">Sarah Jenkins</p>
+<p class="text-xs text-gray-400">Joined Mar 12, 2023</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary border border-primary/20">Member</span>
+<span class="text-xs font-medium text-primary">+$50</span>
+</div>
+</div>
+<!-- Item 2: Pending -->
+<div class="flex items-center gap-4 rounded-lg bg-surface-dark p-3 pr-4 border border-white/5 opacity-80">
+<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-gray-400 font-bold text-sm">
+                            MR
+                        </div>
+<div class="flex flex-1 flex-col">
+<p class="text-sm font-bold text-white">Mike Ross</p>
+<p class="text-xs text-gray-400">Invited 2 days ago</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-300 border border-white/10">Pending</span>
+</div>
+</div>
+<!-- Item 3: Member -->
+<div class="flex items-center gap-4 rounded-lg bg-surface-dark p-3 pr-4 border border-white/5">
+<div class="h-10 w-10 overflow-hidden rounded-full bg-gray-700">
+<img alt="Portrait of Jessica Pearson" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3V2-pCVuWpn982YQoT8cTyHj7OiH2ybUp5-tzruFNUidRPjVYrzSNy-TLcMQ3CjX_zNjOzqWHBHfIvEj8Dtj7r1s5L4p8z7Dt-Ed-41kOd4lpbCooDQQxzmdDibVUxdHC9czYirtwoMCodhrmMFDms4rS5maqjyy8moKzpteNkCOZn3S3DW-MdV4zug-Rlsfpmaup1yViFgwvyla1xUi78ew7FhLC92Km5_Miz-pNHHsp0FTHNFvj9wqNK-JTcCgy2j14FjB9EdU"/>
+</div>
+<div class="flex flex-1 flex-col">
+<p class="text-sm font-bold text-white">Jessica Pearson</p>
+<p class="text-xs text-gray-400">Joined Feb 28, 2023</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary border border-primary/20">Member</span>
+<span class="text-xs font-medium text-primary">+$50</span>
+</div>
+</div>
+<!-- Item 4: Pending -->
+<div class="flex items-center gap-4 rounded-lg bg-surface-dark p-3 pr-4 border border-white/5 opacity-80">
+<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-gray-400 font-bold text-sm">
+                            LS
+                        </div>
+<div class="flex flex-1 flex-col">
+<p class="text-sm font-bold text-white">Louis Specter</p>
+<p class="text-xs text-gray-400">Invited 5 days ago</p>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-300 border border-white/10">Pending</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex gap-2 border-t border-white/10 bg-background-dark/95 backdrop-blur px-4 pb-6 pt-2 sticky bottom-0 z-20">
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-gray-400 hover:text-primary transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:-translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[24px]">home</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-gray-400 hover:text-primary transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:-translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[24px]">groups</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Network</p>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center relative">
+<div class="absolute inset-0 bg-primary/20 blur-lg rounded-full"></div>
+<span class="material-symbols-outlined text-[24px] relative z-10 font-bold filled">redeem</span>
+</div>
+<p class="text-xs font-bold leading-normal tracking-[0.015em]">Referrals</p>
+</a>
+<a class="just flex flex-1 flex-col items-center justify-end gap-1 text-gray-400 hover:text-primary transition-colors group" href="#">
+<div class="flex h-8 items-center justify-center group-hover:-translate-y-0.5 transition-transform">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

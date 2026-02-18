@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Society Journal Feed</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#cf1754",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#211116",
+                        "surface-dark": "#2d1b22",
+                        "gold": "#D4AF37",
+                        "gold-light": "#F3E5AB",
+                    },
+                    fontFamily: {
+                        "sans": ["Work Sans", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Work Sans', sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen flex flex-col overflow-x-hidden antialiased selection:bg-primary selection:text-white">
+<!-- Top Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-slate-200 dark:border-white/10">
+<div class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-white/5 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-slate-800 dark:text-white">menu</span>
+</div>
+<h1 class="text-xl font-serif font-bold tracking-wide text-slate-900 dark:text-white">
+            SOCIETY JOURNAL
+        </h1>
+<div class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-white/5 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-slate-800 dark:text-white">search</span>
+</div>
+</header>
+<!-- Main Content Scrollable Area -->
+<main class="flex-1 pb-24">
+<!-- Featured Article (Hero) -->
+<div class="px-4 pt-4 pb-2">
+<div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-lg group cursor-pointer">
+<!-- Image -->
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Elegant gala event with crystal chandeliers and ambient lighting" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBvf3XWhDrG-_AGId4j5v7EHI-JuHJWV_FK6U0fqmbd7cUQuhJa3xuoh6CAZuxYNSxXmR4oKVEj6mVAxaE04cfSmrwWVuqOwkV7bPsCrb_uhLUiEd6SzuSdWzI3E66aFKZkJpJvBPa-qEt9_PgdeDVjZX6BwrPYOujCXvY1YTsMpmT2YGkGtUByiAeRnWxxl5To46WrdSWH-3m71rcNIZ7zLAwnBgrcYdJ_JKR217ivbpRzznKVtvZHgsKiE7O0Bv7F8volMobFcgI');">
+</div>
+<!-- Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+<!-- Content -->
+<div class="absolute bottom-0 left-0 w-full p-5 flex flex-col items-start gap-2">
+<span class="inline-block px-2 py-1 bg-primary/90 text-white text-[10px] font-bold uppercase tracking-wider rounded">Featured Story</span>
+<h2 class="font-serif text-2xl md:text-3xl font-bold leading-tight text-gold-light drop-shadow-md">
+                        The Annual Winter Solstice Gala: A Retrospective
+                    </h2>
+<p class="text-slate-300 text-sm font-medium line-clamp-2 max-w-[90%]">
+                        An evening of unparalleled elegance, charity, and connection at the Grand Hall.
+                    </p>
+</div>
+</div>
+</div>
+<!-- Filter Tabs -->
+<div class="sticky top-[65px] z-40 bg-background-light dark:bg-background-dark py-3 pl-4 border-b border-transparent dark:border-white/5">
+<div class="flex gap-3 overflow-x-auto hide-scrollbar pr-4">
+<button class="shrink-0 px-5 py-2 rounded-full bg-primary text-white text-sm font-medium shadow-sm transition-transform active:scale-95">
+                    All
+                </button>
+<button class="shrink-0 px-5 py-2 rounded-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors active:scale-95">
+                    Lifestyle
+                </button>
+<button class="shrink-0 px-5 py-2 rounded-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors active:scale-95">
+                    Society News
+                </button>
+<button class="shrink-0 px-5 py-2 rounded-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors active:scale-95">
+                    Dining
+                </button>
+<button class="shrink-0 px-5 py-2 rounded-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors active:scale-95">
+                    Events
+                </button>
+</div>
+</div>
+<!-- Article List -->
+<div class="px-4 py-2 space-y-4">
+<!-- Article 1 -->
+<article class="group flex gap-4 p-3 rounded-xl bg-white dark:bg-surface-dark border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-lg overflow-hidden bg-slate-200 dark:bg-white/10">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Plated gourmet dish with artistic presentation" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRl8cggcraEZO_nHBD9BC0NorRVeuOEoh5F13-gENOXO38RlV0UmWJlB0z3XxlHr0dPNXZwy-g9rCWa6GIVu4sv2Mt3PG80uLka7He3GRORx886Poiwf2Z9tW0i48y_ig_4OqCjUTBgagHBgL_GNZDCr3svQqs8gZzF69XDND_wtaPxXcxWnrgcssUTWJCF1tbeEBuDERqhGK-8cQ8p70HaJ39gilsfH87B6Uf0E4NA7sDyxdcKM_Kc86_pTfYw2UKC1DnZqpg2Hk');">
+</div>
+</div>
+<div class="flex flex-col justify-between py-0.5 flex-1 min-w-0">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary">Dining</span>
+<span class="text-[10px] text-slate-400">• 2h ago</span>
+</div>
+<h3 class="font-serif text-lg font-bold text-slate-900 dark:text-white leading-tight mb-1 truncate">
+                            New Michelin Star Chef
+                        </h3>
+<p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                            Experience the new tasting menu curated by Chef Laurent, featuring seasonal delicacies sourced locally.
+                        </p>
+</div>
+</div>
+</article>
+<!-- Article 2 -->
+<article class="group flex gap-4 p-3 rounded-xl bg-white dark:bg-surface-dark border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-lg overflow-hidden bg-slate-200 dark:bg-white/10">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Gavel on a wooden sounding block for an auction" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBufgce3GyqJ6chTd6BBvMPGA1O765KdnxTMNoWb3fPWLlyO5jHbHUP1osmdChDN2FlPFeER574ArpfLdKqfw-JA4Qhqm99JIbzfHoVUOpC6hwToyXH0ZXqnnNuunaEwtycHcfGVGqtUUNCFuZvzKk2P9_KY_A5R68qFQc55tzBDucim17iEiv31i0ser-XWplIpdjo860LQw-aBlIhDql-Ln7up0iWBPHYJJ9jC3NU6tbWSi91QfcOHe3omJLe1tc3tZ-aG4-ALHU');">
+</div>
+</div>
+<div class="flex flex-col justify-between py-0.5 flex-1 min-w-0">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary">Society News</span>
+<span class="text-[10px] text-slate-400">• 5h ago</span>
+</div>
+<h3 class="font-serif text-lg font-bold text-slate-900 dark:text-white leading-tight mb-1 truncate">
+                            Upcoming Charity Auction
+                        </h3>
+<p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                            Join us for an evening of giving back. Proceeds will support local art initiatives and youth programs.
+                        </p>
+</div>
+</div>
+</article>
+<!-- Article 3 -->
+<article class="group flex gap-4 p-3 rounded-xl bg-white dark:bg-surface-dark border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-lg overflow-hidden bg-slate-200 dark:bg-white/10">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="High fashion models posing in summer attire" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDMQooqWoM871oGNKEGKqoa9cQItBM6IUe44erTCO4PUaimXsdDzUq11PL87HbisowUDCY1nQyh7yqkOQH6c2G-DjNeR8yWn5hgwbFmGaY_fiwJXFmbJwZsJzhQlZ1nvpCBGU-a1VgA9ug-tjUWwnMPVDx68DnuIc3d_kCO1qn5B12lRdLx7HzZNUgjmE8Z2BuH_ukrMniMpQO3xip_Xhfr7bORIQM0RJ5uwaqEkFsu8sJTp3Li2F0Z9klhcE5um7ERknj4kz5BKbw');">
+</div>
+</div>
+<div class="flex flex-col justify-between py-0.5 flex-1 min-w-0">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary">Lifestyle</span>
+<span class="text-[10px] text-slate-400">• 1d ago</span>
+</div>
+<h3 class="font-serif text-lg font-bold text-slate-900 dark:text-white leading-tight mb-1 truncate">
+                            Summer Fashion Trends
+                        </h3>
+<p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                            Discover the essential pieces for your summer wardrobe, as curated by our resident stylist.
+                        </p>
+</div>
+</div>
+</article>
+<!-- Article 4 -->
+<article class="group flex gap-4 p-3 rounded-xl bg-white dark:bg-surface-dark border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-lg overflow-hidden bg-slate-200 dark:bg-white/10">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Abstract view of a modern art gallery exhibit" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuACX4-0UEJxU4ZDV97bfkCwVjTGuFAzsgipt1hPNNKMVRZNqTdQ4NRybhe52i2_iEJc-UiXdfC7yv3hYEz_1baz2O7QU4hQb8xgwtD_IkUrZaZoa3w2qxM6N1yXoQd4nfkmSuItCnPxECYHEN60gjQovlDS-iBT5i6E77uPGIAsUQiS76kBsIJweUNpXPit_lMXH-uldz16kZO5WQerWgkdfsGK0JGRItJ426AAdN82uHoKW09o0Zf1c2OM07jQYbr7ZO3Wq4aBXDs');">
+</div>
+</div>
+<div class="flex flex-col justify-between py-0.5 flex-1 min-w-0">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary">Arts &amp; Culture</span>
+<span class="text-[10px] text-slate-400">• 2d ago</span>
+</div>
+<h3 class="font-serif text-lg font-bold text-slate-900 dark:text-white leading-tight mb-1 truncate">
+                            Private Gallery Opening
+                        </h3>
+<p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                            An exclusive first look at the modern masters collection before it opens to the public next week.
+                        </p>
+</div>
+</div>
+</article>
+<!-- End of list spacer -->
+<div class="h-4"></div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-white/5 pb-5 pt-3 px-6 shadow-[0_-5px_15px_rgba(0,0,0,0.1)] z-50">
+<div class="flex justify-between items-end">
+<!-- Active Tab -->
+<a class="flex flex-col items-center justify-center gap-1 text-primary group" href="#">
+<div class="relative">
+<span class="material-symbols-outlined text-[26px] group-hover:scale-110 transition-transform">newspaper</span>
+<!-- Active Indicator Dot -->
+<span class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></span>
+</div>
+<span class="text-[10px] font-medium tracking-wide">Journal</span>
+</a>
+<!-- Inactive Tab -->
+<a class="flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[26px] group-hover:scale-110 transition-transform">calendar_month</span>
+<span class="text-[10px] font-medium tracking-wide">Events</span>
+</a>
+<!-- Inactive Tab -->
+<a class="flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[26px] group-hover:scale-110 transition-transform">diamond</span>
+<span class="text-[10px] font-medium tracking-wide">Benefits</span>
+</a>
+<!-- Inactive Tab -->
+<a class="flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[26px] group-hover:scale-110 transition-transform">person</span>
+<span class="text-[10px] font-medium tracking-wide">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

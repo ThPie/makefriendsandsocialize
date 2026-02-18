@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Concierge Loading State</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d442",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#111813",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    animation: {
+                        shimmer: "shimmer 1.5s infinite linear",
+                    },
+                    keyframes: {
+                        shimmer: {
+                            "0%": { backgroundPosition: "-1000px 0" },
+                            "100%": { backgroundPosition: "1000px 0" },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom shimmer effect utility */
+        .animate-shimmer {
+            background: linear-gradient(to right, #1c271e 8%, #2a3b2d 18%, #1c271e 33%);
+            background-size: 1000px 100%;
+            animation: shimmer 1.5s infinite linear forwards;
+        }
+        
+        /* Darker shimmer for card backgrounds if needed */
+        .animate-shimmer-card {
+            background: linear-gradient(to right, #1c271e 8%, #28392c 18%, #1c271e 33%);
+            background-size: 1000px 100%;
+            animation: shimmer 1.5s infinite linear forwards;
+        }
+
+        /* Lighter shimmer for text/smaller elements */
+        .animate-shimmer-text {
+            background: linear-gradient(to right, #28392c 8%, #3b5441 18%, #28392c 33%);
+            background-size: 1000px 100%;
+            animation: shimmer 1.5s infinite linear forwards;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex justify-center font-display antialiased selection:bg-primary selection:text-background-dark">
+<div class="relative flex h-full min-h-screen w-full max-w-md flex-col overflow-hidden bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Header Section -->
+<div class="flex items-center justify-between p-4 pb-2 bg-background-light dark:bg-background-dark">
+<div class="flex items-center gap-3 w-full">
+<!-- Icon Placeholder -->
+<div class="h-6 w-6 rounded-md animate-shimmer-text"></div>
+<!-- Title Placeholder -->
+<div class="h-6 w-40 rounded-md animate-shimmer-text"></div>
+</div>
+<!-- Profile Icon Placeholder -->
+<div class="h-8 w-12 rounded-full animate-shimmer-text"></div>
+</div>
+<!-- Main Content Scroll Area -->
+<div class="flex-1 overflow-y-auto no-scrollbar">
+<!-- Hero / Service Overview Card Skeleton -->
+<div class="@container">
+<div class="@[480px]:p-4">
+<div class="relative flex min-h-[480px] flex-col gap-6 items-start justify-end px-4 pb-10 pt-20 @[480px]:px-10 overflow-hidden">
+<!-- Background Image Skeleton -->
+<div class="absolute inset-0 w-full h-full animate-shimmer z-0"></div>
+<!-- Text Content Skeletons -->
+<div class="relative z-10 flex flex-col gap-3 w-full max-w-[80%]">
+<div class="h-10 w-full rounded-lg animate-shimmer-text opacity-80"></div>
+<div class="h-10 w-3/4 rounded-lg animate-shimmer-text opacity-80"></div>
+<div class="h-4 w-1/2 rounded animate-shimmer-text opacity-60 mt-2"></div>
+</div>
+<!-- CTA Button Skeleton -->
+<div class="relative z-10 h-12 w-32 rounded-lg animate-shimmer-text mt-2 opacity-90"></div>
+</div>
+</div>
+</div>
+<!-- Content Body -->
+<div class="flex flex-col gap-8 px-4 py-8">
+<!-- Section Header Skeleton -->
+<div class="flex flex-col gap-4">
+<div class="h-8 w-3/4 rounded-lg animate-shimmer-text"></div>
+<div class="h-4 w-full rounded animate-shimmer-text opacity-60"></div>
+<div class="h-4 w-5/6 rounded animate-shimmer-text opacity-60"></div>
+<!-- Secondary Button Skeleton -->
+<div class="h-10 w-28 rounded-lg animate-shimmer-text mt-2"></div>
+</div>
+<!-- Benefits Grid Skeleton -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Grid Item 1 -->
+<div class="flex flex-col gap-3 rounded-xl border border-[#28392c] bg-[#1c271e] p-4 h-40">
+<div class="h-8 w-8 rounded-full animate-shimmer-text mb-auto"></div>
+<div class="flex flex-col gap-2">
+<div class="h-4 w-3/4 rounded animate-shimmer-text"></div>
+<div class="h-3 w-1/2 rounded animate-shimmer-text opacity-60"></div>
+</div>
+</div>
+<!-- Grid Item 2 -->
+<div class="flex flex-col gap-3 rounded-xl border border-[#28392c] bg-[#1c271e] p-4 h-40">
+<div class="h-8 w-8 rounded-full animate-shimmer-text mb-auto"></div>
+<div class="flex flex-col gap-2">
+<div class="h-4 w-2/3 rounded animate-shimmer-text"></div>
+<div class="h-3 w-1/2 rounded animate-shimmer-text opacity-60"></div>
+</div>
+</div>
+<!-- Grid Item 3 -->
+<div class="flex flex-col gap-3 rounded-xl border border-[#28392c] bg-[#1c271e] p-4 h-40">
+<div class="h-8 w-8 rounded-full animate-shimmer-text mb-auto"></div>
+<div class="flex flex-col gap-2">
+<div class="h-4 w-3/4 rounded animate-shimmer-text"></div>
+<div class="h-3 w-1/2 rounded animate-shimmer-text opacity-60"></div>
+</div>
+</div>
+<!-- Grid Item 4 -->
+<div class="flex flex-col gap-3 rounded-xl border border-[#28392c] bg-[#1c271e] p-4 h-40">
+<div class="h-8 w-8 rounded-full animate-shimmer-text mb-auto"></div>
+<div class="flex flex-col gap-2">
+<div class="h-4 w-2/3 rounded animate-shimmer-text"></div>
+<div class="h-3 w-1/2 rounded animate-shimmer-text opacity-60"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Primary Action Button Area -->
+<div class="px-4 pb-8 pt-2">
+<div class="h-14 w-full rounded-lg animate-shimmer-text opacity-80"></div>
+</div>
+<!-- Spacer for bottom nav -->
+<div class="h-20"></div>
+</div>
+<!-- Bottom Navigation Bar (Static/Persistent UI) -->
+<div class="absolute bottom-0 left-0 right-0 border-t border-[#28392c] bg-[#1c271e] px-4 pb-5 pt-2">
+<div class="flex gap-2">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-white" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]" data-icon="House">home</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db9a4]" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]" data-icon="MagnifyingGlass">search</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Search</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db9a4]" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]" data-icon="Calendar">calendar_today</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Bookings</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db9a4]" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined text-[24px]" data-icon="User">person</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+</a>
+</div>
+</div>
+</div>
+</body></html>

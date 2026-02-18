@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Schedule Concierge Session</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f2a60d",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#221c10",
+                        "surface-dark": "#2d261a", // Slightly lighter than background-dark for cards
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for horizontal scroll areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col antialiased selection:bg-primary selection:text-background-dark">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md px-4 py-3 border-b border-gray-200 dark:border-white/5">
+<div class="flex items-center justify-between">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-gray-900 dark:text-white">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<div class="flex-1 text-center">
+<span class="text-xs font-medium uppercase tracking-widest text-primary">Step 2 of 3</span>
+</div>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</div>
+</header>
+<main class="flex-1 flex flex-col p-6 max-w-md mx-auto w-full pb-24">
+<!-- Page Title -->
+<div class="mb-8">
+<h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">When shall we meet?</h1>
+<p class="text-gray-500 dark:text-gray-400 text-sm">Select a date and time for your concierge session.</p>
+</div>
+<!-- Calendar Widget -->
+<div class="bg-white dark:bg-surface-dark rounded-2xl p-4 shadow-sm mb-8 border border-gray-100 dark:border-white/5">
+<!-- Calendar Header -->
+<div class="flex items-center justify-between mb-6 px-2">
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<h2 class="text-base font-semibold text-gray-900 dark:text-white">October 2023</h2>
+<button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300 transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+<!-- Calendar Grid -->
+<div class="grid grid-cols-7 gap-y-4 mb-2">
+<!-- Days of Week -->
+<div class="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Su</div>
+<div class="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Mo</div>
+<div class="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Tu</div>
+<div class="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wide">We</div>
+<div class="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Th</div>
+<div class="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Fr</div>
+<div class="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Sa</div>
+<!-- Calendar Days -->
+<!-- Week 1 -->
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 cursor-default" disabled="">1</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">2</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">3</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">4</button>
+<!-- Selected Date -->
+<div class="relative h-9 w-full flex items-center justify-center">
+<button class="w-9 h-9 flex items-center justify-center text-sm font-bold text-background-dark bg-primary rounded-full shadow-lg shadow-primary/20">5</button>
+</div>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">6</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 cursor-default" disabled="">7</button>
+<!-- Week 2 -->
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 cursor-default" disabled="">8</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">9</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">10</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">11</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">12</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">13</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 cursor-default" disabled="">14</button>
+<!-- Week 3 -->
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 cursor-default" disabled="">15</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">16</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">17</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">18</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">19</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">20</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 cursor-default" disabled="">21</button>
+<!-- Week 4 -->
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 cursor-default" disabled="">22</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">23</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">24</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">25</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">26</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">27</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 cursor-default" disabled="">28</button>
+<!-- Week 5 -->
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 cursor-default" disabled="">29</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">30</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 pointer-events-none opacity-0">31</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 pointer-events-none opacity-0">1</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 pointer-events-none opacity-0">2</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 pointer-events-none opacity-0">3</button>
+<button class="h-9 w-full flex items-center justify-center text-sm text-gray-300 dark:text-gray-600 pointer-events-none opacity-0">4</button>
+</div>
+</div>
+<!-- Available Times Section -->
+<div class="mb-4">
+<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">schedule</span>
+                Available Times
+            </h3>
+<div class="relative -mx-6 px-6 overflow-hidden">
+<div class="flex gap-3 overflow-x-auto no-scrollbar pb-4 snap-x">
+<!-- Time Slot 1 (Selected) -->
+<button class="snap-start shrink-0 flex items-center justify-center h-12 px-6 rounded-xl bg-primary text-background-dark font-semibold text-sm shadow-lg shadow-primary/20 ring-2 ring-primary transition-all scale-[1.02]">
+                        10:00 AM
+                    </button>
+<!-- Time Slot 2 -->
+<button class="snap-start shrink-0 flex items-center justify-center h-12 px-6 rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:border-primary/50 dark:hover:border-primary/50 font-medium text-sm transition-all">
+                        11:30 AM
+                    </button>
+<!-- Time Slot 3 -->
+<button class="snap-start shrink-0 flex items-center justify-center h-12 px-6 rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:border-primary/50 dark:hover:border-primary/50 font-medium text-sm transition-all">
+                        02:00 PM
+                    </button>
+<!-- Time Slot 4 -->
+<button class="snap-start shrink-0 flex items-center justify-center h-12 px-6 rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:border-primary/50 dark:hover:border-primary/50 font-medium text-sm transition-all">
+                        03:30 PM
+                    </button>
+<!-- Time Slot 5 -->
+<button class="snap-start shrink-0 flex items-center justify-center h-12 px-6 rounded-xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:border-primary/50 dark:hover:border-primary/50 font-medium text-sm transition-all">
+                        04:45 PM
+                    </button>
+<div class="w-2 shrink-0"></div> <!-- Spacer -->
+</div>
+<!-- Fade effect for scroll -->
+<div class="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-background-light dark:from-background-dark to-transparent pointer-events-none"></div>
+</div>
+</div>
+<!-- Summary Note -->
+<div class="mt-2 p-4 bg-primary/5 border border-primary/10 rounded-lg flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">info</span>
+<div class="text-sm text-gray-600 dark:text-gray-400">
+<p>Booking for <strong class="text-gray-900 dark:text-white">Thursday, Oct 5</strong> at <strong class="text-gray-900 dark:text-white">10:00 AM</strong>.</p>
+</div>
+</div>
+</main>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 p-6 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-xl border-t border-gray-200 dark:border-white/5 z-40">
+<div class="max-w-md mx-auto">
+<button class="w-full h-14 bg-primary hover:bg-primary/90 text-background-dark text-base font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+<span>Submit Booking</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Select Session Type</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ecb613",
+                        "background-light": "#f8f8f6",
+                        "background-dark": "#0f231a", // Deep forest green
+                        "card-dark": "#162f23", // Slightly lighter forest green for cards
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+                    boxShadow: {
+                        "glow": "0 0 15px rgba(236, 182, 19, 0.15), 0 0 5px rgba(22, 47, 35, 0.5)"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom radio styling for the cards */
+        .session-card-input:checked + div {
+            border-color: #ecb613;
+            background-color: rgba(236, 182, 19, 0.05);
+            box-shadow: 0 0 20px rgba(11, 56, 36, 0.6);
+        }
+        
+        .session-card-input:checked + div .check-circle {
+            background-color: #ecb613;
+            border-color: #ecb613;
+        }
+        
+        .session-card-input:checked + div .check-icon {
+            opacity: 1;
+        }
+
+        .session-card-input:checked + div .icon-container {
+            color: #ecb613;
+            background-color: rgba(236, 182, 19, 0.1);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased min-h-screen flex flex-col justify-between selection:bg-primary selection:text-white overflow-x-hidden">
+<!-- Header & Progress -->
+<header class="pt-8 pb-4 px-6 flex flex-col gap-6 w-full max-w-md mx-auto relative z-10">
+<!-- Top Nav -->
+<div class="flex items-center justify-between text-white/60">
+<button class="hover:text-primary transition-colors p-1 -ml-1">
+<span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+</button>
+<span class="text-xs font-medium tracking-wider uppercase text-primary">Booking Step 1 of 3</span>
+<div class="w-6"></div> <!-- Spacer for balance -->
+</div>
+<!-- Progress Bar -->
+<div class="flex gap-2 w-full">
+<div class="h-1 flex-1 bg-primary rounded-full"></div>
+<div class="h-1 flex-1 bg-white/10 rounded-full"></div>
+<div class="h-1 flex-1 bg-white/10 rounded-full"></div>
+</div>
+<!-- Heading -->
+<div class="space-y-2 mt-2">
+<h1 class="text-white text-3xl font-bold leading-tight tracking-tight">How would you like to connect?</h1>
+<p class="text-white/60 text-sm font-normal">Choose the format that works best for your schedule.</p>
+</div>
+</header>
+<!-- Main Content: Selection Cards -->
+<main class="flex-1 w-full max-w-md mx-auto px-4 py-4 flex flex-col gap-4 overflow-y-auto">
+<!-- Card 1: Video Call -->
+<label class="group cursor-pointer relative block">
+<input checked="" class="session-card-input sr-only" name="session_type" type="radio" value="video"/>
+<div class="relative flex items-center p-5 rounded-2xl bg-card-dark border border-white/5 hover:border-white/10 transition-all duration-300 h-24">
+<!-- Icon -->
+<div class="icon-container h-12 w-12 rounded-full bg-white/5 flex items-center justify-center text-white/80 transition-colors mr-5 shrink-0">
+<span class="material-symbols-outlined text-2xl">videocam</span>
+</div>
+<!-- Text -->
+<div class="flex-1">
+<h3 class="text-white font-semibold text-lg">Video Call</h3>
+<p class="text-white/50 text-xs mt-0.5">Connect face-to-face via video</p>
+</div>
+<!-- Radio Indicator -->
+<div class="check-circle h-6 w-6 rounded-full border-2 border-white/20 flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-black text-sm font-bold opacity-0 check-icon transition-opacity">check</span>
+</div>
+</div>
+</label>
+<!-- Card 2: Chat -->
+<label class="group cursor-pointer relative block">
+<input class="session-card-input sr-only" name="session_type" type="radio" value="chat"/>
+<div class="relative flex items-center p-5 rounded-2xl bg-card-dark border border-white/5 hover:border-white/10 transition-all duration-300 h-24">
+<div class="icon-container h-12 w-12 rounded-full bg-white/5 flex items-center justify-center text-white/80 transition-colors mr-5 shrink-0">
+<span class="material-symbols-outlined text-2xl">chat_bubble</span>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-semibold text-lg">Chat</h3>
+<p class="text-white/50 text-xs mt-0.5">Text-based secure consultation</p>
+</div>
+<div class="check-circle h-6 w-6 rounded-full border-2 border-white/20 flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-black text-sm font-bold opacity-0 check-icon transition-opacity">check</span>
+</div>
+</div>
+</label>
+<!-- Card 3: In Person -->
+<label class="group cursor-pointer relative block">
+<input class="session-card-input sr-only" name="session_type" type="radio" value="person"/>
+<div class="relative flex items-center p-5 rounded-2xl bg-card-dark border border-white/5 hover:border-white/10 transition-all duration-300 h-24">
+<div class="icon-container h-12 w-12 rounded-full bg-white/5 flex items-center justify-center text-white/80 transition-colors mr-5 shrink-0">
+<span class="material-symbols-outlined text-2xl">location_on</span>
+</div>
+<div class="flex-1">
+<h3 class="text-white font-semibold text-lg">In Person</h3>
+<p class="text-white/50 text-xs mt-0.5">Meet at our physical lounge</p>
+</div>
+<div class="check-circle h-6 w-6 rounded-full border-2 border-white/20 flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-black text-sm font-bold opacity-0 check-icon transition-opacity">check</span>
+</div>
+</div>
+</label>
+<!-- Decorative filler for visual balance on larger screens -->
+<div class="flex-1 min-h-[20px]"></div>
+</main>
+<!-- Footer Action -->
+<footer class="p-6 w-full max-w-md mx-auto bg-gradient-to-t from-background-dark to-transparent pt-10">
+<button class="w-full h-14 bg-primary text-background-dark rounded-xl font-bold text-lg hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_4px_14px_0_rgba(236,182,19,0.39)] flex items-center justify-center gap-2 group">
+<span>Next Step</span>
+<span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</footer>
+</body></html>

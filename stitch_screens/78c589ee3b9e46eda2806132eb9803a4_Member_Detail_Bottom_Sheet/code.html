@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Member Detail Bottom Sheet</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0fbd0f",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210",
+                        "surface-dark": "#161e16", // Slightly lighter than background-dark for cards/sheets
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "2xl": "1.5rem", "3xl": "2rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for clean UI */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display text-white antialiased h-screen overflow-hidden selection:bg-primary selection:text-white">
+<!-- Screen Wrapper -->
+<div class="relative h-full w-full max-w-md mx-auto overflow-hidden bg-background-dark shadow-2xl">
+<!-- Background Content (Blurred Network Directory Simulation) -->
+<div class="absolute inset-0 z-0 opacity-40">
+<!-- Simulated Grid of profiles in background -->
+<div class="grid grid-cols-2 gap-4 p-4">
+<div class="aspect-[3/4] rounded-xl bg-surface-dark/50 animate-pulse"></div>
+<div class="aspect-[3/4] rounded-xl bg-surface-dark/50 animate-pulse delay-75"></div>
+<div class="aspect-[3/4] rounded-xl bg-surface-dark/50 animate-pulse delay-150"></div>
+<div class="aspect-[3/4] rounded-xl bg-surface-dark/50 animate-pulse delay-200"></div>
+</div>
+</div>
+<!-- Dark Overlay & Blur Backdrop -->
+<div class="absolute inset-0 z-10 bg-black/60 backdrop-blur-md"></div>
+<!-- Bottom Sheet Container -->
+<div class="absolute inset-x-0 bottom-0 z-20 flex flex-col h-[92%] transition-transform duration-500 ease-out transform translate-y-0">
+<!-- Sheet Content -->
+<div class="relative flex-1 flex flex-col bg-[#0F110F] rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] border-t border-white/5 overflow-hidden">
+<!-- Grabber Handle -->
+<div class="w-full flex justify-center pt-4 pb-2 shrink-0">
+<div class="w-12 h-1.5 bg-white/20 rounded-full"></div>
+</div>
+<!-- Scrollable Area -->
+<div class="flex-1 overflow-y-auto no-scrollbar pb-32">
+<div class="px-6 pt-2 pb-6 flex flex-col items-center">
+<!-- Profile Image -->
+<div class="relative w-full aspect-[4/5] rounded-2xl overflow-hidden mb-6 shadow-2xl ring-1 ring-white/10 group">
+<img alt="Professional portrait of Alex V. Mercer in suit" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Professional portrait of Alex V. Mercer in suit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkZYcBoS66AsVafiI-mAvZHjbxYAT1cAdN5H4B3wBgQtw9ycsz-irv6folyjvWeag5RIWDWZ1FxXNhYA9jnFEmm8hd5rsZOR4bIngvOP6xeqqOGjHKzqe5GFg_6v7JvHo2nExQLuPNGKQQ4Vwgp6y2ligouamhlfTpHJxSC8DXf7V16M_zTJXOg5sjl8M4bY12lyWI3nKRJW65JA-c6S1UtIPkKAqPbjIMacMZSC3zmjSKGs0vqCqFvmhxgSqg2Aq1JmMTtDmXuBg"/>
+<!-- Gradient Overlay for text readability if needed at bottom of image -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60"></div>
+</div>
+<!-- Identity Block -->
+<div class="text-center w-full mb-6">
+<div class="flex items-center justify-center gap-2 mb-1">
+<h1 class="text-3xl font-bold text-white tracking-tight">Alex V. Mercer</h1>
+<span class="material-symbols-outlined text-primary text-[24px] fill-1" style="font-variation-settings: 'FILL' 1, 'wght' 700;">verified</span>
+</div>
+<p class="text-gray-400 text-sm font-medium tracking-wide uppercase">Senior Product Architect at FinTech Co.</p>
+</div>
+<!-- Bio Section -->
+<div class="w-full mb-8">
+<p class="text-lg text-gray-200 leading-relaxed text-center mb-6 font-medium">
+                                "Building scalable financial systems for the next billion users."
+                            </p>
+<!-- Interest Chips -->
+<div class="flex flex-wrap justify-center gap-3">
+<span class="px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold hover:bg-primary/20 transition-colors cursor-default">
+                                    Fintech
+                                </span>
+<span class="px-4 py-2 rounded-full bg-surface-dark border border-white/10 text-gray-300 text-sm font-semibold hover:border-white/30 transition-colors cursor-default">
+                                    Blockchain
+                                </span>
+<span class="px-4 py-2 rounded-full bg-surface-dark border border-white/10 text-gray-300 text-sm font-semibold hover:border-white/30 transition-colors cursor-default">
+                                    UX Research
+                                </span>
+<span class="px-4 py-2 rounded-full bg-surface-dark border border-white/10 text-gray-300 text-sm font-semibold hover:border-white/30 transition-colors cursor-default">
+                                    Angel Investing
+                                </span>
+<span class="px-4 py-2 rounded-full bg-surface-dark border border-white/10 text-gray-300 text-sm font-semibold hover:border-white/30 transition-colors cursor-default">
+                                    Skiing
+                                </span>
+</div>
+</div>
+<!-- Mutual Connections -->
+<div class="w-full bg-surface-dark/50 rounded-2xl p-4 flex items-center justify-between border border-white/5 mb-6">
+<div class="flex items-center -space-x-3 overflow-hidden pl-2">
+<img alt="Connection Avatar 1" class="inline-block h-8 w-8 rounded-full ring-2 ring-[#0F110F] object-cover" data-alt="Woman with glasses portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_PwO1trfBx6ra0PgO1K8VhDOcuBFQkz6CGRsBQqkhHh_mRlhgH4apO0XRpgvTLwJKvqViLyA6SHteo-lJe6EbJ-euN0eF2dr5AhfgmHy4dyv5N7rbB0iMJYCHVsWzNAlutS27qyPNFMqZCF0VyrTpXOQv1dkG2ZD8b_NxM9NOesEWwyr7Nd_BTkrRB1gZrwLd6hl7pn05LyoqwvmQRgohfw6yCXVMApNVCs3KeHpdHQ8KLeN9D1GJj1v_AoDTjlwy-GRoAFVinaE"/>
+<img alt="Connection Avatar 2" class="inline-block h-8 w-8 rounded-full ring-2 ring-[#0F110F] object-cover" data-alt="Man with beard portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTeW5kA_foni7EozhD_9yRF3e8O3G9A1ZhpVruypoFjwlFLDoJ1oALq2kJOuN_AJnmA28VhghmweR3A_AijS1pDLOwEdyp4BwlGcuyhAO7EL-p6HOlfvd1OqI_i_DkRqEgQL1sJqnWTYLikI2wh8ldXSDMjUr5pdHVAHY4A8xp6Ac5K2xI1waM2nIcfAsvFTgHZz6SyQx-CCCghDYbPj6yNhS2wwaZcJIrKBEovvrFKmz6uTBJkDb_hcadsegGyLE3W6AqpDfOaGg"/>
+<img alt="Connection Avatar 3" class="inline-block h-8 w-8 rounded-full ring-2 ring-[#0F110F] object-cover" data-alt="Man smiling portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLZZK5vr0AU45XgoAkd3w1mwr0f0182bU19Djlq-vFgmLzCtiZV-yM9vEOPIKlfPAkmsWKdqhlCzPF54COjDB0lkrlgpzdXSTCmTUrKZxIlao16Hfqrt7C6zWhnjXBPXu7JH620ioYPN7N0KLObJ-JX4w4jZ8DnWrre-uXnWiAw5u3ClE4tXmMg2c0jjByC2U9YLbc1sVU_P0wNBixPqumRz2P4Bp8n_5aVx2ibsvih4-tNGhXQUatUkz-vnv2pdzWtxB04YsJNg4"/>
+<div class="h-8 w-8 rounded-full ring-2 ring-[#0F110F] bg-primary/20 text-primary flex items-center justify-center text-[10px] font-bold">
+                                    +12
+                                </div>
+</div>
+<div class="flex items-center gap-1 text-gray-400 text-sm">
+<span>Mutual Connections</span>
+<span class="material-symbols-outlined text-base">chevron_right</span>
+</div>
+</div>
+<!-- Additional Info / Stats Grid -->
+<div class="grid grid-cols-2 gap-4 w-full mb-4">
+<div class="bg-surface-dark/30 rounded-2xl p-4 border border-white/5 flex flex-col items-center">
+<span class="text-2xl font-bold text-white mb-1">500+</span>
+<span class="text-xs text-gray-500 uppercase tracking-wider">Connections</span>
+</div>
+<div class="bg-surface-dark/30 rounded-2xl p-4 border border-white/5 flex flex-col items-center">
+<span class="text-2xl font-bold text-white mb-1">4.9</span>
+<span class="text-xs text-gray-500 uppercase tracking-wider">Reputation</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Action Bar -->
+<div class="absolute bottom-0 left-0 w-full p-6 bg-[#0F110F]/85 backdrop-blur-xl border-t border-white/5 z-30 pb-10">
+<div class="flex gap-4">
+<button class="flex-1 h-14 bg-primary hover:bg-green-500 text-white rounded-full font-bold text-base shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-all transform active:scale-95">
+<span class="material-symbols-outlined">person_add</span>
+                            Request Intro
+                        </button>
+<button aria-label="Message" class="h-14 aspect-square rounded-full border border-white/20 bg-white/5 text-white flex items-center justify-center hover:bg-white/10 transition-all active:scale-95 group">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">chat_bubble</span>
+</button>
+<button aria-label="More Options" class="h-14 aspect-square rounded-full border border-white/20 bg-white/5 text-white flex items-center justify-center hover:bg-white/10 transition-all active:scale-95 group">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

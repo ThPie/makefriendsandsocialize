@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dating Intake: Values</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec135b",
+                        "primary-content": "#ffffff",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#181113", // Deep charcoal/black from example
+                        "surface-dark": "#241a1d", // Slightly lighter for cards
+                        "gold-accent": "#D4AF37",
+                        "secondary-text": "#b99da6",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ec135b;
+            border: 2px solid #fff;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 0 10px rgba(236, 19, 91, 0.5);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #543b43;
+            border-radius: 2px;
+        }
+
+        /* For Custom Radio Selection */
+        .radio-card:has(input:checked) {
+            background-color: rgba(236, 19, 91, 0.15);
+            border-color: #ec135b;
+        }
+        .radio-card:has(input:checked) .radio-indicator {
+            border-color: #ec135b;
+            background-color: #ec135b;
+        }
+        .radio-card:has(input:checked) .radio-indicator::after {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Chips */
+        .chip:has(input:checked) {
+            background-color: #ec135b;
+            color: white;
+            border-color: #ec135b;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased selection:bg-primary selection:text-white">
+<div class="relative mx-auto flex h-full min-h-screen w-full max-w-md flex-col overflow-hidden bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Top Bar -->
+<header class="sticky top-0 z-10 flex items-center justify-between bg-background-light/90 px-4 py-4 backdrop-blur-md dark:bg-background-dark/90">
+<button class="flex size-10 items-center justify-center rounded-full text-slate-900 transition hover:bg-black/5 dark:text-white dark:hover:bg-white/10">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h2 class="text-lg font-bold tracking-tight text-center flex-1">Values &amp; Lifestyle</h2>
+<button class="text-sm font-semibold tracking-wide text-secondary-text transition hover:text-primary">
+                Skip
+            </button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto px-5 pb-24 pt-2">
+<!-- Progress -->
+<div class="mb-8 flex flex-col gap-3">
+<div class="flex justify-between text-sm font-medium text-secondary-text">
+<span>Step 3 of 5</span>
+<span class="text-primary">60% Completed</span>
+</div>
+<div class="h-1.5 w-full overflow-hidden rounded-full bg-[#3a2c30]">
+<div class="h-full w-[60%] rounded-full bg-primary shadow-[0_0_10px_rgba(236,19,91,0.6)]"></div>
+</div>
+</div>
+<!-- Header Text -->
+<div class="mb-8 text-center">
+<div class="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-surface-dark border border-[#3a2c30]">
+<span class="material-symbols-outlined text-gold-accent fill-1" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<h1 class="mb-2 text-2xl font-bold leading-tight">What drives you?</h1>
+<p class="text-sm text-secondary-text">Help us find your perfect counterpart by diving deep into your personality traits.</p>
+</div>
+<!-- Section 1: Sliders -->
+<div class="mb-10 space-y-8">
+<!-- Slider 1 -->
+<div class="relative rounded-xl bg-surface-dark p-5 shadow-sm ring-1 ring-white/5">
+<div class="mb-6 flex items-center justify-between">
+<label class="text-xs font-bold uppercase tracking-widest text-gold-accent">Social Battery</label>
+<span class="material-symbols-outlined text-secondary-text text-[18px]">psychology</span>
+</div>
+<div class="relative mb-2 mt-4 px-2">
+<input class="relative z-20 w-full bg-transparent" max="100" min="0" type="range" value="35"/>
+<!-- Custom Track background line is handled by CSS, but labels are absolute -->
+</div>
+<div class="flex justify-between px-1 pt-2">
+<span class="text-sm font-medium text-white">Introvert</span>
+<span class="text-sm font-medium text-white">Extrovert</span>
+</div>
+</div>
+<!-- Slider 2 -->
+<div class="relative rounded-xl bg-surface-dark p-5 shadow-sm ring-1 ring-white/5">
+<div class="mb-6 flex items-center justify-between">
+<label class="text-xs font-bold uppercase tracking-widest text-gold-accent">Planning Style</label>
+<span class="material-symbols-outlined text-secondary-text text-[18px]">event_note</span>
+</div>
+<div class="relative mb-2 mt-4 px-2">
+<input class="relative z-20 w-full bg-transparent" max="100" min="0" type="range" value="75"/>
+</div>
+<div class="flex justify-between px-1 pt-2">
+<span class="text-sm font-medium text-white">Spontaneous</span>
+<span class="text-sm font-medium text-white">Structured</span>
+</div>
+</div>
+</div>
+<!-- Section 2: Radio Select -->
+<div class="mb-10">
+<div class="mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">diamond</span>
+<h3 class="text-base font-bold text-white">How important is ambition to you?</h3>
+</div>
+<div class="flex flex-col gap-3">
+<label class="radio-card group relative flex cursor-pointer items-center gap-4 rounded-xl border border-white/10 bg-surface-dark p-4 transition active:scale-[0.98]">
+<input class="peer sr-only" name="ambition" type="radio"/>
+<div class="radio-indicator relative size-5 rounded-full border-2 border-secondary-text transition-colors"></div>
+<span class="flex-1 text-sm font-medium text-secondary-text group-hover:text-white peer-checked:text-white">Not a priority</span>
+</label>
+<label class="radio-card group relative flex cursor-pointer items-center gap-4 rounded-xl border border-white/10 bg-surface-dark p-4 transition active:scale-[0.98]">
+<input checked="" class="peer sr-only" name="ambition" type="radio"/>
+<div class="radio-indicator relative size-5 rounded-full border-2 border-secondary-text transition-colors"></div>
+<span class="flex-1 text-sm font-medium text-secondary-text group-hover:text-white peer-checked:text-white">Somewhat important</span>
+</label>
+<label class="radio-card group relative flex cursor-pointer items-center gap-4 rounded-xl border border-white/10 bg-surface-dark p-4 transition active:scale-[0.98]">
+<input class="peer sr-only" name="ambition" type="radio"/>
+<div class="radio-indicator relative size-5 rounded-full border-2 border-secondary-text transition-colors"></div>
+<span class="flex-1 text-sm font-medium text-secondary-text group-hover:text-white peer-checked:text-white">Very important</span>
+</label>
+<label class="radio-card group relative flex cursor-pointer items-center gap-4 rounded-xl border border-white/10 bg-surface-dark p-4 transition active:scale-[0.98]">
+<input class="peer sr-only" name="ambition" type="radio"/>
+<div class="radio-indicator relative size-5 rounded-full border-2 border-secondary-text transition-colors"></div>
+<span class="flex-1 text-sm font-medium text-secondary-text group-hover:text-white peer-checked:text-white">Non-negotiable</span>
+</label>
+</div>
+</div>
+<!-- Section 3: Chips -->
+<div class="mb-6">
+<div class="mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">local_bar</span>
+<h3 class="text-base font-bold text-white">Lifestyle Habits</h3>
+</div>
+<div class="flex flex-wrap gap-2">
+<label class="chip cursor-pointer rounded-full border border-white/10 bg-surface-dark px-4 py-2 text-sm font-medium text-secondary-text transition hover:border-primary/50">
+<input class="sr-only" type="checkbox"/>
+                        Non-smoker
+                    </label>
+<label class="chip cursor-pointer rounded-full border border-white/10 bg-surface-dark px-4 py-2 text-sm font-medium text-secondary-text transition hover:border-primary/50">
+<input checked="" class="sr-only" type="checkbox"/>
+                        Social drinker
+                    </label>
+<label class="chip cursor-pointer rounded-full border border-white/10 bg-surface-dark px-4 py-2 text-sm font-medium text-secondary-text transition hover:border-primary/50">
+<input class="sr-only" type="checkbox"/>
+                        Pet friendly
+                    </label>
+<label class="chip cursor-pointer rounded-full border border-white/10 bg-surface-dark px-4 py-2 text-sm font-medium text-secondary-text transition hover:border-primary/50">
+<input class="sr-only" type="checkbox"/>
+                        Vegetarian
+                    </label>
+<label class="chip cursor-pointer rounded-full border border-white/10 bg-surface-dark px-4 py-2 text-sm font-medium text-secondary-text transition hover:border-primary/50">
+<input class="sr-only" type="checkbox"/>
+                        Early riser
+                    </label>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background-dark via-background-dark/95 to-transparent px-5 py-6">
+<button class="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-bold text-white shadow-[0_4px_14px_0_rgba(236,19,91,0.39)] transition transform active:scale-[0.98] hover:shadow-[0_6px_20px_rgba(236,19,91,0.23)] hover:bg-primary/90">
+                Continue
+                <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</body></html>

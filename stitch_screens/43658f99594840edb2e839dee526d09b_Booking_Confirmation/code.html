@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Booking Confirmation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0fb338",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102215",
+                        "gold": "#D4AF37",
+                        "gold-light": "#F2D879",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "sans": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Particle Effect CSS implementation */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(15, 179, 56, 0.2);
+            border-radius: 50%;
+            animation: move-particle 15s infinite linear;
+        }
+        .particle:nth-child(odd) {
+            background: rgba(212, 175, 55, 0.15); /* Gold hint */
+            width: 6px;
+            height: 6px;
+        }
+        .particle:nth-child(1) { top: 10%; left: 10%; animation-duration: 12s; animation-delay: 0s; }
+        .particle:nth-child(2) { top: 20%; left: 80%; animation-duration: 17s; animation-delay: 2s; }
+        .particle:nth-child(3) { top: 50%; left: 40%; animation-duration: 20s; animation-delay: 5s; }
+        .particle:nth-child(4) { top: 80%; left: 20%; animation-duration: 14s; animation-delay: 1s; }
+        .particle:nth-child(5) { top: 60%; left: 90%; animation-duration: 18s; animation-delay: 3s; }
+        .particle:nth-child(6) { top: 15%; left: 50%; animation-duration: 22s; animation-delay: 7s; }
+        .particle:nth-child(7) { top: 90%; left: 70%; animation-duration: 16s; animation-delay: 4s; }
+
+        @keyframes move-particle {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(20px);
+                opacity: 0;
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col items-center justify-between overflow-hidden relative selection:bg-primary selection:text-white">
+<!-- Particle Background -->
+<div class="particles">
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+</div>
+<!-- Main Content Container -->
+<div class="relative z-10 w-full max-w-md flex flex-col items-center flex-grow p-6 pt-12 md:pt-20">
+<!-- Success Icon Section -->
+<div class="mb-8 flex flex-col items-center justify-center animate-float">
+<div class="relative">
+<!-- Outer Laurel/Circle effect -->
+<div class="w-32 h-32 rounded-full border-2 border-primary/20 flex items-center justify-center bg-gradient-to-b from-primary/10 to-transparent relative">
+<!-- Laurel SVG Simulation or detailed icon -->
+<svg class="absolute w-40 h-40 text-gold opacity-90" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 100 100">
+<path class="opacity-40" d="M20 70 Q 10 50 30 20" stroke-linecap="round"></path>
+<path class="opacity-40" d="M80 70 Q 90 50 70 20" stroke-linecap="round"></path>
+<!-- Simplified decorative leaves -->
+<path d="M25 65 Q 15 50 28 35 M22 55 Q 15 45 25 40 M75 65 Q 85 50 72 35 M78 55 Q 85 45 75 40" stroke-linecap="round"></path>
+</svg>
+<!-- Center Gold Checkmark -->
+<div class="w-20 h-20 bg-gradient-to-br from-gold to-[#B8860B] rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.4)]">
+<span class="material-symbols-outlined text-background-dark text-[48px] font-bold">check</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Heading Text -->
+<div class="text-center mb-10 space-y-2">
+<h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">Booking Confirmed</h1>
+<p class="text-gray-500 dark:text-gray-400 text-lg">Your concierge session is set.</p>
+</div>
+<!-- Details Card -->
+<div class="w-full bg-white/50 dark:bg-[#1A2C20] backdrop-blur-md rounded-lg p-6 border border-gray-200 dark:border-primary/10 shadow-lg shadow-black/5 dark:shadow-primary/5">
+<!-- Row 1: Service Type -->
+<div class="flex items-center gap-4 py-4 border-b border-gray-200 dark:border-primary/10">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined">videocam</span>
+</div>
+<div class="flex flex-col flex-1">
+<span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Service Type</span>
+<span class="text-base font-semibold text-gray-900 dark:text-white">Video Call</span>
+</div>
+</div>
+<!-- Row 2: Date & Time -->
+<div class="flex items-center gap-4 py-4 border-b border-gray-200 dark:border-primary/10">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined">event</span>
+</div>
+<div class="flex flex-col flex-1">
+<span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Date &amp; Time</span>
+<span class="text-base font-semibold text-gray-900 dark:text-white">Dec 15 at 10:00 AM</span>
+</div>
+</div>
+<!-- Row 3: Topic -->
+<div class="flex items-center gap-4 py-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined">topic</span>
+</div>
+<div class="flex flex-col flex-1">
+<span class="text-sm text-gray-500 dark:text-gray-400 font-medium">Topic</span>
+<span class="text-base font-semibold text-gray-900 dark:text-white">Lifestyle Planning</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Actions Section -->
+<div class="relative z-10 w-full max-w-md p-6 pb-10 space-y-4">
+<!-- Secondary Action -->
+<button class="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full border border-primary/20 bg-transparent text-primary hover:bg-primary/5 transition-colors active:scale-[0.98]">
+<span class="material-symbols-outlined text-[20px]">calendar_add_on</span>
+<span class="font-semibold text-base">Add to Calendar</span>
+</button>
+<!-- Primary Action -->
+<button class="w-full py-4 px-6 rounded-full bg-primary text-white shadow-lg shadow-primary/25 hover:bg-[#0da032] transition-all active:scale-[0.98] font-bold text-lg">
+            Done
+        </button>
+</div>
+</body></html>

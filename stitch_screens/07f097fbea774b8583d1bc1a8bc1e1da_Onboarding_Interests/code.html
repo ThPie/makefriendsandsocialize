@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Onboarding - Interests</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f2b90d",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#221e10",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white overflow-hidden">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Top Navigation Area -->
+<div class="flex items-center justify-between p-4 pt-6 pb-2">
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-white">arrow_back</span>
+</button>
+<div class="flex-1"></div>
+<button class="text-sm font-semibold text-primary hover:opacity-80 transition-opacity">Skip</button>
+</div>
+<!-- Progress Bar -->
+<div class="px-6 py-2">
+<div class="h-1.5 w-full rounded-full bg-slate-200 dark:bg-white/10">
+<div class="h-1.5 rounded-full bg-primary transition-all duration-500 ease-out" style="width: 80%;"></div>
+</div>
+<p class="mt-2 text-xs font-medium text-slate-500 dark:text-white/40 text-right">Step 4 of 5</p>
+</div>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto px-6 pb-32 no-scrollbar">
+<!-- Headers -->
+<div class="pt-4 pb-8">
+<h1 class="text-3xl font-extrabold tracking-tight leading-tight mb-3 text-slate-900 dark:text-white">
+                    Your <span class="text-primary">Interests</span>
+</h1>
+<p class="text-base text-slate-600 dark:text-white/60 font-normal leading-relaxed">
+                    Curate your experience. Select at least 3 topics that define your lifestyle to personalize your feed.
+                </p>
+</div>
+<!-- Interest Chips Grid -->
+<div class="flex flex-wrap gap-3 pb-8">
+<!-- Selected State Example -->
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5 transition-all active:scale-95">
+<span class="text-sm font-semibold text-background-dark">Fine Dining</span>
+<span class="material-symbols-outlined text-[18px] text-background-dark">check</span>
+</button>
+<!-- Unselected State Example -->
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Arts</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5 transition-all active:scale-95">
+<span class="text-sm font-semibold text-background-dark">Sailing</span>
+<span class="material-symbols-outlined text-[18px] text-background-dark">check</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Tech</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Travel</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5 transition-all active:scale-95">
+<span class="text-sm font-semibold text-background-dark">Horology</span>
+<span class="material-symbols-outlined text-[18px] text-background-dark">check</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Concierge</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Private Aviation</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Opera</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Architecture</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">History</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Golf</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Polo</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Skiing</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-5 transition-all active:scale-95">
+<span class="text-sm font-semibold text-background-dark">Crypto</span>
+<span class="material-symbols-outlined text-[18px] text-background-dark">check</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Startups</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+<button class="group flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white border border-slate-200 dark:border-white/10 dark:bg-white/5 px-5 transition-all hover:bg-slate-100 dark:hover:bg-white/10 active:scale-95">
+<span class="text-sm font-medium text-slate-700 dark:text-white/80 group-hover:text-slate-900 dark:group-hover:text-white">Wine</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-white/40 group-hover:text-primary transition-colors">add</span>
+</button>
+</div>
+</div>
+<!-- Sticky Footer -->
+<div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background-light via-background-light to-transparent dark:from-background-dark dark:via-background-dark dark:to-transparent z-10 pt-16">
+<div class="flex gap-4">
+<button class="flex-1 h-14 rounded-full border border-slate-300 dark:border-white/10 bg-transparent text-slate-900 dark:text-white font-bold text-base hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+                    Back
+                </button>
+<button class="flex-[2] h-14 rounded-full bg-primary text-background-dark font-bold text-base hover:bg-primary/90 transition-colors shadow-[0_0_20px_rgba(242,185,13,0.3)]">
+                    Continue
+                </button>
+</div>
+</div>
+</div>
+</body></html>

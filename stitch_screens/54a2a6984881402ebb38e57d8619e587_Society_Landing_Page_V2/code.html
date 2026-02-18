@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Society - Luxury Network</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a5b2a",
+                        "accent-gold": "#D4AF37",
+                        "surface-dark": "#1e2b22",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#131f16",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "sans": ["Newsreader", "serif"] // Forcing serif everywhere as per design req
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for horizontal scroll */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-white font-display antialiased selection:bg-primary selection:text-white overflow-x-hidden">
+<div class="relative flex h-full min-h-screen w-full max-w-md mx-auto flex-col overflow-hidden shadow-2xl border-x border-[#1e2b22]">
+<!-- Header -->
+<div class="flex items-center justify-between px-6 py-5 bg-background-dark/95 backdrop-blur-sm sticky top-0 z-50 border-b border-[#2b362e]">
+<div class="text-accent-gold flex items-center justify-center p-2 rounded-full border border-[#2b362e] bg-[#1a231c]">
+<span class="material-symbols-outlined text-[20px]">diamond</span>
+</div>
+<h2 class="text-white text-xl font-medium tracking-widest uppercase">SOCIETY</h2>
+<div class="flex items-center justify-end">
+<span class="material-symbols-outlined text-[#a2b4a6] text-[24px]">menu</span>
+</div>
+</div>
+<!-- Main Content -->
+<div class="flex-1 flex flex-col gap-8 pb-24">
+<!-- Hero / Tagline -->
+<div class="px-6 pt-8 pb-2 text-center">
+<p class="text-accent-gold text-xs font-bold tracking-[0.2em] uppercase mb-3">Private Members Only</p>
+<h1 class="text-white text-4xl font-light italic leading-tight">
+                    Belong to the <br/><span class="font-normal not-italic">Extraordinary</span>
+</h1>
+</div>
+<!-- "Why Choose Us" Grid -->
+<div class="px-6">
+<div class="flex justify-between items-end mb-4">
+<h3 class="text-[#a2b4a6] text-sm font-medium tracking-wider uppercase">Our Ethos</h3>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<!-- Card 1 -->
+<div class="aspect-square flex flex-col items-center justify-center gap-3 rounded-lg border border-[#2b362e] bg-[#1a231c] p-4 text-center hover:bg-[#232e25] transition-colors group">
+<div class="text-accent-gold p-3 rounded-full bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-[28px] font-light">lock</span>
+</div>
+<h4 class="text-white text-base font-normal leading-tight">Uncompromising<br/>Privacy</h4>
+</div>
+<!-- Card 2 -->
+<div class="aspect-square flex flex-col items-center justify-center gap-3 rounded-lg border border-[#2b362e] bg-[#1a231c] p-4 text-center hover:bg-[#232e25] transition-colors group">
+<div class="text-accent-gold p-3 rounded-full bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-[28px] font-light">vpn_key</span>
+</div>
+<h4 class="text-white text-base font-normal leading-tight">Global<br/>Access</h4>
+</div>
+<!-- Card 3 -->
+<div class="aspect-square flex flex-col items-center justify-center gap-3 rounded-lg border border-[#2b362e] bg-[#1a231c] p-4 text-center hover:bg-[#232e25] transition-colors group">
+<div class="text-accent-gold p-3 rounded-full bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-[28px] font-light">diversity_2</span>
+</div>
+<h4 class="text-white text-base font-normal leading-tight">Curated<br/>Connections</h4>
+</div>
+<!-- Card 4 -->
+<div class="aspect-square flex flex-col items-center justify-center gap-3 rounded-lg border border-[#2b362e] bg-[#1a231c] p-4 text-center hover:bg-[#232e25] transition-colors group">
+<div class="text-accent-gold p-3 rounded-full bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-[28px] font-light">star</span>
+</div>
+<h4 class="text-white text-base font-normal leading-tight">Exclusive<br/>Benefits</h4>
+</div>
+</div>
+</div>
+<!-- Curated Collections -->
+<div class="flex flex-col gap-4">
+<div class="px-6 flex justify-between items-end">
+<h3 class="text-[#a2b4a6] text-sm font-medium tracking-wider uppercase">Curated Collections</h3>
+<a class="text-accent-gold text-xs italic border-b border-accent-gold/50 pb-0.5" href="#">View all</a>
+</div>
+<div class="flex overflow-x-auto hide-scrollbar gap-4 px-6 pb-4 snap-x snap-mandatory">
+<!-- Collection Item 1 -->
+<div class="min-w-[85%] snap-center relative rounded-xl overflow-hidden aspect-[4/5] group">
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10"></div>
+<img alt="Luxury dark hotel lounge interior with leather seating" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxhqrC-7xwSaqm8cXsMMRYnBg59YUDgM2kcWVVY-34kGFRH71ymCXhDk5UZtq1Acl_iFeNFx2nryREeVGapXcgBK7L8Ojcoj6Kd5F3qq1H6WsNbDpWpjPedWsUrBLoDjiQOAiM4Q5buenjXyqjkBqXe79RwqxEgtOk5c4CrCA89OevkSHy95VvSrYaOoo0E7Rtt46L6WTs6tJu9x8WbUY1PifvIQ82-kbuDxpl-_yGOEe4SN4YbDxdxUugQzHG21Od_tnME9Od0gM"/>
+<div class="absolute bottom-0 left-0 z-20 p-6 w-full">
+<span class="inline-block px-2 py-1 mb-2 text-[10px] tracking-widest uppercase bg-white/10 backdrop-blur-md border border-white/20 text-white rounded">London</span>
+<h4 class="text-accent-gold text-2xl font-normal italic">The Mayfair Chapter</h4>
+<p class="text-white/80 text-sm mt-1 font-light line-clamp-2">An intimate gathering space for the city's literary elite.</p>
+</div>
+</div>
+<!-- Collection Item 2 -->
+<div class="min-w-[85%] snap-center relative rounded-xl overflow-hidden aspect-[4/5] group">
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10"></div>
+<img alt="Evening view from a luxury yacht deck overlooking the ocean" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYWtcpxvys5FzmRn8Lezf0dpt5YBtPvlGhka0TKMy4pbivGADEamp67v_X85TLkS0gL__N6KrUe4zbGU-SG7WuZhjvknr9N_APB7NEWcpP9q7tf8q7yggVqxopa-L3mvILA7u7f8K_b_4Ie5wQnC-7ZagvgTd36CeKClibU7BLBCIscql7jcpUpRABWd6559nYmUk6tDnuJwNQ96VqxNs3o0TnAC4tRYk1A_AFTMsfdAqoI6-7hht2z_2JrjedCCsXje8cKi6KipM"/>
+<div class="absolute bottom-0 left-0 z-20 p-6 w-full">
+<span class="inline-block px-2 py-1 mb-2 text-[10px] tracking-widest uppercase bg-white/10 backdrop-blur-md border border-white/20 text-white rounded">Mediterranean</span>
+<h4 class="text-accent-gold text-2xl font-normal italic">Summer Voyage</h4>
+<p class="text-white/80 text-sm mt-1 font-light line-clamp-2">Exclusive access to the season's premier maritime events.</p>
+</div>
+</div>
+<!-- Collection Item 3 -->
+<div class="min-w-[85%] snap-center relative rounded-xl overflow-hidden aspect-[4/5] group">
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10"></div>
+<img alt="Elegant cocktail bar with crystal glasses and mood lighting" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC1_pnBlO8pce6Ig54rJK2C-eDzOsl31jeVbM4zb19htJ7b9Zn8lkPRa4C7h8-NEibsltomzzPhXQMwYOIpZ8dNGTv-WnOK3FRPogmqsOhGgm_Al9FhiKL2SsryGd3RvnhdwkhnlDLlSobsjU5RMP124idzCCYLbS_u2e_skhBGMUadoK3fLTjFVAsa3tuAxj6gmgT69gWfRknZC-TMfebqzKSvYQkErT42H7hM33Ej6tcvuZqqk7tLCiJVd2SSCocY60SO8UgpTA"/>
+<div class="absolute bottom-0 left-0 z-20 p-6 w-full">
+<span class="inline-block px-2 py-1 mb-2 text-[10px] tracking-widest uppercase bg-white/10 backdrop-blur-md border border-white/20 text-white rounded">New York</span>
+<h4 class="text-accent-gold text-2xl font-normal italic">Manhattan Nights</h4>
+<p class="text-white/80 text-sm mt-1 font-light line-clamp-2">Where privacy meets the pulse of the city.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- CTA Section -->
+<div class="px-6 mt-4">
+<div class="rounded-xl bg-[#1a231c] border border-[#2b362e] p-6 text-center relative overflow-hidden">
+<!-- Decorative background element -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary/20 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-10 -left-10 w-32 h-32 bg-accent-gold/10 rounded-full blur-3xl"></div>
+<h3 class="relative z-10 text-white text-lg font-normal mb-2">Begin Your Legacy</h3>
+<p class="relative z-10 text-[#a2b4a6] text-sm mb-6">Applications are reviewed weekly. The waitlist is currently open.</p>
+<button class="relative z-10 w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-black/50 flex items-center justify-center gap-2">
+<span>Apply for Membership</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation -->
+<div class="fixed bottom-0 w-full max-w-md z-40 bg-background-dark/95 backdrop-blur-lg border-t border-[#2b362e] pb-safe pt-2">
+<div class="flex justify-around items-center h-16 px-2">
+<a class="flex flex-col items-center justify-center gap-1 w-full text-white group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform filled" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;">home</span>
+<span class="text-[10px] font-medium tracking-wide">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 w-full text-[#6d7e71] hover:text-[#a2b4a6] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">search</span>
+<span class="text-[10px] font-medium tracking-wide">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 w-full text-[#6d7e71] hover:text-[#a2b4a6] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">confirmation_number</span>
+<span class="text-[10px] font-medium tracking-wide">Events</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 w-full text-[#6d7e71] hover:text-[#a2b4a6] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">person</span>
+<span class="text-[10px] font-medium tracking-wide">Profile</span>
+</a>
+</div>
+<!-- iOS Home Indicator Spacing -->
+<div class="h-4 w-full"></div>
+</div>
+</div>
+</body></html>

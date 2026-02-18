@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Billing Loading State</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#11d421",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102212",
+                        "surface-dark": "#162b18", // Slightly lighter than bg-dark for cards
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem", 
+                        "lg": "0.5rem", 
+                        "xl": "0.75rem", 
+                        "full": "9999px"
+                    },
+                    animation: {
+                        shimmer: "shimmer 2s linear infinite",
+                    },
+                    keyframes: {
+                        shimmer: {
+                            from: {
+                                "background-position": "0 0"
+                            },
+                            to: {
+                                "background-position": "-200% 0"
+                            }
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Shimmer Effect Utility */
+        .shimmer {
+            background: linear-gradient(to right, #1c2e1f 8%, #2a402d 18%, #1c2e1f 33%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s linear infinite forwards;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-x-hidden min-h-screen flex flex-col">
+<!-- Header Skeleton -->
+<div class="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md pt-12 pb-4 px-4 border-b border-white/5">
+<div class="flex items-center justify-between">
+<div class="w-8 h-8 rounded-full shimmer"></div> <!-- Back Button placeholder -->
+<div class="h-6 w-32 rounded shimmer mx-auto"></div> <!-- Title placeholder -->
+<div class="w-8 h-8 rounded-full shimmer"></div> <!-- Menu Button placeholder -->
+</div>
+</div>
+<!-- Main Content -->
+<main class="flex-1 px-4 py-6 space-y-8">
+<!-- Subscription Card Skeleton -->
+<section class="space-y-4">
+<div class="h-5 w-40 rounded shimmer mb-2"></div> <!-- Section Label "Current Plan" -->
+<div class="rounded-xl overflow-hidden bg-surface-dark shadow-lg border border-white/5 relative p-6">
+<!-- Card Background Pattern Placeholder -->
+<div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full bg-primary/5"></div>
+<div class="relative z-10 space-y-6">
+<div class="flex justify-between items-start">
+<div class="space-y-3">
+<div class="h-3 w-20 rounded shimmer bg-opacity-50"></div> <!-- "Plan" label -->
+<div class="h-8 w-48 rounded shimmer"></div> <!-- Plan Name (e.g. "Pro Annual") -->
+</div>
+<div class="h-10 w-10 rounded-full shimmer"></div> <!-- Icon/Logo placeholder -->
+</div>
+<div class="space-y-2">
+<div class="flex items-baseline space-x-2">
+<div class="h-10 w-32 rounded shimmer"></div> <!-- Price -->
+<div class="h-4 w-12 rounded shimmer"></div> <!-- "/mo" -->
+</div>
+<div class="h-4 w-40 rounded shimmer bg-opacity-60"></div> <!-- Renewal Date -->
+</div>
+<div class="pt-4 border-t border-white/5 flex gap-3">
+<div class="h-10 flex-1 rounded-lg shimmer"></div> <!-- "Manage Plan" Button -->
+<div class="h-10 w-10 rounded-lg shimmer"></div> <!-- "More" Button -->
+</div>
+</div>
+</div>
+</section>
+<!-- Invoices List Skeleton -->
+<section class="space-y-4">
+<div class="flex items-center justify-between px-1">
+<div class="h-6 w-24 rounded shimmer"></div> <!-- "Invoices" Header -->
+<div class="h-4 w-16 rounded shimmer"></div> <!-- "See All" Link -->
+</div>
+<!-- List Container -->
+<div class="flex flex-col space-y-3">
+<!-- Skeleton Item 1 -->
+<div class="flex items-center justify-between p-4 rounded-lg bg-surface-dark border border-white/5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full shimmer shrink-0"></div> <!-- Icon -->
+<div class="space-y-2">
+<div class="h-4 w-32 rounded shimmer"></div> <!-- Invoice ID / Name -->
+<div class="h-3 w-20 rounded shimmer bg-opacity-60"></div> <!-- Date -->
+</div>
+</div>
+<div class="flex flex-col items-end space-y-2">
+<div class="h-4 w-16 rounded shimmer"></div> <!-- Amount -->
+<div class="h-6 w-20 rounded-full shimmer"></div> <!-- Status Badge -->
+</div>
+</div>
+<!-- Skeleton Item 2 -->
+<div class="flex items-center justify-between p-4 rounded-lg bg-surface-dark border border-white/5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full shimmer shrink-0"></div>
+<div class="space-y-2">
+<div class="h-4 w-24 rounded shimmer"></div>
+<div class="h-3 w-24 rounded shimmer bg-opacity-60"></div>
+</div>
+</div>
+<div class="flex flex-col items-end space-y-2">
+<div class="h-4 w-14 rounded shimmer"></div>
+<div class="h-6 w-20 rounded-full shimmer"></div>
+</div>
+</div>
+<!-- Skeleton Item 3 -->
+<div class="flex items-center justify-between p-4 rounded-lg bg-surface-dark border border-white/5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full shimmer shrink-0"></div>
+<div class="space-y-2">
+<div class="h-4 w-28 rounded shimmer"></div>
+<div class="h-3 w-16 rounded shimmer bg-opacity-60"></div>
+</div>
+</div>
+<div class="flex flex-col items-end space-y-2">
+<div class="h-4 w-16 rounded shimmer"></div>
+<div class="h-6 w-20 rounded-full shimmer"></div>
+</div>
+</div>
+<!-- Skeleton Item 4 -->
+<div class="flex items-center justify-between p-4 rounded-lg bg-surface-dark border border-white/5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full shimmer shrink-0"></div>
+<div class="space-y-2">
+<div class="h-4 w-32 rounded shimmer"></div>
+<div class="h-3 w-20 rounded shimmer bg-opacity-60"></div>
+</div>
+</div>
+<div class="flex flex-col items-end space-y-2">
+<div class="h-4 w-16 rounded shimmer"></div>
+<div class="h-6 w-20 rounded-full shimmer"></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<div class="sticky bottom-0 z-20 border-t border-[#28392a] bg-[#1c271c] pb-safe pt-2">
+<div class="flex gap-2 px-4 pb-3">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99f] group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-primary transition-colors">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99f] group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-primary transition-colors">search</span>
+<span class="text-[10px] font-medium">Search</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-2xl font-variation-settings-fill">credit_card</span>
+<span class="text-[10px] font-medium">Billing</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#9db99f] group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:text-primary transition-colors">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</div>
+<!-- iOS Home Indicator Safe Area spacing (visual only for web) -->
+<div class="h-4 w-full bg-[#1c271c]"></div>
+</div>
+</body></html>

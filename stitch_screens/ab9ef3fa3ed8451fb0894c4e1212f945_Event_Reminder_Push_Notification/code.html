@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Event Reminder Push Notification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f2cc0d",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#221f10",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "1.8rem", "3xl": "2.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .ios-blur-bg {
+            background-color: rgba(30, 30, 30, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .wallpaper-blur {
+            filter: blur(8px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-black font-display text-white overflow-hidden h-screen w-full relative select-none">
+<!-- Background Wallpaper -->
+<div class="absolute inset-0 z-0 h-full w-full bg-cover bg-center wallpaper-blur scale-105" data-alt="Abstract dark moody gold and black fluid texture wallpaper" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAgkhGN9GIeUofTCw5S41UJpqe5kW2mQmfUpiA3bTIQukAS89-GVL79eVIdxw-blcBltHo1DtilzPiAOHmdjuIfGyPvBZJWiits-CGOaWCPOks2shQAV8yCfxRwOY8Im4WgtIz8pV4pqHmhKqW2suYq-8oRPo7PbQKLYKqYUOsDLxixqhtHmlLzCQMkxUQRcr42pQtFR-Fh0Pb6ebcAkiMEKfvryo-7y2w_rZf8RRc_zikgXCvKdubnUKzfjfv5iBaDvhrIZSs6hJg');">
+<div class="absolute inset-0 bg-black/40"></div>
+</div>
+<!-- Status Bar Area (Simulated) -->
+<div class="relative z-10 flex w-full justify-between px-8 pt-5 text-sm font-semibold tracking-wide text-white">
+<div class="flex items-center gap-1">
+<span>9:41</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[18px]">wifi</span>
+<span class="material-symbols-outlined text-[18px] rotate-90">battery_full</span>
+</div>
+</div>
+<!-- Lock Screen Date/Time (Behind Notification feel) -->
+<div class="relative z-0 flex flex-col items-center pt-8 text-center text-white/80">
+<span class="material-symbols-outlined text-3xl mb-2">lock</span>
+<h1 class="text-7xl font-light tracking-tighter">9:41</h1>
+<p class="text-xl font-medium mt-1">Tuesday, November 14</p>
+</div>
+<!-- Main Notification Container -->
+<div class="relative z-20 mx-4 mt-8 flex flex-col items-center">
+<!-- Notification Card -->
+<div class="ios-blur-bg w-full max-w-sm overflow-hidden rounded-[1.3rem] shadow-2xl ring-1 ring-white/10">
+<!-- Header -->
+<div class="flex items-center justify-between px-4 py-3 pb-2">
+<div class="flex items-center gap-2">
+<!-- App Icon -->
+<div class="flex h-6 w-6 items-center justify-center rounded-md bg-neutral-900 border border-white/10">
+<span class="material-symbols-outlined text-primary text-[16px]">diamond</span>
+</div>
+<!-- App Name -->
+<span class="text-xs font-semibold uppercase tracking-wider text-white/90">Private Society</span>
+</div>
+<!-- Time & Priority -->
+<div class="flex items-center gap-1.5">
+<span class="text-xs text-white/60">now</span>
+<!-- Priority Dot -->
+<div class="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_4px_#f2cc0d]"></div>
+</div>
+</div>
+<!-- Content Body -->
+<div class="px-4 pb-4">
+<h3 class="mb-1 text-[17px] font-bold leading-tight text-white">Upcoming: The Winter Gala</h3>
+<p class="mb-3 text-[15px] leading-snug text-white/90">
+                    Your carriage awaits. The gala begins in 2 hours at The Crystal Room. View your invitation for details.
+                </p>
+<!-- Rich Media Preview -->
+<div class="relative aspect-video w-full overflow-hidden rounded-xl bg-neutral-800">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Dimly lit luxurious crystal chandelier ballroom venue" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBPWkQcLFFgAJDEodiLfIZ-Ang0Gk4fbvSWx2c4YjK0vu8HwfvcwdmRyc_kUljJP5F4p1p9twkjO-ih6V7YVP-O52ul1ctaN1dIHZA84gorPs-hpjgQZogJsbaaaekSwnda-xG4-9XYbANPg_vmAgqc9OXpBpdHqPXYmJT4Mq6dD-EAirT_Lz5Y2SrY4018OndAfgvD-IOQznSO0hRvq5kp94sSUwQXJTN8qiapjdkT4sXgGKGvhHNHBbILtNulAvhz90jrqFuFUNw');">
+</div>
+<!-- Overlay gradient for text readability if needed, though pure image is requested -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+</div>
+</div>
+<!-- Action Buttons (Simulating Long Press/Rich Notification Actions) -->
+<!-- Note: Usually hidden until long press, but visual design often includes them or implies interactivity. 
+                 Given the prompt description doesn't explicitly ask for action buttons, I'll stick to the "View Invitation" logic implied or keep it clean as a notification stack. 
+                 However, to make it look "premium" and detailed, a subtle footer hint or just the clean card is best. 
+                 Let's stick to the clean card described. -->
+</div>
+<!-- Second stacked notification (Visual cue of a stack) -->
+<div class="ios-blur-bg mt-2 h-14 w-[96%] rounded-2xl opacity-60 scale-95 shadow-lg ring-1 ring-white/5"></div>
+<div class="ios-blur-bg mt-1 h-12 w-[92%] rounded-2xl opacity-30 scale-90 shadow-lg ring-1 ring-white/5"></div>
+</div>
+<!-- Bottom Lock Screen Actions -->
+<div class="absolute bottom-12 z-10 flex w-full justify-between px-12">
+<!-- Flashlight -->
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-black/40 backdrop-blur-md transition hover:bg-black/60 active:scale-95">
+<span class="material-symbols-outlined text-white text-2xl">flashlight_on</span>
+</div>
+<!-- Camera -->
+<div class="flex h-12 w-12 items-center justify-center rounded-full bg-black/40 backdrop-blur-md transition hover:bg-black/60 active:scale-95">
+<span class="material-symbols-outlined text-white text-2xl">photo_camera</span>
+</div>
+</div>
+<!-- Home Indicator -->
+<div class="absolute bottom-2 left-1/2 z-20 h-1.5 w-32 -translate-x-1/2 rounded-full bg-white"></div>
+</body></html>

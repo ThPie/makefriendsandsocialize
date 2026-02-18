@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Legal Page Loading State</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0fbd0f",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Shimmer Animation */
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+        
+        .animate-shimmer {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(to right, #1a2e1a 4%, #243e24 25%, #1a2e1a 36%);
+            background-size: 1000px 100%;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex justify-center items-start">
+<!-- Mobile Container -->
+<div class="relative w-full max-w-md bg-background-light dark:bg-background-dark min-h-screen overflow-hidden shadow-2xl mx-auto flex flex-col">
+<!-- Top App Bar Skeleton -->
+<div class="flex items-center p-4 pb-2 justify-between sticky top-0 z-10 bg-background-light dark:bg-background-dark border-b border-background-dark/10 dark:border-primary/10">
+<div class="flex size-12 shrink-0 items-center justify-center">
+<!-- Back Icon Placeholder -->
+<div class="h-6 w-6 rounded animate-shimmer"></div>
+</div>
+<div class="flex-1 px-2">
+<!-- Title Placeholder -->
+<div class="h-6 w-32 rounded animate-shimmer"></div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="flex flex-col p-4 gap-6 w-full animate-pulse-slow">
+<!-- FAQ Section -->
+<div class="flex flex-col gap-4">
+<!-- FAQ Header Placeholder -->
+<div class="h-5 w-48 rounded animate-shimmer mb-1"></div>
+<!-- FAQ Item 1 -->
+<div class="flex flex-col rounded-lg border border-primary/20 bg-primary/5 dark:bg-[#152015] p-[15px] h-[58px] justify-center relative overflow-hidden">
+<div class="absolute inset-0 animate-shimmer opacity-50"></div>
+<div class="flex items-center justify-between gap-6">
+<div class="h-4 w-3/4 rounded bg-primary/20 dark:bg-primary/10"></div>
+<div class="h-5 w-5 rounded bg-primary/20 dark:bg-primary/10 shrink-0"></div>
+</div>
+</div>
+<!-- FAQ Item 2 -->
+<div class="flex flex-col rounded-lg border border-primary/20 bg-primary/5 dark:bg-[#152015] p-[15px] h-[58px] justify-center relative overflow-hidden">
+<div class="absolute inset-0 animate-shimmer opacity-50"></div>
+<div class="flex items-center justify-between gap-6">
+<div class="h-4 w-2/3 rounded bg-primary/20 dark:bg-primary/10"></div>
+<div class="h-5 w-5 rounded bg-primary/20 dark:bg-primary/10 shrink-0"></div>
+</div>
+</div>
+<!-- FAQ Item 3 -->
+<div class="flex flex-col rounded-lg border border-primary/20 bg-primary/5 dark:bg-[#152015] p-[15px] h-[58px] justify-center relative overflow-hidden">
+<div class="absolute inset-0 animate-shimmer opacity-50"></div>
+<div class="flex items-center justify-between gap-6">
+<div class="h-4 w-1/2 rounded bg-primary/20 dark:bg-primary/10"></div>
+<div class="h-5 w-5 rounded bg-primary/20 dark:bg-primary/10 shrink-0"></div>
+</div>
+</div>
+<!-- FAQ Item 4 -->
+<div class="flex flex-col rounded-lg border border-primary/20 bg-primary/5 dark:bg-[#152015] p-[15px] h-[58px] justify-center relative overflow-hidden">
+<div class="absolute inset-0 animate-shimmer opacity-50"></div>
+<div class="flex items-center justify-between gap-6">
+<div class="h-4 w-3/5 rounded bg-primary/20 dark:bg-primary/10"></div>
+<div class="h-5 w-5 rounded bg-primary/20 dark:bg-primary/10 shrink-0"></div>
+</div>
+</div>
+</div>
+<!-- Spacer -->
+<div class="h-2"></div>
+<!-- Code of Conduct Section -->
+<div class="flex flex-col gap-4">
+<!-- Section Header Placeholder -->
+<div class="h-5 w-40 rounded animate-shimmer"></div>
+<!-- Large Title Placeholder -->
+<div class="h-8 w-64 rounded-lg animate-shimmer mb-2 mt-1"></div>
+<!-- Paragraph Block 1 -->
+<div class="flex flex-col gap-2.5">
+<div class="h-4 w-full rounded animate-shimmer opacity-80"></div>
+<div class="h-4 w-[92%] rounded animate-shimmer opacity-80"></div>
+<div class="h-4 w-[96%] rounded animate-shimmer opacity-80"></div>
+<div class="h-4 w-[60%] rounded animate-shimmer opacity-80"></div>
+</div>
+<!-- Paragraph Block 2 -->
+<div class="flex flex-col gap-2.5 mt-2">
+<div class="h-4 w-[98%] rounded animate-shimmer opacity-80"></div>
+<div class="h-4 w-[85%] rounded animate-shimmer opacity-80"></div>
+<div class="h-4 w-[90%] rounded animate-shimmer opacity-80"></div>
+</div>
+<!-- Paragraph Block 3 -->
+<div class="flex flex-col gap-2.5 mt-2">
+<div class="h-4 w-full rounded animate-shimmer opacity-80"></div>
+<div class="h-4 w-[40%] rounded animate-shimmer opacity-80"></div>
+</div>
+</div>
+<div class="h-20"></div> <!-- Bottom safe area spacing -->
+</div>
+<!-- Bottom Navigation Bar Placeholder (Optional context for typical mobile screen) -->
+<div class="mt-auto h-20 w-full border-t border-primary/10 bg-background-light dark:bg-background-dark p-4 flex justify-around items-center sticky bottom-0">
+<div class="h-8 w-8 rounded-full animate-shimmer"></div>
+<div class="h-8 w-8 rounded-full animate-shimmer"></div>
+<div class="h-8 w-8 rounded-full animate-shimmer"></div>
+<div class="h-8 w-8 rounded-full animate-shimmer"></div>
+</div>
+</div>
+</body></html>

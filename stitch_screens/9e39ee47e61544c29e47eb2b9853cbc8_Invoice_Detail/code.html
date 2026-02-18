@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invoice Detail</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#eecd2b",
+                        "background-light": "#f8f8f6",
+                        "background-dark": "#221f10",
+                        "neutral-dark": "#2a2718", // Derived from primary hue
+                        "neutral-text": "#d4d1c1", // Derived from primary hue
+                    },
+                    fontFamily: {
+                        "display": ["Noto Serif", "serif"],
+                        "sans": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&amp;family=Noto+Serif:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased text-slate-900 dark:text-white min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-primary/10 px-4 py-2">
+<div class="flex items-center justify-between h-12">
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold tracking-tight">Invoice Detail</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-primary">
+<span class="material-symbols-outlined text-2xl">share</span>
+</button>
+</div>
+</div>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto p-6 space-y-8 pb-32">
+<!-- Branding & Summary -->
+<div class="flex flex-col items-center gap-4">
+<div class="w-20 h-20 rounded-full bg-neutral-dark flex items-center justify-center ring-2 ring-primary/20 shadow-lg shadow-primary/5">
+<!-- Placeholder Logo -->
+<span class="material-symbols-outlined text-primary text-4xl">account_balance</span>
+</div>
+<div class="text-center space-y-1">
+<h2 class="text-2xl font-bold">The Royal Society</h2>
+<div class="flex items-center justify-center gap-2">
+<span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border border-primary/20">Paid</span>
+<span class="text-neutral-text text-sm font-sans">Oct 24, 2023</span>
+</div>
+</div>
+</div>
+<!-- Invoice Meta Card -->
+<div class="bg-neutral-dark rounded-xl p-5 border border-primary/10 shadow-sm">
+<div class="grid grid-cols-2 gap-y-4 text-sm">
+<div>
+<p class="text-neutral-text font-sans text-xs uppercase tracking-wide mb-1">Invoice No.</p>
+<p class="font-medium">INV-2023-001</p>
+</div>
+<div class="text-right">
+<p class="text-neutral-text font-sans text-xs uppercase tracking-wide mb-1">Billed To</p>
+<p class="font-medium">John Doe</p>
+</div>
+<div class="col-span-2 pt-2 border-t border-white/5 flex justify-between items-center mt-2">
+<p class="text-neutral-text font-sans text-xs uppercase tracking-wide">Method</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-neutral-text">credit_card</span>
+<span class="font-medium text-sm">Visa •••• 4242</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Breakdown Table -->
+<div class="space-y-4">
+<h3 class="text-lg font-bold px-1">Breakdown</h3>
+<div class="bg-neutral-dark rounded-xl overflow-hidden border border-primary/10">
+<!-- Row 1 -->
+<div class="flex justify-between items-center p-4 border-b border-white/5">
+<div class="flex flex-col">
+<span class="font-medium">Annual Membership Fee</span>
+<span class="text-xs text-neutral-text font-sans">Period: 2023-2024</span>
+</div>
+<span class="font-sans font-medium">$1,200.00</span>
+</div>
+<!-- Row 2 -->
+<div class="flex justify-between items-center p-4 border-b border-white/5">
+<div class="flex flex-col">
+<span class="font-medium">Processing Tax</span>
+<span class="text-xs text-neutral-text font-sans">VAT (8%)</span>
+</div>
+<span class="font-sans font-medium">$96.00</span>
+</div>
+<!-- Total Row -->
+<div class="flex justify-between items-center p-4 bg-primary/5">
+<span class="font-bold text-lg text-primary">Total</span>
+<span class="font-bold text-xl text-primary font-sans">$1,296.00</span>
+</div>
+</div>
+</div>
+<!-- Note -->
+<div class="text-center px-4">
+<p class="text-xs text-neutral-text font-sans leading-relaxed">
+                Thank you for your continued support of The Royal Society. If you have any questions regarding this invoice, please contact support.
+            </p>
+</div>
+</main>
+<!-- Bottom Actions -->
+<div class="fixed bottom-0 left-0 right-0 bg-background-light dark:bg-background-dark border-t border-primary/10 p-6 backdrop-blur-xl z-20">
+<div class="flex flex-col gap-3 max-w-md mx-auto">
+<button class="w-full bg-primary hover:bg-primary/90 text-background-dark font-sans font-bold h-14 rounded-lg flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined">download</span>
+                Download PDF
+            </button>
+<button class="w-full bg-transparent border border-primary/30 text-primary hover:bg-primary/5 font-sans font-bold h-14 rounded-lg flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
+<span class="material-symbols-outlined">mail</span>
+                Email Receipt
+            </button>
+</div>
+</div>
+</body></html>

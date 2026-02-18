@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Member Dashboard V2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a5b2a",
+                        "primary-dark": "#123f1d",
+                        "accent": "#d4af37", // Gold
+                        "accent-light": "#f3e5ab",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#131f16",
+                        "card-dark": "#1e2b21",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "sans": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "2rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for horizontal scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .gold-gradient-text {
+            background: linear-gradient(to bottom right, #f3e5ab, #d4af37, #b8860b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+        }
+
+        .glass-panel {
+            background: rgba(30, 43, 33, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-sans antialiased overflow-x-hidden">
+<div class="relative flex min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Header -->
+<header class="flex items-center justify-between px-6 pt-12 pb-4 z-10">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="size-12 rounded-full overflow-hidden border-2 border-primary/30 p-0.5">
+<img alt="Member Avatar" class="h-full w-full rounded-full object-cover" data-alt="Portrait of a distinguished man in a suit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBH-BPcqZeMiztufwa3MutT0lQR-i9ZGpiXw5KYONp8RtzIhRNy0UyY9IEzGpn2tyYCvA7w6xkLJgjRNMF5JX78VEREblWUmNHuikVMZUUZXOEqoUhinaNLnbF7fI5WHdyriqP9DL85_fd_sb-aFl7BxVsYD1w-W17fXY2rERimY3sdtCvevSJ4ijcT8qtH_tmp5c8AVbsZWYdMskYrHt3cWpa6fWOcVG3xOiWR81kmPGa5Sf9JrtYhsAqsBdj7LQNzw09_yazbsLQ"/>
+</div>
+<div class="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full border-2 border-background-dark"></div>
+</div>
+<div>
+<p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Welcome back</p>
+<h1 class="font-display text-xl font-medium text-white">Jonathan Sterling</h1>
+</div>
+</div>
+<button class="relative p-2 rounded-full hover:bg-white/5 transition-colors text-slate-300">
+<span class="material-symbols-outlined !text-[28px]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-accent rounded-full border border-background-dark"></span>
+</button>
+</header>
+<!-- Main Content Scroll Area -->
+<main class="flex-1 overflow-y-auto pb-24 no-scrollbar">
+<!-- Hero / Profile Completion -->
+<section class="px-6 pt-2 pb-8">
+<div class="relative overflow-hidden rounded-2xl bg-card-dark shadow-lg border border-white/5">
+<!-- Background Pattern -->
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#d4af37 1px, transparent 1px); background-size: 20px 20px;"></div>
+<div class="relative z-10 p-6 flex flex-col items-center text-center">
+<h2 class="font-display text-2xl font-semibold text-white mb-6">Silver Member</h2>
+<!-- Circular Progress -->
+<div class="relative size-48 mb-6">
+<svg class="size-full -rotate-90" viewbox="0 0 100 100">
+<!-- Background circle -->
+<circle class="text-white/10" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<!-- Progress circle (75%) -->
+<circle class="text-accent" cx="50" cy="50" fill="transparent" r="40" stroke="url(#gradient)" stroke-dasharray="251.2" stroke-dashoffset="62.8" stroke-linecap="round" stroke-width="8"></circle>
+<defs>
+<lineargradient id="gradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#f3e5ab"></stop>
+<stop offset="100%" stop-color="#b8860b"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display text-4xl font-bold text-white">75%</span>
+<span class="text-xs text-slate-400 mt-1 uppercase tracking-widest">Complete</span>
+</div>
+</div>
+<p class="text-sm text-slate-300 mb-6 max-w-[240px] leading-relaxed">
+                            Finish your biography to unlock <span class="text-accent font-medium">Gold Status</span> privileges.
+                        </p>
+<button class="w-full py-3 px-6 rounded-xl bg-primary hover:bg-primary-dark text-white font-medium transition-colors shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group">
+<span>Complete Profile</span>
+<span class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Badges / Distinctions -->
+<section class="mb-8">
+<div class="px-6 flex items-center justify-between mb-4">
+<h3 class="font-display text-xl font-semibold text-white">Your Distinctions</h3>
+<a class="text-xs text-accent hover:text-accent-light transition-colors uppercase tracking-wider font-medium" href="#">View All</a>
+</div>
+<div class="flex overflow-x-auto px-6 gap-4 pb-4 no-scrollbar snap-x snap-mandatory">
+<!-- Badge 1 -->
+<div class="snap-center shrink-0 w-32 p-4 rounded-xl glass-panel border border-white/5 flex flex-col items-center justify-center gap-3 group">
+<div class="size-12 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-600 flex items-center justify-center shadow-lg shadow-yellow-900/20 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-yellow-950 !text-2xl" data-icon="crown">crown</span>
+</div>
+<div class="text-center">
+<p class="text-sm font-bold text-white mb-0.5">Founding</p>
+<p class="text-[10px] text-slate-400 uppercase tracking-wide">Member</p>
+</div>
+</div>
+<!-- Badge 2 -->
+<div class="snap-center shrink-0 w-32 p-4 rounded-xl glass-panel border border-white/5 flex flex-col items-center justify-center gap-3 group">
+<div class="size-12 rounded-full bg-gradient-to-br from-slate-300 to-slate-500 flex items-center justify-center shadow-lg shadow-slate-900/20 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-slate-900 !text-2xl" data-icon="restaurant">restaurant</span>
+</div>
+<div class="text-center">
+<p class="text-sm font-bold text-white mb-0.5">Epicurean</p>
+<p class="text-[10px] text-slate-400 uppercase tracking-wide">Dining</p>
+</div>
+</div>
+<!-- Badge 3 -->
+<div class="snap-center shrink-0 w-32 p-4 rounded-xl glass-panel border border-white/5 flex flex-col items-center justify-center gap-3 group">
+<div class="size-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-700 flex items-center justify-center shadow-lg shadow-amber-900/20 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-amber-950 !text-2xl" data-icon="volunteer_activism">volunteer_activism</span>
+</div>
+<div class="text-center">
+<p class="text-sm font-bold text-white mb-0.5">Philanthropist</p>
+<p class="text-[10px] text-slate-400 uppercase tracking-wide">Donor</p>
+</div>
+</div>
+<!-- Badge 4 -->
+<div class="snap-center shrink-0 w-32 p-4 rounded-xl glass-panel border border-white/5 flex flex-col items-center justify-center gap-3 group">
+<div class="size-12 rounded-full bg-gradient-to-br from-orange-300 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-900/20 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-orange-950 !text-2xl" data-icon="mic">mic</span>
+</div>
+<div class="text-center">
+<p class="text-sm font-bold text-white mb-0.5">Host</p>
+<p class="text-[10px] text-slate-400 uppercase tracking-wide">Events</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Actions Grid -->
+<section class="px-6 mb-6">
+<h3 class="font-display text-xl font-semibold text-white mb-4">Concierge Services</h3>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex flex-col items-start p-4 rounded-xl bg-card-dark hover:bg-white/5 border border-white/5 transition-colors group text-left">
+<div class="mb-3 p-2 rounded-lg bg-primary/20 text-primary-light group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined !text-2xl text-white">table_restaurant</span>
+</div>
+<span class="text-sm font-medium text-white">Book Dining</span>
+<span class="text-[10px] text-slate-400 mt-1">Reserve a table</span>
+</button>
+<button class="flex flex-col items-start p-4 rounded-xl bg-card-dark hover:bg-white/5 border border-white/5 transition-colors group text-left">
+<div class="mb-3 p-2 rounded-lg bg-primary/20 text-primary-light group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined !text-2xl text-white">confirmation_number</span>
+</div>
+<span class="text-sm font-medium text-white">Guest List</span>
+<span class="text-[10px] text-slate-400 mt-1">Manage access</span>
+</button>
+<button class="flex flex-col items-start p-4 rounded-xl bg-card-dark hover:bg-white/5 border border-white/5 transition-colors group text-left">
+<div class="mb-3 p-2 rounded-lg bg-primary/20 text-primary-light group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined !text-2xl text-white">celebration</span>
+</div>
+<span class="text-sm font-medium text-white">Events</span>
+<span class="text-[10px] text-slate-400 mt-1">Upcoming galas</span>
+</button>
+<button class="flex flex-col items-start p-4 rounded-xl bg-card-dark hover:bg-white/5 border border-white/5 transition-colors group text-left">
+<div class="mb-3 p-2 rounded-lg bg-primary/20 text-primary-light group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined !text-2xl text-white">support_agent</span>
+</div>
+<span class="text-sm font-medium text-white">Concierge</span>
+<span class="text-[10px] text-slate-400 mt-1">Direct request</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="absolute bottom-0 left-0 w-full glass-panel border-t border-white/10 px-6 pb-6 pt-3 z-50">
+<div class="flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-white group" href="#">
+<div class="p-1 rounded-full group-hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined !text-2xl font-variation-settings-fill" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+</div>
+<span class="text-[10px] font-medium tracking-wide">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors group" href="#">
+<div class="p-1 rounded-full group-hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined !text-2xl">calendar_month</span>
+</div>
+<span class="text-[10px] font-medium tracking-wide">Events</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors group" href="#">
+<div class="p-1 rounded-full group-hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined !text-2xl">groups</span>
+</div>
+<span class="text-[10px] font-medium tracking-wide">Directory</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors group" href="#">
+<div class="p-1 rounded-full group-hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined !text-2xl">person</span>
+</div>
+<span class="text-[10px] font-medium tracking-wide">Profile</span>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

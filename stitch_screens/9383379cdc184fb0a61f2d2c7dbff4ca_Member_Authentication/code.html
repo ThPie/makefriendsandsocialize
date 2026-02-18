@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Member Authentication</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Noto+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Script -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a5b2a",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#131f16",
+                        "gold": "#D4AF37",
+                        "gold-light": "#F3E5AB",
+                        "gold-dark": "#AA8C2C",
+                    },
+                    fontFamily: {
+                        "display": ["Newsreader", "serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "2xl": "2rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Styles for Glossy/Glass effects */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-glass {
+            background: rgba(20, 31, 23, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-glass:focus {
+            background: rgba(20, 31, 23, 0.9);
+            border-color: #D4AF37; /* Gold border on focus */
+            box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Abstract Background Pattern */
+        .bg-pattern {
+            background-color: #0d1610;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(135,45%,25%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(135,45%,15%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, hsla(135,45%,10%,1) 0, transparent 50%), 
+                radial-gradient(at 0% 100%, hsla(135,45%,20%,1) 0, transparent 50%);
+        }
+        
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: 0;
+        }
+
+        /* Gradient Text */
+        .text-gradient-gold {
+            background: linear-gradient(to right, #F3E5AB, #D4AF37, #F3E5AB);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-pattern min-h-screen text-white font-body selection:bg-primary selection:text-white flex flex-col items-center justify-between overflow-x-hidden relative">
+<!-- Ambient Background Elements -->
+<div class="floating-orb w-64 h-64 bg-primary top-[-10%] left-[-10%]"></div>
+<div class="floating-orb w-96 h-96 bg-[#0d2d15] bottom-[-20%] right-[-10%]"></div>
+<!-- Main Content Wrapper -->
+<div class="relative z-10 w-full max-w-md px-6 py-8 flex flex-col h-screen max-h-[900px] justify-between">
+<!-- Header Section -->
+<header class="flex flex-col items-center pt-8 pb-4">
+<div class="w-12 h-12 mb-4 rounded-full bg-gradient-to-br from-primary to-black flex items-center justify-center border border-white/10 shadow-lg shadow-green-900/20">
+<span class="material-symbols-outlined text-gold text-2xl">diamond</span>
+</div>
+<h1 class="font-display italic text-3xl md:text-4xl font-medium tracking-tight text-white mb-1">The Club</h1>
+<p class="text-white/50 text-sm font-light tracking-wide uppercase">Members Only</p>
+</header>
+<!-- Auth Card -->
+<main class="w-full">
+<div class="glass-card rounded-2xl p-6 md:p-8 w-full shadow-2xl backdrop-blur-xl">
+<!-- Toggle Switch -->
+<div class="flex p-1 mb-8 bg-black/30 rounded-xl relative">
+<label class="flex-1 text-center relative z-10 cursor-pointer">
+<input checked="" class="peer hidden" name="auth_mode" type="radio" value="signin"/>
+<div class="py-2.5 text-sm font-medium text-white/60 peer-checked:text-white transition-colors duration-200">Sign In</div>
+<div class="absolute inset-0 bg-primary/20 rounded-lg scale-90 opacity-0 peer-checked:opacity-100 peer-checked:scale-100 transition-all duration-300 shadow-sm border border-white/5 -z-10"></div>
+</label>
+<label class="flex-1 text-center relative z-10 cursor-pointer">
+<input class="peer hidden" name="auth_mode" type="radio" value="signup"/>
+<div class="py-2.5 text-sm font-medium text-white/60 peer-checked:text-white transition-colors duration-200">Sign Up</div>
+<div class="absolute inset-0 bg-primary/20 rounded-lg scale-90 opacity-0 peer-checked:opacity-100 peer-checked:scale-100 transition-all duration-300 shadow-sm border border-white/5 -z-10"></div>
+</label>
+</div>
+<!-- Form Inputs -->
+<form class="space-y-5">
+<div class="space-y-2">
+<label class="text-xs font-medium text-white/70 ml-1 uppercase tracking-wider">Email Address</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 material-symbols-outlined text-lg">mail</span>
+<input class="input-glass w-full rounded-xl py-3.5 pl-11 pr-4 text-sm text-white placeholder-white/20 focus:outline-none focus:ring-0" placeholder="member@luxury.com" type="email"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-medium text-white/70 ml-1 uppercase tracking-wider">Password</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 material-symbols-outlined text-lg">lock</span>
+<input class="input-glass w-full rounded-xl py-3.5 pl-11 pr-4 text-sm text-white placeholder-white/20 focus:outline-none focus:ring-0" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors" type="button">
+<span class="material-symbols-outlined text-lg">visibility_off</span>
+</button>
+</div>
+</div>
+<div class="flex justify-end pt-1">
+<a class="text-xs text-gold hover:text-gold-light transition-colors underline decoration-white/0 hover:decoration-gold-light/50 underline-offset-4" href="#">Forgot Password?</a>
+</div>
+<!-- Primary Action -->
+<button class="w-full mt-4 bg-gradient-to-r from-gold-dark via-gold to-gold-dark bg-[length:200%_auto] hover:bg-right transition-all duration-500 text-black font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(212,175,55,0.2)] active:scale-[0.98]" type="button">
+<span class="tracking-wide">ENTER</span>
+</button>
+</form>
+<!-- Secondary Action -->
+<div class="mt-6 text-center">
+<div class="relative flex items-center justify-center mb-4">
+<div class="h-px bg-white/10 w-full absolute"></div>
+<span class="bg-[#0f1f14] px-3 text-[10px] text-white/40 uppercase tracking-widest relative z-10 font-medium">Or continue with</span>
+</div>
+<button class="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-white/10 hover:bg-white/5 transition-colors group">
+<span class="material-symbols-outlined text-white/60 group-hover:text-white transition-colors">smartphone</span>
+<span class="text-sm text-white/80 group-hover:text-white font-medium">Phone Number</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Footer / Social Proof -->
+<footer class="w-full py-6 flex flex-col items-center gap-3">
+<div class="flex items-center -space-x-3">
+<img alt="User Avatar" class="w-8 h-8 rounded-full border-2 border-[#131f16] object-cover" data-alt="Portrait of a young woman with dark curly hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSNpdBbNsmXS9XNQfYDLPQ-ZR-f2-xI8ngapr747KTatNT0bekKdVFc5SjRs4Li90qgtrgD4v2qHEi4ASGcd3d7tDqdQxI4QWHMv0mBI0RlyqcYIkUhX2njEX6J4KIU3a8sKkWmZupMynDhl2tQ0W2MlZDTw2lzkof9zDdmC7W0pRaIN4rcmaSYF9TbmmSDRT0PW8mHpIs8C31lIcpJLwkp0pPfZ1pfNFaj0UDCdKDG9MeczYf78eyiQUcqs6jF5l5ebdzsCngVTc"/>
+<img alt="User Avatar" class="w-8 h-8 rounded-full border-2 border-[#131f16] object-cover" data-alt="Portrait of a man with short hair looking confident" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEm3nuVs4oHYuHXGMHlBA6LSWr-YGeTmcs2qeGm0UsjSheBBMGsEGrjcXcgcF23hg96iUqZhpXVOoTbApraSDeLqbCpSIO_lZ78p4WfWOr9oIil6n-1KkvCulEwq4T3GjbRlTLQyApRFEh2y0nHB4CMXdlLfUusmFdEdyrTtv8PiULGROf5RrksAKevHCReGe-1KpQEKLNymuWKRkmK_TV2uDr0R7Pjxex8drxtEfpK_Cht5psF5HwoveE46p8pdyFZ4imNoQhRd4"/>
+<img alt="User Avatar" class="w-8 h-8 rounded-full border-2 border-[#131f16] object-cover" data-alt="Portrait of a man smiling with a light background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLNJmjKZghpHMPQnDPIxEG8n8r-lKCZJYQyAS_EbMTqoZkT8VrfO1Q6qqL_lQKuRocl_czrzXfa1wHE5qnFCRO3hqih388L3cHswtVoLAkQGDWxaBMTGLoD-qlcoccnUo84UoV2HgJuZn8Rnswkr59pQUbP90gCEqoKWhG0CIN8ZTiFwzdEfiusqaQNZRGmHKi9x0mQYEZ8C6BQFdMg40FKnd0sPhKGCmAQqKzNQ49Au-KdwqodkP4O-_oXwLU2ZPHkMj8sm5xicw"/>
+<div class="w-8 h-8 rounded-full border-2 border-[#131f16] bg-primary/30 backdrop-blur-sm flex items-center justify-center text-[10px] font-bold text-white">
+                    +2k
+                </div>
+</div>
+<p class="text-xs text-white/40 text-center max-w-[200px] leading-relaxed">
+                Join our exclusive community of verified members.
+            </p>
+</footer>
+</div>
+</body></html>

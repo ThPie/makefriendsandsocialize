@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Society Photo Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0fbd0f",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102210",
+                        "surface-dark": "#162b16", 
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hiding for horizontal scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Masonry Grid Implementation */
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 1rem;
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1rem;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-x-hidden">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark">
+<!-- Top Bar -->
+<header class="sticky top-0 z-30 w-full bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-black/5 dark:border-white/5 pt-12 pb-4 px-6">
+<div class="flex items-center justify-between mb-4">
+<h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Gallery</h1>
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-surface-dark/50 hover:bg-surface-dark transition-colors text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-3 overflow-x-auto no-scrollbar pb-2 mask-linear-fade">
+<button class="flex h-9 shrink-0 items-center justify-center px-5 rounded-full bg-primary text-white font-medium text-sm shadow-lg shadow-primary/20 transition-transform active:scale-95">
+                    All
+                </button>
+<button class="flex h-9 shrink-0 items-center justify-center px-5 rounded-full bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-white/10 text-slate-600 dark:text-gray-300 font-medium text-sm hover:bg-slate-100 dark:hover:bg-white/5 transition-colors active:scale-95">
+                    Galas
+                </button>
+<button class="flex h-9 shrink-0 items-center justify-center px-5 rounded-full bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-white/10 text-slate-600 dark:text-gray-300 font-medium text-sm hover:bg-slate-100 dark:hover:bg-white/5 transition-colors active:scale-95">
+                    Socials
+                </button>
+<button class="flex h-9 shrink-0 items-center justify-center px-5 rounded-full bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-white/10 text-slate-600 dark:text-gray-300 font-medium text-sm hover:bg-slate-100 dark:hover:bg-white/5 transition-colors active:scale-95">
+                    Networking
+                </button>
+<button class="flex h-9 shrink-0 items-center justify-center px-5 rounded-full bg-surface-light dark:bg-surface-dark border border-slate-200 dark:border-white/10 text-slate-600 dark:text-gray-300 font-medium text-sm hover:bg-slate-100 dark:hover:bg-white/5 transition-colors active:scale-95">
+                    Dining
+                </button>
+</div>
+</header>
+<!-- Main Content: Masonry Grid -->
+<main class="flex-1 px-4 py-4 overflow-y-auto no-scrollbar pb-24">
+<div class="masonry-grid">
+<!-- Item 1 -->
+<div class="masonry-item relative group cursor-pointer overflow-hidden rounded-xl">
+<img alt="Gala night crowd" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Crowd at a formal gala event with warm lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaF2CQc6iOeDVOXrJmKl1mUleqF6c9rVgqpglcjGMVGhgyViHQMBrRZW4CUQpAaT-H5Nsy3VU97uxKBsvhE-0_ZwbIoLQXwksM1kVqTNm6ki46KHTg9LHHBN1CmaU4Pe5cRg3CuVcIuJC8KN0TpOOmyiNehy-hKVJpbiK7thitn_rIbot_e8JPd765dygAGGA4giujBYP3v571paEy15rFzqrU73gspMY0-W-W6D9gwVyf4fdok8DggJug5mmr5clGdCi1CbtW-5o"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<span class="inline-block px-2 py-0.5 mb-2 text-[10px] font-semibold tracking-wider uppercase text-primary bg-black/40 backdrop-blur-sm rounded">Gala</span>
+<h3 class="text-white text-sm font-semibold leading-tight">Annual Winter Ball</h3>
+<p class="text-gray-300 text-xs mt-0.5">Dec 12, 2023</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="masonry-item relative group cursor-pointer overflow-hidden rounded-xl">
+<img alt="Woman holding champagne glass" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Close up of a woman holding a champagne glass at a party" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCw5V_KxNruHJvrj_U5nKgXOhMUgdmdU63kLkuhBw0mfsPSgbHl9f6E7rBMp7FOEprIXPBFjdGvt4yfukPM39NoR79uYeYKYqCo-3Pstlo8OvfDMWc3DaB9vCUWUd4N4dEm33iJXazZwbDXoYvvL4RzMokJOQAFTxxYCyYenV31hWUFhyLBVhUigECNWZpxt40Nz7IKS8EsTInXkw4XgnVxjwe8ufoiMh2i3C0q3nZQypmiX1SVApAyiDldEcFQ_CgGyPmqFMyb-OE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<span class="inline-block px-2 py-0.5 mb-2 text-[10px] font-semibold tracking-wider uppercase text-primary bg-black/40 backdrop-blur-sm rounded">Social</span>
+<h3 class="text-white text-sm font-semibold leading-tight">Champagne Toast</h3>
+<p class="text-gray-300 text-xs mt-0.5">Nov 28, 2023</p>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="masonry-item relative group cursor-pointer overflow-hidden rounded-xl">
+<img alt="Cocktail close up" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Elegant cocktail drink with garnish on a dark table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrWCd3w9HS52UQmpACqtBT4BRtDHi6X-jRZ56Jy471OOLHXtZ1fszSZNwS_qmWLhKfdwAvH8LOGGzgbNJjujkfMhr7Hfa6kXYu3-cDKv9Aqje-X34GVxo2itJekdRT8W-C5tB-cJGWu35347eT_wCezMU-ZR5i5ehVl_rHcZOe7EjavaRlQqIoSibLbiHrQQdMHLd8sPhyxinb_2Vr7mz5glu4vDQd4sMJgPNYuHqYPZcxGAi9eMnw7hL2bTZtGPWxeMQ5CVaymkY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<span class="inline-block px-2 py-0.5 mb-2 text-[10px] font-semibold tracking-wider uppercase text-primary bg-black/40 backdrop-blur-sm rounded">Dining</span>
+<h3 class="text-white text-sm font-semibold leading-tight">Mixology Night</h3>
+<p class="text-gray-300 text-xs mt-0.5">Oct 15, 2023</p>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="masonry-item relative group cursor-pointer overflow-hidden rounded-xl">
+<img alt="Networking event discussion" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="People talking at a networking event in a modern hall" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC400Omr8eG9lnuSTp-jDRIxc6s50pcLLCIgq3HWAg_lNWc_9xK-kPHmOqdZKaF1B32m9P1MY1CneiUwSJkvPdb3dJlaMArnlizxpEAZtYLlqUE4I4B5biJF5jX45ipLL9nqtMTpZy617ND08kZpTWaz62LifIN0bYcIzS8t04U9h2btVgWXO3zFZRpfdjaiEWIG3rCmTdGy154ZDll-2mKIkJaDlqUjc6sR9UzzJyJuEAPM_Zgppl6odXrHVi9qikaDat7gcUD534"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<span class="inline-block px-2 py-0.5 mb-2 text-[10px] font-semibold tracking-wider uppercase text-primary bg-black/40 backdrop-blur-sm rounded">Networking</span>
+<h3 class="text-white text-sm font-semibold leading-tight">Founders Summit</h3>
+<p class="text-gray-300 text-xs mt-0.5">Sep 05, 2023</p>
+</div>
+</div>
+<!-- Item 5 -->
+<div class="masonry-item relative group cursor-pointer overflow-hidden rounded-xl">
+<img alt="DJ at a party" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="DJ playing music at a club with colorful lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXcNhchuTiSF9deOvN1Ii-AklqYO9cRsH2sfZ_eBHh4cJAp4BgOEFoVsXK8cNo-KC42Y073OtsKYVKZgIo_MhV5nNrHCfBghXBIPmx0BDRtmTfukCPFsFj5CBEuWql8DCkZR8UD9PgiN1cP36F5sktGYW4tZU5RHDj74rYwvdwCk56HlXJbwnhWoIB9NQTMeyNakDje30AZMOMt-2wyPD_IRINIGATVLqxin2rMuevhTB0NRV25DxRO5U8o6qBOZA_7l3P-JLkqxU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<span class="inline-block px-2 py-0.5 mb-2 text-[10px] font-semibold tracking-wider uppercase text-primary bg-black/40 backdrop-blur-sm rounded">Social</span>
+<h3 class="text-white text-sm font-semibold leading-tight">Summer Rooftop</h3>
+<p class="text-gray-300 text-xs mt-0.5">Aug 20, 2023</p>
+</div>
+</div>
+<!-- Item 6 -->
+<div class="masonry-item relative group cursor-pointer overflow-hidden rounded-xl">
+<img alt="Fine dining table setting" class="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Top view of a beautifully set dining table with candles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt6uHVHHH67HmUwZbFUvUnJxUhKgp2VPIYCjT58ZS4k_RtDzENuG2IzFXU-YW34MTZR7XDnefva24XMyalQhfBnYMv0UNAUIwRO5BHOL6OyxRnjy7h7n2BPx6szKfFVyYRX6w-JZAPwtuMFwbq68J42Q0hojOCjtN0ZBak6LXSwtuAp8L_k-k_w_NTu_m0s8wZsd-WRh4HCVQiI6RM5l1nYOzK3ohaC3udnFDY8hYra7KtP5IHSgfZ1G1aca8cXRxbwWTj3o1mSrw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80"></div>
+<div class="absolute bottom-0 left-0 p-4 w-full">
+<span class="inline-block px-2 py-0.5 mb-2 text-[10px] font-semibold tracking-wider uppercase text-primary bg-black/40 backdrop-blur-sm rounded">Dining</span>
+<h3 class="text-white text-sm font-semibold leading-tight">Chef's Table</h3>
+<p class="text-gray-300 text-xs mt-0.5">Jul 11, 2023</p>
+</div>
+</div>
+</div>
+<!-- Loading Indicator -->
+<div class="flex justify-center py-6">
+<div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full max-w-md bg-background-light/80 dark:bg-background-dark/95 backdrop-blur-xl border-t border-black/5 dark:border-white/5 pb-5 pt-3 px-6 z-40">
+<div class="flex justify-between items-center">
+<a class="flex flex-col items-center justify-center gap-1 group" href="#">
+<div class="text-slate-400 dark:text-gray-500 group-hover:text-primary dark:group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[26px]">home</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400 dark:text-gray-500 group-hover:text-primary dark:group-hover:text-primary">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 group" href="#">
+<div class="text-slate-400 dark:text-gray-500 group-hover:text-primary dark:group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[26px]">search</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400 dark:text-gray-500 group-hover:text-primary dark:group-hover:text-primary">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1" href="#">
+<div class="flex items-center justify-center w-12 h-12 -mt-6 bg-primary rounded-full shadow-lg shadow-primary/30 text-white">
+<span class="material-symbols-outlined text-[28px] font-variation-settings-fill">photo_library</span>
+</div>
+<span class="text-[10px] font-medium text-primary mt-1">Gallery</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 group" href="#">
+<div class="text-slate-400 dark:text-gray-500 group-hover:text-primary dark:group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[26px]">calendar_month</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400 dark:text-gray-500 group-hover:text-primary dark:group-hover:text-primary">Events</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 group" href="#">
+<div class="text-slate-400 dark:text-gray-500 group-hover:text-primary dark:group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[26px]">person</span>
+</div>
+<span class="text-[10px] font-medium text-slate-400 dark:text-gray-500 group-hover:text-primary dark:group-hover:text-primary">Profile</span>
+</a>
+</div>
+</nav>
+</div>
+</body></html>
