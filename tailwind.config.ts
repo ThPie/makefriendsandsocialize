@@ -17,13 +17,15 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
-        display: ['Newsreader', 'Cormorant Garamond', 'serif'],
+        display: ['Plus Jakarta Sans', 'Newsreader', 'Cormorant Garamond', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
+        "background-light": "#f8f8f5",
+        "background-dark": "#221e10",
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",

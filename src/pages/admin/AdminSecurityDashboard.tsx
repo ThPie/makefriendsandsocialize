@@ -1,336 +1,144 @@
 import { useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Checkbox } from '@/components/ui/checkbox';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
-import { EmptyState } from '@/components/ui/empty-state';
-import { toast } from 'sonner';
 import {
   Shield,
-  ShieldCheck,
-  Clock,
-  Loader2,
-  AlertCircle,
-  Users,
-  Calendar,
-  Scan,
-  CheckCircle2,
+  Check,
+  Smartphone,
+  Laptop,
+  Monitor,
+  LogOut,
+  Menu,
+  MoreVertical
 } from 'lucide-react';
-import { format, differenceInDays, subDays } from 'date-fns';
-
-interface MemberDueForScan {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  avatar_urls: string[] | null;
-  city: string | null;
-  country: string | null;
-  job_title: string | null;
-  industry: string | null;
-  bio: string | null;
-  last_scanned_at: string | null;
-  created_at: string;
-  days_since_scan: number;
-}
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 export default function AdminSecurityDashboard() {
-  const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
-  const [isBulkScanning, setIsBulkScanning] = useState(false);
-  const [scanProgress, setScanProgress] = useState({ current: 0, total: 0 });
-  const queryClient = useQueryClient();
-
-  // Fetch members due for periodic scan (90+ days since last scan or never scanned)
-  const { data: membersDueForScan, isLoading } = useQuery({
-    queryKey: ['members-due-for-scan'],
-    queryFn: async () => {
-      const cutoffDate = subDays(new Date(), 90).toISOString();
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, first_name, last_name, avatar_urls, city, country, job_title, industry, bio, last_scanned_at, created_at')
-        .or(`last_scanned_at.is.null,last_scanned_at.lt.${cutoffDate}`)
-        .order('last_scanned_at', { ascending: true, nullsFirst: true });
-
-      if (error) throw error;
-
-      return (data || []).map(member => ({
-        ...member,
-        days_since_scan: member.last_scanned_at
-          ? differenceInDays(new Date(), new Date(member.last_scanned_at))
-          : differenceInDays(new Date(), new Date(member.created_at)),
-      })) as MemberDueForScan[];
-    },
-  });
-
-  // Fetch recent scan stats
-  const { data: recentScans } = useQuery({
-    queryKey: ['recent-scan-stats'],
-    queryFn: async () => {
-      const last30Days = subDays(new Date(), 30).toISOString();
-
-      const { data, error } = await supabase
-        .from('member_security_reports')
-        .select('id, status, severity, scanned_at')
-        .gte('scanned_at', last30Days);
-
-      if (error) throw error;
-      return data || [];
-    },
-  });
-
-  const toggleMemberSelection = (memberId: string) => {
-    setSelectedMembers(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(memberId)) {
-        newSet.delete(memberId);
-      } else {
-        newSet.add(memberId);
-      }
-      return newSet;
-    });
-  };
-
-  const selectAll = () => {
-    if (membersDueForScan) {
-      setSelectedMembers(new Set(membersDueForScan.map(m => m.id)));
-    }
-  };
-
-  const deselectAll = () => {
-    setSelectedMembers(new Set());
-  };
-
-  const runBulkScan = async () => {
-    if (selectedMembers.size === 0) {
-      toast.error('Please select at least one member to scan');
-      return;
-    }
-
-    const membersToScan = membersDueForScan?.filter(m => selectedMembers.has(m.id)) || [];
-    setIsBulkScanning(true);
-    setScanProgress({ current: 0, total: membersToScan.length });
-
-    let successCount = 0;
-    let failCount = 0;
-
-    for (let i = 0; i < membersToScan.length; i++) {
-      const member = membersToScan[i];
-      setScanProgress({ current: i + 1, total: membersToScan.length });
-
-      try {
-        const { error } = await supabase.functions.invoke('deep-osint-analysis', {
-          body: {
-            userId: member.id,
-            firstName: member.first_name || '',
-            lastName: member.last_name || '',
-            city: member.city || '',
-            country: member.country || '',
-            jobTitle: member.job_title || '',
-            industry: member.industry || '',
-            bio: member.bio || '',
-            scanType: 'manual',
-          },
-        });
-
-        if (error) throw error;
-        successCount++;
-      } catch (error) {
-        console.error(`Failed to scan member ${member.id}:`, error);
-        failCount++;
-      }
-    }
-
-    setIsBulkScanning(false);
-    setSelectedMembers(new Set());
-    queryClient.invalidateQueries({ queryKey: ['members-due-for-scan'] });
-    queryClient.invalidateQueries({ queryKey: ['recent-scan-stats'] });
-
-    if (failCount === 0) {
-      toast.success(`Successfully scanned ${successCount} members`);
-    } else {
-      toast.warning(`Scanned ${successCount} members, ${failCount} failed`);
-    }
-  };
-
-  const stats = {
-    dueForScan: membersDueForScan?.length || 0,
-    neverScanned: membersDueForScan?.filter(m => !m.last_scanned_at).length || 0,
-    overdue90Days: membersDueForScan?.filter(m => m.days_since_scan > 90).length || 0,
-    scansLast30Days: recentScans?.length || 0,
-    flaggedLast30Days: recentScans?.filter(s => s.status === 'flagged').length || 0,
-  };
+  const [mfaEnabled, setMfaEnabled] = useState(true);
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-3xl flex items-center gap-3">
-            <Shield className="h-8 w-8 text-[#d4af37]" />
-            Security Dashboard
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Monitor and manage periodic security scans
-          </p>
-        </div>
-      </div>
+    <div className="flex flex-col h-full bg-[#0a120d] min-h-screen text-slate-100 font-display">
+      {/* Top App Bar */}
+      <header className="sticky top-0 z-50 bg-[#f8f8f5]/95 dark:bg-[#0a120d]/95 backdrop-blur-md border-b border-gray-200 dark:border-[#2a3b30] px-4 py-3 flex items-center justify-between">
+        <Button variant="ghost" size="icon" className="-ml-2 text-gray-300 hover:text-[#f2d00d]">
+          <Menu className="h-5 w-5" />
+        </Button>
+        <h1 className="text-lg font-bold tracking-tight flex-1 text-center pr-8">Security Overview</h1>
+      </header>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {[
-          { icon: Clock, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500', value: stats.dueForScan, label: 'Due for Scan' },
-          { icon: AlertCircle, iconBg: 'bg-destructive/10', iconColor: 'text-destructive', value: stats.neverScanned, label: 'Never Scanned' },
-          { icon: Calendar, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500', value: stats.overdue90Days, label: '90+ Days Overdue' },
-          { icon: ShieldCheck, iconBg: 'bg-primary/10', iconColor: 'text-primary', value: stats.scansLast30Days, label: 'Scans (30 days)' },
-          { icon: AlertCircle, iconBg: 'bg-red-500/10', iconColor: 'text-red-500', value: stats.flaggedLast30Days, label: 'Flagged (30 days)' },
-        ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${stat.iconBg}`}>
-                <stat.icon className={`h-5 w-5 ${stat.iconColor}`} />
-              </div>
-              <div>
-                <p className="text-2xl font-display">{stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-              </div>
+      <main className="flex-1 w-full max-w-md mx-auto p-4 space-y-6">
+        {/* Status Indicator */}
+        <div className="flex items-center justify-between bg-[#16211b]/50 border border-[#2a3b30] rounded-lg p-3 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="bg-[#f2d00d]/20 p-2 rounded-full">
+              <Shield className="h-5 w-5 text-[#f2d00d]" />
             </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Members Due for Scan */}
-      <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
-        <CardHeader>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h3 className="font-display text-lg flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Members Due for Periodic Scan
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Members who haven't been scanned in 90+ days or never scanned
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              {selectedMembers.size > 0 && (
-                <Badge variant="secondary">
-                  {selectedMembers.size} selected
-                </Badge>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                className="dark:border-white/[0.12]"
-                onClick={selectedMembers.size === membersDueForScan?.length ? deselectAll : selectAll}
-              >
-                {selectedMembers.size === membersDueForScan?.length ? 'Deselect All' : 'Select All'}
-              </Button>
-              <Button
-                onClick={runBulkScan}
-                disabled={isBulkScanning || selectedMembers.size === 0}
-              >
-                {isBulkScanning ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Scanning {scanProgress.current}/{scanProgress.total}
-                  </>
-                ) : (
-                  <>
-                    <Scan className="h-4 w-4 mr-2" />
-                    Run Bulk Scan
-                  </>
-                )}
-              </Button>
+              <p className="text-sm font-medium text-gray-400">Security Status</p>
+              <p className="text-white font-bold tracking-wide">Secure</p>
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="space-y-3 py-4">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 rounded-lg border border-white/[0.06]">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <div className="flex-1 space-y-2">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-3 w-48" />
-                  </div>
-                  <Skeleton className="h-6 w-20 rounded-full" />
-                </div>
-              ))}
-            </div>
-          ) : membersDueForScan?.length === 0 ? (
-            <EmptyState
-              icon={CheckCircle2}
-              heading="All Members Up to Date"
-              description="No members require a periodic security scan"
-            />
-          ) : (
-            <ScrollArea className="h-[500px]">
-              <div className="space-y-2">
-                {membersDueForScan?.map((member) => {
-                  const initials = `${member.first_name?.[0] || ''}${member.last_name?.[0] || ''}`.toUpperCase() || 'M';
-                  const isSelected = selectedMembers.has(member.id);
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-green-900/30 border border-green-800 rounded-full">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f2d00d] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#f2d00d]"></span>
+            </span>
+            <span className="text-xs font-bold text-[#f2d00d] uppercase">Good</span>
+          </div>
+        </div>
 
-                  return (
-                    <div
-                      key={member.id}
-                      className={`flex items-center gap-4 p-4 rounded-lg border transition-colors cursor-pointer ${isSelected
-                          ? 'border-primary bg-primary/5'
-                          : 'border-white/[0.08] hover:bg-white/[0.04]'
-                        }`}
-                      onClick={() => toggleMemberSelection(member.id)}
-                    >
-                      <Checkbox
-                        checked={isSelected}
-                        onCheckedChange={() => toggleMemberSelection(member.id)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={member.avatar_urls?.[0]} />
-                        <AvatarFallback className="bg-primary/10 text-primary">
-                          {initials}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">
-                          {member.first_name || ''} {member.last_name || 'Unknown'}
-                        </p>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {member.job_title || 'No job title'} • {member.city || 'Unknown location'}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        {member.last_scanned_at ? (
-                          <>
-                            <Badge
-                              variant="outline"
-                              className={member.days_since_scan > 90 ? 'border-amber-500/50 text-amber-500' : ''}
-                            >
-                              {member.days_since_scan} days ago
-                            </Badge>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {format(new Date(member.last_scanned_at), 'MMM d, yyyy')}
-                            </p>
-                          </>
-                        ) : (
-                          <Badge variant="destructive" className="bg-destructive/10 text-destructive border-destructive/20">
-                            Never scanned
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+        {/* MFA Card */}
+        <section className="space-y-3">
+          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider px-1">Authentication</h2>
+          <div className="bg-[#16211b] border border-[#2a3b30] rounded-xl p-5 shadow-sm">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex-1 space-y-1">
+                <h3 className="font-bold text-white">Two-Factor Authentication</h3>
+                <p className="text-sm text-gray-400 leading-snug">Protect your admin account with an extra security layer.</p>
               </div>
-            </ScrollArea>
-          )}
-        </CardContent>
-      </div>
+              <Switch checked={mfaEnabled} onCheckedChange={setMfaEnabled} />
+            </div>
+            <div className="mt-4 pt-4 border-t border-[#2a3b30] flex items-center text-xs text-gray-400">
+              <Shield className="mr-1.5 h-4 w-4 text-[#f2d00d]" />
+              Last verified 2 days ago via Authenticator App
+            </div>
+          </div>
+        </section>
+
+        {/* Active Sessions */}
+        <section className="space-y-3">
+          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider px-1">Active Sessions</h2>
+          <div className="bg-[#16211b] border border-[#2a3b30] rounded-xl overflow-hidden shadow-sm divide-y divide-[#2a3b30]">
+            {/* Current Session */}
+            <div className="p-4 flex items-center justify-between gap-3 bg-[#f2d00d]/5">
+              <div className="flex items-center gap-3">
+                <div className="bg-black/40 h-10 w-10 flex items-center justify-center rounded-lg text-gray-300">
+                  <Smartphone className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-medium text-white flex items-center gap-2">
+                    iPhone 14 Pro
+                    <span className="bg-[#f2d00d]/20 text-[#f2d00d] text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">Current</span>
+                  </p>
+                  <p className="text-xs text-gray-400">London, UK • Online now</p>
+                </div>
+              </div>
+            </div>
+            {/* Other Session 1 */}
+            <div className="p-4 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="bg-black/40 h-10 w-10 flex items-center justify-center rounded-lg text-gray-300">
+                  <Laptop className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-medium text-white">MacBook Pro M1</p>
+                  <p className="text-xs text-gray-400">New York, USA • 2h ago</p>
+                </div>
+              </div>
+              <button className="text-xs font-semibold text-red-500 hover:text-red-400 bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded transition-colors">
+                Logout
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Recent Activity Logs */}
+        <section className="space-y-3 pb-6">
+          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider px-1">Recent Activity</h2>
+          <div className="bg-[#16211b] border border-[#2a3b30] rounded-xl overflow-hidden shadow-sm">
+            <div className="grid grid-cols-12 gap-2 p-3 bg-black/20 text-xs font-semibold text-gray-500 uppercase border-b border-[#2a3b30]">
+              <div className="col-span-6">Event</div>
+              <div className="col-span-3">IP Addr</div>
+              <div className="col-span-3 text-right">Time</div>
+            </div>
+            {/* Log Item: Success */}
+            <div className="grid grid-cols-12 gap-2 p-3 items-center border-b border-[#2a3b30]/50 hover:bg-white/5 transition-colors">
+              <div className="col-span-6 flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_4px_rgba(34,197,94,0.6)]"></div>
+                <span className="text-sm font-medium text-gray-200">Login Success</span>
+              </div>
+              <div className="col-span-3 text-xs text-gray-400 font-mono">192.168.1.1</div>
+              <div className="col-span-3 text-xs text-gray-400 text-right">10:42 AM</div>
+            </div>
+            {/* Log Item: Warning */}
+            <div className="grid grid-cols-12 gap-2 p-3 items-center border-b border-[#2a3b30]/50 hover:bg-white/5 transition-colors">
+              <div className="col-span-6 flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-[#f2d00d] shadow-[0_0_4px_rgba(242,208,13,0.6)]"></div>
+                <span className="text-sm font-medium text-gray-200">Password Change</span>
+              </div>
+              <div className="col-span-3 text-xs text-gray-400 font-mono">192.168.1.1</div>
+              <div className="col-span-3 text-xs text-gray-400 text-right">Yesterday</div>
+            </div>
+          </div>
+          <div className="text-center pt-2">
+            <button className="text-xs font-semibold text-[#f2d00d] hover:text-[#f2d00d]/80 transition-colors uppercase tracking-wide">
+              View Full Logs
+            </button>
+          </div>
+        </section>
+
+      </main>
     </div>
   );
 }

@@ -1,360 +1,187 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { getTierDisplayName } from '@/lib/tier-utils';
 import { supabase } from '@/integrations/supabase/client';
+import { Link } from 'react-router-dom';
+import { BrandedLoader } from '@/components/ui/branded-loader';
+import { Search, Bell, ArrowLeft, Bookmark, ArrowRight, UserPlus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from 'sonner';
-import { Search, Heart, Crown, ArrowRight, Filter, Users, Loader2 } from 'lucide-react';
 
-interface MemberProfile {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  signature_style: string | null;
-  avatar_urls: string[];
-  interests: string[];
-  industry: string | null;
-  job_title: string | null;
-}
+// Filter categories from Stitch
+const FILTERS = ['All Members', 'Finance', 'Tech', 'Real Estate', 'Arts'];
 
 export default function PortalNetwork() {
-  const { user, canAccessMatchmaking, membership } = useAuth();
-  const [members, setMembers] = useState<MemberProfile[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedInterest, setSelectedInterest] = useState<string | null>(null);
-  const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
-  const [requestingIds, setRequestingIds] = useState<Set<string>>(new Set());
+  const { user } = useAuth();
+  const [members, setMembers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState('All Members');
 
   useEffect(() => {
-    if (canAccessMatchmaking) {
-      fetchMembers();
-    } else {
-      setIsLoading(false);
-    }
-  }, [canAccessMatchmaking]);
+    async function fetchMembers() {
+      // Mock fetching logic - we'd filter by industry in a real query
+      let query = supabase
+        .from('profiles')
+        .select('*')
+        .limit(20);
 
-  const fetchMembers = async () => {
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id, first_name, last_name, signature_style, avatar_urls, interests, industry, job_title')
-      .eq('is_visible', true)
-      .neq('id', user.id);
-
-    if (error) {
-      toast.error('Failed to load members');
-      setIsLoading(false);
-      return;
-    }
-
-    setMembers((data as MemberProfile[]) || []);
-    setIsLoading(false);
-  };
-
-  const handleRequestIntroduction = async (memberId: string) => {
-    if (!user) return;
-
-    setRequestingIds(prev => new Set([...prev, memberId]));
-
-    const { error } = await supabase
-      .from('connections')
-      .insert({
-        requester_id: user.id,
-        requested_id: memberId,
-        status: 'pending',
-      });
-
-    setRequestingIds(prev => {
-      const newSet = new Set(prev);
-      newSet.delete(memberId);
-      return newSet;
-    });
-
-    if (error) {
-      if (error.code === '23505') {
-        toast.error('You have already requested an introduction');
-      } else {
-        toast.error('Failed to request introduction');
+      if (user) {
+        query = query.neq('id', user.id);
       }
-      return;
+
+      const { data, error } = await query;
+
+      if (!error && data) {
+        setMembers(data);
+      }
+      setLoading(false);
     }
+    fetchMembers();
+  }, [user, activeFilter]);
 
-    toast.success('Introduction requested successfully');
-  };
 
-  // Get unique interests and industries from all members
-  const allInterests = [...new Set(members.flatMap(m => m.interests || []))];
-  const allIndustries = [...new Set(members.map(m => m.industry).filter(Boolean))] as string[];
-
-  // Filter members
-  const filteredMembers = members.filter(member => {
-    const matchesSearch = !searchTerm ||
-      member.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.signature_style?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.industry?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.job_title?.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesInterest = !selectedInterest ||
-      member.interests?.includes(selectedInterest);
-
-    const matchesIndustry = !selectedIndustry ||
-      member.industry === selectedIndustry;
-
-    return matchesSearch && matchesInterest && matchesIndustry;
-  });
-
-  // Upgrade prompt for Patron members
-  if (!canAccessMatchmaking) {
-    return (
-      <div className="max-w-2xl mx-auto text-center py-16">
-        <div className="mb-8">
-          <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
-            <Crown className="h-10 w-10 text-primary" />
-          </div>
-          <h1 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-            Unlock The Network
-          </h1>
-          <p className="text-muted-foreground text-lg mb-8">
-            The Network is where meaningful connections begin. Upgrade to Fellow membership
-            to browse member profiles and request curated introductions.
-          </p>
-        </div>
-
-        <Card className="bg-card border-primary/20 mb-8">
-          <CardContent className="p-8">
-            <h3 className="font-display text-xl text-foreground mb-4">Fellow Membership Includes</h3>
-            <ul className="text-left space-y-3 text-muted-foreground mb-6">
-              <li className="flex items-center gap-3">
-                <Heart className="h-5 w-5 text-primary" />
-                <span>Curated member introductions</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Heart className="h-5 w-5 text-primary" />
-                <span>Access to The Network</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Heart className="h-5 w-5 text-primary" />
-                <span>Priority event access</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Heart className="h-5 w-5 text-primary" />
-                <span>Exclusive slow dating events</span>
-              </li>
-            </ul>
-            <Button asChild size="lg" className="w-full">
-              <Link to="/membership">
-                Upgrade to Fellow
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <p className="text-sm text-muted-foreground">
-          Current membership: <span className="text-foreground">{getTierDisplayName(membership?.tier)}</span>
-        </p>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="space-y-8">
-        <div>
-          <Skeleton className="h-10 w-48 mb-2" />
-          <Skeleton className="h-5 w-72" />
-        </div>
-        <Skeleton className="h-10 w-full" />
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Card key={i} className="overflow-hidden">
-              <Skeleton className="aspect-[3/4] w-full" />
-              <CardContent className="p-5">
-                <Skeleton className="h-6 w-32 mb-2" />
-                <Skeleton className="h-4 w-24 mb-3" />
-                <Skeleton className="h-4 w-full mb-4" />
-                <Skeleton className="h-9 w-full" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <BrandedLoader />;
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-          The Network
-        </h1>
-        <p className="text-muted-foreground">
-          Discover like-minded members and request introductions
-        </p>
-      </div>
-
-      {/* Filters */}
-      <div className="space-y-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by name, industry, or job title..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
+    <div className="flex flex-col h-full min-h-screen bg-[#0a0f0b]">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-40 bg-[#0a0f0b]/95 backdrop-blur-xl border-b border-white/5 transition-all duration-300">
+        <div className="flex items-center justify-between px-4 pt-4 pb-2">
+          <Link to="/portal" className="flex size-10 items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors">
+            <ArrowLeft className="w-6 h-6" />
+          </Link>
+          <div className="flex gap-4">
+            <button className="flex size-10 items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors">
+              <Search className="w-6 h-6" />
+            </button>
+            <button className="flex size-10 items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors relative">
+              <span className="absolute top-2.5 right-2.5 size-2 bg-[#D4AF37] rounded-full border-2 border-[#0a0f0b]"></span>
+              <Bell className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
-        {/* Industry Filter */}
-        {allIndustries.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground font-medium">Filter by Industry</p>
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                variant={selectedIndustry === null ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedIndustry(null)}
-              >
-                All Industries
-              </Button>
-              {allIndustries.map((industry) => (
-                <Button
-                  key={industry}
-                  variant={selectedIndustry === industry ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedIndustry(industry)}
-                >
-                  {industry}
-                </Button>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="px-4 pb-4">
+          <h1 className="font-display text-4xl font-semibold tracking-tight text-white line-clamp-1">The Network</h1>
+        </div>
 
-        {/* Interest Filter */}
-        <div className="space-y-2">
-          <p className="text-sm text-muted-foreground font-medium">Filter by Interest</p>
-          <div className="flex gap-2 flex-wrap">
-            <Button
-              variant={selectedInterest === null ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSelectedInterest(null)}
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              All
-            </Button>
-            {allInterests.slice(0, 6).map((interest) => (
-              <Button
-                key={interest}
-                variant={selectedInterest === interest ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedInterest(interest)}
+        {/* Filter Chips */}
+        <div className="px-4 pb-4 overflow-x-auto no-scrollbar">
+          <div className="flex gap-2">
+            {FILTERS.map((filter) => (
+              <button
+                key={filter}
+                onClick={() => setActiveFilter(filter)}
+                className={cn(
+                  "shrink-0 h-8 px-4 rounded-full text-sm font-medium transition-all duration-200",
+                  activeFilter === filter
+                    ? "bg-white text-black font-semibold shadow-sm"
+                    : "bg-white/10 backdrop-blur-sm border border-white/10 text-slate-300 hover:bg-white/20"
+                )}
               >
-                {interest}
-              </Button>
+                {filter}
+              </button>
             ))}
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Members Grid */}
-      {filteredMembers.length === 0 ? (
-        <Card className="p-12 text-center">
-          <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
-          <h3 className="font-display text-xl mb-2 text-foreground">No Members Found</h3>
-          <p className="text-muted-foreground mb-4">
-            No members found matching your criteria. Try adjusting your filters to discover more members.
-          </p>
-          <Button variant="outline" onClick={() => { setSearchTerm(''); setSelectedInterest(null); setSelectedIndustry(null); }}>
-            Clear All Filters
-          </Button>
-        </Card>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredMembers.map((member) => (
-            <Card key={member.id} className="group overflow-hidden hover-lift">
-              {/* Photo */}
-              <div className="aspect-[3/4] relative overflow-hidden bg-muted">
-                {member.avatar_urls?.[0] ? (
-                  <img
-                    src={member.avatar_urls[0]}
-                    alt={member.first_name || 'Member'}
-                    width={300}
-                    height={400}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Avatar className="h-24 w-24">
-                      <AvatarFallback className="text-3xl">
-                        {member.first_name?.[0] || 'M'}
-                      </AvatarFallback>
-                    </Avatar>
+      {/* Main Content */}
+      <main className="flex-1 px-4 py-4 pb-28 space-y-4">
+        {/* Connect Card (CTA) */}
+        <div className="relative w-full h-[500px] rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
+          {/* This card simulates the "Swipe" UI from the Stitch design, 
+                 showing the first member with interaction cues.
+                 For now, we'll just show the first member in the list nicely.
+             */}
+
+          {members.length > 0 && (
+            <>
+              <div className="relative h-full w-full bg-[#1e2a22]">
+                <img
+                  alt={members[0].first_name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  src={members[0].avatar_urls?.[0] || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&h=800&fit=crop'}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+
+                <div className="absolute top-4 right-4">
+                  <button className="size-10 rounded-full bg-black/20 backdrop-blur-xl flex items-center justify-center text-white/80 hover:text-white transition-colors">
+                    <Bookmark className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="absolute bottom-0 left-0 w-full p-6 text-white">
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <h2 className="font-display text-3xl font-medium mb-1">{members[0].first_name} {members[0].last_name}</h2>
+                      <p className="text-sm font-medium text-[#D4AF37] mb-2">{members[0].job_title || 'Member'}</p>
+                      <div className="flex gap-2 mt-3">
+                        {members[0].industry && (
+                          <span className="px-2 py-1 rounded-md bg-white/20 backdrop-blur-md text-[10px] font-medium tracking-wide uppercase">
+                            {members[0].industry}
+                          </span>
+                        )}
+                        {members[0].city && (
+                          <span className="px-2 py-1 rounded-md bg-white/20 backdrop-blur-md text-[10px] font-medium tracking-wide uppercase">
+                            {members[0].city}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <Link to={`/portal/profile/${members[0].id}`} className="size-12 rounded-full border border-white/30 bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-[#D4AF37] hover:border-[#D4AF37] hover:text-black transition-all">
+                      <ArrowRight className="w-6 h-6" />
+                    </Link>
                   </div>
-                )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* List of other members */}
+        {members.slice(1).map((member) => (
+          <div key={member.id} className="relative w-full h-[500px] rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
+            <div className="relative h-full w-full bg-[#1e2a22]">
+              <img
+                alt={member.first_name}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                src={member.avatar_urls?.[0] || 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&h=800&fit=crop'}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+
+              <div className="absolute top-4 right-4">
+                <button className="size-10 rounded-full bg-black/20 backdrop-blur-xl flex items-center justify-center text-white/80 hover:text-white transition-colors">
+                  <Bookmark className="w-5 h-5" />
+                </button>
               </div>
 
-              <CardContent className="p-5">
-                <h3 className="font-display text-xl text-foreground mb-1">
-                  {member.first_name || 'Anonymous'}
-                </h3>
-
-                {(member.job_title || member.industry) && (
-                  <p className="text-sm text-primary font-medium mb-2">
-                    {member.job_title}{member.job_title && member.industry ? ' · ' : ''}{member.industry}
-                  </p>
-                )}
-
-                {member.signature_style && (
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                    "{member.signature_style}"
-                  </p>
-                )}
-
-                {member.interests?.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {member.interests.slice(0, 3).map((interest) => (
-                      <span
-                        key={interest}
-                        className="px-2 py-0.5 rounded-full text-xs bg-muted text-muted-foreground"
-                      >
-                        {interest}
-                      </span>
-                    ))}
+              <div className="absolute bottom-0 left-0 w-full p-6 text-white">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <h2 className="font-display text-3xl font-medium mb-1">{member.first_name} {member.last_name}</h2>
+                    <p className="text-sm font-medium text-slate-300 mb-2">{member.job_title || 'Member'}</p>
+                    <div className="flex gap-2 mt-3">
+                      {member.industry && (
+                        <span className="px-2 py-1 rounded-md bg-white/20 backdrop-blur-md text-[10px] font-medium tracking-wide uppercase">
+                          {member.industry}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                )}
+                  <Link to={`/portal/profile/${member.id}`} className="size-12 rounded-full border border-white/30 bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-[#D4AF37] hover:border-[#D4AF37] hover:text-black transition-all">
+                    <ArrowRight className="w-6 h-6" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                  onClick={() => handleRequestIntroduction(member.id)}
-                  disabled={requestingIds.has(member.id)}
-                >
-                  {requestingIds.has(member.id) ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <>
-                      <Heart className="h-4 w-4 mr-2" />
-                      Request Introduction
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="text-center py-6">
+          <p className="text-sm text-slate-400">You've reached the end of the list</p>
         </div>
-      )}
+      </main>
     </div>
   );
 }

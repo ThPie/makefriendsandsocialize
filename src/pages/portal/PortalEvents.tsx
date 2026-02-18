@@ -4,24 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EventCardSkeleton } from '@/components/ui/page-skeleton';
-import { GroupDinnerInvitation } from '@/components/portal/GroupDinnerInvitation';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
 } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Calendar, MapPin, Clock, Crown, Users, ArrowRight, AlertCircle, ImageIcon, Clock3 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Calendar, ImageIcon, MapPin } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { parseLocalDate } from '@/lib/date-utils';
-import { EventAttendeePreview } from '@/components/portal/EventAttendeePreview';
-import { EventPhotoGallery } from '@/components/portal/EventPhotoGallery';
+import { StitchEventCard } from '@/components/portal/StitchEventCard';
+import { PastEventCard } from '@/components/portal/PastEventCard';
+import { EventUpgradeModal } from '@/components/portal/EventUpgradeModal';
 
 interface Event {
   id: string;
@@ -51,16 +45,11 @@ interface WaitlistData {
   status: string;
 }
 
-import { EventCard } from '@/components/portal/EventCard';
-import { PastEventCard } from '@/components/portal/PastEventCard';
-import { EventUpgradeModal } from '@/components/portal/EventUpgradeModal';
-
 export default function PortalEvents() {
   const { user, membership } = useAuth();
   const queryClient = useQueryClient();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-
   const [activeTab, setActiveTab] = useState('upcoming');
 
   // Fetch upcoming events
@@ -190,7 +179,6 @@ export default function PortalEvents() {
           .insert({ event_id: eventId, user_id: user!.id, status: 'confirmed' });
 
         if (error) {
-          // Check for custom Postgres exception from enforce_event_capacity() trigger
           if (error.code === 'P0001') {
             throw new Error(error.message || 'This event is now full.');
           }
@@ -208,9 +196,6 @@ export default function PortalEvents() {
           .eq('user_id', user!.id);
 
         if (error) throw error;
-
-        // Note: Waitlist promotion and notifications are now handled automatically 
-        // by database triggers on the server-side.
       }
     },
     onSuccess: (_, { action }) => {
@@ -269,7 +254,6 @@ export default function PortalEvents() {
 
   const isEventFull = (event: Event) => {
     if (!event.capacity) return false;
-    // Prefer rsvp_count from event object (server-side synced)
     const confirmedCount = event.rsvp_count ?? rsvpCounts[event.id] ?? 0;
     return confirmedCount >= event.capacity;
   };
@@ -307,68 +291,53 @@ export default function PortalEvents() {
     rsvpMutation.mutate({ eventId, action: 'rsvp' });
   };
 
-  if (eventsLoading) {
-    return (
-      <div className="space-y-8 animate-in fade-in duration-300">
-        <div>
-          <Skeleton className="h-10 w-32 mb-2" />
-          <Skeleton className="h-5 w-64" />
-        </div>
-        <Skeleton className="h-10 w-64" />
-        <div className="grid gap-6 md:grid-cols-2">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <EventCardSkeleton key={i} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-32">
       {/* Header */}
-      <div>
-        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+      <div className="flex items-center justify-between">
+        <h1 className="font-display text-3xl md:text-4xl text-foreground">
           Exclusive Events
         </h1>
-        <p className="text-muted-foreground">
-          Curated gatherings for distinguished members
-        </p>
       </div>
 
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="upcoming">Upcoming ({upcomingEvents.length})</TabsTrigger>
-          <TabsTrigger value="past">
-            <ImageIcon className="h-4 w-4 mr-1" />
-            Past Events ({pastEvents.length})
-          </TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="flex justify-center mb-8">
+          <TabsList className="bg-slate-200 dark:bg-[#1e251f] p-1 rounded-full h-auto">
+            <TabsTrigger
+              value="upcoming"
+              className="rounded-full px-6 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-primary data-[state=active]:text-slate-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:hover:text-white"
+            >
+              Upcoming
+            </TabsTrigger>
+            <TabsTrigger
+              value="past"
+              className="rounded-full px-6 py-2 data-[state=active]:bg-white dark:data-[state=active]:bg-primary data-[state=active]:text-slate-900 dark:data-[state=active]:text-white data-[state=active]:shadow-sm transition-all text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:hover:text-white"
+            >
+              Past Events
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
-        <TabsContent value="upcoming" className="mt-6">
+        <TabsContent value="upcoming">
           {eventsLoading ? (
-            <div className="grid gap-6 md:grid-cols-2">
-              {Array.from({ length: 2 }).map((_, i) => (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
                 <EventCardSkeleton key={i} />
               ))}
             </div>
           ) : upcomingEvents.length === 0 ? (
-            <Card className="p-12 text-center border-white/[0.08] bg-white/[0.04]">
+            <Card className="p-12 text-center border-white/[0.08] bg-white/[0.04] rounded-[2rem]">
               <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
               <h3 className="font-display text-xl mb-2 text-foreground">No Upcoming Events</h3>
               <p className="text-muted-foreground mb-4">
-                Check back soon for exciting gatherings! Browse our past events below for a taste of what's to come.
+                Check back soon for exciting gatherings!
               </p>
-              <Button variant="outline" onClick={() => setActiveTab('past')}>
-                <ImageIcon className="h-4 w-4 mr-2" />
-                View Past Events
-              </Button>
             </Card>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
               {upcomingEvents.map((event) => (
-                <EventCard
+                <StitchEventCard
                   key={event.id}
                   event={event}
                   canAccess={canAccessEvent(event.tier)}
@@ -388,7 +357,7 @@ export default function PortalEvents() {
           )}
         </TabsContent>
 
-        <TabsContent value="past" className="mt-6">
+        <TabsContent value="past">
           {pastEventsLoading ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 3 }).map((_, i) => (
@@ -399,7 +368,6 @@ export default function PortalEvents() {
             <Card className="p-12 text-center border-white/[0.08] bg-white/[0.04]">
               <ImageIcon className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
               <h3 className="font-display text-xl mb-2">No Past Events Yet</h3>
-              <p className="text-muted-foreground">Event memories will appear here after they happen!</p>
             </Card>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

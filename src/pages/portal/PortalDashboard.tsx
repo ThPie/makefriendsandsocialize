@@ -2,21 +2,19 @@ import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
-import { SubmitReview } from '@/components/portal/SubmitReview';
-import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
-import { BadgeDisplay } from '@/components/portal/BadgeDisplay';
-import { FeatureUnlockCard } from '@/components/portal/FeatureUnlockCard';
+import { ProfileCompletionCard } from '@/components/portal/dashboard/ProfileCompletionCard';
+import { BadgeScroller } from '@/components/portal/dashboard/BadgeScroller';
+import { ConciergeGrid } from '@/components/portal/dashboard/ConciergeGrid';
 import { OnboardingWizard } from '@/components/portal/OnboardingWizard';
 import { BadgeUnlockModal } from '@/components/portal/BadgeUnlockModal';
-import { UpgradePromptCard } from '@/components/portal/UpgradePromptCard';
 import { EmailVerificationBanner } from '@/components/portal/EmailVerificationBanner';
 import { WidgetErrorBoundary } from '@/components/ui/widget-error-boundary';
-import { RelationshipHealthSection } from '@/components/portal/RelationshipHealthSection';
-import { DashboardStats } from '@/components/portal/dashboard/DashboardStats';
 import { UpcomingSchedule } from '@/components/portal/dashboard/UpcomingSchedule';
+import { Bell } from 'lucide-react';
+import { useSiteStats } from '@/hooks/useSiteStats';
 
 export default function PortalDashboard() {
-  const { user, profile, refreshProfile, canAccessMatchmaking } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const { subscription } = useSubscription();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [earnedBadges, setEarnedBadges] = useState<{ badge_type: string; earned_at: string }[]>([]);
@@ -38,7 +36,6 @@ export default function PortalDashboard() {
     return score;
   }, [profile]);
 
-  const isProfileComplete = completionPercentage === 100;
 
   // Fetch badges
   useEffect(() => {
@@ -65,8 +62,15 @@ export default function PortalDashboard() {
     await refreshProfile();
   };
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   return (
-    <div className="space-y-10">
+    <div className="space-y-8 max-w-md mx-auto pb-24">
       {/* Email Verification Banner */}
       <EmailVerificationBanner />
 
@@ -89,64 +93,46 @@ export default function PortalDashboard() {
         />
       )}
 
-      {/* Welcome Header */}
-      <div>
-        <h1 className="font-display font-semibold text-3xl md:text-4xl text-foreground mb-2">
-          Welcome back, {profile?.first_name || 'Member'}
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          Here is a curated look at what's happening in your social circle today.
-        </p>
+      {/* Header section moved to Layout in desktop, but we might want a greeting here for mobile/dashboard context */}
+      <div className="flex items-center justify-between px-1">
+        <div>
+          <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+            {getGreeting()}
+          </p>
+          <h1 className="font-display text-2xl font-medium text-white">
+            {profile?.first_name || 'Member'} {profile?.last_name}
+          </h1>
+        </div>
+        <div className="relative">
+          {/* Notification icon could go here if not in top bar */}
+        </div>
       </div>
 
-      {/* Upgrade Banner for Free Users */}
-      {(!subscription?.subscribed || subscription?.tier === 'patron') && !subscription?.is_trialing && (
-        <UpgradePromptCard variant="compact" context="general" />
-      )}
-
-      {/* Main Stats Row */}
-      <WidgetErrorBoundary title="Dashboard Stats">
-        <DashboardStats />
+      {/* Profile Completion Card (Hero) */}
+      <WidgetErrorBoundary title="Profile Status">
+        <ProfileCompletionCard
+          completionPercentage={completionPercentage}
+          profileFn={profile?.first_name || ''}
+          profileLn={profile?.last_name || ''}
+          tier={subscription?.tier || 'Member'}
+        />
       </WidgetErrorBoundary>
 
-      {/* Upcoming Schedule */}
+      {/* Badges Scroller */}
+      <WidgetErrorBoundary title="Badges">
+        <BadgeScroller earnedBadges={earnedBadges} />
+      </WidgetErrorBoundary>
+
+      {/* Quick Actions (Concierge) */}
+      <WidgetErrorBoundary title="Concierge">
+        <ConciergeGrid />
+      </WidgetErrorBoundary>
+
+      {/* Upcoming Schedule (Existing component, styled to fit?) */}
       <WidgetErrorBoundary title="Upcoming Schedule">
         <UpcomingSchedule />
       </WidgetErrorBoundary>
 
-      {/* Profile Completion & Feature Unlocks */}
-      {profile && completionPercentage < 100 && (
-        <div className="grid gap-8 md:grid-cols-2">
-          <WidgetErrorBoundary title="Profile Progress">
-            <ProfileCompletionIndicator profile={profile} />
-          </WidgetErrorBoundary>
-
-          <WidgetErrorBoundary title="Feature Status">
-            <FeatureUnlockCard
-              completionPercentage={completionPercentage}
-              isProfileComplete={isProfileComplete}
-            />
-          </WidgetErrorBoundary>
-        </div>
-      )}
-
-      {/* Relationship Health Section - Only for matchmaking users */}
-      {canAccessMatchmaking && user && (
-        <RelationshipHealthSection userId={user.id} />
-      )}
-
-      {/* Badges - Show if any owned */}
-      {earnedBadges.length > 0 && (
-        <div className="mt-8">
-          <h3 className="font-display text-xl font-semibold mb-4">Your Achievements</h3>
-          <WidgetErrorBoundary title="Your Badges">
-            <BadgeDisplay earnedBadges={earnedBadges} showAll={false} compact />
-          </WidgetErrorBoundary>
-        </div>
-      )}
-
-      {/* Submit Review */}
-      <SubmitReview />
     </div>
   );
 }

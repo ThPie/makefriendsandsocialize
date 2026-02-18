@@ -79,6 +79,11 @@ const PortalConcierge = lazy(() => import("@/pages/portal/PortalConcierge"));
 const PortalEventCheckin = lazy(() => import("@/pages/portal/PortalEventCheckin"));
 const AdminPerks = lazy(() => import("@/pages/admin/AdminPerks"));
 const AdminConcierge = lazy(() => import("@/pages/admin/AdminConcierge"));
+const InterestsPage = lazy(() => import("@/pages/onboarding/InterestsPage"));
+const ProfessionalPage = lazy(() => import("@/pages/onboarding/ProfessionalPage"));
+const GoalsPage = lazy(() => import("@/pages/onboarding/GoalsPage"));
+const BasicInfoPage = lazy(() => import("@/pages/onboarding/BasicInfoPage"));
+const ReviewPage = lazy(() => import("@/pages/onboarding/ReviewPage"));
 
 // Slow Dating subdomain routes
 export const SlowDatingRoutes = () => (
@@ -169,6 +174,13 @@ export const MainRoutes = () => (
         <Route path="/portal/perks" element={<ProtectedRoute><PortalLayout><PortalPerks /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/concierge" element={<ProtectedRoute><PortalLayout><PortalConcierge /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/checkin/:eventId/:code" element={<ProtectedRoute><PortalEventCheckin /></ProtectedRoute>} />
+
+        {/* Onboarding Routes */}
+        <Route path="/onboarding/basic-info" element={<BasicInfoPage />} />
+        <Route path="/onboarding/professional" element={<ProfessionalPage />} />
+        <Route path="/onboarding/goals" element={<GoalsPage />} />
+        <Route path="/onboarding/interests" element={<InterestsPage />} />
+        <Route path="/onboarding/review" element={<ReviewPage />} />
 
         {/* Dating intake route */}
         <Route path="/dating/apply" element={<Layout><DatingIntakePage /></Layout>} />
