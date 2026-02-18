@@ -29,7 +29,7 @@ const JournalPostPage = () => {
       incrementView();
     }
   }, [id]);
-  
+
   if (!article) {
     return (
       <div className="flex-1 w-full flex flex-col items-center justify-center px-4 py-20">
@@ -48,7 +48,7 @@ const JournalPostPage = () => {
   return (
     <div className="flex-1 w-full flex flex-col items-center px-4 md:px-10 py-12 animate-fade-in">
       {/* Breadcrumb */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-wrap gap-2 pb-8 w-full max-w-3xl"
@@ -88,7 +88,7 @@ const JournalPostPage = () => {
         </motion.div>
 
         {/* Title */}
-        <motion.h1 
+        <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -96,17 +96,17 @@ const JournalPostPage = () => {
         >
           {article.title}
         </motion.h1>
-        
+
         {/* Meta */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
           className="flex flex-wrap items-center gap-6 pb-8 border-b border-border"
         >
           <div className="flex items-center gap-3">
-            <img 
-              src={article.author.avatar} 
+            <img
+              src={article.author.avatar}
               alt={article.author.name}
               className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
             />
@@ -126,22 +126,22 @@ const JournalPostPage = () => {
             </span>
           </div>
         </motion.div>
-        
+
         {/* Hero Image */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
           className="my-8"
         >
-          <div 
-            className="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-2xl min-h-[400px] md:min-h-[500px]" 
-            style={{backgroundImage: `url("${article.image}")`}}
+          <div
+            className="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-2xl min-h-[400px] md:min-h-[500px]"
+            style={{ backgroundImage: `url("${article.image}")` }}
           />
         </motion.div>
 
         {/* Content */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
@@ -163,7 +163,7 @@ const JournalPostPage = () => {
               <p className="text-muted-foreground leading-relaxed mb-4">
                 {section.content}
               </p>
-              
+
               {section.quote && (
                 <blockquote className="border-l-4 border-primary pl-6 py-2 my-8 bg-primary/5 rounded-r-lg pr-6">
                   <p className="font-display text-xl md:text-2xl text-foreground italic leading-relaxed">
@@ -177,9 +177,9 @@ const JournalPostPage = () => {
 
               {section.image && (
                 <div className="my-8">
-                  <div 
-                    className="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl min-h-80" 
-                    style={{backgroundImage: `url("${section.image}")`}}
+                  <div
+                    className="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl min-h-80"
+                    style={{ backgroundImage: `url("${section.image}")` }}
                   />
                 </div>
               )}
@@ -188,7 +188,7 @@ const JournalPostPage = () => {
         </motion.div>
 
         {/* Like, Bookmark & Share */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
@@ -197,15 +197,15 @@ const JournalPostPage = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
             {/* Like & Bookmark */}
             <BlogLikeBookmark postId={id!} />
-            
+
             {/* Share */}
             <div className="flex items-center gap-4">
               <span className="text-muted-foreground text-sm flex items-center gap-1">
                 <Share2 className="h-4 w-4" />
                 Share
               </span>
-              <SocialShareButtons 
-                title={article.title} 
+              <SocialShareButtons
+                title={article.title}
                 excerpt={article.excerpt}
               />
             </div>
@@ -217,11 +217,11 @@ const JournalPostPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.55 }}
-          className="mt-12 p-8 bg-card border border-border rounded-2xl"
+          className="mt-12 p-8 bg-white/[0.04] border border-white/[0.08] rounded-2xl"
         >
           <div className="flex items-start gap-4">
-            <img 
-              src={article.author.avatar} 
+            <img
+              src={article.author.avatar}
               alt={article.author.name}
               className="w-16 h-16 rounded-full object-cover border-2 border-primary/20"
             />
@@ -229,7 +229,7 @@ const JournalPostPage = () => {
               <p className="text-foreground font-display text-xl font-medium">{article.author.name}</p>
               <p className="text-primary text-sm mb-3">{article.author.role}</p>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                A passionate advocate for building meaningful human connections in our increasingly digital world. 
+                A passionate advocate for building meaningful human connections in our increasingly digital world.
                 Regularly hosts workshops and events focused on authentic networking and community building.
               </p>
             </div>
@@ -250,7 +250,7 @@ const JournalPostPage = () => {
 
       {/* Related Posts */}
       {relatedArticles.length > 0 && (
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65 }}
@@ -263,9 +263,9 @@ const JournalPostPage = () => {
             {relatedArticles.map((post) => (
               <Link key={post.id} to={`/journal/${post.id}`} className="flex flex-col group cursor-pointer">
                 <div className="overflow-hidden rounded-2xl border border-border/50 group-hover:border-primary/50 transition-colors">
-                  <div 
-                    className="w-full bg-center bg-no-repeat bg-cover aspect-[4/3] group-hover:scale-105 transition-transform duration-500" 
-                    style={{backgroundImage: `url("${post.image}")`}} 
+                  <div
+                    className="w-full bg-center bg-no-repeat bg-cover aspect-[4/3] group-hover:scale-105 transition-transform duration-500"
+                    style={{ backgroundImage: `url("${post.image}")` }}
                   />
                 </div>
                 <div className="mt-4">

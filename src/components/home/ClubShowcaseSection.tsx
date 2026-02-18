@@ -61,65 +61,61 @@ export const ClubShowcaseSection = () => {
     const { ref, isVisible } = useScrollAnimation();
 
     return (
-        <section className="w-full bg-background py-24 md:py-32 overflow-hidden">
+        <section className="w-full bg-[#051008] py-24 md:py-32 overflow-hidden" id="collections">
             <div ref={ref} className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
 
                 {/* Section Header */}
-                <div className="container max-w-[1400px] mb-12 flex flex-col items-center text-center px-6">
-                    <div className="inline-flex items-center gap-2 border border-primary/30 rounded-full px-4 py-1.5 backdrop-blur-sm mb-6">
-                        <span className="flex h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
-                        <span className="text-xs font-medium text-primary tracking-wider uppercase">Our Societies</span>
-                    </div>
-                    <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[0.9] mb-6">
-                        Curated <span className="text-muted-foreground font-serif italic">Collections</span>
+                <div className="container max-w-[1400px] mb-16 flex flex-col items-center text-center px-6">
+                    <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-normal text-white italic">
+                        Curated Collections
+                        <span className="block h-px w-24 bg-[#d4af37]/50 mx-auto mt-6" />
                     </h2>
-                    <p className="text-muted-foreground max-w-lg text-lg leading-relaxed">
-                        Discover the exclusive circles that define our community. Each one a unique world of connection.
+                    <p className="mt-8 text-white/60 max-w-lg text-lg leading-relaxed font-light">
+                        Discover sub-societies tailored to your interests.
                     </p>
                 </div>
 
                 {/* Bento Grid Container */}
                 <div className="container max-w-[1400px] px-6">
-                    <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar scroll-touch md:grid md:grid-cols-3 md:auto-rows-[300px]">
+                    <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 no-scrollbar scroll-touch md:grid md:grid-cols-3 md:auto-rows-[400px]">
                         {clubs.map((club, index) => (
                             <Link
                                 key={club.id}
                                 to={club.link}
-                                className={`group relative rounded-2xl overflow-hidden cursor-pointer min-w-[280px] h-[300px] snap-center shrink-0 md:min-w-0 md:shrink md:snap-align-none ${club.className}`}
+                                className={`group relative rounded-none overflow-hidden cursor-pointer min-w-[280px] h-[400px] snap-center shrink-0 md:min-w-0 md:shrink md:snap-align-none border border-white/10 hover:border-[#d4af37]/50 transition-colors duration-500 ${club.className}`}
                             >
                                 {/* Background Image */}
                                 <img
                                     src={club.image}
                                     alt={club.title}
-                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-60 group-hover:opacity-40"
                                 />
 
                                 {/* Overlays */}
-                                <div className={`absolute inset-0 bg-gradient-to-t ${club.color} via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90`} />
-                                <div className="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/50" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
                                 {/* Content */}
-                                <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
-                                    {/* Top Area */}
-                                    <div className="flex justify-between items-start">
-                                        <span className="inline-flex items-center justify-center px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-medium text-white/90 uppercase tracking-wider border border-white/10">
-                                            {club.title}
-                                        </span>
-                                        <div className="bg-white/20 backdrop-blur-md p-2 rounded-full opacity-0 -translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-                                            <ArrowUpRight className="w-5 h-5 text-white" />
-                                        </div>
+                                <div className="absolute inset-0 p-8 flex flex-col justify-end">
+
+                                    {/* Number */}
+                                    <div className="absolute top-8 left-8 text-[#d4af37] font-display text-xl font-bold">
+                                        0{index + 1}
                                     </div>
 
-                                    {/* Bottom Area */}
-                                    <div className="transform transition-transform duration-500 group-hover:-translate-y-2">
-                                        <p className="text-white text-lg md:text-2xl font-display leading-tight max-w-[90%]">
-                                            {club.description}
-                                        </p>
-                                        <div className="mt-4 flex items-center gap-2 text-white/70 text-sm font-medium opacity-0 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-75">
-                                            <span>Explore</span>
-                                            <ArrowUpRight className="w-4 h-4" />
-                                        </div>
+                                    {/* Arrow */}
+                                    <div className="absolute top-8 right-8 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
+                                        <ArrowUpRight className="w-6 h-6 text-[#d4af37]" />
                                     </div>
+
+                                    {/* Title */}
+                                    <h3 className="font-display text-3xl text-white italic mb-2 group-hover:text-[#d4af37] transition-colors duration-300">
+                                        {club.title}
+                                    </h3>
+
+                                    {/* Description */}
+                                    <p className="text-white/70 text-sm leading-relaxed max-w-[90%] transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                                        {club.description}
+                                    </p>
                                 </div>
                             </Link>
                         ))}

@@ -47,8 +47,8 @@ const CookiesPage = () => {
     <main className="flex-grow flex flex-col items-center">
       {/* Hero */}
       <div className="w-full max-w-[1440px] mt-8 p-4">
-        <div 
-          className="flex min-h-[300px] flex-col gap-4 bg-gradient-to-br from-secondary via-secondary to-primary/20 rounded-xl items-center justify-center p-8 text-center"
+        <div
+          className="flex min-h-[300px] flex-col gap-4 bg-white/[0.03] border border-white/[0.08] rounded-xl items-center justify-center p-8 text-center"
         >
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-primary mb-2">
             <Cookie className="w-8 h-8" strokeWidth={1.5} />
@@ -63,11 +63,11 @@ const CookiesPage = () => {
 
       {/* What Are Cookies */}
       <div ref={ref} className="w-full max-w-4xl px-4 md:px-10 mt-12">
-        <div className={`bg-card border border-border rounded-xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
+        <div className={`bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <h2 className="text-foreground text-xl font-bold font-display mb-4">What Are Cookies?</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Cookies are small text files placed on your device when you visit a website. They help us remember your preferences, 
-            understand how you use our site, and improve your overall experience. Cookies are widely used across the internet and 
+            Cookies are small text files placed on your device when you visit a website. They help us remember your preferences,
+            understand how you use our site, and improve your overall experience. Cookies are widely used across the internet and
             are essential for many website features to work properly.
           </p>
         </div>
@@ -80,9 +80,9 @@ const CookiesPage = () => {
         </h2>
         <div className="space-y-6">
           {cookieTypes.map((cookie, index) => (
-            <div 
+            <div
               key={cookie.title}
-              className={`group bg-card border border-border rounded-xl p-6 md:p-8 hover:border-primary/50 transition-all duration-300 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+              className={`group bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 md:p-8 hover:border-primary/50 transition-all duration-300 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
             >
               <div className="flex items-start gap-4 mb-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary flex-shrink-0 transition-all duration-300 group-hover:bg-primary/30 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]">
@@ -115,18 +115,18 @@ const CookiesPage = () => {
 
       {/* Managing Cookies */}
       <div className="w-full max-w-4xl px-4 md:px-10 mt-8 mb-20">
-        <div className={`bg-secondary rounded-xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
+        <div className={`bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <h2 className="text-foreground text-xl font-bold font-display mb-4">Managing Your Cookies</h2>
           <p className="text-muted-foreground leading-relaxed mb-4">
-            Most web browsers allow you to control cookies through their settings. You can usually find these in the 
-            "Options" or "Preferences" menu of your browser. Note that disabling cookies may affect the functionality 
+            Most web browsers allow you to control cookies through their settings. You can usually find these in the
+            "Options" or "Preferences" menu of your browser. Note that disabling cookies may affect the functionality
             of some website features.
           </p>
           <p className="text-muted-foreground leading-relaxed">
             For more information about cookies and how to manage them, visit{' '}
-            <a 
-              href="https://www.allaboutcookies.org" 
-              target="_blank" 
+            <a
+              href="https://www.allaboutcookies.org"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:underline inline-flex items-center gap-1"
             >
@@ -138,9 +138,9 @@ const CookiesPage = () => {
 
         {/* Links */}
         <div className={`mt-6 flex flex-wrap gap-4 scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <Link 
-            to="/privacy" 
-            className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-lg text-muted-foreground hover:text-primary hover:border-primary/50 transition-all duration-200"
+          <Link
+            to="/privacy"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/[0.04] border border-white/[0.08] rounded-lg text-muted-foreground hover:text-primary hover:border-primary/50 transition-all duration-200"
           >
             <Shield className="w-4 h-4" />
             View Privacy Policy

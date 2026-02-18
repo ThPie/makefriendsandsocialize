@@ -76,8 +76,8 @@ const PrivacyPage = () => {
     <main className="flex-grow flex flex-col items-center">
       {/* Hero */}
       <div className="w-full max-w-[1440px] mt-8 p-4">
-        <div 
-          className="flex min-h-[300px] flex-col gap-4 bg-gradient-to-br from-secondary via-secondary to-primary/20 rounded-xl items-center justify-center p-8 text-center"
+        <div
+          className="flex min-h-[300px] flex-col gap-4 bg-white/[0.03] border border-white/[0.08] rounded-xl items-center justify-center p-8 text-center"
         >
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-primary mb-2">
             <Lock className="w-8 h-8" strokeWidth={1.5} />
@@ -92,10 +92,10 @@ const PrivacyPage = () => {
 
       {/* Intro */}
       <div ref={ref} className="w-full max-w-4xl px-4 md:px-10 mt-12">
-        <div className={`bg-card border border-border rounded-xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
+        <div className={`bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <p className="text-muted-foreground leading-relaxed">
-            Welcome to Make Friends and Socialize. We are committed to protecting your personal information and your right to privacy. 
-            This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and 
+            Welcome to Make Friends and Socialize. We are committed to protecting your personal information and your right to privacy.
+            This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and
             participate in our events and services.
           </p>
         </div>
@@ -105,9 +105,9 @@ const PrivacyPage = () => {
       <div className="w-full max-w-4xl px-4 md:px-10 mt-8 mb-20">
         <div className="space-y-6">
           {sections.map((section, index) => (
-            <div 
+            <div
               key={section.title}
-              className={`group bg-card border border-border rounded-xl p-6 md:p-8 hover:border-primary/50 transition-all duration-300 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
+              className={`group bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 md:p-8 hover:border-primary/50 transition-all duration-300 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
             >
               <div className="flex items-start gap-4 mb-5">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary flex-shrink-0 transition-all duration-300 group-hover:bg-primary/30 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]">

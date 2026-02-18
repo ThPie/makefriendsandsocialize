@@ -282,7 +282,7 @@ const MembershipPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + index * 0.1 }}
-                className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border/50"
+                className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.04] border border-white/[0.08]"
               >
                 <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center`}>
                   <item.icon className={`w-5 h-5 ${item.color}`} />
@@ -320,7 +320,7 @@ const MembershipPage = () => {
             animate={legacyAnimation.isVisible ? "visible" : "hidden"}
             className="grid grid-cols-1 md:grid-cols-2 gap-8"
           >
-            <motion.div variants={itemVariants} className="group bg-card border border-border/50 rounded-2xl overflow-hidden hover-lift">
+            <motion.div variants={itemVariants} className="group bg-white/[0.04] border border-white/[0.08] rounded-2xl overflow-hidden hover-lift">
               <div
                 className="w-full aspect-video bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                 style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDruggrnBN-9qTOe1Fc9qMF_JtiW_VnADSmII4S2ux8MqT6fOs2HG-ghWwtzWWHqkDaTAmD4LSpx6E1Hm-sS0Zl0P8VefX-D5Etk3lO-dk0r-NPEcPKRUOBu-2UdNaKofKZFu5q8ho1Fl3MglVTEqdi6uRMGWJ9_6kBmYVGB1jvjTPhvJuXwwTTesD0I1g-PsBP4RwCkV1vaqccSNY-5TXH6oF1728qjz6PlerqNSYPtnIdaWjHcaH5T-JfK_fO9GunPtHGxtXhJY3C")' }}
@@ -336,7 +336,7 @@ const MembershipPage = () => {
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="group bg-card border border-border/50 rounded-2xl overflow-hidden hover-lift">
+            <motion.div variants={itemVariants} className="group bg-white/[0.04] border border-white/[0.08] rounded-2xl overflow-hidden hover-lift">
               <div
                 className="w-full aspect-video bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                 style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDB4GSC6Jo5fw67mSMHAPEJFdrOGuo0YWScMlid-EMsl053fi94hxzLQ8Gr2YRsYR2xZGZv3UIXwrM1WpGe8ugpoAv-7Px5WKpOsLDczUkvB7yCVf7gZssUxy7wEBOhd78EareiANb92XxNzKtQSoAxWjQ0CdI2DdoWkLuMOsVHXKvf9qwBFAhSfiXgI1tZ5k__18haE_z-XAzllweTDSNcZEad7ucCeinEDHN5ftXsXCEMDuS2_Z3ofrUh-vEyWcFG3oMIK2NqS4Ho")' }}
@@ -523,7 +523,7 @@ const MembershipPage = () => {
                 className="flex flex-col items-center text-center group"
               >
                 <div className="relative mb-6">
-                  <div className="w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-lg group-hover:shadow-primary/10">
+                  <div className="w-20 h-20 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-lg group-hover:shadow-primary/10">
                     <item.icon className="h-8 w-8 text-primary" />
                   </div>
                   <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">

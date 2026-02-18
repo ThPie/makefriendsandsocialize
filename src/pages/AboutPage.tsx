@@ -162,7 +162,7 @@ const AboutPage = () => {
             className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"
           >
             {/* Story */}
-            <motion.div variants={itemVariants} className="bg-card border border-border/50 rounded-2xl p-8 hover-lift">
+            <motion.div variants={itemVariants} className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 hover-lift">
               <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Story</p>
               <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
                 A Vision Realized
@@ -176,7 +176,7 @@ const AboutPage = () => {
             </motion.div>
 
             {/* Mission */}
-            <motion.div variants={itemVariants} className="bg-card border border-border/50 rounded-2xl p-8 hover-lift">
+            <motion.div variants={itemVariants} className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 hover-lift">
               <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Mission</p>
               <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
                 Cultivating Connection
@@ -226,7 +226,7 @@ const AboutPage = () => {
               <motion.div
                 key={i}
                 variants={itemVariants}
-                className="group flex flex-col items-center text-center p-8 bg-card border border-border/50 rounded-2xl hover-lift"
+                className="group flex flex-col items-center text-center p-8 bg-white/[0.04] border border-white/[0.08] rounded-2xl hover-lift"
               >
                 <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 transition-all duration-300 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/20">
                   <item.icon className="w-8 h-8 text-primary" strokeWidth={1.5} />
@@ -283,7 +283,7 @@ const AboutPage = () => {
 
       {/* CTA Section */}
       <section className="py-24 md:py-32 w-full relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-secondary" />
+        <div className="absolute inset-0 bg-white/[0.02]" />
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
         </div>

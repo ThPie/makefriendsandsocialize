@@ -178,7 +178,7 @@ export default function FAQPage() {
           />
         </div>
 
-        <div 
+        <div
           ref={heroAnimation.ref}
           className={`container max-w-4xl text-center relative z-10 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
         >
@@ -213,7 +213,7 @@ export default function FAQPage() {
       </section>
 
       {/* FAQ Categories */}
-      <section 
+      <section
         ref={faqAnimation.ref}
         className={`w-full px-6 py-12 md:px-10 md:py-16 lg:px-16 xl:px-20 scroll-animate ${faqAnimation.isVisible ? 'visible' : ''}`}
       >
@@ -230,10 +230,10 @@ export default function FAQPage() {
               </h2>
               <Accordion type="single" collapsible className="w-full space-y-3">
                 {category.faqs.map((faq, faqIndex) => (
-                  <AccordionItem 
-                    key={faqIndex} 
+                  <AccordionItem
+                    key={faqIndex}
                     value={`${categoryIndex}-${faqIndex}`}
-                    className="border border-border/50 rounded-xl px-6 bg-card hover:border-primary/30 transition-colors"
+                    className="border border-white/[0.08] rounded-xl px-6 bg-white/[0.04] hover:border-primary/30 transition-colors"
                   >
                     <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-5 gap-4">
                       <div className="flex items-center gap-4">
@@ -254,12 +254,12 @@ export default function FAQPage() {
 
       {/* Still Have Questions CTA */}
       <section className="py-24 md:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary via-card to-secondary" />
+        <div className="absolute inset-0 bg-white/[0.02]" />
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
-        <div 
+        <div
           ref={ctaAnimation.ref}
           className={`container max-w-3xl text-center relative z-10 scroll-animate ${ctaAnimation.isVisible ? 'visible' : ''}`}
         >

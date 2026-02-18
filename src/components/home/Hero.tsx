@@ -2,15 +2,8 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { AdaptiveVideo } from '@/components/ui/adaptive-video';
 import { useSiteStats } from '@/hooks/useSiteStats';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Lock } from 'lucide-react';
 import { useEffect, useState } from 'react';
-
-/**
- * Full-screen Hero with:
- * - Video background covering entire viewport (100dvh)
- * - Left-aligned modern layout
- * - Single Apply Now button in bottom card
- */
 
 const videoQualitySources = [
   { quality: 'low' as const, src: '/videos/hero-1.mp4', type: 'video/mp4' },
@@ -47,7 +40,7 @@ export const Hero = () => {
   const avatars = stats?.avatarUrls?.slice(0, 4) || [];
 
   return (
-    <section className="relative w-full min-h-screen min-h-[100dvh] overflow-hidden">
+    <section className="relative w-full min-h-screen min-h-[100dvh] overflow-hidden flex items-center justify-center">
       {/* FULL SCREEN VIDEO BACKGROUND */}
       <div className="absolute inset-0 -top-[env(safe-area-inset-top)] bg-black">
         <AdaptiveVideo
@@ -55,63 +48,73 @@ export const Hero = () => {
           loop={true}
           preloadStrategy="metadata"
           showPosterOnSlowConnection={false}
-          className="h-full w-full object-cover scale-[1.02]"
+          className="h-full w-full object-cover scale-[1.02] opacity-60"
         />
-
       </div>
-      <div className="absolute inset-0 bg-black/50" />
+
+      {/* Dark Overlay for better text contrast */}
+      <div className="absolute inset-0 bg-[#0a1f0f]/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0a1f0f] via-transparent to-black/30" />
 
       {/* CONTENT */}
-      <div className="relative z-10 flex flex-col justify-end min-h-screen min-h-[100dvh] px-6 md:px-12 lg:px-20 pt-[env(safe-area-inset-top)] pb-12 md:pb-16 lg:pb-20">
-        {/* HEADLINE SECTION */}
-        <div className="max-w-4xl mb-8">
-          {/* Tagline above title */}
-          <p className="text-white/60 text-xs md:text-sm font-medium mb-4 uppercase tracking-[0.2em]">
-            Where Quality Meets Community
-          </p>
+      <div className="relative z-10 flex flex-col items-center text-center px-6 md:px-12 max-w-4xl mx-auto pt-20">
 
-          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6">
-            Curated Events,<br />
-            <span className="italic text-primary font-light text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
-              Meaningful Connections
-            </span>
-          </h1>
-          <p className="text-white/80 text-base md:text-lg max-w-xl leading-relaxed font-light">
-            A private social club for professionals seeking genuine friendships, intentional networking, and authentic dating experiences.
-          </p>
+        {/* MEMBERS ONLY PILL */}
+        <div className="mb-8 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d4af37]/30 bg-[#0a1f0f]/80 backdrop-blur-md">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#d4af37] animate-pulse" />
+          <span className="text-[#d4af37] text-xs font-medium tracking-[0.2em] uppercase">
+            Members Only
+          </span>
         </div>
 
-        {/* COMPACT CARD - Avatars + Join Text + Apply Button */}
-        <div className="inline-flex flex-wrap items-center gap-4 bg-[hsl(155,25%,12%)]/95 border border-primary/30 rounded-full pl-2 pr-2 py-2 w-fit backdrop-blur-sm shadow-xl">
-          {/* Avatars */}
-          <div className="flex -space-x-3 shrink-0 pl-2">
-            {avatars.map((url, i) => (
+        {/* HEADING */}
+        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-white leading-[1.1] mb-8 font-normal drop-shadow-lg">
+          Experience <br />
+          <span className="text-[#d4af37] italic">Meaningful</span> <br />
+          Connection
+        </h1>
+
+        {/* SUBTITLE */}
+        <p className="text-white/90 text-lg md:text-xl max-w-2xl leading-relaxed font-light mb-10 drop-shadow-md">
+          A private digital sanctuary for the discerning few. Connect, converse, and cultivate your circle.
+        </p>
+
+        {/* CTA BUTTON */}
+        <Button
+          size="lg"
+          asChild
+          className="rounded-full bg-[#d4af37] text-[#0a1f0f] hover:bg-[#b5952f] font-bold text-sm md:text-base px-10 h-14 tracking-wider uppercase mb-12 shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all hover:scale-105"
+        >
+          <Link to="/membership">
+            Apply For Membership
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </Button>
+
+        {/* SOCIAL PROOF */}
+        <div className="flex flex-col items-center gap-3 animate-fade-in-up">
+          <div className="flex -space-x-4">
+            {avatars.length > 0 ? avatars.map((url, i) => (
               <img
                 key={i}
                 src={url}
                 alt=""
-                className="w-10 h-10 rounded-full border border-primary/30 object-cover"
+                className="w-12 h-12 rounded-full border-2 border-[#0a1f0f] object-cover"
                 loading="lazy"
               />
-            ))}
+            )) : (
+              // Fallback avatars if none loaded
+              [1, 2, 3].map(i => (
+                <div key={i} className="w-12 h-12 rounded-full border-2 border-[#0a1f0f] bg-white/10 backdrop-blur-md" />
+              ))
+            )}
+            <div className="w-12 h-12 rounded-full border-2 border-[#0a1f0f] bg-[#d4af37] flex items-center justify-center text-[#0a1f0f] font-bold text-xs z-10">
+              {displayCount > 0 ? `${(displayCount / 1000).toFixed(1)}k+` : '150+'}
+            </div>
           </div>
-
-          {/* Join Text */}
-          <span className="text-white text-sm sm:text-base font-medium whitespace-nowrap px-2">
-            Join <span className="text-primary font-bold font-display italic">{displayCount > 0 ? displayCount.toLocaleString() : '—'}+</span> members
-          </span>
-
-          {/* Apply Button */}
-          <Button
-            size="sm"
-            asChild
-            className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-6 h-10 shrink-0 border border-primary/20"
-          >
-            <Link to="/membership">
-              Apply Now
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+          <p className="text-white/60 text-xs tracking-widest uppercase font-medium">
+            Join our curated community
+          </p>
         </div>
       </div>
     </section>

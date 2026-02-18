@@ -192,7 +192,7 @@ const GalleryPage = () => {
                 onClick={() => setActiveCategory(cat)}
                 className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 cursor-pointer transition-all duration-300 ${activeCategory === cat
                   ? 'bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/20'
-                  : 'bg-card border border-border/50 text-muted-foreground hover:bg-secondary hover:border-primary/30'
+                  : 'bg-white/[0.04] border border-white/[0.08] text-muted-foreground hover:bg-secondary hover:border-primary/30'
                   }`}
               >
                 <span className="text-sm font-medium leading-normal whitespace-nowrap">{cat}</span>
@@ -201,7 +201,7 @@ const GalleryPage = () => {
           </div>
 
           {/* Layout Toggle */}
-          <div className="flex items-center gap-1 bg-card border border-border/50 rounded-full p-1 shrink-0">
+          <div className="flex items-center gap-1 bg-white/[0.04] border border-white/[0.08] rounded-full p-1 shrink-0">
             <Button
               variant={layoutMode === 'grid' ? 'default' : 'ghost'}
               size="icon"

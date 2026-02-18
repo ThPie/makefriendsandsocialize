@@ -98,8 +98,8 @@ const CodeOfConductPage = () => {
     <main className="flex-grow flex flex-col items-center">
       {/* Hero */}
       <div className="w-full max-w-[1440px] mt-8 p-4">
-        <div 
-          className="flex min-h-[300px] flex-col gap-4 bg-gradient-to-br from-secondary via-secondary to-primary/20 rounded-xl items-center justify-center p-8 text-center"
+        <div
+          className="flex min-h-[300px] flex-col gap-4 bg-white/[0.03] border border-white/[0.08] rounded-xl items-center justify-center p-8 text-center"
         >
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-primary mb-2">
             <CheckCircle className="w-8 h-8" strokeWidth={1.5} />
@@ -113,9 +113,9 @@ const CodeOfConductPage = () => {
 
       {/* Intro */}
       <div ref={ref} className="w-full max-w-5xl px-4 md:px-10 mt-12">
-        <div className={`bg-card border border-border rounded-xl p-6 md:p-8 text-center scroll-animate ${isVisible ? 'visible' : ''}`}>
+        <div className={`bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 md:p-8 text-center scroll-animate ${isVisible ? 'visible' : ''}`}>
           <p className="text-muted-foreground leading-relaxed">
-            By joining Make Friends and Socialize, you agree to uphold these community standards. 
+            By joining Make Friends and Socialize, you agree to uphold these community standards.
             These rules exist to protect all members and create a welcoming environment for meaningful connections.
           </p>
         </div>
@@ -125,9 +125,9 @@ const CodeOfConductPage = () => {
       <div className="w-full max-w-5xl px-4 md:px-10 mt-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sections.map((section, index) => (
-            <div 
+            <div
               key={section.title}
-              className={`group bg-card border border-border rounded-xl p-6 hover:border-primary/50 transition-all duration-300 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
+              className={`group bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 hover:border-primary/50 transition-all duration-300 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary mb-4 transition-all duration-300 group-hover:bg-primary/30 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]">
                 <section.icon className="w-6 h-6" strokeWidth={1.5} />
@@ -149,13 +149,13 @@ const CodeOfConductPage = () => {
 
       {/* Enforcement Policy */}
       <div className="w-full max-w-5xl px-4 md:px-10 mt-12 mb-20">
-        <div className={`bg-secondary rounded-xl p-6 md:p-10 scroll-animate ${isVisible ? 'visible' : ''}`}>
+        <div className={`bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 md:p-10 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <h2 className="text-foreground text-2xl font-bold font-display text-center mb-8">Enforcement Policy</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {enforcementSteps.map((step, index) => (
-              <div 
+              <div
                 key={step.title}
-                className={`bg-card border border-border rounded-xl p-5 text-center scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+                className={`bg-white/[0.04] border border-white/[0.08] rounded-xl p-5 text-center scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
               >
                 <div className={`flex h-12 w-12 items-center justify-center rounded-full ${step.color} mx-auto mb-4`}>
                   <step.icon className="w-6 h-6" strokeWidth={2} />
