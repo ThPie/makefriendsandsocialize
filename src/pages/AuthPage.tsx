@@ -729,7 +729,7 @@ export default function AuthPage() {
                         />
                         <label htmlFor="remember-me" className="text-xs text-white/60 cursor-pointer">Remember me</label>
                       </div>
-                      <Link to="/auth/forgot-password" class="text-xs text-[#d4af37] hover:text-[#F3E5AB] transition-colors underline decoration-white/0 hover:decoration-[#F3E5AB]/50 underline-offset-4">
+                      <Link to="/auth/forgot-password" className="text-xs text-[#d4af37] hover:text-[#F3E5AB] transition-colors underline decoration-white/0 hover:decoration-[#F3E5AB]/50 underline-offset-4">
                         Forgot Password?
                       </Link>
                     </div>
