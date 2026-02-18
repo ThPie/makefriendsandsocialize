@@ -133,7 +133,7 @@ export default function PortalBilling() {
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                     </span>
                     <span className="text-amber-400 text-xs font-bold uppercase tracking-wide">
-                      {subscription.status === 'active' ? 'Active' : subscription.status}
+                      {subscription.is_trialing ? 'Trial' : subscription.subscribed ? 'Active' : 'Inactive'}
                     </span>
                   </div>
                 </div>
