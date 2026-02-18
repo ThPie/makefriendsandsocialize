@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EventCardSkeleton } from '@/components/ui/page-skeleton';
 import { GroupDinnerInvitation } from '@/components/portal/GroupDinnerInvitation';
 import {
   Dialog,
@@ -308,7 +309,7 @@ export default function PortalEvents() {
 
   if (eventsLoading) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-8 animate-in fade-in duration-300">
         <div>
           <Skeleton className="h-10 w-32 mb-2" />
           <Skeleton className="h-5 w-64" />
@@ -316,18 +317,7 @@ export default function PortalEvents() {
         <Skeleton className="h-10 w-64" />
         <div className="grid gap-6 md:grid-cols-2">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Card key={i} className="overflow-hidden">
-              <Skeleton className="aspect-[16/9] w-full" />
-              <CardContent className="p-6">
-                <Skeleton className="h-6 w-48 mb-3" />
-                <div className="space-y-2 mb-4">
-                  <Skeleton className="h-4 w-40" />
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-4 w-32" />
-                </div>
-                <Skeleton className="h-10 w-full" />
-              </CardContent>
-            </Card>
+            <EventCardSkeleton key={i} />
           ))}
         </div>
       </div>
@@ -358,8 +348,10 @@ export default function PortalEvents() {
 
         <TabsContent value="upcoming" className="mt-6">
           {eventsLoading ? (
-            <div className="flex items-center justify-center min-h-[200px]">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary" />
+            <div className="grid gap-6 md:grid-cols-2">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <EventCardSkeleton key={i} />
+              ))}
             </div>
           ) : upcomingEvents.length === 0 ? (
             <Card className="p-12 text-center border-white/[0.08] bg-white/[0.04]">
@@ -398,8 +390,10 @@ export default function PortalEvents() {
 
         <TabsContent value="past" className="mt-6">
           {pastEventsLoading ? (
-            <div className="flex items-center justify-center min-h-[200px]">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary" />
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <EventCardSkeleton key={i} />
+              ))}
             </div>
           ) : pastEvents.length === 0 ? (
             <Card className="p-12 text-center border-white/[0.08] bg-white/[0.04]">

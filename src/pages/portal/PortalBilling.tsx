@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   CreditCard,
   Download,
@@ -234,13 +235,11 @@ export default function PortalBilling() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8">
-                <DollarSign className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
-                <p className="text-muted-foreground">No invoices yet</p>
-                <p className="text-sm text-muted-foreground">
-                  Your invoices will appear here after your first payment
-                </p>
-              </div>
+              <EmptyState
+                icon={DollarSign}
+                title="No Invoices Yet"
+                description="Your first invoice will appear here once your membership cycle begins."
+              />
             )}
           </CardContent>
         </Card>

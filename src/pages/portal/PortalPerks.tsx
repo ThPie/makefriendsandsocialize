@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
@@ -253,15 +254,15 @@ export default function PortalPerks() {
           ))}
         </div>
       ) : filteredPerks.length === 0 ? (
-        <Card className="p-12 text-center border-white/[0.08] bg-white/[0.04]">
-          <Gift className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-          <h3 className="font-display text-xl mb-2">No Perks Found</h3>
-          <p className="text-muted-foreground">
-            {searchTerm || selectedCategory
-              ? 'Try adjusting your filters'
-              : 'Check back soon for new partner offers!'}
-          </p>
-        </Card>
+        <EmptyState
+          icon={Gift}
+          title="No Perks Found"
+          description={
+            searchTerm || selectedCategory
+              ? 'Try adjusting your filters or search terms to find available partner offers.'
+              : 'Check back soon for new exclusive partner offers!'
+          }
+        />
       ) : null}
 
       {/* Perk Detail Modal */}

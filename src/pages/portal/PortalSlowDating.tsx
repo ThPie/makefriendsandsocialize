@@ -194,9 +194,23 @@ export default function PortalSlowDating() {
 
   if (profileLoading) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-8 animate-in fade-in duration-300">
         <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-64 w-full" />
+        <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-6 space-y-4">
+          <div className="flex items-start gap-6">
+            <Skeleton className="h-20 w-20 rounded-full" />
+            <div className="flex-1 space-y-3">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-8 w-24 rounded-full" />
+            </div>
+          </div>
+        </div>
+        <Skeleton className="h-6 w-32" />
+        <div className="grid gap-6 md:grid-cols-2">
+          <Skeleton className="h-48 rounded-xl" />
+          <Skeleton className="h-48 rounded-xl" />
+        </div>
       </div>
     );
   }

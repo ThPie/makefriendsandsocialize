@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { MatchDetailLoadingSkeleton } from '@/components/ui/page-skeleton';
 import { DateScheduler } from '@/components/dating/DateScheduler';
 import { MatchDecision } from '@/components/dating/MatchDecision';
 import { CompatibilityBreakdown } from '@/components/dating/CompatibilityBreakdown';
@@ -192,12 +193,7 @@ export default function PortalMatchDetail() {
   });
 
   if (matchLoading || profileLoading) {
-    return (
-      <div className="space-y-8">
-        <Skeleton className="h-8 w-32" />
-        <Skeleton className="h-96 w-full" />
-      </div>
-    );
+    return <MatchDetailLoadingSkeleton />;
   }
 
   if (!match || !matchedProfile || !myProfile) {
