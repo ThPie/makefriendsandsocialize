@@ -37,8 +37,8 @@ export const EthosSection = () => {
           <div className="h-[1px] flex-1 bg-white/10 ml-4" />
         </div>
 
-        {/* Grid matching HTML reference (grid-cols-2 gap-4) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Grid matching HTML reference (grid-cols-2 gap-4) force 2 cols on mobile */}
+        <div className="grid grid-cols-2 gap-3 md:gap-4">
           {ethosItems.map((item, index) => (
             <div
               key={index}

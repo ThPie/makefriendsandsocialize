@@ -338,16 +338,16 @@ export const TestimonialsSection = () => {
   }
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-muted/30" id="testimonials">
+    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="testimonials">
       <div ref={ref} className="mx-auto max-w-7xl">
         <div className={`mb-12 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <span className="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">
+          <span className="text-[#d4af37] text-xs font-bold uppercase tracking-widest mb-4 block">
             Community
           </span>
-          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 max-w-2xl">
-            Voices from the <span className="italic text-primary">Circle</span>
+          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 max-w-2xl">
+            Voices from the <span className="italic text-[#d4af37]">Circle</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-xl leading-relaxed font-light">
+          <p className="text-white/60 text-lg max-w-xl leading-relaxed font-light">
             Hear from our community of extraordinary individuals who value authentic connection.
           </p>
         </div>
@@ -366,18 +366,18 @@ export const TestimonialsSection = () => {
             return (
               <div
                 key={testimonial.id}
-                className={`relativ flex flex-col justify-between bg-card rounded-2xl p-8 border border-transparent hover:border-border/60 transition-all duration-500 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+                className={`relative flex flex-col justify-between bg-[#141f17] rounded-2xl p-8 border border-white/5 hover:border-[#d4af37]/20 transition-all duration-500 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''} shadow-lg`}
               >
                 <div>
                   <div className="flex items-start justify-between mb-6">
-                    <Quote className="w-8 h-8 text-primary/10" />
+                    <Quote className="w-8 h-8 text-[#d4af37]/20" />
                     {sourceBadge && (
-                      <Badge variant="outline" className="text-xs font-normal text-muted-foreground border-border/50">
+                      <Badge variant="outline" className="text-xs font-normal text-white/40 border-white/10">
                         {sourceBadge}
                       </Badge>
                     )}
                   </div>
-                  <p className="text-foreground/80 leading-relaxed mb-6 font-light">
+                  <p className="text-white/80 leading-relaxed mb-6 font-light italic font-serif">
                     "{testimonial.quote}"
                   </p>
                 </div>
@@ -389,8 +389,8 @@ export const TestimonialsSection = () => {
                         <Star
                           key={star}
                           className={`h-3 w-3 ${star <= testimonial.rating!
-                            ? 'text-[hsl(var(--accent-gold))] fill-[hsl(var(--accent-gold))]'
-                            : 'text-muted-foreground/20'
+                            ? 'text-[#d4af37] fill-[#d4af37]'
+                            : 'text-white/10'
                             }`}
                         />
                       ))}
@@ -407,21 +407,21 @@ export const TestimonialsSection = () => {
                         decoding="async"
                         width={48}
                         height={48}
-                        className="w-10 h-10 rounded-full object-cover ring-1 ring-border flex-shrink-0 grayscale hover:grayscale-0 transition-all duration-500"
+                        className="w-10 h-10 rounded-full object-cover ring-1 ring-white/10 flex-shrink-0 grayscale hover:grayscale-0 transition-all duration-500"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center ring-1 ring-border flex-shrink-0">
-                        <span className="text-primary font-medium text-lg">
+                      <div className="w-10 h-10 rounded-full bg-[#1a5b2a]/20 flex items-center justify-center ring-1 ring-white/10 flex-shrink-0">
+                        <span className="text-[#d4af37] font-medium text-lg">
                           {testimonial.name.charAt(0)}
                         </span>
                       </div>
                     )}
                     <div>
-                      <p className="font-display text-base font-semibold text-foreground">
+                      <p className="font-display text-base font-semibold text-white">
                         {testimonial.name}
                       </p>
                       {testimonial.role && (
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                        <p className="text-xs text-white/40 uppercase tracking-wider">
                           {testimonial.role}
                         </p>
                       )}

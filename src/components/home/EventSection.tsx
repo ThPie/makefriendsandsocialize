@@ -37,16 +37,15 @@ const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
     return (
       <div
         ref={ref}
-        className={`flex flex-col gap-0 rounded-2xl bg-card group hover:shadow-elegant transition-all duration-500 border border-border hover:border-primary/30 hover:-translate-y-1 overflow-hidden h-full ${className}`}
+        className={`flex flex-col gap-0 rounded-2xl bg-[#141f17] group hover:shadow-2xl transition-all duration-500 border border-white/5 hover:border-[#d4af37]/20 hover:-translate-y-1 overflow-hidden h-full ${className}`}
       >
-        <div className={`relative w-full overflow-hidden bg-muted ${featured ? 'aspect-[21/9]' : 'aspect-[4/3] md:aspect-[16/9]'}`}>
+        <div className={`relative w-full overflow-hidden bg-[#0a0f0a] ${featured ? 'aspect-[21/9]' : 'aspect-[4/3] md:aspect-[16/9]'}`}>
           {/* Location Badge */}
           {(event.city || event.location) && (
             <div className="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-white/10 shadow-sm">
-              <MapPin className="h-3.5 w-3.5 text-primary" />
+              <MapPin className="h-3.5 w-3.5 text-[#d4af37]" />
               <span className="text-xs font-medium text-white tracking-wide">
                 {event.city || event.location}
-                {/* Assuming default country is USA/Utah for now, can add logic if country data exists */}
               </span>
             </div>
           )}
@@ -60,37 +59,37 @@ const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-muted">
-              <Calendar className="h-12 w-12 text-muted-foreground/50" />
+            <div className="w-full h-full flex items-center justify-center bg-[#1a1f1b]">
+              <Calendar className="h-12 w-12 text-white/20" />
             </div>
           )}
 
-          {/* Date Overlay (Optional - alternative design) */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-            <p className="text-white font-medium text-sm flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-primary" />
+          {/* Date Overlay */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#141f17] to-transparent pt-12">
+            <p className="text-[#d4af37] font-medium text-sm flex items-center gap-2 font-display italic tracking-wide">
+              <Calendar className="h-4 w-4" />
               {format(parseLocalDate(event.date), 'EEEE, MMMM d')}
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col flex-grow gap-4 p-5 md:p-6 bg-card">
+        <div className="flex flex-col flex-grow gap-4 p-5 md:p-6 bg-[#141f17]">
           <div className="flex-1">
-            <h3 className={`font-display font-medium text-card-foreground line-clamp-2group-hover:text-primary transition-colors ${featured ? 'text-2xl md:text-3xl' : 'text-xl'}`}>
+            <h3 className={`font-display font-medium text-white group-hover:text-[#d4af37] transition-colors leading-tight ${featured ? 'text-2xl md:text-3xl' : 'text-xl'}`}>
               {event.title}
             </h3>
 
-            <div className="mt-4 space-y-2 text-muted-foreground text-sm">
+            <div className="mt-4 space-y-2 text-white/60 text-sm font-light">
               {event.venue_name && (
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 shrink-0 text-primary/70" />
+                  <MapPin className="h-4 w-4 shrink-0 text-[#d4af37]/70" />
                   <span>{event.venue_name}</span>
                 </div>
               )}
               {event.time && (
                 <div className="flex items-center gap-2">
                   <div className="h-4 w-4 flex items-center justify-center">
-                    <div className="h-1.5 w-1.5 rounded-full bg-primary/70" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#d4af37]" />
                   </div>
                   <span>{event.time}</span>
                 </div>
@@ -98,13 +97,13 @@ const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
             </div>
           </div>
 
-          <div className="pt-4 border-t border-border/50 flex items-center justify-between">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+            <span className="text-xs font-medium text-white/40 uppercase tracking-widest">
               {event.rsvp_count && event.rsvp_count > 0 ? `${event.rsvp_count} Attending` : 'Open Invite'}
             </span>
             <Link
               to={`/events/${event.id}`}
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:text-primary/80 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-[#d4af37] hover:text-[#f0e6d2] transition-colors"
             >
               Details
               <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">
