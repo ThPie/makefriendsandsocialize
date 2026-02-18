@@ -17,7 +17,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
-        display: ['Cormorant Garamond', 'serif'],
+        display: ['Newsreader', 'Cormorant Garamond', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -52,6 +52,10 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        gold: {
+          DEFAULT: "hsl(var(--accent-gold))",
+          light: "hsl(var(--accent-gold-light, 47 80% 78%))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

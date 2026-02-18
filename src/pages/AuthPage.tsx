@@ -651,13 +651,13 @@ export default function AuthPage() {
 
         {/* Left Side - Form with Gradient Background */}
         <div className="w-full lg:w-1/2 relative flex flex-col justify-center px-8 md:px-16 lg:px-20 py-12 overflow-hidden">
-          {/* Layered Gradient Background - All screens */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)]" />
+          {/* Layered Gradient Background — Stitch forest green */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a110c] via-[#131f16] to-[#0f2915]" />
 
           {/* Radial Glow Effects */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-[hsl(180,60%,25%)]/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-primary/5 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#1a5b2a]/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#d4af37]/8 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-[#1a5b2a]/10 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
 
           {/* Watermark */}
           <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
@@ -668,7 +668,7 @@ export default function AuthPage() {
 
           {/* Glassmorphism Form Container */}
           <div className="relative z-10 max-w-md mx-auto w-full">
-            <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl animate-fade-in">
+            <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-8 shadow-[0_4px_30px_rgba(0,0,0,0.1)] animate-fade-in">
               {/* Logo */}
               <Link to="/" className="inline-block mb-10">
                 <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10" />
@@ -685,10 +685,10 @@ export default function AuthPage() {
 
               {/* Header */}
               <div className="mb-8">
-                <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
-                  {mode === 'signin' ? 'Sign in' : 'Create Account'}
+                <h1 className="font-display text-3xl md:text-4xl text-white mb-2 tracking-wide">
+                  {mode === 'signin' ? 'Member Access' : 'Membership Application'}
                 </h1>
-                <p className="text-white/60">
+                <p className="text-white/50 text-sm">
                   {mode === 'signin'
                     ? 'Welcome back! Please enter your details.'
                     : referralCode
@@ -789,7 +789,7 @@ export default function AuthPage() {
                 ) : (
                   <>
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-white/90">Email Address</Label>
+                      <Label htmlFor="email" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Email Address</Label>
                       <ValidatedInput
                         id="email"
                         type="email"
@@ -809,7 +809,7 @@ export default function AuthPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="password" className="text-white/90">Password</Label>
+                      <Label htmlFor="password" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Password</Label>
                       <PasswordInput
                         id="password"
                         placeholder="••••••••"
@@ -843,7 +843,7 @@ export default function AuthPage() {
                     {mode === 'signup' && (
                       <>
                         <div className="space-y-2">
-                          <Label htmlFor="confirmPassword" className="text-white/90">Confirm Password</Label>
+                          <Label htmlFor="confirmPassword" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Confirm Password</Label>
                           <PasswordInput
                             id="confirmPassword"
                             placeholder="••••••••"
@@ -860,7 +860,7 @@ export default function AuthPage() {
 
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor="firstName" className="text-white/90">First Name</Label>
+                            <Label htmlFor="firstName" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">First Name</Label>
                             <ValidatedInput
                               id="firstName"
                               placeholder="James"
@@ -871,7 +871,7 @@ export default function AuthPage() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="lastName" className="text-white/90">Last Name</Label>
+                            <Label htmlFor="lastName" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Last Name</Label>
                             <Input
                               id="lastName"
                               placeholder="Harrington"
@@ -898,7 +898,7 @@ export default function AuthPage() {
                             Remember me
                           </label>
                         </div>
-                        <Link to="/auth/forgot-password" className="text-sm text-primary hover:text-primary/80 transition-colors">
+                        <Link to="/auth/forgot-password" className="text-xs text-white/50 hover:text-[#d4af37] transition-colors">
                           Forgot password?
                         </Link>
                       </div>
@@ -925,7 +925,7 @@ export default function AuthPage() {
                     <Button
                       onClick={handleStep1Submit}
                       disabled={isSubmitting || isRateLimited || (requiresCaptcha && !captchaVerified)}
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
+                      className="w-full gold-gradient-bg hover:brightness-110 text-black font-bold shadow-[0_4px_14px_0_rgba(212,175,55,0.3)] transition-all transform active:scale-[0.98]"
                       size="lg"
                     >
                       {isSubmitting ? (
@@ -950,7 +950,7 @@ export default function AuthPage() {
                       setStep(1);
                       setAuthMethod('email');
                     }}
-                    className="text-primary hover:text-primary/80 font-medium transition-colors"
+                    className="text-[#d4af37] hover:text-[#d4af37]/80 font-semibold transition-colors"
                   >
                     {mode === 'signin' ? 'Sign up' : 'Sign In'}
                   </button>
@@ -1018,8 +1018,8 @@ export default function AuthPage() {
         <source src="/videos/hero-1.mp4" type="video/mp4" />
       </video>
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)]/95 via-[hsl(180,50%,12%)]/90 to-[hsl(180,55%,15%)]/85" />
+      {/* Gradient Overlay — Stitch forest green */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a110c]/95 via-[#131f16]/90 to-[#0f2915]/85" />
 
       {/* Floating Particles */}
       <FloatingParticles count={20} />
@@ -1043,14 +1043,14 @@ export default function AuthPage() {
           {[1, 2, 3].map((s) => (
             <div
               key={s}
-              className={`h-2 w-12 rounded-full transition-all duration-300 ${s < step ? 'bg-primary' : s === step ? 'bg-primary shadow-lg shadow-primary/50' : 'bg-white/20'
+              className={`h-2 w-12 rounded-full transition-all duration-300 ${s < step ? 'bg-[#d4af37]' : s === step ? 'bg-[#d4af37] shadow-lg shadow-[#d4af37]/50' : 'bg-white/20'
                 }`}
             />
           ))}
         </div>
 
         {/* Form Card - Glassmorphism */}
-        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+        <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-8 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
           {/* Step 2: About You */}
           {step === 2 && (
             <div className="space-y-6">
@@ -1060,7 +1060,7 @@ export default function AuthPage() {
               </div>
 
               <div className="space-y-3">
-                <Label className="text-white/90">Industry</Label>
+                <Label className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Industry</Label>
                 <Select
                   value={industry}
                   onValueChange={(value) => {
@@ -1103,7 +1103,7 @@ export default function AuthPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="jobTitle" className="text-white/90">Job Title</Label>
+                <Label htmlFor="jobTitle" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Job Title</Label>
                 <Input
                   id="jobTitle"
                   placeholder="e.g. Creative Director, Founder"
@@ -1114,7 +1114,7 @@ export default function AuthPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="signatureStyle" className="text-white/90">
+                <Label htmlFor="signatureStyle" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">
                   Tell us about yourself
                 </Label>
                 <Textarea
@@ -1127,7 +1127,7 @@ export default function AuthPage() {
               </div>
 
               <div className="space-y-3">
-                <Label className="text-white/90">What brings you to our community?</Label>
+                <Label className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">What brings you to our community?</Label>
                 <div className="flex flex-wrap gap-2">
                   {MOTIVATIONS.map((motivation) => (
                     <button
@@ -1156,7 +1156,7 @@ export default function AuthPage() {
                 </Button>
                 <Button
                   onClick={() => setStep(3)}
-                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25"
+                  className="flex-1 gold-gradient-bg hover:brightness-110 text-black font-bold shadow-[0_4px_14px_0_rgba(212,175,55,0.3)]"
                 >
                   Continue
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -1174,7 +1174,7 @@ export default function AuthPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="values" className="text-white/90">
+                <Label htmlFor="values" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">
                   What would make your membership valuable?
                 </Label>
                 <Textarea
@@ -1187,7 +1187,7 @@ export default function AuthPage() {
               </div>
 
               <div className="space-y-3">
-                <Label className="text-white/90">Your Interests</Label>
+                <Label className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Your Interests</Label>
                 <div className="flex flex-wrap gap-2">
                   {INTERESTS.map((interest) => (
                     <button
@@ -1245,7 +1245,7 @@ export default function AuthPage() {
                 <Button
                   onClick={handleFinalSubmit}
                   disabled={isSubmitting || !acceptedTerms}
-                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 disabled:opacity-50"
+                  className="flex-1 gold-gradient-bg hover:brightness-110 text-black font-bold shadow-[0_4px_14px_0_rgba(212,175,55,0.3)] disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

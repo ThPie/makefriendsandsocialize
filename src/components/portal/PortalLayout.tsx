@@ -44,7 +44,6 @@ import { InactivityWarningModal } from '@/components/auth/InactivityWarningModal
 import { MobileDashboardNav } from './MobileDashboardNav';
 import { SkipLink } from '@/components/ui/skip-link';
 import { PortalBottomNav } from './PortalBottomNav';
-import { BottomNav } from '@/components/layout/BottomNav';
 
 interface PortalLayoutProps {
   children: ReactNode;
@@ -275,9 +274,9 @@ export function PortalLayout({ children }: PortalLayoutProps) {
               </div>
             </header>
 
-            {/* Mobile Header */}
+            {/* Mobile Header — Stitch style */}
             <header
-              className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden"
+              className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border/30 dark:border-white/[0.06] bg-background/95 dark:bg-[#131f16]/95 backdrop-blur-lg md:hidden"
               style={{ paddingTop: 'var(--safe-top, 0px)' }}
             >
               <div className="flex items-center gap-3">
@@ -287,7 +286,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
               </div>
               <div className="flex items-center gap-3">
                 <NotificationBell />
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-8 w-8 border-2 border-primary/20">
                   <AvatarImage src={profile?.avatar_urls?.[0]} />
                   <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                     {initials}
@@ -324,8 +323,6 @@ export function PortalLayout({ children }: PortalLayoutProps) {
             <PortalBottomNav />
           </main>
         </div>
-        {/* Mobile Bottom Navigation */}
-        <BottomNav />
       </SidebarProvider>
     </>
   );

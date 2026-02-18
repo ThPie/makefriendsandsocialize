@@ -44,7 +44,7 @@ export const InterestsStep = ({
             <p className="text-muted-foreground/60 text-sm">{interests.length} selected (minimum 3)</p>
 
             <div>
-                <Label htmlFor="dob" className="text-foreground">Date of Birth (21+ required)</Label>
+                <Label htmlFor="dob" className="text-xs uppercase tracking-wider text-white/60 font-medium">Date of Birth (21+ required)</Label>
                 <Input
                     id="dob"
                     type="date"

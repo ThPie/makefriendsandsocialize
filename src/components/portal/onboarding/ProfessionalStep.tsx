@@ -50,13 +50,13 @@ export const ProfessionalStep = ({
                 <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
                     <Briefcase className="h-8 w-8 text-primary" />
                 </div>
-                <h1 className="font-display text-3xl text-foreground mb-2">Professional Background</h1>
+                <h1 className="font-display text-3xl text-foreground mb-2">Your Professional Identity</h1>
                 <p className="text-muted-foreground">Help others understand what you do</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <Label htmlFor="jobTitle" className="text-foreground">Job Title *</Label>
+                    <Label htmlFor="jobTitle" className="text-xs uppercase tracking-wider text-white/60 font-medium">Job Title *</Label>
                     <Input
                         id="jobTitle"
                         value={jobTitle}
@@ -66,7 +66,7 @@ export const ProfessionalStep = ({
                     />
                 </div>
                 <div>
-                    <Label htmlFor="company" className="text-foreground">Company/Organization *</Label>
+                    <Label htmlFor="company" className="text-xs uppercase tracking-wider text-white/60 font-medium">Company/Organization *</Label>
                     <Input
                         id="company"
                         value={company}
@@ -78,7 +78,7 @@ export const ProfessionalStep = ({
             </div>
 
             <div>
-                <Label className="text-foreground">Industry *</Label>
+                <Label className="text-xs uppercase tracking-wider text-white/60 font-medium">Industry *</Label>
                 <Select value={industry} onValueChange={setIndustry}>
                     <SelectTrigger className="bg-secondary border-border text-foreground">
                         <SelectValue placeholder="Select your industry" />
@@ -100,7 +100,7 @@ export const ProfessionalStep = ({
             </div>
 
             <div>
-                <Label htmlFor="linkedin" className="text-foreground">LinkedIn URL (optional)</Label>
+                <Label htmlFor="linkedin" className="text-xs uppercase tracking-wider text-white/60 font-medium">LinkedIn URL (optional)</Label>
                 <Input
                     id="linkedin"
                     value={linkedinUrl}
@@ -111,7 +111,7 @@ export const ProfessionalStep = ({
             </div>
 
             <div>
-                <Label htmlFor="bio" className="text-foreground">Bio * (minimum 50 characters)</Label>
+                <Label htmlFor="bio" className="text-xs uppercase tracking-wider text-white/60 font-medium">Bio * (minimum 50 characters)</Label>
                 <Textarea
                     id="bio"
                     value={bio}

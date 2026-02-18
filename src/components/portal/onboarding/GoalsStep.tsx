@@ -31,7 +31,7 @@ export const GoalsStep = ({
             </div>
 
             <div>
-                <Label className="text-foreground mb-3 block">Why are you joining? *</Label>
+                <Label className="text-xs uppercase tracking-wider text-white/60 font-medium mb-3 block">Why are you joining? *</Label>
                 <div className="grid grid-cols-2 gap-3">
                     {COMMUNITY_GOALS.map((goal) => (
                         <div
@@ -52,7 +52,7 @@ export const GoalsStep = ({
             </div>
 
             <div>
-                <Label className="text-foreground mb-3 block">Industries you want to connect with</Label>
+                <Label className="text-xs uppercase tracking-wider text-white/60 font-medium mb-3 block">Industries you want to connect with</Label>
                 <div className="flex flex-wrap gap-2">
                     {TARGET_INDUSTRIES.map((ind) => (
                         <button
@@ -71,7 +71,7 @@ export const GoalsStep = ({
             </div>
 
             <div>
-                <Label htmlFor="offering" className="text-foreground">What can you offer the community? (optional)</Label>
+                <Label htmlFor="offering" className="text-xs uppercase tracking-wider text-white/60 font-medium">What can you offer the community? (optional)</Label>
                 <Textarea
                     id="offering"
                     value={communityOffering}

@@ -595,7 +595,7 @@ export default function PortalOnboarding() {
       <VpnBlockedModal isOpen={showVpnModal} />
 
       <PortalOnboardingLayout currentStep={step} totalSteps={totalSteps}>
-        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8">
+        <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-8 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
@@ -608,7 +608,7 @@ export default function PortalOnboarding() {
             </motion.div>
           </AnimatePresence>
 
-          <div className="flex justify-between mt-8 pt-6 border-t border-white/10">
+          <div className="flex justify-between mt-8 pt-6 border-t border-white/[0.06]">
             <Button
               variant="ghost"
               onClick={handleBack}
@@ -622,7 +622,7 @@ export default function PortalOnboarding() {
             <Button
               onClick={handleNext}
               disabled={isSubmitting}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg shadow-primary/25"
             >
               {isSubmitting ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

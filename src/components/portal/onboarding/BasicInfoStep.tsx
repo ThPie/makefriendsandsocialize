@@ -51,13 +51,13 @@ export const BasicInfoStep = ({
                 <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center mb-4">
                     <User className="h-8 w-8 text-primary" />
                 </div>
-                <h1 className="font-display text-3xl text-foreground mb-2">Welcome! Let's get started</h1>
+                <h1 className="font-display text-3xl text-foreground mb-2">Begin Your Journey</h1>
                 <p className="text-muted-foreground">Tell us a bit about yourself</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <Label htmlFor="firstName" className="text-foreground">First Name *</Label>
+                    <Label htmlFor="firstName" className="text-xs uppercase tracking-wider text-white/60 font-medium">First Name *</Label>
                     <Input
                         id="firstName"
                         value={firstName}
@@ -67,7 +67,7 @@ export const BasicInfoStep = ({
                     />
                 </div>
                 <div>
-                    <Label htmlFor="lastName" className="text-foreground">Last Name *</Label>
+                    <Label htmlFor="lastName" className="text-xs uppercase tracking-wider text-white/60 font-medium">Last Name *</Label>
                     <Input
                         id="lastName"
                         value={lastName}
@@ -79,7 +79,7 @@ export const BasicInfoStep = ({
             </div>
 
             <div>
-                <Label className="text-foreground mb-2 block">Profile Photo</Label>
+                <Label className="text-xs uppercase tracking-wider text-white/60 font-medium mb-2 block">Profile Photo</Label>
                 <div className="flex gap-4 items-center">
                     {photos.map((photo, i) => (
                         <div key={i} className="relative">
@@ -131,7 +131,7 @@ export const BasicInfoStep = ({
                     )}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Label className="text-foreground">Country</Label>
+                            <Label className="text-xs uppercase tracking-wider text-white/60 font-medium">Country</Label>
                             <LocationCombobox
                                 value={country}
                                 onValueChange={(val) => {
@@ -145,7 +145,7 @@ export const BasicInfoStep = ({
                             />
                         </div>
                         <div>
-                            <Label className="text-foreground">State/Province</Label>
+                            <Label className="text-xs uppercase tracking-wider text-white/60 font-medium">State/Province</Label>
                             <LocationCombobox
                                 value={state}
                                 onValueChange={setState}
@@ -157,7 +157,7 @@ export const BasicInfoStep = ({
                     </div>
 
                     <div>
-                        <Label className="text-foreground">City *</Label>
+                        <Label className="text-xs uppercase tracking-wider text-white/60 font-medium">City *</Label>
                         <CityAutocomplete
                             value={city}
                             onValueChange={setCity}

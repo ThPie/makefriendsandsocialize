@@ -19,101 +19,113 @@
     transition: opacity 300ms ease-out, transform 300ms ease-out;
   }
 
-  /* Light Theme - Elegant Cream & Forest */
+  /* ===== Light Theme — Cream & Forest ===== */
   :root {
-    --background: 45 30% 96%;
-    --foreground: 155 25% 15%;
+    --background: 90 14% 96%;
+    /* #f6f8f6 */
+    --foreground: 150 30% 12%;
+    /* dark forest text */
 
-    --card: 45 25% 98%;
-    --card-foreground: 155 25% 15%;
+    --card: 90 10% 98%;
+    /* near-white card */
+    --card-foreground: 150 30% 12%;
 
-    --popover: 45 25% 98%;
-    --popover-foreground: 155 25% 15%;
+    --popover: 90 10% 98%;
+    --popover-foreground: 150 30% 12%;
 
-    /* Warm Elegant Gold Accent - RESTORED */
-    --primary: 43 55% 45%;
-    --primary-foreground: 45 30% 98%;
+    /* Primary — Forest Green (Stitch #1a5b2a) */
+    --primary: 143 55% 23%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Forest Secondary */
-    --secondary: 155 15% 90%;
-    --secondary-foreground: 155 25% 20%;
+    /* Secondary — muted sage */
+    --secondary: 140 12% 90%;
+    --secondary-foreground: 150 25% 20%;
 
-    --muted: 155 10% 92%;
-    --muted-foreground: 155 15% 40%;
+    --muted: 140 8% 92%;
+    --muted-foreground: 150 10% 45%;
 
-    --accent: 155 12% 88%;
-    --accent-foreground: 155 25% 15%;
+    --accent: 140 10% 88%;
+    --accent-foreground: 150 30% 12%;
 
-    /* Muted gold accent - kept for compatibility but primary is now gold too */
-    --accent-gold: 38 45% 55%;
+    /* Gold accent — always available */
+    --accent-gold: 43 76% 52%;
+    /* #d4af37 */
+    --accent-gold-light: 47 80% 78%;
+    /* #f3e5ab */
 
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 155 12% 85%;
-    --input: 155 12% 85%;
-    --ring: 43 55% 45%;
+    --border: 140 10% 86%;
+    --input: 140 10% 86%;
+    --ring: 143 55% 23%;
 
-    /* Radius */
     --radius: 0.75rem;
 
-    /* Sidebar - Light theme */
-    --sidebar-background: 45 25% 97%;
-    --sidebar-foreground: 155 25% 15%;
-    --sidebar-primary: 43 55% 45%;
-    --sidebar-primary-foreground: 45 30% 98%;
-    --sidebar-accent: 155 10% 92%;
-    --sidebar-accent-foreground: 155 25% 15%;
-    --sidebar-border: 155 12% 85%;
-    --sidebar-ring: 43 55% 45%;
+    /* Sidebar — light */
+    --sidebar-background: 90 14% 97%;
+    --sidebar-foreground: 150 30% 12%;
+    --sidebar-primary: 143 55% 23%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 140 8% 92%;
+    --sidebar-accent-foreground: 150 30% 12%;
+    --sidebar-border: 140 10% 86%;
+    --sidebar-ring: 143 55% 23%;
   }
 
-  /* Dark Theme - Premium Vintage Forest Green - RESTORED */
+  /* ===== Dark Theme — Premium Forest ===== */
+  /* Stitch palette: bg #131f16, card #1e2b21, primary #1a5b2a, gold #d4af37 */
   .dark {
-    --background: 155 25% 12%;
-    --foreground: 43 35% 78%;
+    --background: 148 24% 10%;
+    /* #131f16 */
+    --foreground: 40 15% 88%;
+    /* cream-white text */
 
-    --card: 155 22% 14%;
-    --card-foreground: 43 35% 78%;
+    --card: 148 20% 14%;
+    /* #1e2b21 — card/surface */
+    --card-foreground: 40 15% 88%;
 
-    --popover: 155 22% 14%;
-    --popover-foreground: 43 35% 78%;
+    --popover: 148 20% 14%;
+    --popover-foreground: 40 15% 88%;
 
-    /* Warm Elegant Gold Accent */
-    --primary: 43 55% 58%;
-    --primary-foreground: 155 25% 10%;
+    /* Primary — Bright Forest Green */
+    --primary: 143 55% 23%;
+    /* #1a5b2a */
+    --primary-foreground: 0 0% 100%;
 
-    /* Forest Secondary */
-    --secondary: 155 20% 18%;
-    --secondary-foreground: 43 35% 78%;
+    /* Secondary — deeper forest */
+    --secondary: 148 22% 17%;
+    --secondary-foreground: 40 15% 88%;
 
-    --muted: 155 18% 16%;
-    --muted-foreground: 155 12% 50%;
+    --muted: 148 20% 15%;
+    --muted-foreground: 148 10% 55%;
 
-    --accent: 155 18% 20%;
-    --accent-foreground: 43 35% 78%;
+    --accent: 148 20% 18%;
+    --accent-foreground: 40 15% 88%;
 
-    --accent-gold: 38 40% 50%;
+    /* Gold accent */
+    --accent-gold: 43 76% 52%;
+    /* #d4af37 */
+    --accent-gold-light: 47 80% 78%;
 
-    --destructive: 0 55% 35%;
+    --destructive: 0 55% 38%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 155 15% 22%;
-    --input: 155 15% 22%;
-    --ring: 43 55% 58%;
+    --border: 148 15% 20%;
+    --input: 148 15% 20%;
+    --ring: 143 55% 23%;
 
-    /* Radius */
     --radius: 0.75rem;
 
-    /* Sidebar - Vintage Forest theme */
-    --sidebar-background: 155 25% 10%;
-    --sidebar-foreground: 43 35% 78%;
-    --sidebar-primary: 43 55% 58%;
-    --sidebar-primary-foreground: 155 25% 10%;
-    --sidebar-accent: 155 20% 16%;
-    --sidebar-accent-foreground: 43 35% 78%;
-    --sidebar-border: 155 15% 20%;
-    --sidebar-ring: 43 55% 58%;
+    /* Sidebar — forest dark */
+    --sidebar-background: 148 24% 8%;
+    --sidebar-foreground: 40 15% 88%;
+    --sidebar-primary: 143 55% 23%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 148 20% 14%;
+    --sidebar-accent-foreground: 40 15% 88%;
+    --sidebar-border: 148 15% 18%;
+    --sidebar-ring: 143 55% 23%;
   }
 }
 
@@ -202,7 +214,7 @@
   h5,
   h6,
   .font-display {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Newsreader', 'Cormorant Garamond', serif;
   }
 
   /* Refined heading weights */
@@ -241,9 +253,37 @@
     box-shadow: 0 2px 16px -6px hsl(160 30% 10% / 0.1);
   }
 
-  /* Glass effect */
+  /* Glass effect — light mode */
   .glass {
     @apply bg-background/80 backdrop-blur-md;
+  }
+
+  /* Stitch glass-panel — dark mode glassmorphism for cards */
+  .glass-panel {
+    background: rgba(30, 43, 33, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Gold gradient text — luxury accent for headings & badges */
+  .gold-gradient-text {
+    background: linear-gradient(to bottom right, #f3e5ab, #d4af37, #b8860b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Gold gradient background — buttons, badges, CTAs */
+  .gold-gradient-bg {
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+  }
+
+  /* Stitch surface card — subtle dark mode surface */
+  .surface-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
   }
 
   /* Hover lift - refined */
