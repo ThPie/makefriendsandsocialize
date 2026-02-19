@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Check, ChevronDown, ChevronUp, Lock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -239,9 +239,9 @@ export const PricingSection = () => {
                   variant={tier.popular ? 'default' : 'secondary'}
                   className="w-full rounded-full min-h-[48px]"
                 >
-                  <Link to={tier.href}>
+                  <TransitionLink to={tier.href}>
                     {tier.cta}
-                  </Link>
+                  </TransitionLink>
                 </Button>
               </div>
             );

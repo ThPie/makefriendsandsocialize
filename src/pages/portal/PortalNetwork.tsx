@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -149,10 +150,10 @@ export default function PortalNetwork() {
               </li>
             </ul>
             <Button asChild size="lg" className="w-full">
-              <Link to="/membership">
+              <TransitionLink to="/membership">
                 Upgrade to Fellow
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </TransitionLink>
             </Button>
           </CardContent>
         </Card>

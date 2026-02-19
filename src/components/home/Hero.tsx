@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { AdaptiveVideo } from '@/components/ui/adaptive-video';
 import { useSiteStats } from '@/hooks/useSiteStats';
 import { ArrowRight } from 'lucide-react';
@@ -78,9 +78,9 @@ export const Hero = () => {
               variant="luxury"
               className="w-full sm:w-auto py-6 px-10 text-sm tracking-widest uppercase"
             >
-              <Link to="/membership">
+              <TransitionLink to="/membership">
                 Apply for Membership
-              </Link>
+              </TransitionLink>
             </Button>
 
             {/* Social Proof - Bottom Left */}

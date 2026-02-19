@@ -1,7 +1,7 @@
 import { Briefcase, Users, Presentation, Handshake } from 'lucide-react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 
 const businessFeatures = [
   {
@@ -65,7 +65,7 @@ export const BusinessEventsSection = () => {
 
         <div className={`text-center scroll-animate ${isVisible ? 'visible' : ''}`} style={{ animationDelay: '0.5s' }}>
           <Button size="lg" asChild className="rounded-full">
-            <Link to="/events?category=Networking">Explore Business Events</Link>
+            <TransitionLink to="/events?category=Networking">Explore Business Events</TransitionLink>
           </Button>
         </div>
       </div>

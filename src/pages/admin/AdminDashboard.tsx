@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -216,30 +217,30 @@ export default function AdminDashboard() {
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-4">
         <Button asChild>
-          <Link to="/admin/applications">
+          <TransitionLink to="/admin/applications">
             <FileText className="h-4 w-4 mr-2" />
             Review Applications
-          </Link>
+          </TransitionLink>
         </Button>
         <Button
           variant="outline"
           asChild
           className="dark:border-white/[0.12] dark:hover:bg-white/[0.04]"
         >
-          <Link to="/admin/members">
+          <TransitionLink to="/admin/members">
             <Users className="h-4 w-4 mr-2" />
             View Members
-          </Link>
+          </TransitionLink>
         </Button>
         <Button
           variant="outline"
           asChild
           className="dark:border-white/[0.12] dark:hover:bg-white/[0.04]"
         >
-          <Link to="/admin/analytics">
+          <TransitionLink to="/admin/analytics">
             <TrendingUp className="h-4 w-4 mr-2" />
             Analytics
-          </Link>
+          </TransitionLink>
         </Button>
       </div>
     </div>

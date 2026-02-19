@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { Star } from 'lucide-react';
 
 export const AvailabilitySection = () => {
@@ -28,9 +28,9 @@ export const AvailabilitySection = () => {
                         variant="outline"
                         className="rounded-full border-[#d4af37]/30 text-white hover:bg-[#d4af37] hover:text-[#0a1f0f] hover:border-[#d4af37] transition-all duration-300 px-8 py-6 uppercase tracking-widest text-xs font-bold"
                     >
-                        <Link to="/membership">
+                        <TransitionLink to="/membership">
                             Check Status
-                        </Link>
+                        </TransitionLink>
                     </Button>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
@@ -101,7 +101,7 @@ const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
             <span className="text-xs font-medium text-white/40 uppercase tracking-widest">
               {event.rsvp_count && event.rsvp_count > 0 ? `${event.rsvp_count} Attending` : 'Open Invite'}
             </span>
-            <Link
+            <TransitionLink
               to={`/events/${event.id}`}
               className="inline-flex items-center gap-1.5 text-sm font-bold text-[#d4af37] hover:text-[#f0e6d2] transition-colors"
             >
@@ -109,7 +109,7 @@ const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
               <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">
                 arrow_forward
               </span>
-            </Link>
+            </TransitionLink>
           </div>
         </div>
       </div>
@@ -223,12 +223,12 @@ export const EventSection = () => {
 
         <div className={`mt-12 text-left scroll-animate ${isVisible ? 'visible' : ''}`}>
           <Button asChild variant="outline" className="rounded-full px-8 border-primary/20 hover:bg-primary hover:text-white transition-colors">
-            <Link to="/events" className="inline-flex items-center gap-2">
+            <TransitionLink to="/events" className="inline-flex items-center gap-2">
               View All Events
               <span className="material-symbols-outlined text-lg">
                 arrow_forward
               </span>
-            </Link>
+            </TransitionLink>
           </Button>
         </div>
       </div>

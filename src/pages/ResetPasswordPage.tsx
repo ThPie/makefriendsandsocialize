@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -333,9 +334,9 @@ export default function ResetPasswordPage() {
         </div>
         
         <div className="relative z-10 w-full max-w-md animate-fade-in">
-          <Link to="/" className="inline-block mb-8">
+          <TransitionLink to="/" className="inline-block mb-8">
             <img src={logoWhite} alt="MakeFriends & Socialize" className="h-12 md:h-14" />
-          </Link>
+          </TransitionLink>
 
           <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10 text-center">
             <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
@@ -347,10 +348,10 @@ export default function ResetPasswordPage() {
             </p>
             <div className="space-y-3">
               <Button asChild className="w-full" size="lg">
-                <Link to="/auth/forgot-password">Request New Reset Link</Link>
+                <TransitionLink to="/auth/forgot-password">Request New Reset Link</TransitionLink>
               </Button>
               <Button asChild variant="outline" className="w-full border-white/20 text-white hover:bg-white/10" size="lg">
-                <Link to="/auth">Back to Sign In</Link>
+                <TransitionLink to="/auth">Back to Sign In</TransitionLink>
               </Button>
             </div>
           </div>
@@ -383,9 +384,9 @@ export default function ResetPasswordPage() {
         </div>
         
         <div className="relative z-10 w-full max-w-md animate-fade-in">
-          <Link to="/" className="inline-block mb-8">
+          <TransitionLink to="/" className="inline-block mb-8">
             <img src={logoWhite} alt="MakeFriends & Socialize" className="h-12 md:h-14" />
-          </Link>
+          </TransitionLink>
 
           <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
             {/* Header with Shield Icon */}
@@ -495,9 +496,9 @@ export default function ResetPasswordPage() {
         
         <div className="relative z-10 w-full max-w-md animate-fade-in">
           {/* Logo */}
-          <Link to="/" className="inline-block mb-8">
+          <TransitionLink to="/" className="inline-block mb-8">
             <img src={logoWhite} alt="MakeFriends & Socialize" className="h-12 md:h-14" />
-          </Link>
+          </TransitionLink>
           
           <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10 text-center">
             {/* Success Icon */}
@@ -563,13 +564,13 @@ export default function ResetPasswordPage() {
       
       <div className="relative z-10 w-full max-w-md animate-fade-in">
         {/* Logo - visible for both themes */}
-        <Link to="/" className="inline-block mb-8">
+        <TransitionLink to="/" className="inline-block mb-8">
           <img 
             src={logoWhite} 
             alt="MakeFriends & Socialize" 
             className="h-12 md:h-14" 
           />
-        </Link>
+        </TransitionLink>
 
         {/* Glassmorphism Card */}
         <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">

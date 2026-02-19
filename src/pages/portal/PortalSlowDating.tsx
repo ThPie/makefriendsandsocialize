@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Link, useNavigate } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -237,10 +238,10 @@ export default function PortalSlowDating() {
               to create meaningful introductions based on shared values and genuine compatibility.
             </p>
             <Button asChild size="lg">
-              <Link to="/dating/apply">
+              <TransitionLink to="/dating/apply">
                 <Heart className="mr-2 h-5 w-5" />
                 Apply Now
-              </Link>
+              </TransitionLink>
             </Button>
           </CardContent>
         </Card>
@@ -347,9 +348,9 @@ export default function PortalSlowDating() {
             </div>
 
             <Button variant="outline" asChild>
-              <Link to="/dating/apply">
+              <TransitionLink to="/dating/apply">
                 Edit Profile
-              </Link>
+              </TransitionLink>
             </Button>
           </div>
         </CardContent>

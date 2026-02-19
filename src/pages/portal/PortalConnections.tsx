@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -178,10 +179,10 @@ export default function PortalConnections() {
         </div>
 
         <Button asChild size="lg">
-          <Link to="/membership">
+          <TransitionLink to="/membership">
             Upgrade to Fellow
             <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+          </TransitionLink>
         </Button>
 
         <p className="text-sm text-muted-foreground mt-8">
@@ -255,10 +256,10 @@ export default function PortalConnections() {
                 <p className="text-muted-foreground mb-4">No introduction requests received yet.</p>
                 <p className="text-sm text-muted-foreground">Complete your profile to attract more connections!</p>
                 <Button asChild variant="outline" className="mt-4">
-                  <Link to="/portal/profile">
+                  <TransitionLink to="/portal/profile">
                     <User className="h-4 w-4 mr-2" />
                     View Profile
-                  </Link>
+                  </TransitionLink>
                 </Button>
               </CardContent>
             </Card>
@@ -331,10 +332,10 @@ export default function PortalConnections() {
                 <MessageCircle className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
                 <p className="text-muted-foreground mb-4">No introduction requests sent yet</p>
                 <Button asChild variant="outline">
-                  <Link to="/portal/network">
+                  <TransitionLink to="/portal/network">
                     Browse The Network
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  </TransitionLink>
                 </Button>
               </CardContent>
             </Card>
@@ -399,10 +400,10 @@ export default function PortalConnections() {
                   Browse The Network and send introduction requests to get started.
                 </p>
                 <Button asChild variant="outline" className="mt-4">
-                  <Link to="/portal/network">
+                  <TransitionLink to="/portal/network">
                     Browse The Network
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  </TransitionLink>
                 </Button>
               </CardContent>
             </Card>

@@ -1,5 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useSubscription, SubscriptionStatus } from '@/hooks/useSubscription';
 import { Button } from '@/components/ui/button';
 import { Clock, X, Sparkles, ArrowRight } from 'lucide-react';
@@ -131,10 +132,10 @@ export const TrialCountdownBanner = memo(function TrialCountdownBanner({
 
         <div className="flex items-center gap-3">
           <Button asChild size="sm" variant={urgencyLevel === 'critical' ? 'destructive' : 'default'}>
-            <Link to="/membership">
+            <TransitionLink to="/membership">
               Upgrade Now
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+            </TransitionLink>
           </Button>
           <button
             onClick={handleDismiss}

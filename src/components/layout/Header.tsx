@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Users, Mail, Building2, Crown, Globe, BookOpen, Quote, User } from 'lucide-react';
@@ -218,10 +219,10 @@ export const Header = () => {
               size="sm"
               className={`h-9 md:h-10 px-3 md:px-4 ${isTransparent ? "border-white/60 text-white hover:bg-white/10 hover:border-white" : ""}`}
             >
-              <Link to="/auth">
+              <TransitionLink to="/auth">
                 <span className="hidden sm:inline">Sign In</span>
                 <User className="w-4 h-4 sm:hidden" />
-              </Link>
+              </TransitionLink>
             </Button>
           )}
 
@@ -349,7 +350,7 @@ export const Header = () => {
                             </div>
                             <div className="grid grid-cols-2 gap-3 px-2">
                               {item.children?.map((child) => (
-                                <Link
+                                <TransitionLink
                                   key={child.label}
                                   to={child.path}
                                   onClick={() => setIsMenuOpen(false)}
@@ -364,12 +365,12 @@ export const Header = () => {
                                   <div className="absolute inset-0 flex items-center justify-center p-2 text-center">
                                     <span className="text-sm font-bold text-white font-display leading-tight">{child.label}</span>
                                   </div>
-                                </Link>
+                                </TransitionLink>
                               ))}
                             </div>
                           </div>
                         ) : (
-                          <Link
+                          <TransitionLink
                             to={item.path}
                             className={`flex items-center gap-4 px-4 py-3 rounded-xl text-lg font-medium transition-all duration-200 ${location.pathname === item.path
                               ? 'bg-primary/15 text-primary'
@@ -380,7 +381,7 @@ export const Header = () => {
                             <item.icon className={`w-5 h-5 ${location.pathname === item.path ? 'text-primary' : 'text-muted-foreground'
                               }`} />
                             <span>{item.label}</span>
-                          </Link>
+                          </TransitionLink>
                         )}
                       </motion.div>
                     ))}
@@ -412,9 +413,9 @@ export const Header = () => {
                   transition={{ delay: 0.4 }}
                 >
                   <Button asChild variant="outline" className="w-full rounded-xl py-6 text-base font-semibold">
-                    <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                    <TransitionLink to="/auth" onClick={() => setIsMenuOpen(false)}>
                       Sign In
-                    </Link>
+                    </TransitionLink>
                   </Button>
                   <p className="text-center text-xs text-muted-foreground mt-4">
                     Exclusive membership for professionals

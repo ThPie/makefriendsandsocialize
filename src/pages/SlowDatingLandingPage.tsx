@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { motion } from 'framer-motion';
 import { Heart, Users, Clock, Shield, ChevronRight, Sparkles, MessageCircle, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -130,24 +131,24 @@ export default function SlowDatingLandingPage() {
             {user ? (
               hasDatingProfile ? null : (
                 <Button asChild size="lg" className="rounded-full px-8">
-                  <Link to="/dating/apply">
+                  <TransitionLink to="/dating/apply">
                     Apply for Slow Dating
                     <ChevronRight className="ml-2 w-4 h-4" />
-                  </Link>
+                  </TransitionLink>
                 </Button>
               )
             ) : (
               <>
                 <Button asChild size="lg" className="rounded-full px-8">
-                  <Link to="/auth?redirect=/dating/apply">
+                  <TransitionLink to="/auth?redirect=/dating/apply">
                     Apply Now
                     <ChevronRight className="ml-2 w-4 h-4" />
-                  </Link>
+                  </TransitionLink>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="rounded-full px-8">
-                  <Link to="/auth?redirect=/portal/slow-dating">
+                  <TransitionLink to="/auth?redirect=/portal/slow-dating">
                     Login to Access
-                  </Link>
+                  </TransitionLink>
                 </Button>
               </>
             )}
@@ -302,24 +303,24 @@ export default function SlowDatingLandingPage() {
             {user ? (
               !hasDatingProfile && (
                 <Button asChild size="lg" className="rounded-full px-8">
-                  <Link to="/dating/apply">
+                  <TransitionLink to="/dating/apply">
                     Start Your Application
                     <ChevronRight className="ml-2 w-4 h-4" />
-                  </Link>
+                  </TransitionLink>
                 </Button>
               )
             ) : (
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button asChild size="lg" className="rounded-full px-8">
-                  <Link to="/auth?redirect=/dating/apply">
+                  <TransitionLink to="/auth?redirect=/dating/apply">
                     Apply Now
                     <ChevronRight className="ml-2 w-4 h-4" />
-                  </Link>
+                  </TransitionLink>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="rounded-full px-8">
-                  <Link to="/auth?redirect=/portal/slow-dating">
+                  <TransitionLink to="/auth?redirect=/portal/slow-dating">
                     Member Login
-                  </Link>
+                  </TransitionLink>
                 </Button>
               </div>
             )}
@@ -337,10 +338,10 @@ export default function SlowDatingLandingPage() {
         >
           <div className="flex gap-3">
             <Button asChild className="flex-1 rounded-full">
-              <Link to="/auth?redirect=/dating/apply">Apply Now</Link>
+              <TransitionLink to="/auth?redirect=/dating/apply">Apply Now</TransitionLink>
             </Button>
             <Button asChild variant="outline" className="flex-1 rounded-full">
-              <Link to="/auth?redirect=/portal/slow-dating">Login</Link>
+              <TransitionLink to="/auth?redirect=/portal/slow-dating">Login</TransitionLink>
             </Button>
           </div>
         </motion.div>

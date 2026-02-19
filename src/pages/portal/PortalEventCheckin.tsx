@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -159,10 +160,10 @@ export default function PortalEventCheckin() {
               Please sign in to check in to this event
             </p>
             <Button asChild className="w-full">
-              <Link to={`/auth?redirect=${encodeURIComponent(window.location.pathname)}`}>
+              <TransitionLink to={`/auth?redirect=${encodeURIComponent(window.location.pathname)}`}>
                 Sign In
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </TransitionLink>
             </Button>
           </CardContent>
         </Card>
@@ -181,9 +182,9 @@ export default function PortalEventCheckin() {
               This event doesn't exist or the check-in link is invalid
             </p>
             <Button asChild variant="outline" className="w-full">
-              <Link to="/portal/events">
+              <TransitionLink to="/portal/events">
                 View All Events
-              </Link>
+              </TransitionLink>
             </Button>
           </CardContent>
         </Card>
@@ -200,9 +201,9 @@ export default function PortalEventCheckin() {
             <h1 className="font-display text-2xl mb-2">Check-in Failed</h1>
             <p className="text-muted-foreground mb-6">{error}</p>
             <Button asChild variant="outline" className="w-full">
-              <Link to="/portal/events">
+              <TransitionLink to="/portal/events">
                 Back to Events
-              </Link>
+              </TransitionLink>
             </Button>
           </CardContent>
         </Card>
@@ -275,15 +276,15 @@ export default function PortalEventCheckin() {
 
           <div className="flex flex-col gap-3 mt-6">
             <Button asChild className="w-full">
-              <Link to="/portal">
+              <TransitionLink to="/portal">
                 Go to Dashboard
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </TransitionLink>
             </Button>
             <Button asChild variant="outline" className="w-full">
-              <Link to="/portal/events">
+              <TransitionLink to="/portal/events">
                 View All Events
-              </Link>
+              </TransitionLink>
             </Button>
           </div>
         </CardContent>

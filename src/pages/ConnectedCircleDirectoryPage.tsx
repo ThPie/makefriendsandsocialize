@@ -164,10 +164,10 @@ const ConnectedCircleDirectoryPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild>
-                <Link to="/auth">Sign In</Link>
+                <TransitionLink to="/auth">Sign In</TransitionLink>
               </Button>
               <Button variant="outline" asChild>
-                <Link to="/membership">Apply for Membership</Link>
+                <TransitionLink to="/membership">Apply for Membership</TransitionLink>
               </Button>
             </div>
           </div>
@@ -308,7 +308,7 @@ const ConnectedCircleDirectoryPage = () => {
                 </div>
               </div>
               <Button asChild>
-                <Link to="/membership">Upgrade Now</Link>
+                <TransitionLink to="/membership">Upgrade Now</TransitionLink>
               </Button>
             </motion.div>
           )}
@@ -382,7 +382,7 @@ const ConnectedCircleDirectoryPage = () => {
               </p>
               {canAccess && (
                 <Button asChild className="mt-6">
-                  <Link to="/portal/business">List Your Business</Link>
+                  <TransitionLink to="/portal/business">List Your Business</TransitionLink>
                 </Button>
               )}
             </div>

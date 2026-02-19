@@ -12,6 +12,7 @@ import { SEOHead } from '@/components/SEOHead';
 import { motion } from 'framer-motion';
 import { Search, Filter, Building2, Star, ArrowRight, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import {
   Select,
   SelectContent,
@@ -159,19 +160,19 @@ export default function BusinessDirectoryPage() {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   {user ? (
                     <Button asChild>
-                      <Link to="/portal/billing">
+                      <TransitionLink to="/portal/billing">
                         Upgrade Membership <ArrowRight className="w-4 h-4 ml-2" />
-                      </Link>
+                      </TransitionLink>
                     </Button>
                   ) : (
                     <>
                       <Button asChild>
-                        <Link to="/membership">
+                        <TransitionLink to="/membership">
                           View Memberships <ArrowRight className="w-4 h-4 ml-2" />
-                        </Link>
+                        </TransitionLink>
                       </Button>
                       <Button variant="outline" asChild>
-                        <Link to="/auth">Sign In</Link>
+                        <TransitionLink to="/auth">Sign In</TransitionLink>
                       </Button>
                     </>
                   )}

@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Lightbox } from '@/components/ui/lightbox';
 import { Button } from '@/components/ui/button';
@@ -115,9 +115,9 @@ export const PhotoGallerySection = () => {
             variant="outline"
             className="rounded-full px-8 py-6 text-base tracking-widest uppercase border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-300"
           >
-            <Link to="/gallery">
+            <TransitionLink to="/gallery">
               Access Member Gallery
-            </Link>
+            </TransitionLink>
           </Button>
         </div>
       </div>

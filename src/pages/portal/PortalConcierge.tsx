@@ -41,6 +41,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 
 const bookingSchema = z.object({
   booking_type: z.enum(['call', 'chat', 'in_person']),
@@ -205,10 +206,10 @@ export default function PortalConcierge() {
               </li>
             </ul>
             <Button asChild size="lg" className="w-full">
-              <Link to="/membership">
+              <TransitionLink to="/membership">
                 Upgrade to Access
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </TransitionLink>
             </Button>
           </CardContent>
         </Card>

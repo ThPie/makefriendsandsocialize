@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, MapPin, Clock, ArrowRight, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -86,9 +87,9 @@ export function UpcomingSchedule() {
                     You haven't RSVP'd to any upcoming events completely yet. Explore the calendar to find your next gathering.
                 </p>
                 <Button asChild>
-                    <Link to="/portal/events">
+                    <TransitionLink to="/portal/events">
                         Browse Events <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
+                    </TransitionLink>
                 </Button>
             </div>
         );
@@ -172,9 +173,9 @@ export function UpcomingSchedule() {
                                 </div>
 
                                 <Button className="w-full group-hover:bg-primary/90 transition-colors" asChild>
-                                    <Link to={`/portal/events/${event.id}`}>
+                                    <TransitionLink to={`/portal/events/${event.id}`}>
                                         View Details
-                                    </Link>
+                                    </TransitionLink>
                                 </Button>
                             </CardContent>
                         </Card>

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Calendar, Share2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -35,7 +36,7 @@ const JournalPostPage = () => {
       <div className="flex-1 w-full flex flex-col items-center justify-center px-4 py-20">
         <h1 className="text-2xl font-display text-foreground mb-4">Article not found</h1>
         <Button asChild>
-          <Link to="/journal">Back to Journal</Link>
+          <TransitionLink to="/journal">Back to Journal</TransitionLink>
         </Button>
       </div>
     );
@@ -53,9 +54,9 @@ const JournalPostPage = () => {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-wrap gap-2 pb-8 w-full max-w-3xl"
       >
-        <Link to="/" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Home</Link>
+        <TransitionLink to="/" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Home</TransitionLink>
         <span className="text-primary/70 text-sm font-medium leading-normal">/</span>
-        <Link to="/journal" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Journal</Link>
+        <TransitionLink to="/journal" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Journal</TransitionLink>
         <span className="text-primary/70 text-sm font-medium leading-normal">/</span>
         <span className="text-foreground text-sm font-medium leading-normal line-clamp-1">{article.title}</span>
       </motion.div>
@@ -68,10 +69,10 @@ const JournalPostPage = () => {
           transition={{ delay: 0.1 }}
         >
           <Button variant="ghost" asChild className="mb-6 -ml-4">
-            <Link to="/journal" className="flex items-center gap-2">
+            <TransitionLink to="/journal" className="flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back to Journal
-            </Link>
+            </TransitionLink>
           </Button>
         </motion.div>
 
@@ -261,7 +262,7 @@ const JournalPostPage = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {relatedArticles.map((post) => (
-              <Link key={post.id} to={`/journal/${post.id}`} className="flex flex-col group cursor-pointer">
+              <TransitionLink key={post.id} to={`/journal/${post.id}`} className="flex flex-col group cursor-pointer">
                 <div className="overflow-hidden rounded-2xl border border-border/50 group-hover:border-primary/50 transition-colors">
                   <div
                     className="w-full bg-center bg-no-repeat bg-cover aspect-[4/3] group-hover:scale-105 transition-transform duration-500"
@@ -279,16 +280,16 @@ const JournalPostPage = () => {
                     {post.readTime}
                   </div>
                 </div>
-              </Link>
+              </TransitionLink>
             ))}
           </div>
 
           {/* Back to Journal CTA */}
           <div className="text-center mt-12">
             <Button asChild variant="outline" size="lg" className="rounded-full">
-              <Link to="/journal">
+              <TransitionLink to="/journal">
                 View All Articles
-              </Link>
+              </TransitionLink>
             </Button>
           </div>
         </motion.section>

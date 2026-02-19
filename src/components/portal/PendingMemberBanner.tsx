@@ -1,5 +1,6 @@
 import { Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { Button } from '@/components/ui/button';
 
 interface PendingMemberBannerProps {
@@ -21,12 +22,12 @@ export function PendingMemberBanner({ className }: PendingMemberBannerProps) {
           </p>
           <div className="flex flex-wrap gap-2 mt-3">
             <Button asChild variant="outline" size="sm" className="gap-1">
-              <Link to="/portal/profile">
+              <TransitionLink to="/portal/profile">
                 Edit Profile <ArrowRight className="h-3 w-3" />
-              </Link>
+              </TransitionLink>
             </Button>
             <Button asChild variant="ghost" size="sm">
-              <Link to="/events">Browse Events</Link>
+              <TransitionLink to="/events">Browse Events</TransitionLink>
             </Button>
           </div>
         </div>

@@ -8,6 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 
 interface EventUpgradeModalProps {
     isOpen: boolean;
@@ -48,10 +49,10 @@ export const EventUpgradeModal = ({
                             Maybe Later
                         </Button>
                         <Button asChild>
-                            <Link to="/membership" onClick={onClose}>
+                            <TransitionLink to="/membership" onClick={onClose}>
                                 View Membership Options
                                 <ArrowRight className="ml-2 h-4 w-4" />
-                            </Link>
+                            </TransitionLink>
                         </Button>
                     </div>
                 </div>

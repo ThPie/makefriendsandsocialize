@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -95,7 +96,7 @@ export function UpgradePromptCard({
           </span>
         </div>
         <Button asChild size="sm" variant="outline">
-          <Link to="/membership">Upgrade</Link>
+          <TransitionLink to="/membership">Upgrade</TransitionLink>
         </Button>
       </div>
     );
@@ -113,10 +114,10 @@ export function UpgradePromptCard({
               <h3 className="font-display text-lg text-foreground mb-1">{config.title}</h3>
               <p className="text-sm text-muted-foreground mb-3">{config.description}</p>
               <Button asChild size="sm">
-                <Link to="/membership">
+                <TransitionLink to="/membership">
                   {subscription?.is_trialing ? 'Upgrade Now' : 'Start Free Trial'}
                   <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
+                </TransitionLink>
               </Button>
             </div>
           </div>
@@ -149,10 +150,10 @@ export function UpgradePromptCard({
         </div>
 
         <Button asChild size="lg">
-          <Link to="/membership">
+          <TransitionLink to="/membership">
             {subscription?.is_trialing ? 'Upgrade Now' : 'Start 7-Day Free Trial'}
             <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
+          </TransitionLink>
         </Button>
 
         {!subscription?.is_trialing && (

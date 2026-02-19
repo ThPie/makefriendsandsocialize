@@ -1,4 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -244,7 +245,7 @@ const EventDetailPage = () => {
         <h1 className="text-2xl font-bold text-foreground mb-2">Event Not Found</h1>
         <p className="text-muted-foreground mb-6">The event you're looking for doesn't exist or has been removed.</p>
         <Button asChild>
-          <Link to="/events">Browse All Events</Link>
+          <TransitionLink to="/events">Browse All Events</TransitionLink>
         </Button>
       </div>
     );
@@ -460,7 +461,7 @@ const EventDetailPage = () => {
             />
 
             <Button variant="outline" size="lg" asChild>
-              <Link to="/contact">Have Questions?</Link>
+              <TransitionLink to="/contact">Have Questions?</TransitionLink>
             </Button>
           </div>
         </div>

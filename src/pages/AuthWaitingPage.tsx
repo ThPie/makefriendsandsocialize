@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -114,9 +115,9 @@ export default function AuthWaitingPage() {
       
       <div className="relative z-10 max-w-lg text-center animate-fade-in">
         {/* Logo */}
-        <Link to="/" className="inline-block mb-8">
+        <TransitionLink to="/" className="inline-block mb-8">
           <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10 mx-auto" />
-        </Link>
+        </TransitionLink>
 
         {/* Email Verification Banner */}
         {showEmailVerification && (
@@ -240,10 +241,10 @@ export default function AuthWaitingPage() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button asChild variant="outline" className="bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white">
-            <Link to="/">Return to Homepage</Link>
+            <TransitionLink to="/">Return to Homepage</TransitionLink>
           </Button>
           <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25">
-            <Link to="/events">Browse Upcoming Events</Link>
+            <TransitionLink to="/events">Browse Upcoming Events</TransitionLink>
           </Button>
         </div>
       </div>

@@ -249,7 +249,7 @@ const PortalBusiness = () => {
           Upgrade your membership to list your company.
         </p>
         <Button asChild>
-          <Link to="/membership">Upgrade Membership</Link>
+          <TransitionLink to="/membership">Upgrade Membership</TransitionLink>
         </Button>
       </div>
     );
@@ -304,15 +304,15 @@ const PortalBusiness = () => {
             <div className="flex gap-2">
               {businessProfile.slug && (
                 <Button variant="outline" size="sm" asChild>
-                  <Link to={`/directory/${businessProfile.slug}`}>
+                  <TransitionLink to={`/directory/${businessProfile.slug}`}>
                     View Landing Page <ExternalLink className="h-3 w-3 ml-2" />
-                  </Link>
+                  </TransitionLink>
                 </Button>
               )}
               <Button variant="outline" size="sm" asChild>
-                <Link to="/founders-circle/directory">
+                <TransitionLink to="/founders-circle/directory">
                   Directory <ExternalLink className="h-3 w-3 ml-2" />
-                </Link>
+                </TransitionLink>
               </Button>
             </div>
           </div>
