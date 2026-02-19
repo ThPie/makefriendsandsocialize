@@ -4,16 +4,18 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { useSubscription } from '@/hooks/useSubscription';
 
-// Lazy load heavy components
-const Sidebar = lazy(() => import('@/components/ui/sidebar').then(module => ({ default: module.Sidebar })));
-const SidebarContent = lazy(() => import('@/components/ui/sidebar').then(module => ({ default: module.SidebarContent })));
-const SidebarGroup = lazy(() => import('@/components/ui/sidebar').then(module => ({ default: module.SidebarGroup })));
-const SidebarGroupContent = lazy(() => import('@/components/ui/sidebar').then(module => ({ default: module.SidebarGroupContent })));
-const SidebarHeader = lazy(() => import('@/components/ui/sidebar').then(module => ({ default: module.SidebarHeader })));
-const SidebarMenu = lazy(() => import('@/components/ui/sidebar').then(module => ({ default: module.SidebarMenu })));
-const SidebarMenuButton = lazy(() => import('@/components/ui/sidebar').then(module => ({ default: module.SidebarMenuButton })));
-const SidebarMenuItem = lazy(() => import('@/components/ui/sidebar').then(module => ({ default: module.SidebarMenuItem })));
-const SidebarProvider = lazy(() => import('@/components/ui/sidebar').then(module => ({ default: module.SidebarProvider })));
+// Import sidebar components directly — they're small and needed immediately for layout
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from '@/components/ui/sidebar';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
