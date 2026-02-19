@@ -121,18 +121,81 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
         }
     }, []);
 
-    // Pre-fill location from profile
+    // Pre-fill data from profile
     useEffect(() => {
-        if (profile && !formData.location) {
-            const locationParts = [profile.city, profile.state, profile.country].filter(Boolean);
-            if (locationParts.length > 0) {
-                setFormData(prev => ({
-                    ...prev,
-                    location: locationParts.join(', ')
-                }));
+        if (!profile) return;
+
+        setFormData(prev => {
+            const updates: Partial<CompleteIntakeData> = {};
+            let hasUpdates = false;
+
+            // Helper to only update if field is empty/default
+            const shouldUpdate = (key: keyof CompleteIntakeData, value: any) => {
+                const currentValue = prev[key];
+                // Check if current value is empty string, default number, or null/undefined
+                const isEmpty = currentValue === '' || currentValue === null || currentValue === undefined ||
+                    (typeof currentValue === 'number' && currentValue === initialFormData[key] && key !== 'age'); // Don't overwrite modified age unless it's default
+
+                return isEmpty && value;
+            };
+
+            // 1. Basic Info
+            const fullName = [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+            if (shouldUpdate('display_name', fullName)) {
+                updates.display_name = fullName;
+                hasUpdates = true;
             }
-        }
-    }, [profile, formData.location]);
+
+            if (profile.date_of_birth && prev.age === initialFormData.age) {
+                const birthDate = new Date(profile.date_of_birth);
+                const age = new Date().getFullYear() - birthDate.getFullYear();
+                // Adjust if birthday hasn't occurred this year yet
+                const m = new Date().getMonth() - birthDate.getMonth();
+                const actualAge = (m < 0 || (m === 0 && new Date().getDate() < birthDate.getDate())) ? age - 1 : age;
+
+                if (actualAge >= 18) {
+                    updates.age = actualAge;
+                    hasUpdates = true;
+                }
+            }
+
+            if (shouldUpdate('occupation', profile.job_title)) {
+                updates.occupation = profile.job_title;
+                hasUpdates = true;
+            }
+
+            if (shouldUpdate('bio', profile.bio)) {
+                updates.bio = profile.bio;
+                hasUpdates = true;
+            }
+
+            // 2. Photo
+            // Profile interface uses avatar_urls (array), form uses photo_url (string)
+            const profilePhoto = profile.avatar_urls && profile.avatar_urls.length > 0 ? profile.avatar_urls[0] : null;
+            if (shouldUpdate('photo_url', profilePhoto)) {
+                updates.photo_url = profilePhoto!;
+                hasUpdates = true;
+            }
+
+            // 3. Location
+            if (!prev.location) {
+                const locationParts = [profile.city, profile.state, profile.country].filter(Boolean);
+                if (locationParts.length > 0) {
+                    updates.location = locationParts.join(', ');
+                    hasUpdates = true;
+                }
+            }
+
+            // 4. Socials
+            // Only linkedin_url is present in the Profile interface currently
+            if (shouldUpdate('linkedin_url', profile.linkedin_url)) {
+                updates.linkedin_url = profile.linkedin_url!;
+                hasUpdates = true;
+            }
+
+            return hasUpdates ? { ...prev, ...updates } : prev;
+        });
+    }, [profile]);
 
     // Save draft to localStorage on changes
     const saveDraft = useCallback(() => {

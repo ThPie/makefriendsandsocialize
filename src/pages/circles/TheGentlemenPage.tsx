@@ -45,12 +45,27 @@ const TheGentlemenPage = () => {
 
   useEffect(() => {
     if (user && profile) {
+      let age = "";
+      if (profile.date_of_birth) {
+        const birthDate = new Date(profile.date_of_birth);
+        const today = new Date();
+        let calculatedAge = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          calculatedAge--;
+        }
+        age = calculatedAge.toString();
+      }
+
       setFormData((prev) => ({
         ...prev,
         fullName:
           [profile.first_name, profile.last_name].filter(Boolean).join(" ") ||
           prev.fullName,
         email: user.email || prev.email,
+        age: age || prev.age,
+        occupation: profile.job_title || prev.occupation,
+        instagramLinkedin: profile.linkedin_url || prev.instagramLinkedin,
       }));
     }
   }, [user, profile]);

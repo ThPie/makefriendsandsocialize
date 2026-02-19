@@ -50,8 +50,9 @@
     /* Gold accent — always available */
     --accent-gold: 43 76% 52%;
     /* #d4af37 */
-    --accent-gold-light: 47 80% 78%;
     /* #f3e5ab */
+    --accent-gold-text: 43 100% 30%;
+    /* Darker gold for text contrast */
 
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
@@ -107,6 +108,7 @@
     --accent-gold: 43 76% 52%;
     /* #d4af37 */
     --accent-gold-light: 47 80% 78%;
+    --accent-gold-text: 43 76% 52%;
 
     --destructive: 0 55% 38%;
     --destructive-foreground: 0 0% 100%;
@@ -250,7 +252,12 @@
 
   /* Premium card shadow - minimal */
   .shadow-premium {
-    box-shadow: 0 2px 16px -6px hsl(160 30% 10% / 0.1);
+    box-shadow: 0 4px 20px -6px hsl(160 30% 10% / 0.1);
+  }
+
+  /* Premium card shadow - hover state */
+  .shadow-premium-hover {
+    box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.15);
   }
 
   /* Glass effect — light mode */
@@ -289,6 +296,20 @@
   /* Hover lift - refined */
   .hover-lift {
     @apply transition-all duration-300 hover:-translate-y-0.5 hover:shadow-premium;
+  }
+
+  /* Luxury Hover - Slower, scale, and deeper shadow */
+  .hover-luxury {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  .hover-luxury:hover {
+    @apply scale-[1.02] -translate-y-1 shadow-premium-hover;
+  }
+
+  /* Premium Card Base */
+  .premium-card {
+    @apply bg-card/80 backdrop-blur-md border border-white/5 rounded-2xl shadow-premium transition-all duration-300;
   }
 
   /* Scroll animation utilities */

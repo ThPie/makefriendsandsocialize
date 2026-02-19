@@ -42,7 +42,7 @@ export const EthosSection = () => {
           {ethosItems.map((item, index) => (
             <div
               key={index}
-              className={`group bg-[#141f17] border border-white/5 rounded-lg p-5 flex flex-col items-start gap-3 hover:bg-[#141f17]/80 transition-all duration-500 delay-[${index * 100}ms] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              className={`group premium-card hover-luxury p-5 flex flex-col items-start gap-3 transition-all duration-500 delay-[${index * 100}ms] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
             >
               <div className="p-2 rounded-full bg-[#1a5b2a]/20 text-[#d4af37]">
                 <item.icon className="w-5 h-5" />

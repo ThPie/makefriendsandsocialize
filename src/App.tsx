@@ -7,6 +7,7 @@ import { BrowserRouter, useNavigate } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { SessionProvider } from "@/contexts/SessionContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { isSlowDatingSubdomain, isCanadianDomain } from "@/lib/subdomain-utils";
 import { CountryRedirectBanner } from "@/components/ui/country-redirect-banner";
@@ -50,14 +51,16 @@ const App = () => {
               <TooltipProvider>
                 <RegisterSW />
                 <BrowserRouter>
-                  <ScrollToTop />
-                  <RecoveryRedirectHandler />
-                  {/* Show geo-redirect banner for Canadian users on .com */}
-                  {showGeoRedirectBanner && <CountryRedirectBanner />}
-                  <Suspense fallback={<BrandedLoader />}>
-                    {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
-                  </Suspense>
-                  <SpeedInsights />
+                  <SessionProvider>
+                    <ScrollToTop />
+                    <RecoveryRedirectHandler />
+                    {/* Show geo-redirect banner for Canadian users on .com */}
+                    {showGeoRedirectBanner && <CountryRedirectBanner />}
+                    <Suspense fallback={<BrandedLoader />}>
+                      {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
+                    </Suspense>
+                    <SpeedInsights />
+                  </SessionProvider>
                 </BrowserRouter>
               </TooltipProvider>
             </AuthProvider>

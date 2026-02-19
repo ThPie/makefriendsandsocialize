@@ -91,6 +91,7 @@ export default function SlowDatingLandingPage() {
           <img
             src={slowDatingImage}
             alt="Elegant couple"
+            fetchPriority="high"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/50" />

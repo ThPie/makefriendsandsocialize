@@ -33,9 +33,10 @@ export function PushNotificationToggle({ variant = 'card' }: PushNotificationTog
           checked={isSubscribed}
           onCheckedChange={handleToggle}
           disabled={isLoading || permission === 'denied'}
+          aria-label="Toggle push notifications"
         />
-        <Label 
-          htmlFor="push-notifications" 
+        <Label
+          htmlFor="push-notifications"
           className="text-sm cursor-pointer"
         >
           {isLoading ? (
@@ -82,7 +83,7 @@ export function PushNotificationToggle({ variant = 'card' }: PushNotificationTog
                 {isSubscribed ? 'Notifications enabled' : 'Notifications disabled'}
               </p>
               <p className="text-sm text-muted-foreground">
-                {isSubscribed 
+                {isSubscribed
                   ? "You'll receive notifications for new matches, messages, and updates"
                   : 'Enable to stay updated on matches and messages'}
               </p>

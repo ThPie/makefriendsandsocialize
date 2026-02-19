@@ -75,7 +75,8 @@ export const Hero = () => {
           <div className="w-full flex flex-col items-start gap-4 mt-2">
             <Button
               asChild
-              className="w-full sm:w-auto rounded-full bg-[#d4af37] hover:bg-[#c5a030] text-[#0a0f0a] font-bold text-sm tracking-widest uppercase py-6 px-10 shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-transform active:scale-95"
+              variant="luxury"
+              className="w-full sm:w-auto py-6 px-10 text-sm tracking-widest uppercase"
             >
               <Link to="/membership">
                 Apply for Membership
