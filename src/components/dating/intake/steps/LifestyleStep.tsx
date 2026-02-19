@@ -38,23 +38,26 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
     };
 
     return (
-        <>
-            <CardHeader className="bg-gradient-to-r from-dating-forest/5 to-transparent pb-6">
-                <CardTitle className="font-display text-2xl flex items-center gap-3">
-                    <Briefcase className="h-6 w-6 text-dating-terracotta" aria-hidden="true" />
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <CardHeader className="text-center pb-8 border-b border-white/10">
+                <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
+                    <Briefcase className="h-6 w-6 text-dating-terracotta" />
+                </div>
+                <CardTitle className="font-display text-3xl text-white mb-2">
                     Daily Life
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
                     These questions reveal daily compatibility and lifestyle match.
                 </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-8 pt-6">
+
+            <CardContent className="space-y-8 pt-8">
                 {/* Adaptive Tuesday Night Test */}
                 <div className="space-y-3">
-                    <Label htmlFor="tuesday_night_test" className="text-base">
-                        The Tuesday Night Test *
+                    <Label htmlFor="tuesday_night_test" className="text-white/80 text-lg">
+                        The Tuesday Night Test
                     </Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-white/40">
                         {getTuesdayNightPrompt()}
                     </p>
                     <Textarea
@@ -62,17 +65,17 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                         value={formData.tuesday_night_test}
                         onChange={(e) => updateField("tuesday_night_test", e.target.value)}
                         placeholder="Paint a picture of your perfect low-key evening..."
-                        className="min-h-[120px] bg-background/50"
+                        className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
                     />
                 </div>
 
                 {/* Adaptive Financial Philosophy - only for serious daters */}
                 {isSeekingSerious && (
                     <div className="space-y-3 animate-fade-in">
-                        <Label htmlFor="financial_philosophy" className="text-base">
+                        <Label htmlFor="financial_philosophy" className="text-white/80 text-lg">
                             Financial Philosophy
                         </Label>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-white/40">
                             {getFinancialPrompt()}
                         </p>
                         <Textarea
@@ -80,17 +83,17 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                             value={formData.financial_philosophy}
                             onChange={(e) => updateField("financial_philosophy", e.target.value)}
                             placeholder="This reveals your relationship with money..."
-                            className="min-h-[100px] bg-background/50"
+                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
                         />
                     </div>
                 )}
 
                 {/* Adaptive Current Curiosity */}
                 <div className="space-y-3">
-                    <Label htmlFor="current_curiosity" className="text-base">
+                    <Label htmlFor="current_curiosity" className="text-white/80 text-lg">
                         Current Curiosity
                     </Label>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-white/40">
                         {getCurrentCuriosityPrompt()}
                     </p>
                     <Textarea
@@ -98,44 +101,44 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                         value={formData.current_curiosity}
                         onChange={(e) => updateField("current_curiosity", e.target.value)}
                         placeholder="What's capturing your attention lately..."
-                        className="min-h-[100px] bg-background/50"
+                        className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
                     />
                 </div>
 
                 {/* NEW: Financial Deep Dive - #2 divorce cause */}
                 {isSeekingSerious && (
-                    <div className="space-y-6 pt-4 border-t border-border/50 animate-fade-in">
+                    <div className="space-y-6 pt-6 border-t border-white/10 animate-fade-in">
                         <div className="flex items-center gap-2">
-                            <span className="text-xs bg-dating-terracotta/20 text-dating-terracotta px-2 py-1 rounded-full">
+                            <span className="text-xs bg-dating-terracotta/20 text-[#D4AF37] px-2 py-1 rounded-full font-medium border border-[#D4AF37]/20">
                                 Top divorce predictor
                             </span>
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-xs text-white/40">
                                 Money issues are the #2 cause of divorce
                             </span>
                         </div>
 
                         <div className="space-y-3">
-                            <Label>How do you feel about debt?</Label>
-                            <p className="text-sm text-muted-foreground">
+                            <Label className="text-white/80">How do you feel about debt?</Label>
+                            <p className="text-sm text-white/40">
                                 Hidden debt destroys marriages. Being upfront helps us match you well.
                             </p>
                             <Select value={formData.debt_status} onValueChange={(value) => updateField("debt_status", value)}>
-                                <SelectTrigger className="bg-background/50">
+                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
                                     <SelectValue placeholder="Select your situation" />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="debt_free">Debt-free</SelectItem>
-                                    <SelectItem value="small_manageable">Small, manageable debt</SelectItem>
-                                    <SelectItem value="working_on_it">Working on paying it off</SelectItem>
-                                    <SelectItem value="significant">Significant debt (student loans, credit cards)</SelectItem>
-                                    <SelectItem value="prefer_not">Prefer not to say</SelectItem>
+                                <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                    <SelectItem value="debt_free" className="focus:bg-white/10 focus:text-white">Debt-free</SelectItem>
+                                    <SelectItem value="small_manageable" className="focus:bg-white/10 focus:text-white">Small, manageable debt</SelectItem>
+                                    <SelectItem value="working_on_it" className="focus:bg-white/10 focus:text-white">Working on paying it off</SelectItem>
+                                    <SelectItem value="significant" className="focus:bg-white/10 focus:text-white">Significant debt (student loans, credit cards)</SelectItem>
+                                    <SelectItem value="prefer_not" className="focus:bg-white/10 focus:text-white">Prefer not to say</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         <div className="space-y-3">
-                            <Label htmlFor="career_ambition">Work-Life Balance</Label>
-                            <p className="text-sm text-muted-foreground">
+                            <Label htmlFor="career_ambition" className="text-white/80">Work-Life Balance</Label>
+                            <p className="text-sm text-white/40">
                                 What does success look like to you? How much does career drive your identity?
                             </p>
                             <Textarea
@@ -143,12 +146,12 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                                 value={formData.career_ambition}
                                 onChange={(e) => updateField("career_ambition", e.target.value)}
                                 placeholder="Ambition mismatch can cause resentment - be honest about your priorities..."
-                                className="min-h-[100px] bg-background/50"
+                                className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
                             />
                         </div>
                     </div>
                 )}
             </CardContent>
-        </>
+        </div>
     );
 };

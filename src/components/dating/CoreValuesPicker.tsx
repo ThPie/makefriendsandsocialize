@@ -66,13 +66,13 @@ function SortableValue({ id, value, rank, onRemove }: SortableValueProps) {
   const getRankColor = (rank: number) => {
     switch (rank) {
       case 1:
-        return "bg-yellow-500/20 border-yellow-500 text-yellow-700";
+        return "bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]";
       case 2:
-        return "bg-gray-300/30 border-gray-400 text-gray-700";
+        return "bg-white/10 border-white/40 text-white/90";
       case 3:
-        return "bg-amber-600/20 border-amber-600 text-amber-700";
+        return "bg-[#A67B5B]/20 border-[#A67B5B] text-[#A67B5B]"; // Bronze/Copper
       default:
-        return "bg-muted border-border text-muted-foreground";
+        return "bg-white/5 border-white/10 text-white/60";
     }
   };
 
@@ -81,20 +81,20 @@ function SortableValue({ id, value, rank, onRemove }: SortableValueProps) {
       ref={setNodeRef}
       style={style}
       className={cn(
-        "flex items-center gap-3 p-3 rounded-lg border-2 transition-all",
+        "flex items-center gap-3 p-3 rounded-lg border transition-all text-white",
         getRankColor(rank),
-        isDragging && "opacity-50 shadow-lg scale-105"
+        isDragging && "opacity-50 shadow-lg scale-105 z-50 bg-[#1a231b]"
       )}
     >
       <button
         type="button"
-        className="cursor-grab active:cursor-grabbing touch-none"
+        className="cursor-grab active:cursor-grabbing touch-none hover:text-white"
         {...attributes}
         {...listeners}
       >
-        <GripVertical className="h-5 w-5 text-muted-foreground" />
+        <GripVertical className="h-5 w-5 opacity-50 hover:opacity-100" />
       </button>
-      <Badge variant="outline" className={cn("font-bold", getRankColor(rank))}>
+      <Badge variant="outline" className={cn("font-bold border-current", getRankColor(rank))}>
         #{rank}
       </Badge>
       <span className="text-xl">{value.icon}</span>
@@ -102,9 +102,9 @@ function SortableValue({ id, value, rank, onRemove }: SortableValueProps) {
       <button
         type="button"
         onClick={() => onRemove(id)}
-        className="p-1 rounded-full hover:bg-destructive/20 transition-colors"
+        className="p-1 rounded-full hover:bg-white/10 transition-colors text-white/40 hover:text-white"
       >
-        <X className="h-4 w-4 text-destructive" />
+        <X className="h-4 w-4" />
       </button>
     </div>
   );
@@ -161,19 +161,24 @@ export function CoreValuesPicker({
       {/* Selected Values - Ranked */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h4 className="font-semibold text-foreground">
+          <h4 className="font-semibold text-white">
             Your Top {maxSelections} Values (Ranked)
           </h4>
           <Badge
-            variant={selectedValues.length === maxSelections ? "default" : "secondary"}
-            className="transition-all"
+            variant={selectedValues.length === maxSelections ? "default" : "outline"}
+            className={cn(
+              "transition-all",
+              selectedValues.length === maxSelections
+                ? "bg-[#D4AF37] text-black hover:bg-[#D4AF37]/90"
+                : "text-white/60 border-white/20"
+            )}
           >
             {selectedValues.length}/{maxSelections} selected
           </Badge>
         </div>
 
         {selectedValues.length === 0 ? (
-          <div className="p-6 border-2 border-dashed border-muted-foreground/30 rounded-lg text-center text-muted-foreground">
+          <div className="p-6 border-2 border-dashed border-white/10 rounded-lg text-center text-white/40 bg-white/5">
             <p>Click values below to select your top {maxSelections}</p>
             <p className="text-sm mt-1">Then drag to rank by importance</p>
           </div>
@@ -203,15 +208,15 @@ export function CoreValuesPicker({
         )}
 
         {selectedValues.length > 0 && selectedValues.length < maxSelections && (
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-sm text-white/40 text-center animate-pulse">
             Select {maxSelections - selectedValues.length} more value{maxSelections - selectedValues.length > 1 ? "s" : ""}
           </p>
         )}
       </div>
 
       {/* Available Values */}
-      <div className="space-y-3">
-        <h4 className="font-semibold text-foreground">Available Values</h4>
+      <div className="space-y-3 pt-4 border-t border-white/10">
+        <h4 className="font-semibold text-white">Available Values</h4>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {availableValues.map((value) => (
             <button
@@ -222,15 +227,12 @@ export function CoreValuesPicker({
               className={cn(
                 "flex items-center gap-2 p-3 rounded-lg border transition-all text-left",
                 selectedValues.length >= maxSelections
-                  ? "opacity-50 cursor-not-allowed bg-muted"
-                  : "hover:bg-primary/10 hover:border-primary cursor-pointer border-border bg-background"
+                  ? "opacity-50 cursor-not-allowed bg-white/5 border-white/5 text-white/20"
+                  : "hover:bg-white/10 hover:border-white/30 cursor-pointer border-white/10 bg-white/5 text-white/80 hover:text-white"
               )}
             >
               <span className="text-lg">{value.icon}</span>
               <span className="text-sm font-medium truncate">{value.label}</span>
-              {selectedValues.length < maxSelections && (
-                <Check className="h-4 w-4 ml-auto text-primary opacity-0 group-hover:opacity-100" />
-              )}
             </button>
           ))}
         </div>

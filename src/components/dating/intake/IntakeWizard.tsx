@@ -114,67 +114,68 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
     }));
 
     return (
-        <div className="space-y-6">
-            {/* Progress Indicator */}
-            <IntakeProgress
-                currentStep={step}
-                totalSteps={totalSteps}
-                steps={progressSteps}
-                onStepClick={handleStepClick}
-            />
+        <div className="space-y-8">
+            {/* Progress Indicator - NOW ABOVE CARD */}
+            <div className="px-2">
+                <IntakeProgress
+                    currentStep={step}
+                    totalSteps={totalSteps}
+                    steps={progressSteps}
+                    onStepClick={handleStepClick}
+                />
+            </div>
 
             {/* Form Card */}
-            <Card className="border-dating-terracotta/10 overflow-hidden">
-                <div className="min-h-[600px]">
-                    {renderStep()}
-                </div>
+            <div className="min-h-[600px] p-1">
+                {renderStep()}
+            </div>
 
-                {/* Navigation */}
-                <div className="p-6 pt-0 flex justify-between">
-                    <Button
-                        variant="outline"
-                        onClick={handleBack}
-                        disabled={step === 1}
-                        className="gap-2"
-                        aria-label="Go to previous step"
-                    >
-                        <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-                        Back
-                    </Button>
+            {/* Navigation Buttons - Sticky or fixed at bottom of card */}
+            <div className="flex justify-between items-center py-6 px-4 border-t border-white/10 mt-8">
+                <Button
+                    variant="ghost"
+                    onClick={handleBack}
+                    disabled={step === 1}
+                    className="gap-2 text-white/50 hover:text-white hover:bg-white/5 disabled:opacity-30"
+                    aria-label="Go to previous step"
+                >
+                    <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                    Back
+                </Button>
+
+                <div className="flex items-center gap-4">
+                    <span className="text-xs text-white/30 font-medium uppercase tracking-widest hidden md:block">
+                        Step {step} of {totalSteps}
+                    </span>
 
                     {step < totalSteps ? (
                         <Button
                             onClick={handleNext}
-                            className="gap-2 bg-dating-terracotta hover:bg-dating-terracotta/90"
+                            className="gap-2 bg-[#D4AF37] text-black hover:bg-[#D4AF37]/90 px-8 py-6 text-md font-medium rounded-full shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300"
                             aria-label="Go to next step"
                         >
-                            Next
+                            Next Step
                             <ChevronRight className="h-4 w-4" aria-hidden="true" />
                         </Button>
                     ) : (
                         <Button
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="gap-2 bg-dating-forest hover:bg-dating-forest/90"
+                            className="gap-2 bg-[#D4AF37] text-black hover:bg-[#D4AF37]/90 px-8 py-6 text-md font-medium rounded-full shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300"
                             aria-label="Submit application"
                         >
                             {isSubmitting ? (
                                 <>Submitting...</>
                             ) : (
                                 <>
-                                    <Heart className="h-4 w-4" aria-hidden="true" />
+                                    <Heart className="h-4 w-4 fill-black" aria-hidden="true" />
                                     Submit Application
                                 </>
                             )}
                         </Button>
                     )}
                 </div>
-            </Card>
-
-            {/* Footer */}
-            <p className="text-center text-sm text-muted-foreground">
-                Your information is kept confidential and only shared with potential matches.
-            </p>
+            </div>
         </div>
     );
 };

@@ -15,70 +15,73 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
     const { formData, isSeekingSerious } = form;
 
     return (
-        <>
-            <CardHeader className="bg-gradient-to-r from-dating-forest/5 to-transparent pb-6">
-                <CardTitle className="font-display text-2xl flex items-center gap-3">
-                    <ClipboardCheck className="h-6 w-6 text-dating-terracotta" aria-hidden="true" />
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <CardHeader className="text-center pb-8 border-b border-white/10">
+                <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
+                    <ClipboardCheck className="h-6 w-6 text-dating-terracotta" />
+                </div>
+                <CardTitle className="font-display text-3xl text-white mb-2">
                     Review Your Profile
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
                     Take a moment to review your answers before submitting.
                 </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6 pt-6">
+
+            <CardContent className="space-y-6 pt-8">
                 {/* Profile Summary */}
-                <div className="bg-muted/30 rounded-xl p-6 space-y-4">
+                <div className="bg-white/5 rounded-xl p-6 space-y-4 border border-white/10">
                     <div className="flex items-center gap-4">
-                        <Avatar className="h-16 w-16 border-2 border-dating-terracotta/20">
+                        <Avatar className="h-16 w-16 border-2 border-[#D4AF37]/20">
                             <AvatarImage src={formData.photo_url} />
-                            <AvatarFallback className="bg-dating-terracotta/10 text-dating-terracotta text-xl">
+                            <AvatarFallback className="bg-dating-terracotta/20 text-dating-terracotta text-xl">
                                 {formData.display_name ? formData.display_name[0] : "?"}
                             </AvatarFallback>
                         </Avatar>
                         <div>
-                            <h3 className="font-display text-xl text-foreground">{formData.display_name}</h3>
-                            <p className="text-muted-foreground">
+                            <h3 className="font-display text-xl text-white">{formData.display_name}</h3>
+                            <p className="text-white/60">
                                 {formData.age} • {formData.gender} • {formData.location || "Location not specified"}
                             </p>
                         </div>
                     </div>
-                    <div className="grid gap-2 text-sm">
-                        <p><span className="text-muted-foreground">Looking for:</span> {formData.target_gender}, ages {formData.age_range_min}-{formData.age_range_max}</p>
-                        <p><span className="text-muted-foreground">Relationship type:</span> {formData.relationship_type?.replace(/_/g, " ")}</p>
-                        {formData.occupation && <p><span className="text-muted-foreground">Occupation:</span> {formData.occupation}</p>}
-                        {formData.bio && <p><span className="text-muted-foreground">Bio:</span> {formData.bio}</p>}
+                    <div className="grid gap-2 text-sm text-white/80">
+                        <p><span className="text-white/40">Looking for:</span> {formData.target_gender}, ages {formData.age_range_min}-{formData.age_range_max}</p>
+                        <p><span className="text-white/40">Relationship type:</span> {formData.relationship_type?.replace(/_/g, " ")}</p>
+                        {formData.occupation && <p><span className="text-white/40">Occupation:</span> {formData.occupation}</p>}
+                        {formData.bio && <p><span className="text-white/40">Bio:</span> {formData.bio}</p>}
                     </div>
                 </div>
 
                 {/* Key Info Summary - only show fields that were answered */}
                 <div className="grid gap-3 md:grid-cols-2">
                     {formData.wants_children && (
-                        <div className="bg-muted/20 rounded-lg p-3">
-                            <p className="text-xs text-muted-foreground mb-1">Children</p>
+                        <div className="bg-white/5 rounded-lg p-3 border border-white/5 text-white/80">
+                            <p className="text-xs text-white/40 mb-1">Children</p>
                             <p className="text-sm font-medium capitalize">{formData.wants_children.replace(/_/g, " ")}</p>
                         </div>
                     )}
                     {formData.smoking_status && (
-                        <div className="bg-muted/20 rounded-lg p-3">
-                            <p className="text-xs text-muted-foreground mb-1">Smoking</p>
+                        <div className="bg-white/5 rounded-lg p-3 border border-white/5 text-white/80">
+                            <p className="text-xs text-white/40 mb-1">Smoking</p>
                             <p className="text-sm font-medium capitalize">{formData.smoking_status.replace(/_/g, " ")}</p>
                         </div>
                     )}
                     {formData.drinking_status && (
-                        <div className="bg-muted/20 rounded-lg p-3">
-                            <p className="text-xs text-muted-foreground mb-1">Drinking</p>
+                        <div className="bg-white/5 rounded-lg p-3 border border-white/5 text-white/80">
+                            <p className="text-xs text-white/40 mb-1">Drinking</p>
                             <p className="text-sm font-medium capitalize">{formData.drinking_status}</p>
                         </div>
                     )}
                     {formData.love_language && (
-                        <div className="bg-muted/20 rounded-lg p-3">
-                            <p className="text-xs text-muted-foreground mb-1">Love Language</p>
+                        <div className="bg-white/5 rounded-lg p-3 border border-white/5 text-white/80">
+                            <p className="text-xs text-white/40 mb-1">Love Language</p>
                             <p className="text-sm font-medium capitalize">{formData.love_language.replace(/_/g, " ")}</p>
                         </div>
                     )}
                     {isSeekingSerious && formData.marriage_timeline && (
-                        <div className="bg-muted/20 rounded-lg p-3">
-                            <p className="text-xs text-muted-foreground mb-1">Marriage Timeline</p>
+                        <div className="bg-white/5 rounded-lg p-3 border border-white/5 text-white/80">
+                            <p className="text-xs text-white/40 mb-1">Marriage Timeline</p>
                             <p className="text-sm font-medium capitalize">{formData.marriage_timeline.replace(/_/g, " ")}</p>
                         </div>
                     )}
@@ -93,20 +96,20 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                         { label: "Dealbreakers", value: formData.dealbreakers },
                         isSeekingSerious ? { label: "Future Goals", value: formData.future_goals } : null,
                     ].filter(Boolean).map((item, index) => item && item.value && (
-                        <div key={index} className="bg-muted/20 rounded-lg p-4">
-                            <p className="text-sm font-medium text-dating-terracotta mb-1">{item.label}</p>
-                            <p className="text-sm text-muted-foreground">{item.value}</p>
+                        <div key={index} className="bg-white/5 rounded-lg p-4 border border-white/5">
+                            <p className="text-sm font-medium text-[#D4AF37] mb-1">{item.label}</p>
+                            <p className="text-sm text-white/70">{item.value}</p>
                         </div>
                     ))}
                 </div>
 
-                <div className="bg-dating-terracotta/10 border border-dating-terracotta/20 rounded-xl p-4">
-                    <p className="text-sm text-foreground">
-                        <strong>What happens next?</strong> Our matchmaking team will review your profile and verify your social media.
+                <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-xl p-4">
+                    <p className="text-sm text-white/80">
+                        <strong className="text-[#D4AF37]">What happens next?</strong> Our matchmaking team will review your profile and verify your social media.
                         If you're a good fit for our community, we'll reach out to schedule a brief consultation.
                     </p>
                 </div>
             </CardContent>
-        </>
+        </div>
     );
 };

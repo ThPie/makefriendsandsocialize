@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { forwardRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Briefcase, Quote, Users, Shield, Globe, MessageCircle, Sparkles, ArrowRight, CheckCircle, Star, HelpCircle, TrendingUp, Award, Building2, Handshake, Network } from "lucide-react";
+import { Briefcase, Users, Shield, Globe, ArrowRight, HelpCircle, Building2, Handshake, Network } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useAnimatedCounter } from "@/hooks/useAnimatedCounter";
@@ -13,20 +13,19 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+
 // Gallery images for the Founders Circle
 const galleryImages = [
+  // Using placeholders if original assets aren't perfectly matched, but keeping original paths
   { src: "/images/founders/founder-gathering.jpg", alt: "Founder presenting to a group of entrepreneurs" },
   { src: "/images/founders/founder-duo.jpg", alt: "Founders networking in an intimate setting" },
   { src: "/images/founders/founder-chat.jpg", alt: "One-on-one conversation between founders" },
 ];
 
 const ConnectedCirclePage = () => {
-  const { data: foundersStats, isLoading: statsLoading } = useFoundersStats();
+  const { data: foundersStats } = useFoundersStats();
   const heroAnimation = useScrollAnimation({ rootMargin: '100px' });
-  const philosophyAnimation = useScrollAnimation({ rootMargin: '100px' });
   const processAnimation = useScrollAnimation({ rootMargin: '100px' });
-  const valuesAnimation = useScrollAnimation({ rootMargin: '100px' });
-  const statsAnimation = useScrollAnimation({ rootMargin: '100px' });
   const benefitsAnimation = useScrollAnimation({ rootMargin: '100px' });
   const galleryAnimation = useScrollAnimation({ rootMargin: '100px' });
   const faqAnimation = useScrollAnimation({ rootMargin: '100px' });
@@ -59,9 +58,6 @@ const ConnectedCirclePage = () => {
     { value: foundersStats?.connectionsMade || 0, suffix: foundersStats?.connectionsMade ? "+" : "", label: "Connections Made", icon: Handshake },
     { value: foundersStats?.cities || 0, suffix: foundersStats?.cities ? "+" : "", label: "Cities", icon: Globe },
   ];
-
-  // Check if we have any real data to show
-  const hasStatsData = foundersStats && (foundersStats.founderCompanies > 0 || foundersStats.connectionsMade > 0);
 
   // Benefits data
   const benefits = [
@@ -129,22 +125,22 @@ const ConnectedCirclePage = () => {
     return (
       <motion.div
         variants={itemVariants}
-        className="text-center p-6 bg-card border border-border/50 rounded-2xl hover-lift"
+        className="text-center p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-colors"
       >
-        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-          <Icon className="h-6 w-6 text-primary" />
+        <div className="w-12 h-12 rounded-xl bg-[#D4AF37]/20 flex items-center justify-center mx-auto mb-4">
+          <Icon className="h-6 w-6 text-[#D4AF37]" />
         </div>
-        <div className="font-display text-4xl md:text-5xl text-foreground mb-2">
+        <div className="font-display text-4xl md:text-5xl text-white mb-2">
           {count.toLocaleString()}{suffix}
         </div>
-        <p className="text-muted-foreground text-sm">{label}</p>
+        <p className="text-white/60 text-sm">{label}</p>
       </motion.div>
     );
   };
 
   return (
     <Layout>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#0a0f0b]">
         {/* Hero Section */}
         <section className="relative min-h-[90vh] flex items-center overflow-hidden">
           {/* Background Image */}
@@ -152,10 +148,9 @@ const ConnectedCirclePage = () => {
             <img
               src="/images/founders/founder-group-hero.jpg"
               alt="Professional business networking"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover opacity-60"
             />
-            <div className="absolute inset-0 bg-black/50" />
-
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f0b]/80 via-[#0a0f0b]/50 to-[#0a0f0b]" />
           </div>
 
           <div
@@ -171,14 +166,14 @@ const ConnectedCirclePage = () => {
               >
                 The Founders
                 <br />
-                <span className="text-primary">Circle</span>
+                <span className="text-[#D4AF37] italic">Circle</span>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                className="text-white/80 text-lg md:text-xl max-w-xl mb-10 leading-relaxed"
+                className="text-white/80 text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-light"
               >
                 Where visionary founders connect and thrive. An exclusive directory of verified
                 member-founded companies, creating opportunities for meaningful professional
@@ -194,7 +189,7 @@ const ConnectedCirclePage = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base font-medium group"
+                  className="rounded-full px-8 min-h-[52px] text-base font-medium bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-none"
                 >
                   <Link to="/founders-circle/directory">
                     Browse Directory
@@ -204,7 +199,7 @@ const ConnectedCirclePage = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base border-border/50 hover:bg-secondary cursor-pointer"
+                  className="rounded-full px-8 min-h-[52px] text-base border-white/20 text-white hover:bg-white/10 hover:text-white"
                   onClick={(e) => {
                     e.preventDefault();
                     document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
@@ -223,13 +218,13 @@ const ConnectedCirclePage = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.5 }}
           >
-            <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll</span>
+            <span className="text-xs text-white/40 uppercase tracking-widest">Scroll</span>
             <motion.div
-              className="w-5 h-8 rounded-full border border-border flex items-start justify-center p-1"
+              className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center p-1"
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <div className="w-1 h-2 rounded-full bg-primary" />
+              <div className="w-1 h-2 rounded-full bg-[#D4AF37]" />
             </motion.div>
           </motion.div>
         </section>
@@ -241,11 +236,11 @@ const ConnectedCirclePage = () => {
             className={`container max-w-6xl scroll-animate ${benefitsAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Why Join</p>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+              <p className="text-[#D4AF37] text-sm font-semibold uppercase tracking-widest mb-4">Why Join</p>
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
                 Elevate Your Business
               </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              <p className="text-white/60 text-lg max-w-2xl mx-auto">
                 The Founders Circle isn't just a directory—it's a gateway to
                 meaningful founder-to-founder relationships built on trust, innovation, and mutual respect.
               </p>
@@ -261,13 +256,13 @@ const ConnectedCirclePage = () => {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  className="group bg-card border border-border/50 rounded-2xl p-8 hover-lift"
+                  className="group bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all duration-300"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 transition-colors group-hover:bg-primary/20">
-                    <item.icon className="h-7 w-7 text-primary" />
+                  <div className="w-14 h-14 rounded-2xl bg-[#D4AF37]/20 flex items-center justify-center mb-6 transition-colors group-hover:bg-[#D4AF37]/30">
+                    <item.icon className="h-7 w-7 text-[#D4AF37]" />
                   </div>
-                  <h3 className="font-display text-2xl text-foreground mb-3">{item.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+                  <h3 className="font-display text-2xl text-white mb-3">{item.title}</h3>
+                  <p className="text-white/60 leading-relaxed font-light">{item.description}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -275,14 +270,14 @@ const ConnectedCirclePage = () => {
         </section>
 
         {/* How It Works Section */}
-        <section className="py-24 md:py-32 bg-secondary/30 scroll-mt-32" id="how-it-works">
+        <section className="py-24 md:py-32 bg-white/5 border-y border-white/5 scroll-mt-32" id="how-it-works">
           <div
             ref={processAnimation.ref}
             className={`container max-w-5xl scroll-animate ${processAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">The Process</p>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+              <p className="text-[#D4AF37] text-sm font-semibold uppercase tracking-widest mb-4">The Process</p>
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
                 Get Your Company Listed
               </h2>
             </div>
@@ -318,14 +313,14 @@ const ConnectedCirclePage = () => {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  className="bg-card border border-border/50 rounded-2xl p-6 hover-lift flex flex-col items-center text-center group h-full"
+                  className="bg-[#0a0f0b] border border-white/10 rounded-2xl p-6 flex flex-col items-center text-center group h-full hover:border-[#D4AF37]/30 transition-colors"
                 >
-                  <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4 transition-all group-hover:bg-primary/20 group-hover:scale-110">
-                    <span className="font-display text-2xl font-bold text-primary">{item.step}</span>
+                  <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center mb-4 transition-all group-hover:bg-[#D4AF37]/20 group-hover:scale-110">
+                    <span className="font-display text-2xl font-bold text-[#D4AF37]">{item.step}</span>
                   </div>
 
-                  <h3 className="font-display text-xl text-foreground mb-3">{item.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                  <h3 className="font-display text-xl text-white mb-3">{item.title}</h3>
+                  <p className="text-white/60 text-sm leading-relaxed">{item.description}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -339,11 +334,11 @@ const ConnectedCirclePage = () => {
             className={`container max-w-6xl scroll-animate ${galleryAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Community</p>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+              <p className="text-[#D4AF37] text-sm font-semibold uppercase tracking-widest mb-4">Our Community</p>
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
                 Founders in Action
               </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              <p className="text-white/60 text-lg max-w-2xl mx-auto">
                 Glimpses from our exclusive founder gatherings and networking events.
               </p>
             </div>
@@ -358,15 +353,15 @@ const ConnectedCirclePage = () => {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  className="group relative overflow-hidden rounded-2xl aspect-[4/3]"
+                  className="group relative overflow-hidden rounded-2xl aspect-[4/3] border border-white/10"
                 >
                   <img
                     src={image.src}
                     alt={image.alt}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </motion.div>
               ))}
             </motion.div>
@@ -374,14 +369,14 @@ const ConnectedCirclePage = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-24 md:py-32 bg-secondary/30">
+        <section className="py-24 md:py-32 bg-white/5 border-t border-white/5">
           <div
             ref={faqAnimation.ref}
             className={`container max-w-4xl scroll-animate ${faqAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">FAQs</p>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+              <p className="text-[#D4AF37] text-sm font-semibold uppercase tracking-widest mb-4">FAQs</p>
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
                 Common Questions
               </h2>
             </div>
@@ -391,17 +386,17 @@ const ConnectedCirclePage = () => {
                 <AccordionItem
                   key={index}
                   value={`item-${index}`}
-                  className="bg-card border border-border/50 rounded-2xl px-6 data-[state=open]:border-primary/30"
+                  className="bg-[#0a0f0b] border border-white/10 rounded-2xl px-6 data-[state=open]:border-[#D4AF37]/30 transition-colors"
                 >
-                  <AccordionTrigger className="text-left font-display text-lg hover:no-underline py-6">
+                  <AccordionTrigger className="text-left font-display text-lg text-white hover:no-underline py-6 hover:text-[#D4AF37] transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <HelpCircle className="h-4 w-4 text-primary" />
+                      <div className="w-8 h-8 rounded-lg bg-[#D4AF37]/10 flex items-center justify-center flex-shrink-0">
+                        <HelpCircle className="h-4 w-4 text-[#D4AF37]" />
                       </div>
                       {faq.question}
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-6 pl-12">
+                  <AccordionContent className="text-white/60 pb-6 pl-12 leading-relaxed">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -411,7 +406,7 @@ const ConnectedCirclePage = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 md:py-32 bg-secondary/30">
+        <section className="py-24 md:py-32">
           <div
             ref={ctaAnimation.ref}
             className={`container max-w-4xl text-center scroll-animate ${ctaAnimation.isVisible ? 'visible' : ''}`}
@@ -421,16 +416,16 @@ const ConnectedCirclePage = () => {
               animate={ctaAnimation.isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7 }}
             >
-              <div className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8">
-                <Building2 className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">Join The Founders</span>
+              <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-full px-5 py-2.5 mb-8">
+                <Building2 className="h-4 w-4 text-[#D4AF37]" />
+                <span className="text-sm font-medium text-[#D4AF37]">Join The Founders</span>
               </div>
 
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
-                Ready to Connect with Fellow Founders?
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
+                Ready to Connect with<br /> Fellow Founders?
               </h2>
 
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
+              <p className="text-white/60 text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-light">
                 Join The Founders Circle today and gain access to a curated community
                 of entrepreneurs and founders who value strategic connections and collaborative growth.
               </p>
@@ -439,7 +434,7 @@ const ConnectedCirclePage = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base font-medium group"
+                  className="rounded-full px-8 min-h-[52px] text-base font-medium bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-none"
                 >
                   <Link to="/membership">
                     Apply for Membership
@@ -450,7 +445,7 @@ const ConnectedCirclePage = () => {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base border-border/50 hover:bg-secondary"
+                  className="rounded-full px-8 min-h-[52px] text-base border-white/20 text-white hover:bg-white/10 hover:text-white"
                 >
                   <Link to="/founders-circle/directory">Browse Directory</Link>
                 </Button>

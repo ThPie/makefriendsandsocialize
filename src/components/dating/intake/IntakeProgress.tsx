@@ -39,7 +39,7 @@ export const IntakeProgress = ({
         <div className={cn('mb-8', className)}>
             {/* Step Indicators */}
             <div
-                className="flex justify-between items-center mb-4 overflow-x-auto pb-2"
+                className="flex justify-between items-center mb-6 overflow-x-auto pb-4 no-scrollbar"
                 role="navigation"
                 aria-label="Form progress"
             >
@@ -53,8 +53,8 @@ export const IntakeProgress = ({
                         <div
                             key={s.number}
                             className={cn(
-                                'flex items-center gap-2 flex-shrink-0',
-                                isCurrent ? 'text-dating-terracotta' : isCompleted ? 'text-dating-terracotta' : 'text-muted-foreground'
+                                'flex flex-col items-center gap-2 flex-shrink-0 relative group px-2',
+                                isCurrent ? 'text-[#D4AF37]' : isCompleted ? 'text-[#D4AF37]' : 'text-white/30'
                             )}
                         >
                             <button
@@ -62,27 +62,38 @@ export const IntakeProgress = ({
                                 onClick={() => isClickable && onStepClick?.(s.number)}
                                 disabled={!isClickable}
                                 className={cn(
-                                    'w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300',
-                                    isCurrent || isCompleted
-                                        ? 'bg-dating-terracotta border-dating-terracotta text-white'
-                                        : 'border-muted-foreground/30',
-                                    isClickable && 'cursor-pointer hover:scale-110'
+                                    'w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition-all duration-300 relative z-10',
+                                    isCurrent
+                                        ? 'bg-[#D4AF37] border-[#D4AF37] text-[#0a0f0b] shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-110'
+                                        : isCompleted
+                                            ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]'
+                                            : 'bg-white/5 border-white/10 text-white/30 hover:border-white/20',
+                                    isClickable && 'cursor-pointer hover:scale-105'
                                 )}
                                 aria-label={`${s.title} - ${isCompleted ? 'completed' : isCurrent ? 'current step' : 'not started'}`}
                                 aria-current={isCurrent ? 'step' : undefined}
                             >
                                 {isCompleted ? (
-                                    <Check className="h-4 w-4" aria-hidden="true" />
+                                    <Check className="h-5 w-5" aria-hidden="true" />
                                 ) : (
-                                    <Icon className="h-4 w-4" aria-hidden="true" />
+                                    <Icon className="h-5 w-5" aria-hidden="true" />
                                 )}
                             </button>
-                            <span className="hidden lg:block text-xs font-medium">{s.title}</span>
+                            <span
+                                className={cn(
+                                    "hidden md:block text-[10px] uppercase tracking-widest font-medium transition-colors duration-300 absolute -bottom-6 w-32 text-center",
+                                    isCurrent ? "text-white opacity-100" : "text-white/40 opacity-0 group-hover:opacity-100"
+                                )}
+                            >
+                                {s.title}
+                            </span>
+
+                            {/* Connecting Line */}
                             {index < steps.length - 1 && (
                                 <div
                                     className={cn(
-                                        'w-4 md:w-6 h-0.5 mx-1',
-                                        currentStep > s.number ? 'bg-dating-terracotta' : 'bg-muted-foreground/20'
+                                        'absolute top-5 md:top-6 left-[60%] w-[calc(100%+1rem)] h-[2px] transition-all duration-700 -z-0',
+                                        currentStep > s.number ? 'bg-[#D4AF37]' : 'bg-white/10'
                                     )}
                                     aria-hidden="true"
                                 />
@@ -92,18 +103,24 @@ export const IntakeProgress = ({
                 })}
             </div>
 
-            {/* Progress Bar */}
-            <Progress
-                value={progressPercentage}
-                className="h-2 bg-muted"
-                aria-label={`Step ${currentStep} of ${totalSteps}`}
-            />
+            {/* Mobile Title */}
+            <div className="md:hidden text-center mb-6">
+                <h2 className="text-[#D4AF37] font-display text-xl">
+                    {steps.find(s => s.number === currentStep)?.title}
+                </h2>
+                <p className="text-white/40 text-xs uppercase tracking-widest mt-1">
+                    Step {currentStep} of {totalSteps}
+                </p>
+            </div>
 
-            {/* Step Counter (mobile) */}
-            <div className="lg:hidden text-center mt-2">
-                <span className="text-sm text-muted-foreground" role="status">
-                    Step {currentStep} of {totalSteps}: {steps.find(s => s.number === currentStep)?.title}
-                </span>
+            {/* Simple Progress Bar for Mobile */}
+            <div className="md:hidden">
+                <Progress
+                    value={progressPercentage}
+                    className="h-1 bg-white/10"
+                    // indicatorClassName="bg-[#D4AF37]" 
+                    aria-label={`Step ${currentStep} of ${totalSteps}`}
+                />
             </div>
         </div>
     );

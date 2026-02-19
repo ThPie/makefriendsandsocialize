@@ -27,53 +27,56 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
     };
 
     return (
-        <>
-            <CardHeader className="bg-gradient-to-r from-dating-forest/5 to-transparent pb-6">
-                <CardTitle className="font-display text-2xl flex items-center gap-3">
-                    <Cigarette className="h-6 w-6 text-dating-terracotta" aria-hidden="true" />
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <CardHeader className="text-center pb-8 border-b border-white/10">
+                <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
+                    <Cigarette className="h-6 w-6 text-dating-terracotta" />
+                </div>
+                <CardTitle className="font-display text-3xl text-white mb-2">
                     Lifestyle Habits
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
                     Be honest - these help us match you with compatible partners.
                 </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-8 pt-6">
+
+            <CardContent className="space-y-8 pt-8">
                 {/* Smoking */}
                 <div className="space-y-3">
-                    <Label>Do you smoke? *</Label>
+                    <Label className="text-white/80">Do you smoke?</Label>
                     <Select value={formData.smoking_status} onValueChange={(value) => updateField("smoking_status", value)}>
-                        <SelectTrigger className="bg-background/50">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
                             <SelectValue placeholder="Select smoking status" />
                         </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="never">Never</SelectItem>
-                            <SelectItem value="occasionally">Occasionally / Socially</SelectItem>
-                            <SelectItem value="regularly">Regularly</SelectItem>
-                            <SelectItem value="trying_to_quit">Trying to quit</SelectItem>
+                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                            <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
+                            <SelectItem value="occasionally" className="focus:bg-white/10 focus:text-white">Occasionally / Socially</SelectItem>
+                            <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
+                            <SelectItem value="trying_to_quit" className="focus:bg-white/10 focus:text-white">Trying to quit</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
                 {/* Drinking */}
                 <div className="space-y-3">
-                    <Label>Do you drink alcohol? *</Label>
+                    <Label className="text-white/80">Do you drink alcohol?</Label>
                     <Select value={formData.drinking_status} onValueChange={(value) => updateField("drinking_status", value)}>
-                        <SelectTrigger className="bg-background/50">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
                             <SelectValue placeholder="Select drinking status" />
                         </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="never">Never</SelectItem>
-                            <SelectItem value="socially">Socially</SelectItem>
-                            <SelectItem value="regularly">Regularly</SelectItem>
-                            <SelectItem value="sober">Sober / In recovery</SelectItem>
+                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                            <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
+                            <SelectItem value="socially" className="focus:bg-white/10 focus:text-white">Socially</SelectItem>
+                            <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
+                            <SelectItem value="sober" className="focus:bg-white/10 focus:text-white">Sober / In recovery</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
                 {/* Adaptive drug use question */}
                 <div className="space-y-3 animate-fade-in">
-                    <Label htmlFor="drug_use">Recreational drug use</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <Label htmlFor="drug_use" className="text-white/80">Recreational drug use</Label>
+                    <p className="text-sm text-white/40">
                         {getDrugUsePrompt()}
                     </p>
                     <Textarea
@@ -81,70 +84,70 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                         value={formData.drug_use}
                         onChange={(e) => updateField("drug_use", e.target.value)}
                         placeholder="Be honest - this helps us match you appropriately..."
-                        className="min-h-[80px] bg-background/50"
+                        className="min-h-[80px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
                     />
                 </div>
 
                 {/* Exercise */}
                 <div className="space-y-3">
-                    <Label>How often do you exercise?</Label>
+                    <Label className="text-white/80">How often do you exercise?</Label>
                     <Select value={formData.exercise_frequency} onValueChange={(value) => updateField("exercise_frequency", value)}>
-                        <SelectTrigger className="bg-background/50">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
                             <SelectValue placeholder="Select exercise frequency" />
                         </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="daily">Daily</SelectItem>
-                            <SelectItem value="few_times_week">A few times a week</SelectItem>
-                            <SelectItem value="occasionally">Occasionally</SelectItem>
-                            <SelectItem value="rarely">Rarely</SelectItem>
+                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                            <SelectItem value="daily" className="focus:bg-white/10 focus:text-white">Daily</SelectItem>
+                            <SelectItem value="few_times_week" className="focus:bg-white/10 focus:text-white">A few times a week</SelectItem>
+                            <SelectItem value="occasionally" className="focus:bg-white/10 focus:text-white">Occasionally</SelectItem>
+                            <SelectItem value="rarely" className="focus:bg-white/10 focus:text-white">Rarely</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
                 {/* Diet */}
                 <div className="space-y-3">
-                    <Label>Diet preference</Label>
+                    <Label className="text-white/80">Diet preference</Label>
                     <Select value={formData.diet_preference} onValueChange={(value) => updateField("diet_preference", value)}>
-                        <SelectTrigger className="bg-background/50">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
                             <SelectValue placeholder="Select diet preference" />
                         </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="omnivore">Omnivore - I eat everything</SelectItem>
-                            <SelectItem value="vegetarian">Vegetarian</SelectItem>
-                            <SelectItem value="vegan">Vegan</SelectItem>
-                            <SelectItem value="pescatarian">Pescatarian</SelectItem>
-                            <SelectItem value="keto">Keto / Low-carb</SelectItem>
-                            <SelectItem value="halal">Halal</SelectItem>
-                            <SelectItem value="kosher">Kosher</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
+                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                            <SelectItem value="omnivore" className="focus:bg-white/10 focus:text-white">Omnivore - I eat everything</SelectItem>
+                            <SelectItem value="vegetarian" className="focus:bg-white/10 focus:text-white">Vegetarian</SelectItem>
+                            <SelectItem value="vegan" className="focus:bg-white/10 focus:text-white">Vegan</SelectItem>
+                            <SelectItem value="pescatarian" className="focus:bg-white/10 focus:text-white">Pescatarian</SelectItem>
+                            <SelectItem value="keto" className="focus:bg-white/10 focus:text-white">Keto / Low-carb</SelectItem>
+                            <SelectItem value="halal" className="focus:bg-white/10 focus:text-white">Halal</SelectItem>
+                            <SelectItem value="kosher" className="focus:bg-white/10 focus:text-white">Kosher</SelectItem>
+                            <SelectItem value="other" className="focus:bg-white/10 focus:text-white">Other</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
                 {/* NEW: Screen Time - Modern conflict source */}
-                <div className="space-y-3 pt-4 border-t border-border/50">
+                <div className="space-y-4 pt-6 border-t border-white/10">
                     <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs bg-dating-terracotta/20 text-dating-terracotta px-2 py-1 rounded-full">
+                        <span className="text-xs bg-dating-terracotta/20 text-[#D4AF37] px-2 py-1 rounded-full font-medium border border-[#D4AF37]/20">
                             Modern factor
                         </span>
                     </div>
-                    <Label>How do you feel about phones during quality time together?</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <Label className="text-white/80">How do you feel about phones during quality time together?</Label>
+                    <p className="text-sm text-white/40">
                         Screen time is an increasingly common source of relationship conflict.
                     </p>
                     <Select value={formData.screen_time_habits} onValueChange={(value) => updateField("screen_time_habits", value)}>
-                        <SelectTrigger className="bg-background/50">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
                             <SelectValue placeholder="Select your preference" />
                         </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="phones_away">Phones away completely during quality time</SelectItem>
-                            <SelectItem value="occasional_checks">Occasional checks are okay</SelectItem>
-                            <SelectItem value="always_connected">I'm always connected - it's part of my life</SelectItem>
-                            <SelectItem value="flexible">Flexible - depends on the situation</SelectItem>
+                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                            <SelectItem value="phones_away" className="focus:bg-white/10 focus:text-white">Phones away completely during quality time</SelectItem>
+                            <SelectItem value="occasional_checks" className="focus:bg-white/10 focus:text-white">Occasional checks are okay</SelectItem>
+                            <SelectItem value="always_connected" className="focus:bg-white/10 focus:text-white">I'm always connected - it's part of my life</SelectItem>
+                            <SelectItem value="flexible" className="focus:bg-white/10 focus:text-white">Flexible - depends on the situation</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
             </CardContent>
-        </>
+        </div>
     );
 };

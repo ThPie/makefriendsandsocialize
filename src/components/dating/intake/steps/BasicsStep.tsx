@@ -12,9 +12,10 @@ import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { User, Camera, Upload, MapPin } from 'lucide-react';
+import { User, Camera, Upload, MapPin, Sparkles } from 'lucide-react';
 import { VoiceBioRecorder } from '@/components/dating/VoiceBioRecorder';
 import type { IntakeFormContext } from '../useIntakeForm';
+import { cn } from '@/lib/utils';
 
 interface BasicsStepProps {
     form: IntakeFormContext;
@@ -37,65 +38,82 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
     };
 
     return (
-        <>
-            <CardHeader className="bg-gradient-to-r from-dating-forest/5 to-transparent pb-6">
-                <CardTitle className="font-display text-2xl flex items-center gap-3">
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <CardHeader className="text-center pb-8 border-b border-white/10">
+                <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
                     <User className="h-6 w-6 text-dating-terracotta" />
+                </div>
+                <CardTitle className="font-display text-3xl text-white mb-2">
                     The Basics
                 </CardTitle>
-                <CardDescription>
-                    Tell us about yourself, who you're looking to meet, and how we can verify your profile.
+                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
+                    Let's start your journey. Tell us who you are and what you're looking for.
                 </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-8 pt-6">
-                {/* Photo Upload - Required */}
-                <div className="flex flex-col items-center gap-4">
-                    <Avatar className={`h-32 w-32 border-4 ${formData.photo_url ? 'border-green-500/40' : 'border-dating-terracotta/20'}`}>
-                        <AvatarImage src={formData.photo_url} />
-                        <AvatarFallback className="bg-dating-terracotta/10 text-dating-terracotta text-3xl">
-                            {formData.display_name ? formData.display_name[0] : <Camera className="h-10 w-10" />}
-                        </AvatarFallback>
-                    </Avatar>
+
+            <CardContent className="space-y-10 pt-8">
+                {/* Photo Upload - Centered & Premium */}
+                <div className="flex flex-col items-center gap-6">
+                    <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                        <div className={cn(
+                            "absolute inset-0 rounded-full blur-xl opacity-20 transition-opacity duration-500 group-hover:opacity-40",
+                            formData.photo_url ? "bg-green-500" : "bg-dating-terracotta"
+                        )} />
+                        <Avatar className={cn(
+                            "h-40 w-40 border-4 transition-all duration-300",
+                            formData.photo_url
+                                ? "border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.2)]"
+                                : "border-white/10 hover:border-dating-terracotta/50"
+                        )}>
+                            <AvatarImage src={formData.photo_url} className="object-cover" />
+                            <AvatarFallback className="bg-[#1a231b] text-white/20 text-4xl">
+                                {formData.display_name ? formData.display_name[0] : <Camera className="h-12 w-12" />}
+                            </AvatarFallback>
+                        </Avatar>
+
+                        <div className="absolute bottom-2 right-2 p-2 bg-[#D4AF37] rounded-full text-[#1a231b] shadow-lg transform transition-transform duration-300 group-hover:scale-110">
+                            {formData.photo_url ? <Sparkles className="h-5 w-5" /> : <Upload className="h-5 w-5" />}
+                        </div>
+                    </div>
+
                     <input
                         ref={fileInputRef}
                         type="file"
                         accept="image/*"
                         onChange={handlePhotoUpload}
                         className="hidden"
-                        aria-label="Upload profile photo"
                     />
-                    <Button
-                        type="button"
-                        variant={formData.photo_url ? "outline" : "default"}
-                        size="sm"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={isUploading}
-                        className="gap-2"
-                        aria-label={formData.photo_url ? "Change photo" : "Upload photo"}
-                    >
-                        <Upload className="h-4 w-4" aria-hidden="true" />
-                        {isUploading ? "Uploading..." : formData.photo_url ? "Change Photo" : "Upload Photo *"}
-                    </Button>
-                    <p className="text-xs text-muted-foreground">Required for verification • Max 5MB</p>
-                    {!formData.photo_url && (
-                        <p className="text-xs text-dating-terracotta">A photo is required to proceed</p>
-                    )}
+
+                    <div className="text-center space-y-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={isUploading}
+                            className="border-dating-terracotta text-dating-terracotta hover:bg-dating-terracotta hover:text-white transition-all duration-300 min-w-[140px]"
+                        >
+                            {isUploading ? "Uploading..." : formData.photo_url ? "Change Photo" : "Upload Portrait"}
+                        </Button>
+                        <p className="text-xs text-white/40 uppercase tracking-widest font-medium">
+                            Required • High Quality
+                        </p>
+                    </div>
                 </div>
 
-                {/* Name and Age */}
-                <div className="grid gap-6 md:grid-cols-2">
+                {/* Personal Information */}
+                <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
                     <div className="space-y-2">
-                        <Label htmlFor="display_name">Full Name *</Label>
+                        <Label htmlFor="display_name" className="text-white/80">Full Name</Label>
                         <Input
                             id="display_name"
                             value={formData.display_name}
                             onChange={(e) => updateField("display_name", e.target.value)}
-                            placeholder="Your name"
-                            className="bg-background/50"
+                            placeholder="e.g. James St. Patrick"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 h-12"
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="age">Age *</Label>
+                        <Label htmlFor="age" className="text-white/80">Age</Label>
                         <Input
                             id="age"
                             type="number"
@@ -103,227 +121,182 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             max={100}
                             value={formData.age}
                             onChange={(e) => updateField("age", parseInt(e.target.value) || 18)}
-                            className="bg-background/50"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 h-12"
                         />
                     </div>
                 </div>
 
-                {/* Gender Selection */}
-                <div className="grid gap-6 md:grid-cols-2">
+                {/* Gender & Preferences */}
+                <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
                     <div className="space-y-2">
-                        <Label>I am a *</Label>
+                        <Label className="text-white/80">I identify as</Label>
                         <Select value={formData.gender} onValueChange={(value) => updateField("gender", value)}>
-                            <SelectTrigger className="bg-background/50">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
                                 <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Man">Man</SelectItem>
-                                <SelectItem value="Woman">Woman</SelectItem>
-                                <SelectItem value="Non-binary">Non-binary</SelectItem>
-                                <SelectItem value="Trans Man">Trans Man</SelectItem>
-                                <SelectItem value="Trans Woman">Trans Woman</SelectItem>
-                                <SelectItem value="Other">Other</SelectItem>
+                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                <SelectItem value="Man" className="focus:bg-white/10 focus:text-white">Man</SelectItem>
+                                <SelectItem value="Woman" className="focus:bg-white/10 focus:text-white">Woman</SelectItem>
+                                <SelectItem value="Non-binary" className="focus:bg-white/10 focus:text-white">Non-binary</SelectItem>
+                                <SelectItem value="Trans Man" className="focus:bg-white/10 focus:text-white">Trans Man</SelectItem>
+                                <SelectItem value="Trans Woman" className="focus:bg-white/10 focus:text-white">Trans Woman</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                     <div className="space-y-2">
-                        <Label>I want to meet *</Label>
+                        <Label className="text-white/80">Interested in meeting</Label>
                         <Select value={formData.target_gender} onValueChange={(value) => updateField("target_gender", value)}>
-                            <SelectTrigger className="bg-background/50">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
                                 <SelectValue placeholder="Select preference" />
                             </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Men">Men</SelectItem>
-                                <SelectItem value="Women">Women</SelectItem>
-                                <SelectItem value="Everyone">Everyone</SelectItem>
-                                <SelectItem value="Non-binary">Non-binary</SelectItem>
+                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                <SelectItem value="Men" className="focus:bg-white/10 focus:text-white">Men</SelectItem>
+                                <SelectItem value="Women" className="focus:bg-white/10 focus:text-white">Women</SelectItem>
+                                <SelectItem value="Everyone" className="focus:bg-white/10 focus:text-white">Everyone</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                 </div>
 
                 {/* Relationship Type */}
-                <div className="space-y-3">
-                    <Label>What type of relationship are you looking for? *</Label>
+                <div className="space-y-3 p-6 rounded-xl bg-white/5 border border-white/10">
+                    <Label className="text-white/90 text-lg font-display">Relationship Intent</Label>
                     <Select value={formData.relationship_type} onValueChange={(value) => updateField("relationship_type", value)}>
-                        <SelectTrigger className="bg-background/50">
-                            <SelectValue placeholder="Select relationship type" />
+                        <SelectTrigger className="bg-transparent border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectValue placeholder="What are you looking for?" />
                         </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="casual">Casual dating - seeing where things go</SelectItem>
-                            <SelectItem value="serious">Serious relationship - looking for a partner</SelectItem>
-                            <SelectItem value="marriage">Marriage-minded - looking for "the one"</SelectItem>
-                            <SelectItem value="open">Open to see - depends on the connection</SelectItem>
+                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                            <SelectItem value="serious" className="focus:bg-white/10 focus:text-white">
+                                <div className="flex flex-col py-1">
+                                    <span className="font-medium">Serious Relationship</span>
+                                    <span className="text-xs text-white/50">Looking for a partner</span>
+                                </div>
+                            </SelectItem>
+                            <SelectItem value="marriage" className="focus:bg-white/10 focus:text-white">
+                                <div className="flex flex-col py-1">
+                                    <span className="font-medium">Marriage Minded</span>
+                                    <span className="text-xs text-white/50">Ready for long-term commitment</span>
+                                </div>
+                            </SelectItem>
+                            <SelectItem value="casual" className="focus:bg-white/10 focus:text-white">
+                                <div className="flex flex-col py-1">
+                                    <span className="font-medium">Casual Dating</span>
+                                    <span className="text-xs text-white/50">Seeing where things go</span>
+                                </div>
+                            </SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
-                {/* Age Range Preference */}
-                <div className="space-y-4">
+                {/* Age Range Slider */}
+                <div className="space-y-6">
                     <div className="flex items-center justify-between">
-                        <Label>Preferred Age Range</Label>
-                        <div className="flex items-center gap-2">
-                            <span className="bg-dating-terracotta/20 text-dating-terracotta px-2 py-1 rounded text-sm font-medium">
-                                {formData.age_range_min}
-                            </span>
-                            <span className="text-muted-foreground">to</span>
-                            <span className="bg-dating-terracotta/20 text-dating-terracotta px-2 py-1 rounded text-sm font-medium">
-                                {formData.age_range_max}
-                            </span>
+                        <Label className="text-white/80">Age Preference</Label>
+                        <div className="flex items-center gap-3 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                            <span className="text-[#D4AF37] font-mono font-medium">{formData.age_range_min}</span>
+                            <span className="text-white/30 text-xs uppercase">to</span>
+                            <span className="text-[#D4AF37] font-mono font-medium">{formData.age_range_max}</span>
                         </div>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                        Drag both handles to set your preferred age range
-                    </p>
-                    <div className="px-2">
+                    <Slider
+                        value={[formData.age_range_min, formData.age_range_max]}
+                        onValueChange={([min, max]) => {
+                            updateField("age_range_min", min);
+                            updateField("age_range_max", max);
+                        }}
+                        min={18}
+                        max={80}
+                        step={1}
+                        className="py-2"
+                    />
+                </div>
+
+                {/* Location - Elegant Design */}
+                <div className="space-y-6 pt-6 border-t border-white/10">
+                    <div className="flex items-start justify-between">
+                        <div>
+                            <Label className="text-base text-white flex items-center gap-2 mb-1">
+                                <MapPin className="h-4 w-4 text-[#D4AF37]" />
+                                Location
+                            </Label>
+                            {profile?.city ? (
+                                <p className="text-white/60 text-sm">
+                                    Based in <span className="text-white">{[profile.city, profile.state, profile.country].filter(Boolean).join(", ")}</span>
+                                </p>
+                            ) : (
+                                <Link to="/portal/profile" className="text-sm text-dating-terracotta hover:text-[#D4AF37] transition-colors">
+                                    Set your location in profile settings →
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                            <Label className="text-white/80 text-sm">Search Radius</Label>
+                            <span className="text-xs text-white/40">{formData.search_radius} miles</span>
+                        </div>
                         <Slider
-                            value={[formData.age_range_min, formData.age_range_max]}
-                            onValueChange={([min, max]) => {
-                                updateField("age_range_min", min);
-                                updateField("age_range_max", max);
-                            }}
-                            min={18}
-                            max={80}
-                            step={1}
-                            className="py-4"
-                            aria-label="Age range preference"
+                            value={[formData.search_radius]}
+                            onValueChange={([value]) => updateField("search_radius", value)}
+                            min={10}
+                            max={100}
+                            step={5}
+                            className="py-2"
                         />
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                            <span>18</span>
-                            <span>80</span>
-                        </div>
                     </div>
                 </div>
 
-                {/* Location Section */}
-                <div className="space-y-4 pt-4 border-t border-border/50">
-                    <div>
-                        <Label className="text-base flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-dating-terracotta" aria-hidden="true" />
-                            Your Location
-                        </Label>
-                        {profile?.city || profile?.state || profile?.country ? (
-                            <p className="text-foreground font-medium mt-2">
-                                {[profile.city, profile.state, profile.country].filter(Boolean).join(", ")}
-                            </p>
-                        ) : (
-                            <p className="text-muted-foreground mt-2">No location set</p>
-                        )}
-                        <Link
-                            to="/portal/profile"
-                            className="text-sm text-dating-terracotta hover:underline mt-1 inline-block"
-                        >
-                            Edit your location in your profile →
-                        </Link>
-                    </div>
-
-                    <div className="space-y-3">
-                        <Label>Search Radius: {formData.search_radius} miles</Label>
-                        <p className="text-sm text-muted-foreground">
-                            We'll prioritize matches within this distance.
-                        </p>
-                        <div className="px-2">
-                            <Slider
-                                value={[formData.search_radius]}
-                                onValueChange={([value]) => updateField("search_radius", value)}
-                                min={10}
-                                max={100}
-                                step={5}
-                                className="py-4"
-                                aria-label="Search radius"
-                            />
-                            <div className="flex justify-between text-xs text-muted-foreground">
-                                <span>10 miles</span>
-                                <span>100 miles</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Occupation */}
-                <div className="grid gap-6 md:grid-cols-2">
+                {/* Occupation & Bio */}
+                <div className="space-y-6 pt-6 border-t border-white/10">
                     <div className="space-y-2">
-                        <Label htmlFor="occupation">Occupation</Label>
+                        <Label htmlFor="occupation" className="text-white/80">Occupation</Label>
                         <Input
                             id="occupation"
                             value={formData.occupation}
                             onChange={(e) => updateField("occupation", e.target.value)}
-                            placeholder="What do you do?"
-                            className="bg-background/50"
+                            placeholder="e.g. Architect"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 h-12"
+                        />
+                    </div>
+
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="bio" className="text-white/80">Bio</Label>
+                            <VoiceBioRecorder
+                                currentBio={formData.bio}
+                                onBioUpdate={(bio) => updateField("bio", bio)}
+                            />
+                        </div>
+                        <Textarea
+                            id="bio"
+                            value={formData.bio}
+                            onChange={(e) => updateField("bio", e.target.value)}
+                            placeholder="Share a glimpse into your world..."
+                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
                         />
                     </div>
                 </div>
 
-                {/* Bio */}
-                <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                        <Label htmlFor="bio">Short Bio</Label>
-                        <VoiceBioRecorder
-                            currentBio={formData.bio}
-                            onBioUpdate={(bio) => updateField("bio", bio)}
-                        />
-                    </div>
-                    <Textarea
-                        id="bio"
-                        value={formData.bio}
-                        onChange={(e) => updateField("bio", e.target.value)}
-                        placeholder="A few sentences about yourself... or use the microphone to record!"
-                        className="min-h-[80px] bg-background/50"
-                    />
-                </div>
-
-                {/* Social Media Links */}
-                <div className="space-y-4 pt-4 border-t border-border/50">
-                    <div>
-                        <Label className="text-base">Social Media Profiles</Label>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            Help us verify your identity. We'll review these privately and keep them confidential.
-                        </p>
-                    </div>
+                {/* Social Verification - Minimalist */}
+                <div className="pt-6 border-t border-white/10">
+                    <Label className="text-white block mb-4">Social Verification (Private)</Label>
                     <div className="grid gap-4 md:grid-cols-2">
-                        <div className="space-y-2">
-                            <Label htmlFor="linkedin_url">LinkedIn</Label>
-                            <Input
-                                id="linkedin_url"
-                                value={formData.linkedin_url}
-                                onChange={(e) => updateField("linkedin_url", e.target.value)}
-                                placeholder="https://linkedin.com/in/..."
-                                className="bg-background/50"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="instagram_url">Instagram</Label>
-                            <Input
-                                id="instagram_url"
-                                value={formData.instagram_url}
-                                onChange={(e) => updateField("instagram_url", e.target.value)}
-                                placeholder="https://instagram.com/..."
-                                className="bg-background/50"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="facebook_url">Facebook</Label>
-                            <Input
-                                id="facebook_url"
-                                value={formData.facebook_url}
-                                onChange={(e) => updateField("facebook_url", e.target.value)}
-                                placeholder="https://facebook.com/..."
-                                className="bg-background/50"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="twitter_url">X (Twitter)</Label>
-                            <Input
-                                id="twitter_url"
-                                value={formData.twitter_url}
-                                onChange={(e) => updateField("twitter_url", e.target.value)}
-                                placeholder="https://x.com/..."
-                                className="bg-background/50"
-                            />
-                        </div>
+                        <Input
+                            value={formData.linkedin_url}
+                            onChange={(e) => updateField("linkedin_url", e.target.value)}
+                            placeholder="LinkedIn URL"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 h-10 text-sm"
+                        />
+                        <Input
+                            value={formData.instagram_url}
+                            onChange={(e) => updateField("instagram_url", e.target.value)}
+                            placeholder="Instagram Handle"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 h-10 text-sm"
+                        />
                     </div>
                 </div>
             </CardContent>
-        </>
+        </div>
     );
 };
