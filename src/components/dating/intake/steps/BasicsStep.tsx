@@ -2,7 +2,7 @@
  * Step 1: The Basics
  * Basic profile information, photo, demographics, and social media verification
  */
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +12,7 @@ import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { User, Camera, Upload, MapPin, Sparkles } from 'lucide-react';
+import { User, Camera, Upload, MapPin, Sparkles, ImagePlus } from 'lucide-react';
 import { VoiceBioRecorder } from '@/components/dating/VoiceBioRecorder';
 import type { IntakeFormContext } from '../useIntakeForm';
 import { cn } from '@/lib/utils';
@@ -28,14 +28,31 @@ interface BasicsStepProps {
 
 export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { formData, updateField, uploadPhoto, isUploading } = form;
+    const cameraInputRef = useRef<HTMLInputElement>(null);
+    const { formData, updateField, uploadPhoto, isUploading, fieldErrors } = form;
 
     const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             await uploadPhoto(file);
         }
+        // Reset input so same file can be re-selected
+        event.target.value = '';
     };
+
+    // Helper for error styling
+    const hasError = (field: string) => !!fieldErrors[field];
+    const errorMsg = (field: string) => fieldErrors[field];
+
+    const inputErrorClass = (field: string) =>
+        hasError(field)
+            ? 'border-red-500/70 ring-1 ring-red-500/30 focus:border-red-500 focus:ring-red-500/30'
+            : 'border-white/10 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20';
+
+    const selectErrorClass = (field: string) =>
+        hasError(field)
+            ? 'border-red-500/70 ring-1 ring-red-500/30 focus:ring-red-500/30 focus:border-red-500'
+            : 'border-white/10 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50';
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -54,16 +71,22 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
             <CardContent className="space-y-10 pt-8">
                 {/* Photo Upload - Centered & Premium */}
                 <div className="flex flex-col items-center gap-6">
-                    <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                    <div className={cn(
+                        "relative group cursor-pointer",
+                        hasError('photo_url') && "animate-pulse"
+                    )} onClick={() => fileInputRef.current?.click()}>
                         <div className={cn(
                             "absolute inset-0 rounded-full blur-xl opacity-20 transition-opacity duration-500 group-hover:opacity-40",
-                            formData.photo_url ? "bg-green-500" : "bg-dating-terracotta"
+                            hasError('photo_url') ? "bg-red-500 opacity-40" :
+                                formData.photo_url ? "bg-green-500" : "bg-dating-terracotta"
                         )} />
                         <Avatar className={cn(
                             "h-40 w-40 border-4 transition-all duration-300",
-                            formData.photo_url
-                                ? "border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.2)]"
-                                : "border-white/10 hover:border-dating-terracotta/50"
+                            hasError('photo_url')
+                                ? "border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.3)]"
+                                : formData.photo_url
+                                    ? "border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.2)]"
+                                    : "border-white/10 hover:border-dating-terracotta/50"
                         )}>
                             <AvatarImage src={formData.photo_url} className="object-cover" />
                             <AvatarFallback className="bg-[#1a231b] text-white/20 text-4xl">
@@ -71,11 +94,15 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             </AvatarFallback>
                         </Avatar>
 
-                        <div className="absolute bottom-2 right-2 p-2 bg-[#D4AF37] rounded-full text-[#1a231b] shadow-lg transform transition-transform duration-300 group-hover:scale-110">
+                        <div className={cn(
+                            "absolute bottom-2 right-2 p-2 rounded-full text-[#1a231b] shadow-lg transform transition-transform duration-300 group-hover:scale-110",
+                            hasError('photo_url') ? "bg-red-500" : "bg-[#D4AF37]"
+                        )}>
                             {formData.photo_url ? <Sparkles className="h-5 w-5" /> : <Upload className="h-5 w-5" />}
                         </div>
                     </div>
 
+                    {/* Hidden file inputs */}
                     <input
                         ref={fileInputRef}
                         type="file"
@@ -83,20 +110,58 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                         onChange={handlePhotoUpload}
                         className="hidden"
                     />
+                    <input
+                        ref={cameraInputRef}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={handlePhotoUpload}
+                        className="hidden"
+                    />
 
-                    <div className="text-center space-y-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={isUploading}
-                            className="border-dating-terracotta text-dating-terracotta hover:bg-dating-terracotta hover:text-white transition-all duration-300 min-w-[140px]"
-                        >
-                            {isUploading ? "Uploading..." : formData.photo_url ? "Change Photo" : "Upload Portrait"}
-                        </Button>
-                        <p className="text-xs text-white/40 uppercase tracking-widest font-medium">
-                            Required • High Quality
-                        </p>
+                    <div className="text-center space-y-3">
+                        {/* Two buttons: Upload + Camera */}
+                        <div className="flex items-center gap-3">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={isUploading}
+                                className={cn(
+                                    "transition-all duration-300 min-w-[130px] gap-2",
+                                    hasError('photo_url')
+                                        ? "border-red-500 text-red-400 hover:bg-red-500 hover:text-white"
+                                        : "border-dating-terracotta text-dating-terracotta hover:bg-dating-terracotta hover:text-white"
+                                )}
+                            >
+                                <ImagePlus className="h-4 w-4" />
+                                {isUploading ? "Uploading..." : formData.photo_url ? "Change" : "Upload"}
+                            </Button>
+
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => cameraInputRef.current?.click()}
+                                disabled={isUploading}
+                                className={cn(
+                                    "transition-all duration-300 min-w-[130px] gap-2",
+                                    hasError('photo_url')
+                                        ? "border-red-500 text-red-400 hover:bg-red-500 hover:text-white"
+                                        : "border-dating-terracotta text-dating-terracotta hover:bg-dating-terracotta hover:text-white"
+                                )}
+                            >
+                                <Camera className="h-4 w-4" />
+                                Take Photo
+                            </Button>
+                        </div>
+
+                        {hasError('photo_url') ? (
+                            <p className="text-xs text-red-400 font-medium">{errorMsg('photo_url')}</p>
+                        ) : (
+                            <p className="text-xs text-white/40 uppercase tracking-widest font-medium">
+                                Required • High Quality
+                            </p>
+                        )}
                     </div>
                 </div>
 
@@ -109,8 +174,11 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             value={formData.display_name}
                             onChange={(e) => updateField("display_name", e.target.value)}
                             placeholder="e.g. James St. Patrick"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 h-12"
+                            className={cn("bg-white/5 text-white placeholder:text-white/20 h-12", inputErrorClass('display_name'))}
                         />
+                        {hasError('display_name') && (
+                            <p className="text-xs text-red-400">{errorMsg('display_name')}</p>
+                        )}
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="age" className="text-white/80">Age</Label>
@@ -121,8 +189,11 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             max={100}
                             value={formData.age}
                             onChange={(e) => updateField("age", parseInt(e.target.value) || 18)}
-                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 h-12"
+                            className={cn("bg-white/5 text-white placeholder:text-white/20 h-12", inputErrorClass('age'))}
                         />
+                        {hasError('age') && (
+                            <p className="text-xs text-red-400">{errorMsg('age')}</p>
+                        )}
                     </div>
                 </div>
 
@@ -131,7 +202,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                     <div className="space-y-2">
                         <Label className="text-white/80">I identify as</Label>
                         <Select value={formData.gender} onValueChange={(value) => updateField("gender", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectTrigger className={cn("bg-white/5 text-white h-12", selectErrorClass('gender'))}>
                                 <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -142,11 +213,14 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                 <SelectItem value="Trans Woman" className="focus:bg-white/10 focus:text-white">Trans Woman</SelectItem>
                             </SelectContent>
                         </Select>
+                        {hasError('gender') && (
+                            <p className="text-xs text-red-400">{errorMsg('gender')}</p>
+                        )}
                     </div>
                     <div className="space-y-2">
                         <Label className="text-white/80">Interested in meeting</Label>
                         <Select value={formData.target_gender} onValueChange={(value) => updateField("target_gender", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectTrigger className={cn("bg-white/5 text-white h-12", selectErrorClass('target_gender'))}>
                                 <SelectValue placeholder="Select preference" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -155,14 +229,20 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                 <SelectItem value="Everyone" className="focus:bg-white/10 focus:text-white">Everyone</SelectItem>
                             </SelectContent>
                         </Select>
+                        {hasError('target_gender') && (
+                            <p className="text-xs text-red-400">{errorMsg('target_gender')}</p>
+                        )}
                     </div>
                 </div>
 
                 {/* Relationship Type */}
-                <div className="space-y-3 p-6 rounded-xl bg-white/5 border border-white/10">
+                <div className={cn(
+                    "space-y-3 p-6 rounded-xl bg-white/5 border transition-colors",
+                    hasError('relationship_type') ? "border-red-500/50" : "border-white/10"
+                )}>
                     <Label className="text-white/90 text-lg font-display">Relationship Intent</Label>
                     <Select value={formData.relationship_type} onValueChange={(value) => updateField("relationship_type", value)}>
-                        <SelectTrigger className="bg-transparent border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                        <SelectTrigger className={cn("bg-transparent text-white h-12", selectErrorClass('relationship_type'))}>
                             <SelectValue placeholder="What are you looking for?" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -186,6 +266,9 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             </SelectItem>
                         </SelectContent>
                     </Select>
+                    {hasError('relationship_type') && (
+                        <p className="text-xs text-red-400">{errorMsg('relationship_type')}</p>
+                    )}
                 </div>
 
                 {/* Age Range Slider */}

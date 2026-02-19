@@ -15,7 +15,15 @@ interface FamilyStepProps {
 }
 
 export const FamilyStep = ({ form }: FamilyStepProps) => {
-    const { formData, updateField, isSeekingSerious } = form;
+    const { formData, updateField, fieldErrors, isSeekingSerious } = form;
+
+    // Error helpers
+    const hasError = (field: string) => !!fieldErrors[field];
+    const errorMsg = (field: string) => fieldErrors[field];
+    const inputErrorClass = (field: string) =>
+        hasError(field)
+            ? "border-red-500/70 ring-1 ring-red-500/30"
+            : "border-white/10";
 
     const getWantsChildrenOptions = () => {
         if (formData.has_children) {

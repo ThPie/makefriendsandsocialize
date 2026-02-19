@@ -97,6 +97,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
     const [isUploading, setIsUploading] = useState(false);
     const [hasDraft, setHasDraft] = useState(false);
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     const { user, profile } = useAuth();
     const navigate = useNavigate();
@@ -216,12 +217,21 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
     ) => {
         setFormData(prev => ({ ...prev, [field]: value }));
         setValidationErrors([]);
+        setFieldErrors(prev => {
+            if (prev[field as string]) {
+                const next = { ...prev };
+                delete next[field as string];
+                return next;
+            }
+            return prev;
+        });
     }, []);
 
     // Update multiple fields at once
     const updateFields = useCallback((updates: Partial<CompleteIntakeData>) => {
         setFormData(prev => ({ ...prev, ...updates }));
         setValidationErrors([]);
+        setFieldErrors({});
     }, []);
 
     // Toggle an item in an array field
@@ -258,6 +268,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
             const validation = validateStep(step, formData);
             if (!validation.success) {
                 setValidationErrors(validation.errors);
+                setFieldErrors(validation.fieldErrors);
                 toast({
                     title: 'Missing Information',
                     description: validation.errors[0],
@@ -268,6 +279,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
         }
 
         setValidationErrors([]);
+        setFieldErrors({});
         setStep(targetStep);
     }, [step, formData, totalSteps, toast]);
 
@@ -452,6 +464,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
         isUploading,
         hasDraft,
         validationErrors,
+        fieldErrors,
         progress,
         totalSteps,
 

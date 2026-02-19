@@ -14,7 +14,15 @@ interface HabitsStepProps {
 }
 
 export const HabitsStep = ({ form }: HabitsStepProps) => {
-    const { formData, updateField } = form;
+    const { formData, updateField, fieldErrors } = form;
+
+    // Error helpers
+    const hasError = (field: string) => !!fieldErrors[field];
+    const errorMsg = (field: string) => fieldErrors[field];
+    const inputErrorClass = (field: string) =>
+        hasError(field)
+            ? "border-red-500/70 ring-1 ring-red-500/30"
+            : "border-white/10";
 
     const getDrugUsePrompt = () => {
         if (formData.smoking_status === 'regularly' || formData.drinking_status === 'regularly') {

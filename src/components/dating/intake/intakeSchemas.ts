@@ -134,17 +134,26 @@ export const INTAKE_STEPS = [
 ] as const;
 
 // Validation helper
-export const validateStep = (stepNumber: number, data: Partial<CompleteIntakeData>): { success: boolean; errors: string[] } => {
+export const validateStep = (stepNumber: number, data: Partial<CompleteIntakeData>): { success: boolean; errors: string[]; fieldErrors: Record<string, string> } => {
     const stepConfig = INTAKE_STEPS.find(s => s.number === stepNumber);
-    if (!stepConfig) return { success: true, errors: [] };
+    if (!stepConfig) return { success: true, errors: [], fieldErrors: {} };
 
     const result = stepConfig.schema.safeParse(data);
     if (result.success) {
-        return { success: true, errors: [] };
+        return { success: true, errors: [], fieldErrors: {} };
+    }
+
+    const fieldErrors: Record<string, string> = {};
+    for (const err of result.error.errors) {
+        const field = err.path[0]?.toString();
+        if (field && !fieldErrors[field]) {
+            fieldErrors[field] = err.message;
+        }
     }
 
     return {
         success: false,
         errors: result.error.errors.map(e => e.message),
+        fieldErrors,
     };
 };

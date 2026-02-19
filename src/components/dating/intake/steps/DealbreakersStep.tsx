@@ -26,7 +26,15 @@ const POLITICAL_ISSUES = [
 ];
 
 export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
-    const { formData, updateField, toggleArrayItem, isSeekingSerious, isCasualOnly } = form;
+    const { formData, updateField, fieldErrors, toggleArrayItem, isSeekingSerious, isCasualOnly } = form;
+
+    // Error helpers
+    const hasError = (field: string) => !!fieldErrors[field];
+    const errorMsg = (field: string) => fieldErrors[field];
+    const inputErrorClass = (field: string) =>
+        hasError(field)
+            ? "border-red-500/70 ring-1 ring-red-500/30"
+            : "border-white/10";
 
     const getDealbreakersPrompt = () => {
         if (isCasualOnly) {
