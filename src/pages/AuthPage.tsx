@@ -933,7 +933,7 @@ export default function AuthPage() {
                     )}
 
                     <Button
-                      onClick={handleStep1Submit}
+                      onClick={() => { requestAnimationFrame(() => { setTimeout(() => { handleStep1Submit(); }, 0); }); }}
                       disabled={isSubmitting || isRateLimited || (requiresCaptcha && !captchaVerified)}
                       className="w-full gold-gradient-bg hover:brightness-110 text-black font-bold shadow-[0_4px_14px_0_rgba(212,175,55,0.3)] transition-all transform active:scale-[0.98]"
                       size="lg"
@@ -1165,7 +1165,7 @@ export default function AuthPage() {
                   Back
                 </Button>
                 <Button
-                  onClick={() => setStep(3)}
+                  onClick={() => { requestAnimationFrame(() => { setTimeout(() => { startTransition(() => setStep(3)); }, 0); }); }}
                   className="flex-1 gold-gradient-bg hover:brightness-110 text-black font-bold shadow-[0_4px_14px_0_rgba(212,175,55,0.3)]"
                 >
                   Continue
@@ -1253,7 +1253,7 @@ export default function AuthPage() {
                   Back
                 </Button>
                 <Button
-                  onClick={handleFinalSubmit}
+                  onClick={() => { requestAnimationFrame(() => { setTimeout(() => { handleFinalSubmit(); }, 0); }); }}
                   disabled={isSubmitting || !acceptedTerms}
                   className="flex-1 gold-gradient-bg hover:brightness-110 text-black font-bold shadow-[0_4px_14px_0_rgba(212,175,55,0.3)] disabled:opacity-50"
                 >
