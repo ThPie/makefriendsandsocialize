@@ -12,9 +12,8 @@ import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { User, Camera, Upload, MapPin, Sparkles, ImagePlus, Smartphone } from 'lucide-react';
+import { User, Camera, Upload, MapPin, Sparkles, ImagePlus } from 'lucide-react';
 import { VoiceBioRecorder } from '@/components/dating/VoiceBioRecorder';
-import { QRPhotoModal } from '@/components/dating/QRPhotoModal';
 import type { IntakeFormContext } from '../useIntakeForm';
 import { cn } from '@/lib/utils';
 
@@ -34,7 +33,6 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
 
     // Detect mobile/tablet for showing camera button
     const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const [qrModalOpen, setQrModalOpen] = useState(false);
 
     const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -166,32 +164,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                 </Button>
                             )}
 
-                            {/* Use Phone Camera (QR) - on desktop */}
-                            {!isMobile && (
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => setQrModalOpen(true)}
-                                    disabled={isUploading}
-                                    className={cn(
-                                        "transition-all duration-300 min-w-[160px] gap-2",
-                                        hasError('photo_url')
-                                            ? "border-red-500 text-red-400 hover:bg-red-500 hover:text-white"
-                                            : "border-dating-terracotta text-dating-terracotta hover:bg-dating-terracotta hover:text-white"
-                                    )}
-                                >
-                                    <Smartphone className="h-4 w-4" />
-                                    Use Phone Camera
-                                </Button>
-                            )}
                         </div>
-
-                        {/* QR Modal for desktop phone camera */}
-                        <QRPhotoModal
-                            open={qrModalOpen}
-                            onClose={() => setQrModalOpen(false)}
-                            onPhotoReceived={(url) => updateField('photo_url', url)}
-                        />
 
                         {hasError('photo_url') ? (
                             <p className="text-xs text-red-400 font-medium">{errorMsg('photo_url')}</p>

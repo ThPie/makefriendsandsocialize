@@ -79,7 +79,6 @@ const PortalConcierge = lazy(() => import("@/pages/portal/PortalConcierge"));
 const PortalEventCheckin = lazy(() => import("@/pages/portal/PortalEventCheckin"));
 const AdminPerks = lazy(() => import("@/pages/admin/AdminPerks"));
 const AdminConcierge = lazy(() => import("@/pages/admin/AdminConcierge"));
-const PhoneCapturePage = lazy(() => import("@/pages/PhoneCapturePage"));
 
 // Slow Dating subdomain routes
 export const SlowDatingRoutes = () => (
@@ -173,7 +172,6 @@ export const MainRoutes = () => (
 
         {/* Dating intake route */}
         <Route path="/dating/apply" element={<Layout><DatingIntakePage /></Layout>} />
-        <Route path="/photo-capture/:token" element={<PhoneCapturePage />} />
 
         {/* Admin routes with admin layout — ProtectedRoute requireAdmin blocks non-admin access */}
         <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
