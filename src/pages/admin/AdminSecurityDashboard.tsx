@@ -266,7 +266,7 @@ export default function AdminSecurityDashboard() {
           ) : membersDueForScan?.length === 0 ? (
             <EmptyState
               icon={CheckCircle2}
-              heading="All Members Up to Date"
+              title="All Members Up to Date"
               description="No members require a periodic security scan"
             />
           ) : (

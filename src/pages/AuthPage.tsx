@@ -159,7 +159,7 @@ export default function AuthPage() {
     clearFormFeedback();
     setPasswordServerError(null);
 
-    if (passwordTouched && mode === 'signup') {
+    if (mode === 'signup') {
       validatePasswordField(value);
     }
     // Also validate confirm password when password changes
@@ -603,8 +603,18 @@ export default function AuthPage() {
           }
         }
 
+        // Send account created notification email
+        try {
+          await supabase.functions.invoke('send-profile-notification', {
+            body: { user_id: session.user.id, notification_type: 'account_created' },
+          });
+        } catch (emailErr) {
+          console.error('Failed to send welcome email:', emailErr);
+        }
+
         setIsSubmitting(false);
-        navigate('/portal/onboarding');
+        setFormSuccess('🎉 Account created! Welcome to Make Friends & Socialize. Check your email for confirmation.');
+        setTimeout(() => navigate('/portal/onboarding'), 1500);
       } else {
         // No session but no error - user needs to verify email
         // console.log('Signup completed, awaiting email confirmation');
@@ -822,7 +832,7 @@ export default function AuthPage() {
                           }
                         }}
                         showStrengthIndicator={mode === 'signup'}
-                        error={passwordTouched && mode === 'signup' ? passwordError : undefined}
+                        error={mode === 'signup' ? passwordError : undefined}
                         autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
                       />
                       {/* Password breach warning - shown while typing */}

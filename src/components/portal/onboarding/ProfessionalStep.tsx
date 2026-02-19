@@ -119,10 +119,20 @@ export const ProfessionalStep = ({
                         setBio(e.target.value);
                         setBioError(null);
                     }}
-                    className={`bg-secondary border-border text-foreground min-h-[120px] ${bioError ? 'border-destructive' : ''}`}
+                    className={`bg-secondary text-foreground min-h-[120px] transition-colors ${
+                        bioError
+                            ? 'border-destructive'
+                            : bio.length > 0 && bio.length < 50
+                            ? 'border-red-500/50'
+                            : bio.length >= 50
+                            ? 'border-green-500/50'
+                            : 'border-border'
+                    }`}
                     placeholder="Tell us about yourself, your background, and what makes you unique..."
                 />
-                <p className="text-muted-foreground/60 text-xs mt-1">{bio.length}/50 characters minimum</p>
+                <p className={`text-xs mt-1 transition-colors ${bio.length >= 50 ? 'text-green-400' : bio.length > 0 ? 'text-red-400' : 'text-muted-foreground/60'}`}>
+                    {bio.length}/50 characters minimum
+                </p>
                 {bioError && (
                     <p className="text-sm text-destructive mt-1">{bioError}</p>
                 )}
