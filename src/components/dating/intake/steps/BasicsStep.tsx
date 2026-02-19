@@ -31,6 +31,9 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
     const cameraInputRef = useRef<HTMLInputElement>(null);
     const { formData, updateField, uploadPhoto, isUploading, fieldErrors } = form;
 
+    // Detect mobile/tablet for showing camera button
+    const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
     const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -102,7 +105,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                         </div>
                     </div>
 
-                    {/* Hidden file inputs */}
+                    {/* Hidden file input for gallery/upload */}
                     <input
                         ref={fileInputRef}
                         type="file"
@@ -110,14 +113,18 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                         onChange={handlePhotoUpload}
                         className="hidden"
                     />
-                    <input
-                        ref={cameraInputRef}
-                        type="file"
-                        accept="image/*"
-                        capture="environment"
-                        onChange={handlePhotoUpload}
-                        className="hidden"
-                    />
+
+                    {/* Hidden file input for native camera (mobile only) */}
+                    {isMobile && (
+                        <input
+                            ref={cameraInputRef}
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            onChange={handlePhotoUpload}
+                            className="hidden"
+                        />
+                    )}
 
                     <div className="text-center space-y-3">
                         {/* Two buttons: Upload + Camera */}
@@ -135,24 +142,27 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                 )}
                             >
                                 <ImagePlus className="h-4 w-4" />
-                                {isUploading ? "Uploading..." : formData.photo_url ? "Change" : "Upload"}
+                                {isUploading ? "Uploading..." : "Upload Photo"}
                             </Button>
 
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => cameraInputRef.current?.click()}
-                                disabled={isUploading}
-                                className={cn(
-                                    "transition-all duration-300 min-w-[130px] gap-2",
-                                    hasError('photo_url')
-                                        ? "border-red-500 text-red-400 hover:bg-red-500 hover:text-white"
-                                        : "border-dating-terracotta text-dating-terracotta hover:bg-dating-terracotta hover:text-white"
-                                )}
-                            >
-                                <Camera className="h-4 w-4" />
-                                Take Photo
-                            </Button>
+                            {/* Take Photo - only on mobile where native camera opens */}
+                            {isMobile && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => cameraInputRef.current?.click()}
+                                    disabled={isUploading}
+                                    className={cn(
+                                        "transition-all duration-300 min-w-[130px] gap-2",
+                                        hasError('photo_url')
+                                            ? "border-red-500 text-red-400 hover:bg-red-500 hover:text-white"
+                                            : "border-dating-terracotta text-dating-terracotta hover:bg-dating-terracotta hover:text-white"
+                                    )}
+                                >
+                                    <Camera className="h-4 w-4" />
+                                    Take Photo
+                                </Button>
+                            )}
                         </div>
 
                         {hasError('photo_url') ? (
