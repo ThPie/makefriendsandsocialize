@@ -16,6 +16,9 @@ import {
 } from 'lucide-react';
 import { SEO } from '@/components/common/SEO';
 import { generateEventSchema, generateBreadcrumbSchema } from '@/lib/seo-schema';
+import { isTierAtLeast } from '@/lib/tier-utils';
+import { EventUpgradeModal } from '@/components/portal/EventUpgradeModal';
+import { toast } from 'sonner';
 
 interface Event {
   id: string;
@@ -43,10 +46,11 @@ interface Event {
 const EventDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, membership } = useAuth();
   const queryClient = useQueryClient();
   const [isRsvping, setIsRsvping] = useState(false);
   const [rsvpFeedback, setRsvpFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   // Fetch event details
   const { data: event, isLoading: eventLoading } = useQuery({
@@ -102,6 +106,20 @@ const EventDetailPage = () => {
     if (!user) {
       navigate('/auth', { state: { returnTo: `/events/${id}` } });
       return;
+    }
+
+    if (event && !isTierAtLeast(membership?.tier, event.tier as any)) {
+      setShowUpgradeModal(true);
+      return;
+    }
+
+    if (event?.ticket_price && event.ticket_price > 0 && !userRsvp) {
+      toast.info('Online payment coming soon. Please pay at the venue.');
+      // For now, allow RSVP but warn about payment? Or block?
+      // Blocking is safer for "paid" events.
+      // return; 
+      // Actually, let's allow it but show a message, or else they can't attend at all.
+      // Ideally we'd have a 'payment_status' on RSVP.
     }
 
     setIsRsvping(true);
@@ -253,6 +271,14 @@ const EventDetailPage = () => {
         keywords={event.tags?.join(', ')}
         schema={combinedSchema}
       />
+
+      <EventUpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        eventTitle={event.title}
+        eventTier={event.tier}
+      />
+
       {/* Hero Image */}
       <section className="relative w-full h-[50vh] md:h-[60vh] overflow-hidden">
         <div

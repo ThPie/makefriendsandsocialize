@@ -20,7 +20,7 @@ interface ProtectedRouteProps {
  *   <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout>...</AdminLayout></ProtectedRoute>} />
  */
 export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
-    const { user, isAdmin, isLoading } = useAuth();
+    const { user, profile, isAdmin, applicationStatus, isLoading } = useAuth();
     const location = useLocation();
 
     // Show loading state while auth is being determined — never flash content
@@ -37,9 +37,31 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
         return <Navigate to="/auth" state={{ from: location.pathname }} replace />;
     }
 
-    // Authenticated but not admin on an admin route → redirect to portal
-    if (requireAdmin && !isAdmin) {
-        return <Navigate to="/portal" replace />;
+    // Admin routes
+    if (requireAdmin) {
+        if (!isAdmin) {
+            return <Navigate to="/portal" replace />;
+        }
+        return <>{children}</>;
+    }
+
+    // User Portal Logic
+    if (location.pathname.startsWith('/portal')) {
+        // 1. Enforce Onboarding Completion
+        if (profile && !profile.onboarding_completed) {
+            // Allow access to the onboarding page itself
+            if (location.pathname === '/portal/onboarding') {
+                return <>{children}</>;
+            }
+            // Redirect all other portal traffic to onboarding
+            return <Navigate to="/portal/onboarding" replace />;
+        }
+
+        // 2. Enforce Application Approval (for completed profiles)
+        // If profile is complete but application is pending/rejected, force waiting screen
+        if (profile?.onboarding_completed && (applicationStatus === 'pending' || applicationStatus === 'rejected')) {
+            return <Navigate to="/auth/waiting" replace />;
+        }
     }
 
     // All checks passed — render children

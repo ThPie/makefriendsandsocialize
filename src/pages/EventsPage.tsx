@@ -172,8 +172,8 @@ const EventsPage = () => {
       return;
     }
 
-    // Redirect to portal events for proper RSVP handling
-    navigate('/portal/events');
+    // Redirect to event detail page for proper RSVP handling (which includes auth/tier checks)
+    navigate(`/events/${event.id}`);
   };
 
   const filteredAndSortedEvents = useMemo(() => {

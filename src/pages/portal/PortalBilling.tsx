@@ -126,12 +126,42 @@ export default function PortalBilling() {
                       {subscription.subscribed ? 'Active subscription' : 'Free tier'}
                     </p>
                   </div>
+<<<<<<< HEAD
                   {subscription.subscribed && subscription.subscription_end && (
                     <div className="text-right">
                       <p className="text-sm text-muted-foreground">Renews on</p>
                       <p className="font-medium">
                         {format(new Date(subscription.subscription_end), 'MMM d, yyyy')}
                       </p>
+=======
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                    </span>
+                    <span className="text-amber-400 text-xs font-bold uppercase tracking-wide">
+                      {subscription.is_trialing ? 'Trial' : subscription.subscribed ? 'Active' : 'Basic'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1 w-full">
+                  {subscription.is_trialing && subscription.trial_ends_at ? (
+                    <>
+                      <div className="flex justify-between items-end text-sm text-gray-400 mb-1">
+                        <span>Trial Period</span>
+                        <span className="text-white font-medium">
+                          {Math.ceil((new Date(subscription.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days remaining
+                        </span>
+                      </div>
+                      <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full w-[80%]"></div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="h-2 w-full bg-black/40 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full w-full"></div>
+>>>>>>> 853c893 (feat: Integrate remaining Stitch screens (Partner Perks, Referrals, Network, Slow Dating) and verify build)
                     </div>
                   )}
                 </div>

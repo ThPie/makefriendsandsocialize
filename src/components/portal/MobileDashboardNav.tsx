@@ -34,6 +34,7 @@ const primaryNavItems = [
     { title: 'Events', url: '/portal/events', icon: Calendar, requiresApproval: false },
     { title: 'Slow Dating', url: '/portal/slow-dating', icon: Sparkles, requiresApproval: true },
     { title: 'Perks', url: '/portal/perks', icon: Gift, requiresApproval: false },
+    { title: 'Referrals', url: '/portal/referrals', icon: Users, requiresApproval: false },
     { title: 'Concierge', url: '/portal/concierge', icon: Crown, requiresApproval: true },
 ];
 
