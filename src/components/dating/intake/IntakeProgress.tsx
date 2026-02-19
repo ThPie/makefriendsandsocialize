@@ -37,88 +37,114 @@ export const IntakeProgress = ({
 
     return (
         <div className={cn('mb-8', className)}>
-            {/* Step Indicators */}
-            <div
-                className="flex justify-between items-center mb-6 overflow-x-auto pb-4 no-scrollbar"
-                role="navigation"
-                aria-label="Form progress"
-            >
-                {steps.map((s, index) => {
-                    const Icon = STEP_ICONS[index] || ClipboardCheck;
-                    const isCompleted = currentStep > s.number;
-                    const isCurrent = currentStep === s.number;
-                    const isClickable = onStepClick && (isCompleted || isCurrent);
+            {/* Desktop: Full step indicators with labels */}
+            <div className="hidden md:block">
+                <div
+                    className="flex justify-between items-start px-4 pb-2"
+                    role="navigation"
+                    aria-label="Form progress"
+                >
+                    {steps.map((s, index) => {
+                        const Icon = STEP_ICONS[index] || ClipboardCheck;
+                        const isCompleted = currentStep > s.number;
+                        const isCurrent = currentStep === s.number;
+                        const isClickable = onStepClick && (isCompleted || isCurrent);
 
-                    return (
-                        <div
-                            key={s.number}
-                            className={cn(
-                                'flex flex-col items-center gap-2 flex-shrink-0 relative group px-2',
-                                isCurrent ? 'text-[#D4AF37]' : isCompleted ? 'text-[#D4AF37]' : 'text-white/30'
-                            )}
-                        >
-                            <button
-                                type="button"
-                                onClick={() => isClickable && onStepClick?.(s.number)}
-                                disabled={!isClickable}
-                                className={cn(
-                                    'w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition-all duration-300 relative z-10',
-                                    isCurrent
-                                        ? 'bg-[#D4AF37] border-[#D4AF37] text-[#0a0f0b] shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-110'
-                                        : isCompleted
-                                            ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]'
-                                            : 'bg-white/5 border-white/10 text-white/30 hover:border-white/20',
-                                    isClickable && 'cursor-pointer hover:scale-105'
-                                )}
-                                aria-label={`${s.title} - ${isCompleted ? 'completed' : isCurrent ? 'current step' : 'not started'}`}
-                                aria-current={isCurrent ? 'step' : undefined}
+                        return (
+                            <div
+                                key={s.number}
+                                className="flex flex-col items-center gap-2 relative"
+                                style={{ flex: '1 1 0%' }}
                             >
-                                {isCompleted ? (
-                                    <Check className="h-5 w-5" aria-hidden="true" />
-                                ) : (
-                                    <Icon className="h-5 w-5" aria-hidden="true" />
-                                )}
-                            </button>
-                            <span
-                                className={cn(
-                                    "hidden md:block text-[10px] uppercase tracking-widest font-medium transition-colors duration-300 absolute -bottom-6 w-32 text-center",
-                                    isCurrent ? "text-white opacity-100" : "text-white/40 opacity-0 group-hover:opacity-100"
-                                )}
-                            >
-                                {s.title}
-                            </span>
-
-                            {/* Connecting Line */}
-                            {index < steps.length - 1 && (
-                                <div
+                                <button
+                                    type="button"
+                                    onClick={() => isClickable && onStepClick?.(s.number)}
+                                    disabled={!isClickable}
                                     className={cn(
-                                        'absolute top-5 md:top-6 left-[60%] w-[calc(100%+1rem)] h-[2px] transition-all duration-700 -z-0',
-                                        currentStep > s.number ? 'bg-[#D4AF37]' : 'bg-white/10'
+                                        'w-11 h-11 rounded-full flex items-center justify-center border-2 transition-all duration-300 relative z-10',
+                                        isCurrent
+                                            ? 'bg-[#D4AF37] border-[#D4AF37] text-[#0a0f0b] shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-110'
+                                            : isCompleted
+                                                ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]'
+                                                : 'bg-white/5 border-white/15 text-white/30 hover:border-white/25',
+                                        isClickable && 'cursor-pointer hover:scale-105'
                                     )}
-                                    aria-hidden="true"
-                                />
-                            )}
-                        </div>
-                    );
-                })}
+                                    aria-label={`${s.title} - ${isCompleted ? 'completed' : isCurrent ? 'current step' : 'not started'}`}
+                                    aria-current={isCurrent ? 'step' : undefined}
+                                >
+                                    {isCompleted ? (
+                                        <Check className="h-5 w-5" aria-hidden="true" />
+                                    ) : (
+                                        <Icon className="h-5 w-5" aria-hidden="true" />
+                                    )}
+                                </button>
+
+                                {/* Always-visible label */}
+                                <span
+                                    className={cn(
+                                        "text-[10px] uppercase tracking-wider font-medium text-center leading-tight max-w-[80px] transition-colors duration-300",
+                                        isCurrent ? "text-[#D4AF37]" : isCompleted ? "text-[#D4AF37]/70" : "text-white/40"
+                                    )}
+                                >
+                                    {s.title}
+                                </span>
+
+                                {/* Connecting Line */}
+                                {index < steps.length - 1 && (
+                                    <div
+                                        className={cn(
+                                            'absolute top-[22px] left-[55%] w-[90%] h-[2px] transition-all duration-700 -z-0',
+                                            currentStep > s.number ? 'bg-[#D4AF37]' : 'bg-white/10'
+                                        )}
+                                        aria-hidden="true"
+                                    />
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
 
-            {/* Mobile Title */}
-            <div className="md:hidden text-center mb-6">
-                <h2 className="text-[#D4AF37] font-display text-xl">
-                    {steps.find(s => s.number === currentStep)?.title}
-                </h2>
-                <p className="text-white/40 text-xs uppercase tracking-widest mt-1">
-                    Step {currentStep} of {totalSteps}
-                </p>
-            </div>
+            {/* Mobile: Current step title + progress bar */}
+            <div className="md:hidden space-y-4">
+                <div className="text-center">
+                    <h2 className="text-[#D4AF37] font-display text-xl">
+                        {steps.find(s => s.number === currentStep)?.title}
+                    </h2>
+                    <p className="text-white/40 text-xs uppercase tracking-widest mt-1">
+                        Step {currentStep} of {totalSteps}
+                    </p>
+                </div>
 
-            {/* Simple Progress Bar for Mobile */}
-            <div className="md:hidden">
+                {/* Mini step dots */}
+                <div className="flex justify-center gap-2">
+                    {steps.map((s) => {
+                        const isCompleted = currentStep > s.number;
+                        const isCurrent = currentStep === s.number;
+                        return (
+                            <button
+                                key={s.number}
+                                type="button"
+                                onClick={() => onStepClick && (isCompleted || isCurrent) && onStepClick(s.number)}
+                                disabled={!(onStepClick && (isCompleted || isCurrent))}
+                                className={cn(
+                                    'w-2.5 h-2.5 rounded-full transition-all duration-300',
+                                    isCurrent
+                                        ? 'bg-[#D4AF37] scale-125 shadow-[0_0_8px_rgba(212,175,55,0.5)]'
+                                        : isCompleted
+                                            ? 'bg-[#D4AF37]/50'
+                                            : 'bg-white/15',
+                                    (isCompleted || isCurrent) && 'cursor-pointer'
+                                )}
+                                aria-label={`Go to ${s.title}`}
+                            />
+                        );
+                    })}
+                </div>
+
                 <Progress
                     value={progressPercentage}
                     className="h-1 bg-white/10"
-                    // indicatorClassName="bg-[#D4AF37]" 
                     aria-label={`Step ${currentStep} of ${totalSteps}`}
                 />
             </div>
