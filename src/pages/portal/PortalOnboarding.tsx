@@ -165,12 +165,7 @@ export default function PortalOnboarding() {
     }
   }, [user, locationDetected]);
 
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth');
-    }
-  }, [user, authLoading, navigate]);
+  // Auth redirect handled synchronously in render below
 
 
 
@@ -543,6 +538,12 @@ export default function PortalOnboarding() {
 
   if (authLoading) {
     return <BrandedLoader message="Loading..." />;
+  }
+
+  // Redirect unauthenticated users immediately — no flash, no toast
+  if (!user) {
+    navigate('/auth', { replace: true });
+    return null;
   }
 
   const stepContent = () => {
