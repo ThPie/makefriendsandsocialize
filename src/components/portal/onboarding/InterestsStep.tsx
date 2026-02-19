@@ -6,15 +6,15 @@ import { INTERESTS } from '@/constants/onboarding';
 interface InterestsStepProps {
     interests: string[];
     toggleInterest: (interest: string) => void;
-    dateOfBirth: string;
-    setDateOfBirth: (val: string) => void;
+    age: string;
+    setAge: (val: string) => void;
 }
 
 export const InterestsStep = ({
     interests,
     toggleInterest,
-    dateOfBirth,
-    setDateOfBirth,
+    age,
+    setAge,
 }: InterestsStepProps) => {
     return (
         <div className="space-y-6">
@@ -44,15 +44,23 @@ export const InterestsStep = ({
             <p className="text-muted-foreground/60 text-sm">{interests.length} selected (minimum 3)</p>
 
             <div>
-                <Label htmlFor="dob" className="text-xs uppercase tracking-wider text-white/60 font-medium">Date of Birth (21+ required)</Label>
+                <Label htmlFor="age" className="text-xs uppercase tracking-wider text-white/60 font-medium">How old are you? (21+ required)</Label>
                 <Input
-                    id="dob"
-                    type="date"
-                    value={dateOfBirth}
-                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    id="age"
+                    type="number"
+                    min="21"
+                    max="100"
+                    placeholder="e.g. 28"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
                     className="bg-secondary border-border text-foreground"
-                    max={new Date(new Date().setFullYear(new Date().getFullYear() - 21)).toISOString().split('T')[0]}
                 />
+                {age && Number(age) < 21 && (
+                    <p className="text-destructive text-xs mt-1">You must be 21 or older to join</p>
+                )}
+                {age && Number(age) >= 21 && (
+                    <p className="text-green-400 text-xs mt-1">✓ Age verified</p>
+                )}
             </div>
         </div>
     );

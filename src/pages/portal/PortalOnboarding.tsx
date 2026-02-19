@@ -33,6 +33,7 @@ export default function PortalOnboarding() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isValidatingPhoto, setIsValidatingPhoto] = useState(false);
   const [isDetectingLocation, setIsDetectingLocation] = useState(true);
   const [showVpnModal, setShowVpnModal] = useState(false);
   const [locationDetected, setLocationDetected] = useState(false);
@@ -52,7 +53,7 @@ export default function PortalOnboarding() {
   const [country, setCountry] = useState('');
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [age, setAge] = useState('');
 
   // Step 2: Professional Info
   const [jobTitle, setJobTitle] = useState('');
@@ -85,7 +86,12 @@ export default function PortalOnboarding() {
       setCountry(profile.country || '');
       setState(profile.state || '');
       setCity(profile.city || '');
-      setDateOfBirth(profile.date_of_birth || '');
+      // Derive age from stored date_of_birth
+      if (profile.date_of_birth) {
+        const birthYear = new Date(profile.date_of_birth).getFullYear();
+        const derivedAge = new Date().getFullYear() - birthYear;
+        setAge(String(derivedAge));
+      }
       setJobTitle(profile.job_title || '');
       setIndustry(profile.industry || '');
       setBio(profile.bio || '');
@@ -166,16 +172,7 @@ export default function PortalOnboarding() {
     }
   }, [user, authLoading, navigate]);
 
-  const calculateAge = (dob: string): number => {
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
+
 
   const validateStep = (): boolean => {
     switch (step) {
@@ -230,12 +227,9 @@ export default function PortalOnboarding() {
           toast.error('Please select at least 3 interests');
           return false;
         }
-        if (dateOfBirth) {
-          const age = calculateAge(dateOfBirth);
-          if (age < 21) {
-            toast.error('You must be 21 or older to join');
-            return false;
-          }
+        if (age && Number(age) < 21) {
+          toast.error('You must be 21 or older to join');
+          return false;
         }
         return true;
       case 5:
@@ -283,7 +277,7 @@ export default function PortalOnboarding() {
           country,
           state,
           city,
-          date_of_birth: dateOfBirth || null,
+          date_of_birth: age ? `${new Date().getFullYear() - Number(age)}-01-01` : null,
           job_title: jobTitle,
           company,
           industry: finalIndustry,
@@ -322,7 +316,7 @@ export default function PortalOnboarding() {
           country,
           state,
           city,
-          date_of_birth: dateOfBirth || null,
+          date_of_birth: age ? `${new Date().getFullYear() - Number(age)}-01-01` : null,
           job_title: jobTitle,
           company,
           industry: finalIndustry,
@@ -363,8 +357,18 @@ export default function PortalOnboarding() {
         if (appError) throw appError;
       }
 
+      // Send profile complete notification email
+      try {
+        await supabase.functions.invoke('send-profile-notification', {
+          body: { user_id: user.id, notification_type: 'profile_complete' },
+        });
+      } catch (emailErr) {
+        console.error('Failed to send notification email:', emailErr);
+        // Non-critical, continue
+      }
+
       await refreshProfile();
-      toast.success('Profile completed! Your application is being reviewed.');
+      toast.success('✅ Application submitted! Check your email for confirmation.');
       navigate('/auth/waiting');
     } catch (error) {
       console.error('Error completing onboarding:', error);
@@ -374,7 +378,7 @@ export default function PortalOnboarding() {
     }
   };
 
-  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0] || !user) return;
     if (photos.length >= 3) {
       toast.error('Maximum 3 photos allowed');
@@ -389,10 +393,53 @@ export default function PortalOnboarding() {
       return;
     }
 
-    // Open cropper instead of uploading directly
-    const imageUrl = URL.createObjectURL(file);
-    setCropperImage(imageUrl);
-    setPendingFile(file);
+    // AI-powered photo validation
+    setIsValidatingPhoto(true);
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const base64 = event.target?.result as string;
+
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [{
+              role: 'user',
+              content: [
+                { type: 'text', text: 'Does this image show a real photograph of a real human person? Answer ONLY with: REAL_PERSON or NOT_REAL_PERSON. Say NOT_REAL_PERSON if the image is AI-generated, a cartoon, an avatar, an animal, an object, or has no visible human face.' },
+                { type: 'image_url', image_url: { url: base64 } }
+              ]
+            }],
+          }),
+        });
+
+        const aiData = await response.json();
+        const answer = aiData?.choices?.[0]?.message?.content?.trim();
+
+        if (answer !== 'REAL_PERSON') {
+          toast.error('Please upload a real photo of yourself. AI-generated images, avatars, and non-human photos are not accepted.');
+          setIsValidatingPhoto(false);
+          return;
+        }
+      } catch (err) {
+        // If AI check fails, fail open so users aren't blocked
+        console.error('Photo validation failed:', err);
+      }
+
+      // Proceed to cropper
+      const imageUrl = URL.createObjectURL(file);
+      setCropperImage(imageUrl);
+      setPendingFile(file);
+      setIsValidatingPhoto(false);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleCropComplete = async (croppedBlob: Blob) => {
@@ -509,6 +556,7 @@ export default function PortalOnboarding() {
             setLastName={setLastName}
             photos={photos}
             isUploading={isUploading}
+            isValidatingPhoto={isValidatingPhoto}
             handlePhotoSelect={handlePhotoSelect}
             removePhoto={removePhoto}
             isDetectingLocation={isDetectingLocation}
@@ -561,8 +609,8 @@ export default function PortalOnboarding() {
           <InterestsStep
             interests={interests}
             toggleInterest={toggleInterest}
-            dateOfBirth={dateOfBirth}
-            setDateOfBirth={setDateOfBirth}
+            age={age}
+            setAge={setAge}
           />
         );
 

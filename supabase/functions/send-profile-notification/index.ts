@@ -9,7 +9,7 @@ const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 interface ProfileNotificationRequest {
   user_id: string;
-  notification_type: "profile_complete" | "badge_earned";
+  notification_type: "profile_complete" | "badge_earned" | "account_created";
   badge_name?: string;
 }
 
@@ -131,6 +131,50 @@ const handler = async (req: Request): Promise<Response> => {
               <p class="badge-name">${badge_name}</p>
               <p>Great work, ${firstName}! Keep building your profile to unlock more achievements.</p>
               <a href="https://the-gathering.lovable.app/portal/dashboard" class="cta">View Your Badges →</a>
+            </div>
+            <div class="footer">
+              <p>Make Friends and Socialize — Where meaningful connections begin</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+    } else if (notification_type === "account_created") {
+      subject = "Welcome to Make Friends and Socialize! 🎉";
+      htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0a0a0a; color: #fafafa; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+            .header { text-align: center; margin-bottom: 40px; }
+            .logo { font-size: 28px; font-weight: bold; color: #c9a962; }
+            .content { background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%); border-radius: 16px; padding: 40px; border: 1px solid #262626; }
+            h1 { color: #c9a962; font-size: 24px; margin-bottom: 20px; }
+            p { color: #a3a3a3; line-height: 1.6; margin-bottom: 16px; }
+            .highlight { color: #fafafa; }
+            .cta { display: inline-block; background: #c9a962; color: #0a0a0a; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 20px; }
+            .footer { text-align: center; margin-top: 40px; color: #525252; font-size: 14px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="logo">Make Friends and Socialize</div>
+            </div>
+            <div class="content">
+              <h1>Welcome, ${firstName}! 🎉</h1>
+              <p>Your account has been <span class="highlight">successfully created</span>. You're now one step closer to joining our exclusive community of like-minded individuals.</p>
+              <p><span class="highlight">What happens next:</span></p>
+              <ul style="color: #a3a3a3; line-height: 2;">
+                <li>✅ Complete your profile in the member portal</li>
+                <li>🔍 Your application will be reviewed by our team</li>
+                <li>🤝 Once approved, you'll gain full access to the network</li>
+              </ul>
+              <p>Start setting up your profile to get ahead in the review queue!</p>
+              <a href="https://makefriendsandsocializecom.lovable.app/portal/onboarding" class="cta">Complete Your Profile →</a>
             </div>
             <div class="footer">
               <p>Make Friends and Socialize — Where meaningful connections begin</p>

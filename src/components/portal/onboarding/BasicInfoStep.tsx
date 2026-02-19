@@ -1,6 +1,6 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { User, Camera, Loader2, MapPin } from 'lucide-react';
+import { User, Camera, Loader2, MapPin, ShieldCheck } from 'lucide-react';
 import { LocationCombobox } from '@/components/ui/location-combobox';
 import { CityAutocomplete } from '@/components/ui/city-autocomplete';
 
@@ -11,6 +11,7 @@ interface BasicInfoStepProps {
     setLastName: (val: string) => void;
     photos: string[];
     isUploading: boolean;
+    isValidatingPhoto?: boolean;
     handlePhotoSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
     removePhoto: (index: number) => void;
     isDetectingLocation: boolean;
@@ -32,6 +33,7 @@ export const BasicInfoStep = ({
     setLastName,
     photos,
     isUploading,
+    isValidatingPhoto = false,
     handlePhotoSelect,
     removePhoto,
     isDetectingLocation,
@@ -94,8 +96,13 @@ export const BasicInfoStep = ({
                         </div>
                     ))}
                     {photos.length < 3 && (
-                        <label className="w-20 h-20 rounded-full bg-secondary border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-secondary/80 transition-colors">
-                            {isUploading ? (
+                        <label className={`w-20 h-20 rounded-full bg-secondary border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-secondary/80 transition-colors ${isUploading || isValidatingPhoto ? 'opacity-60 cursor-not-allowed' : ''}`}>
+                            {isValidatingPhoto ? (
+                                <>
+                                    <Loader2 className="h-6 w-6 text-primary animate-spin" />
+                                    <span className="text-[10px] text-primary mt-1">Checking...</span>
+                                </>
+                            ) : isUploading ? (
                                 <Loader2 className="h-6 w-6 text-muted-foreground animate-spin" />
                             ) : (
                                 <>
@@ -108,12 +115,15 @@ export const BasicInfoStep = ({
                                 accept="image/jpeg,image/png,image/webp"
                                 onChange={handlePhotoSelect}
                                 className="hidden"
-                                disabled={isUploading}
+                                disabled={isUploading || isValidatingPhoto}
                             />
                         </label>
                     )}
                 </div>
-                <p className="text-muted-foreground/60 text-xs mt-2">Add up to 3 photos (optional but recommended)</p>
+                <div className="flex items-start gap-2 mt-2">
+                    <ShieldCheck className="h-3.5 w-3.5 text-primary/60 mt-0.5 shrink-0" />
+                    <p className="text-muted-foreground/60 text-xs">Upload a real photo of yourself for identity verification. AI-generated images, avatars, and non-human photos will be rejected.</p>
+                </div>
             </div>
 
             {isDetectingLocation ? (
