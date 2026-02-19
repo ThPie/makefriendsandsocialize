@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { TransitionLink } from "@/components/ui/TransitionLink";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -93,7 +94,7 @@ const CirclesPage = () => {
           <div className="max-w-[1400px] mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
               {circles.map((circle, idx) => (
-                <Link
+                <TransitionLink
                   key={circle.title}
                   to={circle.path}
                   className={`group relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden border border-white/10 ${circle.colSpan}`}
@@ -137,7 +138,7 @@ const CirclesPage = () => {
                       <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-2 transition-transform text-[#D4AF37]" />
                     </div>
                   </div>
-                </Link>
+                </TransitionLink>
               ))}
             </div>
           </div>
@@ -165,9 +166,9 @@ const CirclesPage = () => {
 
             <div className="mt-16">
               <Button asChild size="lg" className="rounded-full px-8 h-14 text-base bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-none">
-                <Link to="/membership">
+                <TransitionLink to="/membership">
                   View Membership Options
-                </Link>
+                </TransitionLink>
               </Button>
             </div>
           </div>

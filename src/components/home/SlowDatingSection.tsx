@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Clock, Shield, Sparkles, ArrowRight } from 'lucide-react';
 import slowDatingImage from '@/assets/slow-dating-new.jpg';
@@ -51,9 +51,9 @@ export const SlowDatingSection = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <Button asChild size="lg" className="rounded-full text-base px-8 h-14">
-                <Link to="/dating/apply">
+                <TransitionLink to="/dating/apply">
                   Get Started <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
+                </TransitionLink>
               </Button>
             </div>
 
