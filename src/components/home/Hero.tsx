@@ -6,9 +6,9 @@ import { ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const videoQualitySources = [
-  { quality: 'low' as const, src: '/videos/hero-1.mp4', type: 'video/mp4' },
-  { quality: 'high' as const, src: '/videos/hero-1.mp4', type: 'video/mp4' },
-];
+{ quality: 'low' as const, src: '/videos/hero-1.mp4', type: 'video/mp4' },
+{ quality: 'high' as const, src: '/videos/hero-1.mp4', type: 'video/mp4' }];
+
 
 export const Hero = () => {
   const { data: stats } = useSiteStats();
@@ -47,8 +47,8 @@ export const Hero = () => {
             loop={true}
             preloadStrategy="metadata"
             showPosterOnSlowConnection={false}
-            className="h-full w-full object-cover scale-[1.02]"
-          />
+            className="h-full w-full object-cover scale-[1.02]" />
+
         </div>
 
         {/* Heavy Gradient Overlay */}
@@ -58,9 +58,9 @@ export const Hero = () => {
         <div className="relative z-20 flex flex-col items-start text-left gap-6 max-w-lg mr-auto">
 
           {/* Private Members Pill */}
-          <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#1a5b2a]/90 backdrop-blur-md border border-[#d4af37]/20">
-            <span className="text-[#d4af37] text-[10px] font-bold tracking-[0.2em] uppercase">Private Members Only</span>
-          </div>
+          
+
+
 
           <div className="space-y-2">
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-medium leading-[1] text-[#f0f2f0] drop-shadow-lg">
@@ -76,8 +76,8 @@ export const Hero = () => {
             <Button
               asChild
               variant="luxury"
-              className="w-full sm:w-auto py-6 px-10 text-sm tracking-widest uppercase"
-            >
+              className="w-full sm:w-auto py-6 px-10 text-sm tracking-widest uppercase">
+
               <TransitionLink to="/membership">
                 Apply for Membership
               </TransitionLink>
@@ -86,18 +86,18 @@ export const Hero = () => {
             {/* Social Proof - Bottom Left */}
             <div className="flex items-center gap-3 mt-4 pl-1">
               <div className="flex -space-x-3">
-                {avatars.length > 0 ? avatars.slice(0, 3).map((url, i) => (
-                  <img
-                    key={i}
-                    src={url}
-                    alt=""
-                    className="w-10 h-10 border-2 border-[#d4af37] rounded-full object-cover"
-                  />
-                )) : (
-                  [1, 2, 3].map((i) => (
-                    <div key={i} className="w-10 h-10 border-2 border-[#d4af37] rounded-full bg-white/10" />
-                  ))
-                )}
+                {avatars.length > 0 ? avatars.slice(0, 3).map((url, i) =>
+                <img
+                  key={i}
+                  src={url}
+                  alt=""
+                  className="w-10 h-10 border-2 border-[#d4af37] rounded-full object-cover" />
+
+                ) :
+                [1, 2, 3].map((i) =>
+                <div key={i} className="w-10 h-10 border-2 border-[#d4af37] rounded-full bg-white/10" />
+                )
+                }
                 <div className="flex items-center justify-center w-10 h-10 text-[10px] font-bold text-[#0a0f0a] bg-white border-2 border-[#d4af37] rounded-full">
                   {displayCount > 0 ? `+${(displayCount / 1000).toFixed(0)}k` : '+150'}
                 </div>
@@ -107,6 +107,6 @@ export const Hero = () => {
           </div>
         </div>
       </header>
-    </div>
-  );
+    </div>);
+
 };
