@@ -37,6 +37,7 @@ import {
   Target,
   Gift,
   Scale,
+  ClipboardList,
 } from 'lucide-react';
 import { PageTransition } from '@/components/ui/page-transition';
 import { MFAGuard } from './MFAGuard';
@@ -62,6 +63,7 @@ const menuItems = [
   { title: 'Security Reports', url: '/admin/security', icon: ShieldAlert, sensitive: true, endpoint: 'security' },
   { title: 'Security Dashboard', url: '/admin/security-dashboard', icon: Shield, sensitive: true, endpoint: 'security' },
   { title: 'Introductions', url: '/admin/dating', icon: HeartHandshake, sensitive: true, endpoint: 'dating' },
+  { title: 'Review Queue', url: '/admin/dating/review', icon: ClipboardList, sensitive: true, endpoint: 'dating' },
   { title: 'Matches', url: '/admin/matches', icon: Heart, sensitive: true, endpoint: 'dating' },
   { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp, sensitive: false, endpoint: null },
   { title: 'Events', url: '/admin/events', icon: Calendar, sensitive: false, endpoint: null },
@@ -86,6 +88,7 @@ const SENSITIVE_ROUTES = [
   '/admin/security',
   '/admin/security-dashboard',
   '/admin/dating',
+  '/admin/dating/review',
   '/admin/matches',
   '/admin/roles',
 ];
