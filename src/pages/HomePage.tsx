@@ -12,7 +12,7 @@ const PricingSection = lazy(() => import('@/components/home/PricingSection').the
 const FAQSection = lazy(() => import('@/components/home/FAQSection').then(m => ({ default: m.FAQSection })));
 const ContactFormSection = lazy(() => import('@/components/home/ContactFormSection').then(m => ({ default: m.ContactFormSection })));
 const ClubShowcaseSection = lazy(() => import('@/components/home/ClubShowcaseSection').then(m => ({ default: m.ClubShowcaseSection })));
-const AvailabilitySection = lazy(() => import('@/components/home/AvailabilitySection').then(m => ({ default: m.AvailabilitySection })));
+
 
 // Minimal skeleton for lazy loaded sections
 const SectionSkeleton = memo(() => (
@@ -69,10 +69,6 @@ const HomePage = () => {
         <ContactFormSection />
       </Suspense>
 
-      {/* Footer Availability CTA - specific to Society design */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <AvailabilitySection />
-      </Suspense>
     </main>
   );
 };
