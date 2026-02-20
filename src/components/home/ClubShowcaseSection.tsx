@@ -68,9 +68,10 @@ export const ClubShowcaseSection = () => {
             <div ref={ref} className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
 
                 {/* Section Header */}
-                <div className="px-6 mb-6 flex items-center justify-between max-w-4xl mx-auto">
+                <div className="px-6 mb-6 flex items-center justify-between max-w-7xl mx-auto">
                     <h3 className="text-2xl text-white font-medium italic font-display">Curated Collections</h3>
-                    <div className="flex gap-2">
+                    {/* Scroll arrows only shown on mobile */}
+                    <div className="flex gap-2 lg:hidden">
                         <button
                             onClick={scrollLeft}
                             className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-white/60 hover:bg-white/5 hover:text-white transition-colors"
@@ -86,16 +87,16 @@ export const ClubShowcaseSection = () => {
                     </div>
                 </div>
 
-                {/* Horizontal Scroll Container */}
+                {/* Mobile: Horizontal Scroll | Desktop: 5-col film-strip grid */}
                 <div
                     id="collections-scroll"
-                    className="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x snap-mandatory px-6 max-w-4xl mx-auto"
+                    className="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x snap-mandatory px-6 max-w-7xl mx-auto lg:grid lg:grid-cols-5 lg:overflow-visible lg:pb-0"
                 >
                     {clubs.map((club) => (
                         <Link
                             key={club.id}
                             to={club.link}
-                            className="snap-start min-w-[280px] h-[360px] relative rounded-lg overflow-hidden group cursor-pointer border border-white/5 shrink-0"
+                            className="snap-start min-w-[280px] lg:min-w-0 h-[360px] relative rounded-lg overflow-hidden group cursor-pointer border border-white/5 shrink-0 lg:shrink"
                         >
                             {/* Background Image */}
                             <img

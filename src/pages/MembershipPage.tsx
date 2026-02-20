@@ -109,13 +109,33 @@ const MembershipPage = () => {
 
   const isCurrentTier = (tierName: string) => {
     if (!subscription) return tierName === 'socialite';
-    // Map DB tier to UI tier
     const tierMap: Record<string, string> = {
       patron: 'socialite',
       fellow: 'insider',
       founder: 'patron',
     };
     return tierMap[subscription.tier || 'patron'] === tierName;
+  };
+
+  // Tier rank for Upgrade/Downgrade labels
+  const TIER_RANK: Record<string, number> = { socialite: 0, insider: 1, patron: 2 };
+
+  const getCurrentTierName = (): string => {
+    if (!subscription) return 'socialite';
+    const tierMap: Record<string, string> = { patron: 'socialite', fellow: 'insider', founder: 'patron' };
+    return tierMap[subscription.tier || 'patron'] ?? 'socialite';
+  };
+
+  const getCtaLabel = (tierId: string, tierName: string): string => {
+    if (!user) {
+      if (tierId === 'socialite') return 'Get Started';
+      if (tierId === 'insider') return 'Start Free Trial';
+      return 'Join Waitlist';
+    }
+    const current = getCurrentTierName();
+    if (current === tierId) return 'Your Plan';
+    if (TIER_RANK[tierId] > TIER_RANK[current]) return `Upgrade to ${tierName}`;
+    return `Downgrade to ${tierName}`;
   };
 
   const tiers = [
@@ -409,13 +429,25 @@ const MembershipPage = () => {
                 <motion.div
                   key={tier.name}
                   variants={itemVariants}
-                  className={`relative flex flex-col h-full rounded-2xl p-8 transition-all duration-300 border ${tier.featured
-                    ? 'bg-[#122b22] border-[hsl(43,55%,45%)] shadow-xl scale-105 z-10' // Insider: Green bg, Gold border
-                    : 'bg-[#0f251d] border-transparent hover:border-white/10 opacity-90 hover:opacity-100' // Others: Darker Green
-                    }`}
+                  className={`relative flex flex-col h-full rounded-2xl p-8 transition-all duration-300 border ${
+                    isCurrent
+                      ? 'bg-[#122b22] border-primary/40 shadow-xl scale-105 z-10 opacity-75'
+                      : tier.featured
+                        ? 'bg-[#122b22] border-[hsl(43,55%,45%)] shadow-xl scale-105 z-10'
+                        : 'bg-[#0f251d] border-transparent hover:border-white/10 opacity-90 hover:opacity-100'
+                  }`}
                 >
-                  {/* Badge */}
-                  {tier.featured && (
+                  {/* Current Plan Badge */}
+                  {isCurrent && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border-none">
+                        Your Current Plan
+                      </Badge>
+                    </div>
+                  )}
+
+                  {/* Most Popular Badge (only when not current) */}
+                  {tier.featured && !isCurrent && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                       <Badge className="bg-[hsl(43,55%,45%)] text-[#0f251d] hover:bg-[hsl(43,55%,40%)] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border-none">
                         Most Popular
@@ -426,7 +458,6 @@ const MembershipPage = () => {
                   <div className="flex flex-col gap-1 mb-6">
                     <h3 className="font-display text-xl text-[#d4c5a3] font-medium">{tier.name}</h3>
                     <p className="flex items-baseline gap-1 mt-2">
-                      {/* Price styling */}
                       <span className={`font-display text-5xl font-normal ${tier.featured ? 'text-white' : 'text-[#d4c5a3]'}`}>
                         {tier.price}
                       </span>
@@ -447,9 +478,6 @@ const MembershipPage = () => {
                         <span className="text-sm text-[#e8e4d9] font-light leading-snug">{feature}</span>
                       </li>
                     ))}
-                    {tier.missingFeatures?.map((feature, i) => ( // Show missing features but styled? Or just hide? Image implies full lists. I'll stick to current logic but style them.
-                      null // The attached image shows checkmarks for available. Assuming lists are complete.
-                    ))}
                   </ul>
 
                   {/* See Details Link */}
@@ -464,26 +492,33 @@ const MembershipPage = () => {
 
                   {/* Action Button */}
                   <div className="mt-auto">
-                    {tier.id === 'socialite' ? (
+                    {isCurrent ? (
+                      <Button
+                        className="w-full rounded-full h-12 bg-primary/20 text-primary border border-primary/30 font-medium transition-all cursor-default"
+                        disabled
+                      >
+                        Your Plan
+                      </Button>
+                    ) : tier.id === 'socialite' ? (
                       <Button
                         className="w-full rounded-full h-12 bg-[#1a382e] hover:bg-[#23453a] text-white border border-white/5 font-medium transition-all"
                         asChild
                       >
-                        <Link to="/auth">Get Started</Link>
+                        <Link to="/auth">{getCtaLabel(tier.id, tier.name)}</Link>
                       </Button>
                     ) : tier.id === 'insider' ? (
                       <Button
                         className="w-full rounded-full h-12 bg-[hsl(43,55%,45%)] hover:bg-[hsl(43,55%,40%)] text-[#0f251d] font-bold transition-all shadow-lg shadow-black/20"
                         onClick={() => tier.stripeId && handleStartTrial(tier.stripeId)}
                       >
-                        Start Free Trial
+                        {getCtaLabel(tier.id, tier.name)}
                       </Button>
                     ) : (
                       <Button
                         className="w-full rounded-full h-12 bg-[#1a382e] hover:bg-[#23453a] text-white border border-white/5 font-medium transition-all"
-                        onClick={() => tier.stripeId && handleSubscribe(tier.stripeId)} // Patron is "Join Waitlist" in image? Or "Upgrade"?
+                        onClick={() => tier.stripeId && handleSubscribe(tier.stripeId)}
                       >
-                        {tier.id === 'patron' ? 'Join Waitlist' : 'Upgrade'}
+                        {getCtaLabel(tier.id, tier.name)}
                       </Button>
                     )}
                   </div>

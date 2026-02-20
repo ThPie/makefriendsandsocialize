@@ -81,10 +81,13 @@ export const Header = () => {
   };
 
   const getAvatarUrl = () => {
-    if (profile?.avatar_urls && profile.avatar_urls.length > 0) {
-      return profile.avatar_urls[0];
-    }
-    return undefined;
+    const raw = profile?.avatar_urls?.[0];
+    if (!raw) return undefined;
+    // If already a full URL (http/https), use as-is
+    if (raw.startsWith('http')) return raw;
+    // Construct full Supabase Storage public URL from raw storage path
+    const { data } = supabase.storage.from('profile-photos').getPublicUrl(raw);
+    return data.publicUrl;
   };
 
   // Debounced scroll handler to prevent flickering
@@ -205,7 +208,7 @@ export const Header = () => {
               className="ml-1 md:ml-2 transition-transform hover:scale-105"
               title="Go to your profile"
             >
-              <Avatar className="h-9 w-9 md:h-10 md:w-10 border-2 border-primary/30 hover:border-primary transition-colors">
+              <Avatar className="h-11 w-11 md:h-12 md:w-12 border-2 border-primary/50 hover:border-primary transition-colors">
                 <AvatarImage src={getAvatarUrl()} alt={getFullName() || 'Profile'} />
                 <AvatarFallback className="bg-primary/20 text-primary font-medium text-xs">
                   {getUserInitials()}

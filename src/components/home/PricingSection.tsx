@@ -60,7 +60,7 @@ export const PricingSection = () => {
           <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
             Pricing on <span className="text-primary">your terms</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-muted-foreground text-lg max-w-3xl mx-auto leading-relaxed">
             Whichever plan you pick, it's free until you love your matches. That's our promise.
           </p>
         </div>

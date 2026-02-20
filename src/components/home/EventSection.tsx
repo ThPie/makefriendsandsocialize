@@ -184,7 +184,7 @@ export const EventSection = () => {
           <span className="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">
             Calendar
           </span>
-          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-semibold leading-tight text-foreground max-w-2xl">
+          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-semibold leading-tight text-foreground">
             Upcoming <span className="italic text-primary">Gatherings</span>
           </h2>
           <p className="text-muted-foreground text-lg mt-4 max-w-xl leading-relaxed font-light">
