@@ -98,6 +98,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState<CompleteIntakeData>(initialFormData);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [hasDraft, setHasDraft] = useState(false);
@@ -578,13 +579,13 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
                 }).catch(err => console.error('Profile preprocessing error:', err));
             }
 
-            toast({
-                title: 'Application Submitted!',
-                description: "Your dating profile has been submitted for review. We'll be in touch soon.",
-            });
+            // Fire-and-forget confirmation email with AI dating coach message
+            supabase.functions.invoke('send-dating-application-email', {
+                body: { userId: user.id, displayName: formData.display_name }
+            }).catch(err => console.error('Confirmation email error:', err));
 
             options?.onSuccess?.();
-            navigate('/portal');
+            setIsSubmitted(true);
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : 'There was an error submitting your profile.';
             console.error('Error submitting dating profile:', error);
@@ -607,6 +608,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
         step,
         formData,
         isSubmitting,
+        isSubmitted,
         isUploading,
         isSaving,
         hasDraft,
