@@ -297,7 +297,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
     const nextStep = useCallback(() => goToStep(step + 1), [step, goToStep]);
     const prevStep = useCallback(() => goToStep(step - 1), [step, goToStep]);
 
-    // Handle photo upload
+    // Handle photo upload with AI validation
     const uploadPhoto = useCallback(async (file: File): Promise<string | null> => {
         if (!file.type.startsWith('image/')) {
             toast({ title: 'Invalid file', description: 'Please upload an image file.', variant: 'destructive' });
@@ -311,6 +311,36 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
 
         setIsUploading(true);
         try {
+            // Step 1: AI validation — reject AI-generated or non-human photos before upload
+            const validationForm = new FormData();
+            validationForm.append('photo', file);
+
+            const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+            const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+            const validationRes = await fetch(
+                `${SUPABASE_URL}/functions/v1/validate-dating-photo`,
+                {
+                    method: 'POST',
+                    headers: { Authorization: `Bearer ${SUPABASE_KEY}` },
+                    body: validationForm,
+                }
+            );
+
+            if (validationRes.ok) {
+                const { valid, reason } = await validationRes.json() as { valid: boolean; reason: string };
+                if (!valid) {
+                    toast({
+                        title: 'Photo not accepted',
+                        description: reason || 'Please upload a real photo of yourself.',
+                        variant: 'destructive',
+                    });
+                    return null;
+                }
+            }
+            // If validation call itself fails, we fail open and continue to upload
+
+            // Step 2: Upload to storage
             const fileExt = file.name.split('.').pop();
             const fileName = `dating-${Date.now()}.${fileExt}`;
             const filePath = `${user?.id || 'temp'}/${fileName}`;
