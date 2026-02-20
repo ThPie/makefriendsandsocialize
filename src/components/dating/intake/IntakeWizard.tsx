@@ -3,9 +3,10 @@
  * Handles navigation between steps, validation, and form submission
  */
 import { useEffect, useCallback } from 'react';
-import { Card } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Heart, CheckCircle, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart, CheckCircle, Loader2, Clock, Mail } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { IntakeProgress } from './IntakeProgress';
 import { useIntakeForm } from './useIntakeForm';
 import { INTAKE_STEPS } from './intakeSchemas';
@@ -28,12 +29,94 @@ interface IntakeWizardProps {
     } | null;
 }
 
+// ── Success View ────────────────────────────────────────────────────────────
+const SuccessView = ({ displayName }: { displayName: string }) => {
+    const navigate = useNavigate();
+    const firstName = displayName?.split(' ')[0] || displayName || 'there';
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="flex flex-col items-center text-center px-4 py-16 space-y-8 max-w-xl mx-auto"
+        >
+            {/* Animated heart */}
+            <motion.div
+                animate={{ scale: [1, 1.15, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                className="flex items-center justify-center w-24 h-24 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30"
+            >
+                <Heart className="h-12 w-12 text-[#D4AF37] fill-[#D4AF37]" />
+            </motion.div>
+
+            {/* Heading */}
+            <div className="space-y-3">
+                <h2 className="font-display text-3xl md:text-4xl font-light text-[#D4AF37]">
+                    Application Received 🌿
+                </h2>
+                <p className="text-white/70 text-lg leading-relaxed">
+                    Thank you, <span className="text-white font-medium">{firstName}</span>. Your profile is now in the hands of our matchmaking team.
+                </p>
+            </div>
+
+            {/* Timeline box */}
+            <div className="w-full bg-white/[0.04] border border-white/10 rounded-xl p-6 text-left space-y-4">
+                <div className="flex items-center gap-2 mb-2">
+                    <Clock className="h-4 w-4 text-[#D4AF37]" />
+                    <span className="text-[#D4AF37] text-sm font-semibold uppercase tracking-widest">What Happens Next</span>
+                </div>
+                {[
+                    { label: '24–48 hours', detail: 'Our team reviews your application personally.' },
+                    { label: 'Social verification', detail: 'We verify your profile to keep our community authentic.' },
+                    { label: 'We\'ll reach out', detail: 'Expect a brief consultation call if you\'re a great fit.' },
+                ].map(({ label, detail }) => (
+                    <div key={label} className="flex items-start gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] mt-2 flex-shrink-0" />
+                        <p className="text-white/70 text-sm leading-relaxed">
+                            <span className="text-white font-medium">{label}:</span> {detail}
+                        </p>
+                    </div>
+                ))}
+            </div>
+
+            {/* Email notice */}
+            <div className="flex items-start gap-3 bg-white/[0.03] border border-white/10 rounded-xl p-5 w-full text-left">
+                <Mail className="h-5 w-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                <p className="text-white/60 text-sm leading-relaxed">
+                    <span className="text-white/80 font-medium">Check your inbox</span> — we've sent you a personalized message from your dating coach with encouragement for this journey.
+                </p>
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-col items-center gap-4 w-full pt-2">
+                <Button
+                    onClick={() => navigate('/portal')}
+                    className="gap-2 bg-[#D4AF37] text-black hover:bg-[#D4AF37]/90 px-10 py-6 text-base font-medium rounded-full shadow-[0_0_24px_rgba(212,175,55,0.25)] hover:shadow-[0_0_36px_rgba(212,175,55,0.4)] transition-all duration-300 w-full max-w-xs"
+                >
+                    Return to Portal
+                </Button>
+                <a
+                    href="https://www.gottman.com/blog/the-importance-of-being-intentional-in-your-relationship/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#D4AF37]/60 text-sm hover:text-[#D4AF37] transition-colors duration-200 underline underline-offset-4 decoration-[#D4AF37]/30"
+                >
+                    Read: The Art of Intentional Dating →
+                </a>
+            </div>
+        </motion.div>
+    );
+};
+
+// ── Wizard ──────────────────────────────────────────────────────────────────
 export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
     const form = useIntakeForm();
     const {
         step,
         formData,
         isSubmitting,
+        isSubmitted,
         isSaving,
         totalSteps,
         nextStep,
@@ -42,10 +125,9 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
         submit,
     } = form;
 
-    // Keyboard navigation
+    // Keyboard navigation — always registered, gated internally
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Don't navigate if user is typing in an input
             if (
                 e.target instanceof HTMLInputElement ||
                 e.target instanceof HTMLTextAreaElement ||
@@ -67,7 +149,6 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
 
     const handleNext = useCallback(() => {
         nextStep();
-        // After validation runs, scroll to first error or to top
         setTimeout(() => {
             const firstError = document.querySelector('[class*="border-red-500"]');
             if (firstError) {
@@ -94,36 +175,31 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
 
     const renderStep = () => {
         switch (step) {
-            case 1:
-                return <BasicsStep form={form} profile={profile} />;
-            case 2:
-                return <FamilyStep form={form} />;
-            case 3:
-                return <HabitsStep form={form} />;
-            case 4:
-                return <LifestyleStep form={form} />;
-            case 5:
-                return <DeepDiveStep form={form} />;
-            case 6:
-                return <DealbreakersStep form={form} />;
-            case 7:
-                return <NotificationsStep form={form} />;
-            case 8:
-                return <ReviewStep form={form} />;
-            default:
-                return null;
+            case 1: return <BasicsStep form={form} profile={profile} />;
+            case 2: return <FamilyStep form={form} />;
+            case 3: return <HabitsStep form={form} />;
+            case 4: return <LifestyleStep form={form} />;
+            case 5: return <DeepDiveStep form={form} />;
+            case 6: return <DealbreakersStep form={form} />;
+            case 7: return <NotificationsStep form={form} />;
+            case 8: return <ReviewStep form={form} />;
+            default: return null;
         }
     };
 
-    // Map INTAKE_STEPS for IntakeProgress component
     const progressSteps = INTAKE_STEPS.map(s => ({
         number: s.number,
         title: s.title,
     }));
 
+    // Show success screen after submission (after all hooks)
+    if (isSubmitted) {
+        return <SuccessView displayName={formData.display_name} />;
+    }
+
     return (
         <div className="space-y-8">
-            {/* Progress Indicator - NOW ABOVE CARD */}
+            {/* Progress Indicator */}
             <div className="px-2">
                 <IntakeProgress
                     currentStep={step}
@@ -139,7 +215,7 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                 {renderStep()}
             </div>
 
-            {/* Navigation Buttons - Sticky or fixed at bottom of card */}
+            {/* Navigation Buttons */}
             <div className="flex justify-between items-center py-6 px-4 border-t border-white/10 mt-8">
                 <Button
                     variant="ghost"
@@ -152,8 +228,7 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                     Back
                 </Button>
 
-            <div className="flex items-center gap-4">
-                    {/* Auto-save indicator */}
+                <div className="flex items-center gap-4">
                     {isSaving ? (
                         <span className="hidden md:flex items-center gap-1.5 text-xs text-white/30">
                             <Loader2 className="h-3 w-3 animate-spin" />
@@ -186,7 +261,10 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                             aria-label="Submit application"
                         >
                             {isSubmitting ? (
-                                <>Submitting...</>
+                                <>
+                                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                                    Submitting...
+                                </>
                             ) : (
                                 <>
                                     <Heart className="h-4 w-4 fill-black" aria-hidden="true" />
