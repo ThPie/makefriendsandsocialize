@@ -1,272 +1,263 @@
 
-## Fix 6 Issues: Auth UX, Bio Validation, Onboarding Pre-fill, Age Input, Photo Validation & Submit Confirmation
+## Fix Build Errors + Dating Application QA Issues
 
-### Overview
-This plan addresses 6 distinct issues across the auth signup flow (`AuthPage.tsx`) and the portal onboarding (`PortalOnboarding.tsx` + its step components), plus 2 TypeScript build errors in admin pages.
+### Part 0 — Build Errors (Must Fix First)
 
----
+Two files use `TransitionLink` without importing it:
 
-### Issue 0 (Build Errors) — Fix `heading` → `title` in AdminApplications & AdminSecurityDashboard
+**`src/pages/ConnectedCircleDirectoryPage.tsx`** — Uses `TransitionLink` at lines 167, 170, 311, 385 but only imports `Link` from react-router-dom.
 
-**Root cause:** `EmptyState` in `src/components/ui/empty-state.tsx` uses the prop name `title` (line 6), but both admin pages are passing `heading` instead.
+**`src/pages/portal/PortalBusiness.tsx`** — Uses `TransitionLink` at lines 252, 307, 313 but only imports `Link`.
 
-**Fix in `src/pages/admin/AdminApplications.tsx`** — lines 344-348, 360-364, 375-379: rename `heading=` → `title=`
-
-**Fix in `src/pages/admin/AdminSecurityDashboard.tsx`** — line 269: rename `heading=` → `title=`
-
-No component changes needed; only the call sites need updating.
+Fix: Add `import { TransitionLink } from '@/components/ui/TransitionLink';` to both files.
 
 ---
 
-### Issue 1 — "Lowercase" Error Shown on Submit, Not While Typing
+### Part 1 — BUG 1 & 2: Blank Page + Infinite Spinner
 
-**Location:** `src/pages/AuthPage.tsx` around line 822–826.
+**Root cause:** `DatingIntakePage.tsx` uses `useAuth()` which follows the "separate initial load" pattern — `isLoading` starts `true` and goes `false` once auth resolves. However the current auth context sets `isLoading = false` inside `onAuthStateChange`, which can cause a deadlock on direct URL access or navigation from unauthenticated contexts (as described in the stack overflow pattern).
 
-**Current behavior:** The `PasswordInput` component renders the requirements checklist live as the user types (the checklist with green/red checks). However, the error message from `validatePasswordField` only shows if `passwordTouched` is true, which only becomes true `onBlur`. The screenshot shows the error message _above_ the form in a red banner on submit.
-
-**What the user wants:** The checklist items (which are already in `PasswordInput` with `showStrengthIndicator={mode === 'signup'}`) should show immediately when they start typing — **not** waiting for blur. The requirements checklist already renders while typing because `value.length > 0` triggers it in `PasswordInput`. The issue is specifically the red banner error message: it fires on submit only.
-
-**Fix:** In `handlePasswordChange`, remove the `passwordTouched` guard so `validatePasswordField` is always called on each keystroke during signup:
-
-```typescript
-// Current (only validates if touched):
-if (passwordTouched && mode === 'signup') {
-  validatePasswordField(value);
+**Current code in `DatingIntakePage.tsx`:**
+```tsx
+if (isLoading) {
+  return <div>...<Loader2 /></div>; // Spins forever on Bug 2
 }
-
-// Fixed (always validate while typing in signup):
-if (mode === 'signup') {
-  validatePasswordField(value);
+if (!user) {
+  return <Navigate to="/auth" replace />; // Never reached on Bug 1
 }
 ```
 
-This makes the inline `error` prop on `PasswordInput` show the specific failing requirement as soon as the user types. The checklist already shows; this just also populates the error text immediately.
+**Fix — Add loading timeout to `DatingIntakePage.tsx`:**
+
+Add a local `loadingTimedOut` state with an 8-second timeout. If `isLoading` is still true after 8 seconds, show a friendly error with a "Try Again" button that reloads the page. This addresses Bug 2 (infinite spinner) with a fallback.
+
+```tsx
+const [loadingTimedOut, setLoadingTimedOut] = useState(false);
+
+useEffect(() => {
+  if (!isLoading) return;
+  const timer = setTimeout(() => setLoadingTimedOut(true), 8000);
+  return () => clearTimeout(timer);
+}, [isLoading]);
+
+if (isLoading && !loadingTimedOut) {
+  return <LoadingUI />;
+}
+
+if (loadingTimedOut || !user) {
+  // Instead of hanging, redirect to auth
+  return <Navigate to="/auth" replace />;
+}
+```
+
+**Fix — Auth context pattern (the real root cause):**
+
+The `AuthContext.tsx` uses `onAuthStateChange` to set both user state AND `isLoading = false`. On hard refresh, Supabase needs to restore the session via `getSession()` before `onAuthStateChange` fires. The fix is to call `supabase.auth.getSession()` explicitly on mount to guarantee `isLoading` resolves:
+
+In `AuthContext.tsx`, add an `initializeAuth` function that:
+1. Calls `supabase.auth.getSession()` to get the initial session
+2. If session exists, calls `fetchUserData()`
+3. Sets `isLoading(false)` in its `finally` block — guaranteed even on hard refresh
+
+The `onAuthStateChange` listener stays for subsequent changes (login, logout) but does NOT control `isLoading`. This matches the `auth-state-loading-patterns.yaml` pattern from the stack overflow context.
 
 ---
 
-### Issue 2 — Bio Character Count Color (Red < 50, Green ≥ 50)
+### Part 2 — BUG 3: No Inline Error When Photo Missing
 
-**Location:** `src/components/portal/onboarding/ProfessionalStep.tsx` line 125.
+**Current behavior:** In `useIntakeForm.ts` `goToStep()`, when validation fails it calls `toast()` but also sets `fieldErrors`. The `BasicsStep.tsx` already reads `fieldErrors` and shows red borders/messages for most fields. However, the photo section at line 169-175 only shows the error text — it does NOT scroll to it.
 
-**Current:** Character count is always `text-muted-foreground/60` (dim gray).
+**Fix in `useIntakeForm.ts`:** After setting `fieldErrors`, emit a custom DOM event or use a `ref` callback to scroll to the first errored field. Alternatively, add a `firstErrorField` to the returned state, then in `IntakeWizard.tsx`, after `nextStep()` fails, scroll to the first error.
 
-**Fix:** Apply conditional color class based on bio length:
+**Simpler approach:** In `IntakeWizard.tsx`'s `handleNext`, after calling `nextStep()`, check if `form.validationErrors.length > 0` — if so, find the first element with class `border-red-500` using `document.querySelector` and scroll to it:
 
 ```tsx
-// Current:
-<p className="text-muted-foreground/60 text-xs mt-1">{bio.length}/50 characters minimum</p>
+const handleNext = useCallback(() => {
+  nextStep();
+  setTimeout(() => {
+    const firstError = document.querySelector('[class*="border-red-500"]');
+    if (firstError) {
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, 100);
+}, [nextStep]);
+```
 
-// Fixed:
-<p className={`text-xs mt-1 transition-colors ${bio.length >= 50 ? 'text-green-400' : 'text-red-400'}`}>
-  {bio.length}/50 characters minimum
+The photo area already has `border-red-500` on error — this will scroll directly to the missing photo.
+
+---
+
+### Part 3 — BUG 4: Step Nav Breadcrumb Resets Validation
+
+**Root cause:** In `useIntakeForm.ts` `goToStep()` at line 263-284, when going **backward** (targetStep < step), the code skips validation (`if (targetStep > step)` guard) but still clears `validationErrors` and `fieldErrors` at lines 281-283. This wipes out the "completed" state of the current step, meaning if someone is on step 3 and clicks step 1 breadcrumb, coming back forward re-requires all step 1 validation again.
+
+**Fix:** Track a `completedSteps` set (Set of step numbers) in `useIntakeForm`. When a step passes validation and the user advances, add it to `completedSteps`. When going backward via breadcrumb, don't clear errors for already-completed steps. Only clear `fieldErrors` when entering a step fresh in the forward direction.
+
+**Implementation:**
+```typescript
+const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+
+// In goToStep:
+if (targetStep > step) {
+  const validation = validateStep(step, formData);
+  if (!validation.success) { /* show errors */ return; }
+  // Mark current step as completed
+  setCompletedSteps(prev => new Set([...prev, step]));
+}
+
+setValidationErrors([]);
+setFieldErrors({});
+setStep(targetStep);
+```
+
+Add `completedSteps` to the returned context so `IntakeProgress` can show completed steps with a checkmark.
+
+---
+
+### Part 4 — Step 1 Improvements
+
+**4a. "I identify as" → "Gender Identity"**
+
+In `BasicsStep.tsx` line 214: change `"I identify as"` label to `"Gender Identity"`.
+
+**4b. Bio character counter**
+
+In `BasicsStep.tsx`, add a character counter below the Bio textarea:
+```tsx
+<p className="text-xs mt-1 text-right text-white/40">
+  {formData.bio?.length || 0} characters
 </p>
 ```
 
-Also make the Textarea border itself reflect the state in real-time (not just on bioError):
+**4c. "Interested in meeting" — allow multi-select**
 
+Currently a single-select `<Select>`. Change to chip-style toggles (similar to core values selector in DeepDiveStep) so users can select "Men", "Women", "Non-binary", "Everyone". Since `target_gender` is a string field in the DB, store multi-values joined: `"Men, Women"`. Update `intakeSchemas.ts` to not require a single value.
+
+**4d. Age Preference slider — add note**
+
+In `BasicsStep.tsx` line 288, add below the `<Label>`:
 ```tsx
-className={`... ${bio.length > 0 && bio.length < 50 ? 'border-red-500/50' : bio.length >= 50 ? 'border-green-500/50' : 'border-border'}`}
+<p className="text-xs text-white/40">We'll try to match within this range</p>
 ```
+
+**4e. Location edit button**
+
+In `BasicsStep.tsx` around line 316-340 (the location section), add an "Edit location" button that, when clicked, shows an editable `<Input>` for the location string. This lets users override their auto-detected city.
+
+**4f. Social verification tooltip**
+
+In `BasicsStep.tsx`, find the "Social Verification (Private)" section header and add a `<Tooltip>` explaining these are only visible to the matchmaker.
 
 ---
 
-### Issue 3 — Pre-fill Name from Signup on Onboarding Step 1
+### Part 5 — Step 2 (Life & Family) Improvements
 
-**Location:** `src/pages/portal/PortalOnboarding.tsx` line 80-108 (the profile pre-fill `useEffect`).
+**5a. "Prefer not to say" options**
 
-**Context:** When a user signs up in `AuthPage.tsx` at step 1, they enter `firstName` and `lastName`. These get saved to the profile via `handleFinalSubmit` (line 551-564) only at the _end_ of the multi-step signup. However, there is a faster path: at `handleStep1Submit` (line 426+), for the new direct-to-onboarding flow, the user's name is collected on the signup form.
-
-**Root cause:** The `signUp(email, password)` call in `handleStep1Submit` creates the auth user and the trigger creates a `profiles` row — but `first_name`/`last_name` are not written to `profiles` at this point. The profile pre-fill in `PortalOnboarding` reads from `profile.first_name` / `profile.last_name` but these are empty because the name was never saved during the initial step.
-
-**Fix — two-part:**
-
-1. In `AuthPage.tsx` `handleStep1Submit`, after successful `signUp`, immediately update the profile with the first/last name:
-
-```typescript
-// After signUp succeeds and before navigate('/portal/onboarding'):
-const { data: { session } } = await supabase.auth.getSession();
-if (session?.user && firstName && lastName) {
-  await supabase.from('profiles').update({
-    first_name: firstName,
-    last_name: lastName,
-  }).eq('id', session.user.id);
-}
-```
-
-2. The `PortalOnboarding.tsx` already reads `profile.first_name` and `profile.last_name` in its pre-fill `useEffect` at line 82-83, so once the profile has these values, they will populate automatically. No changes needed there.
-
----
-
-### Issue 4 — Age Input Instead of Date of Birth
-
-**Location:** `src/components/portal/onboarding/InterestsStep.tsx` (lines 46-56) and `src/pages/portal/PortalOnboarding.tsx`.
-
-**Context:** The DB column is `date_of_birth` (date type). We want to show an age number input to the user but still validate they are 21+, without collecting an exact birth date.
-
-**Approach:** Replace the `date` input with a simple number input asking "How old are you?" Store it by computing an approximate date of birth (Jan 1 of the birth year = `currentYear - age`). This keeps DB compatibility while avoiding the perception of collecting a precise birthday.
-
-**Changes to `InterestsStep.tsx`:**
-- Replace `dateOfBirth`/`setDateOfBirth` props with `age`/`setAge` (number | string)
-- Change the date input to:
+In `FamilyStep.tsx`, the `been_married` and `has_children` radio groups currently only have Yes/No. Add a third option:
 ```tsx
-<Label>How old are you? (21+ required)</Label>
-<Input
-  type="number"
-  min="21"
-  max="100"
-  placeholder="e.g. 28"
-  value={age}
-  onChange={(e) => setAge(e.target.value)}
-/>
-{age && Number(age) < 21 && (
-  <p className="text-destructive text-xs mt-1">You must be 21 or older to join</p>
-)}
+<div className="flex items-center space-x-3 bg-white/5 ...">
+  <RadioGroupItem value="prefer_not" id="married-prefer-not" />
+  <Label ...>Prefer not to say</Label>
+</div>
 ```
+Since these are `boolean` fields in the form, change them to `string` (`"yes" | "no" | "prefer_not"`) in the local display but keep the DB mapping: `been_married: value === "yes"`.
 
-**Changes to `PortalOnboarding.tsx`:**
-- Replace `dateOfBirth` / `setDateOfBirth` state with `age` / `setAge`
-- In `validateStep` case 4: check `Number(age) < 21` instead of calling `calculateAge()`
-- In `saveProgress` and `handleComplete`: compute `date_of_birth: age ? `${new Date().getFullYear() - Number(age)}-01-01` : null`
-- Remove `calculateAge` helper function
-- Pre-fill: derive `age` from `profile.date_of_birth` on load using `calculateAge`
+**5b. Conditional "When do you want children?"**
 
-**Interface update for `InterestsStep`:** Change prop types from `dateOfBirth: string` / `setDateOfBirth` to `age: string` / `setAge`.
+The marriage_timeline question already has `{isSeekingSerious && ...}` wrapping. The "wants children" timeline (when they want them) should be hidden when `formData.wants_children === 'no'`. This is already partially handled by the adaptive options — but ensure no follow-up question about timing appears if they select "No".
+
+**5c. Fix dropdown defaults**
+
+In `FamilyStep.tsx`:
+- `family_relationship` Select: Remove any pre-selected value — the `<SelectValue placeholder="Select your relationship" />` is already there and `formData.family_relationship` starts as `''`, so no value is pre-selected. The issue reported may be from an old form. Confirm placeholder shows correctly.
+- `family_involvement_expectation` Select: Same — already uses `placeholder="Select your expectation"`.
+
+**5d. New question: "Open to dating someone with children?"**
+
+Add after the children section:
+```tsx
+<div className="space-y-3">
+  <Label>Are you open to dating someone who already has children?</Label>
+  <Select value={formData.open_to_partner_children} onValueChange={...}>
+    <SelectItem value="yes">Yes, absolutely</SelectItem>
+    <SelectItem value="depends">Depends on the situation</SelectItem>
+    <SelectItem value="no">Prefer not</SelectItem>
+  </Select>
+</div>
+```
+This field needs to be added to `intakeSchemas.ts` as optional and to `initialFormData` in `useIntakeForm.ts`.
 
 ---
 
-### Issue 5 — Require Real Person Photos (Reject AI/Non-Human Images)
+### Part 6 — Step 3 (Lifestyle/Habits) Improvements
 
-**Location:** `src/pages/portal/PortalOnboarding.tsx` — `handlePhotoSelect` and `handleCropComplete`.
+**6a. Replace drug use textarea with structured dropdown**
 
-**Approach:** After the user selects a photo but _before_ uploading to storage, call the Lovable AI (`google/gemini-2.5-flash`) to analyze the image and determine if it contains a real human face. If the image appears AI-generated or doesn't show a real person, reject it with a clear error message.
-
-**How it works:**
-1. In `handlePhotoSelect`, after creating the blob URL, convert the file to base64
-2. Call the AI gateway with a prompt: `"Does this image show a real photograph of a real human person? Answer only: REAL_PERSON or NOT_REAL_PERSON. Reject if: AI generated, cartoon, avatar, animal, object, or no face visible."`
-3. If response is `NOT_REAL_PERSON`, show an error toast and stop the flow
-4. If `REAL_PERSON`, proceed to the image cropper as before
-
-**New state:** `[isValidatingPhoto, setIsValidatingPhoto] = useState(false)`
-
-**Error messages to show:**
-- AI-generated/not a real person: `"Please upload a real photo of yourself. AI-generated images, avatars, and non-human photos are not accepted."`
-
-**Note:** The photo will be used for identity verification (OSINT) purposes — this is already by design in the app. No changes needed to communicate this; the existing upload note can be updated to mention it is for member identity verification.
-
-**Update upload note text** in `BasicInfoStep.tsx` line 116:
-```
-"Upload a real photo of yourself for identity verification. AI-generated images will be rejected."
+In `HabitsStep.tsx`, replace the `<Textarea>` for `drug_use` with a `<Select>`:
+```tsx
+<Select value={formData.drug_use} onValueChange={(v) => updateField("drug_use", v)}>
+  <SelectItem value="never">Never</SelectItem>
+  <SelectItem value="occasionally">Occasionally</SelectItem>
+  <SelectItem value="regularly">Regularly</SelectItem>
+  <SelectItem value="prefer_not">Prefer not to say</SelectItem>
+</Select>
 ```
 
-**Implementation in `PortalOnboarding.tsx`:**
-```typescript
-const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  // ... existing size check ...
-  
-  setIsValidatingPhoto(true);
-  
-  // Convert to base64 for AI check
-  const reader = new FileReader();
-  reader.onload = async (event) => {
-    const base64 = event.target?.result as string;
-    
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session?.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'text', text: 'Does this image show a real photograph of a real human person? Answer ONLY with: REAL_PERSON or NOT_REAL_PERSON. Say NOT_REAL_PERSON if the image is AI-generated, a cartoon, an avatar, an animal, an object, or has no visible human face.' },
-              { type: 'image_url', image_url: { url: base64 } }
-            ]
-          }],
-        }),
-      });
-      
-      const aiData = await response.json();
-      const answer = aiData?.choices?.[0]?.message?.content?.trim();
-      
-      if (answer !== 'REAL_PERSON') {
-        toast.error('Please upload a real photo of yourself. AI-generated images, avatars, and non-human photos are not accepted.');
-        setIsValidatingPhoto(false);
-        return;
-      }
-      
-      // Proceed with cropper
-      const imageUrl = URL.createObjectURL(file);
-      setCropperImage(imageUrl);
-      setPendingFile(file);
-    } catch (err) {
-      // If AI check fails, allow upload (fail open for UX)
-      console.error('Photo validation failed:', err);
-      const imageUrl = URL.createObjectURL(file);
-      setCropperImage(imageUrl);
-      setPendingFile(file);
-    } finally {
-      setIsValidatingPhoto(false);
-    }
-  };
-  reader.readAsDataURL(file);
-};
-```
+**6b. Add "Substance Use" section header**
 
-**`BasicInfoStep.tsx`:** Add `isValidatingPhoto` prop and show a spinner/message while the check runs.
+Group smoking, drinking, and drug questions under a `<div>` with a `<Label className="text-[#D4AF37] text-xs uppercase tracking-widest">Substance Use</Label>` header and a light divider.
+
+**6c. Diet preference explanation note**
+
+Below the diet `<Select>` in `HabitsStep.tsx`, add:
+```tsx
+<p className="text-xs text-white/40">Helps us plan curated dinners and suggest compatible lifestyle matches.</p>
+```
 
 ---
 
-### Issue 6 — Submit Button: Success Message + Confirmation Email
+### Part 7 — Review Step (Step 8) Improvements
 
-There are **two** submission flows to fix:
+**7a. Full collapsible accordion by step**
 
-**Flow A: `AuthPage.tsx` `handleFinalSubmit` (the 3-step signup in `AuthPage`)**
+Replace the current flat summary in `ReviewStep.tsx` with a full `<Accordion>` (using the existing Radix UI accordion component from `@/components/ui/accordion`). Each accordion item = one step:
 
-Currently: After success, it navigates to `/portal/onboarding` silently.
+- Step 1 — The Basics: photo, name, age, gender, location, bio, social links
+- Step 2 — Life & Family: marriage, children, family
+- Step 3 — Lifestyle: smoking, drinking, drugs, exercise, diet, screen time
+- Step 4 — Daily Life: tuesday night test, financial philosophy, etc.
+- Step 5 — Deep Dive: core values, love language, attachment style, etc.
+- Step 6 — Dealbreakers: dealbreakers text, politics, religion, etc.
+- Step 7 — Notifications: phone, notification preferences
 
-**Fix:**
-- After the profile update and waitlist insert succeed, call `supabase.functions.invoke('send-profile-notification', { body: { user_id: session.user.id, notification_type: 'account_created' } })`
-- Show `setFormSuccess('🎉 Account created! Welcome to MakeFriends & Socialize. Check your email for a confirmation.')` before navigating
-- Add a new notification type `"account_created"` to the `send-profile-notification` edge function with a branded welcome email
+Each accordion item header shows the step name + a "✓ Completed" or "⚠ Incomplete" badge.
 
-**Flow B: `PortalOnboarding.tsx` `handleComplete` (the full 5-step portal onboarding)**
+**7b. Review timeline note**
 
-Currently: After success, `toast.success('Profile completed! Your application is being reviewed.')` and navigates to `/auth/waiting`.
-
-**Fix:**
-- After the profile and application insert succeed, call `send-profile-notification` with `notification_type: 'profile_complete'` (this type already exists and sends the "Congratulations! Your Profile is Complete" email)
-- Add an inline success state: show a brief "✅ Application submitted! Check your email for confirmation." message (using `setFormSuccess` or a local `submitted` state) visible for 1-2 seconds before navigating
-
-**Edge Function Update — `send-profile-notification`:**
-Add a new `"account_created"` notification type:
-```typescript
-} else if (notification_type === "account_created") {
-  subject = "Welcome to Make Friends and Socialize! 🎉";
-  htmlContent = `...branded welcome email with name pre-filled...`;
-}
+Below the accordion, add:
+```tsx
+<div className="bg-white/5 border border-white/10 rounded-xl p-4 text-sm text-white/70">
+  <strong className="text-[#D4AF37]">What happens next?</strong> Your profile will be reviewed by our team within 24–48 hours after submission.
+</div>
 ```
 
 ---
 
 ### Files Modified
 
-| File | Change |
+| File | Changes |
 |---|---|
-| `src/pages/admin/AdminApplications.tsx` | Fix `heading` → `title` (build error, 3 locations) |
-| `src/pages/admin/AdminSecurityDashboard.tsx` | Fix `heading` → `title` (build error, 1 location) |
-| `src/pages/AuthPage.tsx` | Issue 1: validate password on keystroke; Issue 3: save name after signUp; Issue 6: send account_created email + show success message |
-| `src/components/portal/onboarding/ProfessionalStep.tsx` | Issue 2: bio char count color red/green |
-| `src/components/portal/onboarding/InterestsStep.tsx` | Issue 4: replace date-of-birth with age number input |
-| `src/components/portal/onboarding/BasicInfoStep.tsx` | Issue 5: add `isValidatingPhoto` prop, update helper text |
-| `src/pages/portal/PortalOnboarding.tsx` | Issue 4: age state; Issue 5: AI photo validation logic; Issue 6: call send-profile-notification on complete |
-| `supabase/functions/send-profile-notification/index.ts` | Issue 6: add `account_created` email type |
-
-### Technical Notes
-- The AI photo validation uses the Lovable AI gateway (no extra API key needed) with `google/gemini-2.5-flash` multimodal vision. It fails open — if the AI gateway is unavailable, the photo upload proceeds normally so users aren't blocked.
-- The age-to-date conversion stores `YYYY-01-01` in the `date_of_birth` column, keeping DB schema unchanged. No migration needed.
-- Password real-time validation: removing the `passwordTouched` guard means the checklist in `PasswordInput` and the `error` text will both show immediately while typing — matching how real-world apps like Google and Apple handle password fields.
+| `src/pages/ConnectedCircleDirectoryPage.tsx` | Add TransitionLink import (build fix) |
+| `src/pages/portal/PortalBusiness.tsx` | Add TransitionLink import (build fix) |
+| `src/contexts/AuthContext.tsx` | Add `initializeAuth` with `getSession()` to fix blank page / infinite spinner (Bugs 1 & 2) |
+| `src/pages/DatingIntakePage.tsx` | Add 8-second loading timeout with Try Again fallback (Bug 2) |
+| `src/components/dating/intake/IntakeWizard.tsx` | Scroll-to-first-error after failed Next Step (Bug 3) |
+| `src/components/dating/intake/useIntakeForm.ts` | Add `completedSteps` tracking; add `open_to_partner_children` to initialFormData (Bug 4 + Step 2) |
+| `src/components/dating/intake/intakeSchemas.ts` | Add `open_to_partner_children` optional field; allow multi-value `target_gender` |
+| `src/components/dating/intake/steps/BasicsStep.tsx` | "Gender Identity" label; bio char counter; multi-select gender preference chips; age range note; location edit button; social verification tooltip |
+| `src/components/dating/intake/steps/FamilyStep.tsx` | "Prefer not to say" options; new open-to-partner-children question |
+| `src/components/dating/intake/steps/HabitsStep.tsx` | Drug use textarea → Select dropdown; Substance Use group header; diet note |
+| `src/components/dating/intake/steps/ReviewStep.tsx` | Full collapsible accordion summary; 24-48hr review note |
