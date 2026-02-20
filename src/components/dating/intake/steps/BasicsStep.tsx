@@ -144,7 +144,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                 )}
                             >
                                 <ImagePlus className="h-4 w-4" />
-                                {isUploading ? "Uploading..." : "Upload Photo"}
+                                {isUploading ? "Checking photo…" : "Upload Photo"}
                             </Button>
 
                             {/* Take Photo - only on mobile where native camera opens */}
