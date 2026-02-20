@@ -36,7 +36,8 @@ export function useAuthRateLimit(): UseAuthRateLimitResult {
       // The previous code passed `isFailure`.
       // Let's assume we want to limit ATTEMPTS.
 
-      const { data, error: rpcError } = await supabase.rpc('check_rate_limit', {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error: rpcError } = await (supabase.rpc as any)('check_rate_limit', {
         p_key_prefix: 'auth_attempt',
         p_max_requests: 5,      // 5 attempts
         p_window_seconds: 60,   // per 60 seconds

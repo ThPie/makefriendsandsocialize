@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Search, Building2, Filter, X, ArrowUpDown, Lock } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
+import { TransitionLink } from "@/components/ui/TransitionLink";
 import { motion } from "framer-motion";
 import {
   Select,

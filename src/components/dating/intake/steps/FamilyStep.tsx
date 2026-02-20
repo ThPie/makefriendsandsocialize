@@ -20,10 +20,13 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
     // Error helpers
     const hasError = (field: string) => !!fieldErrors[field];
     const errorMsg = (field: string) => fieldErrors[field];
-    const inputErrorClass = (field: string) =>
-        hasError(field)
-            ? "border-red-500/70 ring-1 ring-red-500/30"
-            : "border-white/10";
+
+    // Helper to convert boolean to tristate string (yes/no/prefer_not)
+    const boolToTristate = (val: boolean | null | undefined) => {
+        if (val === true) return "yes";
+        if (val === false) return "no";
+        return "no"; // default
+    };
 
     const getWantsChildrenOptions = () => {
         if (formData.has_children) {
@@ -49,6 +52,16 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
         return "Where do you see marriage in your future?";
     };
 
+    const radioItem = (value: string, id: string, label: string) => (
+        <div className="flex items-center space-x-3 bg-white/5 px-4 py-3 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+            <RadioGroupItem value={value} id={id} className="border-white/50 text-[#D4AF37]" />
+            <Label htmlFor={id} className="font-normal text-white cursor-pointer">{label}</Label>
+        </div>
+    );
+
+    // Show children-timing question only when user wants children
+    const showChildrenTiming = formData.wants_children === 'yes' || formData.wants_children === 'open';
+
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             <CardHeader className="text-center pb-8 border-b border-white/10">
@@ -69,18 +82,19 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                     <div className="space-y-4 animate-fade-in">
                         <Label className="text-white/90 text-lg">Have you been married before?</Label>
                         <RadioGroup
-                            value={formData.been_married ? "yes" : "no"}
-                            onValueChange={(value) => updateField("been_married", value === "yes")}
-                            className="flex gap-6"
+                            value={boolToTristate(formData.been_married)}
+                            onValueChange={(value) => {
+                                if (value === "prefer_not") {
+                                    updateField("been_married", false);
+                                } else {
+                                    updateField("been_married", value === "yes");
+                                }
+                            }}
+                            className="flex flex-wrap gap-4"
                         >
-                            <div className="flex items-center space-x-3 bg-white/5 px-4 py-3 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
-                                <RadioGroupItem value="yes" id="married-yes" className="border-white/50 text-[#D4AF37]" />
-                                <Label htmlFor="married-yes" className="font-normal text-white cursor-pointer">Yes</Label>
-                            </div>
-                            <div className="flex items-center space-x-3 bg-white/5 px-4 py-3 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
-                                <RadioGroupItem value="no" id="married-no" className="border-white/50 text-[#D4AF37]" />
-                                <Label htmlFor="married-no" className="font-normal text-white cursor-pointer">No</Label>
-                            </div>
+                            {radioItem("yes", "married-yes", "Yes")}
+                            {radioItem("no", "married-no", "No")}
+                            {radioItem("prefer_not", "married-prefer-not", "Prefer not to say")}
                         </RadioGroup>
                     </div>
                 )}
@@ -103,18 +117,13 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                 <div className="space-y-4">
                     <Label className="text-white/90 text-lg">Do you have children?</Label>
                     <RadioGroup
-                        value={formData.has_children ? "yes" : "no"}
+                        value={boolToTristate(formData.has_children)}
                         onValueChange={(value) => updateField("has_children", value === "yes")}
-                        className="flex gap-6"
+                        className="flex flex-wrap gap-4"
                     >
-                        <div className="flex items-center space-x-3 bg-white/5 px-4 py-3 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
-                            <RadioGroupItem value="yes" id="children-yes" className="border-white/50 text-[#D4AF37]" />
-                            <Label htmlFor="children-yes" className="font-normal text-white cursor-pointer">Yes</Label>
-                        </div>
-                        <div className="flex items-center space-x-3 bg-white/5 px-4 py-3 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
-                            <RadioGroupItem value="no" id="children-no" className="border-white/50 text-[#D4AF37]" />
-                            <Label htmlFor="children-no" className="font-normal text-white cursor-pointer">No</Label>
-                        </div>
+                        {radioItem("yes", "children-yes", "Yes")}
+                        {radioItem("no", "children-no", "No")}
+                        {radioItem("prefer_not", "children-prefer-not", "Prefer not to say")}
                     </RadioGroup>
                 </div>
 
@@ -151,7 +160,25 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                     </Select>
                 </div>
 
-                {/* Marriage timeline - only show for serious/marriage-minded, not casual */}
+                {/* Open to partner with children */}
+                <div className="space-y-3 animate-fade-in">
+                    <Label className="text-white/80">Are you open to dating someone who already has children?</Label>
+                    <Select
+                        value={(formData as any).open_to_partner_children || ''}
+                        onValueChange={(value) => updateField("open_to_partner_children" as any, value)}
+                    >
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectValue placeholder="Select your preference" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                            <SelectItem value="yes" className="focus:bg-white/10 focus:text-white">Yes, absolutely</SelectItem>
+                            <SelectItem value="depends" className="focus:bg-white/10 focus:text-white">Depends on the situation</SelectItem>
+                            <SelectItem value="no" className="focus:bg-white/10 focus:text-white">Prefer not</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                {/* Marriage timeline - only show for serious/marriage-minded when they want children */}
                 {isSeekingSerious && (
                     <div className="space-y-3 animate-fade-in">
                         <Label className="text-white/80">{getMarriageTimelineLabel()}</Label>
@@ -170,7 +197,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                     </div>
                 )}
 
-                {/* NEW: Family Dynamics - Research shows patterns repeat */}
+                {/* NEW: Family Dynamics */}
                 {isSeekingSerious && (
                     <div className="space-y-6 pt-6 border-t border-white/10 animate-fade-in">
                         <div className="flex items-center gap-2">

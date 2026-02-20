@@ -98,6 +98,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
     const [hasDraft, setHasDraft] = useState(false);
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+    const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
 
     const { user, profile } = useAuth();
     const navigate = useNavigate();
@@ -276,12 +277,21 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
                 });
                 return;
             }
+            // Mark current step as completed when moving forward
+            setCompletedSteps(prev => new Set([...prev, step]));
         }
 
-        setValidationErrors([]);
-        setFieldErrors({});
+        // Only clear errors when moving forward to a fresh step
+        // (not when going backward to a previously completed step)
+        if (targetStep > step || !completedSteps.has(targetStep)) {
+            setValidationErrors([]);
+            setFieldErrors({});
+        } else {
+            // Going backward to completed step — just clear top-level errors
+            setValidationErrors([]);
+        }
         setStep(targetStep);
-    }, [step, formData, totalSteps, toast]);
+    }, [step, formData, totalSteps, toast, completedSteps]);
 
     const nextStep = useCallback(() => goToStep(step + 1), [step, goToStep]);
     const prevStep = useCallback(() => goToStep(step - 1), [step, goToStep]);
@@ -465,6 +475,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
         hasDraft,
         validationErrors,
         fieldErrors,
+        completedSteps,
         progress,
         totalSteps,
 

@@ -9,7 +9,7 @@ export const basicsSchema = z.object({
     display_name: z.string().min(2, 'Display name must be at least 2 characters'),
     age: z.number().min(21, 'You must be at least 21 years old').max(100, 'Please enter a valid age'),
     gender: z.string().min(1, 'Please select your gender'),
-    target_gender: z.string().min(1, 'Please select who you are interested in'),
+    target_gender: z.string().optional().default(''),
     photo_url: z.string().url('Please upload a profile photo'),
     relationship_type: z.string().min(1, 'Please select your relationship intentions'),
     location: z.string().optional(),

@@ -23,6 +23,7 @@ interface IntakeProgressProps {
     totalSteps: number;
     steps: Array<{ number: number; title: string }>;
     onStepClick?: (step: number) => void;
+    completedSteps?: Set<number>;
     className?: string;
 }
 
@@ -31,9 +32,11 @@ export const IntakeProgress = ({
     totalSteps,
     steps,
     onStepClick,
+    completedSteps,
     className,
 }: IntakeProgressProps) => {
     const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+    const isStepCompleted = (stepNum: number) => completedSteps ? completedSteps.has(stepNum) : currentStep > stepNum;
 
     return (
         <div className={cn('mb-8', className)}>
@@ -46,7 +49,7 @@ export const IntakeProgress = ({
                 >
                     {steps.map((s, index) => {
                         const Icon = STEP_ICONS[index] || ClipboardCheck;
-                        const isCompleted = currentStep > s.number;
+                        const isCompleted = isStepCompleted(s.number);
                         const isCurrent = currentStep === s.number;
                         const isClickable = onStepClick && (isCompleted || isCurrent);
 
@@ -118,8 +121,8 @@ export const IntakeProgress = ({
 
                 {/* Mini step dots */}
                 <div className="flex justify-center gap-2">
-                    {steps.map((s) => {
-                        const isCompleted = currentStep > s.number;
+                {steps.map((s) => {
+                        const isCompleted = isStepCompleted(s.number);
                         const isCurrent = currentStep === s.number;
                         return (
                             <button

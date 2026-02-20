@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Building2, Loader2, CheckCircle, Clock, XCircle, ExternalLink, Users, Link2, Copy, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import { TransitionLink } from "@/components/ui/TransitionLink";
 import { BusinessVerificationStatus } from "@/components/business/BusinessVerificationStatus";
 import { Lead } from "@/components/business/LeadCard";
 import { LeadDetailSheet } from "@/components/business/LeadDetailSheet";
