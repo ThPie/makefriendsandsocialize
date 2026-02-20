@@ -25,7 +25,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
     const boolToTristate = (val: boolean | null | undefined) => {
         if (val === true) return "yes";
         if (val === false) return "no";
-        return "no"; // default
+        return ""; // unselected by default
     };
 
     const getWantsChildrenOptions = () => {
@@ -141,41 +141,44 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                     </div>
                 )}
 
-                {/* Adaptive children question */}
-                <div className="space-y-3 animate-fade-in">
-                    <Label className="text-white/80">
-                        {formData.has_children ? "Do you want more children?" : "Do you want children?"}
-                    </Label>
-                    <Select value={formData.wants_children} onValueChange={(value) => updateField("wants_children", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
-                            <SelectValue placeholder="Select your preference" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            {getWantsChildrenOptions().map((option) => (
-                                <SelectItem key={option.value} value={option.value} className="focus:bg-white/10 focus:text-white">
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
+                {/* Children preferences side by side */}
+                <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
+                    {/* Adaptive children question */}
+                    <div className="space-y-3 animate-fade-in">
+                        <Label className="text-white/80">
+                            {formData.has_children ? "Do you want more children?" : "Do you want children?"}
+                        </Label>
+                        <Select value={formData.wants_children} onValueChange={(value) => updateField("wants_children", value)}>
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectValue placeholder="Select your preference" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                {getWantsChildrenOptions().map((option) => (
+                                    <SelectItem key={option.value} value={option.value} className="focus:bg-white/10 focus:text-white">
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-                {/* Open to partner with children */}
-                <div className="space-y-3 animate-fade-in">
-                    <Label className="text-white/80">Are you open to dating someone who already has children?</Label>
-                    <Select
-                        value={formData.open_to_partner_children || ''}
-                        onValueChange={(value) => updateField("open_to_partner_children", value)}
-                    >
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
-                            <SelectValue placeholder="Select your preference" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            <SelectItem value="yes" className="focus:bg-white/10 focus:text-white">Yes, absolutely</SelectItem>
-                            <SelectItem value="depends" className="focus:bg-white/10 focus:text-white">Depends on the situation</SelectItem>
-                            <SelectItem value="no" className="focus:bg-white/10 focus:text-white">Prefer not</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    {/* Open to partner with children */}
+                    <div className="space-y-3 animate-fade-in">
+                        <Label className="text-white/80">Are you open to dating someone who already has children?</Label>
+                        <Select
+                            value={formData.open_to_partner_children || ''}
+                            onValueChange={(value) => updateField("open_to_partner_children", value)}
+                        >
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectValue placeholder="Select your preference" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                <SelectItem value="yes" className="focus:bg-white/10 focus:text-white">Yes, absolutely</SelectItem>
+                                <SelectItem value="depends" className="focus:bg-white/10 focus:text-white">Depends on the situation</SelectItem>
+                                <SelectItem value="no" className="focus:bg-white/10 focus:text-white">Prefer not</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
 
                 {/* Marriage timeline - only show for serious/marriage-minded when they want children */}

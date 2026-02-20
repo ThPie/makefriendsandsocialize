@@ -35,10 +35,10 @@ const initialFormData: CompleteIntakeData = {
     twitter_url: '',
     relationship_type: '',
     marriage_timeline: '',
-    has_children: false,
+    has_children: null as boolean | null,
     children_details: '',
     wants_children: '',
-    been_married: false,
+    been_married: null as boolean | null,
     marriage_history: '',
     family_relationship: '',
     family_involvement_expectation: '',
@@ -178,7 +178,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
         };
 
         loadDbDraft();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.id]);
 
     // Pre-fill data from profile

@@ -25,10 +25,10 @@ export const basicsSchema = z.object({
 
 // Step 2: Life & Family
 export const familySchema = z.object({
-    has_children: z.boolean().default(false),
+    has_children: z.boolean().nullable().default(null),
     children_details: z.string().optional(),
     wants_children: z.string().min(1, 'Please answer the children question'),
-    been_married: z.boolean().default(false),
+    been_married: z.boolean().nullable().default(null),
     marriage_history: z.string().optional(),
     marriage_timeline: z.string().optional(),
     family_relationship: z.string().optional(),

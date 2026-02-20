@@ -40,39 +40,40 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                         <span className="text-xs text-[#D4AF37] uppercase tracking-widest font-medium">Substance Use</span>
                         <div className="flex-1 h-px bg-white/10" />
                     </div>
+                    <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
+                        {/* Smoking */}
+                        <div className="space-y-3">
+                            <Label className="text-white/80">Do you smoke?</Label>
+                            <Select value={formData.smoking_status} onValueChange={(value) => updateField("smoking_status", value)}>
+                                <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('smoking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50'}`}>
+                                    <SelectValue placeholder="Select smoking status" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                    <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
+                                    <SelectItem value="occasionally" className="focus:bg-white/10 focus:text-white">Occasionally / Socially</SelectItem>
+                                    <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
+                                    <SelectItem value="trying_to_quit" className="focus:bg-white/10 focus:text-white">Trying to quit</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {hasError('smoking_status') && <p className="text-xs text-red-400">{errorMsg('smoking_status')}</p>}
+                        </div>
 
-                    {/* Smoking */}
-                    <div className="space-y-3">
-                        <Label className="text-white/80">Do you smoke?</Label>
-                        <Select value={formData.smoking_status} onValueChange={(value) => updateField("smoking_status", value)}>
-                            <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('smoking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50'}`}>
-                                <SelectValue placeholder="Select smoking status" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
-                                <SelectItem value="occasionally" className="focus:bg-white/10 focus:text-white">Occasionally / Socially</SelectItem>
-                                <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
-                                <SelectItem value="trying_to_quit" className="focus:bg-white/10 focus:text-white">Trying to quit</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        {hasError('smoking_status') && <p className="text-xs text-red-400">{errorMsg('smoking_status')}</p>}
-                    </div>
-
-                    {/* Drinking */}
-                    <div className="space-y-3">
-                        <Label className="text-white/80">Do you drink alcohol?</Label>
-                        <Select value={formData.drinking_status} onValueChange={(value) => updateField("drinking_status", value)}>
-                            <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('drinking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50'}`}>
-                                <SelectValue placeholder="Select drinking status" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
-                                <SelectItem value="socially" className="focus:bg-white/10 focus:text-white">Socially</SelectItem>
-                                <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
-                                <SelectItem value="sober" className="focus:bg-white/10 focus:text-white">Sober / In recovery</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        {hasError('drinking_status') && <p className="text-xs text-red-400">{errorMsg('drinking_status')}</p>}
+                        {/* Drinking */}
+                        <div className="space-y-3">
+                            <Label className="text-white/80">Do you drink alcohol?</Label>
+                            <Select value={formData.drinking_status} onValueChange={(value) => updateField("drinking_status", value)}>
+                                <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('drinking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50'}`}>
+                                    <SelectValue placeholder="Select drinking status" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                    <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
+                                    <SelectItem value="socially" className="focus:bg-white/10 focus:text-white">Socially</SelectItem>
+                                    <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
+                                    <SelectItem value="sober" className="focus:bg-white/10 focus:text-white">Sober / In recovery</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {hasError('drinking_status') && <p className="text-xs text-red-400">{errorMsg('drinking_status')}</p>}
+                        </div>
                     </div>
 
                     {/* Structured drug use dropdown */}
@@ -92,41 +93,44 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                     </div>
                 </div>
 
-                {/* Exercise */}
-                <div className="space-y-3">
-                    <Label className="text-white/80">How often do you exercise?</Label>
-                    <Select value={formData.exercise_frequency} onValueChange={(value) => updateField("exercise_frequency", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
-                            <SelectValue placeholder="Select exercise frequency" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            <SelectItem value="daily" className="focus:bg-white/10 focus:text-white">Daily</SelectItem>
-                            <SelectItem value="few_times_week" className="focus:bg-white/10 focus:text-white">A few times a week</SelectItem>
-                            <SelectItem value="occasionally" className="focus:bg-white/10 focus:text-white">Occasionally</SelectItem>
-                            <SelectItem value="rarely" className="focus:bg-white/10 focus:text-white">Rarely</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
+                {/* Exercise + Diet side by side */}
+                <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
+                    {/* Exercise */}
+                    <div className="space-y-3">
+                        <Label className="text-white/80">How often do you exercise?</Label>
+                        <Select value={formData.exercise_frequency} onValueChange={(value) => updateField("exercise_frequency", value)}>
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectValue placeholder="Select exercise frequency" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                <SelectItem value="daily" className="focus:bg-white/10 focus:text-white">Daily</SelectItem>
+                                <SelectItem value="few_times_week" className="focus:bg-white/10 focus:text-white">A few times a week</SelectItem>
+                                <SelectItem value="occasionally" className="focus:bg-white/10 focus:text-white">Occasionally</SelectItem>
+                                <SelectItem value="rarely" className="focus:bg-white/10 focus:text-white">Rarely</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-                {/* Diet */}
-                <div className="space-y-3">
-                    <Label className="text-white/80">Diet preference</Label>
-                    <Select value={formData.diet_preference} onValueChange={(value) => updateField("diet_preference", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
-                            <SelectValue placeholder="Select diet preference" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            <SelectItem value="omnivore" className="focus:bg-white/10 focus:text-white">Omnivore - I eat everything</SelectItem>
-                            <SelectItem value="vegetarian" className="focus:bg-white/10 focus:text-white">Vegetarian</SelectItem>
-                            <SelectItem value="vegan" className="focus:bg-white/10 focus:text-white">Vegan</SelectItem>
-                            <SelectItem value="pescatarian" className="focus:bg-white/10 focus:text-white">Pescatarian</SelectItem>
-                            <SelectItem value="keto" className="focus:bg-white/10 focus:text-white">Keto / Low-carb</SelectItem>
-                            <SelectItem value="halal" className="focus:bg-white/10 focus:text-white">Halal</SelectItem>
-                            <SelectItem value="kosher" className="focus:bg-white/10 focus:text-white">Kosher</SelectItem>
-                            <SelectItem value="other" className="focus:bg-white/10 focus:text-white">Other</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <p className="text-xs text-white/40">Helps us plan curated dinners and suggest compatible lifestyle matches.</p>
+                    {/* Diet */}
+                    <div className="space-y-3">
+                        <Label className="text-white/80">Diet preference</Label>
+                        <Select value={formData.diet_preference} onValueChange={(value) => updateField("diet_preference", value)}>
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectValue placeholder="Select diet preference" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                <SelectItem value="omnivore" className="focus:bg-white/10 focus:text-white">Omnivore - I eat everything</SelectItem>
+                                <SelectItem value="vegetarian" className="focus:bg-white/10 focus:text-white">Vegetarian</SelectItem>
+                                <SelectItem value="vegan" className="focus:bg-white/10 focus:text-white">Vegan</SelectItem>
+                                <SelectItem value="pescatarian" className="focus:bg-white/10 focus:text-white">Pescatarian</SelectItem>
+                                <SelectItem value="keto" className="focus:bg-white/10 focus:text-white">Keto / Low-carb</SelectItem>
+                                <SelectItem value="halal" className="focus:bg-white/10 focus:text-white">Halal</SelectItem>
+                                <SelectItem value="kosher" className="focus:bg-white/10 focus:text-white">Kosher</SelectItem>
+                                <SelectItem value="other" className="focus:bg-white/10 focus:text-white">Other</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <p className="text-xs text-white/40">Helps us plan curated dinners and suggest compatible lifestyle matches.</p>
+                    </div>
                 </div>
 
                 {/* Screen Time - Modern conflict source */}
