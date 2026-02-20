@@ -973,6 +973,36 @@ export type Database = {
           },
         ]
       }
+      dating_intake_drafts: {
+        Row: {
+          completed_steps: number[]
+          created_at: string
+          current_step: number
+          form_data: Json
+          id: string
+          last_saved_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_steps?: number[]
+          created_at?: string
+          current_step?: number
+          form_data?: Json
+          id?: string
+          last_saved_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_steps?: number[]
+          created_at?: string
+          current_step?: number
+          form_data?: Json
+          id?: string
+          last_saved_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       dating_matches: {
         Row: {
           admin_notes: string | null
