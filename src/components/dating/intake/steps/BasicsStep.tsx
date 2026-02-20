@@ -12,7 +12,8 @@ import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { User, Camera, Upload, MapPin, Sparkles, ImagePlus } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { User, Camera, Upload, MapPin, Sparkles, ImagePlus, Info, Pencil } from 'lucide-react';
 import { VoiceBioRecorder } from '@/components/dating/VoiceBioRecorder';
 import type { IntakeFormContext } from '../useIntakeForm';
 import { cn } from '@/lib/utils';
@@ -30,6 +31,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const cameraInputRef = useRef<HTMLInputElement>(null);
     const { formData, updateField, uploadPhoto, isUploading, fieldErrors } = form;
+    const [locationEditing, setLocationEditing] = useState(false);
 
     // Detect mobile/tablet for showing camera button
     const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -211,7 +213,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                 {/* Gender & Preferences */}
                 <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
                     <div className="space-y-2">
-                        <Label className="text-white/80">I identify as</Label>
+                        <Label className="text-white/80">Gender Identity</Label>
                         <Select value={formData.gender} onValueChange={(value) => updateField("gender", value)}>
                             <SelectTrigger className={cn("bg-white/5 text-white h-12", selectErrorClass('gender'))}>
                                 <SelectValue placeholder="Select gender" />
@@ -230,16 +232,35 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                     </div>
                     <div className="space-y-2">
                         <Label className="text-white/80">Interested in meeting</Label>
-                        <Select value={formData.target_gender} onValueChange={(value) => updateField("target_gender", value)}>
-                            <SelectTrigger className={cn("bg-white/5 text-white h-12", selectErrorClass('target_gender'))}>
-                                <SelectValue placeholder="Select preference" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                <SelectItem value="Men" className="focus:bg-white/10 focus:text-white">Men</SelectItem>
-                                <SelectItem value="Women" className="focus:bg-white/10 focus:text-white">Women</SelectItem>
-                                <SelectItem value="Everyone" className="focus:bg-white/10 focus:text-white">Everyone</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <p className="text-xs text-white/40 mt-0.5">Select all that apply</p>
+                        <div className="flex flex-wrap gap-2 pt-1">
+                            {["Men", "Women", "Non-binary", "Everyone"].map((option) => {
+                                const selected = formData.target_gender?.split(", ").includes(option) || false;
+                                return (
+                                    <button
+                                        key={option}
+                                        type="button"
+                                        onClick={() => {
+                                            if (option === "Everyone") {
+                                                updateField("target_gender", selected ? "" : "Everyone");
+                                                return;
+                                            }
+                                            const current = formData.target_gender === "Everyone" ? [] : (formData.target_gender?.split(", ").filter(Boolean) || []);
+                                            const next = selected ? current.filter(v => v !== option) : [...current, option];
+                                            updateField("target_gender", next.join(", "));
+                                        }}
+                                        className={cn(
+                                            "px-4 py-2 rounded-full text-sm border transition-all duration-200",
+                                            selected
+                                                ? "bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]"
+                                                : "bg-white/5 border-white/15 text-white/60 hover:border-white/30"
+                                        )}
+                                    >
+                                        {option}
+                                    </button>
+                                );
+                            })}
+                        </div>
                         {hasError('target_gender') && (
                             <p className="text-xs text-red-400">{errorMsg('target_gender')}</p>
                         )}
@@ -285,7 +306,10 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                 {/* Age Range Slider */}
                 <div className="space-y-6">
                     <div className="flex items-center justify-between">
-                        <Label className="text-white/80">Age Preference</Label>
+                        <div>
+                            <Label className="text-white/80">Age Preference</Label>
+                            <p className="text-xs text-white/40 mt-0.5">We'll try to match within this range</p>
+                        </div>
                         <div className="flex items-center gap-3 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
                             <span className="text-[#D4AF37] font-mono font-medium">{formData.age_range_min}</span>
                             <span className="text-white/30 text-xs uppercase">to</span>
@@ -308,19 +332,42 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                 {/* Location - Elegant Design */}
                 <div className="space-y-6 pt-6 border-t border-white/10">
                     <div className="flex items-start justify-between">
-                        <div>
+                        <div className="flex-1">
                             <Label className="text-base text-white flex items-center gap-2 mb-1">
                                 <MapPin className="h-4 w-4 text-[#D4AF37]" />
                                 Location
                             </Label>
-                            {profile?.city ? (
-                                <p className="text-white/60 text-sm">
-                                    Based in <span className="text-white">{[profile.city, profile.state, profile.country].filter(Boolean).join(", ")}</span>
-                                </p>
+                            {profile?.city && !locationEditing ? (
+                                <div className="flex items-center gap-3">
+                                    <p className="text-white/60 text-sm">
+                                        Based in <span className="text-white">{formData.location || [profile.city, profile.state, profile.country].filter(Boolean).join(", ")}</span>
+                                    </p>
+                                    <button
+                                        type="button"
+                                        onClick={() => setLocationEditing(true)}
+                                        className="text-xs text-white/40 hover:text-[#D4AF37] transition-colors flex items-center gap-1"
+                                    >
+                                        <Pencil className="h-3 w-3" /> Edit
+                                    </button>
+                                </div>
                             ) : (
-                                <Link to="/portal/profile" className="text-sm text-dating-terracotta hover:text-[#D4AF37] transition-colors">
-                                    Set your location in profile settings →
-                                </Link>
+                                <div className="space-y-2 mt-2">
+                                    <Input
+                                        value={formData.location}
+                                        onChange={(e) => updateField("location", e.target.value)}
+                                        placeholder="e.g. New York, NY, USA"
+                                        className="bg-white/5 border-white/10 text-white placeholder:text-white/20 h-10 text-sm"
+                                    />
+                                    {locationEditing && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setLocationEditing(false)}
+                                            className="text-xs text-white/40 hover:text-white/70 transition-colors"
+                                        >
+                                            ← Done editing
+                                        </button>
+                                    )}
+                                </div>
                             )}
                         </div>
                     </div>
@@ -369,12 +416,29 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             placeholder="Share a glimpse into your world..."
                             className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
                         />
+                        <p className="text-xs text-right text-white/40">
+                            {formData.bio?.length || 0} characters
+                        </p>
                     </div>
                 </div>
 
                 {/* Social Verification - Minimalist */}
                 <div className="pt-6 border-t border-white/10">
-                    <Label className="text-white block mb-4">Social Verification (Private)</Label>
+                    <div className="flex items-center gap-2 mb-4">
+                        <Label className="text-white">Social Verification (Private)</Label>
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <button type="button" className="text-white/40 hover:text-white/70 transition-colors">
+                                        <Info className="h-4 w-4" />
+                                    </button>
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-[240px] text-center bg-[#1a231b] border-white/10 text-white/80 text-xs">
+                                    These links are only visible to your matchmaker. They are never shown publicly and are used solely for identity verification.
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
                     <div className="grid gap-4 md:grid-cols-2">
                         <Input
                             value={formData.linkedin_url}

@@ -3,7 +3,6 @@
  * Smoking, drinking, exercise, diet, and screen time
  */
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Cigarette } from 'lucide-react';
@@ -19,20 +18,6 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
     // Error helpers
     const hasError = (field: string) => !!fieldErrors[field];
     const errorMsg = (field: string) => fieldErrors[field];
-    const inputErrorClass = (field: string) =>
-        hasError(field)
-            ? "border-red-500/70 ring-1 ring-red-500/30"
-            : "border-white/10";
-
-    const getDrugUsePrompt = () => {
-        if (formData.smoking_status === 'regularly' || formData.drinking_status === 'regularly') {
-            return "Given your other answers, what's your relationship with recreational substances?";
-        }
-        if (formData.smoking_status === 'never' && formData.drinking_status === 'never') {
-            return "Since you don't smoke or drink, is there anything else we should know about your lifestyle preferences?";
-        }
-        return "What's your relationship with recreational substances? This helps us match you with compatible partners.";
-    };
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -49,51 +34,60 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
             </CardHeader>
 
             <CardContent className="space-y-8 pt-8">
-                {/* Smoking */}
-                <div className="space-y-3">
-                    <Label className="text-white/80">Do you smoke?</Label>
-                    <Select value={formData.smoking_status} onValueChange={(value) => updateField("smoking_status", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
-                            <SelectValue placeholder="Select smoking status" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
-                            <SelectItem value="occasionally" className="focus:bg-white/10 focus:text-white">Occasionally / Socially</SelectItem>
-                            <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
-                            <SelectItem value="trying_to_quit" className="focus:bg-white/10 focus:text-white">Trying to quit</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
+                {/* Substance Use Group */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-[#D4AF37] uppercase tracking-widest font-medium">Substance Use</span>
+                        <div className="flex-1 h-px bg-white/10" />
+                    </div>
 
-                {/* Drinking */}
-                <div className="space-y-3">
-                    <Label className="text-white/80">Do you drink alcohol?</Label>
-                    <Select value={formData.drinking_status} onValueChange={(value) => updateField("drinking_status", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
-                            <SelectValue placeholder="Select drinking status" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
-                            <SelectItem value="socially" className="focus:bg-white/10 focus:text-white">Socially</SelectItem>
-                            <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
-                            <SelectItem value="sober" className="focus:bg-white/10 focus:text-white">Sober / In recovery</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
+                    {/* Smoking */}
+                    <div className="space-y-3">
+                        <Label className="text-white/80">Do you smoke?</Label>
+                        <Select value={formData.smoking_status} onValueChange={(value) => updateField("smoking_status", value)}>
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectValue placeholder="Select smoking status" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
+                                <SelectItem value="occasionally" className="focus:bg-white/10 focus:text-white">Occasionally / Socially</SelectItem>
+                                <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
+                                <SelectItem value="trying_to_quit" className="focus:bg-white/10 focus:text-white">Trying to quit</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-                {/* Adaptive drug use question */}
-                <div className="space-y-3 animate-fade-in">
-                    <Label htmlFor="drug_use" className="text-white/80">Recreational drug use</Label>
-                    <p className="text-sm text-white/40">
-                        {getDrugUsePrompt()}
-                    </p>
-                    <Textarea
-                        id="drug_use"
-                        value={formData.drug_use}
-                        onChange={(e) => updateField("drug_use", e.target.value)}
-                        placeholder="Be honest - this helps us match you appropriately..."
-                        className="min-h-[80px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
-                    />
+                    {/* Drinking */}
+                    <div className="space-y-3">
+                        <Label className="text-white/80">Do you drink alcohol?</Label>
+                        <Select value={formData.drinking_status} onValueChange={(value) => updateField("drinking_status", value)}>
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectValue placeholder="Select drinking status" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
+                                <SelectItem value="socially" className="focus:bg-white/10 focus:text-white">Socially</SelectItem>
+                                <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
+                                <SelectItem value="sober" className="focus:bg-white/10 focus:text-white">Sober / In recovery</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    {/* Structured drug use dropdown */}
+                    <div className="space-y-3 animate-fade-in">
+                        <Label className="text-white/80">Recreational drug use</Label>
+                        <Select value={formData.drug_use} onValueChange={(value) => updateField("drug_use", value)}>
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectValue placeholder="Select your usage" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
+                                <SelectItem value="never" className="focus:bg-white/10 focus:text-white">Never</SelectItem>
+                                <SelectItem value="occasionally" className="focus:bg-white/10 focus:text-white">Occasionally</SelectItem>
+                                <SelectItem value="regularly" className="focus:bg-white/10 focus:text-white">Regularly</SelectItem>
+                                <SelectItem value="prefer_not" className="focus:bg-white/10 focus:text-white">Prefer not to say</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
 
                 {/* Exercise */}
@@ -130,9 +124,10 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                             <SelectItem value="other" className="focus:bg-white/10 focus:text-white">Other</SelectItem>
                         </SelectContent>
                     </Select>
+                    <p className="text-xs text-white/40">Helps us plan curated dinners and suggest compatible lifestyle matches.</p>
                 </div>
 
-                {/* NEW: Screen Time - Modern conflict source */}
+                {/* Screen Time - Modern conflict source */}
                 <div className="space-y-4 pt-6 border-t border-white/10">
                     <div className="flex items-center gap-2 mb-2">
                         <span className="text-xs bg-dating-terracotta/20 text-[#D4AF37] px-2 py-1 rounded-full font-medium border border-[#D4AF37]/20">

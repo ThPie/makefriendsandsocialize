@@ -122,25 +122,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    // Set up auth state listener
-    // This handles both initial session load and subsequent changes
+    // Initialize auth by checking current session first.
+    // This fixes blank page / infinite spinner on hard refresh or direct URL access,
+    // because onAuthStateChange may fire after the initial getSession resolves.
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!mounted) return;
+
+        setSession(session);
+        setUser(session?.user ?? null);
+
+        if (session?.user) {
+          await fetchUserData(session.user.id);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    initializeAuth();
+
+    // Listen for subsequent auth changes (login, logout, token refresh, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return;
 
         if (import.meta.env.DEV) console.log('Auth event:', event);
-        setSession(session);
-        setUser(session?.user ?? null);
 
         // Detect password recovery mode
         if (event === 'PASSWORD_RECOVERY') {
           setIsRecoveryMode(true);
         }
 
+        // Skip INITIAL_SESSION — already handled by initializeAuth above
+        if (event === 'INITIAL_SESSION') return;
+
+        setSession(session);
+        setUser(session?.user ?? null);
+
         try {
           if (session?.user) {
-            // CRITICAL FIX: Wait for profile data to fetch BEFORE setting loading=false
-            // This prevents "flash of null profile" where user exists but profile is null
             await fetchUserData(session.user.id);
           } else {
             setProfile(null);
@@ -150,10 +176,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         } catch (error) {
           console.error('Error handling auth state change:', error);
-        } finally {
-          if (mounted) {
-            setIsLoading(false);
-          }
         }
       }
     );

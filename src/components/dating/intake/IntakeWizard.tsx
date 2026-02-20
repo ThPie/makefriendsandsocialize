@@ -66,8 +66,15 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
 
     const handleNext = useCallback(() => {
         nextStep();
-        // Scroll to top of form
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // After validation runs, scroll to first error or to top
+        setTimeout(() => {
+            const firstError = document.querySelector('[class*="border-red-500"]');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }, 100);
     }, [nextStep]);
 
     const handleBack = useCallback(() => {
@@ -122,6 +129,7 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                     totalSteps={totalSteps}
                     steps={progressSteps}
                     onStepClick={handleStepClick}
+                    completedSteps={form.completedSteps}
                 />
             </div>
 

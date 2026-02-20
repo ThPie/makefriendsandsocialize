@@ -2,13 +2,29 @@
  * Dating Intake Page - Refactored
  * Uses the IntakeWizard component for a clean, maintainable multi-step form
  */
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
-import { Heart, Loader2 } from "lucide-react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Heart, Loader2, RefreshCw } from "lucide-react";
 import { IntakeWizard } from "@/components/dating/intake";
+import { Button } from "@/components/ui/button";
 
 export const DatingIntakePage = () => {
   const { user, isLoading, profile } = useAuth();
+  const navigate = useNavigate();
+  const [loadingTimedOut, setLoadingTimedOut] = useState(false);
+
+  // 8-second timeout: if auth never resolves, redirect to login
+  useEffect(() => {
+    if (!isLoading) return;
+    const timer = setTimeout(() => setLoadingTimedOut(true), 8000);
+    return () => clearTimeout(timer);
+  }, [isLoading]);
+
+  // If timed out while loading, redirect to auth
+  if (loadingTimedOut && isLoading) {
+    return <Navigate to="/auth" replace />;
+  }
 
   // Show loading state
   if (isLoading) {
