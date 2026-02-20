@@ -33,6 +33,7 @@ export const familySchema = z.object({
     marriage_timeline: z.string().optional(),
     family_relationship: z.string().optional(),
     family_involvement_expectation: z.string().optional(),
+    open_to_partner_children: z.string().optional(),
 });
 
 // Step 3: Habits

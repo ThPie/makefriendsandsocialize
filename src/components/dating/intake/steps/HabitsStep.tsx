@@ -45,7 +45,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                     <div className="space-y-3">
                         <Label className="text-white/80">Do you smoke?</Label>
                         <Select value={formData.smoking_status} onValueChange={(value) => updateField("smoking_status", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('smoking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50'}`}>
                                 <SelectValue placeholder="Select smoking status" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -55,13 +55,14 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                                 <SelectItem value="trying_to_quit" className="focus:bg-white/10 focus:text-white">Trying to quit</SelectItem>
                             </SelectContent>
                         </Select>
+                        {hasError('smoking_status') && <p className="text-xs text-red-400">{errorMsg('smoking_status')}</p>}
                     </div>
 
                     {/* Drinking */}
                     <div className="space-y-3">
                         <Label className="text-white/80">Do you drink alcohol?</Label>
                         <Select value={formData.drinking_status} onValueChange={(value) => updateField("drinking_status", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('drinking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50'}`}>
                                 <SelectValue placeholder="Select drinking status" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -71,6 +72,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                                 <SelectItem value="sober" className="focus:bg-white/10 focus:text-white">Sober / In recovery</SelectItem>
                             </SelectContent>
                         </Select>
+                        {hasError('drinking_status') && <p className="text-xs text-red-400">{errorMsg('drinking_status')}</p>}
                     </div>
 
                     {/* Structured drug use dropdown */}

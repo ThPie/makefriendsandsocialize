@@ -89,7 +89,6 @@ export const SlowDatingRoutes = () => (
         <Route path="/portal/match/:matchId" element={<PortalLayout><PortalMatchDetail /></PortalLayout>} />
         <Route path="/portal/profile" element={<PortalLayout><PortalProfile /></PortalLayout>} />
         <Route path="/portal/billing" element={<PortalLayout><PortalBilling /></PortalLayout>} />
-        <Route path="/dating/apply" element={<Layout><DatingIntakePage /></Layout>} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route path="/auth/waiting" element={<AuthWaitingPage />} />

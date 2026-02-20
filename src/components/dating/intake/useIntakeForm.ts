@@ -39,6 +39,7 @@ const initialFormData: CompleteIntakeData = {
     marriage_history: '',
     family_relationship: '',
     family_involvement_expectation: '',
+    open_to_partner_children: '',
     smoking_status: '',
     drinking_status: '',
     drug_use: '',
