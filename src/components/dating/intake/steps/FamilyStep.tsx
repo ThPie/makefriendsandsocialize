@@ -164,8 +164,8 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                 <div className="space-y-3 animate-fade-in">
                     <Label className="text-white/80">Are you open to dating someone who already has children?</Label>
                     <Select
-                        value={(formData as any).open_to_partner_children || ''}
-                        onValueChange={(value) => updateField("open_to_partner_children" as any, value)}
+                        value={formData.open_to_partner_children || ''}
+                        onValueChange={(value) => updateField("open_to_partner_children", value)}
                     >
                         <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
                             <SelectValue placeholder="Select your preference" />
