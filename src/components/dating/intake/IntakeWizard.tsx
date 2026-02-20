@@ -5,7 +5,7 @@
 import { useEffect, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Heart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Heart, CheckCircle, Loader2 } from 'lucide-react';
 import { IntakeProgress } from './IntakeProgress';
 import { useIntakeForm } from './useIntakeForm';
 import { INTAKE_STEPS } from './intakeSchemas';
@@ -34,6 +34,7 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
         step,
         formData,
         isSubmitting,
+        isSaving,
         totalSteps,
         nextStep,
         prevStep,
@@ -151,7 +152,19 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                     Back
                 </Button>
 
-                <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
+                    {/* Auto-save indicator */}
+                    {isSaving ? (
+                        <span className="hidden md:flex items-center gap-1.5 text-xs text-white/30">
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                            Saving…
+                        </span>
+                    ) : (
+                        <span className="hidden md:flex items-center gap-1.5 text-xs text-white/20">
+                            <CheckCircle className="h-3 w-3" />
+                            Auto-saved
+                        </span>
+                    )}
                     <span className="text-xs text-white/30 font-medium uppercase tracking-widest hidden md:block">
                         Step {step} of {totalSteps}
                     </span>

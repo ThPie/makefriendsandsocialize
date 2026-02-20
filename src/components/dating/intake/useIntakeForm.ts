@@ -1,8 +1,10 @@
 /**
  * Intake Form Custom Hook
- * Manages form state, validation, draft persistence, and submission
+ * Manages form state, validation, draft persistence, and submission.
+ * Auto-saves to the database (dating_intake_drafts) on step change and field edits,
+ * with debouncing to avoid excessive writes. Falls back to localStorage.
  */
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,6 +16,7 @@ import {
 } from './intakeSchemas';
 
 const DRAFT_STORAGE_KEY = 'dating_application_draft';
+const DB_SAVE_DEBOUNCE_MS = 1500; // debounce DB writes by 1.5 s
 
 const initialFormData: CompleteIntakeData = {
     display_name: '',
@@ -96,10 +99,14 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
     const [formData, setFormData] = useState<CompleteIntakeData>(initialFormData);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [hasDraft, setHasDraft] = useState(false);
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+    const dbSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    // Track whether the initial DB draft has been loaded to avoid overwriting it
+    const dbDraftLoaded = useRef(false);
 
     const { user, profile } = useAuth();
     const navigate = useNavigate();
@@ -108,21 +115,71 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
     const totalSteps = INTAKE_STEPS.length;
     const progress = (step / totalSteps) * 100;
 
-    // Load draft from localStorage on mount
+    // ── Draft loading: DB first, fall back to localStorage ──────────────────
     useEffect(() => {
-        const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
-        if (savedDraft) {
-            try {
-                const { step: savedStep, formData: savedFormData } = JSON.parse(savedDraft);
-                setStep(savedStep || 1);
-                setFormData(prev => ({ ...prev, ...savedFormData }));
-                setHasDraft(true);
-            } catch (e) {
-                console.error('Failed to parse draft:', e);
-                localStorage.removeItem(DRAFT_STORAGE_KEY);
+        if (!user) {
+            // Not authenticated yet — try localStorage fallback
+            const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
+            if (savedDraft) {
+                try {
+                    const { step: savedStep, formData: savedFormData } = JSON.parse(savedDraft);
+                    setStep(savedStep || 1);
+                    setFormData(prev => ({ ...prev, ...savedFormData }));
+                    setHasDraft(true);
+                } catch (e) {
+                    console.error('Failed to parse local draft:', e);
+                    localStorage.removeItem(DRAFT_STORAGE_KEY);
+                }
             }
+            return;
         }
-    }, []);
+
+        // Authenticated: load from DB
+        const loadDbDraft = async () => {
+            const { data, error } = await supabase
+                .from('dating_intake_drafts' as any)
+                .select('*')
+                .eq('user_id', user.id)
+                .maybeSingle();
+
+            if (error) {
+                console.error('Failed to load DB draft:', error);
+                return;
+            }
+
+            if (data) {
+                const draft = (data as unknown) as { current_step: number; completed_steps: number[]; form_data: Record<string, unknown> };
+                setStep(draft.current_step || 1);
+                setFormData(prev => ({ ...prev, ...(draft.form_data || {}) }));
+                setCompletedSteps(new Set(draft.completed_steps || []));
+                setHasDraft(true);
+                dbDraftLoaded.current = true;
+                // Mirror to localStorage for offline fallback
+                localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({
+                    step: draft.current_step,
+                    formData: draft.form_data,
+                }));
+            } else {
+                // No DB draft — try localStorage (e.g. filled before login)
+                const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
+                if (savedDraft) {
+                    try {
+                        const { step: savedStep, formData: savedFormData } = JSON.parse(savedDraft);
+                        setStep(savedStep || 1);
+                        setFormData(prev => ({ ...prev, ...savedFormData }));
+                        setHasDraft(true);
+                    } catch (e) {
+                        console.error('Failed to parse local draft:', e);
+                        localStorage.removeItem(DRAFT_STORAGE_KEY);
+                    }
+                }
+                dbDraftLoaded.current = true;
+            }
+        };
+
+        loadDbDraft();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user?.id]);
 
     // Pre-fill data from profile
     useEffect(() => {
@@ -200,17 +257,54 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
         });
     }, [profile]);
 
-    // Save draft to localStorage on changes
-    const saveDraft = useCallback(() => {
-        const draft = { step, formData };
-        localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
-    }, [step, formData]);
+    // ── Save draft to localStorage (always) + DB (debounced) ───────────────
+    const saveDraftToDb = useCallback(async (
+        currentStep: number,
+        data: CompleteIntakeData,
+        doneSteps: Set<number>,
+    ) => {
+        if (!user) return;
+        setIsSaving(true);
+        try {
+            await (supabase.from('dating_intake_drafts' as any) as any).upsert(
+                {
+                    user_id: user.id,
+                    current_step: currentStep,
+                    completed_steps: Array.from(doneSteps),
+                    form_data: data as unknown as Record<string, unknown>,
+                    last_saved_at: new Date().toISOString(),
+                },
+                { onConflict: 'user_id' }
+            );
+        } catch (err) {
+            console.error('DB draft save failed:', err);
+        } finally {
+            setIsSaving(false);
+        }
+    }, [user]);
+
+    const saveDraft = useCallback((
+        currentStep: number,
+        data: CompleteIntakeData,
+        doneSteps: Set<number>,
+    ) => {
+        // Always persist to localStorage immediately
+        localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ step: currentStep, formData: data }));
+
+        // Debounce DB writes
+        if (dbSaveTimer.current) clearTimeout(dbSaveTimer.current);
+        dbSaveTimer.current = setTimeout(() => {
+            saveDraftToDb(currentStep, data, doneSteps);
+        }, DB_SAVE_DEBOUNCE_MS);
+    }, [saveDraftToDb]);
 
     useEffect(() => {
+        // Skip until the initial DB/localStorage load is done to avoid overwriting it
+        if (!dbDraftLoaded.current && user) return;
         if (formData.display_name || step > 1) {
-            saveDraft();
+            saveDraft(step, formData, completedSteps);
         }
-    }, [formData, step, saveDraft]);
+    }, [formData, step, completedSteps, saveDraft, user]);
 
     // Update a single field
     const updateField = useCallback(<K extends keyof CompleteIntakeData>(
@@ -252,14 +346,20 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
         });
     }, []);
 
-    // Clear draft and reset form
-    const clearDraft = useCallback(() => {
+    // Clear draft and reset form (both localStorage and DB)
+    const clearDraft = useCallback(async () => {
         localStorage.removeItem(DRAFT_STORAGE_KEY);
+        if (user) {
+            await (supabase.from('dating_intake_drafts' as any) as any)
+                .delete()
+                .eq('user_id', user.id);
+        }
         setFormData(initialFormData);
         setStep(1);
+        setCompletedSteps(new Set());
         setHasDraft(false);
         toast({ title: 'Draft cleared', description: 'Your application draft has been deleted.' });
-    }, [toast]);
+    }, [toast, user]);
 
     // Validate current step and navigate
     const goToStep = useCallback((targetStep: number) => {
@@ -455,8 +555,13 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
 
             if (error) throw error;
 
-            // Clear the draft after successful submission
+            // Clear the draft after successful submission (both localStorage and DB)
             localStorage.removeItem(DRAFT_STORAGE_KEY);
+            if (user) {
+                await (supabase.from('dating_intake_drafts' as any) as any)
+                    .delete()
+                    .eq('user_id', user.id);
+            }
 
             // Trigger background processes
             if (insertedProfile) {
@@ -503,6 +608,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
         formData,
         isSubmitting,
         isUploading,
+        isSaving,
         hasDraft,
         validationErrors,
         fieldErrors,
