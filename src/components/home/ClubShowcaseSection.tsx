@@ -46,7 +46,7 @@ const clubs = [
     {
         id: 'slow-dating',
         category: 'Dating',
-        title: 'Slow Dating',
+        title: 'Intentional Connections',
         description: 'Curated matches based on deep compatibility.',
         image: slowDatingImg,
         link: '/slow-dating',
