@@ -8,6 +8,7 @@ import gentlemenImg from '@/assets/gentlemen-hero-new.webp';
 import womenSocietyImg from '@/assets/women-society-hero.jpg';
 import foundersImg from '@/assets/founders-hero-new.jpg';
 import slowDatingImg from '@/assets/slow-dating-new.jpg';
+import businessImg from '@/assets/business-hero.jpg';
 
 const clubs = [
     {
@@ -49,7 +50,15 @@ const clubs = [
         description: 'Curated matches based on deep compatibility.',
         image: slowDatingImg,
         link: '/slow-dating',
-    }
+    },
+    {
+        id: 'business-circle',
+        category: 'Business',
+        title: 'Business Circle',
+        description: 'Strategic connections for entrepreneurs and executives.',
+        image: businessImg,
+        link: '/circles',
+    },
 ];
 
 export const ClubShowcaseSection = () => {
@@ -92,17 +101,11 @@ export const ClubShowcaseSection = () => {
                     id="collections-scroll"
                     className="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x snap-mandatory px-6 max-w-7xl mx-auto lg:grid lg:grid-cols-3 lg:overflow-visible lg:pb-0"
                 >
-                    {clubs.map((club, index) => {
-                        // On desktop with 5 items in a 3-col grid:
-                        // Row 1: items 0,1,2 | Row 2: items 3,4 — center the last two
-                        const isLastRow = index >= 3;
-                        const isLastItem = index === 4;
-
-                        return (
+                {clubs.map((club) => (
                             <Link
                                 key={club.id}
                                 to={club.link}
-                                className={`snap-start min-w-[280px] lg:min-w-0 h-[360px] lg:h-[480px] relative rounded-lg overflow-hidden group cursor-pointer border border-white/5 shrink-0 lg:shrink ${isLastItem ? 'lg:col-start-2' : ''}`}
+                                className="snap-start min-w-[280px] lg:min-w-0 h-[360px] lg:h-[480px] relative rounded-lg overflow-hidden group cursor-pointer border border-white/5 shrink-0 lg:shrink"
                             >
                                 {/* Background Image */}
                                 <img
@@ -129,8 +132,7 @@ export const ClubShowcaseSection = () => {
                                     </p>
                                 </div>
                             </Link>
-                        );
-                    })}
+                        ))}
                 </div>
 
             </div>
