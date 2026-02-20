@@ -1,8 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { useTheme } from 'next-themes';
-import logoLight from '@/assets/logo-transparent.png';
-import logoDark from '@/assets/logo-dark.png';
+import { BrandLogo } from '@/components/common/BrandLogo';
 import { AppStoreBadges } from '@/components/dating/AppStoreBadges';
 import {
   Accordion,
@@ -52,24 +49,13 @@ const footerLinks = {
 };
 
 export const Footer = () => {
-  const [mounted, setMounted] = useState(false);
-  const { resolvedTheme } = useTheme();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const currentLogo = mounted && resolvedTheme === 'light' ? logoDark : logoLight;
-
   return (
     <footer className="w-full bg-background border-t border-border text-foreground py-16 px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
 
-        {/* Main Header */}
-        <div className="text-center mb-16 md:mb-24 space-y-6">
-          <h2 className="font-display font-bold text-3xl md:text-5xl tracking-widest uppercase">
-            MAKE FRIENDS & SOCIALIZE
-          </h2>
+        {/* Logo */}
+        <div className="mb-12 md:mb-16">
+          <BrandLogo width={160} height={48} />
         </div>
 
         {/* Desktop Layout (Grid) */}

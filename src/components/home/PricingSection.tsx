@@ -41,7 +41,7 @@ export const PricingSection = () => {
     {
       id: 'patron',
       data: TIER_BENEFITS.patron,
-      cta: 'Join Waitlist',
+      cta: 'Start Free Trial',
       href: '/membership',
       variant: 'secondary' as const,
       popular: false,

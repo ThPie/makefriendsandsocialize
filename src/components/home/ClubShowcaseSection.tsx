@@ -87,43 +87,50 @@ export const ClubShowcaseSection = () => {
                     </div>
                 </div>
 
-                {/* Mobile: Horizontal Scroll | Desktop: 5-col film-strip grid */}
+                {/* Mobile: Horizontal Scroll | Desktop: 3-col grid (3+2 centered) */}
                 <div
                     id="collections-scroll"
-                    className="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x snap-mandatory px-6 max-w-7xl mx-auto lg:grid lg:grid-cols-5 lg:overflow-visible lg:pb-0"
+                    className="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x snap-mandatory px-6 max-w-7xl mx-auto lg:grid lg:grid-cols-3 lg:overflow-visible lg:pb-0"
                 >
-                    {clubs.map((club) => (
-                        <Link
-                            key={club.id}
-                            to={club.link}
-                            className="snap-start min-w-[280px] lg:min-w-0 h-[360px] relative rounded-lg overflow-hidden group cursor-pointer border border-white/5 shrink-0 lg:shrink"
-                        >
-                            {/* Background Image */}
-                            <img
-                                src={club.image}
-                                alt={club.title}
-                                loading="lazy"
-                                decoding="async"
-                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            />
+                    {clubs.map((club, index) => {
+                        // On desktop with 5 items in a 3-col grid:
+                        // Row 1: items 0,1,2 | Row 2: items 3,4 — center the last two
+                        const isLastRow = index >= 3;
+                        const isLastItem = index === 4;
 
-                            {/* Gradient Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90" />
+                        return (
+                            <Link
+                                key={club.id}
+                                to={club.link}
+                                className={`snap-start min-w-[280px] lg:min-w-0 h-[360px] lg:h-[480px] relative rounded-lg overflow-hidden group cursor-pointer border border-white/5 shrink-0 lg:shrink ${isLastItem ? 'lg:col-start-2' : ''}`}
+                            >
+                                {/* Background Image */}
+                                <img
+                                    src={club.image}
+                                    alt={club.title}
+                                    loading="lazy"
+                                    decoding="async"
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
 
-                            {/* Content */}
-                            <div className="absolute bottom-0 left-0 p-6 w-full">
-                                <p className="text-[#d4af37] text-xs tracking-widest uppercase font-bold mb-2 font-sans">
-                                    {club.category}
-                                </p>
-                                <h4 className="text-2xl text-white font-medium italic mb-2 font-display">
-                                    {club.title}
-                                </h4>
-                                <p className="text-white/70 text-sm font-sans line-clamp-2">
-                                    {club.description}
-                                </p>
-                            </div>
-                        </Link>
-                    ))}
+                                {/* Gradient Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90" />
+
+                                {/* Content */}
+                                <div className="absolute bottom-0 left-0 p-6 w-full">
+                                    <p className="text-[#d4af37] text-xs tracking-widest uppercase font-bold mb-2 font-sans">
+                                        {club.category}
+                                    </p>
+                                    <h4 className="text-2xl text-white font-medium italic mb-2 font-display">
+                                        {club.title}
+                                    </h4>
+                                    <p className="text-white/70 text-sm font-sans line-clamp-2">
+                                        {club.description}
+                                    </p>
+                                </div>
+                            </Link>
+                        );
+                    })}
                 </div>
 
             </div>
