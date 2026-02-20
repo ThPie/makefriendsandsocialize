@@ -24,7 +24,7 @@ const footerLinks = {
     links: [
       { label: "Events", href: "/events" },
       { label: "Founders Circle", href: "/founders-circle" },
-      { label: "Slow Dating", href: "/slow-dating" },
+      { label: "Intentional Connections", href: "/slow-dating" },
       { label: "Business Directory", href: "/business" },
     ]
   },
