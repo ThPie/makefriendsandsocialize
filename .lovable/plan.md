@@ -1,119 +1,128 @@
 
-## Three Improvements: Avatar Photos, Desktop Layout Density, and Membership Plan Status
+## UI Refinements: Ethos Cards, Curated Collections, Patron Plan, Availability Section & Footer
 
-### Overview
+### Summary of Changes
 
-This plan addresses three distinct issues across the app:
-1. **Avatar** — The header shows a letter fallback instead of the user's profile photo when they are logged in
-2. **Desktop layout** — Several homepage sections have content constrained too narrowly, leaving large empty margins that look sparse on wide screens
-3. **Membership plan status** — The pricing cards on `/membership` don't reflect the user's actual current tier (no "Current Plan" badge, no grayed-out state, no Upgrade/Downgrade labeling)
+Six targeted fixes across five files:
 
----
-
-### Issue 1 — Avatar Shows Letter Instead of Photo
-
-**Current behavior:** The `Header.tsx` already calls `getAvatarUrl()` which reads `profile.avatar_urls[0]`. The `<AvatarImage>` is wired up correctly. However, the screenshot shows only the letter fallback.
-
-**Root cause:** The `profile` from `AuthContext` is populated from the `profiles` table, but the `avatar_urls` column stores an array of storage paths (e.g. `["profiles/uuid/photo.jpg"]`), not full public URLs. The `getAvatarUrl()` function returns the raw path string, which the browser cannot load as an image, so `<AvatarImage>` silently fails and the fallback letter renders.
-
-**Fix:** Modify `getAvatarUrl()` in `Header.tsx` to construct a full Supabase Storage public URL from the raw path:
-
-```typescript
-const getAvatarUrl = () => {
-  const raw = profile?.avatar_urls?.[0];
-  if (!raw) return undefined;
-  // If already a full URL (http/https), use as-is
-  if (raw.startsWith('http')) return raw;
-  // Otherwise construct the public storage URL
-  const { data } = supabase.storage.from('profile-photos').getPublicUrl(raw);
-  return data.publicUrl;
-};
-```
-
-**Also increase avatar size** from `h-9 w-9 md:h-10 md:w-10` to `h-11 w-11 md:h-12 md:w-12` for the header avatar link, and keep the border visible with slightly stronger contrast: `border-2 border-primary/50 hover:border-primary`.
-
-The menu panel avatar (h-12 w-12) is already a good size — no change needed there.
+1. **EthosSection** — Center-align all card content; replace "Global Access" with a new value prop
+2. **ClubShowcaseSection** — Switch from 5-column to 3+3 grid (2 rows of 3), making cards larger
+3. **PricingSection (homepage)** — Remove "Join Waitlist" from Patron; use "Start Free Trial" with the correct action
+4. **AvailabilitySection** — Remove the entire section from the homepage
+5. **Footer** — Remove the large "MAKE FRIENDS & SOCIALIZE" heading text
+6. **Alignment** — Ensure both Ethos and Curated Collections share the same horizontal container padding so their left edges align
 
 ---
 
-### Issue 2 — Desktop Layout Density (Homepage Sections)
+### Change 1 — EthosSection (`src/components/home/EthosSection.tsx`)
 
-The screenshots reveal three specific problems:
-
-**A. EthosSection** — Constrained to `max-w-4xl` in a wide viewport, leaving large gutters. The 2×2 grid cards are small and sparse.
-
-**Fix:**
-- Expand container from `max-w-4xl` → `max-w-6xl`
-- On desktop (md+), switch from `grid-cols-2` to `grid-cols-4` so all four ethos pillars sit in one row — wide, impactful, professional
-- Increase card padding: `p-5 md:p-8`
-- Increase icon container: `w-12 h-12` with `w-6 h-6` icon
-- Increase heading size: `text-xl md:text-2xl`
-- Expand description: `text-sm md:text-base`
-
-**B. EventSection** — The section heading and event cards are constrained to the left side of the screen, matching the screenshot showing massive empty space to the right.
+**Current issues:**
+- Cards use `items-start` (left-aligned content), but the screenshot shows the user expects centered layout
+- "Global Access" does not match the club's current local/NYC focus
 
 **Fix:**
-- The section is already `max-w-7xl` which is correct — the issue is the heading uses `max-w-2xl` which clips it on wide screens; change to `max-w-none` for the heading row
-- Increase skeleton and card container gaps on desktop: `gap-6 lg:gap-8`
-- Ensure event cards render 3 columns on large screens (already done with `lg:grid-cols-3`)
+- Change `flex-col items-start` → `flex flex-col items-center text-center` on each card
+- Replace the `Globe` icon import with `Users` (or `Handshake`) since it's about the community
+- Change the "Global Access" item to **"Trusted Community"** with description *"A vetted network of like-minded individuals."*
+- Keep the 4-column desktop grid but add `text-center` to the heading and description
 
-**C. ClubShowcaseSection (Curated Collections)** — Currently a constrained horizontal scroll container (`max-w-4xl`) that looks tiny on a 1920px monitor.
-
-**Fix:**
-- Remove the `max-w-4xl` constraint; let it fill `max-w-7xl`
-- On desktop (lg+), switch from horizontal scroll to a `grid grid-cols-5` layout so all five clubs show at once in a cinematic film-strip style (each card `min-w-0` not `min-w-[280px]`)
-- On mobile, keep the horizontal scroll behavior unchanged
-
-**D. PricingSection (homepage)** — Pricing cards capped at `max-w-6xl` which is fine, but the section header text is limited to `max-w-2xl`, feeling narrow on wide screens.
-
-**Fix:** Change pricing header `max-w-2xl` → `max-w-3xl` for the description paragraph.
-
-**E. SlowDatingSection** — Section is already full `max-w-7xl` — looks OK. No change needed.
-
-**F. TestimonialsSection** — Already `max-w-7xl` and 3-column grid — fine. No change needed.
-
----
-
-### Issue 3 — Membership Plan Current Tier Status (MembershipPage)
-
-**Current behavior:** `isCurrentTier()` already correctly maps DB tier to UI tier name. However:
-- No visual indicator is shown when `isCurrent === true`
-- The CTA buttons always show fixed text ("Get Started", "Start Free Trial", "Join Waitlist") regardless of the user's current plan
-- The current plan card is not visually differentiated
-
-**Fix in `MembershipPage.tsx`:**
-
-**3a. Current plan badge:** When `isCurrent === true`, add a green "Your Current Plan" badge at the top of the card (similar to the "Most Popular" badge):
-
+**Before (card inner layout):**
 ```tsx
-{isCurrent && (
-  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-    <Badge className="bg-primary text-primary-foreground px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
-      Your Current Plan
-    </Badge>
-  </div>
-)}
+<div className="... flex flex-col items-start gap-3">
+  <div className="p-2 rounded-full ..."> <item.icon /> </div>
+  <h4 ...>{item.title}</h4>
+  <p ...>{item.description}</p>
+</div>
 ```
 
-**3b. Grayed-out styling for current plan:** When `isCurrent`, reduce card opacity and add a subtle ring:
+**After:**
 ```tsx
-isCurrent ? 'ring-2 ring-primary/40 opacity-75' : ''
+<div className="... flex flex-col items-center text-center gap-3">
+  <div className="p-3 rounded-full ..."> <item.icon /> </div>
+  <h4 ...>{item.title}</h4>
+  <p ...>{item.description}</p>
+</div>
 ```
 
-**3c. Smart CTA button labels:** Replace the hardcoded button logic with a tier-rank comparison:
+---
 
+### Change 2 — ClubShowcaseSection (`src/components/home/ClubShowcaseSection.tsx`)
+
+**Current issues:**
+- Desktop shows 5 narrow columns (5-col `grid-cols-5`) which makes each card small
+- Cards are `h-[360px]` which is short and cramped at 5 columns
+- The user wants 3 on top + 3 on bottom (2 rows of 3), making each card much wider and taller
+
+**Fix:**
+- On desktop (`lg+`), change from `grid-cols-5` → `grid-cols-3`
+- Increase card height: `h-[360px]` → `h-[420px] lg:h-[480px]`
+- The 5th club (Slow Dating → "Intentional Connections") becomes the 6th slot, but we only have 5 clubs. The 5th card will span naturally — to fill the 2×3 grid evenly with 5 items, make the last card `lg:col-span-3` (span full row) or add a 6th club entry. 
+
+**Best approach:** Add a 6th placeholder/circle entry ("The Singles" or "Coming Soon") to complete the 3+3 grid, OR make the 5th card span the remaining space. The cleanest solution without adding fake content: keep 5 clubs and use `grid-cols-3` where the 5th card auto-flows to position 5, leaving position 6 empty. This looks slightly off.
+
+**Better approach:** Change from `grid-cols-5` on desktop to `grid-cols-3` and make the **last item span a full row** (`lg:col-span-3` with a different aspect-ratio landscape card), or simply show the 5 items as a `grid-cols-3` where the last row has 2 items centered.
+
+**Implementation:** Use CSS grid with `grid-cols-3` and for the last item (5th), add `lg:col-start-2` to center it in the last row. This creates a diamond/pyramid finish: row 1 = 3 cards, row 2 = 2 cards centered.
+
+Actually the cleanest visual with 5 items in a "3+2" is:
+- `grid-cols-3` on lg
+- Last 2 items: wrap naturally into 2nd row positions 1 and 2, with the row itself centered via `justify-center` but that conflicts with grid
+
+**Simplest clean option:** Use `grid-cols-3` for the grid, the 5th card gets `lg:col-start-2` so the second row is `_ [4] [5] _` centering them. This is a clean layout.
+
+- Card height → `h-[420px]` on desktop for better visual impact
+
+---
+
+### Change 3 — PricingSection homepage (`src/components/home/PricingSection.tsx`)
+
+**Current issue:** Patron tier has `cta: 'Join Waitlist'` and `href: '/membership'` — the user wants this replaced with "Start Free Trial" just like Insider.
+
+**Fix:** In the `tiers` array, change the patron entry:
+```tsx
+// Before:
+{ id: 'patron', cta: 'Join Waitlist', href: '/membership', variant: 'secondary' }
+// After:
+{ id: 'patron', cta: 'Start Free Trial', href: '/membership', variant: 'secondary', trial: '30-day free trial' }
 ```
-Tier order: socialite (0) < insider (1) < patron (2)
+
+Note: The homepage `PricingSection` doesn't wire up Stripe checkout (it just links to `/membership`), so this is a label change only. The actual checkout is handled in `MembershipPage.tsx` which already calls `handleStartTrial`.
+
+---
+
+### Change 4 — Remove AvailabilitySection (`src/pages/HomePage.tsx`)
+
+**Fix:** Simply remove the `<Suspense>` block that renders `<AvailabilitySection />` from `HomePage.tsx`. Also remove the lazy import at the top.
+
+The `AvailabilitySection.tsx` file itself can remain (no-delete needed) — it's just not rendered.
+
+---
+
+### Change 5 — Footer heading (`src/components/layout/Footer.tsx`)
+
+**Current:** The footer has a large centered `<h2>` that reads "MAKE FRIENDS & SOCIALIZE" in bold uppercase as a decorative header.
+
+**Fix:** Remove the entire "Main Header" div block:
+```tsx
+{/* Remove this: */}
+<div className="text-center mb-16 md:mb-24 space-y-6">
+  <h2 className="font-display font-bold text-3xl md:text-5xl tracking-widest uppercase">
+    MAKE FRIENDS & SOCIALIZE
+  </h2>
+</div>
 ```
 
-- If `isCurrent` → button shows "Your Plan" (disabled, muted style)
-- If target tier rank > current tier rank → "Upgrade to [Tier]"
-- If target tier rank < current tier rank → "Downgrade to [Tier]"
-- If not logged in → existing labels ("Get Started", "Start Free Trial")
+Replace it with the **logo image** instead (using `<BrandLogo>` or the existing `currentLogo` img tag) to keep the footer branded but not text-heavy. This matches standard footer design patterns.
 
-**3d. Disabled state for current plan:** The "Your Plan" button should be visually disabled and not clickable.
+---
 
-**Also apply the same treatment to the homepage `PricingSection.tsx`** — it also has `isCurrentTier()` but never uses it to change the UI. The fix is identical: add a "Current Plan" badge and disable the CTA button.
+### Change 6 — Alignment Between Sections
+
+**Issue:** The "Our Ethos" section header starts at `px-6` inside `max-w-6xl`, while "Curated Collections" header is `px-6 max-w-7xl`. The cards themselves also have different max-widths, so their left edges don't align visually.
+
+**Fix:** Standardize both sections to use the same container: `max-w-7xl mx-auto px-6`. This means:
+- `EthosSection`: change inner container from `max-w-6xl` → `max-w-7xl`
+- `ClubShowcaseSection`: already uses `max-w-7xl` for the header — just ensure the grid container also uses `max-w-7xl px-6 mx-auto`
 
 ---
 
@@ -121,16 +130,10 @@ Tier order: socialite (0) < insider (1) < patron (2)
 
 | File | Change |
 |---|---|
-| `src/components/layout/Header.tsx` | Fix `getAvatarUrl()` to generate full public URL; increase avatar size |
-| `src/components/home/EthosSection.tsx` | Expand to `max-w-6xl`, 4-col on desktop, larger cards |
-| `src/components/home/EventSection.tsx` | Remove heading `max-w-2xl` constraint |
-| `src/components/home/ClubShowcaseSection.tsx` | Grid layout on desktop, remove `max-w-4xl` cap |
-| `src/components/home/PricingSection.tsx` | Add current-plan badge, smart CTA labels |
-| `src/pages/MembershipPage.tsx` | Add "Your Current Plan" badge, disabled state, Upgrade/Downgrade labels |
+| `src/components/home/EthosSection.tsx` | Center-align cards, replace Globe/Global Access with Users/Trusted Community, expand container to `max-w-7xl` |
+| `src/components/home/ClubShowcaseSection.tsx` | Switch desktop grid to `grid-cols-3`, increase card height, ensure `max-w-7xl` alignment |
+| `src/components/home/PricingSection.tsx` | Change Patron CTA from "Join Waitlist" to "Start Free Trial" |
+| `src/pages/HomePage.tsx` | Remove `AvailabilitySection` import and render block |
+| `src/components/layout/Footer.tsx` | Remove the large "MAKE FRIENDS & SOCIALIZE" h2 heading, replace with logo image |
 
-### Technical Notes
-
-- The `useSubscription` hook already returns `subscription.tier` as the DB tier (`patron` | `fellow` | `founder`). The `isCurrentTier()` function in `MembershipPage.tsx` already maps this correctly. We just need to use the result to control the UI.
-- `supabase.storage.from('profile-photos').getPublicUrl(path)` is synchronous and returns `{ data: { publicUrl } }` — no async needed.
-- The storage bucket name needs to match what is actually used for profile photo uploads. Based on the `PortalProfile.tsx` code which references `avatar_urls`, the bucket is likely `profile-photos` or similar — this will be verified at implementation time.
-- All homepage layout fixes are pure CSS/Tailwind changes — no data or logic changes.
+### No database or backend changes required — all purely frontend/UI changes.
