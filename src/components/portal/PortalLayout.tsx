@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { useSubscription } from '@/hooks/useSubscription';
 
+// Import sidebar components directly — they're small and needed immediately for layout
 import {
   Sidebar,
   SidebarContent,
@@ -28,6 +29,7 @@ import {
   Loader2,
   Crown,
   Shield,
+  Home,
   Gift,
   Mail
 } from 'lucide-react';
@@ -65,6 +67,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   const { user, profile, membership, applicationStatus, isLoading, isAdmin, signOut } = useAuth();
   const { subscription, isLoading: subscriptionLoading } = useSubscription();
 
+  // Memoize menu items to prevent re-creation on every render
   const memoizedMenuItems = useMemo(() => menuItems, []);
 
   const isApproved = canAccessProtectedFeatures({
@@ -75,10 +78,16 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   const restrictedRoutes = getRestrictedRoutesForPending();
 
   useEffect(() => {
+    // ProtectedRoute already guarantees user is authenticated.
+    // These are business-logic redirects only.
+
+    // Check if onboarding is complete first
     if (!isLoading && profile && !profile.onboarding_completed) {
       navigate('/portal/onboarding');
       return;
     }
+
+    // If pending and trying to access restricted routes, redirect
     if (!isLoading && user && isPending && restrictedRoutes.includes(location.pathname)) {
       navigate('/portal');
     }
@@ -92,7 +101,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--gold))]" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -105,179 +114,201 @@ export function PortalLayout({ children }: PortalLayoutProps) {
     ? `${profile.first_name[0]}${profile.last_name[0]}`
     : user.email?.[0]?.toUpperCase() || 'M';
 
+  const tierBadge = membership?.tier ? (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${membership.tier === 'founder'
+      ? 'bg-primary/20 text-primary'
+      : membership.tier === 'fellow'
+        ? 'bg-accent/20 text-accent-foreground'
+        : 'bg-muted text-muted-foreground'
+      }`}>
+      {membership.tier === 'founder' && <Crown className="h-3 w-3" />}
+      {getTierDisplayName(membership.tier)}
+    </span>
+  ) : null;
+
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--gold))]" /></div>}>
-      <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-background">
-          <SkipLink />
-          <Sidebar className="border-r border-border bg-surface" aria-label="Portal Sidebar">
-            {/* Logo */}
-            <SidebarHeader className="p-6 border-b border-border">
-              <Link to="/" className="block">
-                <BrandLogo className="h-8 w-auto" width={96} height={32} />
-              </Link>
-            </SidebarHeader>
+    <>
 
-            <SidebarContent className="px-3 py-4 flex-1">
-              <SidebarGroup>
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {memoizedMenuItems.map((item) => {
-                      const isActive = location.pathname === item.url;
-                      const isPatronRestricted = (item.url === '/portal/network' || item.url === '/portal/connections')
-                        && membership?.tier === 'patron';
-                      const isPendingRestricted = item.requiresApproval && isPending;
-                      const isRestricted = isPatronRestricted || isPendingRestricted;
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
+        <SidebarProvider>
+          <div className="min-h-screen flex w-full bg-background">
+            <SkipLink />
+            <Sidebar className="border-r border-border" aria-label="Portal Sidebar">
+              <SidebarHeader className="p-4 border-b border-border">
+                <Link to="/" className="block mb-3">
+                  <BrandLogo className="h-10 w-auto" width={120} height={40} />
+                </Link>
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+                >
+                  <Home className="h-4 w-4" />
+                  <span>Back to Website</span>
+                </Link>
+              </SidebarHeader>
 
-                      return (
-                        <SidebarMenuItem key={item.title}>
-                          <SidebarMenuButton asChild>
-                            <Link
-                              to={isRestricted ? '#' : item.url}
-                              onClick={(e) => isRestricted && e.preventDefault()}
-                              className={`relative flex items-center gap-3 px-3 py-2.5 rounded-[8px] transition-colors duration-200 text-sm ${
-                                isActive
-                                  ? 'text-foreground'
-                                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
-                              } ${isRestricted ? 'opacity-40 cursor-not-allowed' : ''}`}
-                            >
-                              {/* Gold active bar */}
-                              {isActive && (
-                                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-[hsl(var(--gold))]" />
-                              )}
-                              <item.icon className="h-5 w-5 shrink-0" strokeWidth={1.5} />
-                              <span>{item.title}</span>
-                              {isRestricted && (
-                                <Crown className="h-3 w-3 ml-auto text-[hsl(var(--gold))]" />
-                              )}
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      );
-                    })}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
+              <SidebarContent className="p-4">
+                {/* Profile Section */}
+                <div className="flex items-center gap-3 p-3 mb-4 rounded-lg bg-muted/50">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={profile?.avatar_urls?.[0]} />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {profile?.first_name || 'Member'}
+                    </p>
+                    {tierBadge}
+                  </div>
+                </div>
 
-              {/* Admin Section */}
-              {isAdmin && (
-                <div className="mt-6 pt-4">
-                  <p className="px-3 mb-2 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                    — Admin —
-                  </p>
-                  <Link
-                    to="/admin"
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-[8px] text-sm text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors duration-200"
-                  >
-                    <Shield className="h-5 w-5" strokeWidth={1.5} />
-                    <span>Admin Dashboard</span>
+                <SidebarGroup>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {memoizedMenuItems.map((item) => {
+                        const isActive = location.pathname === item.url;
+                        const isPatronRestricted = (item.url === '/portal/network' || item.url === '/portal/connections')
+                          && membership?.tier === 'patron';
+                        const isPendingRestricted = item.requiresApproval && isPending;
+                        const isRestricted = isPatronRestricted || isPendingRestricted;
+
+                        return (
+                          <SidebarMenuItem key={item.title}>
+                            <SidebarMenuButton asChild>
+                              <Link
+                                to={isRestricted ? '#' : item.url}
+                                onClick={(e) => isRestricted && e.preventDefault()}
+                                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive
+                                  ? 'bg-primary/10 text-primary'
+                                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                                  } ${isRestricted ? 'opacity-50 cursor-not-allowed' : ''}`}
+                              >
+                                <item.icon className="h-5 w-5" />
+                                <span>{item.title}</span>
+                                {isRestricted && (
+                                  <Crown className="h-3 w-3 ml-auto text-primary" />
+                                )}
+                              </Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        );
+                      })}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </SidebarGroup>
+
+                {/* Admin Link */}
+                {isAdmin && (
+                  <div className="mt-6 pt-6 border-t border-border">
+                    <Link
+                      to="/admin"
+                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-primary hover:bg-primary/10 transition-colors"
+                    >
+                      <Shield className="h-5 w-5" />
+                      <span>Admin Dashboard</span>
+                    </Link>
+                  </div>
+                )}
+              </SidebarContent>
+
+              {/* Sign Out */}
+              <div className="p-4 mt-auto border-t border-border">
+                <Button
+                  variant="ghost"
+                  onClick={handleSignOut}
+                  className="w-full justify-start text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="h-5 w-5 mr-3" />
+                  Sign Out
+                </Button>
+              </div>
+            </Sidebar>
+
+            <main id="main-content" className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
+              {/* Desktop Top Bar */}
+              <header className="hidden md:flex items-center justify-between h-20 px-8 border-b border-border bg-background/95 backdrop-blur z-40">
+                <div className="flex-1" />
+
+                <div className="flex items-center gap-6 ml-4">
+                  <NotificationBell />
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+                    <Mail className="h-5 w-5" />
+                  </Button>
+
+                  <div className="h-8 w-px bg-border/50 mx-2" />
+
+                  <div className="flex items-center gap-3">
+                    <div className="text-right hidden lg:block">
+                      <p className="text-sm font-medium leading-none">{profile?.first_name || 'Member'}</p>
+                      <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-bold text-[10px]">
+                        {getTierDisplayName(membership?.tier)} Member
+                      </p>
+                    </div>
+                    <Avatar className="h-10 w-10 border-2 border-primary/20">
+                      <AvatarImage src={profile?.avatar_urls?.[0]} />
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                </div>
+              </header>
+
+              {/* Mobile Header — Stitch style */}
+              <header
+                className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border/30 dark:border-white/[0.06] bg-background/95 dark:bg-[#131f16]/95 backdrop-blur-lg md:hidden"
+                style={{ paddingTop: 'var(--safe-top, 0px)' }}
+              >
+                <div className="flex items-center gap-3">
+                  <Link to="/" className="flex items-center gap-2">
+                    <BrandLogo className="h-8 w-auto" height={32} width={96} />
                   </Link>
                 </div>
-              )}
-            </SidebarContent>
-
-            {/* Bottom: Avatar + Name + Tier + Sign Out */}
-            <div className="mt-auto border-t border-border p-4 space-y-3">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10 shrink-0">
-                  <AvatarImage src={profile?.avatar_urls?.[0]} />
-                  <AvatarFallback className="bg-surface-raised text-foreground text-xs">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">
-                    {profile?.first_name || 'Member'}
-                  </p>
-                  {membership?.tier && (
-                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-medium">
-                      {getTierDisplayName(membership.tier)}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                onClick={handleSignOut}
-                className="w-full justify-start text-muted-foreground hover:text-foreground h-9 px-3 text-sm"
-              >
-                <LogOut className="h-4 w-4 mr-2" strokeWidth={1.5} />
-                Sign Out
-              </Button>
-            </div>
-          </Sidebar>
-
-          <main id="main-content" className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
-            {/* Desktop Top Bar — 64px */}
-            <header className="hidden md:flex items-center justify-between h-16 px-8 border-b border-border bg-background">
-              <div className="flex-1" />
-              <div className="flex items-center gap-4">
-                <NotificationBell />
-                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground h-9 w-9">
-                  <Mail className="h-4 w-4" />
-                </Button>
-                <div className="h-6 w-px bg-border mx-1" />
                 <div className="flex items-center gap-3">
-                  <div className="text-right hidden lg:block">
-                    <p className="text-sm font-medium leading-none text-foreground">{profile?.first_name || 'Member'}</p>
-                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-medium mt-1">
-                      {getTierDisplayName(membership?.tier)} Member
-                    </p>
-                  </div>
-                  <Avatar className="h-9 w-9 border border-border">
+                  <NotificationBell />
+                  <Avatar className="h-8 w-8 border-2 border-primary/20">
                     <AvatarImage src={profile?.avatar_urls?.[0]} />
-                    <AvatarFallback className="bg-surface text-foreground text-xs">
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
                 </div>
-              </div>
-            </header>
+              </header>
 
-            {/* Mobile Header */}
-            <header
-              className="sticky top-0 z-40 flex items-center justify-between h-[60px] px-4 border-b border-border bg-background md:hidden"
-              style={{ paddingTop: 'var(--safe-top, 0px)' }}
-            >
-              <Link to="/" className="flex items-center">
-                <BrandLogo className="h-7 w-auto" height={28} width={84} />
-              </Link>
-              <div className="flex items-center gap-3">
-                <NotificationBell />
-                <Avatar className="h-8 w-8 border border-border">
-                  <AvatarImage src={profile?.avatar_urls?.[0]} />
-                  <AvatarFallback className="bg-surface text-foreground text-xs">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
-            </header>
+              <div className="flex-1 overflow-auto p-4 md:p-8 lg:p-12 scroll-smooth scroll-touch pb-bottom-nav md:pb-8 lg:pb-12">
+                <div className="max-w-7xl mx-auto space-y-8">
+                  {/* Pending Member Banner */}
+                  {isPending && <PendingMemberBanner className="mb-6" />}
 
-            <div className="flex-1 overflow-auto p-6 md:p-8 lg:p-12 scroll-smooth scroll-touch pb-24 md:pb-8 lg:pb-12">
-              <div className="max-w-[1200px] mx-auto space-y-8">
-                {isPending && <PendingMemberBanner className="mb-6" />}
-                <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
+                  {/* Trial Countdown Banner */}
+                  <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
 
-                {location.pathname === '/portal' && (
-                  <Suspense fallback={<div className="h-24 w-full bg-surface animate-pulse rounded-[12px] mb-8" />}>
-                    <MobileDashboardNav onSignOut={handleSignOut} className="mb-8" />
-                  </Suspense>
-                )}
+                  {/* Mobile Dashboard Navigation */}
+                  {location.pathname === '/portal' && (
+                    <Suspense fallback={<div className="h-24 w-full bg-muted/20 animate-pulse rounded-lg mb-8" />}>
+                      <MobileDashboardNav onSignOut={handleSignOut} className="mb-8" />
+                    </Suspense>
+                  )}
 
-                <div className={location.pathname === '/portal' ? 'hidden' : 'block mb-6'}>
-                  <PortalBreadcrumb type="portal" />
+                  {/* Breadcrumb Navigation */}
+                  <div className={location.pathname === '/portal' ? 'hidden' : 'block mb-6'}>
+                    <PortalBreadcrumb type="portal" />
+                  </div>
+
+                  <PageTransition>
+                    {children}
+                  </PageTransition>
                 </div>
-
-                <PageTransition>
-                  {children}
-                </PageTransition>
               </div>
-            </div>
 
-            <PortalBottomNav />
-          </main>
-        </div>
-      </SidebarProvider>
-    </Suspense>
+              {/* Mobile Bottom Navigation */}
+              <PortalBottomNav />
+            </main>
+          </div>
+        </SidebarProvider>
+      </Suspense>
+    </>
   );
 }
