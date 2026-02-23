@@ -2,12 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Make Friends and Socialize - Premium Design System */
-/* Fonts loaded via index.html for performance */
+/* MakeFriends — Ultra-Minimalist Design System */
 
 @layer base {
 
-  /* Page transition animations */
+  /* Page transition */
   .page-transition-enter {
     opacity: 0;
     transform: translateY(8px);
@@ -16,118 +15,123 @@
   .page-transition-enter-active {
     opacity: 1;
     transform: translateY(0);
-    transition: opacity 300ms ease-out, transform 300ms ease-out;
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
   }
 
-  /* ===== Light Theme — Cream & Forest ===== */
+  /* ===== Light Theme ===== */
   :root {
-    --background: 90 14% 96%;
-    /* #f6f8f6 */
-    --foreground: 150 30% 12%;
-    /* dark forest text */
+    /* #FAFAF8 */
+    --background: 50 11% 97%;
+    /* #0D1F0F */
+    --foreground: 135 38% 9%;
 
-    --card: 90 10% 98%;
-    /* near-white card */
-    --card-foreground: 150 30% 12%;
+    /* Surface = #F2F1EE */
+    --card: 43 10% 94%;
+    --card-foreground: 135 38% 9%;
 
-    --popover: 90 10% 98%;
-    --popover-foreground: 150 30% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 135 38% 9%;
 
-    /* Primary — Forest Green (Stitch #1a5b2a) */
-    --primary: 143 55% 23%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary — accent gold #8B6914 */
+    --primary: 43 75% 31%;
+    --primary-foreground: 50 11% 97%;
 
-    /* Secondary — muted sage */
-    --secondary: 140 12% 90%;
-    --secondary-foreground: 150 25% 20%;
+    /* Secondary — muted warm gray */
+    --secondary: 43 10% 94%;
+    --secondary-foreground: 135 12% 32%;
 
-    --muted: 140 8% 92%;
-    --muted-foreground: 150 10% 45%;
+    --muted: 43 8% 92%;
+    --muted-foreground: 135 10% 33%;
 
-    --accent: 140 10% 88%;
-    --accent-foreground: 150 30% 12%;
-
-    /* Gold accent — always available */
-    --accent-gold: 43 76% 52%;
-    /* #d4af37 */
-    /* #f3e5ab */
-    --accent-gold-text: 43 100% 30%;
-    /* Darker gold for text contrast */
-
-    --destructive: 0 65% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 140 10% 86%;
-    --input: 140 10% 86%;
-    --ring: 143 55% 23%;
-
-    --radius: 0.75rem;
-
-    /* Sidebar — light */
-    --sidebar-background: 90 14% 97%;
-    --sidebar-foreground: 150 30% 12%;
-    --sidebar-primary: 143 55% 23%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 140 8% 92%;
-    --sidebar-accent-foreground: 150 30% 12%;
-    --sidebar-border: 140 10% 86%;
-    --sidebar-ring: 143 55% 23%;
-  }
-
-  /* ===== Dark Theme — Premium Forest ===== */
-  /* Stitch palette: bg #131f16, card #1e2b21, primary #1a5b2a, gold #d4af37 */
-  .dark {
-    --background: 148 24% 10%;
-    /* #131f16 */
-    --foreground: 40 15% 88%;
-    /* cream-white text */
-
-    --card: 148 20% 14%;
-    /* #1e2b21 — card/surface */
-    --card-foreground: 40 15% 88%;
-
-    --popover: 148 20% 14%;
-    --popover-foreground: 40 15% 88%;
-
-    /* Primary — Bright Forest Green */
-    --primary: 143 55% 23%;
-    /* #1a5b2a */
-    --primary-foreground: 0 0% 100%;
-
-    /* Secondary — deeper forest */
-    --secondary: 148 22% 17%;
-    --secondary-foreground: 40 15% 88%;
-
-    --muted: 148 20% 15%;
-    --muted-foreground: 148 10% 55%;
-
-    --accent: 148 20% 18%;
-    --accent-foreground: 40 15% 88%;
+    --accent: 43 10% 94%;
+    --accent-foreground: 135 38% 9%;
 
     /* Gold accent */
-    --accent-gold: 43 76% 52%;
-    /* #d4af37 */
-    --accent-gold-light: 47 80% 78%;
-    --accent-gold-text: 43 76% 52%;
+    --accent-gold: 43 75% 31%;
+    --accent-gold-light: 43 65% 44%;
+    --accent-gold-text: 43 75% 31%;
 
-    --destructive: 0 55% 38%;
+    --destructive: 0 65% 33%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 148 15% 20%;
-    --input: 148 15% 20%;
-    --ring: 143 55% 23%;
+    /* #E3E0D8 */
+    --border: 40 12% 87%;
+    --input: 40 12% 87%;
+    --ring: 43 75% 31%;
 
     --radius: 0.75rem;
 
+    /* Surface raised = #FFFFFF */
+    --surface-raised: 0 0% 100%;
+
+    /* Sidebar — light */
+    --sidebar-background: 43 10% 94%;
+    --sidebar-foreground: 135 38% 9%;
+    --sidebar-primary: 43 75% 31%;
+    --sidebar-primary-foreground: 50 11% 97%;
+    --sidebar-accent: 43 8% 92%;
+    --sidebar-accent-foreground: 135 38% 9%;
+    --sidebar-border: 40 12% 87%;
+    --sidebar-ring: 43 75% 31%;
+  }
+
+  /* ===== Dark Theme — Deep Forest ===== */
+  .dark {
+    /* #071A0F */
+    --background: 150 43% 6%;
+    /* #F5F0E8 */
+    --foreground: 38 35% 93%;
+
+    /* Surface = #0D2415 */
+    --card: 150 40% 10%;
+    --card-foreground: 38 35% 93%;
+
+    /* Surface raised = #112D1A */
+    --popover: 148 44% 12%;
+    --popover-foreground: 38 35% 93%;
+
+    /* Primary — accent gold #8B6914 */
+    --primary: 43 75% 31%;
+    --primary-foreground: 150 43% 6%;
+
+    /* Secondary — deeper forest */
+    --secondary: 150 40% 10%;
+    --secondary-foreground: 38 35% 93%;
+
+    /* #9BA89D */
+    --muted: 150 40% 10%;
+    --muted-foreground: 130 5% 63%;
+
+    --accent: 148 44% 12%;
+    --accent-foreground: 38 35% 93%;
+
+    /* Gold accent */
+    --accent-gold: 43 75% 31%;
+    --accent-gold-light: 43 65% 44%;
+    --accent-gold-text: 43 75% 31%;
+
+    --destructive: 0 55% 33%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* #1C3D28 */
+    --border: 148 38% 17%;
+    --input: 148 38% 17%;
+    --ring: 43 75% 31%;
+
+    --radius: 0.75rem;
+
+    /* Surface raised = #112D1A */
+    --surface-raised: 148 44% 12%;
+
     /* Sidebar — forest dark */
-    --sidebar-background: 148 24% 8%;
-    --sidebar-foreground: 40 15% 88%;
-    --sidebar-primary: 143 55% 23%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 148 20% 14%;
-    --sidebar-accent-foreground: 40 15% 88%;
-    --sidebar-border: 148 15% 18%;
-    --sidebar-ring: 143 55% 23%;
+    --sidebar-background: 150 40% 10%;
+    --sidebar-foreground: 38 35% 93%;
+    --sidebar-primary: 43 75% 31%;
+    --sidebar-primary-foreground: 150 43% 6%;
+    --sidebar-accent: 148 44% 12%;
+    --sidebar-accent-foreground: 38 35% 93%;
+    --sidebar-border: 148 38% 17%;
+    --sidebar-ring: 43 75% 31%;
   }
 }
 
@@ -159,13 +163,10 @@
   }
 
   /* ===== Native App Feel ===== */
-
-  /* Remove tap highlight on all touch targets */
   * {
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Prevent text selection on interactive elements */
   button,
   a,
   nav,
@@ -178,7 +179,6 @@
     -webkit-touch-callout: none;
   }
 
-  /* Prevent double-tap zoom on interactive elements */
   button,
   a,
   input,
@@ -188,7 +188,6 @@
     touch-action: manipulation;
   }
 
-  /* Prevent long-press context menu on images in app context */
   img {
     -webkit-touch-callout: none;
   }
@@ -199,16 +198,14 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);
     --safe-right: env(safe-area-inset-right, 0px);
-    --bottom-nav-height: 4.5rem;
-    /* 72px — height of the mobile bottom nav */
+    --bottom-nav-height: 3.5rem;
   }
 
-  /* Scroll margin for fixed header */
   section[id] {
-    scroll-margin-top: 100px;
+    scroll-margin-top: 80px;
   }
 
-  /* Display font for headings - apply to all headings by default */
+  /* Display font — Cormorant Garamond for headings only */
   h1,
   h2,
   h3,
@@ -216,10 +213,9 @@
   h5,
   h6,
   .font-display {
-    font-family: 'Newsreader', 'Cormorant Garamond', serif;
+    font-family: 'Cormorant Garamond', serif;
   }
 
-  /* Refined heading weights */
   h1,
   h2,
   h3 {
@@ -227,7 +223,7 @@
     letter-spacing: -0.02em;
   }
 
-  /* Hide scrollbar but allow scrolling */
+  /* Hide scrollbar */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -240,163 +236,34 @@
 
 @layer utilities {
 
-  /* Premium text gradient - gold accent */
-  .text-gradient {
-    @apply bg-gradient-to-r from-primary via-[hsl(var(--accent-gold))] to-primary bg-clip-text text-transparent;
+  /* Section label — 11px uppercase tracking for section headers */
+  .section-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: hsl(var(--muted-foreground));
   }
 
-  /* Elegant shadow - very subtle and refined */
-  .shadow-elegant {
-    box-shadow: 0 8px 30px -12px hsl(160 30% 10% / 0.12);
+  /* Mono accent — for tags, step numbers */
+  .mono-accent {
+    font-family: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
-  /* Premium card shadow - minimal */
-  .shadow-premium {
-    box-shadow: 0 4px 20px -6px hsl(160 30% 10% / 0.1);
-  }
-
-  /* Premium card shadow - hover state */
-  .shadow-premium-hover {
-    box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.15);
-  }
-
-  /* Glass effect — light mode */
-  .glass {
-    @apply bg-background/80 backdrop-blur-md;
-  }
-
-  /* Stitch glass-panel — dark mode glassmorphism for cards */
-  .glass-panel {
-    background: rgba(30, 43, 33, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  /* Gold gradient text — luxury accent for headings & badges */
-  .gold-gradient-text {
-    background: linear-gradient(to bottom right, #f3e5ab, #d4af37, #b8860b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Gold gradient background — buttons, badges, CTAs */
-  .gold-gradient-bg {
-    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
-  }
-
-  /* Stitch surface card — subtle dark mode surface */
+  /* Surface card — minimal */
   .surface-card {
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    border-radius: var(--radius);
+    border-radius: 12px;
   }
 
-  /* Hover lift - refined */
+  /* Hover lift — restrained */
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-0.5 hover:shadow-premium;
-  }
-
-  /* Luxury Hover - Slower, scale, and deeper shadow */
-  .hover-luxury {
-    @apply transition-all duration-500 ease-out;
-  }
-
-  .hover-luxury:hover {
-    @apply scale-[1.02] -translate-y-1 shadow-premium-hover;
-  }
-
-  /* Premium Card Base */
-  .premium-card {
-    @apply bg-card/80 backdrop-blur-md border border-white/5 rounded-2xl shadow-premium transition-all duration-300;
-  }
-
-  /* Scroll animation utilities */
-  .scroll-animate {
-    @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
-  }
-
-  .scroll-animate.visible {
-    @apply opacity-100 translate-y-0;
-  }
-
-  .scroll-animate-delay-1 {
-    transition-delay: 100ms;
-  }
-
-  .scroll-animate-delay-2 {
-    transition-delay: 200ms;
-  }
-
-  .scroll-animate-delay-3 {
-    transition-delay: 300ms;
-  }
-
-  .scroll-animate-delay-4 {
-    transition-delay: 400ms;
-  }
-
-  .scroll-animate-delay-5 {
-    transition-delay: 500ms;
-  }
-
-  /* Card hover animations */
-  .card-animate {
-    @apply transition-all duration-500 ease-out;
-  }
-
-  .card-animate:hover {
-    @apply -translate-y-2 shadow-elegant;
-  }
-
-  /* Staggered fade-in for lists */
-  .stagger-animate>* {
-    @apply opacity-0 translate-y-6 transition-all duration-500 ease-out;
-  }
-
-  .stagger-animate.visible>*:nth-child(1) {
-    @apply opacity-100 translate-y-0;
-    transition-delay: 0ms;
-  }
-
-  .stagger-animate.visible>*:nth-child(2) {
-    @apply opacity-100 translate-y-0;
-    transition-delay: 100ms;
-  }
-
-  .stagger-animate.visible>*:nth-child(3) {
-    @apply opacity-100 translate-y-0;
-    transition-delay: 200ms;
-  }
-
-  .stagger-animate.visible>*:nth-child(4) {
-    @apply opacity-100 translate-y-0;
-    transition-delay: 300ms;
-  }
-
-  .stagger-animate.visible>*:nth-child(5) {
-    @apply opacity-100 translate-y-0;
-    transition-delay: 400ms;
-  }
-
-  .stagger-animate.visible>*:nth-child(6) {
-    @apply opacity-100 translate-y-0;
-    transition-delay: 500ms;
-  }
-
-  /* Scale-in animation */
-  .scroll-scale {
-    @apply opacity-0 scale-95 transition-all duration-700 ease-out;
-  }
-
-  .scroll-scale.visible {
-    @apply opacity-100 scale-100;
-  }
-
-  /* PWA slow spin animation */
-  .animate-spin-slow {
-    animation: spin 3s linear infinite;
+    @apply transition-all duration-200 hover:-translate-y-0.5;
   }
 
   /* Premium shimmer for skeleton screens */
@@ -419,6 +286,21 @@
     }
   }
 
+  /* Gold gradient text — kept for backward compat but flat preferred */
+  .gold-gradient-text {
+    color: hsl(var(--accent-gold));
+  }
+
+  /* Gold gradient bg — now flat */
+  .gold-gradient-bg {
+    background: hsl(var(--accent-gold));
+  }
+
+  /* Glass — simplified */
+  .glass {
+    @apply bg-background/80 backdrop-blur-md;
+  }
+
   /* Safe area utilities */
   .safe-area-top,
   .safe-top {
@@ -430,13 +312,73 @@
     padding-bottom: var(--safe-bottom);
   }
 
-  /* Smooth scrolling momentum for scroll containers */
   .scroll-touch {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Bottom nav spacing — adds padding so content doesn't hide behind mobile bottom nav */
   .pb-bottom-nav {
     padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
+  }
+
+  /* Centered gold dash divider */
+  .divider-gold {
+    width: 40px;
+    height: 1px;
+    background: hsl(var(--accent-gold));
+    margin: 0 auto;
+  }
+
+  /* Backward compat stubs — no-ops */
+  .shadow-elegant,
+  .shadow-premium,
+  .shadow-premium-hover,
+  .glass-panel,
+  .premium-card {
+    /* Removed — use surface-card or border instead */
+  }
+
+  .hover-luxury {
+    @apply transition-all duration-200;
+  }
+
+  /* Scroll animate — capped at 200ms */
+  .scroll-animate {
+    @apply opacity-0 translate-y-4 transition-all duration-200 ease-out;
+  }
+
+  .scroll-animate.visible {
+    @apply opacity-100 translate-y-0;
+  }
+
+  .scroll-scale {
+    @apply opacity-0 scale-95 transition-all duration-200 ease-out;
+  }
+
+  .scroll-scale.visible {
+    @apply opacity-100 scale-100;
+  }
+
+  /* Stagger — capped delays */
+  .stagger-animate > * {
+    @apply opacity-0 translate-y-4 transition-all duration-200 ease-out;
+  }
+
+  .stagger-animate.visible > *:nth-child(1) { @apply opacity-100 translate-y-0; transition-delay: 0ms; }
+  .stagger-animate.visible > *:nth-child(2) { @apply opacity-100 translate-y-0; transition-delay: 50ms; }
+  .stagger-animate.visible > *:nth-child(3) { @apply opacity-100 translate-y-0; transition-delay: 100ms; }
+  .stagger-animate.visible > *:nth-child(4) { @apply opacity-100 translate-y-0; transition-delay: 150ms; }
+  .stagger-animate.visible > *:nth-child(5) { @apply opacity-100 translate-y-0; transition-delay: 200ms; }
+  .stagger-animate.visible > *:nth-child(6) { @apply opacity-100 translate-y-0; transition-delay: 250ms; }
+
+  .card-animate {
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .card-animate:hover {
+    @apply -translate-y-0.5;
+  }
+
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
   }
 }
