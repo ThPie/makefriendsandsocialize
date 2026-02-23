@@ -4,8 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, Users } from 'lucide-react';
+import { Calendar, MapPin } from 'lucide-react';
 import { useEffect } from 'react';
 import { parseLocalDate } from '@/lib/date-utils';
 
@@ -23,122 +22,13 @@ interface Event {
   rsvp_count: number | null;
 }
 
-import React from 'react';
-
-interface EventCardProps {
-  event: Event;
-  className?: string;
-  featured?: boolean;
-}
-
-// Use forwardRef to properly handle refs and prevent React warnings
-const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
-  ({ event, className = '', featured = false }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={`flex flex-col gap-0 rounded-2xl bg-[#141f17] group hover:shadow-2xl transition-all duration-500 border border-white/5 hover:border-[#d4af37]/20 hover:-translate-y-1 overflow-hidden h-full ${className}`}
-      >
-        <div className={`relative w-full overflow-hidden bg-[#0a0f0a] ${featured ? 'aspect-[21/9]' : 'aspect-[4/3] md:aspect-[16/9]'}`}>
-          {/* Location Badge */}
-          {(event.city || event.location) && (
-            <div className="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-white/10 shadow-sm">
-              <MapPin className="h-3.5 w-3.5 text-[#d4af37]" />
-              <span className="text-xs font-medium text-white tracking-wide">
-                {event.city || event.location}
-              </span>
-            </div>
-          )}
-
-          {event.image_url ? (
-            <img
-              src={event.image_url}
-              alt={event.title}
-              loading="lazy"
-              decoding="async"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-[#1a1f1b]">
-              <Calendar className="h-12 w-12 text-white/20" />
-            </div>
-          )}
-
-          {/* Date Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#141f17] to-transparent pt-12">
-            <p className="text-[#d4af37] font-medium text-sm flex items-center gap-2 font-display italic tracking-wide">
-              <Calendar className="h-4 w-4" />
-              {format(parseLocalDate(event.date), 'EEEE, MMMM d')}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-col flex-grow gap-4 p-5 md:p-6 bg-[#141f17]">
-          <div className="flex-1">
-            <h3 className={`font-display font-medium text-white group-hover:text-[#d4af37] transition-colors leading-tight ${featured ? 'text-2xl md:text-3xl' : 'text-xl'}`}>
-              {event.title}
-            </h3>
-
-            <div className="mt-4 space-y-2 text-white/60 text-sm font-light">
-              {event.venue_name && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 shrink-0 text-[#d4af37]/70" />
-                  <span>{event.venue_name}</span>
-                </div>
-              )}
-              {event.time && (
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 flex items-center justify-center">
-                    <div className="h-1.5 w-1.5 rounded-full bg-[#d4af37]" />
-                  </div>
-                  <span>{event.time}</span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="pt-4 border-t border-white/5 flex items-center justify-between">
-            <span className="text-xs font-medium text-white/40 uppercase tracking-widest">
-              {event.rsvp_count && event.rsvp_count > 0 ? `${event.rsvp_count} Attending` : 'Open Invite'}
-            </span>
-            <TransitionLink
-              to={`/events/${event.id}`}
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-[#d4af37] hover:text-[#f0e6d2] transition-colors"
-            >
-              Details
-              <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">
-                arrow_forward
-              </span>
-            </TransitionLink>
-          </div>
-        </div>
-      </div>
-    );
-  }
-);
-EventCard.displayName = 'EventCard';
-
-const EventCardSkeleton = () => (
-  <div className="flex flex-col gap-4 rounded-xl bg-card border border-border overflow-hidden">
-    <Skeleton className="w-full aspect-[16/9]" />
-    <div className="flex flex-col gap-3 p-4 pt-0">
-      <Skeleton className="h-6 w-3/4 mt-4" />
-      <Skeleton className="h-4 w-1/2" />
-      <Skeleton className="h-4 w-2/3" />
-      <Skeleton className="h-10 w-24 mt-2" />
-    </div>
-  </div>
-);
-
 export const EventSection = () => {
   const { ref, isVisible } = useScrollAnimation();
   const queryClient = useQueryClient();
 
-  // Fetch upcoming events from database
   const { data: events = [], isLoading } = useQuery({
     queryKey: ['home-upcoming-events'],
     queryFn: async () => {
-      // Use local date to avoid timezone issues (UTC can show wrong day)
       const now = new Date();
       const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
       const { data, error } = await supabase
@@ -148,89 +38,137 @@ export const EventSection = () => {
         .neq('status', 'cancelled')
         .neq('status', 'past')
         .order('date', { ascending: true })
-        .limit(6);
-
+        .limit(4);
       if (error) throw error;
       return data as Event[];
     },
   });
 
-  // Subscribe to real-time updates on events table
   useEffect(() => {
     const channel = supabase
       .channel('home-events-realtime')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'events'
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['home-upcoming-events'] });
-        }
-      )
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'events' }, () => {
+        queryClient.invalidateQueries({ queryKey: ['home-upcoming-events'] });
+      })
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [queryClient]);
 
+  const featured = events[0];
+  const upcoming = events.slice(1);
+
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20" id="events">
-      <div ref={ref} className="mx-auto max-w-7xl">
-        <div className={`scroll-animate mb-12 md:mb-16 ${isVisible ? 'visible' : ''}`}>
-          <span className="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">
-            Calendar
-          </span>
-          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-semibold leading-tight text-foreground">
-            Upcoming <span className="italic text-primary">Gatherings</span>
+    <section className="w-full px-6 md:px-12 lg:px-24 py-20 md:py-32 bg-background" id="events">
+      <div ref={ref} className={`mx-auto max-w-[1200px] transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+
+        <div className="mb-12">
+          <span className="section-label mb-3 block">Calendar</span>
+          <h2 className="font-display text-4xl md:text-5xl font-normal text-foreground">
+            Upcoming <span className="italic text-[hsl(var(--gold))]">Gatherings</span>
           </h2>
-          <p className="text-muted-foreground text-lg mt-4 max-w-xl leading-relaxed font-light">
-            From intimate dinners to grand galas—experience gatherings designed to inspire connection.
-          </p>
         </div>
 
-        <div className={`
-          flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 -mx-6 px-6 
-          md:mx-0 md:px-0 md:overflow-visible scrollbar-hide
-          md:grid ${events.length === 1 ? 'md:grid-cols-1 max-w-3xl mx-auto' : events.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'}
-        `}>
-          {isLoading ? (
-            <>
-              <div className="snap-center shrink-0 w-[85vw] md:w-auto"><EventCardSkeleton /></div>
-              <div className="snap-center shrink-0 w-[85vw] md:w-auto"><EventCardSkeleton /></div>
-              <div className="snap-center shrink-0 w-[85vw] md:w-auto"><EventCardSkeleton /></div>
-            </>
-          ) : events.length > 0 ? (
-            events.map((event, index) => (
-              <div key={event.id} className="snap-center shrink-0 w-[85vw] md:w-auto h-full">
-                <EventCard
-                  event={event}
-                  className={`scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''} h-full`}
-                  featured={events.length === 1}
-                />
-              </div>
-            ))
-          ) : (
-            <div className="w-full text-left py-12 text-muted-foreground col-span-full">
-              <Calendar className="h-12 w-12 mb-4 opacity-50" />
-              <p>No upcoming events at the moment. Check back soon!</p>
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Skeleton className="h-[400px] rounded-2xl" />
+            <div className="space-y-4">
+              <Skeleton className="h-20 rounded-xl" />
+              <Skeleton className="h-20 rounded-xl" />
+              <Skeleton className="h-20 rounded-xl" />
             </div>
-          )}
-        </div>
+          </div>
+        ) : events.length === 0 ? (
+          <div className="py-16 text-center text-muted-foreground">
+            <Calendar className="h-12 w-12 mx-auto mb-4 opacity-40" />
+            <p>No upcoming events at the moment.</p>
+          </div>
+        ) : (
+          <>
+            {/* Featured event — editorial layout */}
+            {featured && (
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8">
+                {/* Image */}
+                <div className="md:col-span-7 relative aspect-video rounded-2xl overflow-hidden bg-surface">
+                  {featured.image_url ? (
+                    <img src={featured.image_url} alt={featured.title} className="w-full h-full object-cover" loading="lazy" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Calendar className="h-16 w-16 text-muted-foreground/20" />
+                    </div>
+                  )}
+                  {/* Date pill */}
+                  <div className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-[hsl(var(--gold))] text-background text-xs font-medium">
+                    {format(parseLocalDate(featured.date), 'MMM d')}
+                  </div>
+                </div>
 
-        <div className={`mt-12 text-left scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <Button asChild variant="outline" className="rounded-full px-8 border-primary/20 hover:bg-primary hover:text-white transition-colors">
-            <TransitionLink to="/events" className="inline-flex items-center gap-2">
-              View All Events
-              <span className="material-symbols-outlined text-lg">
-                arrow_forward
-              </span>
-            </TransitionLink>
-          </Button>
-        </div>
+                {/* Details */}
+                <div className="md:col-span-5 flex flex-col justify-center py-4">
+                  <span className="section-label mb-3 block">Featured Event</span>
+                  <h3 className="font-display text-2xl md:text-[32px] text-foreground leading-tight mb-4">
+                    {featured.title}
+                  </h3>
+                  {featured.venue_name && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                      <MapPin className="h-4 w-4 text-[hsl(var(--gold))]/70" />
+                      <span>{featured.venue_name}</span>
+                    </div>
+                  )}
+                  {featured.time && (
+                    <p className="text-sm text-muted-foreground mb-4">{featured.time}</p>
+                  )}
+                  {featured.description && (
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-6 line-clamp-3">
+                      {featured.description}
+                    </p>
+                  )}
+                  <TransitionLink
+                    to={`/events/${featured.id}`}
+                    className="text-sm font-medium text-[hsl(var(--gold))] hover:text-[hsl(var(--gold-light))] transition-colors duration-200"
+                  >
+                    View Details →
+                  </TransitionLink>
+                </div>
+              </div>
+            )}
+
+            {/* Upcoming event chips */}
+            {upcoming.length > 0 && (
+              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {upcoming.map((event) => (
+                  <TransitionLink
+                    key={event.id}
+                    to={`/events/${event.id}`}
+                    className="flex items-center gap-4 min-w-[300px] h-20 px-4 rounded-xl bg-surface border border-border hover:border-[hsl(var(--gold))]/40 transition-colors duration-200 shrink-0"
+                  >
+                    <div className="text-center shrink-0 w-12">
+                      <p className="text-xs text-[hsl(var(--gold))] font-medium uppercase">
+                        {format(parseLocalDate(event.date), 'MMM')}
+                      </p>
+                      <p className="text-xl font-display text-foreground">
+                        {format(parseLocalDate(event.date), 'd')}
+                      </p>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{event.title}</p>
+                      <p className="text-xs text-muted-foreground truncate">{event.venue_name || event.city || ''}</p>
+                    </div>
+                  </TransitionLink>
+                ))}
+              </div>
+            )}
+
+            {/* View all link */}
+            <div className="flex justify-end mt-6">
+              <TransitionLink
+                to="/events"
+                className="text-sm font-medium text-[hsl(var(--gold))] hover:text-[hsl(var(--gold-light))] transition-colors duration-200"
+              >
+                View all events →
+              </TransitionLink>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

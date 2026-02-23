@@ -1,12 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Lightbox } from '@/components/ui/lightbox';
-import { Button } from '@/components/ui/button';
 import { optimizeGoogleImageUrl } from '@/lib/image-utils';
 import { LazyImage } from '@/components/ui/lazy-image';
 
-// Static gallery photos from real events
 const galleryPhotos = [
   { id: '1', image_url: '/images/gallery/event-1.jpg', title: 'Cheers at the Lounge', category: 'Social' },
   { id: '2', image_url: '/images/gallery/event-2.jpg', title: 'Elegant Attire', category: 'Members' },
@@ -20,8 +18,6 @@ export const PhotoGallerySection = () => {
   const { ref, isVisible } = useScrollAnimation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const scrollIntervalRef = useRef<number | null>(null);
 
   const lightboxImages = galleryPhotos.map((p) => ({
     url: p.image_url,
@@ -34,95 +30,93 @@ export const PhotoGallerySection = () => {
     setLightboxOpen(true);
   };
 
-  // Start auto-scroll on hover
-  const handleMouseEnter = () => {
-    if (!scrollRef.current) return;
-
-    scrollIntervalRef.current = window.setInterval(() => {
-      if (scrollRef.current) {
-        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
-        const currentScroll = scrollRef.current.scrollLeft;
-
-        // If we've reached the end, scroll back to start
-        if (currentScroll >= maxScroll - 10) {
-          scrollRef.current.scrollLeft = 0;
-        } else {
-          scrollRef.current.scrollLeft += 2;
-        }
-      }
-    }, 20);
-  };
-
-  // Stop auto-scroll when not hovering
-  const handleMouseLeave = () => {
-    if (scrollIntervalRef.current) {
-      clearInterval(scrollIntervalRef.current);
-      scrollIntervalRef.current = null;
-    }
-  };
+  // Split photos into columns for masonry
+  const columns = [0, 1, 2, 3].map((col) =>
+    galleryPhotos.filter((_, i) => i % 4 === col)
+  );
+  const mobileColumns = [0, 1].map((col) =>
+    galleryPhotos.filter((_, i) => i % 2 === col)
+  );
 
   return (
     <section
       ref={ref}
-      className={`py-20 md:py-32 bg-background transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}
+      className={`py-20 md:py-32 bg-background transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
     >
-      <div className="container mx-auto px-4">
-        {/* Header - Centered Moments */}
-        <div className="text-center mb-12 md:mb-16">
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
-            Moments
+      <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-24">
+        <div className="mb-12">
+          <span className="section-label mb-3 block">Moments from the Circle</span>
+          <h2 className="font-display text-4xl md:text-5xl font-normal text-foreground">
+            A Glimpse <span className="italic text-[hsl(var(--gold))]">Inside</span>
           </h2>
-          <p className="text-muted-foreground text-lg md:text-xl font-light tracking-wide italic">
-            A glimpse into the life of the club.
-          </p>
         </div>
+      </div>
 
-        {/* Horizontal Scrolling Gallery - Scrolls on Hover */}
-        <div
-          ref={scrollRef}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 cursor-grab active:cursor-grabbing"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {galleryPhotos.map((photo, index) => (
-            <div
-              key={photo.id}
-              onClick={() => openLightbox(index)}
-              className="flex-shrink-0 group relative overflow-hidden rounded-lg cursor-pointer w-[280px] md:w-[320px] aspect-[3/4] shadow-md hover:shadow-xl transition-all duration-300"
-            >
-              <LazyImage
-                src={optimizeGoogleImageUrl(photo.image_url, { width: 400, quality: 80 })}
-                alt={photo.title || 'Event photo'}
-                className="w-full h-full object-cover grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:scale-110"
-              />
-              {/* Optional Overlay on hover */}
-              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      {/* Full-bleed masonry wall */}
+      <div className="px-1">
+        {/* Desktop: 4 columns */}
+        <div className="hidden md:grid grid-cols-4 gap-1">
+          {columns.map((col, colIndex) => (
+            <div key={colIndex} className="flex flex-col gap-1">
+              {col.map((photo) => {
+                const globalIndex = galleryPhotos.findIndex(p => p.id === photo.id);
+                return (
+                  <div
+                    key={photo.id}
+                    onClick={() => openLightbox(globalIndex)}
+                    className="relative overflow-hidden cursor-pointer group"
+                  >
+                    <LazyImage
+                      src={optimizeGoogleImageUrl(photo.image_url, { width: 400, quality: 80 })}
+                      alt={photo.title || 'Event photo'}
+                      className="w-full h-auto object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                    />
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-200 flex items-end p-4 opacity-0 group-hover:opacity-100">
+                      <p className="font-display italic text-white text-lg">{photo.title}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
 
-        {/* Hover hint */}
-        <p className="text-center text-muted-foreground text-sm mt-6 mb-8 md:mb-12">
-          Hover to scroll • Click to enlarge
-        </p>
-
-        {/* CTA Button */}
-        <div className="flex justify-center">
-          <Button
-            asChild
-            variant="outline"
-            className="rounded-full px-8 py-6 text-base tracking-widest uppercase border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-300"
-          >
-            <TransitionLink to="/gallery">
-              Access Member Gallery
-            </TransitionLink>
-          </Button>
+        {/* Mobile: 2 columns */}
+        <div className="md:hidden grid grid-cols-2 gap-1">
+          {mobileColumns.map((col, colIndex) => (
+            <div key={colIndex} className="flex flex-col gap-1">
+              {col.map((photo) => {
+                const globalIndex = galleryPhotos.findIndex(p => p.id === photo.id);
+                return (
+                  <div
+                    key={photo.id}
+                    onClick={() => openLightbox(globalIndex)}
+                    className="relative overflow-hidden cursor-pointer group"
+                  >
+                    <LazyImage
+                      src={optimizeGoogleImageUrl(photo.image_url, { width: 300, quality: 75 })}
+                      alt={photo.title || 'Event photo'}
+                      className="w-full h-auto object-cover"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Lightbox */}
+      {/* CTA */}
+      <div className="flex justify-center mt-10">
+        <TransitionLink
+          to="/gallery"
+          className="text-sm font-medium text-[hsl(var(--gold))] hover:text-[hsl(var(--gold-light))] transition-colors duration-200"
+        >
+          Access Member Gallery →
+        </TransitionLink>
+      </div>
+
       <Lightbox
         images={lightboxImages}
         initialIndex={lightboxIndex}
