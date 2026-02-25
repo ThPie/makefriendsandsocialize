@@ -2137,6 +2137,7 @@ export type Database = {
           member_count: number
           previous_member_count: number | null
           rating: number | null
+          review_count: number | null
         }
         Insert: {
           avatar_urls?: string[] | null
@@ -2148,6 +2149,7 @@ export type Database = {
           member_count?: number
           previous_member_count?: number | null
           rating?: number | null
+          review_count?: number | null
         }
         Update: {
           avatar_urls?: string[] | null
@@ -2159,6 +2161,7 @@ export type Database = {
           member_count?: number
           previous_member_count?: number | null
           rating?: number | null
+          review_count?: number | null
         }
         Relationships: []
       }
