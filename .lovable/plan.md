@@ -1,187 +1,162 @@
 
 
-# Global Layout, Alignment & Color Consistency Pass
+# Global Layout, Alignment & Color Token Consistency — Full Project Sweep
 
 ## Scope
 
-This is a project-wide sweep across all public pages, portal, admin, auth, and onboarding screens to unify: (1) content container width, (2) centered section titles, (3) color token consistency, and (4) responsiveness.
+Every page, section, and component across the entire project: public site, portal, admin, auth, onboarding, and dating intake. This covers ~45+ files with token swaps, container standardization, centered headers, and removal of hardcoded colors.
 
 ---
 
-## Technical Details
+## Changes
 
-### 1. Content Container — `src/index.css`
+### Phase 1 — CSS Foundation
 
-The `.content-container` is already set to `max-w-[1200px]` with `px-6 md:px-8 lg:px-10`. This is close to the user's 1100-1280px request. We will keep `1200px` as it fits the range.
+**`src/index.css`**
+- Add `.section-label` utility (11px uppercase, Inter 500, gold color) — currently referenced but not defined
+- Confirm `.content-container` stays at `max-w-[1200px]` (fits the 1100–1280px range)
 
-**Problem:** Several pages bypass `content-container` and use their own inline widths:
-- `SlowDatingSection.tsx`: `px-6 md:px-12 lg:px-24` + `max-w-[1200px]`
-- `ContactFormSection.tsx`: `px-6 md:px-12 lg:px-24` + `max-w-[1200px]`
-- `FAQSection.tsx`: `px-6 md:px-12 lg:px-24` + `max-w-[720px]`
-- `CirclesPage.tsx`: `max-w-[1400px]`
-- Various circle pages: `container max-w-[1400px]`, `max-w-6xl`, `max-w-7xl`
-- `ConnectedCircleDirectoryPage.tsx`: `container max-w-7xl`
-- `ContactPage.tsx`: `max-w-6xl`
+---
 
-**Fix:** Replace all inline container patterns with `content-container` class usage. For narrow sections like FAQ, wrap in `content-container` then use `max-w-[720px] mx-auto` for the inner text.
+### Phase 2 — Public Homepage Sections (Token + Container + Centering)
 
-Also add a `section-label` utility class (currently referenced but missing from CSS):
-```css
-.section-label {
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: hsl(var(--accent-gold));
-}
-```
-
-### 2. Hero — Full-Bleed Image + Centered Text Column
-
-The hero already uses a full-bleed image. The text content inside uses `content-container` which provides the centered column. No changes needed structurally. The hero pattern is correct.
-
-### 3. Center Section Titles — Public Pages
-
-Several sections already use `section-header` (`max-w-[680px] mx-auto text-center`). The following sections do NOT and need updating:
-
-| File | Current | Fix |
-|---|---|---|
-| `SlowDatingSection.tsx` | Left-aligned `max-w-lg` | Wrap in `content-container`, use `section-header` for title area, center heading |
-| `FAQSection.tsx` | Left-aligned | Wrap in `content-container`, center title block |
-| `ContactFormSection.tsx` | Left-aligned (acceptable for split form) | Keep as-is — form layout requires left alignment |
-| `TestimonialsSection.tsx` | Left column in split layout | Keep as-is — split layout intentional |
-
-### 4. Color Token Cleanup — Replace All Non-Token Colors
-
-**A. `--gold` references (wrong variable name):**
-4 files use `hsl(var(--gold))` which doesn't exist — should be `hsl(var(--accent-gold))`:
-- `SlowDatingSection.tsx` (7 instances)
-- `FAQSection.tsx` (2 instances)
-- `ContactFormSection.tsx` (3 instances)
-- `PortalBottomNav.tsx` (1 instance)
-
-**B. Hardcoded hex colors still present:**
-
-| File | Current | Replacement |
-|---|---|---|
-| `Footer.tsx` L47 | `dark:bg-[#101e17]` | Remove (bg-background already handles dark mode) |
-| `AuthPage.tsx` L960 | `from-[#0a110c]/95 via-[#131f16]/90 to-[#0f2915]/85` | `from-background/95 via-[hsl(var(--card))]/90 to-background/85` |
-| `ClubShowcaseSection.tsx` L148 | `dark:bg-[#101e17]` | Remove (bg-card already handles it) |
-| `DeepDiveStep.tsx` (dating intake) | `bg-[#1a231b]` (6+ select dropdowns) | `bg-card` |
-| `AdminDashboard.tsx` | `bg-white/[0.04]`, `border-white/[0.08]`, `bg-emerald-500/10 text-emerald-400` | `bg-card`, `border-border`, `bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]` |
-| `AdminLayout.tsx` L134 | `bg-white/[0.06]` | `bg-muted` |
-
-**C. Semantic status colors (keep as-is):**
-Admin pages (`AdminMatches.tsx`, etc.) use `text-green-600`, `text-amber-600`, `text-red-600` for status indicators (pending/accepted/declined). These are **semantic status colors** and should remain — they convey meaning (success, warning, error) distinct from brand colors. Same for `text-green-500` "check" icons after copy actions.
-
-**D. `bg-surface` class (doesn't exist in Tailwind config):**
-`ContactFormSection.tsx` L61 uses `bg-surface` which isn't defined. Replace with `bg-card`.
-
-### 5. Portal Pages — Center Page Headers
-
-Currently portal page headers are left-aligned. Update the main welcome/title areas:
-
-| File | Change |
-|---|---|
-| `PortalDashboard.tsx` | Center the "Welcome back" heading + subtitle |
-| `PortalProfile.tsx` | Center page title at top |
-| `PortalEvents.tsx` | Center page title |
-| `PortalPerks.tsx` | Center page title |
-| `PortalConnections.tsx` | Center page title |
-| `PortalReferrals.tsx` | Center page title |
-| `PortalBilling.tsx` | Center page title |
-| `PortalNetwork.tsx` | Center page title |
-
-Pattern: Wrap title + subtitle in `text-center max-w-[680px] mx-auto mb-10`.
-
-### 6. Admin Pages — Center Page Headers
-
-Same pattern for admin pages:
-
-| File | Change |
-|---|---|
-| `AdminDashboard.tsx` | Center "Hello, Admin" heading |
-| `AdminApplications.tsx` | Center page title |
-| `AdminMembers.tsx` | Center page title |
-| `AdminEvents.tsx` | Center page title |
-| All other admin pages | Center page title area |
-
-Also fix `AdminDashboard.tsx` hardcoded `bg-white/[0.04]` and `border-white/[0.08]` → `bg-card` and `border-border`.
-
-### 7. `SlowDatingSection.tsx` — Full Refactor
-
-This section uses old patterns (`px-6 md:px-12 lg:px-24`, `section-label`, `hsl(var(--gold))`, left-aligned title). Update to:
-- Use `section-spacing` + `content-container`
-- Use `section-header` for centered title
-- Replace all `--gold` → `--accent-gold`
+**`src/components/home/SlowDatingSection.tsx`**
+- Replace `px-6 md:px-12 lg:px-24` outer padding with `section-spacing` + `content-container`
+- Center title block with `section-header` pattern (`max-w-[680px] mx-auto text-center`)
+- Replace all 7 `hsl(var(--gold))` → `hsl(var(--accent-gold))`
+- Replace `hsl(var(--gold-light))` → `hsl(var(--accent-gold-light))`
 - Center the CTA button
 
-### 8. `FAQSection.tsx` — Refactor
-
-- Use `section-spacing` + `content-container`
-- Center the title block using `section-header`
-- Replace `--gold` → `--accent-gold`
-- Replace `bg-surface` → `bg-card`
-
-### 9. `ContactFormSection.tsx` — Refactor
-
+**`src/components/home/FAQSection.tsx`**
 - Replace `px-6 md:px-12 lg:px-24` with `section-spacing` + `content-container`
-- Replace all `--gold` and `--gold-light` → `--accent-gold` and `--accent-gold-light`
-- Replace `bg-surface` → `bg-card`
+- Center title block with `section-header`
+- Replace 2 `hsl(var(--gold))` → `hsl(var(--accent-gold))`
+- Replace `bg-surface` → `bg-card` (no `bg-surface` in Tailwind config)
 
-### 10. `PhotoGallerySection.tsx` — Fix Heading Color
+**`src/components/home/ContactFormSection.tsx`**
+- Replace `px-6 md:px-12 lg:px-24` with `section-spacing` + `content-container`
+- Replace 3 `hsl(var(--gold))` → `hsl(var(--accent-gold))`
+- Replace `hsl(var(--gold-light))` → `hsl(var(--accent-gold-light))`
+- Replace 3 `bg-surface` → `bg-card`
 
-Line 46: `text-white` should be `text-foreground` (it's on a `bg-card` section, not a dark overlay).
+**`src/components/home/PhotoGallerySection.tsx`**
+- Line 46: `text-white` → `text-foreground` (section is on `bg-card`, not a dark overlay)
 
-### 11. Pages Using `container max-w-*` Instead of `content-container`
-
-Multiple circle/directory pages use Tailwind's `container` class with custom max widths. These should use `content-container` instead for consistency. Files affected:
-- `CirclesPage.tsx`
-- `ConnectedCirclePage.tsx`
-- `ConnectedCircleDirectoryPage.tsx`
-- `ContactPage.tsx`
-- `SlowDatingLandingPage.tsx`
-- `LesAmisPage.tsx`
-- `TheGentlemenPage.tsx`
-- `ThePursuitsPage.tsx`
-- `TheLadiesSocietyPage.tsx`
+**`src/components/home/ClubShowcaseSection.tsx`**
+- Line 148: Remove `dark:bg-[#101e17]` (bg-card already handles dark mode)
 
 ---
 
-## Files to Modify
+### Phase 3 — Layout Components
 
-| File | Changes |
+**`src/components/layout/Footer.tsx`**
+- Line 47: Remove `dark:bg-[#101e17]` (bg-background already handles dark mode)
+
+**`src/components/portal/PortalBottomNav.tsx`**
+- Line 29: Replace `bg-surface` → `bg-card`
+- Line 42: Replace `hsl(var(--gold))` → `hsl(var(--accent-gold))`
+
+---
+
+### Phase 4 — Auth & Onboarding
+
+**`src/pages/AuthPage.tsx`**
+- Line 960: Replace `from-[#0a110c]/95 via-[#131f16]/90 to-[#0f2915]/85` → `from-background/95 via-background/90 to-background/85`
+
+**`src/components/dating/intake/steps/DeepDiveStep.tsx`**
+- Replace all ~9 `bg-[#1a231b]` → `bg-card`
+- Replace `border-white/10` on selects → `border-border`
+- Replace `focus:bg-white/10` → `focus:bg-muted`
+
+**`src/components/dating/intake/steps/DealbreakersStep.tsx`** (and all other intake step files with `bg-[#1a231b]`)
+- Same token swaps as DeepDiveStep
+
+---
+
+### Phase 5 — Portal Page Headers (Center) + Token Cleanup
+
+Center the page-level title + subtitle in each portal page by wrapping in `text-center max-w-[680px] mx-auto mb-8`:
+
+| File | Title to Center |
 |---|---|
-| `src/index.css` | Add `.section-label` utility class |
-| `src/components/home/SlowDatingSection.tsx` | Use content-container, section-header, fix --gold → --accent-gold |
-| `src/components/home/FAQSection.tsx` | Use content-container, section-header, fix --gold → --accent-gold, bg-surface → bg-card |
-| `src/components/home/ContactFormSection.tsx` | Use content-container, fix --gold → --accent-gold, bg-surface → bg-card |
-| `src/components/home/PhotoGallerySection.tsx` | Fix text-white → text-foreground on heading |
-| `src/components/home/ClubShowcaseSection.tsx` | Remove dark:bg-[#101e17] |
-| `src/components/layout/Footer.tsx` | Remove dark:bg-[#101e17] |
-| `src/components/portal/PortalBottomNav.tsx` | Fix --gold → --accent-gold |
-| `src/pages/AuthPage.tsx` | Replace hardcoded gradient hex colors with tokens |
-| `src/components/dating/intake/steps/DeepDiveStep.tsx` | Replace bg-[#1a231b] → bg-card |
-| `src/pages/admin/AdminDashboard.tsx` | Replace bg-white/[0.04] → bg-card, border-white/[0.08] → border-border, center heading, fix emerald → gold |
-| `src/components/admin/AdminLayout.tsx` | Replace bg-white/[0.06] → bg-muted |
-| `src/pages/portal/PortalDashboard.tsx` | Center page header |
-| `src/pages/portal/PortalProfile.tsx` | Center page header |
-| `src/pages/portal/PortalEvents.tsx` | Center page header |
-| `src/pages/portal/PortalPerks.tsx` | Center page header |
-| `src/pages/portal/PortalConnections.tsx` | Center page header |
-| `src/pages/portal/PortalReferrals.tsx` | Center page header |
-| `src/pages/portal/PortalBilling.tsx` | Center page header |
-| `src/pages/portal/PortalNetwork.tsx` | Center page header |
-| `src/pages/CirclesPage.tsx` | Replace max-w-[1400px] with content-container |
-| `src/pages/ConnectedCirclePage.tsx` | Replace container max-w-6xl with content-container |
-| `src/pages/ConnectedCircleDirectoryPage.tsx` | Replace container max-w-7xl with content-container |
-| `src/pages/ContactPage.tsx` | Replace max-w-6xl with content-container |
-| `src/pages/SlowDatingLandingPage.tsx` | Replace max-w-6xl with content-container |
-| `src/pages/circles/LesAmisPage.tsx` | Replace max-w-[1400px] / max-w-6xl with content-container |
-| `src/pages/circles/TheGentlemenPage.tsx` | Replace max-w-[1400px] with content-container |
-| `src/pages/circles/ThePursuitsPage.tsx` | Replace max-w-[1400px] with content-container |
-| `src/pages/circles/TheLadiesSocietyPage.tsx` | Replace max-w-6xl with content-container |
+| `PortalDashboard.tsx` | "Welcome back, {name}" + subtitle |
+| `PortalProfile.tsx` | Page title area |
+| `PortalEvents.tsx` | "Events" header |
+| `PortalPerks.tsx` | Page title |
+| `PortalConnections.tsx` | Page title |
+| `PortalReferrals.tsx` | "Referrals & Rewards" |
+| `PortalBilling.tsx` | "Billing & Subscriptions" |
+| `PortalNetwork.tsx` | "The Network" header |
 
-Total: ~30 files, mostly find-and-replace token swaps + centering page headers.
+Token cleanup in portal pages — replace all `border-white/[0.08]` → `border-border`, `bg-white/[0.04]` → `bg-card`:
+- `PortalBilling.tsx` (4 Card instances + dividers)
+- `PortalEvents.tsx` (2 Card instances)
+- `PortalConcierge.tsx` (4 Card instances)
+- `PortalOnboarding.tsx` (card wrapper + border)
+- `PortalSlowDating.tsx` (skeleton wrapper)
+
+---
+
+### Phase 6 — Admin Page Headers (Center) + Token Cleanup
+
+Center the page-level title in each admin page:
+
+| File | Title to Center |
+|---|---|
+| `AdminDashboard.tsx` | "Hello, Admin" |
+| `AdminApplications.tsx` | Page title |
+| `AdminMembers.tsx` | Page title |
+| `AdminEvents.tsx` | Page title |
+| `AdminMatches.tsx` | Page title |
+| `AdminAnalytics.tsx` | Page title |
+| `AdminSecurityDashboard.tsx` | Page title |
+| `AdminSettings.tsx` | Page title |
+| All remaining admin pages | Page title area |
+
+Token cleanup across all admin pages:
+- Replace all `border-white/[0.08]` → `border-border`
+- Replace all `bg-white/[0.04]` → `bg-card`
+- Replace `bg-white/[0.06]` → `bg-muted`
+- Replace `border-white/[0.06]` → `border-border`
+- Replace `border-white/[0.12]` → `border-border`
+- Replace `hover:bg-white/[0.04]` → `hover:bg-muted`
+- `AdminDashboard.tsx` line 204: Replace `bg-emerald-500/10 text-emerald-400` → `bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]` for Founder tier
+- `AdminLayout.tsx` line 134: Replace `bg-white/[0.06]` → `bg-muted`
+
+---
+
+### Phase 7 — Standalone Pages (Container Standardization)
+
+Replace `container max-w-6xl` / `max-w-[1400px]` / `max-w-7xl` with `content-container` in:
+
+| File | Current Pattern |
+|---|---|
+| `CirclesPage.tsx` | `max-w-[1400px]` |
+| `ConnectedCirclePage.tsx` | `container max-w-6xl` (3 instances) |
+| `ConnectedCircleDirectoryPage.tsx` | `container max-w-7xl` |
+| `ContactPage.tsx` | `max-w-6xl` (2 instances) |
+| `SlowDatingLandingPage.tsx` | `max-w-6xl` |
+| `AboutPage.tsx` | `container max-w-6xl` (3 instances) |
+| `MembershipPage.tsx` | `container max-w-6xl` (2 instances) |
+| `LesAmisPage.tsx` | `container max-w-[1400px]` + `max-w-6xl` |
+| `TheGentlemenPage.tsx` | `container max-w-[1400px]` (2 instances) |
+| `ThePartnersPage.tsx` | `container max-w-[1400px]` (2 instances) |
+| `ThePursuitsPage.tsx` | `container max-w-[1400px]` |
+| `TheLadiesSocietyPage.tsx` | `max-w-6xl` |
+
+---
+
+## Summary
+
+| Category | Files | Key Changes |
+|---|---|---|
+| CSS foundation | 1 | Add `.section-label` |
+| Public sections | 5 | Container + center + `--gold` → `--accent-gold` |
+| Layout components | 2 | Remove hardcoded dark hex, fix `bg-surface` |
+| Auth/onboarding/dating | 3+ | Replace hardcoded hex with tokens |
+| Portal pages | 8+ | Center headers, replace `white/[0.0x]` → tokens |
+| Admin pages | 15+ | Center headers, replace `white/[0.0x]` → tokens |
+| Standalone pages | 12 | Container standardization |
+
+Total: ~45 files modified, primarily find-and-replace token swaps + header centering + container class changes.
 
