@@ -1,73 +1,108 @@
 
 
-# Fix Build Error + Visual Refinements
+# Hero Buttons + Member Avatars Restoration & Portal Token Consistency
 
-## 1. Build Error Fix
+## What You Asked For
 
-**`src/components/home/TestimonialsSection.tsx`** — Line 31 has `TS2589: Type instantiation is excessively deep`. This is caused by the `.from('testimonials').select('*')` call where the Supabase type system recurses too deeply. Fix by explicitly typing the query result or using `.returns<Testimonial[]>()`.
+1. **Restore the 2 buttons and member avatars** to the hero section (they were removed during the Soho House redesign)
+2. **Make portal pages use consistent color tokens** (dashboard, events, profile) — replace all hardcoded hex colors with CSS variable tokens
+3. **Responsive container widths** across portal pages
 
-## 2. Hero Section — Soho House Style (Screenshot 1)
+---
 
-The user wants the hero to look like the Soho House screenshot: full-bleed background image with text positioned at the **bottom-left**, much smaller and cleaner. Key changes to `Hero.tsx`:
+## Changes
 
-- Remove the split-layout concept — go back to full-bleed image with overlay
-- Headline much smaller: ~36px mobile / 48px desktop (like "New bedroom arrivals" in the screenshot)
-- Single line headline in Cormorant Italic, not two massive lines
-- Subheadline: 15px Inter 300, 2-3 lines max
-- Small white pill CTA button ("Apply now" style, like "Shop now")
-- Remove the member avatars row and matchmaking button — keep it minimal
-- Content anchored bottom-left with generous padding
-- Dark gradient overlay from bottom-left corner only
+### 1. `src/components/home/Hero.tsx` — Restore Buttons + Member Avatars
 
-## 3. Events Section — 3-Card Grid (Screenshot 2)
+Add back to the hero section (below the subheadline, above the bottom padding):
 
-The user's screenshot shows the events displayed as 3 equal cards in a row (not the editorial split panel). Each card has:
+- **Two buttons side by side:**
+  - "Apply for Membership" — gold filled pill button (`bg-[hsl(var(--accent-gold))]`, white text)
+  - "Sign In" — ghost text link (white, no border, no button styling)
+- **Member avatars row:** Import `useSiteStats` hook and `MemberAvatars` component to display stacked real member avatars + member count ("1,000+ Members · Salt Lake City") in `text-white/60` below the buttons
 
-- Image on top (~50% height)
-- Title in Cormorant below
-- Date + time with calendar icon
-- Location with map pin icon
-- Attendee count with users icon
-- "View Details →" gold text link at bottom
-- Cards have `--surface` background with `--border` borders
-- Centered "View All Events →" gold link below
+This restores the social proof and dual CTA that existed before.
 
-Changes to `EventSection.tsx`: Replace the editorial panel layout with a simple 3-column card grid.
+### 2. `src/pages/portal/PortalProfile.tsx` — Replace All Hardcoded Colors
 
-## 4. Section Color Differentiation (Screenshot 3)
+Replace every hardcoded hex color with design system tokens:
 
-The user wants alternating section backgrounds — some sections use a slightly different shade to create visual separation. Looking at the screenshot, the events section uses the base `--background` while the next section uses a slightly lighter/different surface tone. This creates visual rhythm.
+| Current | Replacement |
+|---|---|
+| `bg-[#1e2b21]` | `bg-card` |
+| `bg-[#253028]` | `bg-muted` |
+| `border-white/5` | `border-border` |
+| `text-white` | `text-foreground` |
+| `text-slate-400` | `text-muted-foreground` |
+| `text-slate-200` | `text-foreground` |
+| `text-slate-300` | `text-muted-foreground` |
+| `text-[#1a5b2a]` (edit links) | `text-[hsl(var(--accent-gold))]` |
+| `bg-[#1a5b2a]` (waveform bars, play button) | `bg-[hsl(var(--accent-gold))]` / `text-[hsl(var(--accent-gold))]` |
+| `hover:bg-[#253028]` | `hover:bg-muted` |
 
-Changes:
-- Alternate sections between `bg-background` and `bg-card` (which maps to `--surface`)
-- This creates the subtle color banding visible in the screenshot
-- Apply to `HomePage.tsx` by wrapping sections or updating individual section backgrounds
+This makes the profile page fully theme-aware (works in both light and dark mode).
 
-## 5. Responsiveness — Content Container Width (Screenshot 4)
+### 3. `src/components/portal/dashboard/DashboardStats.tsx` — Token Cleanup
 
-The user sees excessive side spacing on different screen sizes. The current `content-container` uses `max-w-[1600px]` with generous padding. This creates too much whitespace on mid-sized screens.
+Replace hardcoded colors:
 
-Fix in `src/index.css`:
-- Change `content-container` from `max-w-[1600px]` to `max-w-[1400px]` 
-- Reduce padding: `px-6 md:px-8 lg:px-16` instead of `px-6 md:px-12 lg:px-24`
-- This ensures content fills more of the viewport on all screen sizes
+| Current | Replacement |
+|---|---|
+| `text-[#d4af37]` | `text-[hsl(var(--accent-gold))]` |
+| `bg-[#d4af37]/10` | `bg-[hsl(var(--accent-gold))]/10` |
+| `bg-white/[0.04]` | `bg-card` |
+| `border-white/[0.08]` | `border-border` |
+| `bg-gradient-to-r from-primary to-[#d4af37]` | `bg-[hsl(var(--accent-gold))]` (flat, no gradient) |
+| `hover:bg-white/[0.06]` | `hover:border-[hsl(var(--accent-gold))]/40` |
+| `text-emerald-500` / `bg-emerald-500/10` | `text-[hsl(var(--accent-gold))]` / `bg-[hsl(var(--accent-gold))]/10` |
+| `duration-300` | `duration-200` |
+| `hover:-translate-y-1 hover:shadow-lg` | Remove (no scale/shadow transforms per design system) |
 
-## 6. Font Consistency
+### 4. `src/components/portal/EventCard.tsx` — Token Cleanup
 
-The CSS currently references `Playfair Display` for `.font-display` headings (line 239) but the design system specifies `Cormorant Garamond`. Fix this in `index.css` to use `'Cormorant Garamond'` instead of `'Playfair Display'`.
+Replace hardcoded colors:
+
+| Current | Replacement |
+|---|---|
+| `bg-[#d4af37]/20` / `text-[#d4af37]` / `border-[#d4af37]/30` | Use `hsl(var(--accent-gold))` variants |
+| `premium-card hover-luxury` | Remove these deprecated classes |
+| `bg-white/[0.04]` / `border-white/[0.08]` | `bg-card` / `border-border` |
+| `duration-500` | `duration-200` |
+| `text-amber-600` | `text-[hsl(var(--accent-gold))]` |
+
+### 5. `src/components/portal/PortalLayout.tsx` — Mobile Header Token Fix
+
+- Line 261: Replace `dark:bg-[#131f16]/95` with `bg-background/95` (use token, not hardcoded)
+
+### 6. `src/components/portal/ReferralDashboard.tsx` — Token Cleanup
+
+Replace all `text-[#d4af37]` → `text-[hsl(var(--accent-gold))]` and `bg-[#d4af37]/10` → `bg-[hsl(var(--accent-gold))]/10`, and `bg-white/[0.04]` → `bg-card`, `border-white/[0.08]` → `border-border`.
+
+### 7. `src/pages/portal/PortalConnections.tsx` — Token Cleanup
+
+Replace `text-[#d4af37]`, `bg-[#d4af37]/15`, `border-[#d4af37]/25` with `hsl(var(--accent-gold))` variants.
+
+### 8. `src/pages/portal/PortalPerks.tsx` — Token Cleanup
+
+Replace `text-[#d4af37]`, `border-[#d4af37]/20`, `bg-gradient-to-br from-[#d4af37]/5` with token equivalents. Replace `bg-white/[0.04]` / `border-white/[0.08]` with `bg-card` / `border-border`.
+
+### 9. `src/components/portal/PortalOnboardingLayout.tsx` — Token Cleanup
+
+Replace `bg-[#0a110c]`, `bg-[#131f16]`, `bg-[#0f2915]` gradient with `from-background/90 via-background/85 to-background/80`.
 
 ---
 
 ## Files to Modify
 
-| File | Change |
+| File | Scope |
 |---|---|
-| `src/components/home/TestimonialsSection.tsx` | Fix TS2589 build error with `.returns<>()` |
-| `src/components/home/Hero.tsx` | Soho House style: smaller text, bottom-left, full-bleed image, minimal CTA |
-| `src/components/home/EventSection.tsx` | 3-card grid layout with image/title/date/location/attendees |
-| `src/index.css` | Fix `.font-display` to Cormorant Garamond; update `content-container` max-width and padding |
-| `src/components/home/EthosSection.tsx` | Add `bg-card` for alternating section color |
-| `src/components/home/PhotoGallerySection.tsx` | Replace hardcoded `bg-[#050B08]` with `bg-card` token |
-| `src/components/home/ClubShowcaseSection.tsx` | Minor: reduce `duration-700` transitions, ensure responsive |
-| `src/pages/HomePage.tsx` | No structural changes needed (section ordering stays) |
+| `src/components/home/Hero.tsx` | Add 2 buttons + member avatars back |
+| `src/pages/portal/PortalProfile.tsx` | Full token replacement (15+ color swaps) |
+| `src/components/portal/dashboard/DashboardStats.tsx` | Token cleanup + remove prohibited animations |
+| `src/components/portal/EventCard.tsx` | Token cleanup + remove deprecated classes |
+| `src/components/portal/PortalLayout.tsx` | 1-line mobile header fix |
+| `src/components/portal/ReferralDashboard.tsx` | Token cleanup |
+| `src/pages/portal/PortalConnections.tsx` | Token cleanup |
+| `src/pages/portal/PortalPerks.tsx` | Token cleanup |
+| `src/components/portal/PortalOnboardingLayout.tsx` | Token cleanup |
 
