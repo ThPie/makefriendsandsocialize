@@ -1,108 +1,74 @@
 
 
-# Hero Buttons + Member Avatars Restoration & Portal Token Consistency
+# "What Our Members Say" — Testimonials Section Redesign
 
-## What You Asked For
+## Overview
 
-1. **Restore the 2 buttons and member avatars** to the hero section (they were removed during the Soho House redesign)
-2. **Make portal pages use consistent color tokens** (dashboard, events, profile) — replace all hardcoded hex colors with CSS variable tokens
-3. **Responsive container widths** across portal pages
+A new split-layout testimonials section placed directly above the footer on the homepage. It will display real Meetup reviews scraped via a new edge function, stored in the existing `testimonials` table, and rendered in a paginated 2-column card grid.
 
 ---
 
-## Changes
+## Technical Details
 
-### 1. `src/components/home/Hero.tsx` — Restore Buttons + Member Avatars
+### 1. Database — No Migration Needed
 
-Add back to the hero section (below the subheadline, above the bottom padding):
+The existing `testimonials` table already has the right columns: `name`, `quote`, `rating`, `image_url`, `source`, `is_approved`. We'll insert Meetup reviews with `source = 'meetup'` and `is_approved = true`.
 
-- **Two buttons side by side:**
-  - "Apply for Membership" — gold filled pill button (`bg-[hsl(var(--accent-gold))]`, white text)
-  - "Sign In" — ghost text link (white, no border, no button styling)
-- **Member avatars row:** Import `useSiteStats` hook and `MemberAvatars` component to display stacked real member avatars + member count ("1,000+ Members · Salt Lake City") in `text-white/60` below the buttons
+### 2. New Edge Function: `sync-meetup-reviews`
 
-This restores the social proof and dual CTA that existed before.
+The Meetup feedback page (`/feedback-overview/`) requires authentication, so Firecrawl may not be able to access it directly. The edge function will:
 
-### 2. `src/pages/portal/PortalProfile.tsx` — Replace All Hardcoded Colors
+- Attempt to scrape `https://www.meetup.com/makefriendsandsocialize/feedback-overview/` using Firecrawl with extract mode
+- Extract reviewer name, rating (1–5), review text, and profile photo URL
+- Filter to only reviews with 4+ stars
+- Upsert into `testimonials` table with `source = 'meetup'`, `is_approved = true`
+- If scraping fails (auth wall), the function will return an error indicating manual seeding is needed
 
-Replace every hardcoded hex color with design system tokens:
+**Fallback approach:** If the Meetup feedback page cannot be scraped (login required), we will seed the testimonials table with the reviews manually. The user can trigger the sync function from the admin panel to try again later.
 
-| Current | Replacement |
-|---|---|
-| `bg-[#1e2b21]` | `bg-card` |
-| `bg-[#253028]` | `bg-muted` |
-| `border-white/5` | `border-border` |
-| `text-white` | `text-foreground` |
-| `text-slate-400` | `text-muted-foreground` |
-| `text-slate-200` | `text-foreground` |
-| `text-slate-300` | `text-muted-foreground` |
-| `text-[#1a5b2a]` (edit links) | `text-[hsl(var(--accent-gold))]` |
-| `bg-[#1a5b2a]` (waveform bars, play button) | `bg-[hsl(var(--accent-gold))]` / `text-[hsl(var(--accent-gold))]` |
-| `hover:bg-[#253028]` | `hover:bg-muted` |
+### 3. Rewrite `TestimonialsSection.tsx` — Split Layout
 
-This makes the profile page fully theme-aware (works in both light and dark mode).
+**Left column (~35%):**
+- Gold section label: "MEMBER REVIEWS" (section-label class)
+- Title: "What Our Members Say" in Cormorant Garamond italic, ~36px
+- Muted subtitle: "Genuine experiences from real members of our community."
+- Overlapping circular avatar cluster from reviewer photos (max 6, with "+X" gold badge)
+- Overall star rating in gold (e.g. "★ 4.9 / 5") + total review count in muted text
 
-### 3. `src/components/portal/dashboard/DashboardStats.tsx` — Token Cleanup
+**Right column (~65%):**
+- 2-column grid of review cards (1 column on mobile)
+- Each card: gold `"` quote mark top-left, review text (3 lines max, truncated), reviewer avatar + "FirstName L." + gold star rating at bottom
+- Card background: `bg-card` with `border-border` border
+- Hover: gold border highlight (`border-[hsl(var(--accent-gold))]`)
+- Prev/next gold outline arrow buttons bottom-right to paginate (4 cards per page)
 
-Replace hardcoded colors:
+**Responsive:**
+- Desktop: side-by-side 35/65 split
+- Tablet: left stacks on top, cards below in 2-col grid
+- Mobile: fully stacked, 1-col cards, avatars centered
 
-| Current | Replacement |
-|---|---|
-| `text-[#d4af37]` | `text-[hsl(var(--accent-gold))]` |
-| `bg-[#d4af37]/10` | `bg-[hsl(var(--accent-gold))]/10` |
-| `bg-white/[0.04]` | `bg-card` |
-| `border-white/[0.08]` | `border-border` |
-| `bg-gradient-to-r from-primary to-[#d4af37]` | `bg-[hsl(var(--accent-gold))]` (flat, no gradient) |
-| `hover:bg-white/[0.06]` | `hover:border-[hsl(var(--accent-gold))]/40` |
-| `text-emerald-500` / `bg-emerald-500/10` | `text-[hsl(var(--accent-gold))]` / `bg-[hsl(var(--accent-gold))]/10` |
-| `duration-300` | `duration-200` |
-| `hover:-translate-y-1 hover:shadow-lg` | Remove (no scale/shadow transforms per design system) |
+**Colors — all from existing tokens:**
+- `hsl(var(--accent-gold))` for quote marks, stars, hover borders, badges
+- `text-foreground` for review body
+- `text-muted-foreground` for names, subtitle
+- `bg-card` / `border-border` for cards
+- Avatar fallback: `bg-[#0D2415]` with gold initials
 
-### 4. `src/components/portal/EventCard.tsx` — Token Cleanup
+### 4. Update `HomePage.tsx`
 
-Replace hardcoded colors:
+Move `TestimonialsSection` to be the last section before the footer (after FAQ/Contact or whichever is currently last). The section queries the `testimonials` table for all approved reviews with `rating >= 4`, ordered by `created_at` descending.
 
-| Current | Replacement |
-|---|---|
-| `bg-[#d4af37]/20` / `text-[#d4af37]` / `border-[#d4af37]/30` | Use `hsl(var(--accent-gold))` variants |
-| `premium-card hover-luxury` | Remove these deprecated classes |
-| `bg-white/[0.04]` / `border-white/[0.08]` | `bg-card` / `border-border` |
-| `duration-500` | `duration-200` |
-| `text-amber-600` | `text-[hsl(var(--accent-gold))]` |
+### 5. Update Query in `TestimonialsSection.tsx`
 
-### 5. `src/components/portal/PortalLayout.tsx` — Mobile Header Token Fix
-
-- Line 261: Replace `dark:bg-[#131f16]/95` with `bg-background/95` (use token, not hardcoded)
-
-### 6. `src/components/portal/ReferralDashboard.tsx` — Token Cleanup
-
-Replace all `text-[#d4af37]` → `text-[hsl(var(--accent-gold))]` and `bg-[#d4af37]/10` → `bg-[hsl(var(--accent-gold))]/10`, and `bg-white/[0.04]` → `bg-card`, `border-white/[0.08]` → `border-border`.
-
-### 7. `src/pages/portal/PortalConnections.tsx` — Token Cleanup
-
-Replace `text-[#d4af37]`, `bg-[#d4af37]/15`, `border-[#d4af37]/25` with `hsl(var(--accent-gold))` variants.
-
-### 8. `src/pages/portal/PortalPerks.tsx` — Token Cleanup
-
-Replace `text-[#d4af37]`, `border-[#d4af37]/20`, `bg-gradient-to-br from-[#d4af37]/5` with token equivalents. Replace `bg-white/[0.04]` / `border-white/[0.08]` with `bg-card` / `border-border`.
-
-### 9. `src/components/portal/PortalOnboardingLayout.tsx` — Token Cleanup
-
-Replace `bg-[#0a110c]`, `bg-[#131f16]`, `bg-[#0f2915]` gradient with `from-background/90 via-background/85 to-background/80`.
+Change from fetching 1 testimonial to fetching all approved testimonials with rating >= 4. Remove the "hide if empty" behavior — show the section always (but with a graceful empty state if no reviews yet).
 
 ---
 
-## Files to Modify
+## Files
 
-| File | Scope |
+| File | Action |
 |---|---|
-| `src/components/home/Hero.tsx` | Add 2 buttons + member avatars back |
-| `src/pages/portal/PortalProfile.tsx` | Full token replacement (15+ color swaps) |
-| `src/components/portal/dashboard/DashboardStats.tsx` | Token cleanup + remove prohibited animations |
-| `src/components/portal/EventCard.tsx` | Token cleanup + remove deprecated classes |
-| `src/components/portal/PortalLayout.tsx` | 1-line mobile header fix |
-| `src/components/portal/ReferralDashboard.tsx` | Token cleanup |
-| `src/pages/portal/PortalConnections.tsx` | Token cleanup |
-| `src/pages/portal/PortalPerks.tsx` | Token cleanup |
-| `src/components/portal/PortalOnboardingLayout.tsx` | Token cleanup |
+| `supabase/functions/sync-meetup-reviews/index.ts` | **Create** — Firecrawl-based scraper for Meetup feedback page |
+| `src/components/home/TestimonialsSection.tsx` | **Rewrite** — Split layout with avatar cluster, paginated card grid |
+| `src/pages/HomePage.tsx` | **Edit** — Move TestimonialsSection to last position (above footer) |
 
