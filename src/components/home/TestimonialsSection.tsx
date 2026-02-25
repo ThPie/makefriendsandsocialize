@@ -28,13 +28,12 @@ export const TestimonialsSection = () => {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const { data } = await supabase
-          .from('testimonials')
-          .select('*')
+        const query = supabase.from('testimonials' as any).select('*');
+        const { data } = await query
           .eq('approved', true)
           .order('created_at', { ascending: false })
           .limit(1);
-        setTestimonials(data || []);
+        setTestimonials((data as unknown as Testimonial[]) || []);
       } catch {
         // silently fail
       } finally {

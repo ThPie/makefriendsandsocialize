@@ -93,7 +93,7 @@ export const ClubShowcaseSection = () => {
             {/* Bento Grid Layout */}
             <div
                 ref={ref}
-                className={`content-container grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-6 xl:gap-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                className={`content-container grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-6 xl:gap-8 transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
             >
                 {clubs.map((club, i) => {
                     const Icon = getIconForCategory(club.category);

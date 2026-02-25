@@ -49,7 +49,7 @@ export const EthosSection = () => {
   }, []);
 
   return (
-    <section className="py-24 md:py-32 bg-background relative z-10 w-full flex flex-col items-center">
+    <section className="py-24 md:py-32 bg-card relative z-10 w-full flex flex-col items-center">
       <div className="content-container w-full">
 
         {/* Centralized section header */}
