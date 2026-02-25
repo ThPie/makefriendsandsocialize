@@ -1,7 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { TransitionLink } from '@/components/ui/TransitionLink';
+import { useSiteStats } from '@/hooks/useSiteStats';
+import { MemberAvatars } from '@/components/home/MemberAvatars';
 
 export const Hero = () => {
+  const { data: stats, isLoading } = useSiteStats();
+
   return (
     <section className="relative w-full h-[100dvh] bg-background overflow-hidden">
       {/* Full-bleed background image */}
@@ -31,15 +35,30 @@ export const Hero = () => {
               Curated connections and exclusive gatherings for individuals seeking a higher standard of community.
             </p>
 
-            {/* Small pill CTA */}
-            <Button
-              asChild
-              className="rounded-full px-6 h-10 text-xs tracking-widest uppercase font-medium bg-white text-black hover:bg-white/90 border-0 transition-colors duration-200"
-            >
-              <TransitionLink to="/membership">
-                Apply Now
+            {/* Two CTA buttons */}
+            <div className="flex items-center gap-4 mb-8">
+              <Button
+                asChild
+                className="rounded-full px-6 h-10 text-xs tracking-widest uppercase font-medium bg-[hsl(var(--accent-gold))] text-white hover:bg-[hsl(var(--accent-gold))]/90 border-0 transition-colors duration-200"
+              >
+                <TransitionLink to="/membership">
+                  Apply for Membership
+                </TransitionLink>
+              </Button>
+              <TransitionLink
+                to="/auth"
+                className="text-xs tracking-widest uppercase font-medium text-white/80 hover:text-white transition-colors duration-200"
+              >
+                Sign In
               </TransitionLink>
-            </Button>
+            </div>
+
+            {/* Member avatars + count */}
+            <MemberAvatars
+              avatarUrls={stats?.avatarUrls || []}
+              memberCount={stats?.memberCount || 0}
+              isLoading={isLoading}
+            />
           </div>
         </div>
       </div>

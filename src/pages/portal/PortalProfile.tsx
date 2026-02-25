@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Settings, MapPin, Edit3, Camera, Briefcase, Award, Play, Info } from 'lucide-react';
 import { WidgetErrorBoundary } from '@/components/ui/widget-error-boundary';
@@ -8,7 +7,6 @@ import { ProfileEditModal } from '@/components/profile/ProfileEditModal';
 import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
 import { VerificationBadge } from '@/components/portal/VerificationBadge';
 import { VpnBlockedModal } from '@/components/portal/VpnBlockedModal';
-
 import { toast } from 'sonner';
 
 export default function PortalProfile() {
@@ -20,7 +18,6 @@ export default function PortalProfile() {
     toast.info("Photo editing is coming soon!");
   };
 
-  // Mock data for display if profile is missing fields
   const displayProfile = {
     ...profile,
     job_title: profile?.job_title || 'Member',
@@ -63,12 +60,12 @@ export default function PortalProfile() {
 
       <section className="grid grid-cols-3 gap-3 h-[280px]">
         {/* Main Photo - Large */}
-        <div className="col-span-2 relative rounded-2xl overflow-hidden border border-white/5 group">
+        <div className="col-span-2 relative rounded-2xl overflow-hidden border border-border group">
           {profile?.avatar_urls?.[0] ? (
             <img src={profile.avatar_urls[0]} alt="Profile" className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full bg-[#1e2b21] flex items-center justify-center">
-              <span className="text-4xl font-display text-white/20">
+            <div className="w-full h-full bg-card flex items-center justify-center">
+              <span className="text-4xl font-display text-foreground/20">
                 {profile?.first_name?.[0]}{profile?.last_name?.[0]}
               </span>
             </div>
@@ -84,24 +81,24 @@ export default function PortalProfile() {
 
         {/* Secondary Photos Column */}
         <div className="col-span-1 flex flex-col gap-3 h-full">
-          <div className="flex-1 rounded-2xl overflow-hidden border border-white/5 relative">
+          <div className="flex-1 rounded-2xl overflow-hidden border border-border relative">
             {profile?.avatar_urls?.[1] ? (
               <img src={profile.avatar_urls[1]} alt="Secondary 1" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full bg-[#253028] flex items-center justify-center">
-                <Camera className="w-6 h-6 text-white/20" />
+              <div className="w-full h-full bg-muted flex items-center justify-center">
+                <Camera className="w-6 h-6 text-muted-foreground/40" />
               </div>
             )}
           </div>
-          <div className="flex-1 rounded-2xl overflow-hidden border border-white/5 relative">
+          <div className="flex-1 rounded-2xl overflow-hidden border border-border relative">
             {profile?.avatar_urls?.[2] ? (
               <img src={profile.avatar_urls[2]} alt="Secondary 2" className="w-full h-full object-cover" />
             ) : (
               <div
                 onClick={handlePhotoEdit}
-                className="w-full h-full bg-[#1e2b21] border-2 border-dashed border-white/20 flex flex-col items-center justify-center cursor-pointer hover:bg-[#253028] transition-colors"
+                className="w-full h-full bg-card border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-muted transition-colors"
               >
-                <Camera className="w-6 h-6 text-white/40" />
+                <Camera className="w-6 h-6 text-muted-foreground/40" />
               </div>
             )}
           </div>
@@ -109,12 +106,12 @@ export default function PortalProfile() {
       </section>
 
       {/* Basic Info Card */}
-      <section className="bg-[#1e2b21] rounded-xl p-5 border border-white/5 shadow-sm">
+      <section className="bg-card rounded-xl p-5 border border-border shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-white">Basic Info</h2>
+          <h2 className="text-lg font-bold text-foreground">Basic Info</h2>
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="text-[#1a5b2a] text-sm font-medium hover:text-[#1a5b2a]/80"
+            className="text-[hsl(var(--accent-gold))] text-sm font-medium hover:text-[hsl(var(--accent-gold))]/80"
           >
             Edit
           </button>
@@ -122,28 +119,28 @@ export default function PortalProfile() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-xs text-slate-400 mb-1">Full Name</p>
-              <p className="text-sm font-medium text-slate-200">{profile?.first_name} {profile?.last_name}</p>
+              <p className="text-xs text-muted-foreground mb-1">Full Name</p>
+              <p className="text-sm font-medium text-foreground">{profile?.first_name} {profile?.last_name}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-400 mb-1">Age</p>
-              <p className="text-sm font-medium text-slate-200">{displayProfile.age || '-'}</p>
+              <p className="text-xs text-muted-foreground mb-1">Age</p>
+              <p className="text-sm font-medium text-foreground">{displayProfile.age || '-'}</p>
             </div>
             <div>
-              <p className="text-xs text-slate-400 mb-1">Location</p>
-              <div className="flex items-center gap-1 text-slate-200">
-                <MapPin className="w-3 h-3 text-[#1a5b2a]" />
+              <p className="text-xs text-muted-foreground mb-1">Location</p>
+              <div className="flex items-center gap-1 text-foreground">
+                <MapPin className="w-3 h-3 text-[hsl(var(--accent-gold))]" />
                 <span className="text-sm font-medium">{displayProfile.location}</span>
               </div>
             </div>
             <div>
-              <p className="text-xs text-slate-400 mb-1">Member Since</p>
-              <p className="text-sm font-medium text-slate-200">2024</p>
+              <p className="text-xs text-muted-foreground mb-1">Member Since</p>
+              <p className="text-sm font-medium text-foreground">2024</p>
             </div>
           </div>
           <div>
-            <p className="text-xs text-slate-400 mb-1">Bio</p>
-            <p className="text-sm text-slate-300 leading-relaxed font-light">
+            <p className="text-xs text-muted-foreground mb-1">Bio</p>
+            <p className="text-sm text-muted-foreground leading-relaxed font-light">
               {profile?.bio || 'No bio yet. Click edit to add one!'}
             </p>
           </div>
@@ -151,26 +148,26 @@ export default function PortalProfile() {
       </section>
 
       {/* Professional Info Card */}
-      <section className="bg-[#1e2b21] rounded-xl p-5 border border-white/5 shadow-sm">
+      <section className="bg-card rounded-xl p-5 border border-border shadow-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-white">Professional Info</h2>
+          <h2 className="text-lg font-bold text-foreground">Professional Info</h2>
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="text-[#1a5b2a] text-sm font-medium hover:text-[#1a5b2a]/80"
+            className="text-[hsl(var(--accent-gold))] text-sm font-medium hover:text-[hsl(var(--accent-gold))]/80"
           >
             Edit
           </button>
         </div>
         <div className="space-y-4">
           <div>
-            <p className="text-xs text-slate-400 mb-1">Job Title</p>
-            <p className="text-sm font-medium text-slate-200">{displayProfile.job_title}</p>
+            <p className="text-xs text-muted-foreground mb-1">Job Title</p>
+            <p className="text-sm font-medium text-foreground">{displayProfile.job_title}</p>
           </div>
           <div>
-            <p className="text-xs text-slate-400 mb-2">Interests</p>
+            <p className="text-xs text-muted-foreground mb-2">Interests</p>
             <div className="flex flex-wrap gap-2">
               {profile?.interests?.map((interest: string) => (
-                <span key={interest} className="px-3 py-1 bg-[#253028] rounded-full text-xs font-medium text-slate-300 border border-white/10">
+                <span key={interest} className="px-3 py-1 bg-muted rounded-full text-xs font-medium text-muted-foreground border border-border">
                   {interest}
                 </span>
               ))}
@@ -179,27 +176,24 @@ export default function PortalProfile() {
         </div>
       </section>
 
-      {/* Vibe Clip Card (Placeholder) */}
-      <section className="bg-[#1e2b21] rounded-xl p-5 border border-white/5 shadow-sm mb-6">
+      {/* Vibe Clip Card */}
+      <section className="bg-card rounded-xl p-5 border border-border shadow-sm mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-white">Vibe Clip</h2>
-          <span className="text-xs text-slate-500">0:15s</span>
+          <h2 className="text-lg font-bold text-foreground">Vibe Clip</h2>
+          <span className="text-xs text-muted-foreground">0:15s</span>
         </div>
-        <div className="relative w-full h-32 rounded-lg overflow-hidden bg-slate-900 group cursor-pointer">
-          {/* Background Visual */}
-          <div className="absolute inset-0 opacity-60 bg-gradient-to-r from-purple-900 via-blue-900 to-slate-900"></div>
-          {/* Waveform Simulation */}
+        <div className="relative w-full h-32 rounded-lg overflow-hidden bg-background group cursor-pointer">
+          <div className="absolute inset-0 opacity-60 bg-gradient-to-r from-purple-900 via-blue-900 to-background"></div>
           <div className="absolute inset-0 flex items-center justify-center gap-1 opacity-50">
-            <div className="w-1 h-8 bg-[#1a5b2a] rounded-full animate-pulse"></div>
-            <div className="w-1 h-12 bg-[#1a5b2a] rounded-full animate-pulse delay-75"></div>
-            <div className="w-1 h-6 bg-[#1a5b2a] rounded-full animate-pulse delay-100"></div>
-            <div className="w-1 h-10 bg-[#1a5b2a] rounded-full animate-pulse delay-150"></div>
-            <div className="w-1 h-4 bg-[#1a5b2a] rounded-full animate-pulse delay-200"></div>
+            <div className="w-1 h-8 bg-[hsl(var(--accent-gold))] rounded-full animate-pulse"></div>
+            <div className="w-1 h-12 bg-[hsl(var(--accent-gold))] rounded-full animate-pulse delay-75"></div>
+            <div className="w-1 h-6 bg-[hsl(var(--accent-gold))] rounded-full animate-pulse delay-100"></div>
+            <div className="w-1 h-10 bg-[hsl(var(--accent-gold))] rounded-full animate-pulse delay-150"></div>
+            <div className="w-1 h-4 bg-[hsl(var(--accent-gold))] rounded-full animate-pulse delay-200"></div>
           </div>
-          {/* Play Button Overlay */}
           <div className="absolute inset-0 flex items-center justify-center z-10">
-            <div className="w-12 h-12 rounded-full bg-[#1a5b2a]/20 backdrop-blur-sm flex items-center justify-center border border-[#1a5b2a]/50 group-hover:scale-110 transition-transform">
-              <Play className="w-5 h-5 text-[#1a5b2a] fill-current" />
+            <div className="w-12 h-12 rounded-full bg-[hsl(var(--accent-gold))]/20 backdrop-blur-sm flex items-center justify-center border border-[hsl(var(--accent-gold))]/50 group-hover:scale-110 transition-transform">
+              <Play className="w-5 h-5 text-[hsl(var(--accent-gold))] fill-current" />
             </div>
           </div>
         </div>

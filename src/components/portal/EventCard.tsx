@@ -52,7 +52,7 @@ export const EventCard = ({
         const colors = {
             patron: 'bg-white/10 text-white/70 border border-white/20',
             fellow: 'bg-primary/20 text-primary border border-primary/30',
-            founder: 'bg-[#d4af37]/20 text-[#d4af37] border border-[#d4af37]/30',
+            founder: 'bg-[hsl(var(--accent-gold))]/20 text-[hsl(var(--accent-gold))] border border-[hsl(var(--accent-gold))]/30',
         };
 
         return (
@@ -72,13 +72,13 @@ export const EventCard = ({
     };
 
     return (
-        <Card className="overflow-hidden group premium-card hover-luxury border-white/[0.08] bg-white/[0.04]">
+        <Card className="overflow-hidden group border-border bg-card">
             {/* Image */}
             <div className="aspect-[16/9] relative overflow-hidden">
                 <img
                     src={event.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}
                     alt={event.title}
-                    className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${!canAccess ? 'opacity-50' : ''
+                    className={`w-full h-full object-cover transition-transform duration-200 ${!canAccess ? 'opacity-50' : ''
                         }`}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
@@ -106,7 +106,7 @@ export const EventCard = ({
                 </div>
                 {!canAccess && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                        <Crown className="h-12 w-12 text-[#d4af37]" />
+                        <Crown className="h-12 w-12 text-[hsl(var(--accent-gold))]" />
                     </div>
                 )}
             </div>
@@ -127,7 +127,7 @@ export const EventCard = ({
                             const spotsLeft = event.capacity ? event.capacity - attending : null;
                             if (isFull) {
                                 return (
-                                    <span className="text-[#d4af37] font-medium">
+                                    <span className="text-[hsl(var(--accent-gold))] font-medium">
                                         Sold Out
                                         {waitlistCount > 0 && (
                                             <span className="text-white/50 ml-2">({waitlistCount} on waitlist)</span>
@@ -137,7 +137,7 @@ export const EventCard = ({
                             }
                             if (spotsLeft !== null && spotsLeft <= 5) {
                                 return (
-                                    <span className="text-[#d4af37] font-medium">
+                                    <span className="text-[hsl(var(--accent-gold))] font-medium">
                                         Only {spotsLeft} spot{spotsLeft !== 1 ? 's' : ''} left!
                                         {waitlistCount > 0 && (
                                             <span className="text-muted-foreground ml-2">({waitlistCount} on waitlist)</span>
@@ -149,7 +149,7 @@ export const EventCard = ({
                                 <span>
                                     {attending} / {event.capacity || '∞'} attending
                                     {waitlistCount > 0 && (
-                                        <span className="text-amber-600 ml-2">({waitlistCount} on waitlist)</span>
+                                        <span className="text-[hsl(var(--accent-gold))] ml-2">({waitlistCount} on waitlist)</span>
                                     )}
                                 </span>
                             );
@@ -168,8 +168,8 @@ export const EventCard = ({
 
                 {/* Waitlist status */}
                 {waitlistEntry && (
-                    <div className="mb-4 p-3 bg-[#d4af37]/10 border border-[#d4af37]/20 rounded-lg">
-                        <div className="flex items-center gap-2 text-[#d4af37]">
+                    <div className="mb-4 p-3 bg-[hsl(var(--accent-gold))]/10 border border-[hsl(var(--accent-gold))]/20 rounded-lg">
+                        <div className="flex items-center gap-2 text-[hsl(var(--accent-gold))]">
                             <Clock3 className="h-4 w-4" />
                             <span className="text-sm font-medium">
                                 {waitlistEntry.status === 'notified'

@@ -28,7 +28,7 @@ export function PortalOnboardingLayout({
       </video>
 
       {/* Gradient Overlay — Stitch forest green */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a110c]/90 via-[#131f16]/85 to-[#0f2915]/80" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/85 to-background/80" />
 
       {/* Header */}
       <header className="relative z-10 flex items-center justify-between px-6 py-4">
