@@ -957,7 +957,7 @@ export default function AuthPage() {
       </video>
 
       {/* Gradient Overlay — Stitch forest green */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a110c]/95 via-[#131f16]/90 to-[#0f2915]/85" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background/85" />
 
       {/* Floating Particles */}
       <FloatingParticles count={20} />

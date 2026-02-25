@@ -26,7 +26,7 @@ export function PortalBottomNav() {
       aria-label="Portal navigation"
     >
       {/* Solid surface background */}
-      <div className="absolute inset-0 bg-surface border-t border-border" />
+      <div className="absolute inset-0 bg-card border-t border-border" />
 
       <div className="relative flex items-center justify-around h-16">
         {tabs.map((tab) => {
@@ -39,7 +39,7 @@ export function PortalBottomNav() {
               className={cn(
                 'flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors duration-200',
                 active
-                  ? 'text-[hsl(var(--gold))]'
+                  ? 'text-[hsl(var(--accent-gold))]'
                   : 'text-muted-foreground'
               )}
               aria-current={active ? 'page' : undefined}

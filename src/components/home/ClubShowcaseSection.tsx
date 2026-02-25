@@ -145,7 +145,7 @@ export const ClubShowcaseSection = () => {
                             </div>
 
                             {/* Content Portion */}
-                            <div className={`flex flex-col flex-grow relative overflow-hidden ${isFullWidth ? 'w-full md:w-1/2 p-8 md:p-16 flex justify-center bg-card dark:bg-[#101e17] text-foreground dark:text-white' : 'p-6 md:p-8'}`}>
+                            <div className={`flex flex-col flex-grow relative overflow-hidden ${isFullWidth ? 'w-full md:w-1/2 p-8 md:p-16 flex justify-center bg-card text-foreground' : 'p-6 md:p-8'}`}>
                                 {/* Subtle gold top border effect on hover (only for vertical cards) */}
                                 {!isFullWidth && (
                                     <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[hsl(var(--accent-gold))]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

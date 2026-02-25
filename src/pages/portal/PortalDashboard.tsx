@@ -90,7 +90,7 @@ export default function PortalDashboard() {
       )}
 
       {/* Welcome Header */}
-      <div>
+      <div className="text-center max-w-[680px] mx-auto mb-8">
         <h1 className="font-display font-semibold text-3xl md:text-4xl text-foreground mb-2">
           Welcome back, {profile?.first_name || 'Member'}
         </h1>

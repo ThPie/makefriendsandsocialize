@@ -97,13 +97,13 @@ export default function PortalBilling() {
       />
 
       <div className="space-y-6">
-        <div>
+        <div className="text-center max-w-[680px] mx-auto mb-8">
           <h1 className="font-display text-2xl md:text-3xl text-foreground">Billing & Subscriptions</h1>
           <p className="text-muted-foreground">Manage your plan and payment history</p>
         </div>
 
         {/* Current Subscription */}
-        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
+        <Card className="border-border bg-card backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-primary" />

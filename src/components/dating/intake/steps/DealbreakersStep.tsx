@@ -34,7 +34,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
     const inputErrorClass = (field: string) =>
         hasError(field)
             ? "border-red-500/70 ring-1 ring-red-500/30"
-            : "border-white/10";
+            : "border-border";
 
     const getDealbreakersPrompt = () => {
         if (isCasualOnly) {
@@ -58,7 +58,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <CardHeader className="text-center pb-8 border-b border-white/10">
+            <CardHeader className="text-center pb-8 border-b border-border">
                 <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
                     <Shield className="h-6 w-6 text-dating-terracotta" />
                 </div>
@@ -84,7 +84,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         value={formData.dealbreakers}
                         onChange={(e) => updateField("dealbreakers", e.target.value)}
                         placeholder="What would be non-negotiable for you in a partner..."
-                        className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                        className="min-h-[120px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
@@ -100,14 +100,14 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         }
                     </p>
                     <Select value={formData.politics_stance} onValueChange={(value) => updateField("politics_stance", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                        <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                             <SelectValue placeholder="Select your preference" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            <SelectItem value="important" className="focus:bg-white/10 focus:text-white">Very important - we need to align</SelectItem>
-                            <SelectItem value="somewhat" className="focus:bg-white/10 focus:text-white">Somewhat important - open to discussion</SelectItem>
-                            <SelectItem value="flexible" className="focus:bg-white/10 focus:text-white">Flexible - it's not a priority</SelectItem>
-                            <SelectItem value="prefer_not" className="focus:bg-white/10 focus:text-white">Prefer not to discuss</SelectItem>
+                        <SelectContent className="bg-card border-border text-white">
+                            <SelectItem value="important" className="focus:bg-muted focus:text-white">Very important - we need to align</SelectItem>
+                            <SelectItem value="somewhat" className="focus:bg-muted focus:text-white">Somewhat important - open to discussion</SelectItem>
+                            <SelectItem value="flexible" className="focus:bg-muted focus:text-white">Flexible - it's not a priority</SelectItem>
+                            <SelectItem value="prefer_not" className="focus:bg-muted focus:text-white">Prefer not to discuss</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -124,14 +124,14 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         }
                     </p>
                     <Select value={formData.religion_stance} onValueChange={(value) => updateField("religion_stance", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                        <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                             <SelectValue placeholder="Select your preference" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            <SelectItem value="important" className="focus:bg-white/10 focus:text-white">Very important - we need to align</SelectItem>
-                            <SelectItem value="somewhat" className="focus:bg-white/10 focus:text-white">Somewhat important - open to discussion</SelectItem>
-                            <SelectItem value="flexible" className="focus:bg-white/10 focus:text-white">Flexible - it's not a priority</SelectItem>
-                            <SelectItem value="prefer_not" className="focus:bg-white/10 focus:text-white">Prefer not to discuss</SelectItem>
+                        <SelectContent className="bg-card border-border text-white">
+                            <SelectItem value="important" className="focus:bg-muted focus:text-white">Very important - we need to align</SelectItem>
+                            <SelectItem value="somewhat" className="focus:bg-muted focus:text-white">Somewhat important - open to discussion</SelectItem>
+                            <SelectItem value="flexible" className="focus:bg-muted focus:text-white">Flexible - it's not a priority</SelectItem>
+                            <SelectItem value="prefer_not" className="focus:bg-muted focus:text-white">Prefer not to discuss</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -152,13 +152,13 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             ? "What are you excited about in life right now..."
                             : "Be honest about what you're looking for in the long term..."
                         }
-                        className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                        className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
                 {/* Political Issues - specific alignment */}
                 {isSeekingSerious && (formData.politics_stance === "important" || formData.politics_stance === "somewhat") && (
-                    <div className="space-y-4 animate-fade-in pt-4 border-t border-white/10">
+                    <div className="space-y-4 animate-fade-in pt-4 border-t border-border">
                         <Label className="text-white/80">Which political topics are genuinely non-negotiable for you?</Label>
                         <p className="text-sm text-white/40">
                             Research shows specific issue alignment matters more than general political identity. Select all that apply.
@@ -173,7 +173,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                                     onClick={() => toggleArrayItem("political_issues", issue)}
                                     className={(formData.political_issues || []).includes(issue)
                                         ? "bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-transparent"
-                                        : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:text-white"}
+                                        : "bg-white/5 border-border text-white/70 hover:bg-muted hover:text-white"}
                                 >
                                     {issue}
                                 </Button>
@@ -184,20 +184,20 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
 
                 {/* Religious Practice Depth */}
                 {isSeekingSerious && (formData.religion_stance === "important" || formData.religion_stance === "somewhat") && (
-                    <div className="space-y-6 animate-fade-in pt-4 border-t border-white/10">
+                    <div className="space-y-6 animate-fade-in pt-4 border-t border-border">
                         <div className="space-y-3">
                             <Label className="text-white/80">How would you describe your current religious practice?</Label>
                             <Select value={formData.religious_practice} onValueChange={(value) => updateField("religious_practice", value)}>
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                                <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your practice" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                    <SelectItem value="actively_practicing" className="focus:bg-white/10 focus:text-white">Actively practicing (weekly+)</SelectItem>
-                                    <SelectItem value="occasionally" className="focus:bg-white/10 focus:text-white">Occasionally practicing</SelectItem>
-                                    <SelectItem value="culturally_connected" className="focus:bg-white/10 focus:text-white">Culturally connected but not practicing</SelectItem>
-                                    <SelectItem value="spiritual_not_religious" className="focus:bg-white/10 focus:text-white">Spiritual but not religious</SelectItem>
-                                    <SelectItem value="agnostic_atheist" className="focus:bg-white/10 focus:text-white">Agnostic/Atheist</SelectItem>
-                                    <SelectItem value="exploring" className="focus:bg-white/10 focus:text-white">Exploring/Questioning</SelectItem>
+                                <SelectContent className="bg-card border-border text-white">
+                                    <SelectItem value="actively_practicing" className="focus:bg-muted focus:text-white">Actively practicing (weekly+)</SelectItem>
+                                    <SelectItem value="occasionally" className="focus:bg-muted focus:text-white">Occasionally practicing</SelectItem>
+                                    <SelectItem value="culturally_connected" className="focus:bg-muted focus:text-white">Culturally connected but not practicing</SelectItem>
+                                    <SelectItem value="spiritual_not_religious" className="focus:bg-muted focus:text-white">Spiritual but not religious</SelectItem>
+                                    <SelectItem value="agnostic_atheist" className="focus:bg-muted focus:text-white">Agnostic/Atheist</SelectItem>
+                                    <SelectItem value="exploring" className="focus:bg-muted focus:text-white">Exploring/Questioning</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -205,15 +205,15 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         <div className="space-y-3">
                             <Label className="text-white/80">Would you want to raise children in a specific faith tradition?</Label>
                             <Select value={formData.raise_children_faith} onValueChange={(value) => updateField("raise_children_faith", value)}>
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                                <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your preference" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                    <SelectItem value="yes_important" className="focus:bg-white/10 focus:text-white">Yes, this is important to me</SelectItem>
-                                    <SelectItem value="open_to_discussion" className="focus:bg-white/10 focus:text-white">Open to discussion with partner</SelectItem>
-                                    <SelectItem value="no_preference" className="focus:bg-white/10 focus:text-white">No specific preference</SelectItem>
-                                    <SelectItem value="prefer_secular" className="focus:bg-white/10 focus:text-white">Would prefer secular upbringing</SelectItem>
-                                    <SelectItem value="not_applicable" className="focus:bg-white/10 focus:text-white">Not applicable / not planning children</SelectItem>
+                                <SelectContent className="bg-card border-border text-white">
+                                    <SelectItem value="yes_important" className="focus:bg-muted focus:text-white">Yes, this is important to me</SelectItem>
+                                    <SelectItem value="open_to_discussion" className="focus:bg-muted focus:text-white">Open to discussion with partner</SelectItem>
+                                    <SelectItem value="no_preference" className="focus:bg-muted focus:text-white">No specific preference</SelectItem>
+                                    <SelectItem value="prefer_secular" className="focus:bg-muted focus:text-white">Would prefer secular upbringing</SelectItem>
+                                    <SelectItem value="not_applicable" className="focus:bg-muted focus:text-white">Not applicable / not planning children</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -222,7 +222,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
 
                 {/* Trust & Fidelity - Serious only */}
                 {isSeekingSerious && (
-                    <div className="space-y-6 pt-6 border-t border-white/10 animate-fade-in">
+                    <div className="space-y-6 pt-6 border-t border-border animate-fade-in">
                         <div className="flex items-center gap-2">
                             <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full font-medium border border-[hsl(var(--accent-gold))]/20">
                                 Critical factor
@@ -242,21 +242,21 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                                 value={formData.trust_fidelity_views}
                                 onChange={(e) => updateField("trust_fidelity_views", e.target.value)}
                                 placeholder="Your experiences and expectations around trust..."
-                                className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                                className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                             />
                         </div>
 
                         <div className="space-y-3">
                             <Label className="text-white/80">How flexible are you about where you live long-term?</Label>
                             <Select value={formData.geographic_flexibility} onValueChange={(value) => updateField("geographic_flexibility", value)}>
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                                <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your flexibility" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                    <SelectItem value="deeply_rooted" className="focus:bg-white/10 focus:text-white">Deeply rooted - not moving</SelectItem>
-                                    <SelectItem value="open_opportunity" className="focus:bg-white/10 focus:text-white">Open to moving for the right opportunity</SelectItem>
-                                    <SelectItem value="seeking_relocate" className="focus:bg-white/10 focus:text-white">Actively seeking to relocate</SelectItem>
-                                    <SelectItem value="flexible_partner" className="focus:bg-white/10 focus:text-white">Flexible - home is where my partner is</SelectItem>
+                                <SelectContent className="bg-card border-border text-white">
+                                    <SelectItem value="deeply_rooted" className="focus:bg-muted focus:text-white">Deeply rooted - not moving</SelectItem>
+                                    <SelectItem value="open_opportunity" className="focus:bg-muted focus:text-white">Open to moving for the right opportunity</SelectItem>
+                                    <SelectItem value="seeking_relocate" className="focus:bg-muted focus:text-white">Actively seeking to relocate</SelectItem>
+                                    <SelectItem value="flexible_partner" className="focus:bg-muted focus:text-white">Flexible - home is where my partner is</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -271,14 +271,14 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                                 value={formData.ten_year_vision}
                                 onChange={(e) => updateField("ten_year_vision", e.target.value)}
                                 placeholder="Paint a picture of your ideal future lifestyle..."
-                                className="min-h-[80px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                                className="min-h-[80px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                             />
                         </div>
                     </div>
                 )}
 
                 {/* Self-Awareness Section */}
-                <div className="space-y-6 pt-6 border-t border-white/10">
+                <div className="space-y-6 pt-6 border-t border-border">
                     <div className="flex items-center gap-2">
                         <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full font-medium border border-[hsl(var(--accent-gold))]/20">
                             Self-awareness check
@@ -298,7 +298,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.accountability_reflection}
                             onChange={(e) => updateField("accountability_reflection", e.target.value)}
                             placeholder="Self-awareness about past patterns is attractive..."
-                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                            className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
 
@@ -312,7 +312,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.ex_admiration}
                             onChange={(e) => updateField("ex_admiration", e.target.value)}
                             placeholder="Even if it ended badly, what did you appreciate about them..."
-                            className="min-h-[60px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                            className="min-h-[60px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
 
@@ -326,7 +326,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.growth_work}
                             onChange={(e) => updateField("growth_work", e.target.value)}
                             placeholder="Therapy, books, workshops, habits, skills..."
-                            className="min-h-[60px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                            className="min-h-[60px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
 
@@ -343,7 +343,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.finding_love_fear}
                             onChange={(e) => updateField("finding_love_fear", e.target.value)}
                             placeholder="Be honest with yourself - awareness is the first step to change..."
-                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                            className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
                 </div>

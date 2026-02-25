@@ -34,8 +34,8 @@ export const ContactFormSection = () => {
   };
 
   return (
-    <section className="w-full px-6 md:px-12 lg:px-24 py-20 md:py-32 bg-background" id="contact">
-      <div ref={ref} className={`mx-auto max-w-[1200px] transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+    <section className="section-spacing bg-background" id="contact">
+      <div ref={ref} className={`content-container transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
         <div className="grid grid-cols-1 lg:grid-cols-2 rounded-2xl overflow-hidden border border-border">
           {/* Left Side - Image */}
           <div className="relative hidden lg:block">
@@ -49,7 +49,7 @@ export const ContactFormSection = () => {
             <div className="relative z-10 flex flex-col justify-end h-full p-10 xl:p-14">
               <h2 className="font-display text-3xl xl:text-4xl text-white leading-tight">
                 Let's Start a<br />
-                <span className="italic text-[hsl(var(--gold))]">Conversation</span>
+                <span className="italic text-[hsl(var(--accent-gold))]">Conversation</span>
               </h2>
               <p className="mt-4 text-white/70 text-sm max-w-md leading-relaxed">
                 Whether you're curious about membership, planning an event, or simply want to learn more—we'd love to hear from you.
@@ -58,11 +58,11 @@ export const ContactFormSection = () => {
           </div>
 
           {/* Right Side - Form */}
-          <div className="bg-surface px-6 py-12 md:px-10 lg:px-14 flex items-center">
+          <div className="bg-card px-6 py-12 md:px-10 lg:px-14 flex items-center">
             <div className="w-full max-w-lg mx-auto">
               <div className="lg:hidden mb-10">
                 <h2 className="font-display text-3xl text-foreground">
-                  Get in <span className="italic text-[hsl(var(--gold))]">Touch</span>
+                  Get in <span className="italic text-[hsl(var(--accent-gold))]">Touch</span>
                 </h2>
                 <p className="mt-2 text-muted-foreground text-sm">We'd love to hear from you.</p>
               </div>
@@ -83,7 +83,7 @@ export const ContactFormSection = () => {
                   <SelectTrigger className="h-12 bg-background border-border">
                     <SelectValue placeholder="What can we help you with? *" />
                   </SelectTrigger>
-                  <SelectContent className="bg-surface border-border">
+                  <SelectContent className="bg-card border-border">
                     <SelectItem value="membership">Membership Questions</SelectItem>
                     <SelectItem value="events">Event Information</SelectItem>
                     <SelectItem value="private-events">Private Events & Bookings</SelectItem>
@@ -109,7 +109,7 @@ export const ContactFormSection = () => {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-[hsl(var(--gold))] hover:bg-[hsl(var(--gold-light))] text-background font-medium rounded-[10px]"
+                  className="w-full h-12 bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold-light))] text-background font-medium rounded-[10px]"
                 >
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>

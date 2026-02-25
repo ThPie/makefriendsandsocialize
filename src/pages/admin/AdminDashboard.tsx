@@ -93,7 +93,7 @@ export default function AdminDashboard() {
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5 space-y-3"
+              className="rounded-xl border border-border bg-card p-5 space-y-3"
             >
               <Skeleton className="h-10 w-10 rounded-lg" />
               <Skeleton className="h-4 w-20" />
@@ -102,7 +102,7 @@ export default function AdminDashboard() {
           ))}
         </div>
         {/* Tier breakdown skeleton */}
-        <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-6">
+        <div className="rounded-xl border border-border bg-card p-6">
           <Skeleton className="h-6 w-40 mb-4" />
           <div className="grid grid-cols-3 gap-4">
             <Skeleton className="h-20 rounded-lg" />
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
       label: 'Total Members',
       value: stats?.totalMembers ?? 0,
       icon: Users,
-      iconBg: 'bg-white/[0.06]',
+      iconBg: 'bg-muted',
       iconColor: 'text-muted-foreground',
       sub: 'Active memberships',
     },
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
       label: 'Active Conn.',
       value: stats?.activeConnections ?? 0,
       icon: Heart,
-      iconBg: 'bg-white/[0.06]',
+      iconBg: 'bg-muted',
       iconColor: 'text-muted-foreground',
       sub: 'Accepted intros',
     },
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
       label: 'Revenue',
       value: '$' + ((stats?.totalMembers ?? 0) * 15).toLocaleString(),
       icon: DollarSign,
-      iconBg: 'bg-white/[0.06]',
+      iconBg: 'bg-muted',
       iconColor: 'text-muted-foreground',
       sub: 'Est. monthly',
       isString: true,
@@ -155,7 +155,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div>
+      <div className="text-center max-w-[680px] mx-auto mb-8">
         <p className="text-sm text-muted-foreground">
           {format(new Date(), 'EEEE, d MMM')}
         </p>
@@ -169,7 +169,7 @@ export default function AdminDashboard() {
         {statCards.map((card) => (
           <div
             key={card.label}
-            className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5 space-y-3"
+            className="rounded-xl border border-border bg-card p-5 space-y-3"
           >
             <div className="flex items-center justify-between">
               <div className={`p-2 rounded-lg ${card.iconBg}`}>
@@ -192,7 +192,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Tier Breakdown */}
-      <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-6">
+      <div className="rounded-xl border border-border bg-card p-6">
         <h2 className="font-display text-xl text-foreground flex items-center gap-2 mb-4">
           <Crown className="h-5 w-5 text-[hsl(var(--accent-gold))]" />
           Membership Tiers
@@ -201,7 +201,7 @@ export default function AdminDashboard() {
           {[
             { label: 'Patron', count: stats?.tierBreakdown.patron ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
             { label: 'Fellow', count: stats?.tierBreakdown.fellow ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
-            { label: 'Founder', count: stats?.tierBreakdown.founder ?? 0, color: 'bg-emerald-500/10 text-emerald-400' },
+            { label: 'Founder', count: stats?.tierBreakdown.founder ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
           ].map((tier) => (
             <div
               key={tier.label}
@@ -225,7 +225,7 @@ export default function AdminDashboard() {
         <Button
           variant="outline"
           asChild
-          className="dark:border-white/[0.12] dark:hover:bg-white/[0.04]"
+          className="dark:border-border dark:hover:bg-muted"
         >
           <TransitionLink to="/admin/members">
             <Users className="h-4 w-4 mr-2" />
@@ -235,7 +235,7 @@ export default function AdminDashboard() {
         <Button
           variant="outline"
           asChild
-          className="dark:border-white/[0.12] dark:hover:bg-white/[0.04]"
+          className="dark:border-border dark:hover:bg-muted"
         >
           <TransitionLink to="/admin/analytics">
             <TrendingUp className="h-4 w-4 mr-2" />
