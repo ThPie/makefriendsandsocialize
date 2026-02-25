@@ -224,7 +224,7 @@ export default function PortalPerks() {
       {featuredPerks.length > 0 && (
         <div className="space-y-4">
           <h2 className="font-display text-xl text-foreground flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-[#d4af37]" />
+            <Sparkles className="h-5 w-5 text-[hsl(var(--accent-gold))]" />
             Featured Offers
           </h2>
           <div className="grid gap-6 md:grid-cols-2">
@@ -301,7 +301,7 @@ export default function PortalPerks() {
               <div className="space-y-2">
                 <p className="text-sm font-medium">Your Code</p>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 p-3 bg-white/[0.06] border border-white/[0.08] rounded-lg font-mono text-center font-bold tracking-wider">
+                  <div className="flex-1 p-3 bg-muted border border-border rounded-lg font-mono text-center font-bold tracking-wider">
                     {selectedPerk.redemption_code}
                   </div>
                   <Button
@@ -320,7 +320,7 @@ export default function PortalPerks() {
             )}
 
             {selectedPerk?.redemption_instructions && (
-              <div className="p-3 bg-white/[0.04] border border-white/[0.08] rounded-lg">
+              <div className="p-3 bg-card border border-border rounded-lg">
                 <p className="text-sm font-medium mb-1">How to redeem</p>
                 <p className="text-sm text-muted-foreground">
                   {selectedPerk.redemption_instructions}
@@ -354,7 +354,7 @@ function PerkCard({ perk, canAccess, onReveal, featured }: PerkCardProps) {
 
   return (
     <Card
-      className={`overflow-hidden transition-all hover:shadow-md hover:-translate-y-1 border-white/[0.08] bg-white/[0.04] backdrop-blur-sm ${featured ? 'border-[#d4af37]/20 bg-gradient-to-br from-[#d4af37]/5 to-transparent' : ''
+      className={`overflow-hidden transition-colors duration-200 border-border bg-card ${featured ? 'border-[hsl(var(--accent-gold))]/20' : ''
         } ${!canAccess ? 'opacity-75' : ''}`}
     >
       <CardHeader className="pb-3">
@@ -367,7 +367,7 @@ function PerkCard({ perk, canAccess, onReveal, featured }: PerkCardProps) {
                 className="h-12 w-12 rounded-lg object-cover"
               />
             ) : (
-              <div className="h-12 w-12 rounded-lg bg-white/[0.06] flex items-center justify-center">
+              <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center">
                 <Icon className="h-6 w-6 text-muted-foreground" />
               </div>
             )}
@@ -385,7 +385,7 @@ function PerkCard({ perk, canAccess, onReveal, featured }: PerkCardProps) {
       <CardContent>
         <h4 className="font-medium text-foreground mb-1">{perk.perk_title}</h4>
         {perk.discount_value && (
-          <p className="text-lg font-bold text-[#d4af37] mb-2">{perk.discount_value}</p>
+          <p className="text-lg font-bold text-[hsl(var(--accent-gold))] mb-2">{perk.discount_value}</p>
         )}
         {perk.perk_description && (
           <p className="text-sm text-muted-foreground line-clamp-2 mb-4">

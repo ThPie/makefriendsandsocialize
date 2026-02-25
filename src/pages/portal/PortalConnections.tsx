@@ -138,7 +138,7 @@ export default function PortalConnections() {
     switch (status) {
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[#d4af37]/15 text-[#d4af37] border border-[#d4af37]/25">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-[hsl(var(--accent-gold))]/15 text-[hsl(var(--accent-gold))] border border-[hsl(var(--accent-gold))]/25">
             <Clock className="h-3 w-3" />
             Pending
           </span>
@@ -167,8 +167,8 @@ export default function PortalConnections() {
     return (
       <div className="max-w-2xl mx-auto text-center py-16">
         <div className="mb-8">
-          <div className="w-20 h-20 mx-auto rounded-full bg-[#d4af37]/10 flex items-center justify-center mb-6 border border-[#d4af37]/20">
-            <Crown className="h-10 w-10 text-[#d4af37]" />
+          <div className="w-20 h-20 mx-auto rounded-full bg-[hsl(var(--accent-gold))]/10 flex items-center justify-center mb-6 border border-[hsl(var(--accent-gold))]/20">
+            <Crown className="h-10 w-10 text-[hsl(var(--accent-gold))]" />
           </div>
           <h1 className="font-display text-3xl md:text-4xl text-foreground mb-4">
             The Network
@@ -249,7 +249,7 @@ export default function PortalConnections() {
 
         <TabsContent value="received" className="space-y-4">
           {receivedConnections.length === 0 ? (
-            <Card className="border-white/[0.08] bg-white/[0.04]">
+            <Card className="border-border bg-card">
               <CardContent className="py-12 text-center">
                 <Heart className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
                 <h3 className="font-display text-lg mb-2 text-foreground">No Requests Yet</h3>
@@ -327,7 +327,7 @@ export default function PortalConnections() {
         {/* Sent Tab */}
         <TabsContent value="sent" className="space-y-4">
           {sentConnections.length === 0 ? (
-            <Card className="border-white/[0.08] bg-white/[0.04]">
+            <Card className="border-border bg-card">
               <CardContent className="py-12 text-center">
                 <MessageCircle className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
                 <p className="text-muted-foreground mb-4">No introduction requests sent yet</p>
@@ -389,7 +389,7 @@ export default function PortalConnections() {
 
         <TabsContent value="accepted" className="space-y-4">
           {acceptedConnections.length === 0 ? (
-            <Card className="border-white/[0.08] bg-white/[0.04]">
+            <Card className="border-border bg-card">
               <CardContent className="py-12 text-center">
                 <Heart className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
                 <h3 className="font-display text-lg mb-2 text-foreground">No Connections Yet</h3>

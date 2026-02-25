@@ -258,7 +258,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
 
               {/* Mobile Header — Stitch style */}
               <header
-                className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border/30 dark:border-white/[0.06] bg-background/95 dark:bg-[#131f16]/95 backdrop-blur-lg md:hidden"
+                className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border/30 bg-background/95 backdrop-blur-lg md:hidden"
                 style={{ paddingTop: 'var(--safe-top, 0px)' }}
               >
                 <div className="flex items-center gap-3">

@@ -18,22 +18,14 @@ export function DashboardStats() {
         queryFn: async () => {
             if (!user) return 0;
             const now = new Date();
-            // Format as YYYY-MM-DD
             const today = now.toISOString().split('T')[0];
-
-            // Get count of confirmed RSVPs for future events
-            // We need to join with events table to filter by date
             const { count, error } = await supabase
                 .from('event_rsvps')
                 .select('event_id, events!inner(date)', { count: 'exact', head: true })
                 .eq('user_id', user.id)
                 .eq('status', 'confirmed')
                 .gte('events.date', today);
-
-            if (error) {
-                console.error('Error fetching event stats:', error);
-                return 0;
-            }
+            if (error) { console.error('Error fetching event stats:', error); return 0; }
             return count || 0;
         },
         enabled: !!user,
@@ -52,17 +44,12 @@ export function DashboardStats() {
                 .from('member_badges')
                 .select('*', { count: 'exact', head: true })
                 .eq('user_id', user.id);
-
-            if (error) {
-                console.error('Error fetching badge stats:', error);
-                return 0;
-            }
+            if (error) { console.error('Error fetching badge stats:', error); return 0; }
             return count || 0;
         },
         enabled: !!user,
     });
 
-    // Calculate display values
     const displayPoints = loyaltyPoints > 0 ? loyaltyPoints : (badgeCount * 150);
     const nextTierPoints = 2000;
     const progress = Math.min((displayPoints / nextTierPoints) * 100, 100);
@@ -77,11 +64,7 @@ export function DashboardStats() {
                 .select('*', { count: 'exact', head: true })
                 .eq('user_id', user.id)
                 .eq('is_read', false);
-
-            if (error) {
-                console.error('Error fetching notification stats:', error);
-                return 0;
-            }
+            if (error) { console.error('Error fetching notification stats:', error); return 0; }
             return count || 0;
         },
         enabled: !!user,
@@ -94,7 +77,7 @@ export function DashboardStats() {
         return (
             <div className="grid gap-6 md:grid-cols-3">
                 {[1, 2, 3].map(i => (
-                    <Card key={i} className="h-48 bg-white/[0.04] backdrop-blur-sm border-white/[0.08]">
+                    <Card key={i} className="h-48 bg-card border-border">
                         <CardContent className="p-6">
                             <Skeleton className="h-12 w-12 rounded-xl mb-4" />
                             <Skeleton className="h-8 w-16 mb-2" />
@@ -111,7 +94,7 @@ export function DashboardStats() {
             id: 'events',
             label: 'Upcoming Events',
             value: String(eventCount).padStart(2, '0'),
-            subtext: '+1 this week', // Placeholder
+            subtext: '+1 this week',
             icon: Calendar,
             color: 'text-primary',
             bg: 'bg-primary/10',
@@ -125,8 +108,8 @@ export function DashboardStats() {
             value: displayPoints.toLocaleString(),
             subtext: null,
             icon: Crown,
-            color: 'text-[#d4af37]',
-            bg: 'bg-[#d4af37]/10',
+            color: 'text-[hsl(var(--accent-gold))]',
+            bg: 'bg-[hsl(var(--accent-gold))]/10',
             tierBadge: getTierDisplayName(membership?.tier).toUpperCase(),
             showProgress: true,
             progressValue: progress,
@@ -140,7 +123,7 @@ export function DashboardStats() {
             icon: Bell,
             color: 'text-primary',
             bg: 'bg-primary/10',
-            link: '/portal/notifications', // Placeholder route if exists or just triggers bell
+            link: '/portal/notifications',
             showProgress: false,
             preview: true,
         }
@@ -149,7 +132,7 @@ export function DashboardStats() {
     return (
         <div className="grid gap-6 md:grid-cols-3">
             {stats.map((stat) => (
-                <Card key={stat.id} className="relative overflow-hidden border-white/[0.08] bg-white/[0.04] backdrop-blur-sm hover:bg-white/[0.06] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <Card key={stat.id} className="relative overflow-hidden border-border bg-card transition-colors duration-200">
                     <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-6">
                             <div className={cn("p-3 rounded-xl", stat.bg)}>
@@ -163,7 +146,7 @@ export function DashboardStats() {
                             )}
 
                             {stat.subtext && (
-                                <div className="text-xs font-medium text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">
+                                <div className="text-xs font-medium text-[hsl(var(--accent-gold))] bg-[hsl(var(--accent-gold))]/10 px-2 py-1 rounded-md">
                                     {stat.subtext}
                                 </div>
                             )}
@@ -181,7 +164,7 @@ export function DashboardStats() {
                             <div className="mt-6 space-y-2">
                                 <div className="h-2 w-full bg-secondary/50 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-gradient-to-r from-primary to-[#d4af37] rounded-full transition-all duration-1000 ease-out"
+                                        className="h-full bg-[hsl(var(--accent-gold))] rounded-full transition-all duration-200 ease-out"
                                         style={{ width: `${stat.progressValue}%` }}
                                     />
                                 </div>
