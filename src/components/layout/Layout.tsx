@@ -18,7 +18,7 @@ export const Layout = memo(forwardRef<HTMLDivElement, LayoutProps>(({ children }
       <JsonLd />
       <SkipLink />
       <Header />
-      <main id="main-content" className={`flex-1 ${isHome ? 'pt-0' : 'pt-[81px]'}`}>
+      <main id="main-content" className={`flex-1 ${isHome ? 'pt-0' : 'pt-[68px]'}`}>
         {children}
       </main>
       <Footer />

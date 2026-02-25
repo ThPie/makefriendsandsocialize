@@ -167,3 +167,6 @@ verify_jwt = true
 
 [functions.validate-dating-photo]
 verify_jwt = false
+
+[functions.send-dating-application-email]
+verify_jwt = true
