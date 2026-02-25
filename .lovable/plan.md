@@ -1,74 +1,187 @@
 
 
-# "What Our Members Say" — Testimonials Section Redesign
+# Global Layout, Alignment & Color Consistency Pass
 
-## Overview
+## Scope
 
-A new split-layout testimonials section placed directly above the footer on the homepage. It will display real Meetup reviews scraped via a new edge function, stored in the existing `testimonials` table, and rendered in a paginated 2-column card grid.
+This is a project-wide sweep across all public pages, portal, admin, auth, and onboarding screens to unify: (1) content container width, (2) centered section titles, (3) color token consistency, and (4) responsiveness.
 
 ---
 
 ## Technical Details
 
-### 1. Database — No Migration Needed
+### 1. Content Container — `src/index.css`
 
-The existing `testimonials` table already has the right columns: `name`, `quote`, `rating`, `image_url`, `source`, `is_approved`. We'll insert Meetup reviews with `source = 'meetup'` and `is_approved = true`.
+The `.content-container` is already set to `max-w-[1200px]` with `px-6 md:px-8 lg:px-10`. This is close to the user's 1100-1280px request. We will keep `1200px` as it fits the range.
 
-### 2. New Edge Function: `sync-meetup-reviews`
+**Problem:** Several pages bypass `content-container` and use their own inline widths:
+- `SlowDatingSection.tsx`: `px-6 md:px-12 lg:px-24` + `max-w-[1200px]`
+- `ContactFormSection.tsx`: `px-6 md:px-12 lg:px-24` + `max-w-[1200px]`
+- `FAQSection.tsx`: `px-6 md:px-12 lg:px-24` + `max-w-[720px]`
+- `CirclesPage.tsx`: `max-w-[1400px]`
+- Various circle pages: `container max-w-[1400px]`, `max-w-6xl`, `max-w-7xl`
+- `ConnectedCircleDirectoryPage.tsx`: `container max-w-7xl`
+- `ContactPage.tsx`: `max-w-6xl`
 
-The Meetup feedback page (`/feedback-overview/`) requires authentication, so Firecrawl may not be able to access it directly. The edge function will:
+**Fix:** Replace all inline container patterns with `content-container` class usage. For narrow sections like FAQ, wrap in `content-container` then use `max-w-[720px] mx-auto` for the inner text.
 
-- Attempt to scrape `https://www.meetup.com/makefriendsandsocialize/feedback-overview/` using Firecrawl with extract mode
-- Extract reviewer name, rating (1–5), review text, and profile photo URL
-- Filter to only reviews with 4+ stars
-- Upsert into `testimonials` table with `source = 'meetup'`, `is_approved = true`
-- If scraping fails (auth wall), the function will return an error indicating manual seeding is needed
+Also add a `section-label` utility class (currently referenced but missing from CSS):
+```css
+.section-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: hsl(var(--accent-gold));
+}
+```
 
-**Fallback approach:** If the Meetup feedback page cannot be scraped (login required), we will seed the testimonials table with the reviews manually. The user can trigger the sync function from the admin panel to try again later.
+### 2. Hero — Full-Bleed Image + Centered Text Column
 
-### 3. Rewrite `TestimonialsSection.tsx` — Split Layout
+The hero already uses a full-bleed image. The text content inside uses `content-container` which provides the centered column. No changes needed structurally. The hero pattern is correct.
 
-**Left column (~35%):**
-- Gold section label: "MEMBER REVIEWS" (section-label class)
-- Title: "What Our Members Say" in Cormorant Garamond italic, ~36px
-- Muted subtitle: "Genuine experiences from real members of our community."
-- Overlapping circular avatar cluster from reviewer photos (max 6, with "+X" gold badge)
-- Overall star rating in gold (e.g. "★ 4.9 / 5") + total review count in muted text
+### 3. Center Section Titles — Public Pages
 
-**Right column (~65%):**
-- 2-column grid of review cards (1 column on mobile)
-- Each card: gold `"` quote mark top-left, review text (3 lines max, truncated), reviewer avatar + "FirstName L." + gold star rating at bottom
-- Card background: `bg-card` with `border-border` border
-- Hover: gold border highlight (`border-[hsl(var(--accent-gold))]`)
-- Prev/next gold outline arrow buttons bottom-right to paginate (4 cards per page)
+Several sections already use `section-header` (`max-w-[680px] mx-auto text-center`). The following sections do NOT and need updating:
 
-**Responsive:**
-- Desktop: side-by-side 35/65 split
-- Tablet: left stacks on top, cards below in 2-col grid
-- Mobile: fully stacked, 1-col cards, avatars centered
+| File | Current | Fix |
+|---|---|---|
+| `SlowDatingSection.tsx` | Left-aligned `max-w-lg` | Wrap in `content-container`, use `section-header` for title area, center heading |
+| `FAQSection.tsx` | Left-aligned | Wrap in `content-container`, center title block |
+| `ContactFormSection.tsx` | Left-aligned (acceptable for split form) | Keep as-is — form layout requires left alignment |
+| `TestimonialsSection.tsx` | Left column in split layout | Keep as-is — split layout intentional |
 
-**Colors — all from existing tokens:**
-- `hsl(var(--accent-gold))` for quote marks, stars, hover borders, badges
-- `text-foreground` for review body
-- `text-muted-foreground` for names, subtitle
-- `bg-card` / `border-border` for cards
-- Avatar fallback: `bg-[#0D2415]` with gold initials
+### 4. Color Token Cleanup — Replace All Non-Token Colors
 
-### 4. Update `HomePage.tsx`
+**A. `--gold` references (wrong variable name):**
+4 files use `hsl(var(--gold))` which doesn't exist — should be `hsl(var(--accent-gold))`:
+- `SlowDatingSection.tsx` (7 instances)
+- `FAQSection.tsx` (2 instances)
+- `ContactFormSection.tsx` (3 instances)
+- `PortalBottomNav.tsx` (1 instance)
 
-Move `TestimonialsSection` to be the last section before the footer (after FAQ/Contact or whichever is currently last). The section queries the `testimonials` table for all approved reviews with `rating >= 4`, ordered by `created_at` descending.
+**B. Hardcoded hex colors still present:**
 
-### 5. Update Query in `TestimonialsSection.tsx`
+| File | Current | Replacement |
+|---|---|---|
+| `Footer.tsx` L47 | `dark:bg-[#101e17]` | Remove (bg-background already handles dark mode) |
+| `AuthPage.tsx` L960 | `from-[#0a110c]/95 via-[#131f16]/90 to-[#0f2915]/85` | `from-background/95 via-[hsl(var(--card))]/90 to-background/85` |
+| `ClubShowcaseSection.tsx` L148 | `dark:bg-[#101e17]` | Remove (bg-card already handles it) |
+| `DeepDiveStep.tsx` (dating intake) | `bg-[#1a231b]` (6+ select dropdowns) | `bg-card` |
+| `AdminDashboard.tsx` | `bg-white/[0.04]`, `border-white/[0.08]`, `bg-emerald-500/10 text-emerald-400` | `bg-card`, `border-border`, `bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]` |
+| `AdminLayout.tsx` L134 | `bg-white/[0.06]` | `bg-muted` |
 
-Change from fetching 1 testimonial to fetching all approved testimonials with rating >= 4. Remove the "hide if empty" behavior — show the section always (but with a graceful empty state if no reviews yet).
+**C. Semantic status colors (keep as-is):**
+Admin pages (`AdminMatches.tsx`, etc.) use `text-green-600`, `text-amber-600`, `text-red-600` for status indicators (pending/accepted/declined). These are **semantic status colors** and should remain — they convey meaning (success, warning, error) distinct from brand colors. Same for `text-green-500` "check" icons after copy actions.
+
+**D. `bg-surface` class (doesn't exist in Tailwind config):**
+`ContactFormSection.tsx` L61 uses `bg-surface` which isn't defined. Replace with `bg-card`.
+
+### 5. Portal Pages — Center Page Headers
+
+Currently portal page headers are left-aligned. Update the main welcome/title areas:
+
+| File | Change |
+|---|---|
+| `PortalDashboard.tsx` | Center the "Welcome back" heading + subtitle |
+| `PortalProfile.tsx` | Center page title at top |
+| `PortalEvents.tsx` | Center page title |
+| `PortalPerks.tsx` | Center page title |
+| `PortalConnections.tsx` | Center page title |
+| `PortalReferrals.tsx` | Center page title |
+| `PortalBilling.tsx` | Center page title |
+| `PortalNetwork.tsx` | Center page title |
+
+Pattern: Wrap title + subtitle in `text-center max-w-[680px] mx-auto mb-10`.
+
+### 6. Admin Pages — Center Page Headers
+
+Same pattern for admin pages:
+
+| File | Change |
+|---|---|
+| `AdminDashboard.tsx` | Center "Hello, Admin" heading |
+| `AdminApplications.tsx` | Center page title |
+| `AdminMembers.tsx` | Center page title |
+| `AdminEvents.tsx` | Center page title |
+| All other admin pages | Center page title area |
+
+Also fix `AdminDashboard.tsx` hardcoded `bg-white/[0.04]` and `border-white/[0.08]` → `bg-card` and `border-border`.
+
+### 7. `SlowDatingSection.tsx` — Full Refactor
+
+This section uses old patterns (`px-6 md:px-12 lg:px-24`, `section-label`, `hsl(var(--gold))`, left-aligned title). Update to:
+- Use `section-spacing` + `content-container`
+- Use `section-header` for centered title
+- Replace all `--gold` → `--accent-gold`
+- Center the CTA button
+
+### 8. `FAQSection.tsx` — Refactor
+
+- Use `section-spacing` + `content-container`
+- Center the title block using `section-header`
+- Replace `--gold` → `--accent-gold`
+- Replace `bg-surface` → `bg-card`
+
+### 9. `ContactFormSection.tsx` — Refactor
+
+- Replace `px-6 md:px-12 lg:px-24` with `section-spacing` + `content-container`
+- Replace all `--gold` and `--gold-light` → `--accent-gold` and `--accent-gold-light`
+- Replace `bg-surface` → `bg-card`
+
+### 10. `PhotoGallerySection.tsx` — Fix Heading Color
+
+Line 46: `text-white` should be `text-foreground` (it's on a `bg-card` section, not a dark overlay).
+
+### 11. Pages Using `container max-w-*` Instead of `content-container`
+
+Multiple circle/directory pages use Tailwind's `container` class with custom max widths. These should use `content-container` instead for consistency. Files affected:
+- `CirclesPage.tsx`
+- `ConnectedCirclePage.tsx`
+- `ConnectedCircleDirectoryPage.tsx`
+- `ContactPage.tsx`
+- `SlowDatingLandingPage.tsx`
+- `LesAmisPage.tsx`
+- `TheGentlemenPage.tsx`
+- `ThePursuitsPage.tsx`
+- `TheLadiesSocietyPage.tsx`
 
 ---
 
-## Files
+## Files to Modify
 
-| File | Action |
+| File | Changes |
 |---|---|
-| `supabase/functions/sync-meetup-reviews/index.ts` | **Create** — Firecrawl-based scraper for Meetup feedback page |
-| `src/components/home/TestimonialsSection.tsx` | **Rewrite** — Split layout with avatar cluster, paginated card grid |
-| `src/pages/HomePage.tsx` | **Edit** — Move TestimonialsSection to last position (above footer) |
+| `src/index.css` | Add `.section-label` utility class |
+| `src/components/home/SlowDatingSection.tsx` | Use content-container, section-header, fix --gold → --accent-gold |
+| `src/components/home/FAQSection.tsx` | Use content-container, section-header, fix --gold → --accent-gold, bg-surface → bg-card |
+| `src/components/home/ContactFormSection.tsx` | Use content-container, fix --gold → --accent-gold, bg-surface → bg-card |
+| `src/components/home/PhotoGallerySection.tsx` | Fix text-white → text-foreground on heading |
+| `src/components/home/ClubShowcaseSection.tsx` | Remove dark:bg-[#101e17] |
+| `src/components/layout/Footer.tsx` | Remove dark:bg-[#101e17] |
+| `src/components/portal/PortalBottomNav.tsx` | Fix --gold → --accent-gold |
+| `src/pages/AuthPage.tsx` | Replace hardcoded gradient hex colors with tokens |
+| `src/components/dating/intake/steps/DeepDiveStep.tsx` | Replace bg-[#1a231b] → bg-card |
+| `src/pages/admin/AdminDashboard.tsx` | Replace bg-white/[0.04] → bg-card, border-white/[0.08] → border-border, center heading, fix emerald → gold |
+| `src/components/admin/AdminLayout.tsx` | Replace bg-white/[0.06] → bg-muted |
+| `src/pages/portal/PortalDashboard.tsx` | Center page header |
+| `src/pages/portal/PortalProfile.tsx` | Center page header |
+| `src/pages/portal/PortalEvents.tsx` | Center page header |
+| `src/pages/portal/PortalPerks.tsx` | Center page header |
+| `src/pages/portal/PortalConnections.tsx` | Center page header |
+| `src/pages/portal/PortalReferrals.tsx` | Center page header |
+| `src/pages/portal/PortalBilling.tsx` | Center page header |
+| `src/pages/portal/PortalNetwork.tsx` | Center page header |
+| `src/pages/CirclesPage.tsx` | Replace max-w-[1400px] with content-container |
+| `src/pages/ConnectedCirclePage.tsx` | Replace container max-w-6xl with content-container |
+| `src/pages/ConnectedCircleDirectoryPage.tsx` | Replace container max-w-7xl with content-container |
+| `src/pages/ContactPage.tsx` | Replace max-w-6xl with content-container |
+| `src/pages/SlowDatingLandingPage.tsx` | Replace max-w-6xl with content-container |
+| `src/pages/circles/LesAmisPage.tsx` | Replace max-w-[1400px] / max-w-6xl with content-container |
+| `src/pages/circles/TheGentlemenPage.tsx` | Replace max-w-[1400px] with content-container |
+| `src/pages/circles/ThePursuitsPage.tsx` | Replace max-w-[1400px] with content-container |
+| `src/pages/circles/TheLadiesSocietyPage.tsx` | Replace max-w-6xl with content-container |
+
+Total: ~30 files, mostly find-and-replace token swaps + centering page headers.
 
