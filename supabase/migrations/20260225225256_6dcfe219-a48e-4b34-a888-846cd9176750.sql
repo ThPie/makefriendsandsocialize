@@ -1,0 +1,1 @@
+ALTER TABLE public.meetup_stats ADD COLUMN IF NOT EXISTS review_count integer DEFAULT 0;
