@@ -4,8 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar, MapPin, Users } from 'lucide-react';
 import { useEffect } from 'react';
 import { parseLocalDate } from '@/lib/date-utils';
 
@@ -58,9 +57,6 @@ export const EventSection = () => {
     return () => { supabase.removeChannel(channel); };
   }, [queryClient]);
 
-  const featured = events[0];
-  const upcoming = events.slice(1, 3);
-
   return (
     <section className="section-spacing bg-background" id="events">
       <div ref={ref} className="content-container">
@@ -71,138 +67,91 @@ export const EventSection = () => {
         </h2>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-            <div className="md:col-span-7"><Skeleton className="w-full aspect-[16/9] rounded-2xl" /></div>
-            <div className="md:col-span-5 space-y-4">
-              <Skeleton className="h-8 w-3/4" />
-              <Skeleton className="h-5 w-1/2" />
-              <Skeleton className="h-5 w-2/3" />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="rounded-2xl border border-border bg-card overflow-hidden">
+                <Skeleton className="w-full aspect-[16/10]" />
+                <div className="p-6 space-y-3">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-4 w-2/3" />
+                </div>
+              </div>
+            ))}
           </div>
-        ) : !featured ? (
+        ) : events.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <Calendar className="h-12 w-12 mb-4 mx-auto opacity-40" />
             <p className="text-lg font-light">No upcoming events at the moment.</p>
           </div>
         ) : (
           <>
-            {/* Featured event — editorial panel */}
-            <div className={`grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              {/* Left — cover image 60% */}
-              <div className="md:col-span-7">
-                <TransitionLink to={`/events/${featured.id}`} className="block">
-                  <div className="relative aspect-[16/9] rounded-2xl overflow-hidden group">
-                    {featured.image_url ? (
+            {/* 3-Card Grid */}
+            <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              {events.map((event) => (
+                <div
+                  key={event.id}
+                  className="rounded-2xl border border-border bg-card overflow-hidden group hover:border-[hsl(var(--accent-gold))]/40 transition-colors duration-200"
+                >
+                  {/* Image */}
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    {event.image_url ? (
                       <img
-                        src={featured.image_url}
-                        alt={featured.title}
-                        className="w-full h-full object-cover transition-transform duration-250 group-hover:scale-[1.02]"
+                        src={event.image_url}
+                        alt={event.title}
+                        className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
                       />
                     ) : (
-                      <div className="w-full h-full bg-card flex items-center justify-center">
-                        <Calendar className="h-16 w-16 text-muted-foreground/30" />
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <Calendar className="h-12 w-12 text-muted-foreground/30" />
                       </div>
                     )}
                   </div>
-                </TransitionLink>
-              </div>
 
-              {/* Right — event details 40% */}
-              <div className="md:col-span-5 flex flex-col justify-center">
-                {(featured.city || featured.location) && (
-                  <span className="eyebrow mb-3 text-[hsl(var(--accent-gold))]">
-                    {featured.city || featured.location}
-                  </span>
-                )}
+                  {/* Content */}
+                  <div className="p-6">
+                    <h3 className="font-display text-xl md:text-2xl text-foreground leading-[1.2] mb-4">
+                      {event.title}
+                    </h3>
 
-                <h3 className="font-display text-2xl md:text-[32px] text-foreground leading-[1.15] mb-4">
-                  {featured.title}
-                </h3>
+                    <div className="space-y-2 mb-6">
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
+                        {format(parseLocalDate(event.date), 'EEEE, MMMM d')}
+                        {event.time && ` · ${event.time}`}
+                      </p>
+                      {(event.venue_name || event.location) && (
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
+                          {event.venue_name || event.location}
+                        </p>
+                      )}
+                      {event.rsvp_count != null && event.rsvp_count > 0 && (
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                          <Users className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
+                          {event.rsvp_count} attending
+                        </p>
+                      )}
+                    </div>
 
-                <div className="space-y-2 mb-6">
-                  <p className="text-sm text-muted-foreground flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
-                    {format(parseLocalDate(featured.date), 'EEEE, MMMM d, yyyy')}
-                    {featured.time && ` · ${featured.time}`}
-                  </p>
-                  {featured.venue_name && (
-                    <p className="text-sm text-muted-foreground flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
-                      {featured.venue_name}
-                    </p>
-                  )}
+                    <TransitionLink
+                      to={`/events/${event.id}`}
+                      className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150"
+                    >
+                      View Details →
+                    </TransitionLink>
+                  </div>
                 </div>
-
-                {featured.description && (
-                  <p className="text-sm text-muted-foreground font-light leading-relaxed line-clamp-3 mb-6">
-                    {featured.description}
-                  </p>
-                )}
-
-                <Button
-                  asChild
-                  className="w-fit rounded-full px-6 h-10 text-xs tracking-widest uppercase font-medium mt-2 gold-fill border-0 hover:opacity-90 transition-opacity duration-150"
-                >
-                  <TransitionLink to={`/events/${featured.id}`}>
-                    Quick Reserve
-                  </TransitionLink>
-                </Button>
-
-                {featured.rsvp_count && featured.rsvp_count > 0 && (
-                  <p className="mt-4 text-xs text-muted-foreground">
-                    {featured.rsvp_count} attending
-                  </p>
-                )}
-              </div>
+              ))}
             </div>
 
-            {/* Event chips strip */}
-            {upcoming.length > 0 && (
-              <div className="mt-10 flex flex-col md:flex-row gap-3">
-                {upcoming.map((event, i) => (
-                  <div
-                    key={event.id}
-                    className={`
-                      flex items-center justify-between gap-4 px-5 py-4 rounded-xl bg-card border border-border
-                      hover:border-[hsl(var(--accent-gold))]/40 transition-all duration-200
-                      flex-1
-                      ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
-                    `}
-                    style={{ transitionDelay: `${(i + 1) * 150 + 300}ms` }}
-                  >
-                    <TransitionLink to={`/events/${event.id}`} className="flex items-center gap-4 flex-1 min-w-0">
-                      {/* Date block */}
-                      <div className="flex flex-col items-center min-w-[44px]">
-                        <span className="text-xs uppercase text-[hsl(var(--accent-gold))] font-medium">
-                          {format(parseLocalDate(event.date), 'MMM')}
-                        </span>
-                        <span className="text-xl font-display text-foreground">
-                          {format(parseLocalDate(event.date), 'd')}
-                        </span>
-                      </div>
-                      {/* Title + venue */}
-                      <div className="flex-1 min-w-0 cursor-pointer">
-                        <p className="text-sm text-foreground font-medium truncate">{event.title}</p>
-                        <p className="text-xs text-muted-foreground truncate mt-0.5">{event.venue_name || event.location || ''}</p>
-                      </div>
-                    </TransitionLink>
-                    <Button asChild size="sm" variant="outline" className="shrink-0 border-[hsl(var(--accent-gold))]/50 text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))] hover:text-black rounded-full text-xs h-8 px-4">
-                      <TransitionLink to={`/events/${event.id}`}>
-                        Reserve
-                      </TransitionLink>
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-
             {/* View all link */}
-            <div className="mt-8 text-right">
+            <div className="mt-12 text-center">
               <TransitionLink
                 to="/events"
                 className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150"
               >
-                View all events →
+                View All Events →
               </TransitionLink>
             </div>
           </>

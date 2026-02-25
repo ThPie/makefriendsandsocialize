@@ -37,7 +37,7 @@ export const PhotoGallerySection = () => {
   return (
     <section
       ref={ref}
-      className={`py-24 md:py-32 bg-[#050B08] relative overflow-hidden transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+      className={`py-24 md:py-32 bg-card relative overflow-hidden transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
     >
       <div className="content-container">
         {/* Eyebrow + heading */}

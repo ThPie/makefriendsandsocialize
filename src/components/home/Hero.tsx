@@ -1,108 +1,45 @@
 import { Button } from '@/components/ui/button';
 import { TransitionLink } from '@/components/ui/TransitionLink';
-import { useSiteStats } from '@/hooks/useSiteStats';
-import { useAuth } from '@/contexts/AuthContext';
-import { useEffect, useState } from 'react';
 
 export const Hero = () => {
-  const { data: stats } = useSiteStats();
-  const { user } = useAuth();
-  const [displayCount, setDisplayCount] = useState(0);
-
-  useEffect(() => {
-    const target = stats?.memberCount || 0;
-    if (target === 0) return;
-    const duration = 1500;
-    const steps = 40;
-    const increment = target / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        setDisplayCount(target);
-        clearInterval(timer);
-      } else {
-        setDisplayCount(Math.floor(current));
-      }
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [stats?.memberCount]);
-
-  const avatars = stats?.avatarUrls?.slice(0, 4) || [];
-
   return (
     <section className="relative w-full h-[100dvh] bg-background overflow-hidden">
-      {/* Background Image */}
+      {/* Full-bleed background image */}
       <img
         src="/images/gallery/event-1.jpg"
-        alt="Elevated social experiences and curated connections at MakeFriends & Socialize"
+        alt="Elevated social experiences"
         className="absolute inset-0 w-full h-full object-cover"
       />
 
-      {/* Very dark gradient overlay for text readability against bright images */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/95 md:from-black/80 via-black/50 to-black/30" />
-      {/* Additional bottom gradient for depth */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f0b]/90 via-transparent to-transparent" />
+      {/* Subtle gradient overlay — bottom-left bias for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-      {/* Hero Content stacked over image */}
-      <div className="relative z-10 flex flex-col justify-end h-[100dvh] w-full pt-28">
-        <div className="px-6 md:px-12 lg:px-24 pb-20 md:pb-32 w-full max-w-[1600px] mx-auto">
-          <div className="max-w-[800px]">
-            {/* Headline - Parallax with smaller text and new copy */}
-            <h1
-              className="font-display leading-[1.05] tracking-tight mb-4 text-white font-normal"
-            >
-              <span className="block text-[48px] sm:text-[64px] md:text-[72px] lg:text-[88px]">
-                Where exceptional people
-              </span>
-              <span className="block text-[48px] sm:text-[64px] md:text-[72px] lg:text-[88px] mt-2 italic text-[hsl(var(--accent-gold))]">
-                find their circle.
-              </span>
+      {/* Content — anchored bottom-left, minimal */}
+      <div className="relative z-10 flex flex-col justify-end h-full w-full">
+        <div className="content-container pb-16 md:pb-24">
+          <div className="max-w-[520px]">
+            {/* Small eyebrow */}
+            <span className="eyebrow block mb-4 text-white/60">Private Membership</span>
+
+            {/* Clean headline — Soho House scale */}
+            <h1 className="font-display italic text-[36px] md:text-[48px] leading-[1.15] tracking-tight text-white mb-4">
+              Where exceptional people find their circle.
             </h1>
 
-            {/* Subheadline - crisp sans-serif or clean serif */}
-            <p className="text-base sm:text-lg lg:text-xl font-medium text-white max-w-[600px] leading-[1.4] mb-8">
-              Curated connections and exclusive events for exceptional individuals seeking a higher standard of community.
+            {/* Subheadline */}
+            <p className="text-[15px] font-light text-white/70 leading-[1.6] mb-8 max-w-[380px]">
+              Curated connections and exclusive gatherings for individuals seeking a higher standard of community.
             </p>
 
-            <div className="flex items-center gap-4 mb-10">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-background overflow-hidden">
-                    <img
-                      src={`https://i.pravatar.cc/150?img=${i + 10}`}
-                      alt={`Member ${i}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="flex flex-col">
-                <span className="text-white font-semibold text-sm">Join {stats?.memberCount || 250}+ members</span>
-                <span className="text-white/70 text-xs">exclusive community</span>
-              </div>
-            </div>
-
-            {/* Action buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                asChild
-                className="rounded-full px-8 h-12 text-sm tracking-wide bg-white text-black hover:bg-white/90 border-0 transition-colors duration-200 font-semibold"
-              >
-                <TransitionLink to="/membership">
-                  Apply for Membership
-                </TransitionLink>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="rounded-full px-8 h-12 text-sm tracking-wide bg-transparent text-white border-white/50 hover:bg-white/10 hover:border-white transition-colors duration-200 font-semibold"
-              >
-                <TransitionLink to={user ? "/portal/dating" : "/auth?returnTo=/portal/dating"}>
-                  Matchmaking
-                </TransitionLink>
-              </Button>
-            </div>
+            {/* Small pill CTA */}
+            <Button
+              asChild
+              className="rounded-full px-6 h-10 text-xs tracking-widest uppercase font-medium bg-white text-black hover:bg-white/90 border-0 transition-colors duration-200"
+            >
+              <TransitionLink to="/membership">
+                Apply Now
+              </TransitionLink>
+            </Button>
           </div>
         </div>
       </div>
