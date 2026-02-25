@@ -1,162 +1,58 @@
 
 
-# Global Layout, Alignment & Color Token Consistency — Full Project Sweep
+# Fix: Make Layout Full-Width and Responsive on All Screen Sizes
 
-## Scope
+## Problem
 
-Every page, section, and component across the entire project: public site, portal, admin, auth, onboarding, and dating intake. This covers ~45+ files with token swaps, container standardization, centered headers, and removal of hardcoded colors.
+The entire app is constrained to a `max-w-[1200px]` centered column. On large monitors, this creates big empty spaces on the left and right — the header/nav, content, and cards all sit in a narrow strip in the middle instead of using the full screen.
 
----
+This affects three layers:
+1. **`.content-container`** in CSS — capped at 1200px, used by the header and all public sections
+2. **PortalLayout** — inner content wrapper capped at `max-w-[1200px]`
+3. **AdminLayout** — inner content wrapper capped at `max-w-[1200px]`
 
-## Changes
+## Solution
 
-### Phase 1 — CSS Foundation
+Remove the fixed `max-w-[1200px]` cap everywhere and switch to a fluid layout with comfortable padding. Content will stretch to fill the viewport on any screen size.
 
-**`src/index.css`**
-- Add `.section-label` utility (11px uppercase, Inter 500, gold color) — currently referenced but not defined
-- Confirm `.content-container` stays at `max-w-[1200px]` (fits the 1100–1280px range)
+## Technical Details
 
----
+### 1. `src/index.css` — Update `.content-container`
 
-### Phase 2 — Public Homepage Sections (Token + Container + Centering)
+Change from:
+```css
+.content-container {
+  @apply max-w-[1200px] w-full mx-auto px-6 md:px-8 lg:px-10;
+}
+```
+To:
+```css
+.content-container {
+  @apply w-full mx-auto px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24;
+}
+```
 
-**`src/components/home/SlowDatingSection.tsx`**
-- Replace `px-6 md:px-12 lg:px-24` outer padding with `section-spacing` + `content-container`
-- Center title block with `section-header` pattern (`max-w-[680px] mx-auto text-center`)
-- Replace all 7 `hsl(var(--gold))` → `hsl(var(--accent-gold))`
-- Replace `hsl(var(--gold-light))` → `hsl(var(--accent-gold-light))`
-- Center the CTA button
+This removes the max-width cap. On large monitors, padding scales up to keep content comfortable but uses the full width. On small screens, padding stays tight.
 
-**`src/components/home/FAQSection.tsx`**
-- Replace `px-6 md:px-12 lg:px-24` with `section-spacing` + `content-container`
-- Center title block with `section-header`
-- Replace 2 `hsl(var(--gold))` → `hsl(var(--accent-gold))`
-- Replace `bg-surface` → `bg-card` (no `bg-surface` in Tailwind config)
+### 2. `src/components/portal/PortalLayout.tsx`
 
-**`src/components/home/ContactFormSection.tsx`**
-- Replace `px-6 md:px-12 lg:px-24` with `section-spacing` + `content-container`
-- Replace 3 `hsl(var(--gold))` → `hsl(var(--accent-gold))`
-- Replace `hsl(var(--gold-light))` → `hsl(var(--accent-gold-light))`
-- Replace 3 `bg-surface` → `bg-card`
+Line 281: Change `max-w-[1200px] mx-auto` to just remove the max-width constraint, keeping the existing padding from the parent `p-4 md:p-6 lg:p-8`.
 
-**`src/components/home/PhotoGallerySection.tsx`**
-- Line 46: `text-white` → `text-foreground` (section is on `bg-card`, not a dark overlay)
+### 3. `src/components/admin/AdminLayout.tsx`
 
-**`src/components/home/ClubShowcaseSection.tsx`**
-- Line 148: Remove `dark:bg-[#101e17]` (bg-card already handles dark mode)
+Line 240: Same change — remove `max-w-[1200px] mx-auto` so admin content fills the available width.
 
----
+### 4. Section text readability
 
-### Phase 3 — Layout Components
+For section headers that use `.section-header` (`max-w-[680px] mx-auto text-center`), keep that constraint — headings should still be readable, but the cards/grids/content around them will now fill the screen.
 
-**`src/components/layout/Footer.tsx`**
-- Line 47: Remove `dark:bg-[#101e17]` (bg-background already handles dark mode)
+## Files to Modify
 
-**`src/components/portal/PortalBottomNav.tsx`**
-- Line 29: Replace `bg-surface` → `bg-card`
-- Line 42: Replace `hsl(var(--gold))` → `hsl(var(--accent-gold))`
-
----
-
-### Phase 4 — Auth & Onboarding
-
-**`src/pages/AuthPage.tsx`**
-- Line 960: Replace `from-[#0a110c]/95 via-[#131f16]/90 to-[#0f2915]/85` → `from-background/95 via-background/90 to-background/85`
-
-**`src/components/dating/intake/steps/DeepDiveStep.tsx`**
-- Replace all ~9 `bg-[#1a231b]` → `bg-card`
-- Replace `border-white/10` on selects → `border-border`
-- Replace `focus:bg-white/10` → `focus:bg-muted`
-
-**`src/components/dating/intake/steps/DealbreakersStep.tsx`** (and all other intake step files with `bg-[#1a231b]`)
-- Same token swaps as DeepDiveStep
-
----
-
-### Phase 5 — Portal Page Headers (Center) + Token Cleanup
-
-Center the page-level title + subtitle in each portal page by wrapping in `text-center max-w-[680px] mx-auto mb-8`:
-
-| File | Title to Center |
+| File | Change |
 |---|---|
-| `PortalDashboard.tsx` | "Welcome back, {name}" + subtitle |
-| `PortalProfile.tsx` | Page title area |
-| `PortalEvents.tsx` | "Events" header |
-| `PortalPerks.tsx` | Page title |
-| `PortalConnections.tsx` | Page title |
-| `PortalReferrals.tsx` | "Referrals & Rewards" |
-| `PortalBilling.tsx` | "Billing & Subscriptions" |
-| `PortalNetwork.tsx` | "The Network" header |
+| `src/index.css` | Remove `max-w-[1200px]` from `.content-container`, add scaling padding |
+| `src/components/portal/PortalLayout.tsx` | Remove `max-w-[1200px] mx-auto` from content wrapper |
+| `src/components/admin/AdminLayout.tsx` | Remove `max-w-[1200px] mx-auto` from content wrapper |
 
-Token cleanup in portal pages — replace all `border-white/[0.08]` → `border-border`, `bg-white/[0.04]` → `bg-card`:
-- `PortalBilling.tsx` (4 Card instances + dividers)
-- `PortalEvents.tsx` (2 Card instances)
-- `PortalConcierge.tsx` (4 Card instances)
-- `PortalOnboarding.tsx` (card wrapper + border)
-- `PortalSlowDating.tsx` (skeleton wrapper)
-
----
-
-### Phase 6 — Admin Page Headers (Center) + Token Cleanup
-
-Center the page-level title in each admin page:
-
-| File | Title to Center |
-|---|---|
-| `AdminDashboard.tsx` | "Hello, Admin" |
-| `AdminApplications.tsx` | Page title |
-| `AdminMembers.tsx` | Page title |
-| `AdminEvents.tsx` | Page title |
-| `AdminMatches.tsx` | Page title |
-| `AdminAnalytics.tsx` | Page title |
-| `AdminSecurityDashboard.tsx` | Page title |
-| `AdminSettings.tsx` | Page title |
-| All remaining admin pages | Page title area |
-
-Token cleanup across all admin pages:
-- Replace all `border-white/[0.08]` → `border-border`
-- Replace all `bg-white/[0.04]` → `bg-card`
-- Replace `bg-white/[0.06]` → `bg-muted`
-- Replace `border-white/[0.06]` → `border-border`
-- Replace `border-white/[0.12]` → `border-border`
-- Replace `hover:bg-white/[0.04]` → `hover:bg-muted`
-- `AdminDashboard.tsx` line 204: Replace `bg-emerald-500/10 text-emerald-400` → `bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]` for Founder tier
-- `AdminLayout.tsx` line 134: Replace `bg-white/[0.06]` → `bg-muted`
-
----
-
-### Phase 7 — Standalone Pages (Container Standardization)
-
-Replace `container max-w-6xl` / `max-w-[1400px]` / `max-w-7xl` with `content-container` in:
-
-| File | Current Pattern |
-|---|---|
-| `CirclesPage.tsx` | `max-w-[1400px]` |
-| `ConnectedCirclePage.tsx` | `container max-w-6xl` (3 instances) |
-| `ConnectedCircleDirectoryPage.tsx` | `container max-w-7xl` |
-| `ContactPage.tsx` | `max-w-6xl` (2 instances) |
-| `SlowDatingLandingPage.tsx` | `max-w-6xl` |
-| `AboutPage.tsx` | `container max-w-6xl` (3 instances) |
-| `MembershipPage.tsx` | `container max-w-6xl` (2 instances) |
-| `LesAmisPage.tsx` | `container max-w-[1400px]` + `max-w-6xl` |
-| `TheGentlemenPage.tsx` | `container max-w-[1400px]` (2 instances) |
-| `ThePartnersPage.tsx` | `container max-w-[1400px]` (2 instances) |
-| `ThePursuitsPage.tsx` | `container max-w-[1400px]` |
-| `TheLadiesSocietyPage.tsx` | `max-w-6xl` |
-
----
-
-## Summary
-
-| Category | Files | Key Changes |
-|---|---|---|
-| CSS foundation | 1 | Add `.section-label` |
-| Public sections | 5 | Container + center + `--gold` → `--accent-gold` |
-| Layout components | 2 | Remove hardcoded dark hex, fix `bg-surface` |
-| Auth/onboarding/dating | 3+ | Replace hardcoded hex with tokens |
-| Portal pages | 8+ | Center headers, replace `white/[0.0x]` → tokens |
-| Admin pages | 15+ | Center headers, replace `white/[0.0x]` → tokens |
-| Standalone pages | 12 | Container standardization |
-
-Total: ~45 files modified, primarily find-and-replace token swaps + header centering + container class changes.
+3 files, minimal changes, fixes the entire app.
 
