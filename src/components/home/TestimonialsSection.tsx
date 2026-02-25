@@ -36,32 +36,36 @@ export const TestimonialsSection = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
+  const [meetupRating, setMeetupRating] = useState(4.6);
+  const [reviewCount, setReviewCount] = useState(55);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchAll = async () => {
       try {
-        const { data } = await (supabase.from('testimonials' as any).select('*') as any)
-          .eq('is_approved', true)
-          .gte('rating', 4)
-          .order('created_at', { ascending: false });
-        setTestimonials((data as unknown as Testimonial[]) || []);
+        const [testimonialsRes, statsRes] = await Promise.all([
+          (supabase.from('testimonials' as any).select('*') as any)
+            .eq('is_approved', true)
+            .gte('rating', 4)
+            .neq('quote', '')
+            .order('created_at', { ascending: false }),
+          supabase.from('meetup_stats').select('rating, review_count').limit(1).single(),
+        ]);
+        setTestimonials((testimonialsRes.data as unknown as Testimonial[]) || []);
+        if (statsRes.data) {
+          setMeetupRating(statsRes.data.rating || 4.6);
+          setReviewCount((statsRes.data as any).review_count || 55);
+        }
       } catch {
         // silently fail
       } finally {
         setLoading(false);
       }
     };
-    fetch();
+    fetchAll();
   }, []);
 
   const totalPages = Math.max(1, Math.ceil(testimonials.length / CARDS_PER_PAGE));
   const currentCards = testimonials.slice(page * CARDS_PER_PAGE, (page + 1) * CARDS_PER_PAGE);
-
-  const avgRating = useMemo(() => {
-    if (testimonials.length === 0) return 0;
-    const sum = testimonials.reduce((a, t) => a + (t.rating || 0), 0);
-    return Math.round((sum / testimonials.length) * 10) / 10;
-  }, [testimonials]);
 
   const avatarPhotos = useMemo(
     () => testimonials.filter((t) => t.image_url).map((t) => t.image_url!).slice(0, 6),
@@ -112,26 +116,24 @@ export const TestimonialsSection = () => {
             )}
 
             {/* Overall rating */}
-            {testimonials.length > 0 && (
-              <div className="flex items-center gap-2 mt-1">
-                <div className="flex gap-0.5">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < Math.round(avgRating)
-                          ? 'fill-[hsl(var(--accent-gold))] text-[hsl(var(--accent-gold))]'
-                          : 'text-border'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-sm font-medium text-foreground">{avgRating} / 5</span>
-                <span className="text-xs text-muted-foreground">
-                  · Based on {testimonials.length} review{testimonials.length !== 1 ? 's' : ''}
-                </span>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="flex gap-0.5">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-4 h-4 ${
+                      i < Math.round(meetupRating)
+                        ? 'fill-[hsl(var(--accent-gold))] text-[hsl(var(--accent-gold))]'
+                        : 'text-border'
+                    }`}
+                  />
+                ))}
               </div>
-            )}
+              <span className="text-sm font-medium text-foreground">{meetupRating} / 5</span>
+              <span className="text-xs text-muted-foreground">
+                · Based on {reviewCount} review{reviewCount !== 1 ? 's' : ''}
+              </span>
+            </div>
           </div>
 
           {/* ── Right Column ── */}
