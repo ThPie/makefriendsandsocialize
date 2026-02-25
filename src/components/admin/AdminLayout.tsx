@@ -237,7 +237,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             </header>
 
             <div className="p-6 md:p-8 lg:p-10">
-              <div className="max-w-[1200px] mx-auto">
+              <div>
                 {/* Breadcrumb Navigation */}
                 <PortalBreadcrumb type="admin" />
 

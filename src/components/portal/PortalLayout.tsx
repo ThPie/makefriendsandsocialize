@@ -278,7 +278,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
               </header>
 
               <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8 scroll-smooth scroll-touch pb-bottom-nav md:pb-8 lg:pb-8">
-                <div className="max-w-[1200px] mx-auto space-y-8">
+                <div className="space-y-8">
                   {/* Pending Member Banner */}
                   {isPending && <PendingMemberBanner className="mb-6" />}
 
