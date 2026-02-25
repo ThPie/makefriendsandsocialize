@@ -55,7 +55,7 @@ const HomePage = () => {
         <WhyChooseSection />
       </Suspense>
 
-      {/* Testimonial Spotlight */}
+      {/* What Our Members Say — last section before footer */}
       <Suspense fallback={<SectionSkeleton />}>
         <TestimonialsSection />
       </Suspense>
