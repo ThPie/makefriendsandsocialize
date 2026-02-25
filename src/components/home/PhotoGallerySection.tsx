@@ -41,10 +41,12 @@ export const PhotoGallerySection = () => {
     >
       <div className="content-container">
         {/* Eyebrow + heading */}
-        <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Moments from the Circle</span>
-        <h2 className="font-display text-4xl md:text-5xl text-white leading-tight mb-16">
-          A Glimpse <span className="italic text-[hsl(var(--accent-gold))]">Inside</span>
-        </h2>
+        <div className="section-header">
+          <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Moments from the Circle</span>
+          <h2 className="font-display text-4xl md:text-5xl text-white leading-tight">
+            A Glimpse <span className="italic text-[hsl(var(--accent-gold))]">Inside</span>
+          </h2>
+        </div>
 
         {/* 3-Photo Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">

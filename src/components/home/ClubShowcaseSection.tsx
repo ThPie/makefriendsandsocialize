@@ -79,13 +79,13 @@ export const ClubShowcaseSection = () => {
         <section className="section-spacing bg-background overflow-hidden" id="collections">
             <div className="content-container mb-12">
                 {/* Section header */}
-                <div className="max-w-2xl">
+                <div className="section-header">
                     <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Curated Collections</span>
-                    <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1] mb-6">
+                    <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1] mb-4">
                         Our <span className="italic text-[hsl(var(--accent-gold))]">Circles</span>
                     </h2>
-                    <p className="text-muted-foreground text-lg leading-relaxed">
-                        Find your people. Our curated circles bring together exceptional individuals around shared passions, industries, and stages of life, fostering deep connections that go beyond the surface.
+                    <p className="text-muted-foreground text-base leading-relaxed">
+                        Find your people. Our curated circles bring together exceptional individuals around shared passions, industries, and stages of life.
                     </p>
                 </div>
             </div>

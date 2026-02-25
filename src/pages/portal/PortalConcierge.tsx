@@ -86,7 +86,7 @@ const TIME_SLOTS = [
 ];
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: typeof Clock }> = {
-  pending: { label: 'Pending', color: 'bg-[#d4af37]/15 text-[#d4af37] border-[#d4af37]/25', icon: Clock },
+  pending: { label: 'Pending', color: 'bg-[hsl(var(--accent-gold))]/15 text-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))]/25', icon: Clock },
   confirmed: { label: 'Confirmed', color: 'bg-primary/15 text-primary border-primary/25', icon: CheckCircle },
   completed: { label: 'Completed', color: 'bg-white/10 text-white/50', icon: CheckCircle },
   cancelled: { label: 'Cancelled', color: 'bg-red-500/15 text-red-400 border-red-500/25', icon: XCircle },
@@ -184,7 +184,7 @@ export default function PortalConcierge() {
           </p>
         </div>
 
-        <Card className="bg-card border-primary/20 mb-8">
+        <Card className="bg-card border-[hsl(var(--accent-gold))]/20 mb-8">
           <CardContent className="p-8">
             <h3 className="font-display text-xl text-foreground mb-4">Concierge Benefits</h3>
             <ul className="text-left space-y-3 text-muted-foreground mb-6">
@@ -336,7 +336,7 @@ export default function PortalConcierge() {
                               'p-4 rounded-lg border-2 text-left transition-all',
                               field.value === type.value
                                 ? 'border-primary bg-primary/5'
-                                : 'border-border hover:border-primary/50'
+                                : 'border-border hover:border-[hsl(var(--accent-gold))]/50'
                             )}
                           >
                             <p className="font-medium">{type.label}</p>

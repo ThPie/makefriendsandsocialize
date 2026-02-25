@@ -319,7 +319,7 @@ export default function AdminEvents() {
   const getTierColor = (tier: string) => {
     switch (tier) {
       case 'founder': return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
-      case 'fellow': return 'bg-primary/10 text-primary border-primary/30';
+      case 'fellow': return 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))]/30';
       default: return 'bg-muted text-muted-foreground border-border';
     }
   };
@@ -769,7 +769,7 @@ export default function AdminEvents() {
                             {event.tier}
                           </Badge>
                           {event.ticket_price && event.ticket_price > 0 && (
-                            <Badge variant="outline" className="border-primary/30 text-primary">
+                            <Badge variant="outline" className="border-[hsl(var(--accent-gold))]/30 text-primary">
                               {event.currency} {event.ticket_price}
                             </Badge>
                           )}

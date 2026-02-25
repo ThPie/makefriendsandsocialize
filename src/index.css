@@ -19,15 +19,15 @@
     transition: opacity 300ms ease-out, transform 300ms ease-out;
   }
 
-  /* ===== Light Theme — Warm Ivory/Beige ===== */
+  /* ===== Light Theme — Warm Ivory ===== */
   :root {
-    --background: 40 24% 96%;
-    /* #F7F5F0 — Creamy Beige */
+    --background: 40 11% 98%;
+    /* #FAFAF8 — Off-white */
     --foreground: 140 34% 9%;
     /* #0D1F0F */
 
-    --card: 40 30% 98%;
-    /* #FCFBFA — slightly lighter cream for cards */
+    --card: 37 9% 95%;
+    /* #F2F1EE — Warm neutral surface */
     --card-foreground: 140 34% 9%;
 
     --popover: 0 0% 100%;
@@ -282,16 +282,30 @@
 
   /* ===== Section spacing ===== */
   .section-spacing {
-    @apply py-32 md:py-[128px];
+    @apply py-24 md:py-32;
   }
 
   .section-spacing-sm {
-    @apply py-20 md:py-24;
+    @apply py-16 md:py-20;
   }
 
-  /* ===== Content container ===== */
+  /* ===== Content container — 1200px centered column ===== */
   .content-container {
-    @apply max-w-[1400px] w-full mx-auto px-6 md:px-8 lg:px-16;
+    @apply max-w-[1200px] w-full mx-auto px-6 md:px-8 lg:px-10;
+  }
+
+  /* ===== Section header — centered eyebrow + title + intro ===== */
+  .section-header {
+    @apply max-w-[680px] mx-auto text-center mb-12 md:mb-16;
+  }
+
+  /* ===== Warm neutral surface band ===== */
+  .surface-warm {
+    background-color: #F2F1EE;
+  }
+
+  .dark .surface-warm {
+    background-color: hsl(var(--card));
   }
 
   /* ===== Frosted glass navigation ===== */

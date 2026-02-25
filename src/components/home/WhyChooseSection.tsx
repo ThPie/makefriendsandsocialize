@@ -25,10 +25,12 @@ export const WhyChooseSection = () => {
     <section className="section-spacing bg-background" id="how-it-works">
       <div ref={ref} className="content-container">
         {/* Header */}
-        <span className="eyebrow block mb-3">How It Works</span>
-        <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1] mb-16 md:mb-24">
-          Three Simple <span className="italic">Steps</span>
-        </h2>
+        <div className="section-header">
+          <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">How It Works</span>
+          <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1]">
+            Three Simple <span className="italic">Steps</span>
+          </h2>
+        </div>
 
         {/* Desktop: Horizontal timeline */}
         <div className="hidden md:grid grid-cols-3 gap-12 relative">

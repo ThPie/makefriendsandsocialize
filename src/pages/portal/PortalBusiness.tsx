@@ -215,7 +215,7 @@ const PortalBusiness = () => {
       case 'approved':
         return <Badge className="bg-green-500/10 text-green-500 border-green-500/20"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
       case 'featured':
-        return <Badge className="bg-primary/10 text-primary border-primary/20"><CheckCircle className="h-3 w-3 mr-1" />Featured</Badge>;
+        return <Badge className="bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))]/20"><CheckCircle className="h-3 w-3 mr-1" />Featured</Badge>;
       case 'pending':
         return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20"><Clock className="h-3 w-3 mr-1" />Pending Review</Badge>;
       case 'rejected':
@@ -283,7 +283,7 @@ const PortalBusiness = () => {
 
       {/* Preview Link / Landing Page URL */}
       {(businessProfile?.status === 'approved' || businessProfile?.status === 'featured') && (
-        <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-8">
+        <div className="bg-[hsl(var(--accent-gold))]/5 border border-[hsl(var(--accent-gold))]/20 rounded-xl p-4 mb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />

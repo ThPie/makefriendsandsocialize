@@ -72,7 +72,7 @@ export default function PortalBilling() {
       case 'paid':
         return <Badge className="bg-primary/15 text-primary border-primary/25 text-[10px] uppercase tracking-widest font-bold"><CheckCircle className="w-3 h-3 mr-1" />Paid</Badge>;
       case 'open':
-        return <Badge className="bg-[#d4af37]/15 text-[#d4af37] border-[#d4af37]/25 text-[10px] uppercase tracking-widest font-bold"><Clock className="w-3 h-3 mr-1" />Open</Badge>;
+        return <Badge className="bg-[hsl(var(--accent-gold))]/15 text-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))]/25 text-[10px] uppercase tracking-widest font-bold"><Clock className="w-3 h-3 mr-1" />Open</Badge>;
       case 'uncollectible':
       case 'void':
         return <Badge className="bg-red-500/10 text-red-500 border-red-500/20"><AlertCircle className="w-3 h-3 mr-1" />Failed</Badge>;
@@ -158,7 +158,7 @@ export default function PortalBilling() {
                 </div>
 
                 {subscription.is_trialing && subscription.trial_ends_at && (
-                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
+                  <div className="bg-primary/10 border border-[hsl(var(--accent-gold))]/20 rounded-lg p-3">
                     <p className="text-sm font-medium text-primary">
                       Trial ends {format(new Date(subscription.trial_ends_at), 'MMM d, yyyy')}
                     </p>
@@ -184,7 +184,7 @@ export default function PortalBilling() {
         <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-[#d4af37]" />
+              <DollarSign className="w-5 h-5 text-[hsl(var(--accent-gold))]" />
               Invoice History
             </CardTitle>
             <CardDescription>View and download your past invoices</CardDescription>

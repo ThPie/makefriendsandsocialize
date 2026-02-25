@@ -125,7 +125,7 @@ function QA({ q, a }: { q: string; a: string | null | undefined }) {
   if (!a) return null;
   return (
     <div className="space-y-1.5">
-      <p className="text-xs font-semibold text-[#D4AF37]/80 uppercase tracking-wider">{q}</p>
+      <p className="text-xs font-semibold text-[hsl(var(--accent-gold))]/80 uppercase tracking-wider">{q}</p>
       <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{a}</p>
     </div>
   );
@@ -144,7 +144,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Chip({ label }: { label: string }) {
   return (
-    <span className="inline-block bg-primary/10 text-primary text-xs px-2.5 py-1 rounded-full border border-primary/20">
+    <span className="inline-block bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] text-xs px-2.5 py-1 rounded-full border border-[hsl(var(--accent-gold))]/20">
       {label}
     </span>
   );
@@ -200,9 +200,9 @@ function ReviewModal({
         <DialogHeader className="px-6 pt-5 pb-4 border-b border-border/40 shrink-0">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 min-w-0">
-              <Avatar className="h-14 w-14 shrink-0 border-2 border-[#D4AF37]/30">
+              <Avatar className="h-14 w-14 shrink-0 border-2 border-[hsl(var(--accent-gold))]/30">
                 <AvatarImage src={profile.photo_url || ""} alt={profile.display_name} />
-                <AvatarFallback className="bg-[#D4AF37]/10 text-[#D4AF37] font-display text-xl">
+                <AvatarFallback className="bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] font-display text-xl">
                   {profile.display_name[0]}
                 </AvatarFallback>
               </Avatar>
@@ -461,7 +461,7 @@ function ReviewModal({
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 gap-2 text-[#D4AF37] border-[#D4AF37]/40 hover:bg-[#D4AF37]/10"
+                className="flex-1 gap-2 text-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))]/40 hover:bg-[hsl(var(--accent-gold))]/10"
                 onClick={() => setAction("call")}
               >
                 <Phone className="h-4 w-4" />
@@ -484,7 +484,7 @@ function ReviewModal({
               <div className="flex items-center gap-2">
                 {action === "approve" && <Badge className="bg-green-500/10 text-green-500 border-green-500/20">Approving</Badge>}
                 {action === "reject" && <Badge className="bg-red-500/10 text-red-500 border-red-500/20">Rejecting</Badge>}
-                {action === "call" && <Badge className="bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20">Scheduling Call</Badge>}
+                {action === "call" && <Badge className="bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))]/20">Scheduling Call</Badge>}
                 <Button variant="ghost" size="sm" className="ml-auto text-muted-foreground" onClick={() => setAction(null)}>
                   Cancel
                 </Button>
@@ -527,7 +527,7 @@ function ReviewModal({
                     ? "w-full bg-green-600 hover:bg-green-700 text-white"
                     : action === "reject"
                     ? "w-full bg-red-600 hover:bg-red-700 text-white"
-                    : "w-full bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black"
+                    : "w-full bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black"
                 }
                 disabled={isActing || (action === "reject" && !adminNotes.trim()) || (action === "call" && !callDatetime)}
                 onClick={handleConfirm}
@@ -703,7 +703,7 @@ const AdminDatingReview = () => {
           {statusFilter === "pending" && pendingCount > 0 && (
             <button
               onClick={() => setSelectedIndex(0)}
-              className="w-full py-3.5 rounded-xl border border-dashed border-[#D4AF37]/40 bg-[#D4AF37]/5 text-[#D4AF37] text-sm font-medium hover:bg-[#D4AF37]/10 transition-colors flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl border border-dashed border-[hsl(var(--accent-gold))]/40 bg-[hsl(var(--accent-gold))]/5 text-[hsl(var(--accent-gold))] text-sm font-medium hover:bg-[hsl(var(--accent-gold))]/10 transition-colors flex items-center justify-center gap-2"
             >
               <Eye className="h-4 w-4" />
               Start Review Session — {pendingCount} pending
@@ -716,7 +716,7 @@ const AdminDatingReview = () => {
               <div
                 key={profile.id}
                 onClick={() => setSelectedIndex(index)}
-                className="flex items-center gap-4 p-4 rounded-xl border border-border/40 bg-card/30 hover:bg-card/60 hover:border-primary/30 transition-all cursor-pointer group"
+                className="flex items-center gap-4 p-4 rounded-xl border border-border/40 bg-card/30 hover:bg-card/60 hover:border-[hsl(var(--accent-gold))]/30 transition-all cursor-pointer group"
               >
                 {/* Photo */}
                 <Avatar className="h-14 w-14 shrink-0 border border-border/30">
@@ -814,7 +814,7 @@ function StatusBadge({ status }: { status: string }) {
     case "matched":
       return <Badge className="bg-pink-500/10 text-pink-500 border-pink-500/20 text-xs">Matched</Badge>;
     case "call_scheduled":
-      return <Badge className="bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20 text-xs gap-1"><Phone className="h-3 w-3" />Call Scheduled</Badge>;
+      return <Badge className="bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))]/20 text-xs gap-1"><Phone className="h-3 w-3" />Call Scheduled</Badge>;
     default:
       return <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20 text-xs">Pending Review</Badge>;
   }

@@ -25,7 +25,7 @@ const ReviewRow = ({ label, value }: { label: string; value?: string | null }) =
 
 const StepBadge = ({ complete }: { complete: boolean }) =>
     complete ? (
-        <Badge className="gap-1 text-xs bg-[#D4AF37]/20 text-[#D4AF37] border-[#D4AF37]/30">
+        <Badge className="gap-1 text-xs bg-[hsl(var(--accent-gold))]/20 text-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))]/30">
             <CheckCircle className="h-3 w-3" /> Completed
         </Badge>
     ) : (
@@ -63,7 +63,7 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                 {/* Profile Summary Card */}
                 <div className="bg-white/5 rounded-xl p-6 space-y-4 border border-white/10">
                     <div className="flex items-center gap-4">
-                        <Avatar className="h-16 w-16 border-2 border-[#D4AF37]/20">
+                        <Avatar className="h-16 w-16 border-2 border-[hsl(var(--accent-gold))]/20">
                             <AvatarImage src={formData.photo_url} />
                             <AvatarFallback className="bg-dating-terracotta/20 text-dating-terracotta text-xl">
                                 {formData.display_name ? formData.display_name[0] : "?"}
@@ -205,9 +205,9 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                 </Accordion>
 
                 {/* What happens next */}
-                <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-xl p-4">
+                <div className="bg-[hsl(var(--accent-gold))]/10 border border-[hsl(var(--accent-gold))]/20 rounded-xl p-4">
                     <p className="text-sm text-white/80">
-                        <strong className="text-[#D4AF37]">What happens next?</strong> Your profile will be reviewed by our team within{' '}
+                        <strong className="text-[hsl(var(--accent-gold))]">What happens next?</strong> Your profile will be reviewed by our team within{' '}
                         <strong className="text-white">24–48 hours</strong> after submission. Our matchmaking team will verify your social media
                         and reach out to schedule a brief consultation if you're a great fit.
                     </p>

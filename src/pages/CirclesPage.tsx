@@ -57,10 +57,10 @@ const CirclesPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 border border-[#D4AF37]/30 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm bg-[#D4AF37]/10"
+              className="inline-flex items-center gap-2 border border-[hsl(var(--accent-gold))]/30 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm bg-[hsl(var(--accent-gold))]/10"
             >
-              <span className="flex h-1.5 w-1.5 rounded-full bg-[#D4AF37] animate-pulse"></span>
-              <span className="text-xs font-medium text-[#D4AF37] tracking-wider uppercase">Curated Communities</span>
+              <span className="flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--accent-gold))] animate-pulse"></span>
+              <span className="text-xs font-medium text-[hsl(var(--accent-gold))] tracking-wider uppercase">Curated Communities</span>
             </motion.div>
 
             <motion.h1
@@ -84,8 +84,8 @@ const CirclesPage = () => {
 
           {/* Ambient Background */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-[120px]" />
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-[hsl(var(--accent-gold))]/5 rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[hsl(var(--accent-gold))]/5 rounded-full blur-[120px]" />
           </div>
         </section>
 
@@ -108,7 +108,7 @@ const CirclesPage = () => {
 
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-500 group-hover:opacity-80" />
-                  <div className="absolute inset-0 bg-[#D4AF37]/0 transition-colors duration-500 group-hover:bg-[#D4AF37]/5 mix-blend-overlay" />
+                  <div className="absolute inset-0 bg-[hsl(var(--accent-gold))]/0 transition-colors duration-500 group-hover:bg-[hsl(var(--accent-gold))]/5 mix-blend-overlay" />
 
                   {/* Content */}
                   <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10">
@@ -125,7 +125,7 @@ const CirclesPage = () => {
                       )}
                     </div>
 
-                    <h3 className="font-display text-4xl text-white mb-2 group-hover:text-[#D4AF37] transition-colors duration-300">
+                    <h3 className="font-display text-4xl text-white mb-2 group-hover:text-[hsl(var(--accent-gold))] transition-colors duration-300">
                       {circle.title}
                     </h3>
 
@@ -135,7 +135,7 @@ const CirclesPage = () => {
 
                     <div className="mt-6 flex items-center text-white/50 group-hover:text-white transition-colors">
                       <span className="text-sm font-medium tracking-widest uppercase">Explore Circle</span>
-                      <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-2 transition-transform text-[#D4AF37]" />
+                      <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-2 transition-transform text-[hsl(var(--accent-gold))]" />
                     </div>
                   </div>
                 </TransitionLink>
@@ -155,7 +155,7 @@ const CirclesPage = () => {
                 { step: "03", title: "Apply", desc: "Quick application for selective circles." }
               ].map((item) => (
                 <div key={item.step} className="group">
-                  <span className="font-display text-6xl text-white/10 group-hover:text-[#D4AF37] transition-colors block mb-4">
+                  <span className="font-display text-6xl text-white/10 group-hover:text-[hsl(var(--accent-gold))] transition-colors block mb-4">
                     {item.step}
                   </span>
                   <h3 className="text-xl font-medium text-white mb-2">{item.title}</h3>
@@ -165,7 +165,7 @@ const CirclesPage = () => {
             </div>
 
             <div className="mt-16">
-              <Button asChild size="lg" className="rounded-full px-8 h-14 text-base bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-none">
+              <Button asChild size="lg" className="rounded-full px-8 h-14 text-base bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-none">
                 <TransitionLink to="/membership">
                   View Membership Options
                 </TransitionLink>

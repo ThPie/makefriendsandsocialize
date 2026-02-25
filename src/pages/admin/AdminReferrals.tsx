@@ -204,7 +204,7 @@ export default function AdminReferrals() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
+              <div className="p-2 rounded-lg bg-[hsl(var(--accent-gold))]/10">
                 <Gift className="h-5 w-5 text-primary" />
               </div>
               <div>
@@ -441,7 +441,7 @@ export default function AdminReferrals() {
                   className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-full bg-primary/10">
+                    <div className="p-2 rounded-full bg-[hsl(var(--accent-gold))]/10">
                       <ArrowUpRight className="h-4 w-4 text-primary" />
                     </div>
                     <div>

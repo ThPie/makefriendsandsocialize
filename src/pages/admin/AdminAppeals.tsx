@@ -265,7 +265,7 @@ const AdminAppeals = () => {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
+              <div className="p-2 bg-[hsl(var(--accent-gold))]/10 rounded-lg">
                 <FileText className="w-5 h-5 text-primary" />
               </div>
               <div>
@@ -393,7 +393,7 @@ const AdminAppeals = () => {
                     className="flex items-start gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
                     onClick={() => handleViewAppeal(appeal)}
                   >
-                    <div className="p-2 bg-primary/10 rounded-lg shrink-0">
+                    <div className="p-2 bg-[hsl(var(--accent-gold))]/10 rounded-lg shrink-0">
                       <TypeIcon className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">

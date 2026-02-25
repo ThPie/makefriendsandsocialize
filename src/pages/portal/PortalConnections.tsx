@@ -216,7 +216,7 @@ export default function PortalConnections() {
 
       {/* Pending Requests Alert */}
       {pendingReceived.length > 0 && (
-        <Card className="bg-primary/5 border-primary/20 backdrop-blur-sm">
+        <Card className="bg-[hsl(var(--accent-gold))]/5 border-[hsl(var(--accent-gold))]/20 backdrop-blur-sm">
           <CardContent className="flex items-center gap-4 p-4">
             <div className="p-2 rounded-full bg-primary/10">
               <Heart className="h-5 w-5 text-primary" />

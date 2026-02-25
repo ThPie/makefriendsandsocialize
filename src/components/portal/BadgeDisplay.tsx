@@ -116,7 +116,7 @@ export function BadgeDisplay({ earnedBadges, showAll = true, compact = false }: 
                 <div
                   className={`text-2xl p-3 rounded-xl transition-all ${
                     badge.earned
-                      ? 'bg-primary/10 cursor-pointer hover:scale-110'
+                      ? 'bg-[hsl(var(--accent-gold))]/10 cursor-pointer hover:scale-110'
                       : 'bg-muted opacity-40 grayscale'
                   }`}
                 >
@@ -151,7 +151,7 @@ export function BadgeDisplay({ earnedBadges, showAll = true, compact = false }: 
               key={badge.type}
               className={`flex flex-col items-center p-6 rounded-2xl text-center transition-all ${
                 badge.earned
-                  ? 'bg-primary/10 border border-primary/20'
+                  ? 'bg-[hsl(var(--accent-gold))]/10 border border-primary/20'
                   : 'bg-muted/50 opacity-50'
               }`}
             >

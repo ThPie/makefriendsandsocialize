@@ -54,7 +54,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
 
     const radioItem = (value: string, id: string, label: string) => (
         <div className="flex items-center space-x-3 bg-white/5 px-4 py-3 rounded-lg border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
-            <RadioGroupItem value={value} id={id} className="border-white/50 text-[#D4AF37]" />
+            <RadioGroupItem value={value} id={id} className="border-white/50 text-[hsl(var(--accent-gold))]" />
             <Label htmlFor={id} className="font-normal text-white cursor-pointer">{label}</Label>
         </div>
     );
@@ -108,7 +108,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                             value={formData.marriage_history}
                             onChange={(e) => updateField("marriage_history", e.target.value)}
                             placeholder="Share what you're comfortable with..."
-                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none selection:bg-[#D4AF37]/30"
+                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none selection:bg-[hsl(var(--accent-gold))]/30"
                         />
                     </div>
                 )}
@@ -136,7 +136,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                             value={formData.children_details}
                             onChange={(e) => updateField("children_details", e.target.value)}
                             placeholder="Ages, living situation, etc..."
-                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
                 )}
@@ -149,7 +149,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                             {formData.has_children ? "Do you want more children?" : "Do you want children?"}
                         </Label>
                         <Select value={formData.wants_children} onValueChange={(value) => updateField("wants_children", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select your preference" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -169,7 +169,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                             value={formData.open_to_partner_children || ''}
                             onValueChange={(value) => updateField("open_to_partner_children", value)}
                         >
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select your preference" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -186,7 +186,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                     <div className="space-y-3 animate-fade-in">
                         <Label className="text-white/80">{getMarriageTimelineLabel()}</Label>
                         <Select value={formData.marriage_timeline} onValueChange={(value) => updateField("marriage_timeline", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select timeline" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -204,7 +204,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                 {isSeekingSerious && (
                     <div className="space-y-6 pt-6 border-t border-white/10 animate-fade-in">
                         <div className="flex items-center gap-2">
-                            <span className="text-xs bg-dating-terracotta/20 text-[#D4AF37] px-2 py-1 rounded-full font-medium border border-[#D4AF37]/20">
+                            <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full font-medium border border-[hsl(var(--accent-gold))]/20">
                                 Research-backed
                             </span>
                             <span className="text-xs text-white/40">
@@ -218,7 +218,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                                 Research shows family-of-origin patterns often repeat in romantic relationships.
                             </p>
                             <Select value={formData.family_relationship} onValueChange={(value) => updateField("family_relationship", value)}>
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your relationship" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -237,7 +237,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                                 In-law dynamics are cited in 43% of divorces. Setting expectations matters.
                             </p>
                             <Select value={formData.family_involvement_expectation} onValueChange={(value) => updateField("family_involvement_expectation", value)}>
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your expectation" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a231b] border-white/10 text-white">

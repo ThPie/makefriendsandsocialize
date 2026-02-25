@@ -37,7 +37,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                 {/* Substance Use Group */}
                 <div className="space-y-6">
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-[#D4AF37] uppercase tracking-widest font-medium">Substance Use</span>
+                        <span className="text-xs text-[hsl(var(--accent-gold))] uppercase tracking-widest font-medium">Substance Use</span>
                         <div className="flex-1 h-px bg-white/10" />
                     </div>
                     <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
@@ -45,7 +45,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                         <div className="space-y-3">
                             <Label className="text-white/80">Do you smoke?</Label>
                             <Select value={formData.smoking_status} onValueChange={(value) => updateField("smoking_status", value)}>
-                                <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('smoking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50'}`}>
+                                <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('smoking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50'}`}>
                                     <SelectValue placeholder="Select smoking status" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -62,7 +62,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                         <div className="space-y-3">
                             <Label className="text-white/80">Do you drink alcohol?</Label>
                             <Select value={formData.drinking_status} onValueChange={(value) => updateField("drinking_status", value)}>
-                                <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('drinking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50'}`}>
+                                <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('drinking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50'}`}>
                                     <SelectValue placeholder="Select drinking status" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -80,7 +80,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                     <div className="space-y-3 animate-fade-in">
                         <Label className="text-white/80">Recreational drug use</Label>
                         <Select value={formData.drug_use} onValueChange={(value) => updateField("drug_use", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select your usage" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -99,7 +99,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                     <div className="space-y-3">
                         <Label className="text-white/80">How often do you exercise?</Label>
                         <Select value={formData.exercise_frequency} onValueChange={(value) => updateField("exercise_frequency", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select exercise frequency" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -115,7 +115,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                     <div className="space-y-3">
                         <Label className="text-white/80">Diet preference</Label>
                         <Select value={formData.diet_preference} onValueChange={(value) => updateField("diet_preference", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select diet preference" />
                             </SelectTrigger>
                             <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -136,7 +136,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                 {/* Screen Time - Modern conflict source */}
                 <div className="space-y-4 pt-6 border-t border-white/10">
                     <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs bg-dating-terracotta/20 text-[#D4AF37] px-2 py-1 rounded-full font-medium border border-[#D4AF37]/20">
+                        <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full font-medium border border-[hsl(var(--accent-gold))]/20">
                             Modern factor
                         </span>
                     </div>
@@ -145,7 +145,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                         Screen time is an increasingly common source of relationship conflict.
                     </p>
                     <Select value={formData.screen_time_habits} onValueChange={(value) => updateField("screen_time_habits", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                             <SelectValue placeholder="Select your preference" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#1a231b] border-white/10 text-white">

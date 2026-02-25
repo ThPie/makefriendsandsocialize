@@ -234,7 +234,7 @@ const AdminDating = () => {
                 <p className="text-sm text-muted-foreground">Total Profiles</p>
                 <p className="text-3xl font-display font-bold">{stats.total}</p>
               </div>
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <div className="h-12 w-12 rounded-full bg-[hsl(var(--accent-gold))]/10 flex items-center justify-center">
                 <Users className="h-6 w-6 text-primary" />
               </div>
             </div>

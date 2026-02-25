@@ -625,7 +625,7 @@ const AdminPhotos = () => {
 
       {/* Bulk Action Bar */}
       {isSelectionMode && selectedCount > 0 && (
-        <div className="flex items-center gap-3 p-4 bg-primary/5 border border-primary/20 rounded-lg">
+        <div className="flex items-center gap-3 p-4 bg-[hsl(var(--accent-gold))]/5 border border-[hsl(var(--accent-gold))]/20 rounded-lg">
           <span className="text-sm font-medium">
             {selectedCount} photo{selectedCount !== 1 ? 's' : ''} selected
           </span>

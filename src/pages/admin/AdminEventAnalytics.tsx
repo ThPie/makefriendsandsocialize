@@ -165,7 +165,7 @@ export default function AdminEventAnalytics() {
                   <p className="text-sm text-muted-foreground">Total Events</p>
                   <p className="text-3xl font-bold text-foreground">{totalEvents}</p>
                 </div>
-                <div className="p-3 rounded-xl bg-primary/10">
+                <div className="p-3 rounded-xl bg-[hsl(var(--accent-gold))]/10">
                   <Calendar className="h-6 w-6 text-primary" />
                 </div>
               </div>
@@ -332,7 +332,7 @@ export default function AdminEventAnalytics() {
                   transition={{ delay: index * 0.1 }}
                   className="flex items-center gap-4"
                 >
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[hsl(var(--accent-gold))]/10 flex items-center justify-center">
                     <span className="text-primary font-bold text-sm">{index + 1}</span>
                   </div>
                   <div className="flex-1 min-w-0">

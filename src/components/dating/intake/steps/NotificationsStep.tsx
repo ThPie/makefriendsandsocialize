@@ -63,7 +63,7 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                         size="sm"
                         onClick={() => updateField("email_notifications_enabled", !formData.email_notifications_enabled)}
                         className={formData.email_notifications_enabled
-                            ? "bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-transparent"
+                            ? "bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-transparent"
                             : "bg-transparent border-white/20 text-white hover:bg-white/10"}
                         aria-label={formData.email_notifications_enabled ? "Disable email notifications" : "Enable email notifications"}
                     >
@@ -88,7 +88,7 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                         size="sm"
                         onClick={() => updateField("push_notifications_enabled", !formData.push_notifications_enabled)}
                         className={formData.push_notifications_enabled
-                            ? "bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-transparent"
+                            ? "bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-transparent"
                             : "bg-transparent border-white/20 text-white hover:bg-white/10"}
                         aria-label={formData.push_notifications_enabled ? "Disable push notifications" : "Enable push notifications"}
                     >
@@ -114,7 +114,7 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                             size="sm"
                             onClick={() => updateField("sms_notifications_enabled", !formData.sms_notifications_enabled)}
                             className={formData.sms_notifications_enabled
-                                ? "bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-transparent"
+                                ? "bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-transparent"
                                 : "bg-transparent border-white/20 text-white hover:bg-white/10"}
                             disabled={!formData.phone_number}
                             aria-label={formData.sms_notifications_enabled ? "Disable SMS notifications" : "Enable SMS notifications"}
@@ -138,7 +138,7 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                                     }
                                 }}
                                 placeholder="+1 (555) 123-4567"
-                                className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20"
+                                className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20"
                             />
                         </div>
                         <p className="text-xs text-white/40">

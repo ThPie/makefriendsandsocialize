@@ -164,7 +164,7 @@ export function DashboardStats() {
                             <div className="mt-6 space-y-2">
                                 <div className="h-2 w-full bg-secondary/50 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-[hsl(var(--accent-gold))] rounded-full transition-all duration-200 ease-out"
+                                        className="h-full bg-[hsl(var(--accent-gold))] rounded-full transition-all duration-1000 ease-out"
                                         style={{ width: `${stat.progressValue}%` }}
                                     />
                                 </div>

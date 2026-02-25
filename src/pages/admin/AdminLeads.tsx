@@ -67,7 +67,7 @@ const AUDIENCE_SEGMENTS: Record<string, { label: string; color: string }> = {
 };
 
 const statusConfig: Record<LeadStatus, { label: string; color: string; icon: typeof CheckCircle }> = {
-  new: { label: 'New', color: 'bg-primary/10 text-primary', icon: Sparkles },
+  new: { label: 'New', color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]', icon: Sparkles },
   contacted: { label: 'Contacted', color: 'bg-amber-500/10 text-amber-500', icon: MessageSquare },
   converted: { label: 'Converted', color: 'bg-green-500/10 text-green-500', icon: CheckCircle },
   dismissed: { label: 'Dismissed', color: 'bg-muted text-muted-foreground', icon: XCircle },
@@ -307,7 +307,7 @@ export default function AdminLeads() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
+              <div className="p-2 rounded-lg bg-[hsl(var(--accent-gold))]/10">
                 <Users className="h-5 w-5 text-primary" />
               </div>
               <div>
@@ -320,7 +320,7 @@ export default function AdminLeads() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
+              <div className="p-2 rounded-lg bg-[hsl(var(--accent-gold))]/10">
                 <Sparkles className="h-5 w-5 text-primary" />
               </div>
               <div>
@@ -359,7 +359,7 @@ export default function AdminLeads() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
+              <div className="p-2 rounded-lg bg-[hsl(var(--accent-gold))]/10">
                 <TrendingUp className="h-5 w-5 text-primary" />
               </div>
               <div>
@@ -372,7 +372,7 @@ export default function AdminLeads() {
       </div>
 
       {/* Automation Stats */}
-      <Card className="bg-primary/5 border-primary/20">
+      <Card className="bg-[hsl(var(--accent-gold))]/5 border-[hsl(var(--accent-gold))]/20">
         <CardContent className="p-4">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3">

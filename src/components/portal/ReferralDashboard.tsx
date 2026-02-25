@@ -208,7 +208,7 @@ export function ReferralDashboard() {
             ))}
           </div>
           <div className="space-y-3">
-            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 1 ? 'bg-primary/10 border border-primary/20' : 'bg-card border border-border'}`}>
+            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 1 ? 'bg-[hsl(var(--accent-gold))]/10 border border-[hsl(var(--accent-gold))]/20' : 'bg-card border border-border'}`}>
               <div className="flex items-center gap-3">
                 <span className="text-lg">🤝</span>
                 <div>
@@ -218,7 +218,7 @@ export function ReferralDashboard() {
               </div>
               {totalReferrals >= 1 && <Check className="h-5 w-5 text-green-500" />}
             </div>
-            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 3 ? 'bg-primary/10 border border-primary/20' : 'bg-card border border-border'}`}>
+            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 3 ? 'bg-[hsl(var(--accent-gold))]/10 border border-[hsl(var(--accent-gold))]/20' : 'bg-card border border-border'}`}>
               <div className="flex items-center gap-3">
                 <span className="text-lg">🎁</span>
                 <div>
@@ -228,7 +228,7 @@ export function ReferralDashboard() {
               </div>
               {totalReferrals >= 3 && <Check className="h-5 w-5 text-green-500" />}
             </div>
-            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 5 ? 'bg-primary/10 border border-primary/20' : 'bg-card border border-border'}`}>
+            <div className={`flex items-center justify-between p-3 rounded-lg ${totalReferrals >= 5 ? 'bg-[hsl(var(--accent-gold))]/10 border border-[hsl(var(--accent-gold))]/20' : 'bg-card border border-border'}`}>
               <div className="flex items-center gap-3">
                 <span className="text-lg">🏆</span>
                 <div>

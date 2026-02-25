@@ -127,8 +127,8 @@ const ConnectedCirclePage = () => {
         variants={itemVariants}
         className="text-center p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-colors"
       >
-        <div className="w-12 h-12 rounded-xl bg-[#D4AF37]/20 flex items-center justify-center mx-auto mb-4">
-          <Icon className="h-6 w-6 text-[#D4AF37]" />
+        <div className="w-12 h-12 rounded-xl bg-[hsl(var(--accent-gold))]/20 flex items-center justify-center mx-auto mb-4">
+          <Icon className="h-6 w-6 text-[hsl(var(--accent-gold))]" />
         </div>
         <div className="font-display text-4xl md:text-5xl text-white mb-2">
           {count.toLocaleString()}{suffix}
@@ -166,7 +166,7 @@ const ConnectedCirclePage = () => {
               >
                 The Founders
                 <br />
-                <span className="text-[#D4AF37] italic">Circle</span>
+                <span className="text-[hsl(var(--accent-gold))] italic">Circle</span>
               </motion.h1>
 
               <motion.p
@@ -189,7 +189,7 @@ const ConnectedCirclePage = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base font-medium bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-none"
+                  className="rounded-full px-8 min-h-[52px] text-base font-medium bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-none"
                 >
                   <Link to="/founders-circle/directory">
                     Browse Directory
@@ -224,7 +224,7 @@ const ConnectedCirclePage = () => {
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <div className="w-1 h-2 rounded-full bg-[#D4AF37]" />
+              <div className="w-1 h-2 rounded-full bg-[hsl(var(--accent-gold))]" />
             </motion.div>
           </motion.div>
         </section>
@@ -236,7 +236,7 @@ const ConnectedCirclePage = () => {
             className={`container max-w-6xl scroll-animate ${benefitsAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
-              <p className="text-[#D4AF37] text-sm font-semibold uppercase tracking-widest mb-4">Why Join</p>
+              <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">Why Join</p>
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
                 Elevate Your Business
               </h2>
@@ -258,8 +258,8 @@ const ConnectedCirclePage = () => {
                   variants={itemVariants}
                   className="group bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all duration-300"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-[#D4AF37]/20 flex items-center justify-center mb-6 transition-colors group-hover:bg-[#D4AF37]/30">
-                    <item.icon className="h-7 w-7 text-[#D4AF37]" />
+                  <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--accent-gold))]/20 flex items-center justify-center mb-6 transition-colors group-hover:bg-[hsl(var(--accent-gold))]/30">
+                    <item.icon className="h-7 w-7 text-[hsl(var(--accent-gold))]" />
                   </div>
                   <h3 className="font-display text-2xl text-white mb-3">{item.title}</h3>
                   <p className="text-white/60 leading-relaxed font-light">{item.description}</p>
@@ -276,7 +276,7 @@ const ConnectedCirclePage = () => {
             className={`container max-w-5xl scroll-animate ${processAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
-              <p className="text-[#D4AF37] text-sm font-semibold uppercase tracking-widest mb-4">The Process</p>
+              <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">The Process</p>
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
                 Get Your Company Listed
               </h2>
@@ -313,10 +313,10 @@ const ConnectedCirclePage = () => {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  className="bg-[#0a0f0b] border border-white/10 rounded-2xl p-6 flex flex-col items-center text-center group h-full hover:border-[#D4AF37]/30 transition-colors"
+                  className="bg-[#0a0f0b] border border-white/10 rounded-2xl p-6 flex flex-col items-center text-center group h-full hover:border-[hsl(var(--accent-gold))]/30 transition-colors"
                 >
-                  <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center mb-4 transition-all group-hover:bg-[#D4AF37]/20 group-hover:scale-110">
-                    <span className="font-display text-2xl font-bold text-[#D4AF37]">{item.step}</span>
+                  <div className="w-16 h-16 rounded-2xl bg-[hsl(var(--accent-gold))]/10 border border-[hsl(var(--accent-gold))]/20 flex items-center justify-center mb-4 transition-all group-hover:bg-[hsl(var(--accent-gold))]/20 group-hover:scale-110">
+                    <span className="font-display text-2xl font-bold text-[hsl(var(--accent-gold))]">{item.step}</span>
                   </div>
 
                   <h3 className="font-display text-xl text-white mb-3">{item.title}</h3>
@@ -334,7 +334,7 @@ const ConnectedCirclePage = () => {
             className={`container max-w-6xl scroll-animate ${galleryAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
-              <p className="text-[#D4AF37] text-sm font-semibold uppercase tracking-widest mb-4">Our Community</p>
+              <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">Our Community</p>
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
                 Founders in Action
               </h2>
@@ -375,7 +375,7 @@ const ConnectedCirclePage = () => {
             className={`container max-w-4xl scroll-animate ${faqAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
-              <p className="text-[#D4AF37] text-sm font-semibold uppercase tracking-widest mb-4">FAQs</p>
+              <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">FAQs</p>
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
                 Common Questions
               </h2>
@@ -386,12 +386,12 @@ const ConnectedCirclePage = () => {
                 <AccordionItem
                   key={index}
                   value={`item-${index}`}
-                  className="bg-[#0a0f0b] border border-white/10 rounded-2xl px-6 data-[state=open]:border-[#D4AF37]/30 transition-colors"
+                  className="bg-[#0a0f0b] border border-white/10 rounded-2xl px-6 data-[state=open]:border-[hsl(var(--accent-gold))]/30 transition-colors"
                 >
-                  <AccordionTrigger className="text-left font-display text-lg text-white hover:no-underline py-6 hover:text-[#D4AF37] transition-colors">
+                  <AccordionTrigger className="text-left font-display text-lg text-white hover:no-underline py-6 hover:text-[hsl(var(--accent-gold))] transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="w-8 h-8 rounded-lg bg-[#D4AF37]/10 flex items-center justify-center flex-shrink-0">
-                        <HelpCircle className="h-4 w-4 text-[#D4AF37]" />
+                      <div className="w-8 h-8 rounded-lg bg-[hsl(var(--accent-gold))]/10 flex items-center justify-center flex-shrink-0">
+                        <HelpCircle className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
                       </div>
                       {faq.question}
                     </div>
@@ -416,9 +416,9 @@ const ConnectedCirclePage = () => {
               animate={ctaAnimation.isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7 }}
             >
-              <div className="inline-flex items-center gap-2 bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-full px-5 py-2.5 mb-8">
-                <Building2 className="h-4 w-4 text-[#D4AF37]" />
-                <span className="text-sm font-medium text-[#D4AF37]">Join The Founders</span>
+              <div className="inline-flex items-center gap-2 bg-[hsl(var(--accent-gold))]/10 border border-[hsl(var(--accent-gold))]/20 rounded-full px-5 py-2.5 mb-8">
+                <Building2 className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
+                <span className="text-sm font-medium text-[hsl(var(--accent-gold))]">Join The Founders</span>
               </div>
 
               <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
@@ -434,7 +434,7 @@ const ConnectedCirclePage = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base font-medium bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-none"
+                  className="rounded-full px-8 min-h-[52px] text-base font-medium bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-none"
                 >
                   <Link to="/membership">
                     Apply for Membership

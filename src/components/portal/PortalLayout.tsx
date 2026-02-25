@@ -140,7 +140,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                 </Link>
                 <Link
                   to="/"
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/20 transition-colors text-sm font-medium"
                 >
                   <Home className="h-4 w-4" />
                   <span>Back to Website</span>
@@ -181,14 +181,14 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                                 to={isRestricted ? '#' : item.url}
                                 onClick={(e) => isRestricted && e.preventDefault()}
                                 className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive
-                                  ? 'bg-primary/10 text-primary'
+                                  ? 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]'
                                   : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                   } ${isRestricted ? 'opacity-50 cursor-not-allowed' : ''}`}
                               >
                                 <item.icon className="h-5 w-5" />
                                 <span>{item.title}</span>
                                 {isRestricted && (
-                                  <Crown className="h-3 w-3 ml-auto text-primary" />
+                                  <Crown className="h-3 w-3 ml-auto text-[hsl(var(--accent-gold))]" />
                                 )}
                               </Link>
                             </SidebarMenuButton>
@@ -204,7 +204,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                   <div className="mt-6 pt-6 border-t border-border">
                     <Link
                       to="/admin"
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-primary hover:bg-primary/10 transition-colors"
+                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/10 transition-colors"
                     >
                       <Shield className="h-5 w-5" />
                       <span>Admin Dashboard</span>
@@ -277,8 +277,8 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                 </div>
               </header>
 
-              <div className="flex-1 overflow-auto p-4 md:p-8 lg:p-12 scroll-smooth scroll-touch pb-bottom-nav md:pb-8 lg:pb-12">
-                <div className="max-w-7xl mx-auto space-y-8">
+              <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8 scroll-smooth scroll-touch pb-bottom-nav md:pb-8 lg:pb-8">
+                <div className="max-w-[1200px] mx-auto space-y-8">
                   {/* Pending Member Banner */}
                   {isPending && <PendingMemberBanner className="mb-6" />}
 

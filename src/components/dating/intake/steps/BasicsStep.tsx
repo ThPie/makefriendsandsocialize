@@ -52,12 +52,12 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
     const inputErrorClass = (field: string) =>
         hasError(field)
             ? 'border-red-500/70 ring-1 ring-red-500/30 focus:border-red-500 focus:ring-red-500/30'
-            : 'border-white/10 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20';
+            : 'border-white/10 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20';
 
     const selectErrorClass = (field: string) =>
         hasError(field)
             ? 'border-red-500/70 ring-1 ring-red-500/30 focus:ring-red-500/30 focus:border-red-500'
-            : 'border-white/10 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50';
+            : 'border-white/10 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50';
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -90,7 +90,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             hasError('photo_url')
                                 ? "border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.3)]"
                                 : formData.photo_url
-                                    ? "border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.2)]"
+                                    ? "border-[hsl(var(--accent-gold))] shadow-[0_0_30px_rgba(212,175,55,0.2)]"
                                     : "border-white/10 hover:border-dating-terracotta/50"
                         )}>
                             <AvatarImage src={formData.photo_url} className="object-cover" />
@@ -101,7 +101,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
 
                         <div className={cn(
                             "absolute bottom-2 right-2 p-2 rounded-full text-[#1a231b] shadow-lg transform transition-transform duration-300 group-hover:scale-110",
-                            hasError('photo_url') ? "bg-red-500" : "bg-[#D4AF37]"
+                            hasError('photo_url') ? "bg-red-500" : "bg-[hsl(var(--accent-gold))]"
                         )}>
                             {formData.photo_url ? <Sparkles className="h-5 w-5" /> : <Upload className="h-5 w-5" />}
                         </div>
@@ -252,7 +252,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                         className={cn(
                                             "px-4 py-2 rounded-full text-sm border transition-all duration-200",
                                             selected
-                                                ? "bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]"
+                                                ? "bg-[hsl(var(--accent-gold))]/20 border-[hsl(var(--accent-gold))] text-[hsl(var(--accent-gold))]"
                                                 : "bg-white/5 border-white/15 text-white/60 hover:border-white/30"
                                         )}
                                     >
@@ -311,9 +311,9 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             <p className="text-xs text-white/40 mt-0.5">We'll try to match within this range</p>
                         </div>
                         <div className="flex items-center gap-3 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                            <span className="text-[#D4AF37] font-mono font-medium">{formData.age_range_min}</span>
+                            <span className="text-[hsl(var(--accent-gold))] font-mono font-medium">{formData.age_range_min}</span>
                             <span className="text-white/30 text-xs uppercase">to</span>
-                            <span className="text-[#D4AF37] font-mono font-medium">{formData.age_range_max}</span>
+                            <span className="text-[hsl(var(--accent-gold))] font-mono font-medium">{formData.age_range_max}</span>
                         </div>
                     </div>
                     <Slider
@@ -334,7 +334,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                     <div className="flex items-start justify-between">
                         <div className="flex-1">
                             <Label className="text-base text-white flex items-center gap-2 mb-1">
-                                <MapPin className="h-4 w-4 text-[#D4AF37]" />
+                                <MapPin className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
                                 Location
                             </Label>
                             {profile?.city && !locationEditing ? (
@@ -345,7 +345,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                     <button
                                         type="button"
                                         onClick={() => setLocationEditing(true)}
-                                        className="text-xs text-white/40 hover:text-[#D4AF37] transition-colors flex items-center gap-1"
+                                        className="text-xs text-white/40 hover:text-[hsl(var(--accent-gold))] transition-colors flex items-center gap-1"
                                     >
                                         <Pencil className="h-3 w-3" /> Edit
                                     </button>
@@ -397,7 +397,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             value={formData.occupation}
                             onChange={(e) => updateField("occupation", e.target.value)}
                             placeholder="e.g. Architect"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 h-12"
+                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 h-12"
                         />
                     </div>
 
@@ -414,7 +414,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             value={formData.bio}
                             onChange={(e) => updateField("bio", e.target.value)}
                             placeholder="Share a glimpse into your world..."
-                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                         <p className="text-xs text-right text-white/40">
                             {formData.bio?.length || 0} characters

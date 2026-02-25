@@ -61,10 +61,12 @@ export const EventSection = () => {
     <section className="section-spacing bg-background" id="events">
       <div ref={ref} className="content-container">
         {/* Header */}
-        <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Calendar</span>
-        <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1] mb-12 md:mb-16">
-          Upcoming <span className="italic">Gatherings</span>
-        </h2>
+        <div className="section-header">
+          <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Calendar</span>
+          <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1]">
+            Upcoming <span className="italic">Gatherings</span>
+          </h2>
+        </div>
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

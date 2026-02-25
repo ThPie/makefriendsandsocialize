@@ -119,7 +119,7 @@ export default function AdminDashboard() {
       label: 'Pending Apps',
       value: stats?.pendingApplications ?? 0,
       icon: UserPlus,
-      iconBg: 'bg-primary/10',
+      iconBg: 'bg-[hsl(var(--accent-gold))]/10',
       iconColor: 'text-primary',
       badge: 'ACTION',
       badgeColor: 'text-primary',
@@ -194,13 +194,13 @@ export default function AdminDashboard() {
       {/* Tier Breakdown */}
       <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-6">
         <h2 className="font-display text-xl text-foreground flex items-center gap-2 mb-4">
-          <Crown className="h-5 w-5 text-[#d4af37]" />
+          <Crown className="h-5 w-5 text-[hsl(var(--accent-gold))]" />
           Membership Tiers
         </h2>
         <div className="grid grid-cols-3 gap-4">
           {[
-            { label: 'Patron', count: stats?.tierBreakdown.patron ?? 0, color: 'bg-primary/10 text-primary' },
-            { label: 'Fellow', count: stats?.tierBreakdown.fellow ?? 0, color: 'bg-[#d4af37]/10 text-[#d4af37]' },
+            { label: 'Patron', count: stats?.tierBreakdown.patron ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
+            { label: 'Fellow', count: stats?.tierBreakdown.fellow ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
             { label: 'Founder', count: stats?.tierBreakdown.founder ?? 0, color: 'bg-emerald-500/10 text-emerald-400' },
           ].map((tier) => (
             <div

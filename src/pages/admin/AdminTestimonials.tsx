@@ -511,8 +511,8 @@ Or line format:
                             onClick={() => toggleReviewSelection(index)}
                             className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                               selectedReviews.has(index)
-                                ? 'border-primary bg-primary/5'
-                                : 'border-border hover:border-primary/50'
+                                ? 'border-[hsl(var(--accent-gold))] bg-[hsl(var(--accent-gold))]/5'
+                                : 'border-border hover:border-[hsl(var(--accent-gold))]/50'
                             }`}
                           >
                             <div className="flex items-start justify-between gap-2">
@@ -619,10 +619,10 @@ Or line format:
                     <img
                       src={testimonial.image_url}
                       alt={testimonial.name}
-                      className="w-16 h-16 rounded-full object-cover ring-2 ring-primary/20"
+                      className="w-16 h-16 rounded-full object-cover ring-2 ring-[hsl(var(--accent-gold))]/20"
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-primary/20">
+                    <div className="w-16 h-16 rounded-full bg-[hsl(var(--accent-gold))]/10 flex items-center justify-center ring-2 ring-[hsl(var(--accent-gold))]/20">
                       <span className="text-primary font-semibold text-xl">
                         {testimonial.name.charAt(0)}
                       </span>

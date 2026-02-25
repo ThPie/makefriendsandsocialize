@@ -128,7 +128,7 @@ export default function PortalNetwork() {
           </p>
         </div>
 
-        <Card className="bg-card border-primary/20 mb-8">
+        <Card className="bg-card border-[hsl(var(--accent-gold))]/20 mb-8">
           <CardContent className="p-8">
             <h3 className="font-display text-xl text-foreground mb-4">Fellow Membership Includes</h3>
             <ul className="text-left space-y-3 text-muted-foreground mb-6">

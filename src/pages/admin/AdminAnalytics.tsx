@@ -141,7 +141,7 @@ export default function AdminAnalytics() {
         {[
           { label: 'Total Matches', value: isLoading ? '...' : stats.total, sub: 'All time matches created', icon: Users, iconColor: 'text-muted-foreground', valueColor: 'text-foreground' },
           { label: 'Success Rate', value: isLoading ? '...' : `${stats.successRate}%`, sub: 'Mutual yes after meeting', icon: TrendingUp, iconColor: 'text-primary', valueColor: 'text-primary' },
-          { label: 'Avg Decision Time', value: isLoading ? '...' : `${stats.avgDecisionDays} days`, sub: 'From match to decision', icon: Clock, iconColor: 'text-[#d4af37]', valueColor: 'text-foreground' },
+          { label: 'Avg Decision Time', value: isLoading ? '...' : `${stats.avgDecisionDays} days`, sub: 'From match to decision', icon: Clock, iconColor: 'text-[hsl(var(--accent-gold))]', valueColor: 'text-foreground' },
           { label: 'Connections Made', value: isLoading ? '...' : stats.mutualYes, sub: 'Successful mutual matches', icon: Heart, iconColor: 'text-primary', valueColor: 'text-primary' },
         ].map((stat) => (
           <div key={stat.label} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5">

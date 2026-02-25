@@ -171,7 +171,7 @@ export default function AdminSecurityDashboard() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl flex items-center gap-3">
-            <Shield className="h-8 w-8 text-[#d4af37]" />
+            <Shield className="h-8 w-8 text-[hsl(var(--accent-gold))]" />
             Security Dashboard
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -186,7 +186,7 @@ export default function AdminSecurityDashboard() {
           { icon: Clock, iconBg: 'bg-amber-500/10', iconColor: 'text-amber-500', value: stats.dueForScan, label: 'Due for Scan' },
           { icon: AlertCircle, iconBg: 'bg-destructive/10', iconColor: 'text-destructive', value: stats.neverScanned, label: 'Never Scanned' },
           { icon: Calendar, iconBg: 'bg-orange-500/10', iconColor: 'text-orange-500', value: stats.overdue90Days, label: '90+ Days Overdue' },
-          { icon: ShieldCheck, iconBg: 'bg-primary/10', iconColor: 'text-primary', value: stats.scansLast30Days, label: 'Scans (30 days)' },
+          { icon: ShieldCheck, iconBg: 'bg-[hsl(var(--accent-gold))]/10', iconColor: 'text-primary', value: stats.scansLast30Days, label: 'Scans (30 days)' },
           { icon: AlertCircle, iconBg: 'bg-red-500/10', iconColor: 'text-red-500', value: stats.flaggedLast30Days, label: 'Flagged (30 days)' },
         ].map((stat) => (
           <div key={stat.label} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
@@ -280,7 +280,7 @@ export default function AdminSecurityDashboard() {
                     <div
                       key={member.id}
                       className={`flex items-center gap-4 p-4 rounded-lg border transition-colors cursor-pointer ${isSelected
-                          ? 'border-primary bg-primary/5'
+                          ? 'border-[hsl(var(--accent-gold))] bg-[hsl(var(--accent-gold))]/5'
                           : 'border-white/[0.08] hover:bg-white/[0.04]'
                         }`}
                       onClick={() => toggleMemberSelection(member.id)}
@@ -292,7 +292,7 @@ export default function AdminSecurityDashboard() {
                       />
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={member.avatar_urls?.[0]} />
-                        <AvatarFallback className="bg-primary/10 text-primary">
+                        <AvatarFallback className="bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]">
                           {initials}
                         </AvatarFallback>
                       </Avatar>

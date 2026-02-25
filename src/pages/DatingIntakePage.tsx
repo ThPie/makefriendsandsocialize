@@ -31,7 +31,7 @@ export const DatingIntakePage = () => {
     return (
       <div className="min-h-screen bg-[#0a0f0b] flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin text-[#D4AF37] mx-auto mb-4" />
+          <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--accent-gold))] mx-auto mb-4" />
           <p className="text-white/60">Loading...</p>
         </div>
       </div>
@@ -55,7 +55,7 @@ export const DatingIntakePage = () => {
         {/* Header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center p-4 bg-white/5 border border-white/10 rounded-full mb-6 backdrop-blur-sm">
-            <Heart className="h-6 w-6 text-[#D4AF37]" />
+            <Heart className="h-6 w-6 text-[hsl(var(--accent-gold))]" />
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
             Slow Dating Application

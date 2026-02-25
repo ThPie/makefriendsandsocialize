@@ -73,7 +73,7 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                         value={formData.tuesday_night_test}
                         onChange={(e) => updateField("tuesday_night_test", e.target.value)}
                         placeholder="Paint a picture of your perfect low-key evening..."
-                        className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                        className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
@@ -91,7 +91,7 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                             value={formData.financial_philosophy}
                             onChange={(e) => updateField("financial_philosophy", e.target.value)}
                             placeholder="This reveals your relationship with money..."
-                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
                 )}
@@ -109,7 +109,7 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                         value={formData.current_curiosity}
                         onChange={(e) => updateField("current_curiosity", e.target.value)}
                         placeholder="What's capturing your attention lately..."
-                        className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                        className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
@@ -117,7 +117,7 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                 {isSeekingSerious && (
                     <div className="space-y-6 pt-6 border-t border-white/10 animate-fade-in">
                         <div className="flex items-center gap-2">
-                            <span className="text-xs bg-dating-terracotta/20 text-[#D4AF37] px-2 py-1 rounded-full font-medium border border-[#D4AF37]/20">
+                            <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full font-medium border border-[hsl(var(--accent-gold))]/20">
                                 Top divorce predictor
                             </span>
                             <span className="text-xs text-white/40">
@@ -131,7 +131,7 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                                 Hidden debt destroys marriages. Being upfront helps us match you well.
                             </p>
                             <Select value={formData.debt_status} onValueChange={(value) => updateField("debt_status", value)}>
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your situation" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -154,7 +154,7 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                                 value={formData.career_ambition}
                                 onChange={(e) => updateField("career_ambition", e.target.value)}
                                 placeholder="Ambition mismatch can cause resentment - be honest about your priorities..."
-                                className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                                className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                             />
                         </div>
                     </div>

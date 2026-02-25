@@ -161,7 +161,7 @@ export default function AdminMembers() {
                 <div className="flex items-start gap-4">
                   <Avatar className="h-12 w-12">
                     <AvatarImage src={member.avatar_urls?.[0]} />
-                    <AvatarFallback className="bg-primary/10 text-primary">
+                    <AvatarFallback className="bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
@@ -242,7 +242,7 @@ export default function AdminMembers() {
                   <div className="flex items-center gap-4">
                     <Avatar className="h-16 w-16">
                       <AvatarImage src={selectedMember.avatar_urls?.[0]} />
-                      <AvatarFallback className="bg-primary/10 text-primary text-xl">
+                      <AvatarFallback className="bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] text-xl">
                         {selectedMember.first_name?.[0] || 'M'}
                         {selectedMember.last_name?.[0] || ''}
                       </AvatarFallback>

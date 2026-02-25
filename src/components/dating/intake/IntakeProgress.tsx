@@ -66,9 +66,9 @@ export const IntakeProgress = ({
                                     className={cn(
                                         'w-11 h-11 rounded-full flex items-center justify-center border-2 transition-all duration-300 relative z-10',
                                         isCurrent
-                                            ? 'bg-[#D4AF37] border-[#D4AF37] text-[#0a0f0b] shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-110'
+                                            ? 'bg-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))] text-[#0a0f0b] shadow-lg scale-110'
                                             : isCompleted
-                                                ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]'
+                                                ? 'bg-[hsl(var(--accent-gold))]/20 border-[hsl(var(--accent-gold))] text-[hsl(var(--accent-gold))]'
                                                 : 'bg-white/5 border-white/15 text-white/30 hover:border-white/25',
                                         isClickable && 'cursor-pointer hover:scale-105'
                                     )}
@@ -86,7 +86,7 @@ export const IntakeProgress = ({
                                 <span
                                     className={cn(
                                         "text-[10px] uppercase tracking-wider font-medium text-center leading-tight max-w-[80px] transition-colors duration-300",
-                                        isCurrent ? "text-[#D4AF37]" : isCompleted ? "text-[#D4AF37]/70" : "text-white/40"
+                                        isCurrent ? "text-[hsl(var(--accent-gold))]" : isCompleted ? "text-[hsl(var(--accent-gold))]/70" : "text-white/40"
                                     )}
                                 >
                                     {s.title}
@@ -97,7 +97,7 @@ export const IntakeProgress = ({
                                     <div
                                         className={cn(
                                             'absolute top-[22px] left-[55%] w-[90%] h-[2px] transition-all duration-700 -z-0',
-                                            currentStep > s.number ? 'bg-[#D4AF37]' : 'bg-white/10'
+                                            currentStep > s.number ? 'bg-[hsl(var(--accent-gold))]' : 'bg-white/10'
                                         )}
                                         aria-hidden="true"
                                     />
@@ -111,7 +111,7 @@ export const IntakeProgress = ({
             {/* Mobile: Current step title + progress bar */}
             <div className="md:hidden space-y-4">
                 <div className="text-center">
-                    <h2 className="text-[#D4AF37] font-display text-xl">
+                    <h2 className="text-[hsl(var(--accent-gold))] font-display text-xl">
                         {steps.find(s => s.number === currentStep)?.title}
                     </h2>
                     <p className="text-white/40 text-xs uppercase tracking-widest mt-1">
@@ -133,9 +133,9 @@ export const IntakeProgress = ({
                                 className={cn(
                                     'w-2.5 h-2.5 rounded-full transition-all duration-300',
                                     isCurrent
-                                        ? 'bg-[#D4AF37] scale-125 shadow-[0_0_8px_rgba(212,175,55,0.5)]'
+                                        ? 'bg-[hsl(var(--accent-gold))] scale-125 shadow-[0_0_8px_rgba(212,175,55,0.5)]'
                                         : isCompleted
-                                            ? 'bg-[#D4AF37]/50'
+                                            ? 'bg-[hsl(var(--accent-gold))]/50'
                                             : 'bg-white/15',
                                     (isCompleted || isCurrent) && 'cursor-pointer'
                                 )}

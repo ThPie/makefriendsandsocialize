@@ -66,7 +66,7 @@ function SortableValue({ id, value, rank, onRemove }: SortableValueProps) {
   const getRankColor = (rank: number) => {
     switch (rank) {
       case 1:
-        return "bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]";
+        return "bg-[hsl(var(--accent-gold))]/20 border-[hsl(var(--accent-gold))] text-[hsl(var(--accent-gold))]";
       case 2:
         return "bg-white/10 border-white/40 text-white/90";
       case 3:
@@ -169,7 +169,7 @@ export function CoreValuesPicker({
             className={cn(
               "transition-all",
               selectedValues.length === maxSelections
-                ? "bg-[#D4AF37] text-black hover:bg-[#D4AF37]/90"
+                ? "bg-[hsl(var(--accent-gold))] text-black hover:bg-[hsl(var(--accent-gold))]/90"
                 : "text-white/60 border-white/20"
             )}
           >

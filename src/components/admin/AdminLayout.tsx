@@ -155,8 +155,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-background">
           <SkipLink />
-          <Sidebar className="border-r dark:border-white/[0.08] dark:bg-[#0a1f0f]/95" aria-label="Admin Sidebar">
-            <SidebarHeader className="p-4 border-b dark:border-white/[0.08]">
+          <Sidebar className="border-r border-border" aria-label="Admin Sidebar">
+            <SidebarHeader className="p-4 border-b border-border">
               <Link to="/" className="flex items-center gap-3 mb-3">
                 <BrandLogo className="h-10 w-auto" width={120} height={40} />
                 <div className="flex items-center gap-1.5">
@@ -167,7 +167,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               <div className="flex flex-col gap-2">
                 <Link
                   to="/"
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/20 transition-colors text-sm font-medium"
                 >
                   <Home className="h-4 w-4" />
                   <span>Back to Website</span>
@@ -195,8 +195,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                             <Link
                               to={item.url}
                               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${isActive
-                                ? 'bg-[#d4af37]/10 text-[#d4af37] border-l-2 border-[#d4af37] font-medium'
-                                : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
+                                ? 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border-l-2 border-[hsl(var(--accent-gold))] font-medium'
+                                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                 }`}
                             >
                               <item.icon className="h-5 w-5" />
@@ -212,7 +212,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
             </SidebarContent>
 
-            <div className="p-4 mt-auto border-t dark:border-white/[0.08]">
+            <div className="p-4 mt-auto border-t border-border">
               {currentEndpoint && (
                 <div className="mb-3 px-2">
                   <RateLimitIndicator endpoint={currentEndpoint} compact />
@@ -230,21 +230,23 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </Sidebar>
 
           <main id="main-content" className="flex-1 overflow-auto">
-            <header className="sticky top-0 z-40 flex items-center h-16 px-4 border-b dark:border-white/[0.08] dark:bg-[#0a1f0f]/95 bg-background/95 backdrop-blur md:hidden">
+            <header className="sticky top-0 z-40 flex items-center h-16 px-4 border-b border-border bg-background/95 backdrop-blur md:hidden">
               <SidebarTrigger />
               <BrandLogo className="ml-3 h-8 w-auto" height={32} width={96} />
-              <Shield className="ml-2 h-4 w-4 text-[#d4af37]" />
+              <Shield className="ml-2 h-4 w-4 text-[hsl(var(--accent-gold))]" />
             </header>
 
             <div className="p-6 md:p-8 lg:p-10">
-              {/* Breadcrumb Navigation */}
-              <PortalBreadcrumb type="admin" />
+              <div className="max-w-[1200px] mx-auto">
+                {/* Breadcrumb Navigation */}
+                <PortalBreadcrumb type="admin" />
 
-              <PageTransition>
-                <MFAGuard requireMFA={requiresMFA}>
-                  {children}
-                </MFAGuard>
-              </PageTransition>
+                <PageTransition>
+                  <MFAGuard requireMFA={requiresMFA}>
+                    {children}
+                  </MFAGuard>
+                </PageTransition>
+              </div>
             </div>
           </main>
         </div>

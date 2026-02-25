@@ -164,7 +164,7 @@ export default function BusinessLandingPage() {
         {/* Hero Section */}
         <section className="py-16 md:py-24 relative overflow-hidden">
           {/* Ambient background */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-[#D4AF37]/5 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-[hsl(var(--accent-gold))]/5 blur-[120px] rounded-full pointer-events-none" />
 
           <div className="container max-w-4xl mx-auto px-4 relative z-10">
             <div className="text-center mb-12">
@@ -173,18 +173,18 @@ export default function BusinessLandingPage() {
                 <img
                   src={business.logo_url}
                   alt={`${business.business_name} logo`}
-                  className="h-24 w-24 md:h-32 md:w-32 rounded-full object-cover mx-auto mb-6 border-4 border-[#D4AF37]/20 shadow-lg shadow-[#D4AF37]/5"
+                  className="h-24 w-24 md:h-32 md:w-32 rounded-full object-cover mx-auto mb-6 border-4 border-[hsl(var(--accent-gold))]/20 shadow-lg shadow-[hsl(var(--accent-gold))]/5"
                 />
               ) : (
-                <div className="h-24 w-24 md:h-32 md:w-32 rounded-full bg-[#D4AF37]/10 flex items-center justify-center mx-auto mb-6 border-4 border-[#D4AF37]/20">
-                  <Building2 className="h-12 w-12 text-[#D4AF37]" />
+                <div className="h-24 w-24 md:h-32 md:w-32 rounded-full bg-[hsl(var(--accent-gold))]/10 flex items-center justify-center mx-auto mb-6 border-4 border-[hsl(var(--accent-gold))]/20">
+                  <Building2 className="h-12 w-12 text-[hsl(var(--accent-gold))]" />
                 </div>
               )}
 
               {/* Business Name & Badge */}
               <div className="flex items-center justify-center gap-2 mb-4">
                 <h1 className="text-3xl md:text-5xl font-display text-white">{business.business_name}</h1>
-                <Badge variant="secondary" className="bg-[#D4AF37]/10 text-[#D4AF37] border-none">
+                <Badge variant="secondary" className="bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border-none">
                   <Star className="h-3 w-3 mr-1" />
                   Verified
                 </Badge>
@@ -209,7 +209,7 @@ export default function BusinessLandingPage() {
                     href={business.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1 bg-white/5 rounded-full border border-white/5 hover:bg-white/10 hover:text-[#D4AF37] transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1 bg-white/5 rounded-full border border-white/5 hover:bg-white/10 hover:text-[hsl(var(--accent-gold))] transition-colors"
                   >
                     <Globe className="h-4 w-4" />
                     Website
@@ -243,7 +243,7 @@ export default function BusinessLandingPage() {
             <Card className="max-w-xl mx-auto shadow-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
               <CardHeader className="text-center border-b border-white/5 pb-8">
                 <CardTitle className="flex items-center justify-center gap-2 text-2xl font-display text-white">
-                  <Mail className="h-5 w-5 text-[#D4AF37]" />
+                  <Mail className="h-5 w-5 text-[hsl(var(--accent-gold))]" />
                   Get in Touch
                 </CardTitle>
                 <CardDescription className="text-white/60">
@@ -253,7 +253,7 @@ export default function BusinessLandingPage() {
               <CardContent className="pt-8">
                 {submitted ? (
                   <div className="text-center py-8">
-                    <CheckCircle2 className="h-16 w-16 text-[#D4AF37] mx-auto mb-4" />
+                    <CheckCircle2 className="h-16 w-16 text-[hsl(var(--accent-gold))] mx-auto mb-4" />
                     <h3 className="text-xl font-semibold mb-2 text-white">Inquiry Sent</h3>
                     <p className="text-white/60">
                       Thank you for connecting. {business.business_name} will get back to you soon.
@@ -280,7 +280,7 @@ export default function BusinessLandingPage() {
                           placeholder="John Doe"
                           value={formData.contactName}
                           onChange={(e) => setFormData(prev => ({ ...prev, contactName: e.target.value }))}
-                          className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20"
+                          className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20"
                           required
                         />
                       </div>
@@ -292,7 +292,7 @@ export default function BusinessLandingPage() {
                           placeholder="john@example.com"
                           value={formData.contactEmail}
                           onChange={(e) => setFormData(prev => ({ ...prev, contactEmail: e.target.value }))}
-                          className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20"
+                          className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20"
                           required
                         />
                       </div>
@@ -307,7 +307,7 @@ export default function BusinessLandingPage() {
                           placeholder="+1 (555) 000-0000"
                           value={formData.contactPhone}
                           onChange={(e) => setFormData(prev => ({ ...prev, contactPhone: e.target.value }))}
-                          className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20"
+                          className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20"
                         />
                       </div>
                       <div className="space-y-2">
@@ -317,7 +317,7 @@ export default function BusinessLandingPage() {
                           placeholder="Acme Inc."
                           value={formData.companyName}
                           onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
-                          className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20"
+                          className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20"
                         />
                       </div>
                     </div>
@@ -330,13 +330,13 @@ export default function BusinessLandingPage() {
                         rows={4}
                         value={formData.message}
                         onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                        className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                        className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                       />
                     </div>
 
                     <Button
                       type="submit"
-                      className="w-full bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-none font-medium h-12 text-base"
+                      className="w-full bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-none font-medium h-12 text-base"
                       size="lg"
                       disabled={submitLead.isPending}
                     >

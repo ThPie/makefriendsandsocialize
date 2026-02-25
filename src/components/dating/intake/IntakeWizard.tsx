@@ -45,14 +45,14 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
             <motion.div
                 animate={{ scale: [1, 1.15, 1] }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                className="flex items-center justify-center w-24 h-24 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30"
+                className="flex items-center justify-center w-24 h-24 rounded-full bg-[hsl(var(--accent-gold))]/10 border border-[hsl(var(--accent-gold))]/30"
             >
-                <Heart className="h-12 w-12 text-[#D4AF37] fill-[#D4AF37]" />
+                <Heart className="h-12 w-12 text-[hsl(var(--accent-gold))] fill-[hsl(var(--accent-gold))]" />
             </motion.div>
 
             {/* Heading */}
             <div className="space-y-3">
-                <h2 className="font-display text-3xl md:text-4xl font-light text-[#D4AF37]">
+                <h2 className="font-display text-3xl md:text-4xl font-light text-[hsl(var(--accent-gold))]">
                     Application Received 🌿
                 </h2>
                 <p className="text-white/70 text-lg leading-relaxed">
@@ -63,8 +63,8 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
             {/* Timeline box */}
             <div className="w-full bg-white/[0.04] border border-white/10 rounded-xl p-6 text-left space-y-4">
                 <div className="flex items-center gap-2 mb-2">
-                    <Clock className="h-4 w-4 text-[#D4AF37]" />
-                    <span className="text-[#D4AF37] text-sm font-semibold uppercase tracking-widest">What Happens Next</span>
+                    <Clock className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
+                    <span className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest">What Happens Next</span>
                 </div>
                 {[
                     { label: '24–48 hours', detail: 'Our team reviews your application personally.' },
@@ -72,7 +72,7 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
                     { label: 'We\'ll reach out', detail: 'Expect a brief consultation call if you\'re a great fit.' },
                 ].map(({ label, detail }) => (
                     <div key={label} className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] mt-2 flex-shrink-0" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--accent-gold))] mt-2 flex-shrink-0" />
                         <p className="text-white/70 text-sm leading-relaxed">
                             <span className="text-white font-medium">{label}:</span> {detail}
                         </p>
@@ -82,7 +82,7 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
 
             {/* Email notice */}
             <div className="flex items-start gap-3 bg-white/[0.03] border border-white/10 rounded-xl p-5 w-full text-left">
-                <Mail className="h-5 w-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
+                <Mail className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" />
                 <p className="text-white/60 text-sm leading-relaxed">
                     <span className="text-white/80 font-medium">Check your inbox</span> — we've sent you a personalized message from your dating coach with encouragement for this journey.
                 </p>
@@ -92,7 +92,7 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
             <div className="flex flex-col items-center gap-4 w-full pt-2">
                 <Button
                     onClick={() => navigate('/portal')}
-                    className="gap-2 bg-[#D4AF37] text-black hover:bg-[#D4AF37]/90 px-10 py-6 text-base font-medium rounded-full shadow-[0_0_24px_rgba(212,175,55,0.25)] hover:shadow-[0_0_36px_rgba(212,175,55,0.4)] transition-all duration-300 w-full max-w-xs"
+                    className="gap-2 bg-[hsl(var(--accent-gold))] text-black hover:bg-[hsl(var(--accent-gold))]/90 px-10 py-6 text-base font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 w-full max-w-xs"
                 >
                     Return to Portal
                 </Button>
@@ -100,7 +100,7 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
                     href="https://www.gottman.com/blog/the-importance-of-being-intentional-in-your-relationship/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#D4AF37]/60 text-sm hover:text-[#D4AF37] transition-colors duration-200 underline underline-offset-4 decoration-[#D4AF37]/30"
+                    className="text-[hsl(var(--accent-gold))]/60 text-sm hover:text-[hsl(var(--accent-gold))] transition-colors duration-200 underline underline-offset-4 decoration-[hsl(var(--accent-gold))]/30"
                 >
                     Read: The Art of Intentional Dating →
                 </a>
@@ -247,7 +247,7 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                     {step < totalSteps ? (
                         <Button
                             onClick={handleNext}
-                            className="gap-2 bg-[#D4AF37] text-black hover:bg-[#D4AF37]/90 px-8 py-6 text-md font-medium rounded-full shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300"
+                            className="gap-2 bg-[hsl(var(--accent-gold))] text-black hover:bg-[hsl(var(--accent-gold))]/90 px-8 py-6 text-md font-medium rounded-full shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300"
                             aria-label="Go to next step"
                         >
                             Next Step
@@ -257,7 +257,7 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                         <Button
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="gap-2 bg-[#D4AF37] text-black hover:bg-[#D4AF37]/90 px-8 py-6 text-md font-medium rounded-full shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300"
+                            className="gap-2 bg-[hsl(var(--accent-gold))] text-black hover:bg-[hsl(var(--accent-gold))]/90 px-8 py-6 text-md font-medium rounded-full shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300"
                             aria-label="Submit application"
                         >
                             {isSubmitting ? (

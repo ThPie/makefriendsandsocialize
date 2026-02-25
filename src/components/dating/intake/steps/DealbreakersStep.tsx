@@ -84,7 +84,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         value={formData.dealbreakers}
                         onChange={(e) => updateField("dealbreakers", e.target.value)}
                         placeholder="What would be non-negotiable for you in a partner..."
-                        className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                        className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
@@ -100,7 +100,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         }
                     </p>
                     <Select value={formData.politics_stance} onValueChange={(value) => updateField("politics_stance", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                             <SelectValue placeholder="Select your preference" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -124,7 +124,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         }
                     </p>
                     <Select value={formData.religion_stance} onValueChange={(value) => updateField("religion_stance", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                             <SelectValue placeholder="Select your preference" />
                         </SelectTrigger>
                         <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -152,7 +152,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             ? "What are you excited about in life right now..."
                             : "Be honest about what you're looking for in the long term..."
                         }
-                        className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                        className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
@@ -172,7 +172,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                                     size="sm"
                                     onClick={() => toggleArrayItem("political_issues", issue)}
                                     className={(formData.political_issues || []).includes(issue)
-                                        ? "bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-transparent"
+                                        ? "bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-transparent"
                                         : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:text-white"}
                                 >
                                     {issue}
@@ -188,7 +188,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         <div className="space-y-3">
                             <Label className="text-white/80">How would you describe your current religious practice?</Label>
                             <Select value={formData.religious_practice} onValueChange={(value) => updateField("religious_practice", value)}>
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your practice" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -205,7 +205,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         <div className="space-y-3">
                             <Label className="text-white/80">Would you want to raise children in a specific faith tradition?</Label>
                             <Select value={formData.raise_children_faith} onValueChange={(value) => updateField("raise_children_faith", value)}>
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your preference" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -224,7 +224,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                 {isSeekingSerious && (
                     <div className="space-y-6 pt-6 border-t border-white/10 animate-fade-in">
                         <div className="flex items-center gap-2">
-                            <span className="text-xs bg-dating-terracotta/20 text-[#D4AF37] px-2 py-1 rounded-full font-medium border border-[#D4AF37]/20">
+                            <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full font-medium border border-[hsl(var(--accent-gold))]/20">
                                 Critical factor
                             </span>
                             <span className="text-xs text-white/40">
@@ -242,14 +242,14 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                                 value={formData.trust_fidelity_views}
                                 onChange={(e) => updateField("trust_fidelity_views", e.target.value)}
                                 placeholder="Your experiences and expectations around trust..."
-                                className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                                className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                             />
                         </div>
 
                         <div className="space-y-3">
                             <Label className="text-white/80">How flexible are you about where you live long-term?</Label>
                             <Select value={formData.geographic_flexibility} onValueChange={(value) => updateField("geographic_flexibility", value)}>
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[#D4AF37]/20 focus:border-[#D4AF37]/50">
+                                <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your flexibility" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-[#1a231b] border-white/10 text-white">
@@ -271,7 +271,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                                 value={formData.ten_year_vision}
                                 onChange={(e) => updateField("ten_year_vision", e.target.value)}
                                 placeholder="Paint a picture of your ideal future lifestyle..."
-                                className="min-h-[80px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                                className="min-h-[80px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                             />
                         </div>
                     </div>
@@ -280,7 +280,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                 {/* Self-Awareness Section */}
                 <div className="space-y-6 pt-6 border-t border-white/10">
                     <div className="flex items-center gap-2">
-                        <span className="text-xs bg-dating-terracotta/20 text-[#D4AF37] px-2 py-1 rounded-full font-medium border border-[#D4AF37]/20">
+                        <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full font-medium border border-[hsl(var(--accent-gold))]/20">
                             Self-awareness check
                         </span>
                         <span className="text-xs text-white/40">
@@ -298,7 +298,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.accountability_reflection}
                             onChange={(e) => updateField("accountability_reflection", e.target.value)}
                             placeholder="Self-awareness about past patterns is attractive..."
-                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
 
@@ -312,7 +312,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.ex_admiration}
                             onChange={(e) => updateField("ex_admiration", e.target.value)}
                             placeholder="Even if it ended badly, what did you appreciate about them..."
-                            className="min-h-[60px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                            className="min-h-[60px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
 
@@ -326,7 +326,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.growth_work}
                             onChange={(e) => updateField("growth_work", e.target.value)}
                             placeholder="Therapy, books, workshops, habits, skills..."
-                            className="min-h-[60px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                            className="min-h-[60px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
 
@@ -343,7 +343,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.finding_love_fear}
                             onChange={(e) => updateField("finding_love_fear", e.target.value)}
                             placeholder="Be honest with yourself - awareness is the first step to change..."
-                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/20 resize-none"
+                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
                 </div>

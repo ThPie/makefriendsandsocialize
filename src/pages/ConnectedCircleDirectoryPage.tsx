@@ -189,7 +189,7 @@ const ConnectedCircleDirectoryPage = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-6"
+              className="inline-flex items-center gap-2 glass border border-[hsl(var(--accent-gold))]/20 rounded-full px-5 py-2.5 mb-6"
             >
               <Building2 className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium text-foreground">Founders Directory</span>
@@ -295,7 +295,7 @@ const ConnectedCircleDirectoryPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-primary/10 border border-primary/20 rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4"
+              className="bg-primary/10 border border-[hsl(var(--accent-gold))]/20 rounded-2xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4"
             >
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-primary/20 rounded-xl">

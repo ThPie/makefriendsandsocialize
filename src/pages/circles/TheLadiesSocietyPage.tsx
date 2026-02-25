@@ -192,7 +192,7 @@ const TheLadiesSocietyPage = () => {
   };
 
   const inputClasses =
-    "block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm transition-all duration-200";
+    "block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/50 focus:border-[hsl(var(--accent-gold))]/50 text-sm transition-all duration-200";
 
   return (
     <Layout>
@@ -235,7 +235,7 @@ const TheLadiesSocietyPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8"
+              className="inline-flex items-center gap-2 glass border border-[hsl(var(--accent-gold))]/20 rounded-full px-5 py-2.5 mb-8"
             >
               <Crown className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium text-foreground">
@@ -424,7 +424,7 @@ const TheLadiesSocietyPage = () => {
 
               <motion.div
                 variants={itemVariants}
-                className="bg-card border border-primary/50 ring-1 ring-primary/20 rounded-2xl p-8 text-center relative"
+                className="bg-card border border-[hsl(var(--accent-gold))]/50 ring-1 ring-[hsl(var(--accent-gold))]/20 rounded-2xl p-8 text-center relative"
               >
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
@@ -639,7 +639,7 @@ const TheLadiesSocietyPage = () => {
                     }
                     required
                   >
-                    <SelectTrigger className="w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm h-auto">
+                    <SelectTrigger className="w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-[hsl(var(--accent-gold))]/50 text-sm h-auto">
                       <SelectValue placeholder="Select your tier" />
                     </SelectTrigger>
                     <SelectContent className="bg-card border border-border">

@@ -44,12 +44,12 @@ export const PricingSection = () => {
     <section className="section-spacing bg-background" id="membership">
       <div ref={ref} className="content-container">
         {/* Header */}
-        <div className="text-center mb-12 md:mb-16">
-          <span className="eyebrow block mb-3">Membership</span>
+        <div className="section-header">
+          <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Membership</span>
           <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1] mb-4">
             Invest in <span className="italic">Connection</span>
           </h2>
-          <p className="text-muted-foreground text-base font-light max-w-lg mx-auto">
+          <p className="text-muted-foreground text-base font-light">
             Choose the membership that fits your lifestyle. All plans include a 30-day free trial.
           </p>
         </div>

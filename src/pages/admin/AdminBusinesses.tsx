@@ -138,7 +138,7 @@ const AdminBusinesses = () => {
       case 'approved':
         return <Badge className="bg-green-500/10 text-green-500 border-green-500/20"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
       case 'featured':
-        return <Badge className="bg-primary/10 text-primary border-primary/20"><Star className="h-3 w-3 mr-1" />Featured</Badge>;
+        return <Badge className="bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))]/20"><Star className="h-3 w-3 mr-1" />Featured</Badge>;
       case 'pending':
         return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
       case 'rejected':
@@ -239,7 +239,7 @@ const AdminBusinesses = () => {
                           className="w-10 h-10 rounded-lg object-contain bg-muted"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-lg bg-[hsl(var(--accent-gold))]/10 flex items-center justify-center">
                           <Building2 className="h-5 w-5 text-primary" />
                         </div>
                       )}
@@ -350,7 +350,7 @@ const AdminBusinesses = () => {
                       className="w-20 h-20 rounded-xl object-contain bg-muted"
                     />
                   ) : (
-                    <div className="w-20 h-20 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <div className="w-20 h-20 rounded-xl bg-[hsl(var(--accent-gold))]/10 flex items-center justify-center">
                       <Building2 className="h-10 w-10 text-primary" />
                     </div>
                   )}

@@ -228,7 +228,7 @@ export default function PortalEventCheckin() {
   // Success state
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md border-primary/20">
+      <Card className="w-full max-w-md border-[hsl(var(--accent-gold))]/20">
         <CardContent className="p-8 text-center">
           <div className="relative mb-6">
             <div className="h-20 w-20 mx-auto rounded-full bg-green-500/10 flex items-center justify-center">

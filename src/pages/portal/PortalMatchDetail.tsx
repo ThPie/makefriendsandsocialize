@@ -453,7 +453,7 @@ export default function PortalMatchDetail() {
                         </div>
                       </div>
                       {recommendation && recommendation.recommended_slot_id === scheduledSlot.id && (
-                        <div className="mt-3 bg-primary/10 p-3 rounded-lg border border-primary/20">
+                        <div className="mt-3 bg-primary/10 p-3 rounded-lg border border-[hsl(var(--accent-gold))]/20">
                           <div className="flex items-center gap-1.5 mb-1">
                             <Zap className="h-3.5 w-3.5 text-primary" />
                             <span className="text-[11px] font-bold text-primary uppercase tracking-wider">AI Date Concierge</span>

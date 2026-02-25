@@ -147,7 +147,7 @@ export default function PortalSlowDating() {
         return {
           label: 'Vetted',
           icon: CheckCircle2,
-          className: 'bg-primary/10 text-primary border-primary/20',
+          className: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))]/20',
           description: 'Your profile is approved and our matchmakers are finding your ideal connections.',
         };
       case 'pending':
@@ -275,7 +275,7 @@ export default function PortalSlowDating() {
 
       {/* Paused Banner */}
       {isPaused && (
-        <Card className="border-primary/30 bg-primary/5">
+        <Card className="border-[hsl(var(--accent-gold))]/30 bg-primary/5">
           <CardContent className="py-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3">
@@ -314,7 +314,7 @@ export default function PortalSlowDating() {
           <div className="flex items-start gap-6">
             <Avatar className="h-20 w-20 border-2 border-border">
               <AvatarImage src={profile.photo_url || undefined} alt={profile.display_name} />
-              <AvatarFallback className="bg-primary/10 text-primary text-xl">
+              <AvatarFallback className="bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] text-xl">
                 {profile.display_name?.[0] || 'M'}
               </AvatarFallback>
             </Avatar>
@@ -362,7 +362,7 @@ export default function PortalSlowDating() {
           <h2 className="text-xl font-display font-light text-foreground mb-6 flex items-center gap-2">
             <Handshake className="h-5 w-5 text-primary" />
             Your Connections
-            <Badge variant="secondary" className="ml-2 bg-primary/10 text-primary">
+            <Badge variant="secondary" className="ml-2 bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]">
               {revealedMatches.length}
             </Badge>
           </h2>

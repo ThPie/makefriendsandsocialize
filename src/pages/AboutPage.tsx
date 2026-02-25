@@ -92,7 +92,7 @@ const AboutPage = () => {
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
-            className="absolute bottom-1/4 left-1/3 w-80 h-80 rounded-full bg-primary/5 blur-3xl"
+            className="absolute bottom-1/4 left-1/3 w-80 h-80 rounded-full bg-[hsl(var(--accent-gold))]/5 blur-3xl"
             animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -106,7 +106,7 @@ const AboutPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8"
+            className="inline-flex items-center gap-2 glass border border-[hsl(var(--accent-gold))]/20 rounded-full px-5 py-2.5 mb-8"
           >
             <Sparkles className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium text-foreground">Our Story</span>
@@ -190,7 +190,7 @@ const AboutPage = () => {
             </motion.div>
 
             {/* Values Summary */}
-            <motion.div variants={itemVariants} className="bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-8 hover-lift">
+            <motion.div variants={itemVariants} className="bg-gradient-to-br from-primary/10 to-primary/5 border border-[hsl(var(--accent-gold))]/20 rounded-2xl p-8 hover-lift">
               <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Values</p>
               <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
                 Guiding Principles
@@ -285,7 +285,7 @@ const AboutPage = () => {
       <section className="py-24 md:py-32 w-full relative overflow-hidden">
         <div className="absolute inset-0 bg-white/[0.02]" />
         <div className="absolute inset-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[hsl(var(--accent-gold))]/5 blur-3xl" />
         </div>
 
         <div

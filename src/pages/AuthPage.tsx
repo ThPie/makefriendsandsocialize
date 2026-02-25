@@ -879,7 +879,7 @@ export default function AuthPage() {
                       Remember me
                     </label>
                   </div>
-                  <Link to="/auth/forgot-password" className="text-xs text-white/50 hover:text-[#d4af37] transition-colors">
+                  <Link to="/auth/forgot-password" className="text-xs text-white/50 hover:text-[hsl(var(--accent-gold))] transition-colors">
                     Forgot password?
                   </Link>
                 </div>
@@ -981,7 +981,7 @@ export default function AuthPage() {
           {[1, 2, 3].map((s) => (
             <div
               key={s}
-              className={`h-2 w-12 rounded-full transition-all duration-300 ${s < step ? 'bg-[#d4af37]' : s === step ? 'bg-[#d4af37] shadow-lg shadow-[#d4af37]/50' : 'bg-white/20'
+              className={`h-2 w-12 rounded-full transition-all duration-300 ${s < step ? 'bg-[hsl(var(--accent-gold))]' : s === step ? 'bg-[hsl(var(--accent-gold))] shadow-lg shadow-[hsl(var(--accent-gold))]/50' : 'bg-white/20'
                 }`}
             />
           ))}
