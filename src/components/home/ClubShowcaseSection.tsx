@@ -80,7 +80,7 @@ export const ClubShowcaseSection = () => {
             <div className="content-container mb-12">
                 {/* Section header */}
                 <div className="max-w-2xl">
-                    <span className="eyebrow block mb-3">Curated Collections</span>
+                    <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Curated Collections</span>
                     <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1] mb-6">
                         Our <span className="italic text-[hsl(var(--accent-gold))]">Circles</span>
                     </h2>
@@ -145,7 +145,7 @@ export const ClubShowcaseSection = () => {
                             </div>
 
                             {/* Content Portion */}
-                            <div className={`flex flex-col flex-grow relative overflow-hidden ${isFullWidth ? 'w-full md:w-1/2 p-8 md:p-16 flex justify-center bg-[#101e17] text-white' : 'p-6 md:p-8'}`}>
+                            <div className={`flex flex-col flex-grow relative overflow-hidden ${isFullWidth ? 'w-full md:w-1/2 p-8 md:p-16 flex justify-center bg-card dark:bg-[#101e17] text-foreground dark:text-white' : 'p-6 md:p-8'}`}>
                                 {/* Subtle gold top border effect on hover (only for vertical cards) */}
                                 {!isFullWidth && (
                                     <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[hsl(var(--accent-gold))]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -153,11 +153,11 @@ export const ClubShowcaseSection = () => {
 
                                 <div className="flex items-center gap-3 mb-4">
                                     {!isFullWidth && <Icon className="w-5 h-5 text-[hsl(var(--accent-gold))]" strokeWidth={1.5} />}
-                                    <h3 className={`font-display ${isFullWidth ? 'text-4xl md:text-5xl lg:text-6xl text-white' : 'text-2xl md:text-3xl text-foreground'}`}>
+                                    <h3 className={`font-display ${isFullWidth ? 'text-4xl md:text-5xl lg:text-6xl text-foreground dark:text-white' : 'text-2xl md:text-3xl text-foreground'}`}>
                                         {club.title}
                                     </h3>
                                 </div>
-                                <p className={`text-sm md:text-base font-light leading-relaxed ${isFullWidth ? 'text-white/90 max-w-[500px] mb-8' : 'text-muted-foreground'}`}>
+                                <p className={`text-sm md:text-base font-light leading-relaxed ${isFullWidth ? 'text-foreground/80 dark:text-white/90 max-w-[500px] mb-8' : 'text-muted-foreground'}`}>
                                     {club.description}
                                 </p>
 

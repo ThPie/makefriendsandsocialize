@@ -41,7 +41,7 @@ export const PhotoGallerySection = () => {
     >
       <div className="content-container">
         {/* Eyebrow + heading */}
-        <span className="eyebrow block mb-3 text-white/70">Moments from the Circle</span>
+        <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Moments from the Circle</span>
         <h2 className="font-display text-4xl md:text-5xl text-white leading-tight mb-16">
           A Glimpse <span className="italic text-[hsl(var(--accent-gold))]">Inside</span>
         </h2>

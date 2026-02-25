@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 import { Calendar, MapPin } from 'lucide-react';
 import { useEffect } from 'react';
 import { parseLocalDate } from '@/lib/date-utils';
@@ -38,7 +39,7 @@ export const EventSection = () => {
         .neq('status', 'cancelled')
         .neq('status', 'past')
         .order('date', { ascending: true })
-        .limit(4);
+        .limit(3);
 
       if (error) throw error;
       return data as Event[];
@@ -58,13 +59,13 @@ export const EventSection = () => {
   }, [queryClient]);
 
   const featured = events[0];
-  const upcoming = events.slice(1, 4);
+  const upcoming = events.slice(1, 3);
 
   return (
     <section className="section-spacing bg-background" id="events">
       <div ref={ref} className="content-container">
         {/* Header */}
-        <span className="eyebrow block mb-3">Calendar</span>
+        <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Calendar</span>
         <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1] mb-12 md:mb-16">
           Upcoming <span className="italic">Gatherings</span>
         </h2>
@@ -138,12 +139,14 @@ export const EventSection = () => {
                   </p>
                 )}
 
-                <TransitionLink
-                  to={`/events/${featured.id}`}
-                  className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150 inline-flex items-center gap-1"
+                <Button
+                  asChild
+                  className="w-fit rounded-full px-6 h-10 text-xs tracking-widest uppercase font-medium mt-2 gold-fill border-0 hover:opacity-90 transition-opacity duration-150"
                 >
-                  View Details →
-                </TransitionLink>
+                  <TransitionLink to={`/events/${featured.id}`}>
+                    Quick Reserve
+                  </TransitionLink>
+                </Button>
 
                 {featured.rsvp_count && featured.rsvp_count > 0 && (
                   <p className="mt-4 text-xs text-muted-foreground">
@@ -157,32 +160,38 @@ export const EventSection = () => {
             {upcoming.length > 0 && (
               <div className="mt-10 flex flex-col md:flex-row gap-3">
                 {upcoming.map((event, i) => (
-                  <TransitionLink
+                  <div
                     key={event.id}
-                    to={`/events/${event.id}`}
                     className={`
-                      flex items-center gap-4 px-5 py-4 rounded-xl bg-card border border-border
+                      flex items-center justify-between gap-4 px-5 py-4 rounded-xl bg-card border border-border
                       hover:border-[hsl(var(--accent-gold))]/40 transition-all duration-200
                       flex-1
                       ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
                     `}
                     style={{ transitionDelay: `${(i + 1) * 150 + 300}ms` }}
                   >
-                    {/* Date block */}
-                    <div className="flex flex-col items-center min-w-[44px]">
-                      <span className="text-xs uppercase text-[hsl(var(--accent-gold))] font-medium">
-                        {format(parseLocalDate(event.date), 'MMM')}
-                      </span>
-                      <span className="text-xl font-display text-foreground">
-                        {format(parseLocalDate(event.date), 'd')}
-                      </span>
-                    </div>
-                    {/* Title + venue */}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-foreground font-light truncate">{event.title}</p>
-                      <p className="text-xs text-muted-foreground truncate">{event.venue_name || event.location || ''}</p>
-                    </div>
-                  </TransitionLink>
+                    <TransitionLink to={`/events/${event.id}`} className="flex items-center gap-4 flex-1 min-w-0">
+                      {/* Date block */}
+                      <div className="flex flex-col items-center min-w-[44px]">
+                        <span className="text-xs uppercase text-[hsl(var(--accent-gold))] font-medium">
+                          {format(parseLocalDate(event.date), 'MMM')}
+                        </span>
+                        <span className="text-xl font-display text-foreground">
+                          {format(parseLocalDate(event.date), 'd')}
+                        </span>
+                      </div>
+                      {/* Title + venue */}
+                      <div className="flex-1 min-w-0 cursor-pointer">
+                        <p className="text-sm text-foreground font-medium truncate">{event.title}</p>
+                        <p className="text-xs text-muted-foreground truncate mt-0.5">{event.venue_name || event.location || ''}</p>
+                      </div>
+                    </TransitionLink>
+                    <Button asChild size="sm" variant="outline" className="shrink-0 border-[hsl(var(--accent-gold))]/50 text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))] hover:text-black rounded-full text-xs h-8 px-4">
+                      <TransitionLink to={`/events/${event.id}`}>
+                        Reserve
+                      </TransitionLink>
+                    </Button>
+                  </div>
                 ))}
               </div>
             )}

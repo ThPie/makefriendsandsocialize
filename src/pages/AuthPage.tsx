@@ -20,7 +20,7 @@ import { ValidatedInput } from '@/components/ui/validated-input';
 import { SimpleCaptcha } from '@/components/auth/SimpleCaptcha';
 import { useAuthRateLimit } from '@/hooks/useAuthRateLimit';
 import { useSessionManager } from '@/hooks/useSessionManager';
-import logoWhite from '@/assets/logo-white.png';
+import { BrandLogo } from '@/components/common/BrandLogo';
 
 // Enhanced email validation
 const emailSchema = z.string()
@@ -682,7 +682,7 @@ export default function AuthPage() {
           <div className="relative z-10 max-w-md mx-auto w-full animate-fade-in">
             {/* Logo */}
             <Link to="/" className="inline-block mb-10">
-              <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10" />
+              <BrandLogo className="h-14 w-auto drop-shadow-sm" />
             </Link>
 
             {/* Referral Banner */}
@@ -696,9 +696,6 @@ export default function AuthPage() {
 
             {/* Header */}
             <div className="mb-8">
-              <span className="eyebrow block mb-2">
-                {mode === 'signin' ? 'Member Access' : 'Apply'}
-              </span>
               <h1 className="font-display text-3xl md:text-[40px] text-foreground leading-[1.15]">
                 {mode === 'signin' ? 'Welcome back.' : 'Join the Circle.'}
               </h1>
@@ -741,29 +738,6 @@ export default function AuthPage() {
                 Google
               </button>
 
-              <button
-                onClick={async () => {
-                  clearFormFeedback();
-                  try {
-                    const { lovable } = await import('@/integrations/lovable/index');
-                    const result = await lovable.auth.signInWithOAuth('apple', {
-                      redirect_uri: window.location.origin,
-                    });
-                    if (result.error) {
-                      setFormError(result.error.message || 'Could not connect to Apple. Please try again.');
-                    }
-                  } catch (err) {
-                    setFormError('Could not connect to Apple. Please try again.');
-                  }
-                }}
-                disabled={isSubmitting || isRateLimited}
-                className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-[10px] border border-border bg-card hover:bg-accent text-foreground font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.43.987 3.96.948 1.637-.026 2.62-1.515 3.579-2.998 1.113-1.651 1.553-3.251 1.59-3.328-.059-.026-3.073-1.152-3.084-4.594-.002-2.815 2.308-4.053 2.418-4.115-1.352-1.924-3.567-2.19-4.327-2.228-1.565-.152-3.176 1.055-4.103 1.055-.94 0-2.276-1.04-3.46-1.056zm4.61-4.707c.803-.984 1.355-2.355 1.206-3.71-.15.42-.36.81-.62 1.14-.813.978-2.26 1.62-3.6 1.56-.03.793.264 1.569.789 2.146.604.661 1.488 1.096 2.378 1.156.458-.024.965-.183 1.407-.53v-.004z" />
-                </svg>
-                Apple
-              </button>
             </div>
 
             {/* Divider */}
@@ -776,31 +750,7 @@ export default function AuthPage() {
               </div>
             </div>
 
-            {/* Auth Method Toggle - Only for Sign In */}
-            {mode === 'signin' && (
-              <div className="flex gap-2 p-1 bg-white/5 rounded-lg">
-                <button
-                  onClick={() => setAuthMethod('email')}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md text-sm font-medium transition-all ${authMethod === 'email'
-                    ? 'bg-primary text-primary-foreground shadow-md'
-                    : 'text-white/60 hover:text-white hover:bg-white/5'
-                    }`}
-                >
-                  <Mail className="h-4 w-4" />
-                  Email
-                </button>
-                <button
-                  onClick={() => setAuthMethod('phone')}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-md text-sm font-medium transition-all ${authMethod === 'phone'
-                    ? 'bg-primary text-primary-foreground shadow-md'
-                    : 'text-white/60 hover:text-white hover:bg-white/5'
-                    }`}
-                >
-                  <Phone className="h-4 w-4" />
-                  Phone
-                </button>
-              </div>
-            )}
+
 
             {/* Inline Form Feedback */}
             {formError && (
@@ -819,187 +769,174 @@ export default function AuthPage() {
 
             {/* Form */}
             <div className="space-y-5">
-              {/* Phone Login - Sign In Only */}
-              {mode === 'signin' && authMethod === 'phone' ? (
-                <PhoneOTPLogin
-                  onSuccess={() => navigate('/portal')}
-                  onSwitchToEmail={() => setAuthMethod('email')}
-                  disabled={isRateLimited}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Email Address</Label>
+                <ValidatedInput
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={handleEmailChange}
+                  onBlur={() => {
+                    setEmailTouched(true);
+                    validateEmail(email);
+                  }}
+                  error={emailTouched ? emailError : undefined}
+                  success={emailTouched && !emailError && email.length > 0}
+                  icon={<Mail className="h-5 w-5 text-white/40" />}
+                  autoComplete="email"
+                  inputMode="email"
                 />
-              ) : (
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Password</Label>
+                <PasswordInput
+                  id="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  onBlur={() => {
+                    setPasswordTouched(true);
+                    if (mode === 'signup') {
+                      validatePasswordField(password);
+                    }
+                  }}
+                  showStrengthIndicator={mode === 'signup'}
+                  error={mode === 'signup' ? passwordError : undefined}
+                  autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                />
+                {/* Password breach warning - shown while typing */}
+                {mode === 'signup' && passwordServerError && (
+                  <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm mt-2">
+                    <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
+                    <span>{passwordServerError}</span>
+                  </div>
+                )}
+                {mode === 'signup' && isCheckingPassword && (
+                  <p className="text-xs text-white/40 flex items-center gap-2 mt-1">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    Checking password security...
+                  </p>
+                )}
+              </div>
+
+              {mode === 'signup' && (
                 <>
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Email Address</Label>
-                    <ValidatedInput
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={handleEmailChange}
-                      onBlur={() => {
-                        setEmailTouched(true);
-                        validateEmail(email);
-                      }}
-                      error={emailTouched ? emailError : undefined}
-                      success={emailTouched && !emailError && email.length > 0}
-                      icon={<Mail className="h-5 w-5 text-white/40" />}
-                      autoComplete="email"
-                      inputMode="email"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="password" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Password</Label>
+                    <Label htmlFor="confirmPassword" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Confirm Password</Label>
                     <PasswordInput
-                      id="password"
+                      id="confirmPassword"
                       placeholder="••••••••"
-                      value={password}
-                      onChange={handlePasswordChange}
+                      value={confirmPassword}
+                      onChange={handleConfirmPasswordChange}
                       onBlur={() => {
-                        setPasswordTouched(true);
-                        if (mode === 'signup') {
-                          validatePasswordField(password);
-                        }
+                        setConfirmPasswordTouched(true);
+                        validateConfirmPassword(confirmPassword);
                       }}
-                      showStrengthIndicator={mode === 'signup'}
-                      error={mode === 'signup' ? passwordError : undefined}
-                      autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                      error={confirmPasswordTouched ? confirmPasswordError : undefined}
+                      autoComplete="new-password"
                     />
-                    {/* Password breach warning - shown while typing */}
-                    {mode === 'signup' && passwordServerError && (
-                      <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm mt-2">
-                        <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
-                        <span>{passwordServerError}</span>
-                      </div>
-                    )}
-                    {mode === 'signup' && isCheckingPassword && (
-                      <p className="text-xs text-white/40 flex items-center gap-2 mt-1">
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                        Checking password security...
-                      </p>
-                    )}
                   </div>
 
-                  {mode === 'signup' && (
-                    <>
-                      <div className="space-y-2">
-                        <Label htmlFor="confirmPassword" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Confirm Password</Label>
-                        <PasswordInput
-                          id="confirmPassword"
-                          placeholder="••••••••"
-                          value={confirmPassword}
-                          onChange={handleConfirmPasswordChange}
-                          onBlur={() => {
-                            setConfirmPasswordTouched(true);
-                            validateConfirmPassword(confirmPassword);
-                          }}
-                          error={confirmPasswordTouched ? confirmPasswordError : undefined}
-                          autoComplete="new-password"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="firstName" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">First Name</Label>
-                          <ValidatedInput
-                            id="firstName"
-                            placeholder="James"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            icon={<User className="h-5 w-5 text-white/40" />}
-                            autoComplete="given-name"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="lastName" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Last Name</Label>
-                          <Input
-                            id="lastName"
-                            placeholder="Harrington"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
-                            autoComplete="family-name"
-                          />
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {mode === 'signin' && (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="remember"
-                          checked={rememberMe}
-                          onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                          className="border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                        />
-                        <label htmlFor="remember" className="text-sm text-white/60 cursor-pointer">
-                          Remember me
-                        </label>
-                      </div>
-                      <Link to="/auth/forgot-password" className="text-xs text-white/50 hover:text-[#d4af37] transition-colors">
-                        Forgot password?
-                      </Link>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">First Name</Label>
+                      <ValidatedInput
+                        id="firstName"
+                        placeholder="James"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        icon={<User className="h-5 w-5 text-white/40" />}
+                        autoComplete="given-name"
+                      />
                     </div>
-                  )}
-
-                  {/* Rate Limit Warning */}
-                  {isRateLimited && (
-                    <div className="flex items-center gap-2 p-3 bg-destructive/20 border border-destructive/30 rounded-lg text-destructive text-sm">
-                      <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-                      <span>
-                        Too many attempts. Please try again {rateLimitInfo?.resetAt ? `after ${new Date(rateLimitInfo.resetAt).toLocaleTimeString()}` : 'later'}.
-                      </span>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Last Name</Label>
+                      <Input
+                        id="lastName"
+                        placeholder="Harrington"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
+                        autoComplete="family-name"
+                      />
                     </div>
-                  )}
-
-                  {/* CAPTCHA - shown after 3 failed attempts */}
-                  {requiresCaptcha && !isRateLimited && (
-                    <SimpleCaptcha
-                      onVerify={setCaptchaVerified}
-                      disabled={isSubmitting}
-                    />
-                  )}
-
-                  <Button
-                    onClick={() => { requestAnimationFrame(() => { setTimeout(() => { handleStep1Submit(); }, 0); }); }}
-                    disabled={isSubmitting || isRateLimited || (requiresCaptcha && !captchaVerified)}
-                    className="w-full gold-fill hover:opacity-90 text-white font-medium rounded-[10px] h-12 transition-opacity duration-150"
-                    size="lg"
-                  >
-                    {isSubmitting ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : mode === 'signin' ? (
-                      'Sign In'
-                    ) : (
-                      <>
-                        Continue
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
+                  </div>
                 </>
               )}
 
-              <p className="text-center text-sm text-white/50">
-                {mode === 'signin' ? "Don't have an account?" : 'Already a member?'}{' '}
-                <button
-                  onClick={() => {
-                    setMode(mode === 'signin' ? 'signup' : 'signin');
-                    setStep(1);
-                    setAuthMethod('email');
-                  }}
-                  className="text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] font-medium transition-colors"
-                >
-                  {mode === 'signin' ? 'Sign up' : 'Sign In'}
-                </button>
-              </p>
+              {mode === 'signin' && (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="remember"
+                      checked={rememberMe}
+                      onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                      className="border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                    />
+                    <label htmlFor="remember" className="text-sm text-white/60 cursor-pointer">
+                      Remember me
+                    </label>
+                  </div>
+                  <Link to="/auth/forgot-password" className="text-xs text-white/50 hover:text-[#d4af37] transition-colors">
+                    Forgot password?
+                  </Link>
+                </div>
+              )}
+
+              {/* Rate Limit Warning */}
+              {isRateLimited && (
+                <div className="flex items-center gap-2 p-3 bg-destructive/20 border border-destructive/30 rounded-lg text-destructive text-sm">
+                  <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                  <span>
+                    Too many attempts. Please try again {rateLimitInfo?.resetAt ? `after ${new Date(rateLimitInfo.resetAt).toLocaleTimeString()}` : 'later'}.
+                  </span>
+                </div>
+              )}
+
+              {/* CAPTCHA - shown after 3 failed attempts */}
+              {requiresCaptcha && !isRateLimited && (
+                <SimpleCaptcha
+                  onVerify={setCaptchaVerified}
+                  disabled={isSubmitting}
+                />
+              )}
+
+              <Button
+                onClick={() => { requestAnimationFrame(() => { setTimeout(() => { handleStep1Submit(); }, 0); }); }}
+                disabled={isSubmitting || isRateLimited || (requiresCaptcha && !captchaVerified)}
+                className="w-full gold-fill hover:opacity-90 text-white font-medium rounded-[10px] h-12 transition-opacity duration-150"
+                size="lg"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : mode === 'signin' ? (
+                  'Sign In'
+                ) : (
+                  <>
+                    Continue
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
             </div>
+
+            <p className="text-center text-sm text-white/50">
+              {mode === 'signin' ? "Don't have an account?" : 'Already a member?'}{' '}
+              <button
+                onClick={() => {
+                  setMode(mode === 'signin' ? 'signup' : 'signin');
+                  setStep(1);
+                  setAuthMethod('email');
+                }}
+                className="text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] font-medium transition-colors"
+              >
+                {mode === 'signin' ? 'Sign up' : 'Sign In'}
+              </button>
+            </p>
           </div>
         </div>
-
-
       </div>
     );
   }
@@ -1028,8 +965,8 @@ export default function AuthPage() {
       <div className="relative z-10 w-full max-w-2xl animate-fade-in">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-block mb-6">
-            <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10 mx-auto" />
+          <Link to="/" className="inline-block mb-6 flex justify-center">
+            <BrandLogo className="h-14 w-auto drop-shadow-sm" />
           </Link>
           <h1 className="font-display text-3xl md:text-4xl text-white mb-2">
             Complete Your Application
@@ -1053,7 +990,7 @@ export default function AuthPage() {
         {/* Form Card - Glassmorphism */}
         <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl p-8 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
           {/* Step 2: About You */}
-          {step === 2 && (
+          {(step as number) === 2 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
                 <h2 className="font-display text-2xl text-white">About You</h2>
@@ -1167,7 +1104,7 @@ export default function AuthPage() {
           )}
 
           {/* Step 3: Your Lifestyle */}
-          {step === 3 && (
+          {(step as number) === 3 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
                 <h2 className="font-display text-2xl text-white">Your Lifestyle</h2>

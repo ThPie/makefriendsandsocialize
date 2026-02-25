@@ -14,7 +14,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                 "hidden md:flex items-center gap-1.5 text-sm font-medium transition-colors duration-150 h-full",
                 isTransparent ? "text-white/90 hover:text-white" : "text-foreground hover:text-[hsl(var(--accent-gold))]"
             )}>
-                Services
+                Circles
                 <ChevronDown className="h-3 w-3 opacity-50 group-hover:rotate-180 transition-transform duration-200" />
             </button>
 
@@ -23,10 +23,10 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                 {/* Pointer Triangle intentionally omitted to match the clean rounded glass look of the reference */}
 
                 {/* Content Box - matching the exact reference layout: Left dark panel, right white options */}
-                <div className="bg-[#FAF9F6] dark:bg-card border border-border/40 rounded-[32px] shadow-2xl overflow-hidden flex flex-row h-[500px]">
+                <div className="bg-[#FAF9F6] dark:bg-card border border-border/40 rounded-[32px] shadow-2xl overflow-hidden flex flex-row min-h-[420px] max-h-[85vh]">
 
                     {/* LEFT PANEL - The dark rounded container inside */}
-                    <div className="w-[340px] m-2 rounded-[24px] overflow-hidden relative flex flex-col justify-between p-10 bg-[#1A1A1A]">
+                    <div className="w-[300px] m-2 rounded-[24px] overflow-hidden relative flex flex-col justify-between p-8 bg-[#1A1A1A]">
                         {/* Background Image with heavy overlay */}
                         <img
                             src="/images/gallery/event-1.jpg"
@@ -37,10 +37,10 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
 
                         <div className="relative z-10 flex flex-col gap-4">
                             <h2 className="text-white text-3xl font-display leading-[1.1] tracking-tight">
-                                Exceptional Social<br />Experiences
+                                Multiple Exclusive<br />Circles
                             </h2>
                             <p className="text-white/80 text-sm font-light leading-relaxed mb-4">
-                                High-quality curation designed around exclusive events and genuine connections.
+                                Choose where you fit best, or apply to join them all for a fully encompassing social experience.
                             </p>
                             <span className="text-[hsl(var(--accent-gold))] text-xs font-semibold uppercase tracking-widest mt-2">
                                 Curated Network
@@ -54,13 +54,13 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                     </div>
 
                     {/* RIGHT PANEL - The list of services */}
-                    <div className="flex-1 p-10 flex flex-col bg-[#FAF9F6] dark:bg-card relative">
-                        <div className="grid grid-cols-2 gap-x-12 gap-y-8 flex-1">
+                    <div className="flex-1 p-8 flex flex-col bg-[#FAF9F6] dark:bg-card relative overflow-y-auto">
+                        <div className="grid grid-cols-2 gap-x-8 gap-y-4 flex-1">
 
                             {/* Column 1: Special Services */}
                             <div>
-                                <h3 className="text-muted-foreground font-light text-sm mb-6">Our Circles</h3>
-                                <div className="flex flex-col gap-4">
+                                <h3 className="text-muted-foreground font-light text-sm mb-3">Our Circles</h3>
+                                <div className="flex flex-col gap-2">
                                     <TransitionLink to="/founders-circle" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
                                             <Hexagon strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
@@ -95,8 +95,8 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
 
                             {/* Column 2: Coming Soon */}
                             <div>
-                                <h3 className="text-muted-foreground font-light text-sm mb-6">Upcoming</h3>
-                                <div className="flex flex-col gap-4">
+                                <h3 className="text-muted-foreground font-light text-sm mb-3">Upcoming</h3>
+                                <div className="flex flex-col gap-2">
                                     <div className="bg-transparent border border-border/50 rounded-2xl p-4 flex items-center gap-4 opacity-70">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent">
                                             <Circle strokeWidth={1} className="w-5 h-5 text-muted-foreground" />
@@ -132,14 +132,14 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                         </div>
 
                         {/* Bottom Help CTA area */}
-                        <div className="mt-auto flex items-end justify-between pt-6">
-                            <div>
+                        <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between pt-4 mt-4 border-t border-border/10 shrink-0 gap-4">
+                            <div className="max-w-xs">
                                 <h4 className="text-foreground font-medium text-sm mb-1">Looking for a specific circle?</h4>
-                                <p className="text-muted-foreground text-sm font-light">We have an concierge waiting to assist you.</p>
+                                <p className="text-muted-foreground text-sm font-light">We have a concierge waiting to assist you.</p>
                             </div>
                             <TransitionLink
                                 to="/contact"
-                                className="bg-[#111111] hover:bg-black text-white px-8 py-3 rounded-full text-sm font-medium transition-colors"
+                                className="bg-[#111111] hover:bg-black text-white px-8 py-3 rounded-full text-sm font-medium transition-colors shrink-0 whitespace-nowrap"
                             >
                                 Contact us
                             </TransitionLink>

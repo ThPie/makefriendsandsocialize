@@ -31,7 +31,7 @@ export const Hero = () => {
   const avatars = stats?.avatarUrls?.slice(0, 4) || [];
 
   return (
-    <section className="relative w-full min-h-[100dvh] bg-background overflow-hidden">
+    <section className="relative w-full h-[100dvh] bg-background overflow-hidden">
       {/* Background Image */}
       <img
         src="/images/gallery/event-1.jpg"
@@ -45,16 +45,18 @@ export const Hero = () => {
       <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f0b]/90 via-transparent to-transparent" />
 
       {/* Hero Content stacked over image */}
-      <div className="relative z-10 flex flex-col justify-end min-h-[100dvh] w-full pt-28">
+      <div className="relative z-10 flex flex-col justify-end h-[100dvh] w-full pt-28">
         <div className="px-6 md:px-12 lg:px-24 pb-20 md:pb-32 w-full max-w-[1600px] mx-auto">
           <div className="max-w-[800px]">
-            {/* Headline - Soho Home style: very clean, large serif, slight tight kerning */}
-            <h1 className="font-display leading-[1.0] tracking-tight mb-4 text-white font-normal">
-              <span className="block text-[64px] sm:text-[80px] md:text-[96px] lg:text-[112px]">
-                Elevated social
+            {/* Headline - Parallax with smaller text and new copy */}
+            <h1
+              className="font-display leading-[1.05] tracking-tight mb-4 text-white font-normal"
+            >
+              <span className="block text-[48px] sm:text-[64px] md:text-[72px] lg:text-[88px]">
+                Where exceptional people
               </span>
-              <span className="block text-[64px] sm:text-[80px] md:text-[96px] lg:text-[112px] mt-2">
-                experiences
+              <span className="block text-[48px] sm:text-[64px] md:text-[72px] lg:text-[88px] mt-2 italic text-[hsl(var(--accent-gold))]">
+                find their circle.
               </span>
             </h1>
 
@@ -81,46 +83,25 @@ export const Hero = () => {
               </div>
             </div>
 
-            {/* Solid white pill button */}
-            <Button
-              asChild
-              className="rounded-full px-8 h-12 text-sm tracking-wide bg-white text-black hover:bg-white/90 border-0 transition-colors duration-200 font-semibold"
-            >
-              <TransitionLink to="/membership">
-                Apply for Membership
-              </TransitionLink>
-            </Button>
-          </div>
-        </div>
-
-        {/* Partner Logos Band - Ultra Compact */}
-        <div className="w-full bg-[#0d1911] py-4 md:py-6 border-t border-white/5 absolute bottom-0">
-          <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-24 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
-            <h4 className="text-white/40 uppercase tracking-[0.2em] text-[10px] font-semibold whitespace-nowrap">Trusted By</h4>
-            <div className="flex flex-wrap items-center justify-center md:justify-end gap-6 md:gap-10 opacity-60 scale-75 md:scale-90 origin-right">
-              {/* Using stylized text to simulate the partner logos since we don't have SVGs */}
-              <div className="flex items-center gap-2">
-                <span className="text-white font-bold text-sm md:text-base tracking-tighter leading-tight">Jack<br />Wolfskin</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <span className="text-white font-bold text-[8px] tracking-widest leading-none">THE</span>
-                <span className="text-white font-bold text-sm md:text-base tracking-tighter leading-none mt-0.5">NORTH</span>
-                <span className="text-white font-bold text-xs md:text-sm tracking-tighter leading-none">FACE</span>
-              </div>
-              <div className="flex items-center gap-1.5 border border-white p-0.5">
-                <div className="bg-transparent border border-white w-3 h-4"></div>
-                <div className="flex flex-col">
-                  <span className="text-white text-[8px] font-bold tracking-widest leading-tight">NATIONAL</span>
-                  <span className="text-white text-[8px] font-bold tracking-widest leading-tight">GEOGRAPHIC</span>
-                </div>
-              </div>
-              <div className="flex flex-col items-center">
-                <span className="text-white font-black text-sm md:text-base tracking-tighter italic leading-none">NEWIBER</span>
-                <span className="text-white text-[8px] tracking-widest font-light leading-none">travel</span>
-              </div>
-              <div>
-                <span className="text-white font-bold text-sm md:text-base tracking-tighter lowercase">sunrise</span>
-              </div>
+            {/* Action buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                asChild
+                className="rounded-full px-8 h-12 text-sm tracking-wide bg-white text-black hover:bg-white/90 border-0 transition-colors duration-200 font-semibold"
+              >
+                <TransitionLink to="/membership">
+                  Apply for Membership
+                </TransitionLink>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="rounded-full px-8 h-12 text-sm tracking-wide bg-transparent text-white border-white/50 hover:bg-white/10 hover:border-white transition-colors duration-200 font-semibold"
+              >
+                <TransitionLink to={user ? "/portal/dating" : "/auth?returnTo=/portal/dating"}>
+                  Matchmaking
+                </TransitionLink>
+              </Button>
             </div>
           </div>
         </div>

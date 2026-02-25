@@ -19,15 +19,15 @@
     transition: opacity 300ms ease-out, transform 300ms ease-out;
   }
 
-  /* ===== Light Theme — Warm Ivory ===== */
+  /* ===== Light Theme — Warm Ivory/Beige ===== */
   :root {
-    --background: 60 7% 97%;
-    /* #FAFAF8 */
+    --background: 40 24% 96%;
+    /* #F7F5F0 — Creamy Beige */
     --foreground: 140 34% 9%;
     /* #0D1F0F */
 
-    --card: 60 5% 96%;
-    /* #F5F5F4 → light grey surface for cards */
+    --card: 40 30% 98%;
+    /* #FCFBFA — slightly lighter cream for cards */
     --card-foreground: 140 34% 9%;
 
     --popover: 0 0% 100%;

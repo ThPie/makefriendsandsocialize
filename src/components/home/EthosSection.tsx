@@ -54,7 +54,7 @@ export const EthosSection = () => {
 
         {/* Centralized section header */}
         <div className="text-center mb-16 md:mb-24 max-w-3xl mx-auto flex flex-col items-center">
-          <span className="eyebrow block mb-3 opacity-80">Our Ethos</span>
+          <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Our Ethos</span>
           <h2 className="font-display text-4xl md:text-[56px] text-foreground leading-[1.1]">
             What We Stand For
           </h2>
