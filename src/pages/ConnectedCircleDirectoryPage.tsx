@@ -183,7 +183,7 @@ const ConnectedCircleDirectoryPage = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-background py-12 md:py-20">
-        <div className="container max-w-7xl">
+        <div className="content-container">
           {/* Header */}
           <div className="text-center mb-12">
             <motion.div

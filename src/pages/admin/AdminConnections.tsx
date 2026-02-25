@@ -78,7 +78,7 @@ export default function AdminConnections() {
 
   return (
     <div className="space-y-8">
-      <div>
+      <div className="text-center max-w-[680px] mx-auto mb-8">
         <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
           Connection Activity
         </h1>

@@ -23,7 +23,7 @@ export const PastEventCard = ({ event }: PastEventCardProps) => {
     };
 
     return (
-        <Card className="overflow-hidden border-white/[0.08] bg-white/[0.04]">
+        <Card className="overflow-hidden border-border bg-card">
             <div className="aspect-[16/9] relative overflow-hidden">
                 <img
                     src={event.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'}

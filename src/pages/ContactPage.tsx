@@ -188,7 +188,7 @@ const ContactPage = () => {
       {/* Contact Info Cards */}
       <section
         ref={cardsAnimation.ref}
-        className={`w-full max-w-6xl px-4 -mt-8 relative z-10 scroll-animate ${cardsAnimation.isVisible ? 'visible' : ''}`}
+        className={`content-container -mt-8 relative z-10 scroll-animate ${cardsAnimation.isVisible ? 'visible' : ''}`}
       >
         <motion.div
           variants={containerVariants}
@@ -221,7 +221,7 @@ const ContactPage = () => {
       </section>
 
       {/* Main Content */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-16 px-4 w-full max-w-6xl mx-auto mb-20">
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-16 content-container mb-20">
         {/* Form */}
         <div
           ref={formAnimation.ref}

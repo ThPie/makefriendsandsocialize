@@ -157,7 +157,7 @@ export default function AdminSettings() {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="text-center max-w-[680px] mx-auto mb-8">
         <h1 className="font-display text-3xl text-foreground">Settings</h1>
         <p className="text-muted-foreground mt-1">Manage site configuration and settings</p>
       </div>

@@ -182,7 +182,7 @@ export default function SlowDatingLandingPage() {
 
       {/* Benefits Section */}
       <section className="py-20 px-6 bg-secondary/5">
-        <div className="container mx-auto max-w-6xl">
+        <div className="content-container">
           <motion.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 20 }}

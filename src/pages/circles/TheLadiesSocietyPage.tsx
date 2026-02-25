@@ -329,7 +329,7 @@ const TheLadiesSocietyPage = () => {
         <section className="py-16 md:py-20">
           <div
             ref={benefitsAnimation.ref}
-            className={`container max-w-6xl scroll-animate ${benefitsAnimation.isVisible ? "visible" : ""}`}
+            className={`content-container scroll-animate ${benefitsAnimation.isVisible ? "visible" : ""}`}
           >
             <div className="text-center mb-12">
               <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">

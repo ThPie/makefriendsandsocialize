@@ -321,7 +321,7 @@ const MembershipPage = () => {
       <section className="py-16 md:py-20 w-full">
         <div
           ref={legacyAnimation.ref}
-          className={`container max-w-6xl scroll-animate ${legacyAnimation.isVisible ? 'visible' : ''}`}
+          className={`content-container scroll-animate ${legacyAnimation.isVisible ? 'visible' : ''}`}
         >
           <div className="text-center mb-16">
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Foundation</p>
@@ -379,7 +379,7 @@ const MembershipPage = () => {
       <section className="py-16 md:py-20 w-full">
         <div
           ref={tiersAnimation.ref}
-          className={`container max-w-6xl scroll-animate ${tiersAnimation.isVisible ? 'visible' : ''}`}
+          className={`content-container scroll-animate ${tiersAnimation.isVisible ? 'visible' : ''}`}
         >
           <div className="text-center mb-10">
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Membership Tiers</p>

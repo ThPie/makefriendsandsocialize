@@ -190,7 +190,7 @@ const TheGentlemenPage = () => {
 
           <div
             ref={heroAnimation.ref}
-            className={`container max-w-[1400px] relative z-10 py-20 pl-8 md:pl-16 border-l border-white/20 ml-4 md:ml-12 scroll-animate ${heroAnimation.isVisible ? "visible" : ""}`}
+            className={`content-container relative z-10 py-20 pl-8 md:pl-16 border-l border-white/20 ml-4 md:ml-12 scroll-animate ${heroAnimation.isVisible ? "visible" : ""}`}
           >
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -244,7 +244,7 @@ const TheGentlemenPage = () => {
         <section className="py-20 border-y border-border/40 bg-secondary/5">
           <div
             ref={expectAnimation.ref}
-            className={`container max-w-[1400px] scroll-animate ${expectAnimation.isVisible ? "visible" : ""}`}
+            className={`content-container scroll-animate ${expectAnimation.isVisible ? "visible" : ""}`}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 px-8">
               {expectations.map((item) => (

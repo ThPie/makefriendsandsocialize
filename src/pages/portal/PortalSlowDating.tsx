@@ -197,7 +197,7 @@ export default function PortalSlowDating() {
     return (
       <div className="space-y-8 animate-in fade-in duration-300">
         <Skeleton className="h-8 w-48" />
-        <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-6 space-y-4">
+        <div className="rounded-xl border border-border bg-card p-6 space-y-4">
           <div className="flex items-start gap-6">
             <Skeleton className="h-20 w-20 rounded-full" />
             <div className="flex-1 space-y-3">

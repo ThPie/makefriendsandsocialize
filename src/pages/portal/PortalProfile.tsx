@@ -42,21 +42,19 @@ export default function PortalProfile() {
       <ProfileEditModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} />
 
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2 flex items-center gap-2">
-            My Profile
-            <VerificationBadge
-              isVerified={profile?.is_security_verified || false}
-              verifiedAt={profile?.verified_at}
-              size="lg"
-            />
-          </h1>
-          <p className="text-muted-foreground">
-            Build your profile to connect with our community
-          </p>
-        </div>
-        <Button variant="outline" onClick={() => setIsEditModalOpen(true)} className="hidden md:flex items-center gap-2">
+      <div className="text-center max-w-[680px] mx-auto mb-8">
+        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2 inline-flex items-center gap-2">
+          My Profile
+          <VerificationBadge
+            isVerified={profile?.is_security_verified || false}
+            verifiedAt={profile?.verified_at}
+            size="lg"
+          />
+        </h1>
+        <p className="text-muted-foreground">
+          Build your profile to connect with our community
+        </p>
+        <Button variant="outline" onClick={() => setIsEditModalOpen(true)} className="hidden md:inline-flex items-center gap-2 mt-4">
           <Settings className="w-4 h-4" /> Edit Profile
         </Button>
       </div>
