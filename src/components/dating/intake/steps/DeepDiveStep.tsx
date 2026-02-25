@@ -23,7 +23,7 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
     const inputErrorClass = (field: string) =>
         hasError(field)
             ? "border-red-500/70 ring-1 ring-red-500/30"
-            : "border-white/10";
+            : "border-border";
 
     const getConflictPrompt = () => {
         if (formData.relationship_type === 'casual') {
@@ -43,7 +43,7 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <CardHeader className="text-center pb-8 border-b border-white/10">
+            <CardHeader className="text-center pb-8 border-b border-border">
                 <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
                     <Brain className="h-6 w-6 text-dating-terracotta" />
                 </div>
@@ -69,7 +69,7 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                         value={formData.conflict_resolution}
                         onChange={(e) => updateField("conflict_resolution", e.target.value)}
                         placeholder="Describe your approach to resolving disagreements..."
-                        className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                        className="min-h-[120px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
@@ -86,7 +86,7 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                         value={formData.emotional_connection}
                         onChange={(e) => updateField("emotional_connection", e.target.value)}
                         placeholder="What makes you feel truly connected to someone..."
-                        className="min-h-[120px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                        className="min-h-[120px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
@@ -100,16 +100,16 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                             Beyond the honeymoon phase, what does a healthy intimate life look like to you? This helps us match partners with compatible expectations.
                         </p>
                         <Select value={formData.intimacy_expectations} onValueChange={(value) => updateField("intimacy_expectations", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                            <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select your expectation" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                <SelectItem value="very_important" className="focus:bg-white/10 focus:text-white">Very important - frequent physical connection</SelectItem>
-                                <SelectItem value="important_regular" className="focus:bg-white/10 focus:text-white">Important - regular but not constant</SelectItem>
-                                <SelectItem value="quality_over_quantity" className="focus:bg-white/10 focus:text-white">Quality over quantity - meaningful moments</SelectItem>
-                                <SelectItem value="fluctuates" className="focus:bg-white/10 focus:text-white">Fluctuates - depends on life circumstances</SelectItem>
-                                <SelectItem value="lower_priority" className="focus:bg-white/10 focus:text-white">Lower priority - emotional connection is enough</SelectItem>
-                                <SelectItem value="prefer_not_say" className="focus:bg-white/10 focus:text-white">Prefer not to say</SelectItem>
+                            <SelectContent className="bg-card border-border text-white">
+                                <SelectItem value="very_important" className="focus:bg-muted focus:text-white">Very important - frequent physical connection</SelectItem>
+                                <SelectItem value="important_regular" className="focus:bg-muted focus:text-white">Important - regular but not constant</SelectItem>
+                                <SelectItem value="quality_over_quantity" className="focus:bg-muted focus:text-white">Quality over quantity - meaningful moments</SelectItem>
+                                <SelectItem value="fluctuates" className="focus:bg-muted focus:text-white">Fluctuates - depends on life circumstances</SelectItem>
+                                <SelectItem value="lower_priority" className="focus:bg-muted focus:text-white">Lower priority - emotional connection is enough</SelectItem>
+                                <SelectItem value="prefer_not_say" className="focus:bg-muted focus:text-white">Prefer not to say</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -119,15 +119,15 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                 <div className="space-y-3">
                     <Label className="text-white/80">What's your primary love language?</Label>
                     <Select value={formData.love_language} onValueChange={(value) => updateField("love_language", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                        <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                             <SelectValue placeholder="Select love language" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            <SelectItem value="words" className="focus:bg-white/10 focus:text-white">Words of Affirmation</SelectItem>
-                            <SelectItem value="quality_time" className="focus:bg-white/10 focus:text-white">Quality Time</SelectItem>
-                            <SelectItem value="physical_touch" className="focus:bg-white/10 focus:text-white">Physical Touch</SelectItem>
-                            <SelectItem value="acts_of_service" className="focus:bg-white/10 focus:text-white">Acts of Service</SelectItem>
-                            <SelectItem value="gifts" className="focus:bg-white/10 focus:text-white">Receiving Gifts</SelectItem>
+                        <SelectContent className="bg-card border-border text-white">
+                            <SelectItem value="words" className="focus:bg-muted focus:text-white">Words of Affirmation</SelectItem>
+                            <SelectItem value="quality_time" className="focus:bg-muted focus:text-white">Quality Time</SelectItem>
+                            <SelectItem value="physical_touch" className="focus:bg-muted focus:text-white">Physical Touch</SelectItem>
+                            <SelectItem value="acts_of_service" className="focus:bg-muted focus:text-white">Acts of Service</SelectItem>
+                            <SelectItem value="gifts" className="focus:bg-muted focus:text-white">Receiving Gifts</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -137,26 +137,26 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                     <div className="space-y-3">
                         <Label className="text-white/80">Are you more...</Label>
                         <Select value={formData.introvert_extrovert} onValueChange={(value) => updateField("introvert_extrovert", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                            <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                <SelectItem value="introvert" className="focus:bg-white/10 focus:text-white">Introverted</SelectItem>
-                                <SelectItem value="extrovert" className="focus:bg-white/10 focus:text-white">Extroverted</SelectItem>
-                                <SelectItem value="ambivert" className="focus:bg-white/10 focus:text-white">Ambivert (both)</SelectItem>
+                            <SelectContent className="bg-card border-border text-white">
+                                <SelectItem value="introvert" className="focus:bg-muted focus:text-white">Introverted</SelectItem>
+                                <SelectItem value="extrovert" className="focus:bg-muted focus:text-white">Extroverted</SelectItem>
+                                <SelectItem value="ambivert" className="focus:bg-muted focus:text-white">Ambivert (both)</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                     <div className="space-y-3">
                         <Label className="text-white/80">Morning person or night owl?</Label>
                         <Select value={formData.morning_night_person} onValueChange={(value) => updateField("morning_night_person", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                            <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                <SelectItem value="morning" className="focus:bg-white/10 focus:text-white">Early bird</SelectItem>
-                                <SelectItem value="night" className="focus:bg-white/10 focus:text-white">Night owl</SelectItem>
-                                <SelectItem value="flexible" className="focus:bg-white/10 focus:text-white">Flexible</SelectItem>
+                            <SelectContent className="bg-card border-border text-white">
+                                <SelectItem value="morning" className="focus:bg-muted focus:text-white">Early bird</SelectItem>
+                                <SelectItem value="night" className="focus:bg-muted focus:text-white">Night owl</SelectItem>
+                                <SelectItem value="flexible" className="focus:bg-muted focus:text-white">Flexible</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -180,7 +180,7 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                         value={formData.support_style}
                         onChange={(e) => updateField("support_style", e.target.value)}
                         placeholder="Describe how you like to be supported..."
-                        className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                        className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
@@ -197,7 +197,7 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                         value={formData.vulnerability_check}
                         onChange={(e) => updateField("vulnerability_check", e.target.value)}
                         placeholder="Being honest here shows self-awareness..."
-                        className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                        className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
@@ -231,21 +231,21 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                         }
                     </p>
                     <Select value={formData.attachment_style} onValueChange={(value) => updateField("attachment_style", value)}>
-                        <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                        <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                             <SelectValue placeholder="Select attachment style" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            <SelectItem value="secure" className="focus:bg-white/10 focus:text-white">Secure</SelectItem>
-                            <SelectItem value="anxious" className="focus:bg-white/10 focus:text-white">Anxious</SelectItem>
-                            <SelectItem value="avoidant" className="focus:bg-white/10 focus:text-white">Avoidant</SelectItem>
-                            <SelectItem value="fearful_avoidant" className="focus:bg-white/10 focus:text-white">Fearful-Avoidant (Disorganized)</SelectItem>
-                            <SelectItem value="not_sure" className="focus:bg-white/10 focus:text-white">Not sure</SelectItem>
+                        <SelectContent className="bg-card border-border text-white">
+                            <SelectItem value="secure" className="focus:bg-muted focus:text-white">Secure</SelectItem>
+                            <SelectItem value="anxious" className="focus:bg-muted focus:text-white">Anxious</SelectItem>
+                            <SelectItem value="avoidant" className="focus:bg-muted focus:text-white">Avoidant</SelectItem>
+                            <SelectItem value="fearful_avoidant" className="focus:bg-muted focus:text-white">Fearful-Avoidant (Disorganized)</SelectItem>
+                            <SelectItem value="not_sure" className="focus:bg-muted focus:text-white">Not sure</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
                 {/* Gottman-Inspired Communication Questions */}
-                <div className="space-y-6 pt-6 border-t border-white/10">
+                <div className="space-y-6 pt-6 border-t border-border">
                     <div className="flex items-center gap-2">
                         <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full border border-[hsl(var(--accent-gold))]/20">
                             Gottman-validated
@@ -259,15 +259,15 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                     <div className="space-y-3">
                         <Label className="text-white/80">When you're upset with a partner, do you tend to:</Label>
                         <Select value={formData.communication_style} onValueChange={(value) => updateField("communication_style", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                            <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select your communication style" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                <SelectItem value="address_immediately" className="focus:bg-white/10 focus:text-white">Address it immediately and directly</SelectItem>
-                                <SelectItem value="cool_off_first" className="focus:bg-white/10 focus:text-white">Take time to cool off, then discuss calmly</SelectItem>
-                                <SelectItem value="hint" className="focus:bg-white/10 focus:text-white">Hint at it and hope they pick up on it</SelectItem>
-                                <SelectItem value="shut_down" className="focus:bg-white/10 focus:text-white">Shut down and need space before talking</SelectItem>
-                                <SelectItem value="build_up" className="focus:bg-white/10 focus:text-white">Tend to let things build up until I explode</SelectItem>
+                            <SelectContent className="bg-card border-border text-white">
+                                <SelectItem value="address_immediately" className="focus:bg-muted focus:text-white">Address it immediately and directly</SelectItem>
+                                <SelectItem value="cool_off_first" className="focus:bg-muted focus:text-white">Take time to cool off, then discuss calmly</SelectItem>
+                                <SelectItem value="hint" className="focus:bg-muted focus:text-white">Hint at it and hope they pick up on it</SelectItem>
+                                <SelectItem value="shut_down" className="focus:bg-muted focus:text-white">Shut down and need space before talking</SelectItem>
+                                <SelectItem value="build_up" className="focus:bg-muted focus:text-white">Tend to let things build up until I explode</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -279,14 +279,14 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                             This is called a "repair attempt" - the #1 predictor of relationship success according to 50 years of research.
                         </p>
                         <Select value={formData.repair_attempt_response} onValueChange={(value) => updateField("repair_attempt_response", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                            <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select your typical response" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                <SelectItem value="appreciate_deescalate" className="focus:bg-white/10 focus:text-white">Usually appreciate it and de-escalate</SelectItem>
-                                <SelectItem value="depends" className="focus:bg-white/10 focus:text-white">Sometimes - depends on how upset I am</SelectItem>
-                                <SelectItem value="find_frustrating" className="focus:bg-white/10 focus:text-white">I find it frustrating when I'm trying to make a point</SelectItem>
-                                <SelectItem value="finish_first" className="focus:bg-white/10 focus:text-white">I need to finish the conversation first</SelectItem>
+                            <SelectContent className="bg-card border-border text-white">
+                                <SelectItem value="appreciate_deescalate" className="focus:bg-muted focus:text-white">Usually appreciate it and de-escalate</SelectItem>
+                                <SelectItem value="depends" className="focus:bg-muted focus:text-white">Sometimes - depends on how upset I am</SelectItem>
+                                <SelectItem value="find_frustrating" className="focus:bg-muted focus:text-white">I find it frustrating when I'm trying to make a point</SelectItem>
+                                <SelectItem value="finish_first" className="focus:bg-muted focus:text-white">I need to finish the conversation first</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -295,14 +295,14 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                     <div className="space-y-3">
                         <Label className="text-white/80">When life gets overwhelming, I typically:</Label>
                         <Select value={formData.stress_response} onValueChange={(value) => updateField("stress_response", value)}>
-                            <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                            <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select your stress response" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                <SelectItem value="lean_on_partner" className="focus:bg-white/10 focus:text-white">Lean on my partner more</SelectItem>
-                                <SelectItem value="need_alone_time" className="focus:bg-white/10 focus:text-white">Need alone time to recharge</SelectItem>
-                                <SelectItem value="throw_into_work" className="focus:bg-white/10 focus:text-white">Throw myself into work/hobbies</SelectItem>
-                                <SelectItem value="irritable_withdrawn" className="focus:bg-white/10 focus:text-white">Tend to become irritable or withdrawn</SelectItem>
+                            <SelectContent className="bg-card border-border text-white">
+                                <SelectItem value="lean_on_partner" className="focus:bg-muted focus:text-white">Lean on my partner more</SelectItem>
+                                <SelectItem value="need_alone_time" className="focus:bg-muted focus:text-white">Need alone time to recharge</SelectItem>
+                                <SelectItem value="throw_into_work" className="focus:bg-muted focus:text-white">Throw myself into work/hobbies</SelectItem>
+                                <SelectItem value="irritable_withdrawn" className="focus:bg-muted focus:text-white">Tend to become irritable or withdrawn</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -318,7 +318,7 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
                             value={formData.past_relationship_learning}
                             onChange={(e) => updateField("past_relationship_learning", e.target.value)}
                             placeholder="What insights did you gain about yourself and relationships..."
-                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                            className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
                 </div>

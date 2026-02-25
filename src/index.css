@@ -262,6 +262,16 @@
 
 @layer utilities {
 
+  /* ===== Section label — 11px uppercase gold ===== */
+  .section-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: hsl(var(--accent-gold));
+  }
+
   /* ===== Eyebrow label — 11px uppercase muted ===== */
   .eyebrow {
     font-family: 'Inter', sans-serif;

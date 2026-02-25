@@ -44,7 +44,7 @@ const footerLinks = {
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-background dark:bg-[#101e17] text-foreground transition-colors duration-300">
+    <footer className="w-full bg-background text-foreground transition-colors duration-300">
       {/* Main content */}
       <div className="content-container pt-24 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">

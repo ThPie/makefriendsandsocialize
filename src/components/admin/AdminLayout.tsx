@@ -131,7 +131,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="space-y-3 animate-pulse">
-          <div className="h-10 w-10 rounded-full bg-white/[0.06] mx-auto" />
+          <div className="h-10 w-10 rounded-full bg-muted mx-auto" />
           <div className="h-3 w-24 rounded bg-white/[0.06]" />
         </div>
       </div>
