@@ -9,15 +9,16 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "3rem",
       screens: {
-        "2xl": "1440px",
+        "2xl": "1200px",
       },
     },
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
-        display: ['Newsreader', 'Cormorant Garamond', 'serif'],
+        display: ['Cormorant Garamond', 'serif'],
+        mono: ['IBM Plex Mono', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -55,7 +56,7 @@ export default {
         },
         gold: {
           DEFAULT: "hsl(var(--accent-gold))",
-          light: "hsl(var(--accent-gold-light, 47 80% 78%))",
+          light: "hsl(var(--accent-gold-light, 43 63% 44%))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -74,10 +75,19 @@ export default {
           cream: "hsl(45 30% 90%)",
         },
       },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
+      },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "calc(var(--radius) - 4px)",
+        sm: "calc(var(--radius) - 8px)",
+      },
+      transitionDuration: {
+        '150': '150ms',
+        '250': '250ms',
       },
       keyframes: {
         "accordion-down": {

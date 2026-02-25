@@ -21,8 +21,8 @@ const CodeOfConductPage = lazy(() => import("@/pages/CodeOfConductPage"));
 const CookiesPage = lazy(() => import("@/pages/CookiesPage"));
 const FAQPage = lazy(() => import("@/pages/FAQPage"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
-const BusinessDirectoryPage = lazy(() => import("@/pages/BusinessDirectoryPage"));
-const BusinessLandingPage = lazy(() => import("@/pages/BusinessLandingPage"));
+const ThePartnersPage = lazy(() => import("@/pages/circles/ThePartnersPage"));
+const ThePursuitsPage = lazy(() => import("@/pages/circles/ThePursuitsPage"));
 const AuthPage = lazy(() => import("@/pages/AuthPage"));
 const AuthCallbackPage = lazy(() => import("@/pages/AuthCallbackPage"));
 const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
@@ -127,12 +127,13 @@ export const MainRoutes = () => (
         {/* Redirects from old URLs for SEO */}
         <Route path="/connected-circle" element={<Navigate to="/founders-circle" replace />} />
         <Route path="/connected-circle/directory" element={<Navigate to="/founders-circle/directory" replace />} />
-        <Route path="/business" element={<Layout><BusinessDirectoryPage /></Layout>} />
-        <Route path="/directory/:slug" element={<BusinessLandingPage />} />
+        {/* Connected Circle / Founders Circle Routing */}
         <Route path="/circles" element={<CirclesPage />} />
         <Route path="/circles/the-gentlemen" element={<TheGentlemenPage />} />
         <Route path="/circles/the-ladies-society" element={<TheLadiesSocietyPage />} />
         <Route path="/circles/les-amis" element={<LesAmisPage />} />
+        <Route path="/circles/the-partners" element={<ThePartnersPage />} />
+        <Route path="/circles/the-pursuits" element={<ThePursuitsPage />} />
         <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
 
         {/* Health check endpoint for deployment verification */}

@@ -1,0 +1,152 @@
+import { TransitionLink } from '@/components/ui/TransitionLink';
+import { ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Hexagon, Diamond, BringToFront, Circle } from 'lucide-react';
+
+interface CirclesMegamenuProps {
+    isTransparent?: boolean;
+}
+
+export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps) {
+    return (
+        <div className="group relative h-full">
+            <button className={cn(
+                "hidden md:flex items-center gap-1.5 text-sm font-medium transition-colors duration-150 h-full",
+                isTransparent ? "text-white/90 hover:text-white" : "text-foreground hover:text-[hsl(var(--accent-gold))]"
+            )}>
+                Services
+                <ChevronDown className="h-3 w-3 opacity-50 group-hover:rotate-180 transition-transform duration-200" />
+            </button>
+
+            {/* Dropdown Container */}
+            <div className="absolute top-[100%] right-0 -mr-64 xl:-mr-80 w-[960px] max-w-[95vw] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 z-[100] pt-4">
+                {/* Pointer Triangle intentionally omitted to match the clean rounded glass look of the reference */}
+
+                {/* Content Box - matching the exact reference layout: Left dark panel, right white options */}
+                <div className="bg-[#FAF9F6] dark:bg-card border border-border/40 rounded-[32px] shadow-2xl overflow-hidden flex flex-row h-[500px]">
+
+                    {/* LEFT PANEL - The dark rounded container inside */}
+                    <div className="w-[340px] m-2 rounded-[24px] overflow-hidden relative flex flex-col justify-between p-10 bg-[#1A1A1A]">
+                        {/* Background Image with heavy overlay */}
+                        <img
+                            src="/images/gallery/event-1.jpg"
+                            alt="Services"
+                            className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/80"></div>
+
+                        <div className="relative z-10 flex flex-col gap-4">
+                            <h2 className="text-white text-3xl font-display leading-[1.1] tracking-tight">
+                                Exceptional Social<br />Experiences
+                            </h2>
+                            <p className="text-white/80 text-sm font-light leading-relaxed mb-4">
+                                High-quality curation designed around exclusive events and genuine connections.
+                            </p>
+                            <span className="text-[hsl(var(--accent-gold))] text-xs font-semibold uppercase tracking-widest mt-2">
+                                Curated Network
+                            </span>
+                        </div>
+
+                        {/* Bottom image layer context if needed */}
+                        <div className="relative z-10 mt-auto">
+                            {/* Empty spacing block in the reference to push text up */}
+                        </div>
+                    </div>
+
+                    {/* RIGHT PANEL - The list of services */}
+                    <div className="flex-1 p-10 flex flex-col bg-[#FAF9F6] dark:bg-card relative">
+                        <div className="grid grid-cols-2 gap-x-12 gap-y-8 flex-1">
+
+                            {/* Column 1: Special Services */}
+                            <div>
+                                <h3 className="text-muted-foreground font-light text-sm mb-6">Our Circles</h3>
+                                <div className="flex flex-col gap-4">
+                                    <TransitionLink to="/founders-circle" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                                            <Hexagon strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">Founders Circle</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">For entrepreneurs and executives.</p>
+                                        </div>
+                                    </TransitionLink>
+
+                                    <TransitionLink to="/circles/the-gentlemen" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                                            <Diamond strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">The Gentlemen</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Focusing on substantive connections.</p>
+                                        </div>
+                                    </TransitionLink>
+
+                                    <TransitionLink to="/slow-dating" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                                            <BringToFront strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">Intentional connections</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Modern professional dating.</p>
+                                        </div>
+                                    </TransitionLink>
+                                </div>
+                            </div>
+
+                            {/* Column 2: Coming Soon */}
+                            <div>
+                                <h3 className="text-muted-foreground font-light text-sm mb-6">Upcoming</h3>
+                                <div className="flex flex-col gap-4">
+                                    <div className="bg-transparent border border-border/50 rounded-2xl p-4 flex items-center gap-4 opacity-70">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent">
+                                            <Circle strokeWidth={1} className="w-5 h-5 text-muted-foreground" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-foreground font-medium text-sm">The Partners Circle</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Curated experiences for couples.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-transparent border border-border/50 rounded-2xl p-4 flex items-center gap-4 opacity-70">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent">
+                                            <Circle strokeWidth={1} className="w-5 h-5 text-muted-foreground" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-foreground font-medium text-sm">The Pursuits Club</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Active pursuits and sport life.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-transparent border border-border/50 rounded-2xl p-4 flex items-center gap-4 opacity-70">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent">
+                                            <Circle strokeWidth={1} className="w-5 h-5 text-muted-foreground" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-foreground font-medium text-sm">The Ladies Society</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Inspiring females connecting.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {/* Bottom Help CTA area */}
+                        <div className="mt-auto flex items-end justify-between pt-6">
+                            <div>
+                                <h4 className="text-foreground font-medium text-sm mb-1">Looking for a specific circle?</h4>
+                                <p className="text-muted-foreground text-sm font-light">We have an concierge waiting to assist you.</p>
+                            </div>
+                            <TransitionLink
+                                to="/contact"
+                                className="bg-[#111111] hover:bg-black text-white px-8 py-3 rounded-full text-sm font-medium transition-colors"
+                            >
+                                Contact us
+                            </TransitionLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -1,41 +1,32 @@
 import { Button } from '@/components/ui/button';
-import { Check, ChevronDown, ChevronUp, Lock } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { TIER_BENEFITS } from '@/lib/stripe-products';
 
-const INITIAL_FEATURES_SHOWN = 4;
-
 export const PricingSection = () => {
   const { ref, isVisible } = useScrollAnimation();
-  const [expandedTiers, setExpandedTiers] = useState<Record<string, boolean>>({});
-  const [activeTab, setActiveTab] = useState<'socialite' | 'insider' | 'patron'>('insider');
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
 
-  const toggleExpanded = (id: string) => {
-    setExpandedTiers(prev => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  // Map TIER_BENEFITS to display format
   const tiers = [
     {
       id: 'socialite',
       data: TIER_BENEFITS.socialite,
       cta: 'Get Started',
       href: '/auth',
-      variant: 'outline' as const,
       popular: false,
+      style: 'default' as const,
     },
     {
       id: 'insider',
       data: TIER_BENEFITS.insider,
       cta: 'Start Free Trial',
       href: '/membership',
-      variant: 'default' as const,
       popular: true,
+      style: 'featured' as const,
       trial: '30-day free trial',
     },
     {
@@ -43,37 +34,36 @@ export const PricingSection = () => {
       data: TIER_BENEFITS.patron,
       cta: 'Start Free Trial',
       href: '/membership',
-      variant: 'secondary' as const,
       popular: false,
+      style: 'premium' as const,
       trial: '30-day free trial',
     }
   ];
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-background" id="membership">
-      <div ref={ref} className="mx-auto max-w-7xl relative z-10">
-        {/* Membership Header */}
-        <div className={`text-center mb-10 md:mb-16 scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <Badge variant="outline" className="mb-4 border-primary/20 text-primary bg-primary/5 px-4 py-1">
-            Membership
-          </Badge>
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
-            Pricing on <span className="text-primary">your terms</span>
+    <section className="section-spacing bg-background" id="membership">
+      <div ref={ref} className="content-container">
+        {/* Header */}
+        <div className="text-center mb-12 md:mb-16">
+          <span className="eyebrow block mb-3">Membership</span>
+          <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1] mb-4">
+            Invest in <span className="italic">Connection</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-3xl mx-auto leading-relaxed">
-            Whichever plan you pick, it's free until you love your matches. That's our promise.
+          <p className="text-muted-foreground text-base font-light max-w-lg mx-auto">
+            Choose the membership that fits your lifestyle. All plans include a 30-day free trial.
           </p>
         </div>
 
-        {/* Billing Toggle */}
-        <div className="flex justify-center mb-10">
-          <div className="flex p-1 bg-muted/50 rounded-full border border-border/60">
+        {/* Controls Container */}
+        <div className="flex flex-col items-center justify-center mb-12 gap-6">
+          {/* Billing toggle */}
+          <div className="flex p-1 bg-card rounded-full border border-border">
             <button
               onClick={() => setBillingCycle('monthly')}
               className={cn(
-                "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300",
+                "px-6 py-2 rounded-full text-sm font-medium transition-all duration-200",
                 billingCycle === 'monthly'
-                  ? "bg-primary text-primary-foreground"
+                  ? "gold-fill"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -82,56 +72,34 @@ export const PricingSection = () => {
             <button
               onClick={() => setBillingCycle('yearly')}
               className={cn(
-                "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2",
+                "px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2",
                 billingCycle === 'yearly'
-                  ? "bg-primary text-primary-foreground"
+                  ? "gold-fill"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
               Yearly
-              <span className="text-xs bg-[hsl(var(--accent-gold))] text-foreground px-2 py-0.5 rounded-full font-bold">-20%</span>
+              <span className="text-[10px] bg-[hsl(var(--accent-gold))]/20 text-[hsl(var(--accent-gold))] px-2 py-0.5 rounded-full font-medium">-20%</span>
             </button>
           </div>
+
+          {/* Features toggle */}
+          <button
+            onClick={() => setShowAllFeatures(!showAllFeatures)}
+            className="flex items-center gap-2 text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors group"
+          >
+            <span className="font-light tracking-wide uppercase">{showAllFeatures ? "Hide details" : "See all details"}</span>
+            <ChevronDown className={cn("w-4 h-4 transition-transform duration-300", showAllFeatures ? "rotate-180" : "group-hover:translate-y-0.5")} />
+          </button>
         </div>
 
-        {/* Mobile Tab Switcher */}
-        <div className="md:hidden flex justify-center mb-8">
-          <div className="flex p-1 bg-muted/50 rounded-full border border-border/60">
-            {tiers.map((tier) => (
-              <button
-                key={tier.id}
-                onClick={() => setActiveTab(tier.id as any)}
-                className={cn(
-                  "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 relative z-10",
-                  activeTab === tier.id
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {tier.data.name}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        {/* Pricing cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-end">
           {tiers.map((tier, index) => {
-            const isMobileHidden = activeTab !== tier.id;
             const { data } = tier;
-
-            const isExpanded = expandedTiers[tier.id] || false;
             const features = data.features || [];
             const missingFeatures = data.missingFeatures || [];
 
-            const visibleFeatures = isExpanded ? features : features.slice(0, INITIAL_FEATURES_SHOWN);
-            const hasMoreFeatures = features.length > INITIAL_FEATURES_SHOWN;
-
-            // For missing features, shows 0 if collapsed, all if expanded
-            const visibleMissingFeatures = isExpanded ? missingFeatures : [];
-            const hasMoreMissing = missingFeatures.length > 0;
-
-            // Price calculation
             let displayPrice = 'Free';
             let displayPeriod = '';
 
@@ -145,99 +113,82 @@ export const PricingSection = () => {
               <div
                 key={tier.id}
                 className={cn(
-                  "relative flex flex-col gap-6 rounded-2xl p-8 transition-all duration-300",
+                  "relative flex flex-col rounded-2xl p-8 transition-all duration-700",
+                  // Insider is tallest — elevated 24px
                   tier.popular
-                    ? "bg-card border-2 border-primary shadow-sm"
-                    : "bg-card border border-border/60 hover:border-primary/40",
-                  isMobileHidden ? "hidden md:flex" : "flex",
+                    ? "bg-popover border border-[hsl(var(--accent-gold))] md:pb-12 md:-mt-6"
+                    : tier.style === 'premium'
+                      ? "bg-card border border-border"
+                      : "bg-card border border-border",
                   isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                 )}
+                style={{ transitionDelay: `${index * 120}ms` }}
               >
-                {/* Popular Badge */}
+                {/* Popular badge — rotated */}
                 {tier.popular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                    <Badge className="bg-primary text-primary-foreground text-xs">
+                  <div className="absolute -top-3 right-6 z-10 -rotate-2">
+                    <span className="inline-block px-4 py-1.5 text-[10px] uppercase tracking-[0.15em] font-medium rounded-full gold-fill">
                       Most Popular
-                    </Badge>
+                    </span>
                   </div>
                 )}
 
-                <div className={cn("flex flex-col gap-2", tier.popular ? "mt-2" : "")}>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-foreground text-lg font-bold font-display">{data.name}</h3>
-                  </div>
+                {/* Tier name */}
+                <h3 className="text-foreground text-base font-light mb-4">
+                  {data.name}
+                </h3>
 
-                  <div className="flex items-baseline gap-1.5 text-foreground mt-2">
-                    <span className="text-5xl font-black leading-tight tracking-tight font-display">
-                      {displayPrice}
-                    </span>
-                    <span className="text-muted-foreground text-sm font-medium">{displayPeriod}</span>
-                  </div>
-
-                  {billingCycle === 'yearly' && 'annualSavings' in data && (
-                    <p className="text-xs text-primary font-medium">billed yearly (save {data.annualSavings})</p>
-                  )}
-
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {data.description}
-                  </p>
+                {/* Price */}
+                <div className="flex items-baseline gap-1.5 mb-2">
+                  <span className="font-display text-[56px] leading-none text-foreground tracking-tight">
+                    {displayPrice}
+                  </span>
+                  <span className="text-base text-muted-foreground">{displayPeriod}</span>
                 </div>
 
-                {/* Features */}
-                <ul className="space-y-3 mb-4 flex-1">
-                  {visibleFeatures.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-start gap-3 text-sm text-foreground">
-                      <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-
-                  {/* Missing Features */}
-                  {visibleMissingFeatures && visibleMissingFeatures.length > 0 && (
-                    <div className={cn(
-                      "border-t border-border/50 pt-4 mb-4",
-                      !isExpanded && "opacity-70"
-                    )}>
-                      <p className="text-xs text-muted-foreground/80 uppercase tracking-wider mb-3 font-medium">
-                        Upgrade to unlock
-                      </p>
-                      <ul className="space-y-3">
-                        {visibleMissingFeatures.map((feature, featureIndex) => (
-                          <li key={featureIndex} className="flex items-start gap-3 text-sm text-muted-foreground/70">
-                            <Lock className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </ul>
-
-                {/* See More Toggle */}
-                {(hasMoreFeatures || hasMoreMissing) && (
-                  <button
-                    onClick={() => toggleExpanded(tier.id)}
-                    className="w-full flex items-center justify-center gap-2 py-2 text-sm text-primary hover:text-primary/80 transition-colors mb-4"
-                  >
-                    {isExpanded ? (
-                      <>
-                        <span>See less</span>
-                        <ChevronUp className="w-4 h-4" />
-                      </>
-                    ) : (
-                      <>
-                        <span>See all benefits</span>
-                        <ChevronDown className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
+                {billingCycle === 'yearly' && 'annualSavings' in data && (
+                  <p className="text-xs text-[hsl(var(--accent-gold))] font-medium mb-4">
+                    billed yearly (save {data.annualSavings})
+                  </p>
                 )}
 
-                {/* CTA Button */}
+                <p className="text-sm text-muted-foreground font-light mb-auto">
+                  {data.description}
+                </p>
+
+                {/* Features (Conditionally Visible) */}
+                <div
+                  className={cn(
+                    "transition-all duration-500 ease-in-out overflow-hidden",
+                    showAllFeatures ? "max-h-[800px] opacity-100 mt-8 mb-8" : "max-h-0 opacity-0 mt-0 mb-8"
+                  )}
+                >
+                  <ul className="space-y-3 flex-1">
+                    {features.map((feature, fi) => (
+                      <li key={fi} className="flex items-start gap-3 text-sm text-foreground">
+                        <Check className="h-4 w-4 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" strokeWidth={2} />
+                        <span className="font-light">{feature}</span>
+                      </li>
+                    ))}
+                    {/* Missing features — struck through, muted */}
+                    {missingFeatures.map((feature, fi) => (
+                      <li key={`m-${fi}`} className="flex items-start gap-3 text-sm text-[hsl(var(--text-muted))]">
+                        <Check className="h-4 w-4 flex-shrink-0 mt-0.5 opacity-30" strokeWidth={1.5} />
+                        <span className="font-light line-through">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* CTA */}
                 <Button
                   asChild
-                  variant={tier.popular ? 'default' : 'secondary'}
-                  className="w-full rounded-full min-h-[48px]"
+                  className={cn(
+                    "w-full rounded-[10px] h-12 text-sm tracking-wide transition-opacity duration-150",
+                    tier.popular
+                      ? "gold-fill hover:opacity-90"
+                      : "bg-card border border-border text-foreground hover:bg-accent"
+                  )}
                 >
                   <TransitionLink to={tier.href}>
                     {tier.cta}

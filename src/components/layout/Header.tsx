@@ -1,435 +1,107 @@
 import { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { Button } from '@/components/ui/button';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Users, Mail, Building2, Crown, Globe, BookOpen, Quote, User } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import logoLight from '@/assets/logo-transparent.png';
-import logoDark from '@/assets/logo-dark.png';
-import { supabase } from '@/integrations/supabase/client';
+import { BrandLogo } from '@/components/common/BrandLogo';
 import { useAuth } from '@/contexts/AuthContext';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { CirclesMegamenu } from './CirclesMegamenu';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { useCapacitor } from '@/hooks/useCapacitor';
-import foundersImg from '@/assets/founders-hero-new.jpg';
-import gentlemenImg from '@/assets/gentlemen-hero-new.webp';
-import womenImg from '@/assets/women-society-hero.jpg';
-import lesAmisImg from '@/assets/les-amis-hero-new.webp';
-
-const navItems = [
-  { label: 'Events', path: '/events', icon: Calendar },
-  { label: 'Blog', path: '/journal', icon: BookOpen },
-  {
-    label: 'Circles',
-    path: '/circles',
-    icon: Users,
-    isMegaMenu: true,
-    children: [
-      { label: 'Founders Circle', path: '/founders-circle', image: foundersImg },
-      { label: 'The Gentlemen', path: '/circles/the-gentlemen', image: gentlemenImg },
-      { label: 'The Women Society', path: '/circles', image: womenImg }, // Linking to main circles page for now as per previous
-      { label: 'Les Amis', path: '/circles/les-amis', image: lesAmisImg },
-    ]
-  },
-  { label: 'Membership', path: '/membership', icon: Users },
-  { label: 'Contact', path: '/contact', icon: Mail },
-];
+import { cn } from '@/lib/utils';
 
 export const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [dailyQuote, setDailyQuote] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-  const location = useLocation();
+  const [scrolled, setScrolled] = useState(false);
   const { user, profile } = useAuth();
-  const { resolvedTheme } = useTheme();
-  const { isNative, isIOS } = useCapacitor();
+  const location = useLocation();
 
-  const isHomePage = location.pathname === '/';
-  const isTransparent = isHomePage && !isScrolled;
+  // Don't show public header on portal/admin pages
+  const isPortal = location.pathname.startsWith('/portal');
+  const isAdmin = location.pathname.startsWith('/admin');
+  const isAuth = location.pathname.startsWith('/auth');
 
-  // Use light logo for dark theme OR transparent header, dark logo for light theme
-  const currentLogo = !mounted || resolvedTheme === 'dark' || isTransparent ? logoLight : logoDark;
-
-  const [scrollDepth, setScrollDepth] = useState(0);
-
-  // Prevent hydration mismatch
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Get user initials for avatar fallback
-  const getUserInitials = () => {
-    if (profile?.first_name || profile?.last_name) {
-      const first = profile.first_name?.[0] || '';
-      const last = profile.last_name?.[0] || '';
-      return (first + last).toUpperCase() || 'U';
-    }
-    if (user?.email) {
-      return user.email[0].toUpperCase();
-    }
-    return 'U';
-  };
-
-  const getFullName = () => {
-    if (profile?.first_name || profile?.last_name) {
-      return [profile.first_name, profile.last_name].filter(Boolean).join(' ');
-    }
-    return null;
-  };
-
-  const getAvatarUrl = () => {
-    const raw = profile?.avatar_urls?.[0];
-    if (!raw) return undefined;
-    // If already a full URL (http/https), use as-is
-    if (raw.startsWith('http')) return raw;
-    // Construct full Supabase Storage public URL from raw storage path
-    const { data } = supabase.storage.from('profile-photos').getPublicUrl(raw);
-    return data.publicUrl;
-  };
-
-  // Debounced scroll handler to prevent flickering
-  useEffect(() => {
-    let rafId: number;
-    let lastScrollY = window.scrollY;
-
     const handleScroll = () => {
-      // Cancel any pending animation frame
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
-
-      rafId = requestAnimationFrame(() => {
-        const currentScrollY = window.scrollY;
-        // Only update if scroll position changed significantly (debounce threshold)
-        if (Math.abs(currentScrollY - lastScrollY) > 5 || currentScrollY <= 20) {
-          setIsScrolled(currentScrollY > 20);
-          const depth = Math.min(currentScrollY / 200, 1);
-          setScrollDepth(depth);
-          lastScrollY = currentScrollY;
-        }
-      });
+      setScrolled(window.scrollY > 20);
     };
-
-    // Initial check
-    handleScroll();
-
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location.pathname]);
+  // Hide header on portal, admin, and auth pages
+  if (isPortal || isAdmin || isAuth) return null;
 
-  // Prevent body scroll when menu is open
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isMenuOpen]);
-
-  // Fetch daily quote
-  useEffect(() => {
-    const fetchDailyQuote = async () => {
-      try {
-        // Use local date (not UTC) so the quote matches the user's day.
-        const now = new Date();
-        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-        const { data, error } = await supabase
-          .from('daily_quotes')
-          .select('quote_text')
-          .eq('quote_date', today)
-          .single();
-
-        if (error && error.code !== 'PGRST116') {
-          console.error('Error fetching daily quote:', error);
-          return;
-        }
-
-        if (data) {
-          setDailyQuote(data.quote_text);
-        }
-      } catch (error) {
-        console.error('Error fetching daily quote:', error);
-      }
-    };
-
-    fetchDailyQuote();
-  }, []);
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300 ${isTransparent
-        ? 'bg-gradient-to-b from-black/50 via-black/25 to-transparent'
-        : 'border-b border-border bg-background/95 backdrop-blur-md'
-        }`}
-      style={{
-        // Add safe area padding for PWA/Native app notch clearance
-        paddingTop: 'env(safe-area-inset-top, 0px)',
-        boxShadow: isTransparent
-          ? 'none'
-          : `0 ${4 + scrollDepth * 8}px ${12 + scrollDepth * 20}px -${4 - scrollDepth * 2}px hsl(var(--foreground) / ${0.05 + scrollDepth * 0.1})`
-      }}
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-250',
+        'h-[60px] md:h-[68px]',
+        scrolled
+          ? 'dark:frosted-nav frosted-nav-light border-b border-border/40'
+          : 'bg-transparent'
+      )}
     >
-      <div className="mx-auto flex h-full items-center justify-between px-4 py-2 md:px-8 lg:px-12 xl:px-16">
-        {/* Logo */}
-        <Link to="/" className="flex items-center">
-          <img
-            src={currentLogo}
-            alt="MakeFriends & Socialize"
-            width={160}
-            height={48}
-            className={`w-auto object-contain transition-all duration-300 ${isTransparent ? 'h-10 md:h-14' : 'h-8 md:h-12'
-              }`}
-          />
-        </Link>
+      <div className="content-container h-full flex items-center justify-between">
+        {/* Logo — far left */}
+        <TransitionLink to="/" className="flex items-center">
+          <BrandLogo width={140} height={40} forceWhite={!scrolled} />
+        </TransitionLink>
 
-        {/* Actions - Theme & Profile/Auth */}
-        <div className="flex flex-1 items-center justify-end gap-3">
-          {/* Theme Toggle */}
-          <ThemeToggle isTransparent={isTransparent} />
+        {/* Right side — minimal */}
+        <div className="flex items-center gap-6 h-full">
+          {/* Circles Megamenu */}
+          <CirclesMegamenu isTransparent={!scrolled} />
 
-          {/* Profile Avatar or Apply Button */}
-          {user ? (
-            <Link
-              to="/portal"
-              className="ml-1 md:ml-2 transition-transform hover:scale-105"
-              title="Go to your profile"
+          {/* Sign In — text link, desktop only */}
+          {!user && (
+            <TransitionLink
+              to="/auth"
+              className={cn(
+                "hidden md:inline-block text-sm font-light transition-colors duration-150",
+                !scrolled ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
+              )}
             >
-              <Avatar className="h-11 w-11 md:h-12 md:w-12 border-2 border-primary/50 hover:border-primary transition-colors">
-                <AvatarImage src={getAvatarUrl()} alt={getFullName() || 'Profile'} />
-                <AvatarFallback className="bg-primary/20 text-primary font-medium text-xs">
-                  {getUserInitials()}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
-          ) : (
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className={`h-9 md:h-10 px-3 md:px-4 ${isTransparent ? "border-white/60 text-white hover:bg-white/10 hover:border-white" : ""}`}
-            >
-              <TransitionLink to="/auth">
-                <span className="hidden sm:inline">Sign In</span>
-                <User className="w-4 h-4 sm:hidden" />
-              </TransitionLink>
-            </Button>
+              Sign In
+            </TransitionLink>
           )}
 
-          {/* Hamburger Menu Button - Visible on ALL screens */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsMenuOpen(!isMenuOpen);
-            }}
-            className={`relative z-50 flex ml-1 md:ml-2 items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-lg transition-colors pointer-events-auto ${isTransparent
-              ? 'text-white hover:bg-white/10 bg-black/20 backdrop-blur-sm'
-              : 'text-foreground hover:bg-muted bg-background/80'
-              }`}
-            aria-label="Toggle menu"
-            aria-expanded={isMenuOpen}
-          >
-            <div className="w-5 h-4 md:w-6 md:h-5 flex flex-col justify-center items-center">
-              <span
-                className={`block h-0.5 w-5 md:w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-0.5' : '-translate-y-1'
-                  }`}
-              />
-              <span
-                className={`block h-0.5 w-5 md:w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 mt-1'
-                  }`}
-              />
-              <span
-                className={`block h-0.5 w-5 md:w-6 rounded-full bg-current transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-0.5' : 'translate-y-1 mt-1'
-                  }`}
-              />
+          {/* If logged in, go to portal */}
+          {user && (
+            <div className="hidden md:flex items-center gap-4">
+              <TransitionLink
+                to="/portal"
+                className={cn(
+                  "text-sm font-light transition-colors duration-150",
+                  !scrolled ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
+                )}
+              >
+                Dashboard
+              </TransitionLink>
+              <TransitionLink to="/portal/profile">
+                <Avatar className="h-8 w-8 border border-white/20 hover:opacity-80 transition-opacity">
+                  <AvatarImage src={profile?.avatar_urls?.[0]} />
+                  <AvatarFallback className="bg-primary/80 text-primary-foreground text-xs">
+                    {profile?.first_name?.[0] || user.email?.[0]?.toUpperCase() || 'M'}{(profile?.last_name?.[0] || '').toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </TransitionLink>
             </div>
-          </button>
+          )}
+
+          {/* Apply — gold pill button */}
+          <Button
+            asChild
+            size="sm"
+            className="rounded-full px-6 h-9 text-xs tracking-widest uppercase font-medium gold-fill border-0 hover:opacity-90 transition-opacity duration-150"
+          >
+            <TransitionLink to="/membership">
+              Apply
+            </TransitionLink>
+          </Button>
+
+          {/* Theme Toggle */}
+          <ThemeToggle isTransparent={!scrolled} />
         </div>
       </div>
-
-      {/* Menu - Full Screen Slide Out */}
-      {/* Menu - Full Screen Slide Out - Portalled to body to escape Header's stacking context */}
-      {mounted && createPortal(
-        <AnimatePresence>
-          {isMenuOpen && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm"
-                style={{ zIndex: 9998 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                onClick={() => setIsMenuOpen(false)}
-              />
-
-              {/* Slide-out Panel - Opens from Right */}
-              <motion.nav
-                className="fixed inset-y-0 right-0 w-[85%] max-w-[320px] bg-card border-l border-border flex flex-col shadow-2xl overflow-hidden"
-                style={{ zIndex: 9999 }}
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-              >
-                {/* Header with Logo and Theme Toggle */}
-                <div className="p-6 border-b border-border flex items-center justify-between">
-                  {/* Close button / Logo area */}
-                  <div className="flex items-center gap-4">
-                    {/* Optional: Add an explicit close button if needed, but clicking outside or the toggle works. 
-                         For now, keeping previous layout but adding logo.
-                     */}
-                    <Link to="/" onClick={() => setIsMenuOpen(false)}>
-                      <img
-                        src={resolvedTheme === 'light' ? logoDark : logoLight}
-                        alt="MakeFriends & Socialize"
-                        className="h-10 w-auto object-contain"
-                      />
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Profile Section for logged in users */}
-                {user && (
-                  <motion.div
-                    className="px-6 py-4 border-b border-border"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                  >
-                    <Link
-                      to="/portal"
-                      className="flex items-center gap-3 p-3 rounded-xl bg-primary/10 hover:bg-primary/15 transition-colors"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <Avatar className="h-12 w-12 border-2 border-primary/30">
-                        <AvatarImage src={getAvatarUrl()} alt={getFullName() || 'Profile'} />
-                        <AvatarFallback className="bg-primary/20 text-primary font-medium">
-                          {getUserInitials()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-foreground truncate">
-                          {getFullName() || 'Your Profile'}
-                        </p>
-                        <p className="text-sm text-muted-foreground truncate">
-                          View your dashboard
-                        </p>
-                      </div>
-                      <User className="w-5 h-5 text-primary" />
-                    </Link>
-                  </motion.div>
-                )}
-
-                {/* Navigation Items */}
-                <div className="flex-1 overflow-y-auto py-6 px-4">
-                  <nav className="space-y-6">
-                    {navItems.map((item, index) => (
-                      <motion.div
-                        key={item.label}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 + index * 0.05 }}
-                      >
-                        {item.isMegaMenu ? (
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-4 px-4 text-lg font-medium text-muted-foreground">
-                              <item.icon className="w-5 h-5" />
-                              <span>{item.label}</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-3 px-2">
-                              {item.children?.map((child) => (
-                                <TransitionLink
-                                  key={child.label}
-                                  to={child.path}
-                                  onClick={() => setIsMenuOpen(false)}
-                                  className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10"
-                                >
-                                  <img
-                                    src={child.image}
-                                    alt={child.label}
-                                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                  />
-                                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors" />
-                                  <div className="absolute inset-0 flex items-center justify-center p-2 text-center">
-                                    <span className="text-sm font-bold text-white font-display leading-tight">{child.label}</span>
-                                  </div>
-                                </TransitionLink>
-                              ))}
-                            </div>
-                          </div>
-                        ) : (
-                          <TransitionLink
-                            to={item.path}
-                            className={`flex items-center gap-4 px-4 py-3 rounded-xl text-lg font-medium transition-all duration-200 ${location.pathname === item.path
-                              ? 'bg-primary/15 text-primary'
-                              : 'text-foreground hover:bg-muted hover:text-primary'
-                              }`}
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            <item.icon className={`w-5 h-5 ${location.pathname === item.path ? 'text-primary' : 'text-muted-foreground'
-                              }`} />
-                            <span>{item.label}</span>
-                          </TransitionLink>
-                        )}
-                      </motion.div>
-                    ))}
-                  </nav>
-                </div>
-
-                {/* Daily Quote Section */}
-                {dailyQuote && (
-                  <motion.div
-                    className="px-6 py-4 border-t border-border bg-secondary/30"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.35 }}
-                  >
-                    <div className="flex items-start gap-2">
-                      <Quote className="w-4 h-4 text-primary/60 flex-shrink-0 mt-0.5" />
-                      <p className="font-serif italic text-sm text-muted-foreground leading-relaxed">
-                        {dailyQuote}
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* Footer with CTA */}
-                <motion.div
-                  className="p-6 border-t border-border"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  <Button asChild variant="outline" className="w-full rounded-xl py-6 text-base font-semibold">
-                    <TransitionLink to="/auth" onClick={() => setIsMenuOpen(false)}>
-                      Sign In
-                    </TransitionLink>
-                  </Button>
-                  <p className="text-center text-xs text-muted-foreground mt-4">
-                    Exclusive membership for professionals
-                  </p>
-                </motion.div>
-              </motion.nav>
-            </>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
     </header>
   );
 };

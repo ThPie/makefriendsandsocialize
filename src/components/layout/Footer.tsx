@@ -1,12 +1,5 @@
 import { Link } from 'react-router-dom';
 import { BrandLogo } from '@/components/common/BrandLogo';
-import { AppStoreBadges } from '@/components/dating/AppStoreBadges';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Facebook, Instagram, Linkedin } from 'lucide-react';
 
 const footerLinks = {
@@ -25,7 +18,8 @@ const footerLinks = {
       { label: "Events", href: "/events" },
       { label: "Founders Circle", href: "/founders-circle" },
       { label: "Intentional Connections", href: "/slow-dating" },
-      { label: "Business Directory", href: "/business" },
+      { label: "The Partners Circle", href: "/circles/the-partners" },
+      { label: "The Pursuits Club", href: "/circles/the-pursuits" },
     ]
   },
   inquiries: {
@@ -50,27 +44,31 @@ const footerLinks = {
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-background border-t border-border text-foreground py-16 px-6 md:px-12 lg:px-24">
-      <div className="max-w-7xl mx-auto flex flex-col items-center">
+    <footer className="w-full bg-background dark:bg-[#101e17] text-foreground transition-colors duration-300">
+      {/* Main content */}
+      <div className="content-container pt-24 pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
 
-        {/* Logo */}
-        <div className="mb-12 md:mb-16">
-          <BrandLogo width={160} height={48} />
-        </div>
+          {/* Logo + tagline — spans 4 cols */}
+          <div className="md:col-span-4 flex flex-col gap-4">
+            <BrandLogo width={160} height={48} />
+            <p className="text-[13px] text-muted-foreground leading-relaxed max-w-[280px]">
+              A private sanctuary for meaningful connection, curated events, and genuine friendships.
+            </p>
+          </div>
 
-        {/* Desktop Layout (Grid) */}
-        <div className="hidden md:grid grid-cols-4 gap-8 w-full max-w-6xl mb-16 px-4">
+          {/* Link columns — each spans ~2.5 cols */}
           {Object.values(footerLinks).map((section) => (
-            <div key={section.title} className="flex flex-col space-y-6">
-              <h3 className="font-display font-bold text-sm tracking-widest uppercase text-muted-foreground">
+            <div key={section.title} className="md:col-span-2 flex flex-col gap-5">
+              <h3 className="eyebrow">
                 {section.title}
               </h3>
-              <ul className="space-y-4">
+              <ul className="flex flex-col gap-3">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
                       to={link.href}
-                      className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                      className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150 text-sm"
                     >
                       {link.label}
                     </Link>
@@ -81,71 +79,41 @@ export const Footer = () => {
           ))}
         </div>
 
-        {/* Mobile Layout (Accordion) */}
-        <div className="md:hidden w-full mb-12">
-          <Accordion type="single" collapsible className="w-full">
-            {Object.values(footerLinks).map((section) => (
-              <AccordionItem key={section.title} value={section.title} className="border-b-muted">
-                <AccordionTrigger className="font-display font-bold text-sm tracking-widest uppercase py-4 text-muted-foreground">
-                  {section.title}
-                </AccordionTrigger>
-                <AccordionContent>
-                  <ul className="flex flex-col space-y-3 pb-4">
-                    {section.links.map((link) => (
-                      <li key={link.label}>
-                        <Link
-                          to={link.href}
-                          className="text-muted-foreground hover:text-primary transition-colors text-sm pl-2 block"
-                        >
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
+        {/* Bottom bar */}
+        <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Make Friends and Socialize LLC. All rights reserved.
+          </p>
 
-        {/* Social Icons & Copyright */}
-        <div className="w-full flex flex-col items-center space-y-8 pt-8 border-t border-border/40">
-          {/* Social Media Icons */}
-          <div className="flex items-center gap-6">
+          {/* Social icons */}
+          <div className="flex items-center gap-5">
             <a
               href="https://www.facebook.com/profile.php?id=61575868888590"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150"
               aria-label="Facebook"
             >
-              <Facebook className="h-5 w-5" />
+              <Facebook className="h-5 w-5" strokeWidth={1.5} />
             </a>
             <a
               href="https://www.instagram.com/makefriendsandsocialize/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150"
               aria-label="Instagram"
             >
-              <Instagram className="h-5 w-5" />
+              <Instagram className="h-5 w-5" strokeWidth={1.5} />
             </a>
             <a
               href="https://linkedin.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150"
               aria-label="LinkedIn"
             >
-              <Linkedin className="h-5 w-5" />
+              <Linkedin className="h-5 w-5" strokeWidth={1.5} />
             </a>
-          </div>
-
-          <div className="flex flex-col items-center gap-4">
-            <AppStoreBadges comingSoon={true} />
-            <p className="text-xs text-muted-foreground text-center">
-              © {new Date().getFullYear()} Make Friends and Socialize LLC. All rights reserved.
-            </p>
           </div>
         </div>
       </div>

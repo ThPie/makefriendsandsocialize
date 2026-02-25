@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Make Friends and Socialize - Premium Design System */
-/* Fonts loaded via index.html for performance */
+/* Make Friends & Socialize — Luxury Design System v2 */
+/* Fonts loaded via index.html: Playfair Display, Inter, IBM Plex Mono */
 
 @layer base {
 
@@ -19,115 +19,135 @@
     transition: opacity 300ms ease-out, transform 300ms ease-out;
   }
 
-  /* ===== Light Theme — Cream & Forest ===== */
+  /* ===== Light Theme — Warm Ivory ===== */
   :root {
-    --background: 90 14% 96%;
-    /* #f6f8f6 */
-    --foreground: 150 30% 12%;
-    /* dark forest text */
+    --background: 60 7% 97%;
+    /* #FAFAF8 */
+    --foreground: 140 34% 9%;
+    /* #0D1F0F */
 
-    --card: 90 10% 98%;
-    /* near-white card */
-    --card-foreground: 150 30% 12%;
+    --card: 60 5% 96%;
+    /* #F5F5F4 → light grey surface for cards */
+    --card-foreground: 140 34% 9%;
 
-    --popover: 90 10% 98%;
-    --popover-foreground: 150 30% 12%;
+    --popover: 0 0% 100%;
+    /* #FFFFFF → surface-raised */
+    --popover-foreground: 140 34% 9%;
 
-    /* Primary — Forest Green (Stitch #1a5b2a) */
+    /* Primary — Forest Green (kept for compatibility) */
     --primary: 143 55% 23%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary — muted sage */
-    --secondary: 140 12% 90%;
-    --secondary-foreground: 150 25% 20%;
+    /* Secondary — warm ivory */
+    --secondary: 40 7% 95%;
+    --secondary-foreground: 140 20% 30%;
 
-    --muted: 140 8% 92%;
-    --muted-foreground: 150 10% 45%;
+    --muted: 60 5% 96%;
+    --muted-foreground: 140 10% 45%;
+    /* #4A5A4D → text-secondary */
 
-    --accent: 140 10% 88%;
-    --accent-foreground: 150 30% 12%;
+    --accent: 60 5% 93%;
+    --accent-foreground: 140 34% 9%;
 
-    /* Gold accent — always available */
-    --accent-gold: 43 76% 52%;
-    /* #d4af37 */
-    /* #f3e5ab */
-    --accent-gold-text: 43 100% 30%;
-    /* Darker gold for text contrast */
+    /* Gold accent */
+    --accent-gold: 43 76% 31%;
+    /* #8B6914 */
+    --accent-gold-light: 43 63% 44%;
+    /* #B8892A */
+    --accent-gold-text: 43 76% 31%;
 
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 140 10% 86%;
-    --input: 140 10% 86%;
-    --ring: 143 55% 23%;
+    --border: 37 10% 87%;
+    /* #E3E0D8 */
+    --input: 37 10% 87%;
+    --ring: 43 76% 31%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
+    /* 16px cards */
+
+    /* Semantic text colors */
+    --text-muted: 140 6% 63%;
+    /* #9BA89D */
 
     /* Sidebar — light */
-    --sidebar-background: 90 14% 97%;
-    --sidebar-foreground: 150 30% 12%;
-    --sidebar-primary: 143 55% 23%;
+    --sidebar-background: 40 7% 95%;
+    --sidebar-foreground: 140 34% 9%;
+    --sidebar-primary: 43 76% 31%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 140 8% 92%;
-    --sidebar-accent-foreground: 150 30% 12%;
-    --sidebar-border: 140 10% 86%;
-    --sidebar-ring: 143 55% 23%;
+    --sidebar-accent: 40 7% 92%;
+    --sidebar-accent-foreground: 140 34% 9%;
+    --sidebar-border: 37 10% 87%;
+    --sidebar-ring: 43 76% 31%;
+
+    /* Light mode shadows allowed */
+    --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
   }
 
-  /* ===== Dark Theme — Premium Forest ===== */
-  /* Stitch palette: bg #131f16, card #1e2b21, primary #1a5b2a, gold #d4af37 */
+  /* ===== Dark Theme — Deep Forest ===== */
   .dark {
-    --background: 148 24% 10%;
-    /* #131f16 */
-    --foreground: 40 15% 88%;
-    /* cream-white text */
+    --background: 150 38% 6%;
+    /* #071A0F */
+    --foreground: 36 24% 93%;
+    /* #F5F0E8 */
 
-    --card: 148 20% 14%;
-    /* #1e2b21 — card/surface */
-    --card-foreground: 40 15% 88%;
+    --card: 150 30% 9%;
+    /* #0D2415 → surface */
+    --card-foreground: 36 24% 93%;
 
-    --popover: 148 20% 14%;
-    --popover-foreground: 40 15% 88%;
+    --popover: 150 27% 12%;
+    /* #112D1A → surface-raised */
+    --popover-foreground: 36 24% 93%;
 
-    /* Primary — Bright Forest Green */
+    /* Primary — Forest Green */
     --primary: 143 55% 23%;
-    /* #1a5b2a */
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary — deeper forest */
-    --secondary: 148 22% 17%;
-    --secondary-foreground: 40 15% 88%;
+    /* Secondary — deep forest */
+    --secondary: 150 30% 9%;
+    --secondary-foreground: 36 24% 93%;
 
-    --muted: 148 20% 15%;
-    --muted-foreground: 148 10% 55%;
+    --muted: 150 30% 9%;
+    --muted-foreground: 140 6% 63%;
+    /* #9BA89D → text-secondary */
 
-    --accent: 148 20% 18%;
-    --accent-foreground: 40 15% 88%;
+    --accent: 150 27% 12%;
+    --accent-foreground: 36 24% 93%;
 
     /* Gold accent */
-    --accent-gold: 43 76% 52%;
-    /* #d4af37 */
-    --accent-gold-light: 47 80% 78%;
-    --accent-gold-text: 43 76% 52%;
+    --accent-gold: 43 76% 31%;
+    /* #8B6914 */
+    --accent-gold-light: 43 63% 44%;
+    /* #B8892A */
+    --accent-gold-text: 43 63% 44%;
 
     --destructive: 0 55% 38%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 148 15% 20%;
-    --input: 148 15% 20%;
-    --ring: 143 55% 23%;
+    --border: 150 21% 17%;
+    /* #1C3D28 */
+    --input: 150 21% 17%;
+    --ring: 43 76% 31%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    /* Sidebar — forest dark */
-    --sidebar-background: 148 24% 8%;
-    --sidebar-foreground: 40 15% 88%;
-    --sidebar-primary: 143 55% 23%;
+    /* Semantic text colors */
+    --text-muted: 140 8% 39%;
+    /* #5A6B5D */
+
+    /* Sidebar — dark */
+    --sidebar-background: 150 30% 9%;
+    --sidebar-foreground: 36 24% 93%;
+    --sidebar-primary: 43 76% 31%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 148 20% 14%;
-    --sidebar-accent-foreground: 40 15% 88%;
-    --sidebar-border: 148 15% 18%;
-    --sidebar-ring: 143 55% 23%;
+    --sidebar-accent: 150 27% 12%;
+    --sidebar-accent-foreground: 36 24% 93%;
+    --sidebar-border: 150 21% 17%;
+    --sidebar-ring: 43 76% 31%;
+
+    /* No box shadows in dark mode */
+    --shadow-card: none;
   }
 }
 
@@ -146,6 +166,9 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.7;
     overscroll-behavior-y: contain;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -199,8 +222,8 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-left: env(safe-area-inset-left, 0px);
     --safe-right: env(safe-area-inset-right, 0px);
-    --bottom-nav-height: 4.5rem;
-    /* 72px — height of the mobile bottom nav */
+    --bottom-nav-height: 4rem;
+    /* 64px — height of the mobile bottom nav */
   }
 
   /* Scroll margin for fixed header */
@@ -208,23 +231,22 @@
     scroll-margin-top: 100px;
   }
 
-  /* Display font for headings - apply to all headings by default */
+  /* Display font — Playfair Display ONLY for hero/section/display text */
   h1,
   h2,
   h3,
-  h4,
-  h5,
-  h6,
   .font-display {
-    font-family: 'Newsreader', 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
   }
 
-  /* Refined heading weights */
-  h1,
-  h2,
-  h3 {
-    font-weight: 600;
-    letter-spacing: -0.02em;
+  /* UI headings (h4-h6) use Inter light weight */
+  h4,
+  h5,
+  h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
   }
 
   /* Hide scrollbar but allow scrolling */
@@ -240,42 +262,69 @@
 
 @layer utilities {
 
+  /* ===== Eyebrow label — 11px uppercase muted ===== */
+  .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: hsl(var(--text-muted));
+  }
+
+  /* ===== Monospaced accent — IBM Plex Mono ===== */
+  .font-mono-accent {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ===== Section spacing ===== */
+  .section-spacing {
+    @apply py-32 md:py-[128px];
+  }
+
+  .section-spacing-sm {
+    @apply py-20 md:py-24;
+  }
+
+  /* ===== Content container ===== */
+  .content-container {
+    @apply max-w-[1600px] w-full mx-auto px-6 md:px-12 lg:px-24;
+  }
+
+  /* ===== Frosted glass navigation ===== */
+  .frosted-nav {
+    background: rgba(7, 26, 15, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .frosted-nav-light {
+    background: rgba(250, 250, 248, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  /* ===== Gold fills ===== */
+  .gold-fill {
+    background-color: hsl(var(--accent-gold));
+    color: #fff;
+  }
+
+  .gold-fill:hover {
+    background-color: hsl(var(--accent-gold-light));
+  }
+
   /* Premium text gradient - gold accent */
   .text-gradient {
     @apply bg-gradient-to-r from-primary via-[hsl(var(--accent-gold))] to-primary bg-clip-text text-transparent;
   }
 
-  /* Elegant shadow - very subtle and refined */
-  .shadow-elegant {
-    box-shadow: 0 8px 30px -12px hsl(160 30% 10% / 0.12);
-  }
-
-  /* Premium card shadow - minimal */
-  .shadow-premium {
-    box-shadow: 0 4px 20px -6px hsl(160 30% 10% / 0.1);
-  }
-
-  /* Premium card shadow - hover state */
-  .shadow-premium-hover {
-    box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.15);
-  }
-
-  /* Glass effect — light mode */
-  .glass {
-    @apply bg-background/80 backdrop-blur-md;
-  }
-
-  /* Stitch glass-panel — dark mode glassmorphism for cards */
-  .glass-panel {
-    background: rgba(30, 43, 33, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
   /* Gold gradient text — luxury accent for headings & badges */
   .gold-gradient-text {
-    background: linear-gradient(to bottom right, #f3e5ab, #d4af37, #b8860b);
+    background: linear-gradient(to bottom right, #B8892A, #8B6914, #6B5010);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -283,33 +332,56 @@
 
   /* Gold gradient background — buttons, badges, CTAs */
   .gold-gradient-bg {
-    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+    background: linear-gradient(135deg, #8B6914 0%, #B8892A 100%);
   }
 
-  /* Stitch surface card — subtle dark mode surface */
+  /* Elegant shadow - very subtle and refined (light mode only) */
+  .shadow-elegant {
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Premium card shadow - minimal */
+  .shadow-premium {
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-background/80 backdrop-blur-md;
+  }
+
+  /* Glass panel — dark mode glassmorphism for cards */
+  .glass-panel {
+    background: rgba(13, 36, 21, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Surface card — subtle surface */
   .surface-card {
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
     border-radius: var(--radius);
   }
 
-  /* Hover lift - refined */
+  /* Hover lift - refined (0.15s–0.25s transitions) */
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-0.5 hover:shadow-premium;
+    @apply transition-all duration-200 hover:-translate-y-0.5;
   }
 
-  /* Luxury Hover - Slower, scale, and deeper shadow */
+  /* Luxury Hover — restrained, no bouncing */
   .hover-luxury {
-    @apply transition-all duration-500 ease-out;
+    @apply transition-all duration-200 ease-out;
   }
 
   .hover-luxury:hover {
-    @apply scale-[1.02] -translate-y-1 shadow-premium-hover;
+    @apply -translate-y-0.5;
   }
 
   /* Premium Card Base */
   .premium-card {
-    @apply bg-card/80 backdrop-blur-md border border-white/5 rounded-2xl shadow-premium transition-all duration-300;
+    @apply bg-card border border-border rounded-2xl transition-all duration-200;
   }
 
   /* Scroll animation utilities */
@@ -343,11 +415,11 @@
 
   /* Card hover animations */
   .card-animate {
-    @apply transition-all duration-500 ease-out;
+    @apply transition-all duration-200 ease-out;
   }
 
   .card-animate:hover {
-    @apply -translate-y-2 shadow-elegant;
+    @apply -translate-y-1;
   }
 
   /* Staggered fade-in for lists */
@@ -435,7 +507,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Bottom nav spacing — adds padding so content doesn't hide behind mobile bottom nav */
+  /* Bottom nav spacing */
   .pb-bottom-nav {
     padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
   }

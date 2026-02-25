@@ -1,12 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Lightbox } from '@/components/ui/lightbox';
-import { Button } from '@/components/ui/button';
 import { optimizeGoogleImageUrl } from '@/lib/image-utils';
 import { LazyImage } from '@/components/ui/lazy-image';
 
-// Static gallery photos from real events
 const galleryPhotos = [
   { id: '1', image_url: '/images/gallery/event-1.jpg', title: 'Cheers at the Lounge', category: 'Social' },
   { id: '2', image_url: '/images/gallery/event-2.jpg', title: 'Elegant Attire', category: 'Members' },
@@ -20,8 +18,6 @@ export const PhotoGallerySection = () => {
   const { ref, isVisible } = useScrollAnimation();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const scrollIntervalRef = useRef<number | null>(null);
 
   const lightboxImages = galleryPhotos.map((p) => ({
     url: p.image_url,
@@ -30,95 +26,79 @@ export const PhotoGallerySection = () => {
   }));
 
   const openLightbox = (index: number) => {
-    setLightboxIndex(index);
+    // Keep index within bounds since we duplicate photos in the marquee
+    setLightboxIndex(index % galleryPhotos.length);
     setLightboxOpen(true);
   };
 
-  // Start auto-scroll on hover
-  const handleMouseEnter = () => {
-    if (!scrollRef.current) return;
-
-    scrollIntervalRef.current = window.setInterval(() => {
-      if (scrollRef.current) {
-        const maxScroll = scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
-        const currentScroll = scrollRef.current.scrollLeft;
-
-        // If we've reached the end, scroll back to start
-        if (currentScroll >= maxScroll - 10) {
-          scrollRef.current.scrollLeft = 0;
-        } else {
-          scrollRef.current.scrollLeft += 2;
-        }
-      }
-    }, 20);
-  };
-
-  // Stop auto-scroll when not hovering
-  const handleMouseLeave = () => {
-    if (scrollIntervalRef.current) {
-      clearInterval(scrollIntervalRef.current);
-      scrollIntervalRef.current = null;
-    }
-  };
+  // Use only the first 3 photos for the static grid
+  const displayPhotos = galleryPhotos.slice(0, 3);
 
   return (
     <section
       ref={ref}
-      className={`py-20 md:py-32 bg-background transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-        }`}
+      className={`py-24 md:py-32 bg-[#050B08] relative overflow-hidden transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
     >
-      <div className="container mx-auto px-4">
-        {/* Header - Centered Moments */}
-        <div className="text-center mb-12 md:mb-16">
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
-            Moments
-          </h2>
-          <p className="text-muted-foreground text-lg md:text-xl font-light tracking-wide italic">
-            A glimpse into the life of the club.
-          </p>
-        </div>
+      <div className="content-container">
+        {/* Eyebrow + heading */}
+        <span className="eyebrow block mb-3 text-white/70">Moments from the Circle</span>
+        <h2 className="font-display text-4xl md:text-5xl text-white leading-tight mb-16">
+          A Glimpse <span className="italic text-[hsl(var(--accent-gold))]">Inside</span>
+        </h2>
 
-        {/* Horizontal Scrolling Gallery - Scrolls on Hover */}
-        <div
-          ref={scrollRef}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 cursor-grab active:cursor-grabbing"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {galleryPhotos.map((photo, index) => (
-            <div
-              key={photo.id}
-              onClick={() => openLightbox(index)}
-              className="flex-shrink-0 group relative overflow-hidden rounded-lg cursor-pointer w-[280px] md:w-[320px] aspect-[3/4] shadow-md hover:shadow-xl transition-all duration-300"
-            >
-              <LazyImage
-                src={optimizeGoogleImageUrl(photo.image_url, { width: 400, quality: 80 })}
-                alt={photo.title || 'Event photo'}
-                className="w-full h-full object-cover grayscale transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:scale-110"
-              />
-              {/* Optional Overlay on hover */}
-              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        {/* 3-Photo Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {/* Top/Large Photo (spans full width on mobile, 1 col on desktop if we wanted, but let's make it span full width row for bento effect) */}
+          <div className="md:col-span-2 relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-2xl group cursor-pointer" onClick={() => openLightbox(0)}>
+            <img
+              src={displayPhotos[0].image_url}
+              alt={displayPhotos[0].title}
+              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+              <span className="text-white text-xs uppercase tracking-widest mb-2">{displayPhotos[0].category}</span>
+              <span className="text-white font-display text-3xl">{displayPhotos[0].title}</span>
             </div>
-          ))}
+          </div>
+
+          {/* Bottom Left Photo */}
+          <div className="relative aspect-square md:aspect-[4/3] overflow-hidden rounded-2xl group cursor-pointer" onClick={() => openLightbox(1)}>
+            <img
+              src={displayPhotos[1].image_url}
+              alt={displayPhotos[1].title}
+              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+              <span className="text-white text-xs uppercase tracking-widest mb-2">{displayPhotos[1].category}</span>
+              <span className="text-white font-display text-2xl">{displayPhotos[1].title}</span>
+            </div>
+          </div>
+
+          {/* Bottom Right Photo */}
+          <div className="relative aspect-square md:aspect-[4/3] overflow-hidden rounded-2xl group cursor-pointer" onClick={() => openLightbox(2)}>
+            <img
+              src={displayPhotos[2].image_url}
+              alt={displayPhotos[2].title}
+              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+              <span className="text-white text-xs uppercase tracking-widest mb-2">{displayPhotos[2].category}</span>
+              <span className="text-white font-display text-2xl">{displayPhotos[2].title}</span>
+            </div>
+          </div>
         </div>
 
-        {/* Hover hint */}
-        <p className="text-center text-muted-foreground text-sm mt-6 mb-8 md:mb-12">
-          Hover to scroll • Click to enlarge
-        </p>
-
-        {/* CTA Button */}
-        <div className="flex justify-center">
-          <Button
-            asChild
-            variant="outline"
-            className="rounded-full px-8 py-6 text-base tracking-widest uppercase border-foreground/20 hover:bg-foreground hover:text-background transition-all duration-300"
+        {/* CTA */}
+        <div className="mt-16 text-center">
+          <TransitionLink
+            to="/gallery"
+            className="inline-flex items-center justify-center rounded-full px-8 py-4 text-sm tracking-[0.15em] uppercase font-medium border border-white/20 bg-white/5 text-white hover:bg-white/10 transition-colors duration-200"
           >
-            <TransitionLink to="/gallery">
-              Access Member Gallery
-            </TransitionLink>
-          </Button>
+            See More
+          </TransitionLink>
         </div>
       </div>
 

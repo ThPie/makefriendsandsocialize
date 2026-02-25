@@ -1,11 +1,12 @@
 import { useLocation, Link } from 'react-router-dom';
-import { Home, Calendar, Users, User } from 'lucide-react';
+import { Home, Calendar, Users, Heart, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const tabs = [
     { label: 'Home', icon: Home, path: '/portal' },
     { label: 'Events', icon: Calendar, path: '/portal/events' },
-    { label: 'Network', icon: Users, path: '/portal/connections' },
+    { label: 'Circles', icon: Users, path: '/portal/connections' },
+    { label: 'Connect', icon: Heart, path: '/portal/slow-dating' },
     { label: 'Profile', icon: User, path: '/portal/profile' },
 ];
 
@@ -23,10 +24,10 @@ export function BottomNav() {
             style={{ paddingBottom: 'var(--safe-bottom, 0px)' }}
             aria-label="Mobile navigation"
         >
-            {/* Glassmorphic background */}
-            <div className="absolute inset-0 bg-background/85 dark:bg-[#0d1a10]/90 backdrop-blur-xl border-t border-border/40 dark:border-white/[0.06]" />
+            {/* Background */}
+            <div className="absolute inset-0 bg-[hsl(var(--card))] border-t border-border" />
 
-            <div className="relative flex items-center justify-around h-[var(--bottom-nav-height)]">
+            <div className="relative flex items-center justify-around h-16">
                 {tabs.map((tab) => {
                     const active = isActive(tab.path);
                     return (
@@ -34,28 +35,24 @@ export function BottomNav() {
                             key={tab.path}
                             to={tab.path}
                             className={cn(
-                                'flex flex-col items-center justify-center gap-1 w-full h-full transition-all duration-200',
+                                'flex flex-col items-center justify-center gap-1 w-full h-full transition-colors duration-150',
                                 active
-                                    ? 'text-primary'
-                                    : 'text-muted-foreground hover:text-foreground'
+                                    ? 'text-[hsl(var(--accent-gold))]'
+                                    : 'text-[hsl(var(--text-muted))]'
                             )}
                             aria-current={active ? 'page' : undefined}
                         >
                             <tab.icon
-                                className={cn(
-                                    'w-[22px] h-[22px] transition-all duration-200',
-                                    active && 'scale-110'
-                                )}
-                                strokeWidth={active ? 2.5 : 1.8}
+                                className="w-[22px] h-[22px]"
+                                strokeWidth={active ? 2 : 1.5}
+                                fill={active ? 'currentColor' : 'none'}
                             />
-                            <span
-                                className={cn(
-                                    'text-[10px] leading-none tracking-wide transition-all duration-200',
-                                    active ? 'font-semibold' : 'font-medium'
-                                )}
-                            >
-                                {tab.label}
-                            </span>
+                            {/* Label only shown for active tab */}
+                            {active && (
+                                <span className="text-[10px] leading-none tracking-wide font-medium">
+                                    {tab.label}
+                                </span>
+                            )}
                         </Link>
                     );
                 })}

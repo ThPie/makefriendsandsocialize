@@ -1,26 +1,20 @@
-import { ShieldCheck, Star, CalendarClock, Handshake } from 'lucide-react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 
-const features = [
+const steps = [
   {
-    icon: ShieldCheck,
-    title: 'Vetted, Like-Minded Members',
-    description: 'Every member is personally reviewed to ensure a community of ambitious, warm, and interesting people.',
+    number: '01',
+    title: 'Apply',
+    description: 'Submit your membership application. Every applicant is personally reviewed to ensure alignment with our community values.',
   },
   {
-    icon: Star,
-    title: 'Thoughtfully Designed Events',
-    description: 'From intimate dinners to cultural outings—each gathering is crafted to spark genuine conversation.',
+    number: '02',
+    title: 'Connect',
+    description: 'Once approved, explore curated events, join circles, and begin meeting members who share your interests and ambitions.',
   },
   {
-    icon: CalendarClock,
-    title: 'Weekly Gatherings, Year-Round',
-    description: 'Multiple events each week ensure you always have opportunities to meet new friends.',
-  },
-  {
-    icon: Handshake,
-    title: 'Business Networking',
-    description: 'Connect with founders, executives, and entrepreneurs at events designed to foster partnerships.',
+    number: '03',
+    title: 'Belong',
+    description: 'Experience the full spectrum of membership — from intimate dinners and group outings to intentional dating and business networking.',
   },
 ];
 
@@ -28,45 +22,67 @@ export const WhyChooseSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section className="w-full px-6 py-16 md:px-10 md:py-24 lg:px-16 xl:px-20 bg-muted/30" id="why">
-      <div ref={ref} className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <section className="section-spacing bg-background" id="how-it-works">
+      <div ref={ref} className="content-container">
+        {/* Header */}
+        <span className="eyebrow block mb-3">How It Works</span>
+        <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1] mb-16 md:mb-24">
+          Three Simple <span className="italic">Steps</span>
+        </h2>
 
-          {/* Left Column: Text Content */}
-          <div className={`flex flex-col items-start scroll-animate ${isVisible ? 'visible' : ''}`}>
-            <span className="text-primary text-xs font-bold uppercase tracking-widest mb-4 block">
-              Our Ethos
-            </span>
-            <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-semibold text-foreground mb-6 leading-tight">
-              Cultivating <span className="italic text-primary">meaningful</span> connection in a digital world.
-            </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed font-light max-w-xl">
-              We curate spaces where ambition meets distinct character, fostering a private community for professionals who value depth over volume.
-            </p>
+        {/* Desktop: Horizontal timeline */}
+        <div className="hidden md:grid grid-cols-3 gap-12 relative">
+          {/* Gold dashed connecting line */}
+          <div className="absolute top-12 left-[16%] right-[16%] h-px border-t border-dashed border-[hsl(var(--accent-gold))]/40" />
 
-            <div className="mt-8 h-px w-24 bg-primary/30"></div>
-          </div>
+          {steps.map((step, i) => (
+            <div
+              key={step.number}
+              className={`relative text-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+              style={{ transitionDelay: `${i * 200}ms` }}
+            >
+              {/* Large background number */}
+              <div className="font-display text-[96px] leading-none text-[hsl(var(--accent-gold))]/10 select-none mb-[-40px] relative z-0">
+                {step.number}
+              </div>
 
-          {/* Right Column: 2x2 Grid of Cards */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-6">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className={`group flex flex-col items-center text-center p-4 sm:p-6 rounded-2xl transition-all duration-500 hover:bg-background/50 border border-transparent hover:border-border/60 hover:shadow-sm scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
-              >
-                <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center mb-4 sm:mb-5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
-                  <feature.icon className="w-5 h-5" />
-                </div>
-                <h3 className="font-display text-base sm:text-lg font-semibold text-foreground mb-1 sm:mb-2">
-                  {feature.title}
+              {/* Content */}
+              <div className="relative z-10">
+                <h3 className="text-xl font-light text-foreground mb-3">
+                  {step.title}
                 </h3>
-                <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
-                  {feature.description}
+                <p className="text-sm text-muted-foreground font-light leading-relaxed max-w-[280px] mx-auto">
+                  {step.description}
                 </p>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
 
+        {/* Mobile: Vertical timeline */}
+        <div className="md:hidden flex flex-col relative pl-10">
+          {/* Gold vertical bar */}
+          <div className="absolute left-3 top-2 bottom-2 w-px bg-[hsl(var(--accent-gold))]/30" />
+
+          {steps.map((step, i) => (
+            <div
+              key={step.number}
+              className={`relative pb-10 last:pb-0 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              style={{ transitionDelay: `${i * 150}ms` }}
+            >
+              {/* Step dot */}
+              <div className="absolute left-[-28px] top-1 w-6 h-6 rounded-full border-2 border-[hsl(var(--accent-gold))] bg-background flex items-center justify-center">
+                <span className="font-mono-accent text-[9px] text-[hsl(var(--accent-gold))]">{step.number}</span>
+              </div>
+
+              <h3 className="text-lg font-light text-foreground mb-2">
+                {step.title}
+              </h3>
+              <p className="text-sm text-muted-foreground font-light leading-relaxed">
+                {step.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

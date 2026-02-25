@@ -1,61 +1,104 @@
-import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { Lock, Gem, Users, MessageSquare } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-const ethosItems = [
+const pillars = [
   {
-    icon: Lock,
-    title: 'Privacy First',
-    description: 'Discretion is our currency. Your data is sovereign.',
+    number: '01',
+    title: 'Authentic Connection',
+    description: 'We foster genuine relationships through thoughtfully curated experiences that bring together like-minded individuals.',
   },
   {
-    icon: Gem,
-    title: 'Curated Events',
-    description: 'Access to exclusive gatherings worldwide.',
+    number: '02',
+    title: 'Curated Excellence',
+    description: 'Every event, every gathering, every moment is designed with intention — because quality matters more than quantity.',
   },
   {
-    icon: Users,
-    title: 'Trusted Community',
-    description: 'A vetted network of like-minded individuals.',
+    number: '03',
+    title: 'Privacy & Trust',
+    description: 'A vetted community built on mutual respect, discretion, and shared values. Your space, your pace.',
   },
   {
-    icon: MessageSquare,
-    title: 'True Discourse',
-    description: 'Meaningful conversations with peers.',
+    number: '04',
+    title: 'Meaningful Growth',
+    description: 'Beyond networking — we create environments where personal and professional growth happen naturally.',
   },
 ];
 
 export const EthosSection = () => {
-  const { ref, isVisible } = useScrollAnimation();
+  const [visibleItems, setVisibleItems] = useState<Record<number, boolean>>({});
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Number(entry.target.getAttribute('data-index'));
+            setVisibleItems((prev) => ({ ...prev, [index]: true }));
+          }
+        });
+      },
+      {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    const elements = document.querySelectorAll('.ethos-pillar');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section className="w-full px-6 py-12 bg-gradient-to-b from-transparent to-[#0a0f0a]" id="ethos">
-      <div ref={ref} className="mx-auto max-w-7xl">
+    <section className="py-24 md:py-32 bg-background relative z-10 w-full flex flex-col items-center">
+      <div className="content-container w-full">
 
-        {/* Section Header */}
-        <div className={`flex items-center justify-between mb-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h3 className="text-2xl text-white font-medium italic font-display">Our Ethos</h3>
-          <div className="h-[1px] flex-1 bg-white/10 ml-4" />
+        {/* Centralized section header */}
+        <div className="text-center mb-16 md:mb-24 max-w-3xl mx-auto flex flex-col items-center">
+          <span className="eyebrow block mb-3 opacity-80">Our Ethos</span>
+          <h2 className="font-display text-4xl md:text-[56px] text-foreground leading-[1.1]">
+            What We Stand For
+          </h2>
         </div>
 
-        {/* 2 cols on mobile, 4 cols on desktop */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-          {ethosItems.map((item, index) => (
-            <div
-              key={index}
-              className={`group premium-card hover-luxury p-5 md:p-8 flex flex-col items-center text-center gap-3 transition-all duration-500 delay-[${index * 100}ms] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-            >
-              <div className="p-3 md:p-4 rounded-full bg-[#1a5b2a]/20 text-[#d4af37]">
-                <item.icon className="w-6 h-6 md:w-7 md:h-7" />
+        {/* 4-column grid layout as originally requested */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 w-full">
+          {pillars.map((pillar, i) => {
+            const isVisible = visibleItems[i];
+
+            return (
+              <div
+                key={pillar.number}
+                className="ethos-pillar flex flex-col"
+                data-index={i}
+              >
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="font-mono text-[hsl(var(--accent-gold))] font-mono-accent text-lg">
+                    {pillar.number}
+                  </span>
+                  {/* The animated gold line */}
+                  <div className="flex-grow h-px bg-[hsl(var(--accent-gold))] opacity-40 overflow-hidden relative">
+                    <div
+                      className="absolute inset-0 bg-[hsl(var(--accent-gold))] origin-left"
+                      style={{
+                        transform: isVisible ? 'scaleX(1)' : 'scaleX(0)',
+                        transition: 'transform 1.2s cubic-bezier(0.22, 1, 0.36, 1)',
+                        // Stagger the animation so they appear one by one
+                        transitionDelay: `${i * 200}ms`
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <h3 className="font-display text-2xl md:text-3xl text-foreground mb-4">
+                  {pillar.title}
+                </h3>
+                <p className="text-muted-foreground font-light leading-[1.7]">
+                  {pillar.description}
+                </p>
               </div>
-
-              <h4 className="text-white text-lg md:text-2xl font-medium leading-tight font-display">{item.title}</h4>
-              <p className="text-white/50 text-xs md:text-sm font-sans leading-relaxed">
-                {item.description}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
-
       </div>
     </section>
   );

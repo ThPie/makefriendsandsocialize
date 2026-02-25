@@ -127,15 +127,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // because onAuthStateChange may fire after the initial getSession resolves.
     const initializeAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!mounted) return;
+        const initPromise = async () => {
+          const { data: { session }, error } = await supabase.auth.getSession();
+          if (error) throw error;
 
-        setSession(session);
-        setUser(session?.user ?? null);
+          if (!mounted) return;
 
-        if (session?.user) {
-          await fetchUserData(session.user.id);
-        }
+          setSession(session);
+          setUser(session?.user ?? null);
+
+          if (session?.user) {
+            await fetchUserData(session.user.id);
+          }
+        };
+
+        // Enforce maximum 10-second timeout on initialization
+        await Promise.race([
+          initPromise(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Auth initialization timed out')), 10000))
+        ]);
       } catch (error) {
         console.error('Error initializing auth:', error);
       } finally {
