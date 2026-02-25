@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -37,7 +37,9 @@ export const TestimonialsSection = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [meetupRating, setMeetupRating] = useState(4.6);
-  const [reviewCount, setReviewCount] = useState(55);
+  const [reviewCount, setReviewCount] = useState(180);
+  const [memberAvatars, setMemberAvatars] = useState<string[]>([]);
+  const [memberCount, setMemberCount] = useState(999);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -48,12 +50,14 @@ export const TestimonialsSection = () => {
             .gte('rating', 4)
             .neq('quote', '')
             .order('created_at', { ascending: false }),
-          supabase.from('meetup_stats').select('rating, review_count').limit(1).single(),
+          supabase.from('meetup_stats').select('rating, review_count, avatar_urls, member_count').limit(1).single(),
         ]);
         setTestimonials((testimonialsRes.data as unknown as Testimonial[]) || []);
         if (statsRes.data) {
           setMeetupRating(statsRes.data.rating || 4.6);
-          setReviewCount((statsRes.data as any).review_count || 55);
+          setReviewCount((statsRes.data as any).review_count || 180);
+          setMemberAvatars(statsRes.data.avatar_urls || []);
+          setMemberCount(statsRes.data.member_count || 999);
         }
       } catch {
         // silently fail
@@ -67,11 +71,7 @@ export const TestimonialsSection = () => {
   const totalPages = Math.max(1, Math.ceil(testimonials.length / CARDS_PER_PAGE));
   const currentCards = testimonials.slice(page * CARDS_PER_PAGE, (page + 1) * CARDS_PER_PAGE);
 
-  const avatarPhotos = useMemo(
-    () => testimonials.filter((t) => t.image_url).map((t) => t.image_url!).slice(0, 6),
-    [testimonials]
-  );
-  const extraAvatars = Math.max(0, testimonials.filter((t) => t.image_url).length - 6);
+  const extraMembers = Math.max(0, memberCount - memberAvatars.length);
 
   if (loading) return null;
 
@@ -95,10 +95,10 @@ export const TestimonialsSection = () => {
             </p>
 
             {/* Avatar cluster */}
-            {avatarPhotos.length > 0 && (
+            {memberAvatars.length > 0 && (
               <div className="flex items-center mt-2">
                 <div className="flex -space-x-3">
-                  {avatarPhotos.map((url, i) => (
+                  {memberAvatars.map((url, i) => (
                     <Avatar key={i} className="w-10 h-10 border-2 border-card ring-1 ring-border">
                       <AvatarImage src={url} alt="Member" className="object-cover" />
                       <AvatarFallback className="bg-[#0D2415] text-[hsl(var(--accent-gold))] text-xs font-medium">
@@ -106,9 +106,9 @@ export const TestimonialsSection = () => {
                       </AvatarFallback>
                     </Avatar>
                   ))}
-                  {extraAvatars > 0 && (
+                  {extraMembers > 0 && (
                     <div className="w-10 h-10 rounded-full bg-[hsl(var(--accent-gold))] flex items-center justify-center text-xs font-semibold text-background border-2 border-card -ml-3">
-                      +{extraAvatars}
+                      +{extraMembers}
                     </div>
                   )}
                 </div>
