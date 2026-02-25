@@ -41,6 +41,8 @@ Deno.serve(async (req) => {
             schema: {
               type: "object",
               properties: {
+                overall_rating: { type: "number" },
+                total_reviews: { type: "number" },
                 reviews: {
                   type: "array",
                   items: {
@@ -51,14 +53,14 @@ Deno.serve(async (req) => {
                       review_text: { type: "string" },
                       profile_photo_url: { type: "string" },
                     },
-                    required: ["reviewer_name", "rating", "review_text"],
+                    required: ["reviewer_name", "rating"],
                   },
                 },
               },
               required: ["reviews"],
             },
             prompt:
-              "Extract all member reviews/feedback. For each review get the reviewer's full name, their star rating (1-5), the review text, and their profile photo URL if available.",
+              "Extract the overall group rating and total number of reviews. Then extract all individual member reviews/feedback. For each review get the reviewer's full name, their star rating (1-5), the review text (leave empty string if they only left a star rating without text), and their profile photo URL if available.",
           },
         ],
         waitFor: 3000,
@@ -72,7 +74,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Scraping failed — Meetup feedback page may require authentication. Seed reviews manually.",
+          error: "Scraping failed — Meetup feedback page may require authentication.",
           details: scrapeData,
         }),
         { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -84,31 +86,51 @@ Deno.serve(async (req) => {
     const reviews: Array<{
       reviewer_name: string;
       rating: number;
-      review_text: string;
+      review_text?: string;
       profile_photo_url?: string;
     }> = json?.reviews || [];
+
+    // Update overall rating and review count in meetup_stats
+    const overallRating = json?.overall_rating;
+    const totalReviews = json?.total_reviews;
+    
+    if (overallRating || totalReviews) {
+      const updateData: Record<string, unknown> = { last_updated: new Date().toISOString() };
+      if (overallRating) updateData.rating = overallRating;
+      if (totalReviews) updateData.review_count = totalReviews;
+      
+      await supabase
+        .from("meetup_stats")
+        .update(updateData)
+        .eq("meetup_url", "https://www.meetup.com/makefriendsandsocialize/");
+      
+      console.log(`Updated meetup_stats: rating=${overallRating}, review_count=${totalReviews}`);
+    }
 
     if (reviews.length === 0) {
       console.log("No reviews extracted — page may require login");
       return new Response(
         JSON.stringify({
-          success: false,
-          error: "No reviews found. The Meetup feedback page likely requires authentication. Please seed reviews manually.",
+          success: true,
+          message: "No individual reviews found (page may require login), but stats may have been updated.",
+          rating_updated: !!overallRating,
         }),
-        { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Filter to 4+ stars only
-    const goodReviews = reviews.filter((r) => r.rating >= 4);
-    console.log(`Found ${reviews.length} total reviews, ${goodReviews.length} with 4+ stars`);
+    // Only save reviews that have actual written text (not just star ratings)
+    const writtenReviews = reviews.filter(
+      (r) => r.rating >= 4 && r.review_text && r.review_text.trim().length > 0
+    );
+    console.log(`Found ${reviews.length} total reviews, ${writtenReviews.length} with 4+ stars AND written text`);
 
     let upserted = 0;
-    for (const review of goodReviews) {
+    for (const review of writtenReviews) {
       const { error } = await supabase.from("testimonials").upsert(
         {
           name: review.reviewer_name,
-          quote: review.review_text,
+          quote: review.review_text!.trim(),
           rating: review.rating,
           image_url: review.profile_photo_url || null,
           source: "meetup",
@@ -129,7 +151,7 @@ Deno.serve(async (req) => {
       JSON.stringify({
         success: true,
         total_found: reviews.length,
-        filtered_4plus: goodReviews.length,
+        with_written_text: writtenReviews.length,
         upserted,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
