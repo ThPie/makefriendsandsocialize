@@ -7,7 +7,6 @@ interface SiteStats {
   rating: number | null;
   joinedThisWeek: number;
   avatarUrls: string[];
-  reviewCount: number;
 }
 
 /**
@@ -29,7 +28,7 @@ export const useSiteStats = () => {
       // Get stats from meetup_stats - this is the primary source for member count and avatars
       const { data: meetupStats, error: meetupError } = await supabase
         .from('meetup_stats')
-        .select('member_count, rating, avatar_urls, joined_this_week, review_count')
+        .select('member_count, rating, avatar_urls, joined_this_week')
         .order('last_updated', { ascending: false })
         .limit(1)
         .single();
@@ -54,7 +53,6 @@ export const useSiteStats = () => {
         rating: meetupStats?.rating || null,
         joinedThisWeek: meetupStats?.joined_this_week || 0,
         avatarUrls: meetupStats?.avatar_urls || [],
-        reviewCount: (meetupStats as any)?.review_count || 0,
       };
     },
     staleTime: 1000 * 60 * 5, // 5 minutes

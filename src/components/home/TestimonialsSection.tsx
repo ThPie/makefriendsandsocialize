@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { useSiteStats } from '@/hooks/useSiteStats';
 
 interface Testimonial {
   id: string;
@@ -37,40 +36,38 @@ export const TestimonialsSection = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
-  const { data: stats } = useSiteStats();
 
   useEffect(() => {
-    const fetchReviews = async () => {
+    const fetch = async () => {
       try {
         const { data } = await (supabase.from('testimonials' as any).select('*') as any)
           .eq('is_approved', true)
           .gte('rating', 4)
-          .neq('quote', '')
-          .not('quote', 'is', null)
           .order('created_at', { ascending: false });
-        // Filter client-side too to catch any edge cases
-        const filtered = ((data as unknown as Testimonial[]) || []).filter(
-          (t) => t.quote && t.quote.trim().length > 0
-        );
-        setTestimonials(filtered);
+        setTestimonials((data as unknown as Testimonial[]) || []);
       } catch {
         // silently fail
       } finally {
         setLoading(false);
       }
     };
-    fetchReviews();
+    fetch();
   }, []);
 
   const totalPages = Math.max(1, Math.ceil(testimonials.length / CARDS_PER_PAGE));
   const currentCards = testimonials.slice(page * CARDS_PER_PAGE, (page + 1) * CARDS_PER_PAGE);
 
-  // Use real rating from meetup_stats
-  const realRating = stats?.rating ?? 4.6;
-  const reviewCount = (stats as any)?.reviewCount ?? 55;
+  const avgRating = useMemo(() => {
+    if (testimonials.length === 0) return 0;
+    const sum = testimonials.reduce((a, t) => a + (t.rating || 0), 0);
+    return Math.round((sum / testimonials.length) * 10) / 10;
+  }, [testimonials]);
 
-  const avatarPhotos = stats?.avatarUrls?.slice(0, 6) ?? [];
-  const extraAvatars = Math.max(0, (stats?.avatarUrls?.length ?? 0) - 6);
+  const avatarPhotos = useMemo(
+    () => testimonials.filter((t) => t.image_url).map((t) => t.image_url!).slice(0, 6),
+    [testimonials]
+  );
+  const extraAvatars = Math.max(0, testimonials.filter((t) => t.image_url).length - 6);
 
   if (loading) return null;
 
@@ -114,31 +111,33 @@ export const TestimonialsSection = () => {
               </div>
             )}
 
-            {/* Overall rating from Meetup */}
-            <div className="flex items-center gap-2 mt-1">
-              <div className="flex gap-0.5">
-                {Array.from({ length: 5 }, (_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-4 h-4 ${
-                      i < Math.round(realRating)
-                        ? 'fill-[hsl(var(--accent-gold))] text-[hsl(var(--accent-gold))]'
-                        : 'text-border'
-                    }`}
-                  />
-                ))}
+            {/* Overall rating */}
+            {testimonials.length > 0 && (
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${
+                        i < Math.round(avgRating)
+                          ? 'fill-[hsl(var(--accent-gold))] text-[hsl(var(--accent-gold))]'
+                          : 'text-border'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm font-medium text-foreground">{avgRating} / 5</span>
+                <span className="text-xs text-muted-foreground">
+                  · Based on {testimonials.length} review{testimonials.length !== 1 ? 's' : ''}
+                </span>
               </div>
-              <span className="text-sm font-medium text-foreground">{realRating} / 5</span>
-              <span className="text-xs text-muted-foreground">
-                · Based on {reviewCount} review{reviewCount !== 1 ? 's' : ''}
-              </span>
-            </div>
+            )}
           </div>
 
           {/* ── Right Column ── */}
           <div className="lg:w-[65%] flex flex-col gap-6">
             {testimonials.length === 0 ? (
-              <p className="text-muted-foreground text-sm italic">No written reviews yet.</p>
+              <p className="text-muted-foreground text-sm italic">No reviews yet.</p>
             ) : (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -147,14 +146,17 @@ export const TestimonialsSection = () => {
                       key={t.id}
                       className="relative bg-card border border-border rounded-2xl p-6 transition-colors duration-200 hover:border-[hsl(var(--accent-gold))] hover:shadow-sm"
                     >
+                      {/* Gold quote mark */}
                       <span className="absolute top-4 left-5 font-display text-4xl leading-none text-[hsl(var(--accent-gold))] opacity-60 select-none">
                         "
                       </span>
 
+                      {/* Review text */}
                       <p className="text-foreground text-sm leading-relaxed mt-6 mb-6 line-clamp-3">
                         {t.quote}
                       </p>
 
+                      {/* Reviewer info */}
                       <div className="flex items-center justify-between mt-auto">
                         <div className="flex items-center gap-2.5">
                           <Avatar className="w-8 h-8">
@@ -175,6 +177,7 @@ export const TestimonialsSection = () => {
                   ))}
                 </div>
 
+                {/* Pagination arrows */}
                 {totalPages > 1 && (
                   <div className="flex items-center justify-end gap-2">
                     <button
