@@ -220,7 +220,7 @@ export default function AdminApplications() {
         <Skeleton className="h-10 w-80 rounded-lg" />
         <div className="space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5 space-y-3">
+            <div key={i} className="rounded-xl border border-border bg-card p-5 space-y-3">
               <div className="flex items-center gap-4">
                 <Skeleton className="h-12 w-12 rounded-full" />
                 <div className="flex-1 space-y-2">
@@ -268,7 +268,7 @@ export default function AdminApplications() {
   };
 
   const ApplicationRow = ({ app }: { app: Application }) => (
-    <div className="flex items-center justify-between p-4 border-b border-white/[0.06] last:border-0">
+    <div className="flex items-center justify-between p-4 border-b border-border last:border-0">
       <div className="flex-1">
         <p className="font-medium text-foreground">
           Application #{app.id.slice(0, 8)}
@@ -313,7 +313,7 @@ export default function AdminApplications() {
 
   return (
     <div className="space-y-8">
-      <div>
+      <div className="text-center max-w-[680px] mx-auto mb-8">
         <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
           Applications
         </h1>
@@ -339,7 +339,7 @@ export default function AdminApplications() {
         </TabsList>
 
         <TabsContent value="pending" className="mt-6">
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
+            <div className="rounded-xl border border-border bg-card">
             {pendingApps.length === 0 ? (
               <EmptyState
                 icon={FileText}
@@ -355,7 +355,7 @@ export default function AdminApplications() {
         </TabsContent>
 
         <TabsContent value="approved" className="mt-6">
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
+            <div className="rounded-xl border border-border bg-card">
             {approvedApps.length === 0 ? (
               <EmptyState
                 icon={Check}
@@ -371,7 +371,7 @@ export default function AdminApplications() {
         </TabsContent>
 
         <TabsContent value="rejected" className="mt-6">
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
+          <div className="rounded-xl border border-border bg-card">
             {rejectedApps.length === 0 ? (
               <EmptyState
                 icon={X}
@@ -485,7 +485,7 @@ export default function AdminApplications() {
               )}
 
               {/* Security Status Section */}
-              <div className="border border-white/[0.08] rounded-xl p-4 bg-white/[0.02]">
+              <div className="border border-border rounded-xl p-4 bg-card">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-medium text-foreground flex items-center gap-2">
                     <Shield className="h-4 w-4" />

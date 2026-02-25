@@ -150,7 +150,7 @@ const LesAmisPage = () => {
 
           <div
             ref={heroAnimation.ref}
-            className={`container max-w-[1400px] relative z-10 py-20 pl-8 md:pl-16 border-l border-white/20 ml-4 md:ml-12 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+            className={`content-container relative z-10 py-20 pl-8 md:pl-16 border-l border-white/20 ml-4 md:ml-12 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -186,7 +186,7 @@ const LesAmisPage = () => {
         <section className="py-24 md:py-32">
           <div
             ref={whatIsAnimation.ref}
-            className={`container max-w-6xl scroll-animate ${whatIsAnimation.isVisible ? 'visible' : ''}`}
+            className={`content-container scroll-animate ${whatIsAnimation.isVisible ? 'visible' : ''}`}
           >
             {/* What It Is - Compact intro */}
             <motion.div

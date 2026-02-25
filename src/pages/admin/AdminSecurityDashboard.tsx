@@ -168,16 +168,14 @@ export default function AdminSecurityDashboard() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-3xl flex items-center gap-3">
-            <Shield className="h-8 w-8 text-[hsl(var(--accent-gold))]" />
-            Security Dashboard
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Monitor and manage periodic security scans
-          </p>
-        </div>
+      <div className="text-center max-w-[680px] mx-auto mb-8">
+        <h1 className="font-display text-3xl inline-flex items-center gap-3">
+          <Shield className="h-8 w-8 text-[hsl(var(--accent-gold))]" />
+          Security Dashboard
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          Monitor and manage periodic security scans
+        </p>
       </div>
 
       {/* Stats Cards */}
@@ -189,7 +187,7 @@ export default function AdminSecurityDashboard() {
           { icon: ShieldCheck, iconBg: 'bg-[hsl(var(--accent-gold))]/10', iconColor: 'text-primary', value: stats.scansLast30Days, label: 'Scans (30 days)' },
           { icon: AlertCircle, iconBg: 'bg-red-500/10', iconColor: 'text-red-500', value: stats.flaggedLast30Days, label: 'Flagged (30 days)' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+          <div key={stat.label} className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-3">
               <div className={`p-2 rounded-lg ${stat.iconBg}`}>
                 <stat.icon className={`h-5 w-5 ${stat.iconColor}`} />
@@ -204,7 +202,7 @@ export default function AdminSecurityDashboard() {
       </div>
 
       {/* Members Due for Scan */}
-      <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
+      <div className="rounded-xl border border-border bg-card">
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -222,10 +220,10 @@ export default function AdminSecurityDashboard() {
                   {selectedMembers.size} selected
                 </Badge>
               )}
-              <Button
-                variant="outline"
-                size="sm"
-                className="dark:border-white/[0.12]"
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-border"
                 onClick={selectedMembers.size === membersDueForScan?.length ? deselectAll : selectAll}
               >
                 {selectedMembers.size === membersDueForScan?.length ? 'Deselect All' : 'Select All'}
@@ -253,7 +251,7 @@ export default function AdminSecurityDashboard() {
           {isLoading ? (
             <div className="space-y-3 py-4">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 rounded-lg border border-white/[0.06]">
+                <div key={i} className="flex items-center gap-4 p-4 rounded-lg border border-border">
                   <Skeleton className="h-10 w-10 rounded-full" />
                   <div className="flex-1 space-y-2">
                     <Skeleton className="h-4 w-32" />
@@ -281,7 +279,7 @@ export default function AdminSecurityDashboard() {
                       key={member.id}
                       className={`flex items-center gap-4 p-4 rounded-lg border transition-colors cursor-pointer ${isSelected
                           ? 'border-[hsl(var(--accent-gold))] bg-[hsl(var(--accent-gold))]/5'
-                          : 'border-white/[0.08] hover:bg-white/[0.04]'
+                          : 'border-border hover:bg-muted'
                         }`}
                       onClick={() => toggleMemberSelection(member.id)}
                     >

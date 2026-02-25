@@ -129,7 +129,7 @@ export default function AdminAnalytics() {
 
   return (
     <div className="space-y-8">
-      <div>
+      <div className="text-center max-w-[680px] mx-auto mb-8">
         <h1 className="font-display text-3xl text-foreground">Analytics</h1>
         <p className="text-muted-foreground mt-2">
           Match success rates, decision times, and connection trends
@@ -144,7 +144,7 @@ export default function AdminAnalytics() {
           { label: 'Avg Decision Time', value: isLoading ? '...' : `${stats.avgDecisionDays} days`, sub: 'From match to decision', icon: Clock, iconColor: 'text-[hsl(var(--accent-gold))]', valueColor: 'text-foreground' },
           { label: 'Connections Made', value: isLoading ? '...' : stats.mutualYes, sub: 'Successful mutual matches', icon: Heart, iconColor: 'text-primary', valueColor: 'text-primary' },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5">
+          <div key={stat.label} className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm text-muted-foreground">{stat.label}</p>
               <stat.icon className={`h-4 w-4 ${stat.iconColor}`} />
@@ -158,8 +158,8 @@ export default function AdminAnalytics() {
       {/* Charts */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Pie Chart - Match Outcomes */}
-        <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
-          <div className="p-6 border-b border-white/[0.06]">
+        <div className="rounded-xl border border-border bg-card">
+          <div className="p-6 border-b border-border">
             <h3 className="font-display text-lg">Match Outcomes</h3>
           </div>
           <div className="p-6">
@@ -199,8 +199,8 @@ export default function AdminAnalytics() {
         </div>
 
         {/* Line Chart - Monthly Trends */}
-        <div className="rounded-xl border border-white/[0.08] bg-white/[0.04]">
-          <div className="p-6 border-b border-white/[0.06]">
+        <div className="rounded-xl border border-border bg-card">
+          <div className="p-6 border-b border-border">
             <h3 className="font-display text-lg">Monthly Trends</h3>
           </div>
           <div className="p-6">

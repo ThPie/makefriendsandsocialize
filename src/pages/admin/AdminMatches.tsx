@@ -252,7 +252,7 @@ export default function AdminMatches() {
 
   return (
     <div className="space-y-8">
-      <div>
+      <div className="text-center max-w-[680px] mx-auto mb-8">
         <h1 className="text-3xl font-display text-foreground">Match Management</h1>
         <p className="text-muted-foreground mt-2">Track and manage all dating matches through the pipeline</p>
       </div>

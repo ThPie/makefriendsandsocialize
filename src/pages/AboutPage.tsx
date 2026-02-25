@@ -153,7 +153,7 @@ const AboutPage = () => {
       <section className="py-24 md:py-32 w-full">
         <div
           ref={storyAnimation.ref}
-          className={`container max-w-6xl scroll-animate ${storyAnimation.isVisible ? 'visible' : ''}`}
+          className={`content-container scroll-animate ${storyAnimation.isVisible ? 'visible' : ''}`}
         >
           <motion.div
             variants={containerVariants}
@@ -207,7 +207,7 @@ const AboutPage = () => {
       <section className="py-24 md:py-32 w-full bg-secondary/30">
         <div
           ref={valuesAnimation.ref}
-          className={`container max-w-6xl scroll-animate ${valuesAnimation.isVisible ? 'visible' : ''}`}
+          className={`content-container scroll-animate ${valuesAnimation.isVisible ? 'visible' : ''}`}
         >
           <div className="text-center mb-16">
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">What We Stand For</p>
@@ -243,7 +243,7 @@ const AboutPage = () => {
       <section className="py-24 md:py-32 w-full">
         <div
           ref={experienceAnimation.ref}
-          className={`container max-w-6xl scroll-animate ${experienceAnimation.isVisible ? 'visible' : ''}`}
+          className={`content-container scroll-animate ${experienceAnimation.isVisible ? 'visible' : ''}`}
         >
           <div className="text-center mb-16">
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Captured Moments</p>

@@ -223,15 +223,13 @@ export default function PortalConcierge() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-            Concierge Services
-          </h1>
-          <p className="text-muted-foreground">
-            Your personal guide to an exceptional membership
-          </p>
-        </div>
+      <div className="text-center max-w-[680px] mx-auto mb-8">
+        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+          Concierge Services
+        </h1>
+        <p className="text-muted-foreground">
+          Your personal guide to an exceptional membership
+        </p>
         {!showForm && upcomingBookings.length === 0 && (
           <Button onClick={() => setShowForm(true)}>
             <Headphones className="h-4 w-4 mr-2" />
@@ -242,7 +240,7 @@ export default function PortalConcierge() {
 
       {/* Service Overview - Show when no form and no bookings */}
       {!showForm && bookings.length === 0 && (
-        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-white/[0.08] backdrop-blur-sm">
+        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-border backdrop-blur-sm">
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row gap-8">
               <div className="flex-1 space-y-4">
@@ -309,7 +307,7 @@ export default function PortalConcierge() {
 
       {/* Booking Form */}
       {showForm && (
-        <Card className="border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
+        <Card className="border-border bg-card backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Book a Concierge Session</CardTitle>
             <CardDescription>

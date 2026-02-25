@@ -360,8 +360,8 @@ export default function AdminEvents() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <h1 className="font-display text-3xl text-foreground">Events</h1>
-          <p className="text-muted-foreground mt-1">Manage all society events</p>
+          <h1 className="font-display text-3xl text-foreground text-center">Events</h1>
+          <p className="text-muted-foreground mt-1 text-center">Manage all society events</p>
         </motion.div>
         
         <div className="flex items-center gap-3">

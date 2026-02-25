@@ -155,7 +155,7 @@ const ConnectedCirclePage = () => {
 
           <div
             ref={heroAnimation.ref}
-            className={`container max-w-6xl relative z-10 py-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+            className={`content-container relative z-10 py-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="max-w-2xl">
               <motion.h1
@@ -233,7 +233,7 @@ const ConnectedCirclePage = () => {
         <section className="py-24 md:py-32">
           <div
             ref={benefitsAnimation.ref}
-            className={`container max-w-6xl scroll-animate ${benefitsAnimation.isVisible ? 'visible' : ''}`}
+            className={`content-container scroll-animate ${benefitsAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
               <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">Why Join</p>
@@ -331,7 +331,7 @@ const ConnectedCirclePage = () => {
         <section className="py-24 md:py-32">
           <div
             ref={galleryAnimation.ref}
-            className={`container max-w-6xl scroll-animate ${galleryAnimation.isVisible ? 'visible' : ''}`}
+            className={`content-container scroll-animate ${galleryAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
               <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">Our Community</p>

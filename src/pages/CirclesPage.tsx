@@ -91,7 +91,7 @@ const CirclesPage = () => {
 
         {/* Circles Mosaic Grid */}
         <section className="py-20 px-4 md:px-8">
-          <div className="max-w-[1400px] mx-auto">
+          <div className="content-container">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
               {circles.map((circle, idx) => (
                 <TransitionLink
@@ -146,7 +146,7 @@ const CirclesPage = () => {
 
         {/* Minimal How it Works */}
         <section className="py-20 border-t border-white/10 bg-white/5">
-          <div className="container max-w-4xl text-center">
+          <div className="content-container text-center">
             <h2 className="font-display text-3xl md:text-4xl text-white mb-12">How to Join</h2>
             <div className="grid md:grid-cols-3 gap-8">
               {[
