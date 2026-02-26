@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /portal/
+Disallow: /admin/
+Disallow: /auth/reset-password
+Disallow: /auth/callback
+
+Sitemap: https://makefriendsandsocialize.com/sitemap.xml
