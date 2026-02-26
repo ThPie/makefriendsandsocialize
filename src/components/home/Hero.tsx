@@ -15,7 +15,7 @@ export const Hero = () => {
   }, []);
 
   return (
-    <section className="relative w-full h-[100dvh] bg-background overflow-hidden">
+    <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
       {/* Full-bleed background video */}
       <video
         ref={videoRef}
@@ -23,16 +23,27 @@ export const Hero = () => {
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        poster="/videos/hero-poster.jpg"
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+        onCanPlay={(e) => {
+          e.currentTarget.style.opacity = '1';
+        }}
+        style={{ opacity: 0 }}
       >
         <source src="/videos/hero-background.mp4" type="video/mp4" />
+        {/* Fallback image if video fails or isn't supported */}
+        <img
+          src="/videos/hero-poster.jpg"
+          alt="Luxury social experience"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       </video>
 
-      {/* Luxury dark overlay */}
-      <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
+      {/* Luxury dark overlay — removed multiply to avoid absolute blackness if video is slow */}
+      <div className="absolute inset-0 bg-black/50" />
 
       {/* Subtle gradient overlay — bottom-left bias for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
       {/* Content — anchored bottom-left, minimal */}
       <div className="relative z-10 flex flex-col justify-end h-full w-full">
