@@ -1,6 +1,6 @@
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { ArrowRight } from 'lucide-react';
+
 
 const steps = [
   { num: '01', title: 'Join the Waitlist', description: 'Create your profile and join a community of like-minded individuals looking for meaningful connections.' },
@@ -67,9 +67,9 @@ export const SlowDatingSection = () => {
         <div className="mt-12 flex justify-center">
           <TransitionLink
             to="/dating/apply"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-[10px] text-sm font-medium tracking-wider uppercase bg-[hsl(var(--accent-gold))] text-background transition-colors duration-200 hover:bg-[hsl(var(--accent-gold-light))]"
+            className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150 tracking-[0.15em] uppercase"
           >
-            Get Started <ArrowRight className="h-4 w-4" />
+            Get Started →
           </TransitionLink>
         </div>
       </div>

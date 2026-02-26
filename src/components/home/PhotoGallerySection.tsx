@@ -87,9 +87,9 @@ export const PhotoGallerySection = () => {
         <div className="mt-16 text-center">
           <TransitionLink
             to="/gallery"
-            className="inline-flex items-center justify-center rounded-full px-8 py-4 text-sm tracking-[0.15em] uppercase font-medium border border-border bg-transparent text-foreground hover:bg-muted transition-colors duration-200"
+            className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150 tracking-[0.15em] uppercase"
           >
-            See More
+            See More →
           </TransitionLink>
         </div>
       </div>
