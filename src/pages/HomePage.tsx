@@ -47,7 +47,7 @@ const HomePage = () => {
         </Suspense>
       </div>
 
-      {/* Upcoming Gatherings */}
+      {/* Upcoming Gatherings — different bg for visual separation */}
       <div className="order-3 md:order-4">
         <Suspense fallback={<SectionSkeleton />}>
           <EventSection />

@@ -112,7 +112,7 @@ export const EventSection = () => {
   }, [queryClient]);
 
   return (
-    <section className="section-spacing bg-background" id="events">
+    <section className="py-16 md:py-20 bg-card border-t border-border" id="events">
       <div ref={ref} className="content-container">
         {/* Header */}
         <div className="section-header">
