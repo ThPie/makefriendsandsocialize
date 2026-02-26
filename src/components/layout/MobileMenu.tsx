@@ -3,6 +3,7 @@ import { X, Menu } from 'lucide-react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { BrandLogo } from '@/components/common/BrandLogo';
 import { useAuth } from '@/contexts/AuthContext';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
@@ -11,14 +12,27 @@ const navLinks = [
   { label: 'Circles', to: '/circles' },
   { label: 'Membership', to: '/membership' },
   { label: 'Journal', to: '/journal' },
+  { label: 'Explore', to: '/events' },
 ];
 
 export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
 
   return (
-    <div className="md:hidden">
+    <div className="md:hidden flex items-center gap-3">
+      {/* Avatar on mobile when logged in */}
+      {user && (
+        <TransitionLink to="/portal">
+          <Avatar className="h-10 w-10 border-2 border-[hsl(var(--accent-gold))]/60">
+            <AvatarImage src={profile?.avatar_urls?.[0]} />
+            <AvatarFallback className="bg-primary/80 text-primary-foreground text-xs font-medium">
+              {profile?.first_name?.[0] || user.email?.[0]?.toUpperCase() || 'M'}{(profile?.last_name?.[0] || '').toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+        </TransitionLink>
+      )}
+
       {/* Hamburger trigger */}
       <button
         onClick={() => setOpen(true)}
@@ -63,7 +77,7 @@ export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {
         <nav className="flex flex-col p-6 gap-1 flex-1">
           {navLinks.map((link) => (
             <TransitionLink
-              key={link.to}
+              key={link.label}
               to={link.to}
               onClick={() => setOpen(false)}
               className="py-3 px-2 text-lg font-display text-foreground hover:text-[hsl(var(--accent-gold))] transition-colors border-b border-border/40 last:border-0"

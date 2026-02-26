@@ -46,16 +46,16 @@ export const EthosSection = () => {
         ))}
       </div>
 
-      {/* Mobile: stacked cards */}
-      <div className="md:hidden content-container pb-8 flex flex-col gap-3">
+      {/* Mobile: 2x2 grid */}
+      <div className="md:hidden content-container pb-8 grid grid-cols-2 gap-3">
         {pillars.map((pillar, i) => (
           <div
             key={pillar.title}
-            className={`rounded-xl border border-border bg-card p-5 flex flex-col gap-2 transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+            className={`rounded-xl border border-border bg-card p-4 flex flex-col gap-2 transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
             style={{ transitionDelay: `${i * 80}ms` }}
           >
-            <h3 className="font-display text-lg text-foreground leading-tight">{pillar.title}</h3>
-            <p className="text-xs text-muted-foreground font-light leading-relaxed">{pillar.description}</p>
+            <h3 className="font-display text-base text-foreground leading-tight">{pillar.title}</h3>
+            <p className="text-[11px] text-muted-foreground font-light leading-relaxed">{pillar.description}</p>
           </div>
         ))}
       </div>

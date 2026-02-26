@@ -65,37 +65,26 @@ export const Header = () => {
             </TransitionLink>
           )}
 
-          {/* If logged in, go to portal */}
+          {/* If logged in, show avatar */}
           {user && (
-            <div className="hidden md:flex items-center gap-4">
-              <TransitionLink
-                to="/portal"
-                className={cn(
-                  "text-sm font-light transition-colors duration-150",
-                  !scrolled ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
-                )}
-              >
-                Dashboard
-              </TransitionLink>
-              <TransitionLink to="/portal/profile">
-                <Avatar className="h-8 w-8 border border-white/20 hover:opacity-80 transition-opacity">
-                  <AvatarImage src={profile?.avatar_urls?.[0]} />
-                  <AvatarFallback className="bg-primary/80 text-primary-foreground text-xs">
-                    {profile?.first_name?.[0] || user.email?.[0]?.toUpperCase() || 'M'}{(profile?.last_name?.[0] || '').toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </TransitionLink>
-            </div>
+            <TransitionLink to="/portal" className="hidden md:block">
+              <Avatar className="h-11 w-11 border-2 border-[hsl(var(--accent-gold))]/60 hover:border-[hsl(var(--accent-gold))] transition-colors">
+                <AvatarImage src={profile?.avatar_urls?.[0]} />
+                <AvatarFallback className="bg-primary/80 text-primary-foreground text-sm font-medium">
+                  {profile?.first_name?.[0] || user.email?.[0]?.toUpperCase() || 'M'}{(profile?.last_name?.[0] || '').toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </TransitionLink>
           )}
 
-          {/* Apply — gold pill button */}
+          {/* Explore — gold pill button, desktop only */}
           <Button
             asChild
             size="sm"
-            className="rounded-full px-6 h-9 text-xs tracking-widest uppercase font-medium gold-fill border-0 hover:opacity-90 transition-opacity duration-150"
+            className="hidden md:inline-flex rounded-full px-6 h-9 text-xs tracking-widest uppercase font-medium gold-fill border-0 hover:opacity-90 transition-opacity duration-150"
           >
-            <TransitionLink to="/membership">
-              Apply
+            <TransitionLink to="/events">
+              Explore
             </TransitionLink>
           </Button>
 
