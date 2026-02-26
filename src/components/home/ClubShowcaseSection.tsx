@@ -70,7 +70,7 @@ const CircleCard = ({ club }: { club: typeof clubs[0] }) => {
       className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40 min-w-[220px] w-[220px] md:min-w-0 md:w-[calc((100%-60px)/3.5)] shrink-0 snap-center"
     >
       {/* Image */}
-      <div className="relative aspect-[4/5] overflow-hidden">
+      <div className="relative aspect-[4/4] overflow-hidden">
         <img
           src={club.image}
           alt={club.title}

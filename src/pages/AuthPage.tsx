@@ -654,10 +654,52 @@ export default function AuthPage() {
   if (step === 1) {
     return (
       <div className="min-h-screen flex relative bg-background">
-        {/* Left Side — Branding panel (50%) — hidden on mobile */}
-        <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-center px-16 xl:px-20">
-          {/* Subtle radial glow */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,hsl(var(--primary)/0.15),transparent_60%)]" />
+        {/* Left Side — Branding panel with floating avatars */}
+        <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-center px-16 xl:px-20 overflow-hidden">
+          {/* Floating avatar cards scattered across background */}
+          <div className="absolute inset-0 pointer-events-none">
+            {avatarUrls.slice(0, 12).map((url, i) => {
+              // Predefined positions for natural scattered look
+              const positions = [
+                { top: '5%', left: '55%', size: 72, rotate: -8 },
+                { top: '8%', left: '20%', size: 56, rotate: 12 },
+                { top: '15%', left: '75%', size: 64, rotate: -5 },
+                { top: '25%', left: '45%', size: 80, rotate: 6 },
+                { top: '30%', left: '10%', size: 60, rotate: -15 },
+                { top: '40%', left: '65%', size: 72, rotate: 10 },
+                { top: '50%', left: '30%', size: 56, rotate: -12 },
+                { top: '55%', left: '80%', size: 68, rotate: 8 },
+                { top: '65%', left: '50%', size: 76, rotate: -6 },
+                { top: '70%', left: '15%', size: 64, rotate: 14 },
+                { top: '80%', left: '70%', size: 60, rotate: -10 },
+                { top: '85%', left: '35%', size: 72, rotate: 5 },
+              ];
+              const pos = positions[i];
+              return (
+                <div
+                  key={i}
+                  className="absolute rounded-2xl overflow-hidden border border-border/30 shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
+                  style={{
+                    top: pos.top,
+                    left: pos.left,
+                    width: pos.size,
+                    height: pos.size,
+                    transform: `rotate(${pos.rotate}deg)`,
+                    opacity: 0.7 - (i * 0.03),
+                  }}
+                >
+                  <img
+                    src={url}
+                    alt=""
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Content over avatars */}
           <div className="relative z-10">
             {/* Logo */}
             <Link to="/" className="inline-block mb-10">
@@ -720,25 +762,9 @@ export default function AuthPage() {
               </button>
             </p>
 
-            {/* Member Avatars — up to 20 */}
+            {/* Member count */}
             <div className="mt-12">
-              <div className="flex items-center -space-x-2 mb-3">
-                {avatarUrls.slice(0, 20).map((url, i) => (
-                  <img
-                    key={i}
-                    src={url}
-                    alt="Member"
-                    className="w-8 h-8 rounded-full border-2 border-background object-cover"
-                    loading="lazy"
-                  />
-                ))}
-                {memberCount > 20 && (
-                  <div className="w-8 h-8 rounded-full border-2 border-background bg-primary/30 flex items-center justify-center text-[10px] font-bold text-foreground">
-                    +{memberCount > 1000 ? `${Math.floor(memberCount / 1000)}k` : memberCount - 20}
-                  </div>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 {memberCount > 0 ? `${memberCount.toLocaleString()}+ members` : 'Join our community'}
               </p>
             </div>
