@@ -1,58 +1,36 @@
 
 
-# Fix: Make Layout Full-Width and Responsive on All Screen Sizes
+## Plan: Redesign Gallery Page to Match Reference
 
-## Problem
+The reference screenshot shows a clean, minimal masonry gallery from piedigit.com with these characteristics:
 
-The entire app is constrained to a `max-w-[1200px]` centered column. On large monitors, this creates big empty spaces on the left and right — the header/nav, content, and cards all sit in a narrow strip in the middle instead of using the full screen.
+- **No hero section** — no large background image, no "Photo Gallery" badge, no title/subtitle
+- **No category filters or layout toggle** — just photos
+- **2-column staggered masonry** with very tight gaps (2-3px)
+- Photos fill the full width edge-to-edge (minimal side padding)
+- Each photo has natural aspect ratios (some tall, some shorter) creating an organic Pinterest-style flow
+- Dark background matching the site theme
+- No text overlays on photos by default — clean, immersive
 
-This affects three layers:
-1. **`.content-container`** in CSS — capped at 1200px, used by the header and all public sections
-2. **PortalLayout** — inner content wrapper capped at `max-w-[1200px]`
-3. **AdminLayout** — inner content wrapper capped at `max-w-[1200px]`
+### Changes to `src/pages/GalleryPage.tsx`
 
-## Solution
+1. **Remove the hero section entirely** (lines 130-180) — the large background image, "Photo Gallery" badge, title, and subtitle
+2. **Remove the category filter bar and layout toggle** (lines 182-226) — no filter chips, no grid/masonry toggle
+3. **Replace with a simple page header** — just the page title "Gallery" or "Our Moments" styled in the brand font with gold accent, consistent with other page headers
+4. **Default to masonry-only layout** — remove the grid layout option entirely, remove `layoutMode` state
+5. **Tighten the masonry grid**:
+   - Use `columns-2 md:columns-3 lg:columns-4` with `gap-1` (4px gaps) instead of `gap-4`
+   - Use `mb-1` instead of `mb-4` between items
+   - Reduce side padding to `px-1 md:px-2`
+6. **Remove hover overlays with titles** — keep photos clean without text overlays (the lightbox already shows captions when clicked)
+7. **Keep**: infinite scroll, lightbox on click, loading skeletons
+8. **Color alignment**: ensure background uses `bg-background`, rounded corners on photos reduced to `rounded-sm` or `rounded-none` for the tight-packed look
 
-Remove the fixed `max-w-[1200px]` cap everywhere and switch to a fluid layout with comfortable padding. Content will stretch to fill the viewport on any screen size.
+### Technical Details
 
-## Technical Details
-
-### 1. `src/index.css` — Update `.content-container`
-
-Change from:
-```css
-.content-container {
-  @apply max-w-[1200px] w-full mx-auto px-6 md:px-8 lg:px-10;
-}
-```
-To:
-```css
-.content-container {
-  @apply w-full mx-auto px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24;
-}
-```
-
-This removes the max-width cap. On large monitors, padding scales up to keep content comfortable but uses the full width. On small screens, padding stays tight.
-
-### 2. `src/components/portal/PortalLayout.tsx`
-
-Line 281: Change `max-w-[1200px] mx-auto` to just remove the max-width constraint, keeping the existing padding from the parent `p-4 md:p-6 lg:p-8`.
-
-### 3. `src/components/admin/AdminLayout.tsx`
-
-Line 240: Same change — remove `max-w-[1200px] mx-auto` so admin content fills the available width.
-
-### 4. Section text readability
-
-For section headers that use `.section-header` (`max-w-[680px] mx-auto text-center`), keep that constraint — headings should still be readable, but the cards/grids/content around them will now fill the screen.
-
-## Files to Modify
-
-| File | Change |
-|---|---|
-| `src/index.css` | Remove `max-w-[1200px]` from `.content-container`, add scaling padding |
-| `src/components/portal/PortalLayout.tsx` | Remove `max-w-[1200px] mx-auto` from content wrapper |
-| `src/components/admin/AdminLayout.tsx` | Remove `max-w-[1200px] mx-auto` from content wrapper |
-
-3 files, minimal changes, fixes the entire app.
+- Remove imports: `LayoutGrid`, `Columns`, `Sparkles`, `Button`, `useScrollAnimation`
+- Remove state: `layoutMode`, `activeCategory`, `heroAnimation`, `galleryAnimation`
+- Simplify the query to always fetch all categories (no filter)
+- Keep `useInfiniteQuery` and intersection observer for infinite scroll
+- Reduce motion variants to subtle fade-in only (no scale/translate)
 
