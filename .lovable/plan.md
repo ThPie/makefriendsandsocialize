@@ -1,55 +1,63 @@
 
 
-## Plan: Update Review Cards — Avatars, Layout, and New Review
+## Plan: Homepage Redesign — 8 Changes
 
-### 1. Copy Avatar Images to Project
+### 1. Replace Hero Video
+Copy the uploaded `hero-background-20mb.mp4` to `public/videos/hero-bg-new.mp4`, replacing the existing file. The Hero component already references this path, so no code change needed for the source.
 
-Copy the 7 uploaded photos to `public/images/reviewers/`:
-- `IMG_5914.jpg` → `diane.jpg`
-- `IMG_5915.jpg` → `martin.jpg`
-- `IMG_5916.jpg` → `henriett.jpg`
-- `IMG_5920.jpg` → `katherine.jpg`
-- `IMG_5913.jpg` → `lisa.jpg`
-- `IMG_5917.jpg` → `staci.jpg`
-- `IMG_5918.jpg` → `mindy.jpg`
+### 2. Update Hero Content
+In `src/components/home/Hero.tsx`:
+- Remove the subheadline paragraph ("Curated connections and exclusive gatherings...")
+- Change "Apply for Membership" button text to "Become Member"
 
-### 2. Database Updates
+### 3. Center Circles Section Header + Add Description
+In `src/components/home/ClubShowcaseSection.tsx`:
+- Center-align the "Curated Collections / Our Circles" header block (text-center, remove the flex justify-between layout that places arrows next to the title)
+- Add a short description paragraph below the heading (e.g., "Discover our curated communities, each designed for a unique way to connect")
+- Move desktop scroll arrows below or beside the carousel instead of next to the title
 
-Update `image_url` for existing testimonials:
-- Diane → `/images/reviewers/diane.jpg`
-- Martin Irwin → `/images/reviewers/martin.jpg`
-- Harriett Friedman → `/images/reviewers/henriett.jpg`
-- Katherine → `/images/reviewers/katherine.jpg`
-- Lisa Morelock → `/images/reviewers/lisa.jpg`
-- Staci → `/images/reviewers/staci.jpg`
+### 4. Increase Mobile Circle Card Size
+In `src/components/home/ClubShowcaseSection.tsx`:
+- Change mobile card width from `min-w-[220px] w-[220px]` to approximately `w-[85vw]` so the first card fills most of the screen with just a peek of the second card visible for scroll affordance
 
-Insert Mindy's review (from the screenshot):
-- name: "Mindy", quote: "The host is amazing! Great events, great souls!", rating: 3, source: "meetup", is_approved: true, image_url: `/images/reviewers/mindy.jpg`
+### 5. Add Mobile Hamburger Menu
+Create a new component (or modify `Header.tsx`) to add a modern hamburger menu on mobile, inspired by the second screenshot (slide-out panel with menu items). The header currently has no mobile menu — just a logo, Apply button, and theme toggle. The new menu will:
+- Show a hamburger icon (3-line) on mobile, hidden on desktop
+- Open a full-screen or slide-in overlay with navigation links (Home, Events, Circles, Membership, Sign In)
+- Use the existing color palette and typography
+- Include the brand logo at top and a close button
 
-### 3. Redesign Review Card Layout
+### 6. Ethos Section — Add Title + Mobile Cards
+In `src/components/home/EthosSection.tsx`:
+- Add a section title above the pillars (e.g., eyebrow "Our Values" + heading "What We *Stand For*" with "Stand For" in gold italic)
+- On mobile, replace the horizontal scroll with stacked cards (bordered, rounded, with padding) instead of the current inline scroll strips
 
-**File:** `src/components/home/TestimonialsSection.tsx`
+### 7. Testimonials — Uniform Card Height on Mobile
+In `src/components/home/TestimonialsSection.tsx`:
+- Add a fixed height or `line-clamp` to the quote text on mobile so all cards are the same height
+- Currently cards use `min-h-[200px]` but varying quote lengths make them uneven
+- Apply `line-clamp-4` on mobile and ensure all cards share a consistent fixed height
 
-Current card layout (top to bottom): quote mark → review text → [avatar + name | stars]
+### 8. Gold Styling for All Eyebrow Text + Second-Word Gold Pattern
+Across all homepage sections, ensure:
+- All eyebrow/section-label text uses `text-[hsl(var(--accent-gold))]` (most already do, will audit)
+- Section headings follow the "second word in gold italic" pattern consistently:
+  - Hero: Already fine (no two-word section title)
+  - Circles: "Our *Circles*" ✓
+  - Events: "Upcoming *Gatherings*" ✓
+  - Gallery: "A Glimpse *Inside*" ✓
+  - How It Works: "Three Simple *Steps*" → ensure "Steps" is gold
+  - Pricing: "Invest in *Connection*" → ensure "Connection" is gold
+  - Testimonials: "What Our Members *Say*" → ensure "Say" is gold
+  - Ethos (new title): "What We *Stand For*" → gold
 
-New card layout (top to bottom):
-- **Stars** at the top (gold, left-aligned)
-- **Review text** in the middle
-- **Avatar** (larger: `w-10 h-10` on mobile, `w-12 h-12` on desktop) + name below
-
-Mobile-specific changes:
-- Cards become **portrait-oriented**: taller with more vertical padding (`p-4`, `min-h-[200px]`)
-- Remove `line-clamp-3` on mobile to show more text in the taller card
-- Keep 2-column grid on mobile
-
-Desktop stays compact as-is but with same reordering (stars top, avatar bottom).
-
-### Technical Details
-
-| Item | Detail |
-|------|--------|
-| Images | 7 files copied to `public/images/reviewers/` |
-| DB | 6 UPDATE + 1 INSERT on `testimonials` table |
-| Component | Reorder card internals: stars → quote → avatar+name |
-| Mobile | Portrait cards with `aspect-[3/4]` or `min-h-[220px]`, larger avatars |
+### Files to be modified:
+- `public/videos/hero-bg-new.mp4` — replaced with uploaded video
+- `src/components/home/Hero.tsx` — remove subheadline, rename CTA
+- `src/components/home/ClubShowcaseSection.tsx` — center header, add description, bigger mobile cards
+- `src/components/home/EthosSection.tsx` — add title, mobile cards layout
+- `src/components/home/TestimonialsSection.tsx` — uniform card height
+- `src/components/layout/Header.tsx` — add mobile hamburger menu
+- `src/components/home/WhyChooseSection.tsx` — gold on "Steps"
+- `src/components/home/PricingSection.tsx` — gold on "Connection"
 
