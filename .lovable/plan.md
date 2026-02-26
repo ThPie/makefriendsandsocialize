@@ -1,36 +1,104 @@
 
 
-## Plan: Redesign Gallery Page to Match Reference
+## Plan: 5 Fixes — Event Cards, Section Order, Circle Sizing, Review Grid, Footer Dropdowns
 
-The reference screenshot shows a clean, minimal masonry gallery from piedigit.com with these characteristics:
+---
 
-- **No hero section** — no large background image, no "Photo Gallery" badge, no title/subtitle
-- **No category filters or layout toggle** — just photos
-- **2-column staggered masonry** with very tight gaps (2-3px)
-- Photos fill the full width edge-to-edge (minimal side padding)
-- Each photo has natural aspect ratios (some tall, some shorter) creating an organic Pinterest-style flow
-- Dark background matching the site theme
-- No text overlays on photos by default — clean, immersive
+### 1. Event Cards — Match Reference Screenshot (Desktop)
 
-### Changes to `src/pages/GalleryPage.tsx`
+**File:** `src/components/home/EventSection.tsx`
 
-1. **Remove the hero section entirely** (lines 130-180) — the large background image, "Photo Gallery" badge, title, and subtitle
-2. **Remove the category filter bar and layout toggle** (lines 182-226) — no filter chips, no grid/masonry toggle
-3. **Replace with a simple page header** — just the page title "Gallery" or "Our Moments" styled in the brand font with gold accent, consistent with other page headers
-4. **Default to masonry-only layout** — remove the grid layout option entirely, remove `layoutMode` state
-5. **Tighten the masonry grid**:
-   - Use `columns-2 md:columns-3 lg:columns-4` with `gap-1` (4px gaps) instead of `gap-4`
-   - Use `mb-1` instead of `mb-4` between items
-   - Reduce side padding to `px-1 md:px-2`
-6. **Remove hover overlays with titles** — keep photos clean without text overlays (the lightbox already shows captions when clicked)
-7. **Keep**: infinite scroll, lightbox on click, loading skeletons
-8. **Color alignment**: ensure background uses `bg-background`, rounded corners on photos reduced to `rounded-sm` or `rounded-none` for the tight-packed look
+The reference screenshot shows a card-based layout where the image sits on top and the event details (title, date+time, venue+city, attendees, "View Details" gold link) sit below in a card body — not overlaid on the image.
 
-### Technical Details
+**Changes:**
+- Redesign `EventCard` to use a **stacked layout**: image on top (aspect ~16/10, `object-cover object-top`, rounded top corners), then a card body below with `bg-card border border-border rounded-2xl`.
+- Card body content order: title (font-display, ~text-lg), then date+time row (Calendar icon + formatted date + time), then venue+city row (MapPin icon), then attendees row (Users icon + "X attending"), then a gold "View Details →" text link at the bottom.
+- Remove the gradient overlay and absolute-positioned text from the current implementation.
+- Keep mobile horizontal scroll behavior unchanged — same `snap-x overflow-x-auto` container, just the card design changes to the stacked layout.
+- Aspect ratio changes from `2/3` (portrait) to a vertical card with image ~16/10 and body padding below.
 
-- Remove imports: `LayoutGrid`, `Columns`, `Sparkles`, `Button`, `useScrollAnimation`
-- Remove state: `layoutMode`, `activeCategory`, `heroAnimation`, `galleryAnimation`
-- Simplify the query to always fetch all categories (no filter)
-- Keep `useInfiniteQuery` and intersection observer for infinite scroll
-- Reduce motion variants to subtle fade-in only (no scale/translate)
+### 2. Move Ethos Section After Events on Mobile Only
+
+**File:** `src/pages/HomePage.tsx`
+
+Currently the order is: Hero → Ethos → Clubs → Events. On mobile, the user wants Events to appear before Ethos.
+
+**Changes:**
+- Use CSS `order` classes to reorder on mobile only.
+- Wrap each section in a div with order classes:
+  - Hero: `order-1`
+  - Ethos: `order-3 md:order-2` (pushed down on mobile)
+  - ClubShowcase: `order-2 md:order-3` (stays same position relative to events)
+  - Events: `order-2 md:order-4` — actually, the user wants Events right after Hero on mobile.
+  
+  Simpler approach: On mobile, Ethos gets `order-4` and Events gets `order-2`:
+  - Hero: `order-1`
+  - Ethos: `order-4 md:order-2`
+  - Clubs: `order-3 md:order-3`
+  - Events: `order-2 md:order-4`
+  
+  This puts mobile order as: Hero → Events → Clubs → Ethos → Gallery → ...
+  
+  Wait, re-reading: "move our ethos section after events section on mobile only." Current order: Hero, Ethos, Clubs, Events. They want: Hero, Clubs, Events, Ethos on mobile. Or simply Hero, Events, Ethos on mobile?
+
+  Most likely they want: Hero → Events → Ethos on mobile (events before ethos). The simplest read: swap Ethos and Events on mobile.
+
+  Current desktop order should stay: Hero → Ethos → Clubs → Events.
+  Mobile order wanted: Hero → Clubs → Events → Ethos (or Hero → Events → Ethos → Clubs).
+
+  Given "move ethos after events" — mobile order: Hero → Clubs → Events → Ethos → rest.
+
+  Using flexbox order:
+  - Hero: `order-1`
+  - Ethos wrapper: `order-4 md:order-2`
+  - Clubs wrapper: `order-2 md:order-3`
+  - Events wrapper: `order-3 md:order-4`
+  - Rest stays sequential with higher order values.
+
+  The parent `<main>` already has `flex flex-col`, so order classes will work.
+
+### 3. Reduce Founders & Gentlemen Card Height on Desktop
+
+**File:** `src/components/home/ClubShowcaseSection.tsx`
+
+Currently the first two cards (Founders, Gentlemen) span `col-span-3` each in a 6-column grid and use `aspect-ratio: 3/4`. At `col-span-3` on a wide screen, 3/4 makes them very tall.
+
+**Change:** Override the aspect ratio for the first two cards on desktop to something shorter like `4/5` or `2/3` — or better, apply a `max-h-[480px]` on desktop. Simplest fix: change `style={{ aspectRatio: '3/4' }}` to use a shorter ratio for desktop cards. Since mobile uses horizontal scroll with its own sizing, this only affects desktop.
+
+- Add a prop or conditional: for `col-span-3` cards, use `aspect-[3/4] md:aspect-[4/5]` or just reduce to `aspect-[2/3]` via className instead of inline style.
+
+### 4. Testimonials — 2x2 Grid (4 Cards) on Mobile
+
+**File:** `src/components/home/TestimonialsSection.tsx`
+
+Currently uses `grid-cols-1 sm:grid-cols-2` — on small mobile it shows 1 column. The user wants 2 columns on mobile too, showing 4 cards (2 rows × 2 cols) on the first screen.
+
+**Change:** Update grid to `grid-cols-2` (always 2 columns). Reduce padding/text sizes on mobile to fit 2 cards side by side on small screens. The cards need to be compact enough: smaller font, less padding, shorter `line-clamp`.
+
+### 5. Footer — Collapsible Dropdowns on Mobile
+
+**File:** `src/components/layout/Footer.tsx`
+
+Currently shows all 4 link sections in a 2x2 grid on mobile. The user wants:
+- Logo centered + tagline centered + visible on mobile
+- The 4 link sections collapsed into accordion/dropdown items (tap title to expand)
+- Desktop stays the same
+
+**Changes:**
+- Import `Collapsible, CollapsibleTrigger, CollapsibleContent` from Radix (already installed: `@radix-ui/react-collapsible`)
+- On mobile (`md:hidden`): center the logo and tagline, then render each footer section as a collapsible with the title as trigger and links as content
+- On desktop (`hidden md:grid`): keep current 4-column grid layout
+- Add a ChevronDown icon that rotates on open
+
+---
+
+### Technical Summary
+
+| # | File | Change |
+|---|------|--------|
+| 1 | `EventSection.tsx` | Redesign EventCard to stacked layout (image top, details below in card body) with "View Details →" gold link |
+| 2 | `HomePage.tsx` | Add CSS `order` classes to swap Ethos below Events on mobile |
+| 3 | `ClubShowcaseSection.tsx` | Reduce aspect ratio of first 2 desktop cards from 3/4 to ~2/3 |
+| 4 | `TestimonialsSection.tsx` | Change mobile grid from 1-col to 2-col, compact card styling |
+| 5 | `Footer.tsx` | Mobile: center logo/tagline, convert link sections to collapsible dropdowns; desktop unchanged |
 
