@@ -73,23 +73,48 @@ const datingClub = {
   link: '/slow-dating'
 };
 
-const CircleCard = ({ club, className = '', style }: { club: typeof clubs[0]; className?: string; style?: React.CSSProperties }) => {
+// Mobile-only portrait card
+const CircleCardMobile = ({ club }: { club: typeof clubs[0] }) => {
   return (
     <Link
       to={club.link}
-      className={`relative rounded-2xl overflow-hidden group border border-transparent hover:border-[hsl(var(--accent-gold))] hover:ring-2 hover:ring-[hsl(var(--accent-gold))] hover:ring-offset-2 hover:ring-offset-black bg-black transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[hsl(var(--accent-gold))]/20 ${className}`}
-      style={{ aspectRatio: 'var(--card-ratio, 3/4)', ...style }}
+      className="relative rounded-2xl overflow-hidden group border border-border bg-black w-[75vw] min-w-[280px] snap-center shrink-0"
+      style={{ aspectRatio: '3/4' }}
     >
-      <div className="absolute top-2 right-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="w-4 h-4 rounded-full bg-[hsl(var(--accent-gold))] shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
-      </div>
-      <img src={club.image} alt={club.title} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-
+      <img src={club.image} alt={club.title} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />
       <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/95 via-black/60 to-transparent z-10" />
+      <div className="absolute inset-x-0 bottom-0 p-6 z-20 flex flex-col justify-end">
+        <h3 className="font-display text-2xl text-white mb-2 leading-tight">{club.title}</h3>
+        <p className="text-sm font-light leading-snug text-white/80 line-clamp-2">{club.description}</p>
+      </div>
+    </Link>
+  );
+};
 
-      <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 z-20 flex flex-col justify-end">
-        <h3 className="font-display text-2xl md:text-3xl text-white mb-2 leading-tight drop-shadow-md">{club.title}</h3>
-        <p className="text-sm font-light leading-snug text-white/80 line-clamp-2 transition-colors">{club.description}</p>
+// Desktop zigzag row card (like the dating card)
+const ZigzagCard = ({ club, reverse }: { club: typeof clubs[0]; reverse: boolean }) => {
+  return (
+    <Link
+      to={club.link}
+      className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} overflow-hidden group border border-border bg-card transition-all duration-200 hover:border-[hsl(var(--accent-gold))]`}
+    >
+      <div className="relative overflow-hidden w-full md:w-1/2 h-[320px] md:h-auto md:min-h-[360px]">
+        <img src={club.image} alt={club.title} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />
+        <div className="absolute top-4 left-4 z-10">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] font-medium rounded-full border border-[hsl(var(--accent-gold))]/30 text-[hsl(var(--accent-gold))] bg-black/60 backdrop-blur-md">
+            {club.category}
+          </span>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-80 mix-blend-multiply" />
+      </div>
+      <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-card text-foreground">
+        <h3 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground dark:text-white mb-4">{club.title}</h3>
+        <p className="text-sm md:text-base font-light leading-relaxed text-foreground/80 dark:text-white/90 max-w-[500px] mb-8">{club.description}</p>
+        <div>
+          <span className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium border border-[hsl(var(--accent-gold))]/60 text-[hsl(var(--accent-gold))] group-hover:bg-[hsl(var(--accent-gold))] group-hover:text-black transition-colors duration-200">
+            Explore
+          </span>
+        </div>
       </div>
     </Link>
   );
@@ -116,58 +141,27 @@ export const ClubShowcaseSection = () => {
         {/* Mobile: Horizontal scroll for circle cards */}
         <div className="md:hidden px-4">
           <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide py-4 -mx-4 px-4">
-            {clubs.map((club) => (
-              <CircleCard key={club.id} club={club} className="w-[75vw] min-w-[280px] snap-center shrink-0" />
+            {[...clubs, { ...datingClub, category: datingClub.category }].map((club) => (
+              <CircleCardMobile key={club.id} club={club} />
             ))}
           </div>
         </div>
 
-        {/* Desktop: Bento grid for circle cards */}
-        <div className="hidden md:grid content-container grid-cols-6 gap-6 xl:gap-8">
-          {clubs.map((club, i) => {
-            const colSpanClass = i < 2 ? 'md:col-span-3' : 'md:col-span-2';
-            const ratio = i < 2 ? '3/4' : '3/4';
-            return <CircleCard key={club.id} club={club} className={colSpanClass} style={{ '--card-ratio': i < 2 ? '2/3' : '3/4' } as React.CSSProperties} />;
-          })}
-        </div>
-
-        {/* Dating card — standalone, full width */}
-        <div className="content-container mt-6 md:mt-8">
-          <Link
-            to={datingClub.link}
-            className="flex flex-col md:flex-row-reverse rounded-2xl overflow-hidden group border border-border bg-card transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[hsl(var(--accent-gold))] hover:shadow-[hsl(var(--accent-gold))]/20"
-          >
-            <div className="relative overflow-hidden w-full md:w-1/2 h-[320px] md:h-auto">
-              <img src={datingClub.image} alt={datingClub.title} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute top-4 left-4 z-10">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] font-medium rounded-full border border-[hsl(var(--accent-gold))]/30 text-[hsl(var(--accent-gold))] shadow-sm bg-black/60 backdrop-blur-md">
-                  {datingClub.category}
-                </span>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-80 mix-blend-multiply" />
-            </div>
-            <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-card text-foreground">
-              <div className="flex items-center gap-3 mb-4">
-                <h3 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground dark:text-white">{datingClub.title}</h3>
-              </div>
-              <p className="text-sm md:text-base font-light leading-relaxed text-foreground/80 dark:text-white/90 max-w-[500px] mb-8">{datingClub.description}</p>
-              <div>
-                <span className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium border border-[hsl(var(--accent-gold))]/60 text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))] hover:text-black transition-colors duration-200">
-                  Read more
-                </span>
-              </div>
-            </div>
-          </Link>
+        {/* Desktop: Zigzag full-width cards */}
+        <div className="hidden md:flex flex-col content-container">
+          {[...clubs, datingClub].map((club, i) => (
+            <ZigzagCard key={club.id} club={club} reverse={i % 2 !== 0} />
+          ))}
         </div>
       </div>
 
-      {/* See All — gold text arrow */}
-      <div className={`content-container mt-16 flex justify-center transition-all duration-700 delay-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+      {/* See All — gold text link */}
+      <div className={`content-container mt-16 flex justify-center transition-all duration-200 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
         <Link
           to="/circles"
-          className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150 tracking-[0.15em] uppercase"
+          className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150 tracking-[0.08em]"
         >
-          See All Circles →
+          See all circles →
         </Link>
       </div>
     </section>
