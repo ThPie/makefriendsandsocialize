@@ -1,104 +1,55 @@
 
 
-## Plan: 5 Fixes — Event Cards, Section Order, Circle Sizing, Review Grid, Footer Dropdowns
+## Plan: Update Review Cards — Avatars, Layout, and New Review
 
----
+### 1. Copy Avatar Images to Project
 
-### 1. Event Cards — Match Reference Screenshot (Desktop)
+Copy the 7 uploaded photos to `public/images/reviewers/`:
+- `IMG_5914.jpg` → `diane.jpg`
+- `IMG_5915.jpg` → `martin.jpg`
+- `IMG_5916.jpg` → `henriett.jpg`
+- `IMG_5920.jpg` → `katherine.jpg`
+- `IMG_5913.jpg` → `lisa.jpg`
+- `IMG_5917.jpg` → `staci.jpg`
+- `IMG_5918.jpg` → `mindy.jpg`
 
-**File:** `src/components/home/EventSection.tsx`
+### 2. Database Updates
 
-The reference screenshot shows a card-based layout where the image sits on top and the event details (title, date+time, venue+city, attendees, "View Details" gold link) sit below in a card body — not overlaid on the image.
+Update `image_url` for existing testimonials:
+- Diane → `/images/reviewers/diane.jpg`
+- Martin Irwin → `/images/reviewers/martin.jpg`
+- Harriett Friedman → `/images/reviewers/henriett.jpg`
+- Katherine → `/images/reviewers/katherine.jpg`
+- Lisa Morelock → `/images/reviewers/lisa.jpg`
+- Staci → `/images/reviewers/staci.jpg`
 
-**Changes:**
-- Redesign `EventCard` to use a **stacked layout**: image on top (aspect ~16/10, `object-cover object-top`, rounded top corners), then a card body below with `bg-card border border-border rounded-2xl`.
-- Card body content order: title (font-display, ~text-lg), then date+time row (Calendar icon + formatted date + time), then venue+city row (MapPin icon), then attendees row (Users icon + "X attending"), then a gold "View Details →" text link at the bottom.
-- Remove the gradient overlay and absolute-positioned text from the current implementation.
-- Keep mobile horizontal scroll behavior unchanged — same `snap-x overflow-x-auto` container, just the card design changes to the stacked layout.
-- Aspect ratio changes from `2/3` (portrait) to a vertical card with image ~16/10 and body padding below.
+Insert Mindy's review (from the screenshot):
+- name: "Mindy", quote: "The host is amazing! Great events, great souls!", rating: 3, source: "meetup", is_approved: true, image_url: `/images/reviewers/mindy.jpg`
 
-### 2. Move Ethos Section After Events on Mobile Only
-
-**File:** `src/pages/HomePage.tsx`
-
-Currently the order is: Hero → Ethos → Clubs → Events. On mobile, the user wants Events to appear before Ethos.
-
-**Changes:**
-- Use CSS `order` classes to reorder on mobile only.
-- Wrap each section in a div with order classes:
-  - Hero: `order-1`
-  - Ethos: `order-3 md:order-2` (pushed down on mobile)
-  - ClubShowcase: `order-2 md:order-3` (stays same position relative to events)
-  - Events: `order-2 md:order-4` — actually, the user wants Events right after Hero on mobile.
-  
-  Simpler approach: On mobile, Ethos gets `order-4` and Events gets `order-2`:
-  - Hero: `order-1`
-  - Ethos: `order-4 md:order-2`
-  - Clubs: `order-3 md:order-3`
-  - Events: `order-2 md:order-4`
-  
-  This puts mobile order as: Hero → Events → Clubs → Ethos → Gallery → ...
-  
-  Wait, re-reading: "move our ethos section after events section on mobile only." Current order: Hero, Ethos, Clubs, Events. They want: Hero, Clubs, Events, Ethos on mobile. Or simply Hero, Events, Ethos on mobile?
-
-  Most likely they want: Hero → Events → Ethos on mobile (events before ethos). The simplest read: swap Ethos and Events on mobile.
-
-  Current desktop order should stay: Hero → Ethos → Clubs → Events.
-  Mobile order wanted: Hero → Clubs → Events → Ethos (or Hero → Events → Ethos → Clubs).
-
-  Given "move ethos after events" — mobile order: Hero → Clubs → Events → Ethos → rest.
-
-  Using flexbox order:
-  - Hero: `order-1`
-  - Ethos wrapper: `order-4 md:order-2`
-  - Clubs wrapper: `order-2 md:order-3`
-  - Events wrapper: `order-3 md:order-4`
-  - Rest stays sequential with higher order values.
-
-  The parent `<main>` already has `flex flex-col`, so order classes will work.
-
-### 3. Reduce Founders & Gentlemen Card Height on Desktop
-
-**File:** `src/components/home/ClubShowcaseSection.tsx`
-
-Currently the first two cards (Founders, Gentlemen) span `col-span-3` each in a 6-column grid and use `aspect-ratio: 3/4`. At `col-span-3` on a wide screen, 3/4 makes them very tall.
-
-**Change:** Override the aspect ratio for the first two cards on desktop to something shorter like `4/5` or `2/3` — or better, apply a `max-h-[480px]` on desktop. Simplest fix: change `style={{ aspectRatio: '3/4' }}` to use a shorter ratio for desktop cards. Since mobile uses horizontal scroll with its own sizing, this only affects desktop.
-
-- Add a prop or conditional: for `col-span-3` cards, use `aspect-[3/4] md:aspect-[4/5]` or just reduce to `aspect-[2/3]` via className instead of inline style.
-
-### 4. Testimonials — 2x2 Grid (4 Cards) on Mobile
+### 3. Redesign Review Card Layout
 
 **File:** `src/components/home/TestimonialsSection.tsx`
 
-Currently uses `grid-cols-1 sm:grid-cols-2` — on small mobile it shows 1 column. The user wants 2 columns on mobile too, showing 4 cards (2 rows × 2 cols) on the first screen.
+Current card layout (top to bottom): quote mark → review text → [avatar + name | stars]
 
-**Change:** Update grid to `grid-cols-2` (always 2 columns). Reduce padding/text sizes on mobile to fit 2 cards side by side on small screens. The cards need to be compact enough: smaller font, less padding, shorter `line-clamp`.
+New card layout (top to bottom):
+- **Stars** at the top (gold, left-aligned)
+- **Review text** in the middle
+- **Avatar** (larger: `w-10 h-10` on mobile, `w-12 h-12` on desktop) + name below
 
-### 5. Footer — Collapsible Dropdowns on Mobile
+Mobile-specific changes:
+- Cards become **portrait-oriented**: taller with more vertical padding (`p-4`, `min-h-[200px]`)
+- Remove `line-clamp-3` on mobile to show more text in the taller card
+- Keep 2-column grid on mobile
 
-**File:** `src/components/layout/Footer.tsx`
+Desktop stays compact as-is but with same reordering (stars top, avatar bottom).
 
-Currently shows all 4 link sections in a 2x2 grid on mobile. The user wants:
-- Logo centered + tagline centered + visible on mobile
-- The 4 link sections collapsed into accordion/dropdown items (tap title to expand)
-- Desktop stays the same
+### Technical Details
 
-**Changes:**
-- Import `Collapsible, CollapsibleTrigger, CollapsibleContent` from Radix (already installed: `@radix-ui/react-collapsible`)
-- On mobile (`md:hidden`): center the logo and tagline, then render each footer section as a collapsible with the title as trigger and links as content
-- On desktop (`hidden md:grid`): keep current 4-column grid layout
-- Add a ChevronDown icon that rotates on open
-
----
-
-### Technical Summary
-
-| # | File | Change |
-|---|------|--------|
-| 1 | `EventSection.tsx` | Redesign EventCard to stacked layout (image top, details below in card body) with "View Details →" gold link |
-| 2 | `HomePage.tsx` | Add CSS `order` classes to swap Ethos below Events on mobile |
-| 3 | `ClubShowcaseSection.tsx` | Reduce aspect ratio of first 2 desktop cards from 3/4 to ~2/3 |
-| 4 | `TestimonialsSection.tsx` | Change mobile grid from 1-col to 2-col, compact card styling |
-| 5 | `Footer.tsx` | Mobile: center logo/tagline, convert link sections to collapsible dropdowns; desktop unchanged |
+| Item | Detail |
+|------|--------|
+| Images | 7 files copied to `public/images/reviewers/` |
+| DB | 6 UPDATE + 1 INSERT on `testimonials` table |
+| Component | Reorder card internals: stars → quote → avatar+name |
+| Mobile | Portrait cards with `aspect-[3/4]` or `min-h-[220px]`, larger avatars |
 
