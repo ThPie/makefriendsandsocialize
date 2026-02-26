@@ -91,13 +91,12 @@ const GalleryPage = () => {
       {/* Masonry grid */}
       <div className="px-1 md:px-2">
         {isLoading ? (
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-1">
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-4">
             {Array.from({ length: 12 }).map((_, i) => (
               <Skeleton
                 key={i}
-                className={`mb-1 w-full rounded-sm ${
-                  i % 3 === 0 ? 'aspect-[3/4]' : i % 3 === 1 ? 'aspect-square' : 'aspect-[4/3]'
-                }`}
+                className={`mb-4 w-full rounded-2xl ${i % 3 === 0 ? 'aspect-[3/4]' : i % 3 === 1 ? 'aspect-square' : 'aspect-[4/3]'
+                  }`}
               />
             ))}
           </div>
@@ -107,12 +106,12 @@ const GalleryPage = () => {
             <p className="text-sm">Check back after our next event.</p>
           </div>
         ) : (
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-1">
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-4">
             {photos.map((photo, index) => (
               <div
                 key={photo.id}
                 onClick={() => openLightbox(index)}
-                className="mb-1 break-inside-avoid cursor-pointer overflow-hidden rounded-sm"
+                className="mb-4 break-inside-avoid cursor-pointer overflow-hidden rounded-2xl border border-transparent hover:border-[hsl(var(--accent-gold))] transition-all duration-300 shadow-sm hover:shadow-xl hover:shadow-[hsl(var(--accent-gold))]/10"
               >
                 <img
                   src={photo.image_url.startsWith('http') ? optimizeGoogleImageUrl(photo.image_url, { width: 600, quality: 80 }) : photo.image_url}

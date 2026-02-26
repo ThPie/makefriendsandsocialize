@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useSiteStats } from '@/hooks/useSiteStats';
@@ -5,18 +6,33 @@ import { MemberAvatars } from '@/components/home/MemberAvatars';
 
 export const Hero = () => {
   const { data: stats, isLoading } = useSiteStats();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 1.8;
+    }
+  }, []);
 
   return (
     <section className="relative w-full h-[100dvh] bg-background overflow-hidden">
-      {/* Full-bleed background image */}
-      <img
-        src="/images/gallery/event-1.jpg"
-        alt="Elevated social experiences"
+      {/* Full-bleed background video */}
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
         className="absolute inset-0 w-full h-full object-cover"
-      />
+      >
+        <source src="/videos/hero-background.mp4" type="video/mp4" />
+      </video>
+
+      {/* Luxury dark overlay */}
+      <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
 
       {/* Subtle gradient overlay — bottom-left bias for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
       {/* Content — anchored bottom-left, minimal */}
       <div className="relative z-10 flex flex-col justify-end h-full w-full">

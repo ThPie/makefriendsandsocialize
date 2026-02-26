@@ -35,7 +35,7 @@ export const FAQSection = () => {
               <AccordionItem
                 key={index}
                 value={`item-${index}`}
-                className="border border-border rounded-xl px-6 bg-card data-[state=open]:border-[hsl(var(--accent-gold))]/30"
+                className="border border-border rounded-2xl px-6 bg-card data-[state=open]:border-[hsl(var(--accent-gold))]/30"
               >
                 <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-5 text-sm">
                   {faq.question}

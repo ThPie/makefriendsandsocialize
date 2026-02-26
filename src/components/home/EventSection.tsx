@@ -26,24 +26,22 @@ const EventCard = ({ event, className = '' }: { event: Event, className?: string
   return (
     <TransitionLink
       to={`/events/${event.id}`}
-      className={`relative rounded-[2rem] overflow-hidden group border-none bg-black transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[hsl(var(--accent-gold))]/20 block ${className}`}
-      style={{ aspectRatio: '3/4' }}
+      className={`relative rounded-2xl overflow-hidden group border border-transparent hover:border-[hsl(var(--accent-gold))] bg-black transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[hsl(var(--accent-gold))]/20 block ${className}`}
+      style={{ aspectRatio: '2/3' }}
     >
       {event.image_url ? (
-        <img src={event.image_url} alt={event.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+        <img
+          src={event.image_url}
+          alt={event.title}
+          className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+        />
       ) : (
         <div className="absolute inset-0 bg-zinc-900 flex items-center justify-center">
           <Calendar className="h-12 w-12 text-white/20" />
         </div>
       )}
 
-      <div className="absolute top-4 right-4 z-20">
-        <div className="w-10 h-10 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center border border-white/20 transition-colors group-hover:bg-white/20">
-          <Calendar className="w-5 h-5 text-white" strokeWidth={2} />
-        </div>
-      </div>
-
-      <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-black/95 via-black/60 to-transparent z-10" />
+      <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-black/95 via-black/40 to-transparent z-10" />
 
       <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 z-20 flex flex-col justify-end">
         <div className="flex flex-wrap items-center gap-1.5 mb-2 text-[hsl(var(--accent-gold))] text-xs font-semibold tracking-wider uppercase drop-shadow-sm">

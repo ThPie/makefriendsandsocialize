@@ -74,33 +74,20 @@ const datingClub = {
 };
 
 const CircleCard = ({ club, className = '' }: { club: typeof clubs[0]; className?: string }) => {
-  const Icon = getIconForCategory(club.category);
   return (
     <Link
       to={club.link}
-      className={`relative rounded-[2rem] overflow-hidden group border-none bg-black transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[hsl(var(--accent-gold))]/20 ${className}`}
+      className={`relative rounded-2xl overflow-hidden group border border-transparent hover:border-[hsl(var(--accent-gold))] hover:ring-2 hover:ring-[hsl(var(--accent-gold))] hover:ring-offset-2 hover:ring-offset-black bg-black transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[hsl(var(--accent-gold))]/20 ${className}`}
       style={{ aspectRatio: '3/4' }}
     >
-      <img src={club.image} alt={club.title} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-
-      <div className="absolute top-4 right-4 z-20">
-        <div className="w-10 h-10 rounded-full bg-black/20 backdrop-blur-md flex items-center justify-center border border-white/20 transition-colors group-hover:bg-white/20">
-          <Icon className="w-5 h-5 text-white" strokeWidth={2} />
-        </div>
+      <div className="absolute top-2 right-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="w-4 h-4 rounded-full bg-[hsl(var(--accent-gold))] shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
       </div>
+      <img src={club.image} alt={club.title} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
       <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/95 via-black/60 to-transparent z-10" />
 
       <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 z-20 flex flex-col justify-end">
-        <div className="flex items-center gap-1 mb-2">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <svg key={i} className="w-4 h-4 text-[hsl(var(--accent-gold))] fill-current shadow-sm" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-          ))}
-          <span className="text-white text-sm font-medium ml-1">5.0</span>
-        </div>
-
         <h3 className="font-display text-2xl md:text-3xl text-white mb-2 leading-tight drop-shadow-md">{club.title}</h3>
         <p className="text-sm font-light leading-snug text-white/80 line-clamp-2 transition-colors">{club.description}</p>
       </div>

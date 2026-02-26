@@ -83,7 +83,7 @@ export const EventCard = ({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 {/* Date badge */}
-                <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-md rounded-xl px-3 py-2 text-center border border-white/30">
+                <div className="absolute top-4 left-4 bg-white/20 backdrop-blur-md rounded-2xl px-3 py-2 text-center border border-white/30">
                     <div className="text-[10px] uppercase tracking-wider text-white/80 font-medium">{parseLocalDate(event.date).toLocaleDateString('en-US', { month: 'short' })}</div>
                     <div className="text-xl font-bold text-white leading-none">{parseLocalDate(event.date).getDate()}</div>
                 </div>
