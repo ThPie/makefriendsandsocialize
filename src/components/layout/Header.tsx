@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { CirclesMegamenu } from './CirclesMegamenu';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { MobileMenu } from './MobileMenu';
 import { cn } from '@/lib/utils';
 
 export const Header = () => {
@@ -100,6 +101,9 @@ export const Header = () => {
 
           {/* Theme Toggle */}
           <ThemeToggle isTransparent={!scrolled} />
+
+          {/* Mobile hamburger menu */}
+          <MobileMenu isTransparent={!scrolled} />
         </div>
       </div>
     </header>

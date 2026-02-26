@@ -47,7 +47,7 @@ export const PricingSection = () => {
         <div className="section-header">
           <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Membership</span>
           <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1] mb-4">
-            Invest in <span className="italic">Connection</span>
+            Invest in <span className="italic text-[hsl(var(--accent-gold))]">Connection</span>
           </h2>
           <p className="text-muted-foreground text-base font-light">
             Choose the membership that fits your lifestyle. All plans include a 30-day free trial.

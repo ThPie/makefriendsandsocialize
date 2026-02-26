@@ -56,11 +56,6 @@ export const Hero = () => {
               Where exceptional people find their circle
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-[15px] font-light text-white/70 leading-[1.6] mb-8 max-w-[380px]">
-              Curated connections and exclusive gatherings for individuals seeking a higher standard of community.
-            </p>
-
             {/* Two CTA buttons */}
             <div className="flex items-center gap-4 mb-8">
               <Button
@@ -68,7 +63,7 @@ export const Hero = () => {
                 className="rounded-full px-6 h-10 text-xs tracking-widest uppercase font-medium bg-[hsl(var(--accent-gold))] text-white hover:bg-[hsl(var(--accent-gold))]/90 border-0 transition-colors duration-200"
               >
                 <TransitionLink to="/membership">
-                  Apply for Membership
+                  Become Member
                 </TransitionLink>
               </Button>
               <TransitionLink
