@@ -73,15 +73,38 @@ const datingClub = {
   link: '/slow-dating'
 };
 
-const CircleCard = ({ club, className = '' }: { club: typeof clubs[0]; className?: string }) => {
+// Mobile-only compact card: image-dominant with overlay
+const MobileCircleCard = ({ club }: { club: typeof clubs[0] }) => {
+  return (
+    <Link
+      to={club.link}
+      className="relative min-w-[72vw] h-[280px] snap-center shrink-0 rounded-2xl overflow-hidden group"
+    >
+      <img src={club.image} alt={club.title} loading="lazy" decoding="async" className="w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+      <div className="absolute top-3 left-3 z-10">
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[9px] uppercase tracking-[0.15em] font-medium rounded-full bg-black/50 backdrop-blur-sm text-white/90">
+          {club.category}
+        </span>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 p-4">
+        <h3 className="font-display text-xl text-white leading-tight mb-1">{club.title}</h3>
+        <p className="text-xs text-white/70 font-light line-clamp-2 leading-relaxed">{club.description}</p>
+      </div>
+    </Link>
+  );
+};
+
+// Desktop card: full layout with text section
+const DesktopCircleCard = ({ club, className = '' }: { club: typeof clubs[0]; className?: string }) => {
   const Icon = getIconForCategory(club.category);
   return (
     <Link
       to={club.link}
-      className={`flex flex-col rounded-2xl overflow-hidden group border border-border bg-card transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-[hsl(var(--accent-gold))] hover:shadow-[hsl(var(--accent-gold))]/20 ${className}`}
+      className={`flex flex-col rounded-2xl overflow-hidden group border border-border bg-card transition-all duration-200 hover:border-[hsl(var(--accent-gold))]/40 ${className}`}
     >
-      <div className="relative overflow-hidden h-[240px] md:h-[320px]">
-        <img src={club.image} alt={club.title} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+      <div className="relative overflow-hidden h-[320px]">
+        <img src={club.image} alt={club.title} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]" />
         <div className="absolute top-4 left-4 z-10">
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[10px] uppercase tracking-[0.15em] font-medium rounded-full border border-[hsl(var(--accent-gold))]/30 text-[hsl(var(--accent-gold))] shadow-sm bg-black/60 backdrop-blur-md">
             {club.category}
@@ -90,7 +113,6 @@ const CircleCard = ({ club, className = '' }: { club: typeof clubs[0]; className
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-80 mix-blend-multiply" />
       </div>
       <div className="flex flex-col flex-grow relative overflow-hidden p-6 md:p-8">
-        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[hsl(var(--accent-gold))]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <div className="flex items-center gap-3 mb-4">
           <Icon className="w-5 h-5 text-[hsl(var(--accent-gold))]" strokeWidth={1.5} />
           <h3 className="font-display text-2xl md:text-3xl text-foreground">{club.title}</h3>
@@ -121,9 +143,9 @@ export const ClubShowcaseSection = () => {
       <div ref={ref} className={`transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         {/* Mobile: Horizontal scroll for circle cards */}
         <div className="md:hidden px-4">
-          <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4">
+          <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4">
             {clubs.map((club) => (
-              <CircleCard key={club.id} club={club} className="min-w-[85vw] snap-center shrink-0" />
+              <MobileCircleCard key={club.id} club={club} />
             ))}
           </div>
         </div>
@@ -132,7 +154,7 @@ export const ClubShowcaseSection = () => {
         <div className="hidden md:grid content-container grid-cols-6 gap-6 xl:gap-8">
           {clubs.map((club, i) => {
             const colSpanClass = i < 2 ? 'md:col-span-3' : 'md:col-span-2';
-            return <CircleCard key={club.id} club={club} className={colSpanClass} />;
+            return <DesktopCircleCard key={club.id} club={club} className={colSpanClass} />;
           })}
         </div>
 

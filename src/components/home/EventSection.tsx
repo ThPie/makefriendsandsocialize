@@ -88,48 +88,39 @@ export const EventSection = () => {
           </div> :
 
         <>
-            {/* Mobile: Horizontal scroll */}
-            <div className={`md:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            {/* Mobile: Horizontal scroll — image-dominant cards */}
+            <div className={`md:hidden flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               {events.map((event) => (
-                <div
+                <TransitionLink
                   key={event.id}
-                  className="min-w-[85vw] snap-center shrink-0 rounded-2xl border border-border bg-card overflow-hidden group hover:border-[hsl(var(--accent-gold))]/40 transition-colors duration-200"
+                  to={`/events/${event.id}`}
+                  className="relative min-w-[72vw] h-[320px] snap-center shrink-0 rounded-2xl overflow-hidden group"
                 >
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    {event.image_url ? (
-                      <img src={event.image_url} alt={event.title} className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]" />
-                    ) : (
-                      <div className="w-full h-full bg-muted flex items-center justify-center">
-                        <Calendar className="h-12 w-12 text-muted-foreground/30" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-6">
-                    <h3 className="font-display text-xl md:text-2xl text-foreground leading-[1.2] mb-4">{event.title}</h3>
-                    <div className="space-y-2 mb-6">
-                      <p className="text-sm text-muted-foreground flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
+                  {event.image_url ? (
+                    <img src={event.image_url} alt={event.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <Calendar className="h-12 w-12 text-muted-foreground/30" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <h3 className="font-display text-lg text-white leading-tight mb-2">{event.title}</h3>
+                    <div className="space-y-1">
+                      <p className="text-xs text-white/80 flex items-center gap-1.5">
+                        <Calendar className="h-3.5 w-3.5 text-[hsl(var(--accent-gold))]" />
                         {format(parseLocalDate(event.date), 'EEEE, MMMM d')}
                         {event.time && ` · ${event.time}`}
                       </p>
                       {(event.venue_name || event.location) && (
-                        <p className="text-sm text-muted-foreground flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
+                        <p className="text-xs text-white/70 flex items-center gap-1.5">
+                          <MapPin className="h-3.5 w-3.5 text-[hsl(var(--accent-gold))]" />
                           {event.venue_name || event.location}
                         </p>
                       )}
-                      {event.rsvp_count != null && event.rsvp_count > 0 && (
-                        <p className="text-sm text-muted-foreground flex items-center gap-2">
-                          <Users className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
-                          {event.rsvp_count} attending
-                        </p>
-                      )}
                     </div>
-                    <TransitionLink to={`/events/${event.id}`} className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150">
-                      View Details →
-                    </TransitionLink>
                   </div>
-                </div>
+                </TransitionLink>
               ))}
             </div>
 
