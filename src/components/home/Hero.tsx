@@ -49,7 +49,7 @@ export const Hero = () => {
         <div className="content-container pb-16 md:pb-24">
           <div className="max-w-[520px]">
             {/* Small eyebrow */}
-            <span className="eyebrow block mb-4 text-white/60">Private Membership</span>
+            <span className="eyebrow block mb-4 text-white/60">SOCIAL CLUB</span>
 
             {/* Clean headline — Soho House scale */}
             <h1 className="font-display italic text-[36px] md:text-[48px] leading-[1.15] tracking-tight text-white mb-4">
