@@ -67,7 +67,7 @@ const CircleCard = ({ club }: { club: typeof clubs[0] }) => {
   return (
     <Link
       to={club.link}
-      className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40 min-w-[85vw] w-[85vw] md:min-w-0 md:w-[calc((100%-60px)/3.5)] shrink-0 snap-center"
+      className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40 min-w-[78vw] w-[78vw] md:min-w-0 md:w-[calc((100%-60px)/3.5)] shrink-0 snap-center"
     >
       {/* Image */}
       <div className="relative aspect-[4/4] overflow-hidden">
