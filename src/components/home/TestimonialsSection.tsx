@@ -48,11 +48,12 @@ export const TestimonialsSection = () => {
           (supabase.from('testimonials' as any).select('*') as any)
             .eq('is_approved', true)
             .gte('rating', 4)
-            .neq('quote', '')
-            .order('created_at', { ascending: false }),
+            .neq('quote', ''),
           supabase.from('meetup_stats').select('rating, review_count, avatar_urls, member_count').limit(1).single(),
         ]);
-        setTestimonials((testimonialsRes.data as unknown as Testimonial[]) || []);
+        const sorted = ((testimonialsRes.data as unknown as Testimonial[]) || [])
+          .sort((a, b) => (b.quote?.length || 0) - (a.quote?.length || 0));
+        setTestimonials(sorted);
         if (statsRes.data) {
           setMeetupRating(statsRes.data.rating || 4.6);
           setReviewCount((statsRes.data as any).review_count || 180);

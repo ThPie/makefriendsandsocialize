@@ -88,63 +88,94 @@ export const EventSection = () => {
           </div> :
 
         <>
-            {/* 3-Card Grid */}
-            <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              {events.map((event) =>
-            <div
-              key={event.id}
-              className="rounded-2xl border border-border bg-card overflow-hidden group hover:border-[hsl(var(--accent-gold))]/40 transition-colors duration-200">
-
-                  {/* Image */}
+            {/* Mobile: Horizontal scroll */}
+            <div className={`md:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              {events.map((event) => (
+                <div
+                  key={event.id}
+                  className="min-w-[85vw] snap-center shrink-0 rounded-2xl border border-border bg-card overflow-hidden group hover:border-[hsl(var(--accent-gold))]/40 transition-colors duration-200"
+                >
                   <div className="relative aspect-[16/10] overflow-hidden">
-                    {event.image_url ?
-                <img
-                  src={event.image_url}
-                  alt={event.title}
-                  className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]" /> :
-
-
-                <div className="w-full h-full bg-muted flex items-center justify-center">
+                    {event.image_url ? (
+                      <img src={event.image_url} alt={event.title} className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]" />
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
                         <Calendar className="h-12 w-12 text-muted-foreground/30" />
                       </div>
-                }
+                    )}
                   </div>
-
-                  {/* Content */}
                   <div className="p-6">
-                    <h3 className="font-display text-xl md:text-2xl text-foreground leading-[1.2] mb-4">
-                      {event.title}
-                    </h3>
-
+                    <h3 className="font-display text-xl md:text-2xl text-foreground leading-[1.2] mb-4">{event.title}</h3>
                     <div className="space-y-2 mb-6">
                       <p className="text-sm text-muted-foreground flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
                         {format(parseLocalDate(event.date), 'EEEE, MMMM d')}
                         {event.time && ` · ${event.time}`}
                       </p>
-                      {(event.venue_name || event.location) &&
-                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                      {(event.venue_name || event.location) && (
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
                           <MapPin className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
                           {event.venue_name || event.location}
                         </p>
-                  }
-                      {event.rsvp_count != null && event.rsvp_count > 0 &&
-                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                      )}
+                      {event.rsvp_count != null && event.rsvp_count > 0 && (
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
                           <Users className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
                           {event.rsvp_count} attending
                         </p>
-                  }
+                      )}
                     </div>
-
-                    <TransitionLink
-                  to={`/events/${event.id}`}
-                  className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150">
-
+                    <TransitionLink to={`/events/${event.id}`} className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150">
                       View Details →
                     </TransitionLink>
                   </div>
                 </div>
-            )}
+              ))}
+            </div>
+
+            {/* Desktop: 3-Card Grid */}
+            <div className={`hidden md:grid grid-cols-3 gap-6 transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+              {events.map((event) => (
+                <div
+                  key={event.id}
+                  className="rounded-2xl border border-border bg-card overflow-hidden group hover:border-[hsl(var(--accent-gold))]/40 transition-colors duration-200"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    {event.image_url ? (
+                      <img src={event.image_url} alt={event.title} className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]" />
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <Calendar className="h-12 w-12 text-muted-foreground/30" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-display text-xl md:text-2xl text-foreground leading-[1.2] mb-4">{event.title}</h3>
+                    <div className="space-y-2 mb-6">
+                      <p className="text-sm text-muted-foreground flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
+                        {format(parseLocalDate(event.date), 'EEEE, MMMM d')}
+                        {event.time && ` · ${event.time}`}
+                      </p>
+                      {(event.venue_name || event.location) && (
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
+                          {event.venue_name || event.location}
+                        </p>
+                      )}
+                      {event.rsvp_count != null && event.rsvp_count > 0 && (
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                          <Users className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
+                          {event.rsvp_count} attending
+                        </p>
+                      )}
+                    </div>
+                    <TransitionLink to={`/events/${event.id}`} className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150">
+                      View Details →
+                    </TransitionLink>
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* View all link */}
