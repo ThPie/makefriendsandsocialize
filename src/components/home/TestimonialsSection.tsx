@@ -143,34 +143,34 @@ export const TestimonialsSection = () => {
               <p className="text-muted-foreground text-sm italic">No reviews yet.</p>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   {currentCards.map((t) => (
                     <div
                       key={t.id}
-                      className="relative bg-card border border-border rounded-2xl p-6 transition-colors duration-200 hover:border-[hsl(var(--accent-gold))] hover:shadow-sm"
+                      className="relative bg-card border border-border rounded-xl sm:rounded-2xl p-3 sm:p-6 transition-colors duration-200 hover:border-[hsl(var(--accent-gold))] hover:shadow-sm"
                     >
                       {/* Gold quote mark */}
-                      <span className="absolute top-4 left-5 font-display text-4xl leading-none text-[hsl(var(--accent-gold))] opacity-60 select-none">
+                      <span className="absolute top-2 left-3 sm:top-4 sm:left-5 font-display text-2xl sm:text-4xl leading-none text-[hsl(var(--accent-gold))] opacity-60 select-none">
                         "
                       </span>
 
                       {/* Review text */}
-                      <p className="text-foreground text-sm leading-relaxed mt-6 mb-6 line-clamp-3">
+                      <p className="text-foreground text-xs sm:text-sm leading-relaxed mt-5 sm:mt-6 mb-4 sm:mb-6 line-clamp-3">
                         {t.quote}
                       </p>
 
                       {/* Reviewer info */}
-                      <div className="flex items-center justify-between mt-auto">
-                        <div className="flex items-center gap-2.5">
-                          <Avatar className="w-8 h-8">
+                      <div className="flex items-center justify-between mt-auto gap-1">
+                        <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+                          <Avatar className="w-6 h-6 sm:w-8 sm:h-8 shrink-0">
                             {t.image_url ? (
                               <AvatarImage src={t.image_url} alt={t.name} className="object-cover" />
                             ) : null}
-                            <AvatarFallback className="bg-[#0D2415] text-[hsl(var(--accent-gold))] text-[10px] font-semibold">
+                            <AvatarFallback className="bg-[#0D2415] text-[hsl(var(--accent-gold))] text-[8px] sm:text-[10px] font-semibold">
                               {t.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
-                          <span className="text-muted-foreground text-xs font-medium">
+                          <span className="text-muted-foreground text-[10px] sm:text-xs font-medium truncate">
                             {formatName(t.name)}
                           </span>
                         </div>
