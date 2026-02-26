@@ -16,7 +16,7 @@ const clubs = [
     id: 'founders',
     category: 'Exclusive',
     title: 'Founders Circle',
-    description: 'Where visionaries shape the future. Join an elite collective of entrepreneurs, founders, and industry disruptors.',
+    description: 'Where visionaries shape the future. Join an elite collective of entrepreneurs, founders, and industry disruptors redefining what it means to build something meaningful.',
     image: foundersImg,
     link: '/founders-circle'
   },
@@ -24,7 +24,7 @@ const clubs = [
     id: 'gentlemen',
     category: 'Society',
     title: 'The Gentlemen',
-    description: 'A circle for the modern man of substance and style. Experience curated tastings and tailored networking events.',
+    description: 'A circle for the modern man of substance and style. Experience curated tastings, tailored networking events, and conversations that matter with like-minded individuals.',
     image: gentlemenImg,
     link: '/circles/the-gentlemen'
   },
@@ -32,7 +32,7 @@ const clubs = [
     id: 'les-amis',
     category: 'Social',
     title: 'Les Amis',
-    description: 'Casual gatherings for close friends and allies. Enjoy relaxed dining, cultural outings, and vibrant conversations.',
+    description: 'Casual gatherings for close friends and allies. Enjoy relaxed dining, cultural outings, and vibrant conversations in an intimate, welcoming atmosphere.',
     image: lesAmisImg,
     link: '/circles/les-amis'
   },
@@ -40,7 +40,7 @@ const clubs = [
     id: 'women-society',
     category: 'Society',
     title: 'The Ladies Society',
-    description: 'Empowering connections for visionary women. A sanctuary for female leaders and creatives to collaborate and inspire.',
+    description: 'Empowering connections for visionary women. A sanctuary for female leaders and creatives to collaborate, inspire, and elevate each other through curated experiences.',
     image: womenSocietyImg,
     link: '/circles'
   },
@@ -48,7 +48,7 @@ const clubs = [
     id: 'business-circle',
     category: 'Business',
     title: 'Business Circle',
-    description: 'Strategic connections for entrepreneurs and executives. Unlock exclusive industry insights and opportunities.',
+    description: 'Strategic connections for entrepreneurs and executives. Unlock exclusive industry insights, partnership opportunities, and expert-led masterclasses.',
     image: businessImg,
     link: '/circles'
   },
@@ -67,7 +67,7 @@ const CircleCard = ({ club }: { club: typeof clubs[0] }) => {
   return (
     <Link
       to={club.link}
-      className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40 min-w-[280px] w-[280px] md:w-auto md:min-w-0 shrink-0 snap-center"
+      className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40 min-w-[220px] w-[220px] md:min-w-0 md:w-[calc((100%-60px)/3.5)] shrink-0 snap-center"
     >
       {/* Image */}
       <div className="relative aspect-[4/5] overflow-hidden">
