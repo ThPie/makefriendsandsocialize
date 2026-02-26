@@ -9,10 +9,22 @@ export const Hero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 1.8;
-    }
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.playbackRate = 1.8;
+
+    // Fallback: show video after 3s even if canplay/loadeddata don't fire
+    const timer = setTimeout(() => {
+      video.style.opacity = '1';
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, []);
+
+  const showVideo = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    e.currentTarget.style.opacity = '1';
+  };
 
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
@@ -23,20 +35,17 @@ export const Hero = () => {
         loop
         muted
         playsInline
-        poster="/videos/hero-poster.jpg"
+        poster={`${import.meta.env.BASE_URL}videos/hero-poster.jpg`}
         className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
-        onCanPlay={(e) => {
+        onCanPlay={showVideo}
+        onLoadedData={showVideo}
+        onError={(e) => {
+          // If video fails to load, show poster by making video element visible
           e.currentTarget.style.opacity = '1';
         }}
         style={{ opacity: 0 }}
       >
-        <source src="/videos/hero-background.mp4" type="video/mp4" />
-        {/* Fallback image if video fails or isn't supported */}
-        <img
-          src="/videos/hero-poster.jpg"
-          alt="Luxury social experience"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        <source src={`${import.meta.env.BASE_URL}videos/hero-background.mp4`} type="video/mp4" />
       </video>
 
       {/* Luxury dark overlay — removed multiply to avoid absolute blackness if video is slow */}
