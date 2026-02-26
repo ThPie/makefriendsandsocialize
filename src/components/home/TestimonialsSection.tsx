@@ -87,8 +87,8 @@ export const TestimonialsSection = () => {
           <div className="lg:w-[35%] flex flex-col items-center lg:items-start text-center lg:text-left gap-6">
             <span className="section-label">MEMBER REVIEWS</span>
 
-            <h2 className="font-display italic text-3xl md:text-[36px] leading-tight text-foreground">
-              What Our Members Say
+            <h2 className="font-display text-3xl md:text-[36px] leading-tight text-foreground">
+              What Our Members <span className="italic text-[hsl(var(--accent-gold))]">Say</span>
             </h2>
 
             <p className="text-muted-foreground text-sm md:text-base max-w-md">
@@ -147,13 +147,13 @@ export const TestimonialsSection = () => {
                   {currentCards.map((t) => (
                     <div
                       key={t.id}
-                      className="relative bg-card border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 min-h-[200px] sm:min-h-0 flex flex-col transition-colors duration-200 hover:border-[hsl(var(--accent-gold))] hover:shadow-sm"
+                      className="relative bg-card border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 h-[220px] sm:h-auto sm:min-h-0 flex flex-col transition-colors duration-200 hover:border-[hsl(var(--accent-gold))] hover:shadow-sm"
                     >
                       {/* Stars at top */}
                       {t.rating && <GoldStars count={t.rating} />}
 
                       {/* Review text */}
-                      <p className="text-foreground text-xs sm:text-sm leading-relaxed mt-3 sm:mt-4 mb-auto sm:line-clamp-3">
+                      <p className="text-foreground text-xs sm:text-sm leading-relaxed mt-3 sm:mt-4 mb-auto line-clamp-4 sm:line-clamp-3">
                         {t.quote}
                       </p>
 

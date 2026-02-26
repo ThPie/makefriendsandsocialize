@@ -67,7 +67,7 @@ const CircleCard = ({ club }: { club: typeof clubs[0] }) => {
   return (
     <Link
       to={club.link}
-      className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40 min-w-[220px] w-[220px] md:min-w-0 md:w-[calc((100%-60px)/3.5)] shrink-0 snap-center"
+      className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40 min-w-[85vw] w-[85vw] md:min-w-0 md:w-[calc((100%-60px)/3.5)] shrink-0 snap-center"
     >
       {/* Image */}
       <div className="relative aspect-[4/4] overflow-hidden">
@@ -123,15 +123,31 @@ export const ClubShowcaseSection = () => {
   return (
     <section className="section-spacing bg-background overflow-hidden" id="collections">
       <div className="content-container mb-8">
-        <div className="flex items-end justify-between">
-          <div>
-            <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))] text-gold">Curated Collections</span>
-            <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1]">
-              Our <span className="italic text-[hsl(var(--accent-gold))]">Circles</span>
-            </h2>
+        <div className="text-center max-w-xl mx-auto">
+          <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Curated Collections</span>
+          <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1]">
+            Our <span className="italic text-[hsl(var(--accent-gold))]">Circles</span>
+          </h2>
+          <p className="text-muted-foreground text-sm md:text-base font-light mt-4">
+            Discover our curated communities, each designed for a unique way to connect, grow, and belong.
+          </p>
+        </div>
+      </div>
+
+      <div ref={ref} className={`transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        {/* Horizontal scroll for all screen sizes */}
+        <div className="content-container">
+          <div
+            ref={scrollRef}
+            className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4"
+          >
+            {clubs.map((club) => (
+              <CircleCard key={club.id} club={club} />
+            ))}
           </div>
-          {/* Desktop nav arrows */}
-          <div className="hidden md:flex items-center gap-2">
+
+          {/* Desktop nav arrows — below carousel */}
+          <div className="hidden md:flex items-center justify-center gap-2 mt-6">
             <button
               onClick={() => scroll('left')}
               disabled={!canScrollLeft}
@@ -148,20 +164,6 @@ export const ClubShowcaseSection = () => {
             >
               <ChevronRight className="w-4 h-4" />
             </button>
-          </div>
-        </div>
-      </div>
-
-      <div ref={ref} className={`transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        {/* Horizontal scroll for all screen sizes */}
-        <div className="content-container">
-          <div
-            ref={scrollRef}
-            className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4"
-          >
-            {clubs.map((club) => (
-              <CircleCard key={club.id} club={club} />
-            ))}
           </div>
         </div>
 
