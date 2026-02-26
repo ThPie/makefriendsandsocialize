@@ -26,45 +26,51 @@ const EventCard = ({ event, className = '' }: { event: Event, className?: string
   return (
     <TransitionLink
       to={`/events/${event.id}`}
-      className={`relative rounded-2xl overflow-hidden group border border-transparent hover:border-[hsl(var(--accent-gold))] bg-black transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[hsl(var(--accent-gold))]/20 block ${className}`}
-      style={{ aspectRatio: '2/3' }}
+      className={`rounded-2xl overflow-hidden group border border-border hover:border-[hsl(var(--accent-gold))] bg-card transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[hsl(var(--accent-gold))]/20 block ${className}`}
     >
-      {event.image_url ? (
-        <img
-          src={event.image_url}
-          alt={event.title}
-          className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-zinc-900 flex items-center justify-center">
-          <Calendar className="h-12 w-12 text-white/20" />
-        </div>
-      )}
+      {/* Image */}
+      <div className="relative w-full aspect-[16/10] overflow-hidden">
+        {event.image_url ? (
+          <img
+            src={event.image_url}
+            alt={event.title}
+            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full bg-muted flex items-center justify-center">
+            <Calendar className="h-12 w-12 text-muted-foreground/20" />
+          </div>
+        )}
+      </div>
 
-      <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-black/95 via-black/40 to-transparent z-10" />
+      {/* Card body */}
+      <div className="p-5 flex flex-col gap-3">
+        <h3 className="font-display text-lg md:text-xl text-foreground leading-tight">{event.title}</h3>
 
-      <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 z-20 flex flex-col justify-end">
-        <div className="flex flex-wrap items-center gap-1.5 mb-2 text-[hsl(var(--accent-gold))] text-xs font-semibold tracking-wider uppercase drop-shadow-sm">
-          <Calendar className="w-3.5 h-3.5" />
-          <span>{format(parseLocalDate(event.date), 'MMM d, yyyy')}</span>
-        </div>
+        <div className="flex flex-col gap-1.5 text-muted-foreground text-sm">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" />
+            <span>{format(parseLocalDate(event.date), 'MMM d, yyyy')}{event.time ? ` · ${event.time}` : ''}</span>
+          </div>
 
-        <h3 className="font-display text-2xl md:text-3xl text-white leading-tight drop-shadow-md mb-3">{event.title}</h3>
-
-        <div className="flex items-center gap-4 text-white/80 text-sm font-light">
           {(event.venue_name || event.location || event.city) && (
-            <div className="flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-[hsl(var(--accent-gold))]" />
-              <span className="truncate max-w-[140px] md:max-w-[180px]">{event.venue_name || event.city || event.location}</span>
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" />
+              <span className="truncate">{event.venue_name || event.city || event.location}</span>
             </div>
           )}
+
           {event.rsvp_count != null && event.rsvp_count > 0 && (
-            <div className="flex items-center gap-1.5">
-              <Users className="w-4 h-4 text-[hsl(var(--accent-gold))]" />
-              <span>{event.rsvp_count}</span>
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" />
+              <span>{event.rsvp_count} attending</span>
             </div>
           )}
         </div>
+
+        <span className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150 mt-1">
+          View Details →
+        </span>
       </div>
     </TransitionLink>
   );
@@ -121,7 +127,7 @@ export const EventSection = () => {
             {[1, 2, 3].map((i) =>
               <div key={i} className="rounded-2xl border border-border bg-card overflow-hidden">
                 <Skeleton className="w-full aspect-[16/10]" />
-                <div className="p-6 space-y-3">
+                <div className="p-5 space-y-3">
                   <Skeleton className="h-6 w-3/4" />
                   <Skeleton className="h-4 w-1/2" />
                   <Skeleton className="h-4 w-2/3" />
@@ -138,7 +144,7 @@ export const EventSection = () => {
               {/* Mobile: Horizontal scroll */}
               <div className={`md:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide py-4 -mx-4 px-4 transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                 {events.map((event) => (
-                  <EventCard key={event.id} event={event} className="w-[75vw] min-w-[280px] snap-center shrink-0" />
+                  <EventCard key={event.id} event={event} className="w-[72vw] min-w-[280px] snap-center shrink-0" />
                 ))}
               </div>
 

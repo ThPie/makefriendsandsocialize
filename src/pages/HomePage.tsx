@@ -32,33 +32,48 @@ const HomePage = () => {
       />
 
       {/* Above the fold */}
-      <Hero />
-      <EthosSection />
+      <div className="order-1">
+        <Hero />
+      </div>
+
+      <div className="order-4 md:order-2">
+        <EthosSection />
+      </div>
 
       {/* Curated Collections */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <ClubShowcaseSection />
-      </Suspense>
+      <div className="order-2 md:order-3">
+        <Suspense fallback={<SectionSkeleton />}>
+          <ClubShowcaseSection />
+        </Suspense>
+      </div>
 
       {/* Upcoming Gatherings */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <EventSection />
-      </Suspense>
+      <div className="order-3 md:order-4">
+        <Suspense fallback={<SectionSkeleton />}>
+          <EventSection />
+        </Suspense>
+      </div>
 
       {/* Moments from the Circle */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <PhotoGallerySection />
-      </Suspense>
+      <div className="order-5">
+        <Suspense fallback={<SectionSkeleton />}>
+          <PhotoGallerySection />
+        </Suspense>
+      </div>
 
       {/* How It Works */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <WhyChooseSection />
-      </Suspense>
+      <div className="order-6">
+        <Suspense fallback={<SectionSkeleton />}>
+          <WhyChooseSection />
+        </Suspense>
+      </div>
 
       {/* What Our Members Say — last section before footer */}
-      <Suspense fallback={<SectionSkeleton />}>
-        <TestimonialsSection />
-      </Suspense>
+      <div className="order-7">
+        <Suspense fallback={<SectionSkeleton />}>
+          <TestimonialsSection />
+        </Suspense>
+      </div>
     </main>
   );
 };

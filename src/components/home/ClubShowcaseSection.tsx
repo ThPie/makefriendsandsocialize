@@ -73,12 +73,12 @@ const datingClub = {
   link: '/slow-dating'
 };
 
-const CircleCard = ({ club, className = '' }: { club: typeof clubs[0]; className?: string }) => {
+const CircleCard = ({ club, className = '', style }: { club: typeof clubs[0]; className?: string; style?: React.CSSProperties }) => {
   return (
     <Link
       to={club.link}
       className={`relative rounded-2xl overflow-hidden group border border-transparent hover:border-[hsl(var(--accent-gold))] hover:ring-2 hover:ring-[hsl(var(--accent-gold))] hover:ring-offset-2 hover:ring-offset-black bg-black transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[hsl(var(--accent-gold))]/20 ${className}`}
-      style={{ aspectRatio: '3/4' }}
+      style={{ aspectRatio: 'var(--card-ratio, 3/4)', ...style }}
     >
       <div className="absolute top-2 right-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <div className="w-4 h-4 rounded-full bg-[hsl(var(--accent-gold))] shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
@@ -126,7 +126,8 @@ export const ClubShowcaseSection = () => {
         <div className="hidden md:grid content-container grid-cols-6 gap-6 xl:gap-8">
           {clubs.map((club, i) => {
             const colSpanClass = i < 2 ? 'md:col-span-3' : 'md:col-span-2';
-            return <CircleCard key={club.id} club={club} className={colSpanClass} />;
+            const ratio = i < 2 ? '3/4' : '3/4';
+            return <CircleCard key={club.id} club={club} className={colSpanClass} style={{ '--card-ratio': i < 2 ? '2/3' : '3/4' } as React.CSSProperties} />;
           })}
         </div>
 

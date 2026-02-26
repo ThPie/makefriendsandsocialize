@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BrandLogo } from '@/components/common/BrandLogo';
-import { Facebook, Instagram, Linkedin } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, ChevronDown } from 'lucide-react';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 
 const footerLinks = {
   experience: {
@@ -42,28 +44,65 @@ const footerLinks = {
   }
 };
 
+const FooterCollapsible = ({ section }: { section: { title: string; links: { label: string; href: string }[] } }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="border-b border-border">
+      <CollapsibleTrigger className="flex items-center justify-between w-full py-4 text-left">
+        <span className="eyebrow text-[hsl(var(--accent-gold))] text-xs">{section.title}</span>
+        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="pb-4">
+        <ul className="flex flex-col gap-2.5">
+          {section.links.map((link) => (
+            <li key={link.label}>
+              <Link
+                to={link.href}
+                className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150 text-sm"
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};
+
 export const Footer = () => {
   return (
     <footer className="w-full bg-background text-foreground transition-colors duration-200">
-      {/* Main content */}
       <div className="content-container pt-24 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
 
-          {/* Logo + tagline — spans 4 cols on desktop, full width on mobile */}
-          <div className="md:col-span-4 flex flex-col gap-4">
+        {/* ── Mobile layout ── */}
+        <div className="md:hidden flex flex-col items-center gap-6">
+          <BrandLogo width={160} height={48} />
+          <p className="text-[13px] text-muted-foreground leading-relaxed text-center max-w-[280px]">
+            A private sanctuary for meaningful connection, curated events, and genuine friendships.
+          </p>
+
+          {/* Collapsible nav sections */}
+          <div className="w-full mt-4">
+            {Object.values(footerLinks).map((section) => (
+              <FooterCollapsible key={section.title} section={section} />
+            ))}
+          </div>
+        </div>
+
+        {/* ── Desktop layout ── */}
+        <div className="hidden md:grid grid-cols-12 gap-8">
+          <div className="col-span-4 flex flex-col gap-4">
             <BrandLogo width={160} height={48} />
             <p className="text-[13px] text-muted-foreground leading-relaxed max-w-[280px]">
               A private sanctuary for meaningful connection, curated events, and genuine friendships.
             </p>
           </div>
 
-          {/* Link columns — 2x2 grid on mobile, 4 cols on desktop */}
-          <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
+          <div className="col-span-8 grid grid-cols-4 gap-6">
             {Object.values(footerLinks).map((section) => (
               <div key={section.title} className="flex flex-col gap-4">
-                <h3 className="eyebrow text-[hsl(var(--accent-gold))]">
-                  {section.title}
-                </h3>
+                <h3 className="eyebrow text-[hsl(var(--accent-gold))]">{section.title}</h3>
                 <ul className="flex flex-col gap-2.5">
                   {section.links.map((link) => (
                     <li key={link.label}>
@@ -87,33 +126,14 @@ export const Footer = () => {
             © {new Date().getFullYear()} Make Friends and Socialize LLC. All rights reserved.
           </p>
 
-          {/* Social icons */}
           <div className="flex items-center gap-5">
-            <a
-              href="https://www.facebook.com/profile.php?id=61575868888590"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150"
-              aria-label="Facebook"
-            >
+            <a href="https://www.facebook.com/profile.php?id=61575868888590" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150" aria-label="Facebook">
               <Facebook className="h-5 w-5" strokeWidth={1.5} />
             </a>
-            <a
-              href="https://www.instagram.com/makefriendsandsocialize/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150"
-              aria-label="Instagram"
-            >
+            <a href="https://www.instagram.com/makefriendsandsocialize/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150" aria-label="Instagram">
               <Instagram className="h-5 w-5" strokeWidth={1.5} />
             </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150"
-              aria-label="LinkedIn"
-            >
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150" aria-label="LinkedIn">
               <Linkedin className="h-5 w-5" strokeWidth={1.5} />
             </a>
           </div>
