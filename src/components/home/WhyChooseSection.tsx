@@ -28,7 +28,7 @@ export const WhyChooseSection = () => {
         <div className="section-header">
           <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))] text-gold">How It Works</span>
           <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1]">
-            Three Simple <span className="italic text-[hsl(var(--accent-gold))]">Steps</span>
+            Three Simple <span className="italic">Steps</span>
           </h2>
         </div>
 
@@ -50,7 +50,7 @@ export const WhyChooseSection = () => {
 
               {/* Content */}
               <div className="relative z-10">
-                <h3 className="text-xl font-light text-foreground mb-3">
+                <h3 className="text-xl font-light mb-3 text-gold">
                   {step.title}
                 </h3>
                 <p className="text-sm text-muted-foreground font-light leading-relaxed max-w-[280px] mx-auto">
