@@ -10,13 +10,13 @@ export const Hero = () => {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.playbackRate = 1.8;
+      videoRef.current.playbackRate = 0.9;
     }
   }, []);
 
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
-      {/* Full-bleed background video */}
+      {/* Full-bleed background video — object-position centers on people's faces */}
       <video
         ref={videoRef}
         autoPlay
@@ -24,14 +24,13 @@ export const Hero = () => {
         muted
         playsInline
         poster="/videos/hero-poster.jpg"
-        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+        className="absolute inset-0 w-full h-full object-cover object-[center_30%] md:object-center transition-opacity duration-1000"
         onCanPlay={(e) => {
           e.currentTarget.style.opacity = '1';
         }}
         style={{ opacity: 0 }}
       >
-        <source src="/videos/hero-background.mp4" type="video/mp4" />
-        {/* Fallback image if video fails or isn't supported */}
+        <source src="/videos/hero-bg-new.mp4" type="video/mp4" />
         <img
           src="/videos/hero-poster.jpg"
           alt="Luxury social experience"
