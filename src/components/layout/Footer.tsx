@@ -44,12 +44,12 @@ const footerLinks = {
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-background text-foreground transition-colors duration-300">
+    <footer className="w-full bg-background text-foreground transition-colors duration-200">
       {/* Main content */}
       <div className="content-container pt-24 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8">
 
-          {/* Logo + tagline — spans 4 cols */}
+          {/* Logo + tagline — spans 4 cols on desktop, full width on mobile */}
           <div className="md:col-span-4 flex flex-col gap-4">
             <BrandLogo width={160} height={48} />
             <p className="text-[13px] text-muted-foreground leading-relaxed max-w-[280px]">
@@ -57,26 +57,28 @@ export const Footer = () => {
             </p>
           </div>
 
-          {/* Link columns — each spans ~2.5 cols */}
-          {Object.values(footerLinks).map((section) => (
-            <div key={section.title} className="md:col-span-2 flex flex-col gap-5">
-              <h3 className="eyebrow">
-                {section.title}
-              </h3>
-              <ul className="flex flex-col gap-3">
-                {section.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      to={link.href}
-                      className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150 text-sm"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Link columns — 2x2 grid on mobile, 4 cols on desktop */}
+          <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-6">
+            {Object.values(footerLinks).map((section) => (
+              <div key={section.title} className="flex flex-col gap-4">
+                <h3 className="eyebrow text-[hsl(var(--accent-gold))]">
+                  {section.title}
+                </h3>
+                <ul className="flex flex-col gap-2.5">
+                  {section.links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        to={link.href}
+                        className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150 text-sm"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Bottom bar */}

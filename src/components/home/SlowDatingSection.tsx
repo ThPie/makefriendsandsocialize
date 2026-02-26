@@ -16,7 +16,7 @@ export const SlowDatingSection = () => {
       <div ref={ref} className={`content-container transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
 
         <div className="section-header">
-          <span className="section-label mb-3 block">How It Works</span>
+          <span className="section-label mb-3 block text-[hsl(var(--accent-gold))]">How It Works</span>
           <h2 className="font-display text-4xl md:text-5xl font-normal text-foreground mb-4">
             Our Simple <span className="italic text-[hsl(var(--accent-gold))]">Process</span>
           </h2>
