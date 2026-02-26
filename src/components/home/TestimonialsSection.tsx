@@ -147,34 +147,29 @@ export const TestimonialsSection = () => {
                   {currentCards.map((t) => (
                     <div
                       key={t.id}
-                      className="relative bg-card border border-border rounded-xl sm:rounded-2xl p-3 sm:p-6 transition-colors duration-200 hover:border-[hsl(var(--accent-gold))] hover:shadow-sm"
+                      className="relative bg-card border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 min-h-[200px] sm:min-h-0 flex flex-col transition-colors duration-200 hover:border-[hsl(var(--accent-gold))] hover:shadow-sm"
                     >
-                      {/* Gold quote mark */}
-                      <span className="absolute top-2 left-3 sm:top-4 sm:left-5 font-display text-2xl sm:text-4xl leading-none text-[hsl(var(--accent-gold))] opacity-60 select-none">
-                        "
-                      </span>
+                      {/* Stars at top */}
+                      {t.rating && <GoldStars count={t.rating} />}
 
                       {/* Review text */}
-                      <p className="text-foreground text-xs sm:text-sm leading-relaxed mt-5 sm:mt-6 mb-4 sm:mb-6 line-clamp-3">
+                      <p className="text-foreground text-xs sm:text-sm leading-relaxed mt-3 sm:mt-4 mb-auto sm:line-clamp-3">
                         {t.quote}
                       </p>
 
-                      {/* Reviewer info */}
-                      <div className="flex items-center justify-between mt-auto gap-1">
-                        <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
-                          <Avatar className="w-6 h-6 sm:w-8 sm:h-8 shrink-0">
-                            {t.image_url ? (
-                              <AvatarImage src={t.image_url} alt={t.name} className="object-cover" />
-                            ) : null}
-                            <AvatarFallback className="bg-[#0D2415] text-[hsl(var(--accent-gold))] text-[8px] sm:text-[10px] font-semibold">
-                              {t.name.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-muted-foreground text-[10px] sm:text-xs font-medium truncate">
-                            {formatName(t.name)}
-                          </span>
-                        </div>
-                        {t.rating && <GoldStars count={t.rating} />}
+                      {/* Avatar + name at bottom */}
+                      <div className="flex items-center gap-2 sm:gap-3 mt-4 sm:mt-5">
+                        <Avatar className="w-10 h-10 sm:w-12 sm:h-12 shrink-0">
+                          {t.image_url ? (
+                            <AvatarImage src={t.image_url} alt={t.name} className="object-cover" />
+                          ) : null}
+                          <AvatarFallback className="bg-[#0D2415] text-[hsl(var(--accent-gold))] text-xs sm:text-sm font-semibold">
+                            {t.name.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-muted-foreground text-[11px] sm:text-xs font-medium truncate">
+                          {formatName(t.name)}
+                        </span>
                       </div>
                     </div>
                   ))}
