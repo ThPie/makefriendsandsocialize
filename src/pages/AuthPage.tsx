@@ -654,114 +654,135 @@ export default function AuthPage() {
   if (step === 1) {
     return (
       <div className="min-h-screen flex relative bg-background">
-        {/* Left Side — Image panel (55%) — hidden on mobile */}
-        <div className="hidden lg:flex lg:w-[55%] relative flex-col justify-center items-center overflow-hidden">
-          <img
-            src="/images/hero-poster.webp"
-            alt="Luxury social gathering"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="relative z-10 text-center px-12">
-            <h2 className="font-display italic text-3xl xl:text-4xl text-white mb-4 leading-tight">
-              Where exceptional people<br />find their circle.
-            </h2>
-          </div>
-          {/* Member count social proof — bottom-left */}
-          <div className="absolute bottom-8 left-8 z-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5">
-            <MemberAvatars
-              avatarUrls={avatarUrls}
-              memberCount={memberCount}
-              isLoading={isLoadingStats}
-            />
+        {/* Left Side — Branding panel (50%) — hidden on mobile */}
+        <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-center px-16 xl:px-20">
+          {/* Subtle radial glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,hsl(var(--primary)/0.15),transparent_60%)]" />
+          <div className="relative z-10">
+            {/* Logo */}
+            <Link to="/" className="inline-block mb-10">
+              <BrandLogo className="h-14 w-auto" />
+            </Link>
+
+            <h1 className="font-display italic text-4xl xl:text-5xl text-foreground leading-[1.15] mb-4">
+              {mode === 'signin' ? 'Welcome back.' : 'Join the Circle.'}
+            </h1>
+            <p className="text-muted-foreground text-base max-w-md mb-10">
+              {mode === 'signin'
+                ? 'Hey welcome back! We hope you had a great day.'
+                : referralCode
+                  ? `You've been invited to join our exclusive community.`
+                  : 'Submit your application to begin your journey.'
+              }
+            </p>
+
+            {/* Google Sign-In */}
+            <button
+              onClick={async () => {
+                clearFormFeedback();
+                try {
+                  const { lovable } = await import('@/integrations/lovable/index');
+                  const result = await lovable.auth.signInWithOAuth('google', {
+                    redirect_uri: window.location.origin,
+                  });
+                  if (result.error) {
+                    setFormError(result.error.message || 'Could not connect to Google. Please try again.');
+                  }
+                } catch (err) {
+                  setFormError('Could not connect to Google. Please try again.');
+                }
+              }}
+              disabled={isSubmitting || isRateLimited}
+              className="flex items-center gap-3 py-3.5 px-6 rounded-full border border-border bg-card hover:bg-accent text-foreground font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed mb-10"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+              </svg>
+              Login with Google
+            </button>
+
+            {/* Mode toggle */}
+            <p className="text-sm text-muted-foreground">
+              {mode === 'signin' ? "Not yet a member?" : 'Already a member?'}{' '}
+              <button
+                onClick={() => {
+                  setMode(mode === 'signin' ? 'signup' : 'signin');
+                  setStep(1);
+                  setAuthMethod('email');
+                  clearFormFeedback();
+                }}
+                className="text-foreground font-semibold hover:text-[hsl(var(--accent-gold))] transition-colors"
+              >
+                {mode === 'signin' ? 'Sign Up' : 'Sign In'}
+              </button>
+            </p>
+
+            {/* Member Avatars — up to 20 */}
+            <div className="mt-12">
+              <div className="flex items-center -space-x-2 mb-3">
+                {avatarUrls.slice(0, 20).map((url, i) => (
+                  <img
+                    key={i}
+                    src={url}
+                    alt="Member"
+                    className="w-8 h-8 rounded-full border-2 border-background object-cover"
+                    loading="lazy"
+                  />
+                ))}
+                {memberCount > 20 && (
+                  <div className="w-8 h-8 rounded-full border-2 border-background bg-primary/30 flex items-center justify-center text-[10px] font-bold text-foreground">
+                    +{memberCount > 1000 ? `${Math.floor(memberCount / 1000)}k` : memberCount - 20}
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {memberCount > 0 ? `${memberCount.toLocaleString()}+ members` : 'Join our community'}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Right Side — Form (45%) */}
-        <div className="w-full lg:w-[45%] relative flex flex-col justify-center px-8 md:px-16 py-12 bg-popover">
-          <div className="relative z-10 max-w-md mx-auto w-full animate-fade-in">
-            {/* Logo */}
-            <Link to="/" className="inline-block mb-10">
-              <BrandLogo className="h-14 w-auto drop-shadow-sm" />
-            </Link>
+        {/* Right Side — Glassmorphic Form Card (50%) */}
+        <div className="w-full lg:w-1/2 relative flex flex-col justify-center items-center px-6 md:px-12 py-12">
+          {/* Mobile-only logo */}
+          <Link to="/" className="inline-block mb-8 lg:hidden">
+            <BrandLogo className="h-12 w-auto" />
+          </Link>
 
+          {/* Mobile-only header */}
+          <div className="mb-6 lg:hidden">
+            <h1 className="font-display text-3xl text-foreground leading-[1.15] mb-2">
+              {mode === 'signin' ? 'Welcome back.' : 'Join the Circle.'}
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              {mode === 'signin' ? 'Sign in to access your membership.' : 'Submit your application to begin.'}
+            </p>
+          </div>
+
+          {/* Glassmorphic Card */}
+          <div className="w-full max-w-md bg-foreground/[0.04] backdrop-blur-2xl border border-foreground/[0.08] rounded-2xl p-8 shadow-[0_8px_32px_rgba(0,0,0,0.12)] animate-fade-in">
             {/* Referral Banner */}
             {referralCode && referrerName && mode === 'signup' && (
               <div className="mb-6 p-4 bg-primary/20 border border-primary/30 rounded-xl">
-                <p className="text-sm text-white/90">
+                <p className="text-sm text-foreground/90">
                   🎉 <strong>{referrerName}</strong> invited you! Sign up to get <span className="text-primary font-semibold">10% off</span> your first month.
                 </p>
               </div>
             )}
 
-            {/* Header */}
-            <div className="mb-8">
-              <h1 className="font-display text-3xl md:text-[40px] text-foreground leading-[1.15]">
-                {mode === 'signin' ? 'Welcome back.' : 'Join the Circle.'}
-              </h1>
-              <p className="text-muted-foreground text-sm mt-2">
-                {mode === 'signin'
-                  ? 'Sign in to access your membership.'
-                  : referralCode
-                    ? `You've been invited to join our exclusive community.`
-                    : 'Submit your application to begin.'
-                }
-              </p>
-            </div>
-
-            {/* Social Sign-In Buttons */}
-            <div className="flex gap-4 mb-6">
-              <button
-                onClick={async () => {
-                  clearFormFeedback();
-                  try {
-                    const { lovable } = await import('@/integrations/lovable/index');
-                    const result = await lovable.auth.signInWithOAuth('google', {
-                      redirect_uri: window.location.origin,
-                    });
-                    if (result.error) {
-                      setFormError(result.error.message || 'Could not connect to Google. Please try again.');
-                    }
-                  } catch (err) {
-                    setFormError('Could not connect to Google. Please try again.');
-                  }
-                }}
-                disabled={isSubmitting || isRateLimited}
-                className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-[10px] border border-border bg-card hover:bg-accent text-foreground font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                </svg>
-                Google
-              </button>
-
-            </div>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-popover px-3 text-muted-foreground text-xs">or continue with email</span>
-              </div>
-            </div>
-
-
-
             {/* Inline Form Feedback */}
             {formError && (
-              <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm mb-4">
                 <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
                 <span>{formError}</span>
               </div>
             )}
 
             {formSuccess && (
-              <div className="flex items-start gap-2 p-3 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400 text-sm">
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-primary/10 border border-primary/20 text-primary text-sm mb-4">
                 <CheckCircle className="h-4 w-4 mt-0.5 shrink-0" />
                 <span>{formSuccess}</span>
               </div>
@@ -770,7 +791,7 @@ export default function AuthPage() {
             {/* Form */}
             <div className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Email Address</Label>
+                <Label htmlFor="email" className="text-xs uppercase tracking-wider text-muted-foreground font-medium ml-1">E-Mail</Label>
                 <ValidatedInput
                   id="email"
                   type="email"
@@ -783,14 +804,14 @@ export default function AuthPage() {
                   }}
                   error={emailTouched ? emailError : undefined}
                   success={emailTouched && !emailError && email.length > 0}
-                  icon={<Mail className="h-5 w-5 text-white/40" />}
+                  icon={<Mail className="h-5 w-5 text-muted-foreground/60" />}
                   autoComplete="email"
                   inputMode="email"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Password</Label>
+                <Label htmlFor="password" className="text-xs uppercase tracking-wider text-muted-foreground font-medium ml-1">Password</Label>
                 <PasswordInput
                   id="password"
                   placeholder="••••••••"
@@ -806,15 +827,14 @@ export default function AuthPage() {
                   error={mode === 'signup' ? passwordError : undefined}
                   autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
                 />
-                {/* Password breach warning - shown while typing */}
                 {mode === 'signup' && passwordServerError && (
-                  <div className="flex items-start gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm mt-2">
+                  <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm mt-2">
                     <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
                     <span>{passwordServerError}</span>
                   </div>
                 )}
                 {mode === 'signup' && isCheckingPassword && (
-                  <p className="text-xs text-white/40 flex items-center gap-2 mt-1">
+                  <p className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
                     <Loader2 className="h-3 w-3 animate-spin" />
                     Checking password security...
                   </p>
@@ -824,7 +844,7 @@ export default function AuthPage() {
               {mode === 'signup' && (
                 <>
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Confirm Password</Label>
+                    <Label htmlFor="confirmPassword" className="text-xs uppercase tracking-wider text-muted-foreground font-medium ml-1">Confirm Password</Label>
                     <PasswordInput
                       id="confirmPassword"
                       placeholder="••••••••"
@@ -841,24 +861,24 @@ export default function AuthPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">First Name</Label>
+                      <Label htmlFor="firstName" className="text-xs uppercase tracking-wider text-muted-foreground font-medium ml-1">First Name</Label>
                       <ValidatedInput
                         id="firstName"
                         placeholder="James"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        icon={<User className="h-5 w-5 text-white/40" />}
+                        icon={<User className="h-5 w-5 text-muted-foreground/60" />}
                         autoComplete="given-name"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-xs uppercase tracking-wider text-white/60 font-medium ml-1">Last Name</Label>
+                      <Label htmlFor="lastName" className="text-xs uppercase tracking-wider text-muted-foreground font-medium ml-1">Last Name</Label>
                       <Input
                         id="lastName"
                         placeholder="Harrington"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20"
+                        className="bg-foreground/5 border-foreground/10 text-foreground placeholder:text-muted-foreground/50 focus:border-primary/50 focus:ring-primary/20"
                         autoComplete="family-name"
                       />
                     </div>
@@ -873,13 +893,13 @@ export default function AuthPage() {
                       id="remember"
                       checked={rememberMe}
                       onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                      className="border-white/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                      className="border-muted-foreground/30 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                     />
-                    <label htmlFor="remember" className="text-sm text-white/60 cursor-pointer">
+                    <label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
                       Remember me
                     </label>
                   </div>
-                  <Link to="/auth/forgot-password" className="text-xs text-white/50 hover:text-[hsl(var(--accent-gold))] transition-colors">
+                  <Link to="/auth/forgot-password" className="text-xs text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors">
                     Forgot password?
                   </Link>
                 </div>
@@ -895,7 +915,7 @@ export default function AuthPage() {
                 </div>
               )}
 
-              {/* CAPTCHA - shown after 3 failed attempts */}
+              {/* CAPTCHA */}
               {requiresCaptcha && !isRateLimited && (
                 <SimpleCaptcha
                   onVerify={setCaptchaVerified}
@@ -906,13 +926,13 @@ export default function AuthPage() {
               <Button
                 onClick={() => { requestAnimationFrame(() => { setTimeout(() => { handleStep1Submit(); }, 0); }); }}
                 disabled={isSubmitting || isRateLimited || (requiresCaptcha && !captchaVerified)}
-                className="w-full gold-fill hover:opacity-90 text-white font-medium rounded-[10px] h-12 transition-opacity duration-150"
+                className="w-full gold-fill hover:opacity-90 text-white font-medium rounded-full h-12 transition-opacity duration-150"
                 size="lg"
               >
                 {isSubmitting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : mode === 'signin' ? (
-                  'Sign In'
+                  'LOGIN'
                 ) : (
                   <>
                     Continue
@@ -922,19 +942,44 @@ export default function AuthPage() {
               </Button>
             </div>
 
-            <p className="text-center text-sm text-white/50">
-              {mode === 'signin' ? "Don't have an account?" : 'Already a member?'}{' '}
+            {/* Mobile-only: Google + toggle */}
+            <div className="lg:hidden mt-6 space-y-4">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-transparent px-3 text-muted-foreground text-xs backdrop-blur-sm">or</span>
+                </div>
+              </div>
               <button
-                onClick={() => {
-                  setMode(mode === 'signin' ? 'signup' : 'signin');
-                  setStep(1);
-                  setAuthMethod('email');
+                onClick={async () => {
+                  clearFormFeedback();
+                  try {
+                    const { lovable } = await import('@/integrations/lovable/index');
+                    const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: window.location.origin });
+                    if (result.error) setFormError(result.error.message || 'Could not connect to Google.');
+                  } catch { setFormError('Could not connect to Google.'); }
                 }}
-                className="text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] font-medium transition-colors"
+                disabled={isSubmitting || isRateLimited}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-full border border-border bg-card hover:bg-accent text-foreground font-medium transition-all duration-200 disabled:opacity-50"
               >
-                {mode === 'signin' ? 'Sign up' : 'Sign In'}
+                <svg className="h-5 w-5" viewBox="0 0 24 24">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                </svg>
+                Login with Google
               </button>
-            </p>
+              <p className="text-center text-sm text-muted-foreground">
+                {mode === 'signin' ? "Not yet a member?" : 'Already a member?'}{' '}
+                <button
+                  onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setStep(1); clearFormFeedback(); }}
+                  className="text-foreground font-semibold hover:text-[hsl(var(--accent-gold))] transition-colors"
+                >
+                  {mode === 'signin' ? 'Sign Up' : 'Sign In'}
+                </button>
+              </p>
+            </div>
           </div>
         </div>
       </div>
