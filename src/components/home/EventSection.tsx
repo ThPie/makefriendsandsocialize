@@ -29,7 +29,7 @@ const EventCard = ({ event, className = '' }: { event: Event, className?: string
       className={`rounded-2xl overflow-hidden group border border-border hover:border-[hsl(var(--accent-gold))] bg-card transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-[hsl(var(--accent-gold))]/20 block ${className}`}
     >
       {/* Image */}
-      <div className="relative w-full aspect-square overflow-hidden">
+      <div className="relative w-full aspect-[16/10] overflow-hidden">
         {event.image_url ? (
           <img
             src={event.image_url}
