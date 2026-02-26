@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Lightbox } from '@/components/ui/lightbox';
-import { optimizeGoogleImageUrl } from '@/lib/image-utils';
-import { LazyImage } from '@/components/ui/lazy-image';
 
 const galleryPhotos = [
   { id: '1', image_url: '/images/gallery/event-1.jpg', title: 'Cheers at the Lounge', category: 'Social' },
@@ -26,13 +24,34 @@ export const PhotoGallerySection = () => {
   }));
 
   const openLightbox = (index: number) => {
-    // Keep index within bounds since we duplicate photos in the marquee
     setLightboxIndex(index % galleryPhotos.length);
     setLightboxOpen(true);
   };
 
-  // Use only the first 3 photos for the static grid
-  const displayPhotos = galleryPhotos.slice(0, 3);
+  // Split into two columns for masonry staggered effect
+  const leftColumn = galleryPhotos.filter((_, i) => i % 2 === 0);
+  const rightColumn = galleryPhotos.filter((_, i) => i % 2 === 1);
+
+  const getOriginalIndex = (photo: typeof galleryPhotos[0]) =>
+    galleryPhotos.findIndex((p) => p.id === photo.id);
+
+  const PhotoCard = ({ photo, tall = false }: { photo: typeof galleryPhotos[0]; tall?: boolean }) => (
+    <div
+      className={`relative overflow-hidden rounded-2xl group cursor-pointer ${tall ? 'aspect-[3/4]' : 'aspect-square'}`}
+      onClick={() => openLightbox(getOriginalIndex(photo))}
+    >
+      <img
+        src={photo.image_url}
+        alt={photo.title}
+        loading="lazy"
+        className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end p-6">
+        <span className="text-white/70 text-xs uppercase tracking-widest mb-1">{photo.category}</span>
+        <span className="text-white font-display text-xl">{photo.title}</span>
+      </div>
+    </div>
+  );
 
   return (
     <section
@@ -48,48 +67,19 @@ export const PhotoGallerySection = () => {
           </h2>
         </div>
 
-        {/* 3-Photo Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {/* Top/Large Photo (spans full width on mobile, 1 col on desktop if we wanted, but let's make it span full width row for bento effect) */}
-          <div className="md:col-span-2 relative aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-2xl group cursor-pointer" onClick={() => openLightbox(0)}>
-            <img
-              src={displayPhotos[0].image_url}
-              alt={displayPhotos[0].title}
-              loading="lazy"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
-              <span className="text-white text-xs uppercase tracking-widest mb-2">{displayPhotos[0].category}</span>
-              <span className="text-white font-display text-3xl">{displayPhotos[0].title}</span>
-            </div>
+        {/* Masonry 2-column staggered grid */}
+        <div className="grid grid-cols-2 gap-3 md:gap-4">
+          {/* Left column */}
+          <div className="flex flex-col gap-3 md:gap-4">
+            {leftColumn.map((photo, i) => (
+              <PhotoCard key={photo.id} photo={photo} tall={i === 0} />
+            ))}
           </div>
-
-          {/* Bottom Left Photo */}
-          <div className="relative aspect-square md:aspect-[4/3] overflow-hidden rounded-2xl group cursor-pointer" onClick={() => openLightbox(1)}>
-            <img
-              src={displayPhotos[1].image_url}
-              alt={displayPhotos[1].title}
-              loading="lazy"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
-              <span className="text-white text-xs uppercase tracking-widest mb-2">{displayPhotos[1].category}</span>
-              <span className="text-white font-display text-2xl">{displayPhotos[1].title}</span>
-            </div>
-          </div>
-
-          {/* Bottom Right Photo */}
-          <div className="relative aspect-square md:aspect-[4/3] overflow-hidden rounded-2xl group cursor-pointer" onClick={() => openLightbox(2)}>
-            <img
-              src={displayPhotos[2].image_url}
-              alt={displayPhotos[2].title}
-              loading="lazy"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
-              <span className="text-white text-xs uppercase tracking-widest mb-2">{displayPhotos[2].category}</span>
-              <span className="text-white font-display text-2xl">{displayPhotos[2].title}</span>
-            </div>
+          {/* Right column — offset for stagger */}
+          <div className="flex flex-col gap-3 md:gap-4 mt-8 md:mt-12">
+            {rightColumn.map((photo, i) => (
+              <PhotoCard key={photo.id} photo={photo} tall={i === 1} />
+            ))}
           </div>
         </div>
 
@@ -97,7 +87,7 @@ export const PhotoGallerySection = () => {
         <div className="mt-16 text-center">
           <TransitionLink
             to="/gallery"
-            className="inline-flex items-center justify-center rounded-full px-8 py-4 text-sm tracking-[0.15em] uppercase font-medium border border-white/20 bg-white/5 text-white hover:bg-white/10 transition-colors duration-200"
+            className="inline-flex items-center justify-center rounded-full px-8 py-4 text-sm tracking-[0.15em] uppercase font-medium border border-border bg-transparent text-foreground hover:bg-muted transition-colors duration-200"
           >
             See More
           </TransitionLink>
