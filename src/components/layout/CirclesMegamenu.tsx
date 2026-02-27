@@ -93,39 +93,39 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                 </div>
                             </div>
 
-                            {/* Column 2: Coming Soon */}
+                            {/* Column 2: More Circles */}
                             <div>
-                                <h3 className="text-muted-foreground font-light text-sm mb-3">Upcoming</h3>
+                                <h3 className="text-muted-foreground font-light text-sm mb-3">More Circles</h3>
                                 <div className="flex flex-col gap-2">
-                                    <div className="bg-transparent border border-border/50 rounded-2xl p-4 flex items-center gap-4 opacity-70">
-                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent">
-                                            <Circle strokeWidth={1} className="w-5 h-5 text-muted-foreground" />
+                                    <TransitionLink to="/circles/the-partners" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                                            <Circle strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
                                         <div>
-                                            <h4 className="text-foreground font-medium text-sm">Couple's Circle</h4>
+                                            <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">Couple's Circle</h4>
                                             <p className="text-muted-foreground font-light text-[13px] mt-0.5">Exclusive experiences for couples.</p>
                                         </div>
-                                    </div>
+                                    </TransitionLink>
 
-                                    <div className="bg-transparent border border-border/50 rounded-2xl p-4 flex items-center gap-4 opacity-70">
-                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent">
-                                            <Circle strokeWidth={1} className="w-5 h-5 text-muted-foreground" />
+                                    <TransitionLink to="/circles/the-pursuits" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                                            <Circle strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
                                         <div>
-                                            <h4 className="text-foreground font-medium text-sm">Active & Outdoor</h4>
+                                            <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">Active & Outdoor</h4>
                                             <p className="text-muted-foreground font-light text-[13px] mt-0.5">Adventures and active lifestyle.</p>
                                         </div>
-                                    </div>
+                                    </TransitionLink>
 
-                                    <div className="bg-transparent border border-border/50 rounded-2xl p-4 flex items-center gap-4 opacity-70">
-                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent">
-                                            <Circle strokeWidth={1} className="w-5 h-5 text-muted-foreground" />
+                                    <TransitionLink to="/circles/the-ladies-society" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                                            <Circle strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
                                         <div>
-                                            <h4 className="text-foreground font-medium text-sm">The Ladies Society</h4>
+                                            <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">The Ladies Society</h4>
                                             <p className="text-muted-foreground font-light text-[13px] mt-0.5">Inspiring females connecting.</p>
                                         </div>
-                                    </div>
+                                    </TransitionLink>
                                 </div>
                             </div>
 

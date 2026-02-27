@@ -42,7 +42,7 @@ const ThePursuitsPage = () => {
         <section className="relative h-[80vh] flex items-center overflow-hidden">
           <div className="absolute inset-0">
             <img
-              src="/images/gallery/event-8.jpg"
+              src="/images/gallery/golf-outdoor.jpg"
               alt="Active pursuits"
               className="w-full h-full object-cover"
             />
