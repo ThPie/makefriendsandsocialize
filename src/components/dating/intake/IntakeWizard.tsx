@@ -193,9 +193,9 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
     const currentStepTitle = INTAKE_STEPS.find(s => s.number === step)?.title || '';
 
     return (
-        <div className="flex min-h-[calc(100vh-80px)]">
+        <div className="flex min-h-[calc(100dvh-68px)] w-full">
             {/* Desktop Sidebar */}
-            <aside className="hidden md:flex w-[280px] shrink-0 flex-col bg-[#0a0f0b] p-6 rounded-l-2xl border-r border-white/5">
+            <aside className="hidden md:flex w-[300px] lg:w-[320px] shrink-0 flex-col bg-[hsl(var(--surface))] p-6 lg:p-8 border-r border-border">
                 <IntakeProgress
                     currentStep={step}
                     totalSteps={totalSteps}
@@ -206,7 +206,7 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
             </aside>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex-1 flex flex-col min-w-0 bg-background">
                 {/* Mobile Progress */}
                 <div className="md:hidden px-4 pt-4">
                     <IntakeProgress
@@ -219,24 +219,24 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                 </div>
 
                 {/* Desktop Step Header */}
-                <div className="hidden md:block px-8 pt-8 pb-2">
+                <div className="hidden md:block px-8 lg:px-16 2xl:px-24 pt-10 pb-4">
                     <p className="text-[hsl(var(--accent-gold))] text-xs uppercase tracking-widest font-medium mb-1">
                         Step {step} of {totalSteps}
                     </p>
-                    <h2 className="font-display text-2xl text-white">
+                    <h2 className="font-display text-3xl text-foreground">
                         {currentStepTitle}
                     </h2>
                 </div>
 
                 {/* Form Content */}
-                <div className="flex-1 overflow-auto px-4 md:px-8 py-6">
-                    <div className="min-h-[500px]">
+                <div className="flex-1 overflow-auto px-4 md:px-8 lg:px-16 2xl:px-24 py-6">
+                    <div className="min-h-[500px] max-w-2xl">
                         {renderStep()}
                     </div>
                 </div>
 
                 {/* Navigation Buttons */}
-                <div className="flex justify-between items-center py-4 px-4 md:px-8 border-t border-white/10">
+                <div className="flex justify-between items-center py-4 px-4 md:px-8 lg:px-16 2xl:px-24 border-t border-border">
                     <Button
                         variant="ghost"
                         onClick={handleBack}
