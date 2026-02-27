@@ -13,7 +13,7 @@ const values = [
   {
     icon: Award,
     title: 'Quality',
-    desc: 'From venues to catering, every detail is meticulously curated for perfection.',
+    desc: 'From venues to catering, every detail is meticulously refined for perfection.',
   },
   {
     icon: Lock,
@@ -127,7 +127,7 @@ const AboutPage = () => {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
           >
-            Curating exclusive luxury social experiences for discerning individuals seeking meaningful connections.
+            Designing exclusive luxury social experiences for discerning individuals seeking meaningful connections.
           </motion.p>
         </div>
 
@@ -182,7 +182,7 @@ const AboutPage = () => {
                 Cultivating Connection
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                To cultivate a vibrant network of like-minded individuals through meticulously curated luxury experiences that foster genuine connections.
+                To cultivate a vibrant network of like-minded individuals through meticulously crafted luxury experiences that foster genuine connections.
               </p>
               <p className="text-muted-foreground leading-relaxed">
                 We believe the most valuable asset in life is not wealth or status, but the quality of relationships we build.
@@ -316,7 +316,7 @@ const AboutPage = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-muted-foreground text-lg md:text-xl mb-10 max-w-xl mx-auto"
           >
-            Experience the difference of curated connections and exclusive events designed for discerning individuals.
+            Experience the difference of thoughtfully designed connections and exclusive events for discerning individuals.
           </motion.p>
 
           <motion.div

@@ -53,7 +53,7 @@ const menuItems = [
   { title: 'My Profile', url: '/portal/profile', icon: User, requiresApproval: false },
   { title: 'The Network', url: '/portal/network', icon: Users, requiresApproval: true },
   { title: 'Connections', url: '/portal/connections', icon: Heart, requiresApproval: true },
-  { title: 'Intentional Connections', url: '/portal/slow-dating', icon: Heart, requiresApproval: true },
+  { title: 'Slow Dating', url: '/portal/slow-dating', icon: Heart, requiresApproval: true },
   { title: 'Founder Profile', url: '/portal/business', icon: Users, requiresApproval: false },
   { title: 'Events', url: '/portal/events', icon: Calendar, requiresApproval: false },
   { title: 'Perks', url: '/portal/perks', icon: Gift, requiresApproval: false },

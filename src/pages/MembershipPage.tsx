@@ -200,7 +200,7 @@ const MembershipPage = () => {
   ];
 
   const valueHighlights = [
-    { icon: Heart, label: 'Slow Dating', sublabel: 'Curated matchmaking', color: 'text-primary', bg: 'bg-primary/10' },
+    { icon: Heart, label: 'Slow Dating', sublabel: 'Handpicked matchmaking', color: 'text-primary', bg: 'bg-primary/10' },
     { icon: Gift, label: 'Partner Perks', sublabel: 'Exclusive discounts', color: 'text-[hsl(var(--accent-gold))]', bg: 'bg-[hsl(var(--accent-gold))]/10' },
     { icon: Briefcase, label: 'Business Leads', sublabel: 'Patrons receive leads', color: 'text-primary', bg: 'bg-primary/10' },
   ];
@@ -210,7 +210,7 @@ const MembershipPage = () => {
     <div className="flex-1 w-full flex flex-col items-center bg-background">
       <SEO
         title="Exclusive Membership & Benefits"
-        description="Unlock access to curated events, personalized matchmaking, and a private network of high-achieving professionals. Start your 30-day trial today."
+        description="Unlock access to exclusive events, personalized matchmaking, and a private network of high-achieving professionals. Start your 30-day trial today."
         keywords="social club membership, private club application, exclusive networking, slow dating membership NYC"
       />
       {/* Hero Section */}
@@ -330,7 +330,7 @@ const MembershipPage = () => {
             </h2>
             <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
               MakeFriends Socialize is founded on the principle that the most meaningful moments are shared.
-              We provide a private, curated environment for leaders, innovators, and connoisseurs to connect.
+              We provide a private, refined environment for leaders, innovators, and connoisseurs to connect.
             </p>
           </div>
 
@@ -365,9 +365,9 @@ const MembershipPage = () => {
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <Users className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-foreground text-xl font-bold mb-2 font-display">Curated Community</h3>
+                <h3 className="text-foreground text-xl font-bold mb-2 font-display">Vetted Community</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Join a vetted network of peers who share a passion for culture, connection, and elevated experiences.
+                  Join a select network of peers who share a passion for culture, connection, and elevated experiences.
                 </p>
               </div>
             </motion.div>
@@ -388,7 +388,7 @@ const MembershipPage = () => {
             </h2>
             <p className="text-foreground/80 text-base italic max-w-2xl mx-auto mb-6 border-l-2 border-primary pl-4 text-left">
               Make Friends & Socialize is a private social club — not a dating app.
-              We create intentional connections through curated events, community, and introductions.
+              We create intentional connections through tailored events, community, and introductions.
             </p>
             <p className="text-muted-foreground text-lg mb-8">
               Select the tier that best aligns with your vision. Start with a 30-day free trial.

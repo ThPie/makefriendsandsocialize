@@ -52,6 +52,20 @@ export const Header = () => {
           {/* Circles Megamenu */}
           <CirclesMegamenu isTransparent={!scrolled} />
 
+          {/* Desktop nav links */}
+          {['Events', 'Membership', 'Blog'].map((label) => (
+            <TransitionLink
+              key={label}
+              to={label === 'Blog' ? '/journal' : `/${label.toLowerCase()}`}
+              className={cn(
+                "hidden md:inline-block text-sm font-light transition-colors duration-150",
+                !scrolled ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
+              )}
+            >
+              {label}
+            </TransitionLink>
+          ))}
+
           {/* Sign In — text link, desktop only */}
           {!user && (
             <TransitionLink
@@ -76,17 +90,6 @@ export const Header = () => {
               </Avatar>
             </TransitionLink>
           )}
-
-          {/* Explore — gold pill button, desktop only */}
-          <Button
-            asChild
-            size="sm"
-            className="hidden md:inline-flex rounded-full px-6 h-9 text-xs tracking-widest uppercase font-medium gold-fill border-0 hover:opacity-90 transition-opacity duration-150"
-          >
-            <TransitionLink to="/events">
-              Explore
-            </TransitionLink>
-          </Button>
 
           {/* Theme Toggle */}
           <ThemeToggle isTransparent={!scrolled} />

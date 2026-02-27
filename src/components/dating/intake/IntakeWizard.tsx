@@ -1,6 +1,6 @@
 /**
  * IntakeWizard - Multi-step intake form orchestrator
- * Handles navigation between steps, validation, and form submission
+ * Split-screen layout: dark sidebar with vertical progress | form content
  */
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -41,7 +41,6 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
             transition={{ duration: 0.6, ease: 'easeOut' }}
             className="flex flex-col items-center text-center px-4 py-16 space-y-8 max-w-xl mx-auto"
         >
-            {/* Animated heart */}
             <motion.div
                 animate={{ scale: [1, 1.15, 1] }}
                 transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
@@ -50,7 +49,6 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
                 <Heart className="h-12 w-12 text-[hsl(var(--accent-gold))] fill-[hsl(var(--accent-gold))]" />
             </motion.div>
 
-            {/* Heading */}
             <div className="space-y-3">
                 <h2 className="font-display text-3xl md:text-4xl font-light text-[hsl(var(--accent-gold))]">
                     Application Received 🌿
@@ -60,7 +58,6 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
                 </p>
             </div>
 
-            {/* Timeline box */}
             <div className="w-full bg-white/[0.04] border border-white/10 rounded-xl p-6 text-left space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                     <Clock className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
@@ -80,7 +77,6 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
                 ))}
             </div>
 
-            {/* Email notice */}
             <div className="flex items-start gap-3 bg-white/[0.03] border border-white/10 rounded-xl p-5 w-full text-left">
                 <Mail className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" />
                 <p className="text-white/60 text-sm leading-relaxed">
@@ -88,7 +84,6 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
                 </p>
             </div>
 
-            {/* CTAs */}
             <div className="flex flex-col items-center gap-4 w-full pt-2">
                 <Button
                     onClick={() => navigate('/portal')}
@@ -125,7 +120,6 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
         submit,
     } = form;
 
-    // Keyboard navigation — always registered, gated internally
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (
@@ -192,15 +186,16 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
         title: s.title,
     }));
 
-    // Show success screen after submission (after all hooks)
     if (isSubmitted) {
         return <SuccessView displayName={formData.display_name} />;
     }
 
+    const currentStepTitle = INTAKE_STEPS.find(s => s.number === step)?.title || '';
+
     return (
-        <div className="space-y-8">
-            {/* Progress Indicator */}
-            <div className="px-2">
+        <div className="flex min-h-[calc(100vh-80px)]">
+            {/* Desktop Sidebar */}
+            <aside className="hidden md:flex w-[280px] shrink-0 flex-col bg-[#0a0f0b] p-6 rounded-l-2xl border-r border-white/5">
                 <IntakeProgress
                     currentStep={step}
                     totalSteps={totalSteps}
@@ -208,71 +203,94 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                     onStepClick={handleStepClick}
                     completedSteps={form.completedSteps}
                 />
-            </div>
+            </aside>
 
-            {/* Form Card */}
-            <div className="min-h-[600px] p-1">
-                {renderStep()}
-            </div>
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col min-w-0">
+                {/* Mobile Progress */}
+                <div className="md:hidden px-4 pt-4">
+                    <IntakeProgress
+                        currentStep={step}
+                        totalSteps={totalSteps}
+                        steps={progressSteps}
+                        onStepClick={handleStepClick}
+                        completedSteps={form.completedSteps}
+                    />
+                </div>
 
-            {/* Navigation Buttons */}
-            <div className="flex justify-between items-center py-6 px-4 border-t border-white/10 mt-8">
-                <Button
-                    variant="ghost"
-                    onClick={handleBack}
-                    disabled={step === 1}
-                    className="gap-2 text-white/50 hover:text-white hover:bg-white/5 disabled:opacity-30"
-                    aria-label="Go to previous step"
-                >
-                    <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-                    Back
-                </Button>
-
-                <div className="flex items-center gap-4">
-                    {isSaving ? (
-                        <span className="hidden md:flex items-center gap-1.5 text-xs text-white/30">
-                            <Loader2 className="h-3 w-3 animate-spin" />
-                            Saving…
-                        </span>
-                    ) : (
-                        <span className="hidden md:flex items-center gap-1.5 text-xs text-white/20">
-                            <CheckCircle className="h-3 w-3" />
-                            Auto-saved
-                        </span>
-                    )}
-                    <span className="text-xs text-white/30 font-medium uppercase tracking-widest hidden md:block">
+                {/* Desktop Step Header */}
+                <div className="hidden md:block px-8 pt-8 pb-2">
+                    <p className="text-[hsl(var(--accent-gold))] text-xs uppercase tracking-widest font-medium mb-1">
                         Step {step} of {totalSteps}
-                    </span>
+                    </p>
+                    <h2 className="font-display text-2xl text-white">
+                        {currentStepTitle}
+                    </h2>
+                </div>
 
-                    {step < totalSteps ? (
-                        <Button
-                            onClick={handleNext}
-                            className="gap-2 bg-[hsl(var(--accent-gold))] text-black hover:bg-[hsl(var(--accent-gold))]/90 px-8 py-6 text-md font-medium rounded-full shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300"
-                            aria-label="Go to next step"
-                        >
-                            Next Step
-                            <ChevronRight className="h-4 w-4" aria-hidden="true" />
-                        </Button>
-                    ) : (
-                        <Button
-                            onClick={handleSubmit}
-                            disabled={isSubmitting}
-                            className="gap-2 bg-[hsl(var(--accent-gold))] text-black hover:bg-[hsl(var(--accent-gold))]/90 px-8 py-6 text-md font-medium rounded-full shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300"
-                            aria-label="Submit application"
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                                    Submitting...
-                                </>
-                            ) : (
-                                <>
-                                    <Heart className="h-4 w-4 fill-black" aria-hidden="true" />
-                                    Submit Application
-                                </>
-                            )}
-                        </Button>
-                    )}
+                {/* Form Content */}
+                <div className="flex-1 overflow-auto px-4 md:px-8 py-6">
+                    <div className="min-h-[500px]">
+                        {renderStep()}
+                    </div>
+                </div>
+
+                {/* Navigation Buttons */}
+                <div className="flex justify-between items-center py-4 px-4 md:px-8 border-t border-white/10">
+                    <Button
+                        variant="ghost"
+                        onClick={handleBack}
+                        disabled={step === 1}
+                        className="gap-2 text-white/50 hover:text-white hover:bg-white/5 disabled:opacity-30"
+                        aria-label="Go to previous step"
+                    >
+                        <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                        Back
+                    </Button>
+
+                    <div className="flex items-center gap-4">
+                        {isSaving ? (
+                            <span className="hidden md:flex items-center gap-1.5 text-xs text-white/30">
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                                Saving…
+                            </span>
+                        ) : (
+                            <span className="hidden md:flex items-center gap-1.5 text-xs text-white/20">
+                                <CheckCircle className="h-3 w-3" />
+                                Auto-saved
+                            </span>
+                        )}
+
+                        {step < totalSteps ? (
+                            <Button
+                                onClick={handleNext}
+                                className="gap-2 bg-[hsl(var(--accent-gold))] text-black hover:bg-[hsl(var(--accent-gold))]/90 px-8 py-6 text-md font-medium rounded-full shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300"
+                                aria-label="Go to next step"
+                            >
+                                Continue
+                                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={handleSubmit}
+                                disabled={isSubmitting}
+                                className="gap-2 bg-[hsl(var(--accent-gold))] text-black hover:bg-[hsl(var(--accent-gold))]/90 px-8 py-6 text-md font-medium rounded-full shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] transition-all duration-300"
+                                aria-label="Submit application"
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                                        Submitting...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Heart className="h-4 w-4 fill-black" aria-hidden="true" />
+                                        Submit Application
+                                    </>
+                                )}
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

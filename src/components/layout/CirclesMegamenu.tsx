@@ -43,7 +43,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                 Choose where you fit best, or apply to join them all for a fully encompassing social experience.
                             </p>
                             <span className="text-[hsl(var(--accent-gold))] text-xs font-semibold uppercase tracking-widest mt-2">
-                                Curated Network
+                                Exclusive Network
                             </span>
                         </div>
 
@@ -86,8 +86,8 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                             <BringToFront strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
                                         <div>
-                                            <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">Intentional connections</h4>
-                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Modern professional dating.</p>
+                                    <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">Slow Dating</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Handpicked introductions for meaningful connections.</p>
                                         </div>
                                     </TransitionLink>
                                 </div>
@@ -102,8 +102,8 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                             <Circle strokeWidth={1} className="w-5 h-5 text-muted-foreground" />
                                         </div>
                                         <div>
-                                            <h4 className="text-foreground font-medium text-sm">The Partners Circle</h4>
-                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Curated experiences for couples.</p>
+                                            <h4 className="text-foreground font-medium text-sm">Couple's Circle</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Exclusive experiences for couples.</p>
                                         </div>
                                     </div>
 
@@ -112,8 +112,8 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                             <Circle strokeWidth={1} className="w-5 h-5 text-muted-foreground" />
                                         </div>
                                         <div>
-                                            <h4 className="text-foreground font-medium text-sm">The Pursuits Club</h4>
-                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Active pursuits and sport life.</p>
+                                            <h4 className="text-foreground font-medium text-sm">Active & Outdoor</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Adventures and active lifestyle.</p>
                                         </div>
                                     </div>
 

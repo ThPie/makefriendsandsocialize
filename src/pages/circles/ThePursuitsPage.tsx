@@ -21,7 +21,7 @@ const ThePursuitsPage = () => {
     {
       id: "02",
       title: "Wellness Events",
-      description: "Curated spa days, sound baths, yoga retreats, and biohacking sessions.",
+      description: "Rejuvenating spa days, sound baths, yoga retreats, and biohacking sessions.",
     },
     {
       id: "03",
@@ -57,8 +57,8 @@ const ThePursuitsPage = () => {
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
               <div className="text-white/60 text-sm tracking-[0.2em] uppercase mb-4">Make Friends & Socialize</div>
               <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-white mb-8 leading-[0.9]">
-                The<br />
-                <span className="text-primary italic font-serif">Pursuits</span> Club
+                <span className="text-primary italic font-serif">Active</span> &<br />
+                Outdoor
               </h1>
 
               <p className="text-white/90 text-xl max-w-xl leading-relaxed mb-12 border-l-2 border-primary pl-6 font-light">
@@ -84,7 +84,7 @@ const ThePursuitsPage = () => {
             </h2>
             <div className="h-px w-24 bg-border mx-auto mb-8" />
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
-              From golf foursomes and cycling excursions to recovery spas and performance retreats, The Pursuits Club unites members who view movement and vitality as essential pillars of a life well-lived.
+              From golf foursomes and cycling excursions to recovery spas and performance retreats, Active & Outdoor unites members who view movement and vitality as essential pillars of a life well-lived.
             </p>
           </div>
         </section>
@@ -120,7 +120,7 @@ const ThePursuitsPage = () => {
                 Ready to Join?
               </h2>
               <p className="text-muted-foreground text-lg mb-8 max-w-lg mx-auto">
-                Your membership gives you access to The Pursuits Club and all its active experiences. Not a member yet?
+                Your membership gives you access to Active & Outdoor and all its active experiences. Not a member yet?
               </p>
               <Button
                 size="lg"

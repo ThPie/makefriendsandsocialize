@@ -28,7 +28,7 @@ const benefits = [
   {
     icon: Heart,
     title: 'No Swiping',
-    description: 'Forget endless scrolling. We believe in intentional introductions curated by humans who understand nuance.'
+    description: 'Forget endless scrolling. We believe in intentional introductions handpicked by humans who understand nuance.'
   },
   {
     icon: Users,
@@ -49,7 +49,7 @@ const benefits = [
 
 const processSteps = [
   { number: '01', title: 'Apply', description: 'Complete our thoughtful questionnaire about your values and what you seek.' },
-  { number: '02', title: 'Get Matched', description: 'Our team reviews your profile and curates compatible introductions.' },
+  { number: '02', title: 'Get Matched', description: 'Our team reviews your profile and selects compatible introductions.' },
   { number: '03', title: 'Connect', description: 'Receive one match at a time with a personal introduction and conversation starters.' },
   { number: '04', title: 'Meet', description: 'Schedule your first date with our concierge support if desired.' }
 ];
@@ -124,7 +124,7 @@ export default function SlowDatingLandingPage() {
             className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
           >
             Intentional introductions for those who value depth over speed.
-            One meaningful connection at a time, curated by humans who understand what matters.
+            One meaningful connection at a time, personally selected by humans who understand what matters.
           </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -295,7 +295,7 @@ export default function SlowDatingLandingPage() {
           >
             <Calendar className="w-12 h-12 text-primary mx-auto mb-6" />
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-4">
-              Ready for Intentional Dating?
+              Ready for Slow Dating?
             </h2>
             <p className="text-muted-foreground max-w-lg mx-auto mb-8">
               Join our community of relationship-minded individuals who believe in the power of patience and genuine connection.
