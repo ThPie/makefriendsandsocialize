@@ -1,32 +1,34 @@
 
 
-## Plan: Gallery Redesign, Circle Updates, and Matchmaking CTA
+## Plan: Align Gentlemen Vision + Remove Circle-Specific Applications & Pricing
 
-### 1. Redesign Photo Gallery on Desktop (Inspired by Reference)
-In `src/components/home/PhotoGallerySection.tsx`:
-- Replace the 2-column masonry grid on desktop with a **single horizontal strip** of tall portrait images (`aspect-[3/4]`) arranged edge-to-edge with **zero gap** (gap-0)
-- Images fill the full viewport width, no container padding on desktop
-- On hover over the left half of the strip, auto-scroll left; hover over right half, auto-scroll right (using `requestAnimationFrame` + mouse position detection)
-- Keep mobile layout as-is (2-column masonry) or adapt to horizontal scroll
-- Remove rounded corners on desktop for the seamless edge-to-edge look
-- Keep lightbox on click
+### 1. Redesign The Gentlemen Page to Match Ladies Society Vision
+**File: `src/pages/circles/TheGentlemenPage.tsx`** — Full rewrite to mirror The Ladies Society structure:
+- **Hero**: Replace the image-based hero with a centered text hero (like Ladies Society) with subtle animated background orbs, tagline badge, and "Apply Now" CTA
+- **Mission Section**: Change from "presence and conversation" to empowerment-focused: "A private space for men who seek growth, accountability, and brotherhood — without ego or competition. Just men lifting each other higher."
+- **Benefits Grid**: Replace the 4-item "expectations" with a 6-item benefits grid matching Ladies Society format (Monthly Gatherings, Growth Conversations, Networking, Wellness, Priority Access, Annual Dinner — adapted for men)
+- **Remove**: Dress code commitment checkbox, style preference dropdown, membership tier selector, and all Gentlemen-specific pricing
 
-### 2. Replace Gentlemen and Les Amis Images
-In `src/components/home/ClubShowcaseSection.tsx`:
-- Replace `gentlemenImg` with a stock image URL of men in suits (from Unsplash)
-- Replace `lesAmisImg` with a stock image URL of a French social gathering (from Unsplash)
+### 2. Remove Circle-Specific Applications from All Circle Pages
+Replace the full application forms on these pages with a simple CTA that directs users to the main membership application:
+- **`TheGentlemenPage.tsx`**: Remove the application form section entirely. Replace with a "Join the Club" CTA that links to `/membership` or `/auth`
+- **`TheLadiesSocietyPage.tsx`**: Remove the application form + pricing sections. Replace with a CTA
+- **`ThePartnersPage.tsx`**: Remove the application form. Replace with a CTA
+- **`LesAmisPage.tsx`**: Remove the application form. Replace with a CTA
+- **`ThePursuitsPage.tsx`**: Remove the application form. Replace with a CTA
 
-### 3. Update Les Amis Description
-In `src/components/home/ClubShowcaseSection.tsx`:
-- Change description to something like: "A circle for French speakers in Utah. Since there aren't many of us here, we created this space to gather, share our culture, and build lasting friendships through curated Francophone events."
+Each page will instead show a simple section: "Your membership gives you access to this circle. Not a member yet?" with a "Become Member" button linking to the membership page.
 
-### 4. Dating Card CTA: "Apply MatchMaking" with Auth Redirect
-In `src/components/home/ClubShowcaseSection.tsx`:
-- Change the dating card button text from "Read more" to "Apply MatchMaking"
-- Change the `Link` destination: if user is logged in, navigate to `/dating/apply`; if not, navigate to `/auth` with a redirect parameter back to `/dating/apply`
-- This requires importing `useAuth` and using `useNavigate` instead of a plain `Link` for the dating card, or wrapping the button click handler with auth check logic
+### 3. Remove Circle-Specific Pricing from Ladies Society
+**File: `src/pages/circles/TheLadiesSocietyPage.tsx`**:
+- Remove the entire "Membership Pricing" section (the $29/mo and $249/yr cards)
+- Remove the `pricingAnimation` scroll animation ref
+- Keep the Mission section, Benefits grid, and the new simplified CTA
 
 ### Files to modify:
-- `src/components/home/PhotoGallerySection.tsx` — full desktop redesign with auto-scroll on hover
-- `src/components/home/ClubShowcaseSection.tsx` — replace images, update Les Amis description, dating CTA
+- `src/pages/circles/TheGentlemenPage.tsx` — full vision rewrite + remove form
+- `src/pages/circles/TheLadiesSocietyPage.tsx` — remove pricing section + remove form
+- `src/pages/circles/ThePartnersPage.tsx` — remove form, add membership CTA
+- `src/pages/circles/LesAmisPage.tsx` — remove form, add membership CTA
+- `src/pages/circles/ThePursuitsPage.tsx` — remove form, add membership CTA
 
