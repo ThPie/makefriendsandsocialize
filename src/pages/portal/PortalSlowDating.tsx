@@ -221,8 +221,8 @@ export default function PortalSlowDating() {
     return (
       <div className="space-y-12">
         <div>
-          <h1 className="text-3xl font-display font-light text-foreground mb-2">Intentional Connections</h1>
-          <p className="text-muted-foreground">Curated matchmaking for meaningful connections</p>
+          <h1 className="text-3xl font-display font-light text-foreground mb-2">Slow Dating</h1>
+          <p className="text-muted-foreground">Handpicked matchmaking for meaningful connections</p>
         </div>
 
         <Card className="border-border">
@@ -234,7 +234,7 @@ export default function PortalSlowDating() {
               Join Our Slow Dating Community
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto mb-8">
-              Experience a more intentional approach to dating. Our curators carefully review each profile
+              Experience a more intentional approach to dating. Our matchmakers carefully review each profile
               to create meaningful introductions based on shared values and genuine compatibility.
             </p>
             <Button asChild size="lg">
@@ -264,8 +264,8 @@ export default function PortalSlowDating() {
       />
 
       <div>
-        <h1 className="text-3xl font-display font-light text-foreground mb-2">Intentional Connections</h1>
-        <p className="text-muted-foreground">Your curated matchmaking journey</p>
+        <h1 className="text-3xl font-display font-light text-foreground mb-2">Slow Dating</h1>
+        <p className="text-muted-foreground">Your personalized matchmaking journey</p>
       </div>
 
       {/* Upgrade Prompt for Free Users */}

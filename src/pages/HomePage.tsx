@@ -26,7 +26,7 @@ const HomePage = () => {
     <main className="flex flex-col min-h-screen bg-background">
       <SEO
         title="Experience Meaningful Connection"
-        description="Join an exclusive community of professionals. Weekly curated events, authentic networking, and intentional connections for high-achievers."
+        description="Join an exclusive community of professionals. Weekly tailored events, authentic networking, and slow dating for high-achievers."
         keywords="private social club, professional networking, private members club, professional community events"
         schema={generateOrganizationSchema()}
       />

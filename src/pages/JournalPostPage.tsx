@@ -36,7 +36,7 @@ const JournalPostPage = () => {
       <div className="flex-1 w-full flex flex-col items-center justify-center px-4 py-20">
         <h1 className="text-2xl font-display text-foreground mb-4">Article not found</h1>
         <Button asChild>
-          <TransitionLink to="/journal">Back to Journal</TransitionLink>
+          <TransitionLink to="/journal">Back to Blog</TransitionLink>
         </Button>
       </div>
     );
@@ -56,7 +56,7 @@ const JournalPostPage = () => {
       >
         <TransitionLink to="/" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Home</TransitionLink>
         <span className="text-primary/70 text-sm font-medium leading-normal">/</span>
-        <TransitionLink to="/journal" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Journal</TransitionLink>
+        <TransitionLink to="/journal" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Blog</TransitionLink>
         <span className="text-primary/70 text-sm font-medium leading-normal">/</span>
         <span className="text-foreground text-sm font-medium leading-normal line-clamp-1">{article.title}</span>
       </motion.div>
@@ -71,7 +71,7 @@ const JournalPostPage = () => {
           <Button variant="ghost" asChild className="mb-6 -ml-4">
             <TransitionLink to="/journal" className="flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
-              Back to Journal
+              Back to Blog
             </TransitionLink>
           </Button>
         </motion.div>

@@ -16,7 +16,7 @@ const ThePartnersPage = () => {
     {
       id: "01",
       title: "Double Dates",
-      description: "Curated dinners and outings matching you with like-minded couples.",
+      description: "Tailored dinners and outings matching you with like-minded couples.",
     },
     {
       id: "02",
@@ -57,12 +57,12 @@ const ThePartnersPage = () => {
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
               <div className="text-white/60 text-sm tracking-[0.2em] uppercase mb-4">Make Friends & Socialize</div>
               <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-white mb-8 leading-[0.9]">
-                The<br />
-                <span className="text-primary italic font-serif">Partners</span> Circle
+                <span className="text-primary italic font-serif">Couple's</span><br />
+                Circle
               </h1>
 
               <p className="text-white/90 text-xl max-w-xl leading-relaxed mb-12 border-l-2 border-primary pl-6 font-light">
-                A private sanctuary for dynamic couples to connect, share experiences, and build lasting friendships.
+                A private sanctuary for couples to connect, share experiences, and build lasting friendships together.
               </p>
 
               <Button
@@ -84,7 +84,7 @@ const ThePartnersPage = () => {
             </h2>
             <div className="h-px w-24 bg-border mx-auto mb-8" />
             <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
-              The Partners Circle is designed for couples who want to expand their social horizons together. Whether it's through intimate dinner parties, double dates, or exclusive retreats, we bring together aligned partners to foster genuine connections.
+              The Couple's Circle is designed for couples who want to expand their social horizons together. Whether it's through intimate dinner parties, double dates, or exclusive retreats, we bring together aligned partners to foster genuine connections.
             </p>
           </div>
         </section>
@@ -120,7 +120,7 @@ const ThePartnersPage = () => {
                 Ready to Join?
               </h2>
               <p className="text-muted-foreground text-lg mb-8 max-w-lg mx-auto">
-                Your membership gives you access to The Partners Circle and all its gatherings. Not a member yet?
+                Your membership gives you access to the Couple's Circle and all its gatherings. Not a member yet?
               </p>
               <Button
                 size="lg"

@@ -13,7 +13,7 @@ const portalRouteLabels: Record<string, string> = {
   '/portal/profile': 'My Profile',
   '/portal/network': 'The Network',
   '/portal/connections': 'Connections',
-  '/portal/slow-dating': 'Intentional Connections',
+  '/portal/slow-dating': 'Slow Dating',
   '/portal/events': 'Events',
   '/portal/perks': 'Perks',
   '/portal/concierge': 'Concierge',

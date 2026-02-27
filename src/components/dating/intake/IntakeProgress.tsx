@@ -1,6 +1,6 @@
 /**
  * Intake Progress Component
- * Visual progress indicator for the multi-step intake form
+ * Vertical sidebar for desktop, compact dots + bar for mobile
  */
 import { Check } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -13,8 +13,12 @@ import {
     Brain,
     Shield,
     Bell,
-    ClipboardCheck
+    ClipboardCheck,
+    ArrowLeft,
+    HelpCircle
 } from 'lucide-react';
+import { BrandLogo } from '@/components/common/BrandLogo';
+import { useNavigate } from 'react-router-dom';
 
 const STEP_ICONS = [User, Users, Wine, Briefcase, Brain, Shield, Bell, ClipboardCheck];
 
@@ -37,74 +41,99 @@ export const IntakeProgress = ({
 }: IntakeProgressProps) => {
     const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
     const isStepCompleted = (stepNum: number) => completedSteps ? completedSteps.has(stepNum) : currentStep > stepNum;
+    const navigate = useNavigate();
 
     return (
-        <div className={cn('mb-8', className)}>
-            {/* Desktop: Full step indicators with labels */}
-            <div className="hidden md:block">
-                <div
-                    className="flex justify-between items-start px-4 pb-2"
-                    role="navigation"
-                    aria-label="Form progress"
-                >
+        <>
+            {/* Desktop: Vertical sidebar progress */}
+            <div className={cn('hidden md:flex flex-col h-full', className)}>
+                {/* Brand */}
+                <div className="mb-10">
+                    <BrandLogo width={130} height={38} forceWhite />
+                </div>
+
+                {/* Steps */}
+                <nav className="flex-1 flex flex-col gap-1" aria-label="Form progress">
                     {steps.map((s, index) => {
-                        const Icon = STEP_ICONS[index] || ClipboardCheck;
                         const isCompleted = isStepCompleted(s.number);
                         const isCurrent = currentStep === s.number;
                         const isClickable = onStepClick && (isCompleted || isCurrent);
 
                         return (
-                            <div
-                                key={s.number}
-                                className="flex flex-col items-center gap-2 relative"
-                                style={{ flex: '1 1 0%' }}
-                            >
+                            <div key={s.number} className="relative">
                                 <button
                                     type="button"
                                     onClick={() => isClickable && onStepClick?.(s.number)}
                                     disabled={!isClickable}
                                     className={cn(
-                                        'w-11 h-11 rounded-full flex items-center justify-center border-2 transition-all duration-300 relative z-10',
+                                        'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200',
                                         isCurrent
-                                            ? 'bg-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))] text-[#0a0f0b] shadow-lg scale-110'
+                                            ? 'bg-white/10 text-white'
                                             : isCompleted
-                                                ? 'bg-[hsl(var(--accent-gold))]/20 border-[hsl(var(--accent-gold))] text-[hsl(var(--accent-gold))]'
-                                                : 'bg-white/5 border-white/15 text-white/30 hover:border-white/25',
-                                        isClickable && 'cursor-pointer hover:scale-105'
+                                                ? 'text-white/70 hover:bg-white/5'
+                                                : 'text-white/30',
+                                        isClickable && 'cursor-pointer'
                                     )}
                                     aria-label={`${s.title} - ${isCompleted ? 'completed' : isCurrent ? 'current step' : 'not started'}`}
                                     aria-current={isCurrent ? 'step' : undefined}
                                 >
-                                    {isCompleted ? (
-                                        <Check className="h-5 w-5" aria-hidden="true" />
-                                    ) : (
-                                        <Icon className="h-5 w-5" aria-hidden="true" />
-                                    )}
+                                    {/* Step indicator */}
+                                    <div className={cn(
+                                        'w-7 h-7 rounded-full flex items-center justify-center shrink-0 border transition-all duration-200',
+                                        isCurrent
+                                            ? 'bg-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))] text-black'
+                                            : isCompleted
+                                                ? 'bg-[hsl(var(--accent-gold))]/20 border-[hsl(var(--accent-gold))]/60 text-[hsl(var(--accent-gold))]'
+                                                : 'border-white/20 bg-transparent'
+                                    )}>
+                                        {isCompleted ? (
+                                            <Check className="h-3.5 w-3.5" />
+                                        ) : (
+                                            <span className="text-xs font-medium">{s.number}</span>
+                                        )}
+                                    </div>
+
+                                    {/* Label */}
+                                    <span className={cn(
+                                        "text-sm font-medium transition-colors",
+                                        isCurrent ? "text-white" : isCompleted ? "text-white/70" : "text-white/30"
+                                    )}>
+                                        {s.title}
+                                    </span>
                                 </button>
 
-                                {/* Always-visible label */}
-                                <span
-                                    className={cn(
-                                        "text-[10px] uppercase tracking-wider font-medium text-center leading-tight max-w-[80px] transition-colors duration-300",
-                                        isCurrent ? "text-[hsl(var(--accent-gold))]" : isCompleted ? "text-[hsl(var(--accent-gold))]/70" : "text-white/40"
-                                    )}
-                                >
-                                    {s.title}
-                                </span>
-
-                                {/* Connecting Line */}
+                                {/* Connecting line */}
                                 {index < steps.length - 1 && (
-                                    <div
-                                        className={cn(
-                                            'absolute top-[22px] left-[55%] w-[90%] h-[2px] transition-all duration-700 -z-0',
-                                            currentStep > s.number ? 'bg-[hsl(var(--accent-gold))]' : 'bg-white/10'
-                                        )}
-                                        aria-hidden="true"
-                                    />
+                                    <div className="absolute left-[26px] top-[42px] w-[2px] h-[8px]" aria-hidden="true">
+                                        <div className={cn(
+                                            'w-full h-full rounded-full transition-colors duration-300',
+                                            currentStep > s.number ? 'bg-[hsl(var(--accent-gold))]/50' : 'bg-white/10'
+                                        )} />
+                                    </div>
                                 )}
                             </div>
                         );
                     })}
+                </nav>
+
+                {/* Bottom actions */}
+                <div className="mt-auto pt-6 flex flex-col gap-3">
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Go back
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => navigate('/contact')}
+                        className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
+                    >
+                        <HelpCircle className="h-4 w-4" />
+                        Need help?
+                    </button>
                 </div>
             </div>
 
@@ -151,6 +180,6 @@ export const IntakeProgress = ({
                     aria-label={`Step ${currentStep} of ${totalSteps}`}
                 />
             </div>
-        </div>
+        </>
     );
 };

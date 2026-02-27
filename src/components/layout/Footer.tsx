@@ -19,9 +19,9 @@ const footerLinks = {
     links: [
     { label: "Events", href: "/events" },
     { label: "Founders Circle", href: "/founders-circle" },
-    { label: "Intentional Connections", href: "/slow-dating" },
-    { label: "The Partners Circle", href: "/circles/the-partners" },
-    { label: "The Pursuits Club", href: "/circles/the-pursuits" }]
+    { label: "Slow Dating", href: "/slow-dating" },
+    { label: "Couple's Circle", href: "/circles/the-partners" },
+    { label: "Active & Outdoor", href: "/circles/the-pursuits" }]
 
   },
   inquiries: {
@@ -29,7 +29,7 @@ const footerLinks = {
     links: [
     { label: "Contact Us", href: "/contact" },
     { label: "FAQ", href: "/faq" },
-    { label: "Journal", href: "/journal" },
+    { label: "Blog", href: "/journal" },
     { label: "Partnerships", href: "/contact" }]
 
   },

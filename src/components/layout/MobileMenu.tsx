@@ -11,8 +11,7 @@ const navLinks = [
   { label: 'Events', to: '/events' },
   { label: 'Circles', to: '/circles' },
   { label: 'Membership', to: '/membership' },
-  { label: 'Journal', to: '/journal' },
-  { label: 'Explore', to: '/events' },
+  { label: 'Blog', to: '/journal' },
 ];
 
 export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {

@@ -25,7 +25,7 @@ const clubs = [
     id: 'gentlemen',
     category: 'Society',
     title: 'The Gentlemen',
-    description: 'A circle for the modern man of substance and style. Experience curated tastings, tailored networking events, and conversations that matter with like-minded individuals.',
+    description: 'A circle for the modern man of substance and style. Experience exclusive tastings, tailored networking events, and conversations that matter with like-minded individuals.',
     image: gentlemenImg,
     link: '/circles/the-gentlemen'
   },
@@ -33,7 +33,7 @@ const clubs = [
     id: 'les-amis',
     category: 'Social',
     title: 'Les Amis',
-    description: 'A circle for French speakers in Utah. Since there aren\'t many of us here, we created this space to gather, share our culture, and build lasting friendships through curated Francophone events.',
+    description: 'A circle for French speakers in Utah. Since there aren\'t many of us here, we created this space to gather, share our culture, and build lasting friendships through thoughtfully designed Francophone events.',
     image: lesAmisImg,
     link: '/circles/les-amis'
   },
@@ -41,9 +41,9 @@ const clubs = [
     id: 'women-society',
     category: 'Society',
     title: 'The Ladies Society',
-    description: 'Empowering connections for visionary women. A sanctuary for female leaders and creatives to collaborate, inspire, and elevate each other through curated experiences.',
+    description: 'Empowering connections for visionary women. A sanctuary for female leaders and creatives to collaborate, inspire, and elevate each other through bespoke experiences.',
     image: womenSocietyImg,
-    link: '/circles'
+    link: '/circles/the-ladies-society'
   },
   {
     id: 'business-circle',
@@ -58,8 +58,8 @@ const clubs = [
 const datingClub = {
   id: 'slow-dating',
   category: 'Dating',
-  title: 'Intentional Connections',
-  description: 'Curated matches based on deep compatibility. Move beyond the swipe and engage in meaningful, expertly facilitated social environments designed to foster genuine romantic partnerships.',
+  title: 'Slow Dating',
+  description: 'Handpicked matches based on deep compatibility. Move beyond the swipe and engage in meaningful, expertly facilitated social environments designed to foster genuine romantic partnerships.',
   image: slowDatingImg,
 };
 
@@ -120,12 +120,12 @@ export const ClubShowcaseSection = () => {
     <section className="section-spacing bg-background overflow-hidden" id="collections">
       <div className="content-container mb-8">
         <div className="text-center max-w-xl mx-auto">
-          <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Curated Collections</span>
+          <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Exclusive Collections</span>
           <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1]">
             Our <span className="italic text-[hsl(var(--accent-gold))]">Circles</span>
           </h2>
           <p className="text-muted-foreground text-sm md:text-base font-light mt-4">
-            Discover our curated communities, each designed for a unique way to connect, grow, and belong.
+            Discover our handpicked communities, each designed for a unique way to connect, grow, and belong.
           </p>
         </div>
       </div>
