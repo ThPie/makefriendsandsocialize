@@ -17,7 +17,6 @@ import {
     ArrowLeft,
     HelpCircle
 } from 'lucide-react';
-import { BrandLogo } from '@/components/common/BrandLogo';
 import { useNavigate } from 'react-router-dom';
 
 const STEP_ICONS = [User, Users, Wine, Briefcase, Brain, Shield, Bell, ClipboardCheck];
@@ -47,11 +46,6 @@ export const IntakeProgress = ({
         <>
             {/* Desktop: Vertical sidebar progress */}
             <div className={cn('hidden md:flex flex-col h-full', className)}>
-                {/* Brand */}
-                <div className="mb-10">
-                    <BrandLogo width={130} height={38} forceWhite />
-                </div>
-
                 {/* Steps */}
                 <nav className="flex-1 flex flex-col gap-1" aria-label="Form progress">
                     {steps.map((s, index) => {

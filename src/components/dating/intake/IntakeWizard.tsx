@@ -219,18 +219,23 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                 </div>
 
                 {/* Desktop Step Header */}
-                <div className="hidden md:block px-8 lg:px-16 2xl:px-24 pt-10 pb-4">
+                <div className="hidden md:block px-8 lg:px-16 2xl:px-24 pt-10 pb-4 max-w-3xl mx-auto w-full">
                     <p className="text-[hsl(var(--accent-gold))] text-xs uppercase tracking-widest font-medium mb-1">
                         Step {step} of {totalSteps}
                     </p>
                     <h2 className="font-display text-3xl text-foreground">
                         {currentStepTitle}
                     </h2>
+                    {INTAKE_STEPS.find(s => s.number === step)?.description && (
+                        <p className="text-muted-foreground text-sm mt-2 leading-relaxed">
+                            {INTAKE_STEPS.find(s => s.number === step)?.description}
+                        </p>
+                    )}
                 </div>
 
                 {/* Form Content */}
                 <div className="flex-1 overflow-auto px-4 md:px-8 lg:px-16 2xl:px-24 py-6">
-                    <div className="min-h-[500px] max-w-2xl">
+                    <div className="min-h-[500px] max-w-3xl mx-auto">
                         {renderStep()}
                     </div>
                 </div>
