@@ -1,34 +1,83 @@
 
 
-## Plan: Align Gentlemen Vision + Remove Circle-Specific Applications & Pricing
+## Plan: Form Redesign, Terminology Updates, Navigation Changes, and Circle Links
 
-### 1. Redesign The Gentlemen Page to Match Ladies Society Vision
-**File: `src/pages/circles/TheGentlemenPage.tsx`** — Full rewrite to mirror The Ladies Society structure:
-- **Hero**: Replace the image-based hero with a centered text hero (like Ladies Society) with subtle animated background orbs, tagline badge, and "Apply Now" CTA
-- **Mission Section**: Change from "presence and conversation" to empowerment-focused: "A private space for men who seek growth, accountability, and brotherhood — without ego or competition. Just men lifting each other higher."
-- **Benefits Grid**: Replace the 4-item "expectations" with a 6-item benefits grid matching Ladies Society format (Monthly Gatherings, Growth Conversations, Networking, Wellness, Priority Access, Annual Dinner — adapted for men)
-- **Remove**: Dress code commitment checkbox, style preference dropdown, membership tier selector, and all Gentlemen-specific pricing
+### 1. Redesign Matchmaking Intake Form (Inspired by Reference Screenshot)
+**File: `src/components/dating/intake/IntakeWizard.tsx`**
+- Restructure to a **split-screen layout on desktop**: left panel (dark green/brand color) shows the step sidebar with progress, right panel shows the form content
+- Left panel: brand logo at top, vertical step list with completed/active/pending states (checkmarks, dots, connecting lines), "Go back" and "Need help?" at bottom
+- Right panel: step title, description, form fields, Back/Continue buttons at bottom
+- Mobile: collapse left panel, show step title + dots + progress bar (similar to current mobile layout)
 
-### 2. Remove Circle-Specific Applications from All Circle Pages
-Replace the full application forms on these pages with a simple CTA that directs users to the main membership application:
-- **`TheGentlemenPage.tsx`**: Remove the application form section entirely. Replace with a "Join the Club" CTA that links to `/membership` or `/auth`
-- **`TheLadiesSocietyPage.tsx`**: Remove the application form + pricing sections. Replace with a CTA
-- **`ThePartnersPage.tsx`**: Remove the application form. Replace with a CTA
-- **`LesAmisPage.tsx`**: Remove the application form. Replace with a CTA
-- **`ThePursuitsPage.tsx`**: Remove the application form. Replace with a CTA
+**File: `src/components/dating/intake/IntakeProgress.tsx`**
+- Refactor into a **vertical sidebar progress** component for desktop (matching the reference's left panel style)
+- Keep mobile dots/progress bar as-is
 
-Each page will instead show a simple section: "Your membership gives you access to this circle. Not a member yet?" with a "Become Member" button linking to the membership page.
+### 2. Replace "Intentional Connections" → "Slow Dating" (8 files)
+- `src/components/home/ClubShowcaseSection.tsx` — title + description
+- `src/components/layout/CirclesMegamenu.tsx` — menu item label
+- `src/components/layout/Footer.tsx` — footer link label
+- `src/components/portal/PortalLayout.tsx` — sidebar item title
+- `src/components/portal/PortalBreadcrumb.tsx` — breadcrumb label
+- `src/pages/portal/PortalSlowDating.tsx` — page headings
+- `src/pages/SlowDatingLandingPage.tsx` — any remaining references
+- `src/pages/HomePage.tsx` — SEO description
 
-### 3. Remove Circle-Specific Pricing from Ladies Society
-**File: `src/pages/circles/TheLadiesSocietyPage.tsx`**:
-- Remove the entire "Membership Pricing" section (the $29/mo and $249/yr cards)
-- Remove the `pricingAnimation` scroll animation ref
-- Keep the Mission section, Benefits grid, and the new simplified CTA
+### 3. Replace "Curated" with Varied Alternatives (avoid repetition)
+Across all files, replace each instance of "curated" with contextually appropriate alternatives:
+- "handpicked", "tailored", "exclusive", "thoughtfully designed", "personally selected", "bespoke", "refined"
+- No two adjacent sections should use the same word
+
+### 4. Replace "Journal" → "Blog" (6 files)
+- `src/components/layout/MobileMenu.tsx` — nav link label
+- `src/components/layout/Footer.tsx` — footer link label  
+- `src/pages/JournalPage.tsx` — page title/headings (display text only)
+- `src/pages/JournalPostPage.tsx` — breadcrumb and back button text
+- `src/types/index.ts` — type union values
+- Routes stay at `/journal` to avoid breaking links
+
+### 5. Replace "The Partners Circle" → "Couple's Circle" (4 files)
+- `src/components/layout/CirclesMegamenu.tsx`
+- `src/components/layout/Footer.tsx`
+- `src/pages/circles/ThePartnersPage.tsx` — all page content references
+
+### 6. Replace "The Pursuits Club" → "Active & Outdoor" (4 files)
+- `src/components/layout/CirclesMegamenu.tsx`
+- `src/components/layout/Footer.tsx`
+- `src/pages/circles/ThePursuitsPage.tsx` — all page content references
+
+### 7. Make Circle Cards Link to Their Pages
+**File: `src/components/home/ClubShowcaseSection.tsx`**
+- Update `clubs` array: change `link` for Ladies Society from `/circles` to `/circles/the-ladies-society`
+- Change Business Circle link from `/circles` to an appropriate page or keep as-is
+
+### 8. Remove "Explore" from Navbar, Add Events/Membership/Blog
+**File: `src/components/layout/Header.tsx`**
+- Remove the "Explore" gold pill button entirely
+- Add desktop nav links: "Events" → `/events`, "Membership" → `/membership`, "Blog" → `/journal`
+
+**File: `src/components/layout/MobileMenu.tsx`**
+- Remove "Explore" from `navLinks` array
+- Ensure Events, Membership, Blog are present (they already are minus Blog rename)
 
 ### Files to modify:
-- `src/pages/circles/TheGentlemenPage.tsx` — full vision rewrite + remove form
-- `src/pages/circles/TheLadiesSocietyPage.tsx` — remove pricing section + remove form
-- `src/pages/circles/ThePartnersPage.tsx` — remove form, add membership CTA
-- `src/pages/circles/LesAmisPage.tsx` — remove form, add membership CTA
-- `src/pages/circles/ThePursuitsPage.tsx` — remove form, add membership CTA
+- `src/components/dating/intake/IntakeWizard.tsx` — split-screen form layout
+- `src/components/dating/intake/IntakeProgress.tsx` — vertical sidebar progress
+- `src/components/home/ClubShowcaseSection.tsx` — terminology + circle links
+- `src/components/layout/Header.tsx` — remove Explore, add nav links
+- `src/components/layout/MobileMenu.tsx` — remove Explore, rename Journal
+- `src/components/layout/Footer.tsx` — all terminology updates
+- `src/components/layout/CirclesMegamenu.tsx` — terminology updates
+- `src/components/portal/PortalLayout.tsx` — Slow Dating rename
+- `src/components/portal/PortalBreadcrumb.tsx` — Slow Dating rename
+- `src/pages/portal/PortalSlowDating.tsx` — Slow Dating rename
+- `src/pages/SlowDatingLandingPage.tsx` — terminology updates
+- `src/pages/circles/ThePartnersPage.tsx` — Couple's Circle rename
+- `src/pages/circles/ThePursuitsPage.tsx` — Active & Outdoor rename
+- `src/pages/JournalPage.tsx` — Blog rename
+- `src/pages/JournalPostPage.tsx` — Blog rename
+- `src/pages/HomePage.tsx` — SEO text update
+- `src/pages/MembershipPage.tsx` — curated replacement
+- `src/pages/AboutPage.tsx` — curated replacement
+- `src/types/index.ts` — type updates
 
