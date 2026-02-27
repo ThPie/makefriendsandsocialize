@@ -1465,6 +1465,7 @@ export type Database = {
       event_photos: {
         Row: {
           category: string | null
+          circle_tags: string[] | null
           created_at: string | null
           display_order: number | null
           event_id: string | null
@@ -1477,6 +1478,7 @@ export type Database = {
         }
         Insert: {
           category?: string | null
+          circle_tags?: string[] | null
           created_at?: string | null
           display_order?: number | null
           event_id?: string | null
@@ -1489,6 +1491,7 @@ export type Database = {
         }
         Update: {
           category?: string | null
+          circle_tags?: string[] | null
           created_at?: string | null
           display_order?: number | null
           event_id?: string | null

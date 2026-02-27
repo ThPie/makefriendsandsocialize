@@ -458,6 +458,38 @@ export default function AdminEvents() {
                     />
                   </div>
                 </div>
+
+                <div className="space-y-2">
+                  <Label>Circle Tags</Label>
+                  <p className="text-xs text-muted-foreground">Select circles this event belongs to</p>
+                  <div className="flex flex-wrap gap-3">
+                    {[
+                      { value: 'the-gentlemen', label: 'The Gentlemen' },
+                      { value: 'the-ladies-society', label: 'The Ladies Society' },
+                      { value: 'les-amis', label: 'Les Amis' },
+                      { value: 'couples-circle', label: "Couple's Circle" },
+                      { value: 'active-outdoor', label: 'Active & Outdoor' },
+                    ].map((circle) => {
+                      const currentTags = form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+                      const isSelected = currentTags.includes(circle.value);
+                      return (
+                        <label key={circle.value} className="flex items-center gap-1.5 cursor-pointer text-sm">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => {
+                              let tags = currentTags.filter(t => t !== circle.value);
+                              if (e.target.checked) tags.push(circle.value);
+                              setForm({ ...form, tags: tags.join(', ') });
+                            }}
+                            className="rounded border-border"
+                          />
+                          {circle.label}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
               {/* Image Section */}
