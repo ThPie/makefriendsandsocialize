@@ -83,7 +83,7 @@ export const Header = () => {
           {user && (
             <TransitionLink to="/portal" className="hidden md:block">
               <Avatar className="h-11 w-11 border-2 border-[hsl(var(--accent-gold))]/60 hover:border-[hsl(var(--accent-gold))] transition-colors">
-                <AvatarImage src={profile?.avatar_urls?.[0]} />
+                <AvatarImage src={profile?.avatar_urls?.[0] || user?.user_metadata?.avatar_url} />
                 <AvatarFallback className="bg-primary/80 text-primary-foreground text-sm font-medium">
                   {profile?.first_name?.[0] || user.email?.[0]?.toUpperCase() || 'M'}{(profile?.last_name?.[0] || '').toUpperCase()}
                 </AvatarFallback>

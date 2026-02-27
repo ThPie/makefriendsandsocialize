@@ -124,14 +124,14 @@ export type CompleteIntakeData = z.infer<typeof completeIntakeSchema>;
 
 // Step definitions for progress tracking
 export const INTAKE_STEPS = [
-    { number: 1, title: 'The Basics', schema: basicsSchema },
-    { number: 2, title: 'Life & Family', schema: familySchema },
-    { number: 3, title: 'Lifestyle', schema: habitsSchema },
-    { number: 4, title: 'Daily Life', schema: lifestyleSchema },
-    { number: 5, title: 'Deep Dive', schema: deepDiveSchema },
-    { number: 6, title: 'Dealbreakers', schema: dealbreakersSchema },
-    { number: 7, title: 'Notifications', schema: notificationsSchema },
-    { number: 8, title: 'Review', schema: z.object({}) },
+    { number: 1, title: 'The Basics', schema: basicsSchema, description: 'Please provide as much detail as possible — the more we know about you, the better we can match you with someone truly compatible.' },
+    { number: 2, title: 'Life & Family', schema: familySchema, description: 'Help us understand your family values and what you envision for your future together.' },
+    { number: 3, title: 'Lifestyle', schema: habitsSchema, description: 'Your daily habits say a lot about compatibility — share yours honestly.' },
+    { number: 4, title: 'Daily Life', schema: lifestyleSchema, description: 'What does your everyday life look like? This helps us find someone who fits naturally into it.' },
+    { number: 5, title: 'Deep Dive', schema: deepDiveSchema, description: 'These deeper questions help us understand how you connect, communicate, and love.' },
+    { number: 6, title: 'Dealbreakers', schema: dealbreakersSchema, description: 'Be honest about what matters most — it helps us respect your boundaries.' },
+    { number: 7, title: 'Notifications', schema: notificationsSchema, description: 'Choose how you\'d like to hear from us about your matches and updates.' },
+    { number: 8, title: 'Review', schema: z.object({}), description: 'Review your answers before submitting. You can go back to edit any section.' },
 ] as const;
 
 // Validation helper
