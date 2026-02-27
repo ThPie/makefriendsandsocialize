@@ -1,15 +1,16 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { useRef, useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Assets
-import lesAmisImg from '@/assets/les-amis-hero-new.webp';
-import gentlemenImg from '@/assets/gentlemen-hero-new.webp';
+import gentlemenImg from '@/assets/gentlemen-stock.jpg';
 import womenSocietyImg from '@/assets/women-society-hero.jpg';
 import foundersImg from '@/assets/founders-hero-new.jpg';
 import slowDatingImg from '@/assets/slow-dating-new.jpg';
 import businessImg from '@/assets/business-hero.jpg';
+import lesAmisImg from '@/assets/les-amis-stock.jpg';
 
 const clubs = [
   {
@@ -32,7 +33,7 @@ const clubs = [
     id: 'les-amis',
     category: 'Social',
     title: 'Les Amis',
-    description: 'Casual gatherings for close friends and allies. Enjoy relaxed dining, cultural outings, and vibrant conversations in an intimate, welcoming atmosphere.',
+    description: 'A circle for French speakers in Utah. Since there aren\'t many of us here, we created this space to gather, share our culture, and build lasting friendships through curated Francophone events.',
     image: lesAmisImg,
     link: '/circles/les-amis'
   },
@@ -60,43 +61,31 @@ const datingClub = {
   title: 'Intentional Connections',
   description: 'Curated matches based on deep compatibility. Move beyond the swipe and engage in meaningful, expertly facilitated social environments designed to foster genuine romantic partnerships.',
   image: slowDatingImg,
-  link: '/slow-dating'
 };
 
-const CircleCard = ({ club }: { club: typeof clubs[0] }) => {
-  return (
-    <Link
-      to={club.link}
-      className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40 min-w-[78vw] w-[78vw] md:min-w-0 md:w-[calc((100%-60px)/3.5)] shrink-0 snap-center"
-    >
-      {/* Image */}
-      <div className="relative aspect-[4/4] overflow-hidden">
-        <img
-          src={club.image}
-          alt={club.title}
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
-        />
-      </div>
-
-      {/* Text content below image */}
-      <div className="p-5 flex flex-col gap-2 flex-1">
-        <h3 className="font-display text-xl md:text-2xl text-foreground leading-tight">{club.title}</h3>
-        <p className="text-sm font-light leading-relaxed text-muted-foreground line-clamp-3">{club.description}</p>
-        <span className="mt-auto pt-3 text-xs uppercase tracking-[0.15em] text-[hsl(var(--accent-gold))] font-medium">
-          Explore →
-        </span>
-      </div>
-    </Link>
-  );
-};
+const CircleCard = ({ club }: { club: typeof clubs[0] }) => (
+  <Link
+    to={club.link}
+    className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40 min-w-[78vw] w-[78vw] md:min-w-0 md:w-[calc((100%-60px)/3.5)] shrink-0 snap-center"
+  >
+    <div className="relative aspect-[4/4] overflow-hidden">
+      <img src={club.image} alt={club.title} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />
+    </div>
+    <div className="p-5 flex flex-col gap-2 flex-1">
+      <h3 className="font-display text-xl md:text-2xl text-foreground leading-tight">{club.title}</h3>
+      <p className="text-sm font-light leading-relaxed text-muted-foreground line-clamp-3">{club.description}</p>
+      <span className="mt-auto pt-3 text-xs uppercase tracking-[0.15em] text-[hsl(var(--accent-gold))] font-medium">Explore →</span>
+    </div>
+  </Link>
+);
 
 export const ClubShowcaseSection = () => {
   const { ref, isVisible } = useScrollAnimation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const updateScrollState = () => {
     const el = scrollRef.current;
@@ -116,8 +105,15 @@ export const ClubShowcaseSection = () => {
   const scroll = (dir: 'left' | 'right') => {
     const el = scrollRef.current;
     if (!el) return;
-    const amount = 300;
-    el.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
+    el.scrollBy({ left: dir === 'left' ? -300 : 300, behavior: 'smooth' });
+  };
+
+  const handleMatchmakingClick = () => {
+    if (user) {
+      navigate('/dating/apply');
+    } else {
+      navigate('/auth?redirect=/dating/apply');
+    }
   };
 
   return (
@@ -135,43 +131,28 @@ export const ClubShowcaseSection = () => {
       </div>
 
       <div ref={ref} className={`transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-        {/* Horizontal scroll for all screen sizes */}
         <div className="content-container">
-          <div
-            ref={scrollRef}
-            className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4"
-          >
+          <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4">
             {clubs.map((club) => (
               <CircleCard key={club.id} club={club} />
             ))}
           </div>
 
-          {/* Desktop nav arrows — below carousel */}
           <div className="hidden md:flex items-center justify-center gap-2 mt-6">
-            <button
-              onClick={() => scroll('left')}
-              disabled={!canScrollLeft}
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-foreground/30 transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-              aria-label="Scroll left"
-            >
+            <button onClick={() => scroll('left')} disabled={!canScrollLeft} className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-foreground/30 transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed" aria-label="Scroll left">
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <button
-              onClick={() => scroll('right')}
-              disabled={!canScrollRight}
-              className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-foreground/30 transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
-              aria-label="Scroll right"
-            >
+            <button onClick={() => scroll('right')} disabled={!canScrollRight} className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-foreground/60 hover:text-foreground hover:border-foreground/30 transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed" aria-label="Scroll right">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Dating card — standalone, full width */}
+        {/* Dating card */}
         <div className="content-container mt-6 md:mt-8">
-          <Link
-            to={datingClub.link}
-            className="flex flex-col md:flex-row-reverse rounded-2xl overflow-hidden group border border-border bg-card transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40"
+          <div
+            onClick={handleMatchmakingClick}
+            className="flex flex-col md:flex-row-reverse rounded-2xl overflow-hidden group border border-border bg-card transition-all duration-200 hover:-translate-y-1 hover:border-[hsl(var(--accent-gold))]/40 cursor-pointer"
           >
             <div className="relative overflow-hidden w-full md:w-1/2 h-[320px] md:h-auto">
               <img src={datingClub.image} alt={datingClub.title} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105" />
@@ -189,20 +170,16 @@ export const ClubShowcaseSection = () => {
               <p className="text-sm md:text-base font-light leading-relaxed text-foreground/80 dark:text-white/90 max-w-[500px] mb-8">{datingClub.description}</p>
               <div>
                 <span className="inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium border border-[hsl(var(--accent-gold))]/60 text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))] hover:text-black transition-colors duration-200">
-                  Read more
+                  Apply MatchMaking
                 </span>
               </div>
             </div>
-          </Link>
+          </div>
         </div>
       </div>
 
-      {/* See All */}
       <div className={`content-container mt-16 flex justify-center transition-all duration-200 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-        <Link
-          to="/circles"
-          className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150 tracking-[0.15em] uppercase"
-        >
+        <Link to="/circles" className="text-sm text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150 tracking-[0.15em] uppercase">
           See All Circles →
         </Link>
       </div>
