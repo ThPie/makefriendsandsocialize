@@ -47,19 +47,7 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <CardHeader className="text-center pb-8 border-b border-white/10">
-                <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
-                    <ClipboardCheck className="h-6 w-6 text-dating-terracotta" />
-                </div>
-                <CardTitle className="font-display text-3xl text-white mb-2">
-                    Review Your Profile
-                </CardTitle>
-                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
-                    Take a moment to review your answers before submitting.
-                </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-6 pt-8">
+            <CardContent className="space-y-6 pt-4">
                 {/* Profile Summary Card */}
                 <div className="bg-white/5 rounded-xl p-6 space-y-4 border border-white/10">
                     <div className="flex items-center gap-4">

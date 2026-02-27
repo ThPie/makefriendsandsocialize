@@ -47,19 +47,7 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <CardHeader className="text-center pb-8 border-b border-white/10">
-                <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
-                    <Briefcase className="h-6 w-6 text-dating-terracotta" />
-                </div>
-                <CardTitle className="font-display text-3xl text-white mb-2">
-                    Daily Life
-                </CardTitle>
-                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
-                    These questions reveal daily compatibility and lifestyle match.
-                </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-8 pt-8">
+            <CardContent className="space-y-8 pt-4">
                 {/* Adaptive Tuesday Night Test */}
                 <div className="space-y-3">
                     <Label htmlFor="tuesday_night_test" className="text-white/80 text-lg">

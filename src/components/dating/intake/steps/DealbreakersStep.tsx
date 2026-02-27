@@ -58,19 +58,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <CardHeader className="text-center pb-8 border-b border-border">
-                <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
-                    <Shield className="h-6 w-6 text-dating-terracotta" />
-                </div>
-                <CardTitle className="font-display text-3xl text-white mb-2">
-                    Dealbreakers & Future
-                </CardTitle>
-                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
-                    Let's talk about non-negotiables and what you're building toward.
-                </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-8 pt-8">
+            <CardContent className="space-y-8 pt-4">
                 {/* Dealbreakers */}
                 <div className="space-y-3">
                     <Label htmlFor="dealbreakers" className="text-white/80 text-lg">

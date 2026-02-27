@@ -64,19 +64,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <CardHeader className="text-center pb-8 border-b border-white/10">
-                <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
-                    <Users className="h-6 w-6 text-dating-terracotta" />
-                </div>
-                <CardTitle className="font-display text-3xl text-white mb-2">
-                    Life & Family
-                </CardTitle>
-                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
-                    Understanding your family situation and future goals helps us find compatible matches.
-                </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-8 pt-8">
+            <CardContent className="space-y-8 pt-4">
                 {/* Only show marriage questions if seeking serious relationship */}
                 {isSeekingSerious && (
                     <div className="space-y-4 animate-fade-in">

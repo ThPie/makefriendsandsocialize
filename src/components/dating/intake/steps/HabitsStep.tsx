@@ -21,19 +21,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <CardHeader className="text-center pb-8 border-b border-white/10">
-                <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
-                    <Cigarette className="h-6 w-6 text-dating-terracotta" />
-                </div>
-                <CardTitle className="font-display text-3xl text-white mb-2">
-                    Lifestyle Habits
-                </CardTitle>
-                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
-                    Be honest - these help us match you with compatible partners.
-                </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-8 pt-8">
+            <CardContent className="space-y-8 pt-4">
                 {/* Substance Use Group */}
                 <div className="space-y-6">
                     <div className="flex items-center gap-2">
