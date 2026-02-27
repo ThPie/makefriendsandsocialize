@@ -1,11 +1,7 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 import {
   Crown,
@@ -16,63 +12,14 @@ import {
   MessageCircle,
   Star,
   Gem,
-  Loader2,
 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const TheLadiesSocietyPage = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
-  const { user, profile } = useAuth();
   const heroAnimation = useScrollAnimation({ rootMargin: "100px" });
   const missionAnimation = useScrollAnimation({ rootMargin: "100px" });
   const benefitsAnimation = useScrollAnimation({ rootMargin: "100px" });
-  const pricingAnimation = useScrollAnimation({ rootMargin: "100px" });
-  const formAnimation = useScrollAnimation({ rootMargin: "100px" });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    age: "",
-    occupation: "",
-    reasonToJoin: "",
-    supportMeaning: "",
-    contributionStatement: "",
-    membershipTier: "",
-  });
-
-  useEffect(() => {
-    if (user && profile) {
-      let age = "";
-      if (profile.date_of_birth) {
-        const birthDate = new Date(profile.date_of_birth);
-        const today = new Date();
-        let calculatedAge = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-          calculatedAge--;
-        }
-        age = calculatedAge.toString();
-      }
-
-      setFormData((prev) => ({
-        ...prev,
-        fullName:
-          [profile.first_name, profile.last_name].filter(Boolean).join(" ") ||
-          prev.fullName,
-        email: user.email || prev.email,
-        age: age || prev.age,
-        occupation: profile.job_title || prev.occupation,
-      }));
-    }
-  }, [user, profile]);
+  const ctaAnimation = useScrollAnimation({ rootMargin: "100px" });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -129,70 +76,6 @@ const TheLadiesSocietyPage = () => {
         "An elegant evening celebrating the achievements and bonds within the circle.",
     },
   ];
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!user) {
-      toast({
-        title: "Sign in required",
-        description:
-          "Please sign in or create an account to apply to The Ladies Society.",
-        variant: "destructive",
-      });
-      navigate("/auth?returnTo=/circles/the-ladies-society");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      const { error } = await supabase.from("circle_applications").insert({
-        user_id: user.id,
-        circle_name: "the-ladies-society",
-        full_name: formData.fullName,
-        email: formData.email,
-        age: formData.age ? parseInt(formData.age, 10) : null,
-        occupation: formData.occupation || null,
-        reason_to_join: formData.reasonToJoin,
-        support_meaning: formData.supportMeaning || null,
-        contribution_statement: formData.contributionStatement || null,
-        membership_tier: formData.membershipTier,
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Application Submitted",
-        description:
-          "Thank you — we will review your application and follow up with next steps.",
-      });
-
-      setFormData({
-        fullName: "",
-        email: "",
-        age: "",
-        occupation: "",
-        reasonToJoin: "",
-        supportMeaning: "",
-        contributionStatement: "",
-        membershipTier: "",
-      });
-    } catch (error) {
-      console.error("Error submitting application:", error);
-      toast({
-        title: "Submission Failed",
-        description:
-          "There was an error submitting your application. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const inputClasses =
-    "block w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/50 focus:border-[hsl(var(--accent-gold))]/50 text-sm transition-all duration-200";
 
   return (
     <Layout>
@@ -280,13 +163,9 @@ const TheLadiesSocietyPage = () => {
               <Button
                 size="lg"
                 className="rounded-full px-8 min-h-[52px] text-base font-medium group"
-                onClick={() =>
-                  document
-                    .getElementById("apply")
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
+                onClick={() => navigate("/membership")}
               >
-                Apply Now
+                Become a Member
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </motion.div>
@@ -367,316 +246,33 @@ const TheLadiesSocietyPage = () => {
           </div>
         </section>
 
-        {/* Membership Pricing */}
+        {/* Membership CTA */}
         <section className="py-16 md:py-20">
           <div
-            ref={pricingAnimation.ref}
-            className={`container max-w-4xl scroll-animate ${pricingAnimation.isVisible ? "visible" : ""}`}
+            ref={ctaAnimation.ref}
+            className={`container max-w-2xl text-center scroll-animate ${ctaAnimation.isVisible ? "visible" : ""}`}
           >
-            <div className="text-center mb-12">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">
-                Pricing
-              </p>
-              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-                Membership Options
-              </h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
-                Access to The Ladies Society requires a Member tier or above.
-                Fellows with businesses can have their listings featured in our
-                directory.
-              </p>
-            </div>
-
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={pricingAnimation.isVisible ? "visible" : "hidden"}
-              className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto"
-            >
-              <motion.div
-                variants={itemVariants}
-                className="bg-card border border-border/50 rounded-2xl p-8 text-center"
-              >
-                <h3 className="font-display text-2xl text-foreground mb-2">
-                  Monthly
-                </h3>
-                <div className="mb-4">
-                  <span className="font-display text-4xl text-primary">
-                    $29
-                  </span>
-                  <span className="text-muted-foreground">/month</span>
-                </div>
-                <p className="text-muted-foreground text-sm mb-6">
-                  Full access to all Ladies Society gatherings and benefits.
-                </p>
-                <Button
-                  variant="outline"
-                  className="w-full rounded-full"
-                  onClick={() =>
-                    document
-                      .getElementById("apply")
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                >
-                  Apply Now
-                </Button>
-              </motion.div>
-
-              <motion.div
-                variants={itemVariants}
-                className="bg-card border border-[hsl(var(--accent-gold))]/50 ring-1 ring-[hsl(var(--accent-gold))]/20 rounded-2xl p-8 text-center relative"
-              >
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
-                    Best Value
-                  </span>
-                </div>
-                <h3 className="font-display text-2xl text-foreground mb-2">
-                  Annual
-                </h3>
-                <div className="mb-4">
-                  <span className="font-display text-4xl text-primary">
-                    $249
-                  </span>
-                  <span className="text-muted-foreground">/year</span>
-                </div>
-                <p className="text-muted-foreground text-sm mb-6">
-                  Save over $99 annually. Includes all membership benefits.
-                </p>
-                <Button
-                  className="w-full rounded-full"
-                  onClick={() =>
-                    document
-                      .getElementById("apply")
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                >
-                  Apply Now
-                </Button>
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Application Form */}
-        <section id="apply" className="py-16 md:py-20">
-          <div
-            ref={formAnimation.ref}
-            className={`container max-w-2xl scroll-animate ${formAnimation.isVisible ? "visible" : ""}`}
-          >
-            <div className="text-center mb-12">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">
-                Join Us
-              </p>
-              <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-                Apply to The Ladies Society
-              </h2>
-            </div>
-
             <motion.div
               initial={{ opacity: 0, y: 30 }}
-              animate={formAnimation.isVisible ? { opacity: 1, y: 0 } : {}}
+              animate={ctaAnimation.isVisible ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7 }}
-              className="bg-card border border-border/50 rounded-2xl p-8"
+              className="bg-card border border-border/50 rounded-2xl p-10"
             >
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label
-                    className="block text-sm font-medium text-foreground mb-2"
-                    htmlFor="fullName"
-                  >
-                    Full Name *
-                  </label>
-                  <input
-                    id="fullName"
-                    type="text"
-                    required
-                    value={formData.fullName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, fullName: e.target.value })
-                    }
-                    className={inputClasses}
-                    placeholder="Your full name"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    className="block text-sm font-medium text-foreground mb-2"
-                    htmlFor="email"
-                  >
-                    Email Address *
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    className={inputClasses}
-                    placeholder="you@example.com"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label
-                      className="block text-sm font-medium text-foreground mb-2"
-                      htmlFor="age"
-                    >
-                      Age
-                    </label>
-                    <input
-                      id="age"
-                      type="number"
-                      min={18}
-                      max={99}
-                      value={formData.age}
-                      onChange={(e) =>
-                        setFormData({ ...formData, age: e.target.value })
-                      }
-                      className={inputClasses}
-                      placeholder="Your age"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className="block text-sm font-medium text-foreground mb-2"
-                      htmlFor="occupation"
-                    >
-                      Occupation
-                    </label>
-                    <input
-                      id="occupation"
-                      type="text"
-                      value={formData.occupation}
-                      onChange={(e) =>
-                        setFormData({ ...formData, occupation: e.target.value })
-                      }
-                      className={inputClasses}
-                      placeholder="Your occupation"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    className="block text-sm font-medium text-foreground mb-2"
-                    htmlFor="reasonToJoin"
-                  >
-                    Why do you want to join The Ladies Society? *
-                  </label>
-                  <textarea
-                    id="reasonToJoin"
-                    required
-                    rows={3}
-                    value={formData.reasonToJoin}
-                    onChange={(e) =>
-                      setFormData({ ...formData, reasonToJoin: e.target.value })
-                    }
-                    className={`${inputClasses} resize-none`}
-                    placeholder="Tell us what draws you to this circle..."
-                  />
-                </div>
-
-                <div>
-                  <label
-                    className="block text-sm font-medium text-foreground mb-2"
-                    htmlFor="supportMeaning"
-                  >
-                    What does support among women mean to you?
-                  </label>
-                  <textarea
-                    id="supportMeaning"
-                    rows={3}
-                    value={formData.supportMeaning}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        supportMeaning: e.target.value,
-                      })
-                    }
-                    className={`${inputClasses} resize-none`}
-                    placeholder="Share your perspective..."
-                  />
-                </div>
-
-                <div>
-                  <label
-                    className="block text-sm font-medium text-foreground mb-2"
-                    htmlFor="contributionStatement"
-                  >
-                    What do you hope to contribute to this circle?
-                  </label>
-                  <textarea
-                    id="contributionStatement"
-                    rows={3}
-                    value={formData.contributionStatement}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        contributionStatement: e.target.value,
-                      })
-                    }
-                    className={`${inputClasses} resize-none`}
-                    placeholder="How would you enrich this community..."
-                  />
-                </div>
-
-                <div>
-                  <label
-                    className="block text-sm font-medium text-foreground mb-2"
-                    htmlFor="membershipTier"
-                  >
-                    Membership Tier *
-                  </label>
-                  <Select
-                    value={formData.membershipTier}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, membershipTier: value })
-                    }
-                    required
-                  >
-                    <SelectTrigger className="w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-[hsl(var(--accent-gold))]/50 text-sm h-auto">
-                      <SelectValue placeholder="Select your tier" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border border-border">
-                      <SelectItem value="member">Member</SelectItem>
-                      <SelectItem value="fellow">Fellow</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    The Ladies Society is available to Member and Fellow tier
-                    members. Fellows with businesses can have their listings
-                    featured in our directory.
-                  </p>
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-6 text-base font-medium rounded-full group"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      Submit Application
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </>
-                  )}
-                </Button>
-
-                <p className="text-xs text-muted-foreground text-center mt-4">
-                  Membership is reviewed to maintain a respectful and empowering
-                  environment.
-                </p>
-              </form>
+              <h2 className="font-display text-3xl md:text-4xl text-foreground mb-4">
+                Ready to Join?
+              </h2>
+              <p className="text-muted-foreground text-lg mb-8 max-w-lg mx-auto">
+                Your membership gives you access to The Ladies Society and all
+                its gatherings. Not a member yet?
+              </p>
+              <Button
+                size="lg"
+                className="rounded-full px-10 min-h-[52px] text-base font-medium group"
+                onClick={() => navigate("/membership")}
+              >
+                Become a Member
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
             </motion.div>
           </div>
         </section>
