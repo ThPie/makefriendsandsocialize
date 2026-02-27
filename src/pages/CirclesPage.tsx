@@ -9,8 +9,10 @@ import { ArrowRight } from "lucide-react";
 // Assets
 import lesAmisImg from "@/assets/les-amis-hero-new.webp";
 import gentlemenImg from "@/assets/gentlemen-hero-new.webp";
+import couplesCircleImg from "@/assets/couples-circle-hero.jpg";
 // Placeholder for Women Society
 const womenSocietyImg = "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?q=80&w=2938&auto=format&fit=crop";
+const activeOutdoorImg = "/images/gallery/golf-outdoor.jpg";
 
 const CirclesPage = () => {
   const heroAnimation = useScrollAnimation({ rootMargin: '100px' });
@@ -43,6 +45,24 @@ const CirclesPage = () => {
       tags: ["French Conversation", "Open to All"],
       path: "/circles/les-amis",
       isFree: true,
+      colSpan: "md:col-span-1",
+    },
+    {
+      title: "Couple's Circle",
+      description: "A private sanctuary for couples to connect, share experiences, and build lasting friendships together.",
+      image: couplesCircleImg,
+      tags: ["Couples Only", "Selective"],
+      path: "/circles/couples-circle",
+      isFree: false,
+      colSpan: "md:col-span-2",
+    },
+    {
+      title: "Active & Outdoor",
+      description: "For members who view movement and vitality as essential pillars of a life well-lived.",
+      image: activeOutdoorImg,
+      tags: ["Golf", "Wellness", "Adventure"],
+      path: "/circles/active-outdoor",
+      isFree: false,
       colSpan: "md:col-span-3",
     },
   ];

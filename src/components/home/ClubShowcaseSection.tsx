@@ -9,15 +9,18 @@ import gentlemenImg from '@/assets/gentlemen-stock.jpg';
 import womenSocietyImg from '@/assets/women-society-hero.jpg';
 import foundersImg from '@/assets/founders-hero-new.jpg';
 import slowDatingImg from '@/assets/slow-dating-new.jpg';
-import businessImg from '@/assets/business-hero.jpg';
 import lesAmisImg from '@/assets/les-amis-stock.jpg';
+import couplesCircleImg from '@/assets/couples-circle-hero.jpg';
+
+// Active & Outdoor uses golf-themed imagery
+const activeOutdoorImg = '/images/gallery/golf-outdoor.jpg';
 
 const clubs = [
   {
     id: 'founders',
     category: 'Exclusive',
     title: 'Founders Circle',
-    description: 'Where visionaries shape the future. Join an elite collective of entrepreneurs, founders, and industry disruptors redefining what it means to build something meaningful.',
+    description: 'Where visionaries shape the future. Join an elite collective of entrepreneurs, founders, and industry disruptors redefining what it means to build something meaningful. Strategic connections, exclusive insights, and expert-led masterclasses.',
     image: foundersImg,
     link: '/founders-circle'
   },
@@ -46,12 +49,20 @@ const clubs = [
     link: '/circles/the-ladies-society'
   },
   {
-    id: 'business-circle',
-    category: 'Business',
-    title: 'Business Circle',
-    description: 'Strategic connections for entrepreneurs and executives. Unlock exclusive industry insights, partnership opportunities, and expert-led masterclasses.',
-    image: businessImg,
-    link: '/circles'
+    id: 'couples-circle',
+    category: 'Couples',
+    title: "Couple's Circle",
+    description: 'A private sanctuary for couples to connect, share experiences, and build lasting friendships together through intimate dinner parties and exclusive retreats.',
+    image: couplesCircleImg,
+    link: '/circles/couples-circle'
+  },
+  {
+    id: 'active-outdoor',
+    category: 'Lifestyle',
+    title: 'Active & Outdoor',
+    description: 'For members who view movement and vitality as essential pillars of a life well-lived. Golf pairings, cycling tours, wellness retreats, and more.',
+    image: activeOutdoorImg,
+    link: '/circles/active-outdoor'
   },
 ];
 
