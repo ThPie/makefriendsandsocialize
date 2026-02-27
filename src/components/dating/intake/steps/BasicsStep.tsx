@@ -61,19 +61,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <CardHeader className="text-center pb-8 border-b border-white/10">
-                <div className="mx-auto w-12 h-12 bg-dating-terracotta/20 rounded-full flex items-center justify-center mb-4">
-                    <User className="h-6 w-6 text-dating-terracotta" />
-                </div>
-                <CardTitle className="font-display text-3xl text-white mb-2">
-                    The Basics
-                </CardTitle>
-                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
-                    Let's start your journey. Tell us who you are and what you're looking for.
-                </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-10 pt-8">
+            <CardContent className="space-y-10 pt-4">
                 {/* Photo Upload - Centered & Premium */}
                 <div className="flex flex-col items-center gap-6">
                     <div className={cn(
