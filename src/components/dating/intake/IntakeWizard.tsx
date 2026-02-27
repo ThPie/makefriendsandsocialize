@@ -195,7 +195,7 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
     return (
         <div className="flex min-h-[calc(100dvh-68px)] w-full">
             {/* Desktop Sidebar — sticky so it stays visible on scroll */}
-            <aside className="hidden md:flex w-[300px] lg:w-[320px] shrink-0 flex-col bg-[hsl(var(--surface))] p-6 lg:p-8 border-r border-border sticky top-[68px] h-[calc(100dvh-68px)] overflow-y-auto">
+            <aside className="hidden md:flex w-[300px] lg:w-[320px] shrink-0 flex-col bg-gradient-to-b from-[hsl(var(--accent-gold))]/15 via-[hsl(var(--accent-gold))]/8 to-[hsl(var(--surface))] p-6 lg:p-8 border-r border-[hsl(var(--accent-gold))]/20 sticky top-[68px] h-[calc(100dvh-68px)] overflow-y-auto">
                 <IntakeProgress
                     currentStep={step}
                     totalSteps={totalSteps}

@@ -93,7 +93,7 @@ export const dealbreakersSchema = z.object({
 
 // Step 7: Notifications
 export const notificationsSchema = z.object({
-    search_radius: z.number().min(5).max(100).default(25),
+    search_radius: z.number().min(5).max(500).default(25),
     phone_number: z.string().optional(),
     email_notifications_enabled: z.boolean().default(true),
     push_notifications_enabled: z.boolean().default(true),

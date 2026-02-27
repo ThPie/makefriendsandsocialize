@@ -369,7 +369,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             value={[formData.search_radius]}
                             onValueChange={([value]) => updateField("search_radius", value)}
                             min={10}
-                            max={100}
+                            max={500}
                             step={5}
                             className="py-2"
                         />
