@@ -43,7 +43,16 @@ interface EventPhoto {
   event_id: string | null;
   instagram_post_id: string | null;
   source: string;
+  circle_tags: string[] | null;
 }
+
+const CIRCLE_TAGS = [
+  { value: 'the-gentlemen', label: 'The Gentlemen' },
+  { value: 'the-ladies-society', label: 'The Ladies Society' },
+  { value: 'les-amis', label: 'Les Amis' },
+  { value: 'couples-circle', label: "Couple's Circle" },
+  { value: 'active-outdoor', label: 'Active & Outdoor' },
+];
 
 const CATEGORIES = [
   'Galas',
@@ -204,6 +213,7 @@ const AdminPhotos = () => {
     title: '',
     category: '',
     is_featured: false,
+    circle_tags: [] as string[],
   });
 
   const sensors = useSensors(
@@ -243,6 +253,7 @@ const AdminPhotos = () => {
         category: data.category || null,
         is_featured: data.is_featured || false,
         display_order: maxOrder + 1,
+        circle_tags: (data as any).circle_tags || [],
       }]);
       if (error) throw error;
     },
@@ -353,6 +364,7 @@ const AdminPhotos = () => {
       title: '',
       category: '',
       is_featured: false,
+      circle_tags: [],
     });
   };
 
@@ -398,6 +410,7 @@ const AdminPhotos = () => {
       title: photo.title || '',
       category: photo.category || '',
       is_featured: photo.is_featured || false,
+      circle_tags: photo.circle_tags || [],
     });
     setEditingPhoto(photo);
   };
@@ -570,6 +583,28 @@ const AdminPhotos = () => {
                           ))}
                         </SelectContent>
                       </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Circle Tags</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {CIRCLE_TAGS.map((tag) => (
+                          <label key={tag.value} className="flex items-center gap-1.5 cursor-pointer">
+                            <Checkbox
+                              checked={formData.circle_tags.includes(tag.value)}
+                              onCheckedChange={(checked) => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  circle_tags: checked
+                                    ? [...prev.circle_tags, tag.value]
+                                    : prev.circle_tags.filter((t) => t !== tag.value),
+                                }));
+                              }}
+                            />
+                            <span className="text-sm">{tag.label}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="flex items-center justify-between">
@@ -747,6 +782,28 @@ const AdminPhotos = () => {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Circle Tags</Label>
+              <div className="flex flex-wrap gap-2">
+                {CIRCLE_TAGS.map((tag) => (
+                  <label key={tag.value} className="flex items-center gap-1.5 cursor-pointer">
+                    <Checkbox
+                      checked={formData.circle_tags.includes(tag.value)}
+                      onCheckedChange={(checked) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          circle_tags: checked
+                            ? [...prev.circle_tags, tag.value]
+                            : prev.circle_tags.filter((t) => t !== tag.value),
+                        }));
+                      }}
+                    />
+                    <span className="text-sm">{tag.label}</span>
+                  </label>
+                ))}
+              </div>
             </div>
 
             <div className="flex items-center justify-between">
