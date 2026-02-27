@@ -4,14 +4,12 @@
  */
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate, useNavigate } from "react-router-dom";
-import { Heart, Loader2, RefreshCw } from "lucide-react";
+import { Navigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { IntakeWizard } from "@/components/dating/intake";
-import { Button } from "@/components/ui/button";
 
 export const DatingIntakePage = () => {
   const { user, isLoading, profile } = useAuth();
-  const navigate = useNavigate();
   const [loadingTimedOut, setLoadingTimedOut] = useState(false);
 
   // 8-second timeout: if auth never resolves, redirect to login
@@ -51,20 +49,7 @@ export const DatingIntakePage = () => {
         <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-dating-forest/10 blur-[100px]" />
       </div>
 
-      <div className="container max-w-3xl mx-auto px-4 relative z-10">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center p-4 bg-white/5 border border-white/10 rounded-full mb-6 backdrop-blur-sm">
-            <Heart className="h-6 w-6 text-[hsl(var(--accent-gold))]" />
-          </div>
-          <h1 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
-            Slow Dating Application
-          </h1>
-          <p className="text-white/60 max-w-lg mx-auto text-lg font-light leading-relaxed">
-            Take your time. These questions help us find meaningful connections that align with your values and lifestyle.
-          </p>
-        </div>
-
+      <div className="container max-w-4xl mx-auto px-4 relative z-10">
         {/* Intake Wizard */}
         <div className="bg-white/[0.03] backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
           <IntakeWizard profile={profile} />

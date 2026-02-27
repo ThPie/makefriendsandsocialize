@@ -68,12 +68,12 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                 <CardTitle className="font-display text-3xl text-white mb-2">
                     The Basics
                 </CardTitle>
-                <CardDescription className="text-white/60 text-base max-w-md mx-auto">
-                    Let's start your journey. Tell us who you are and what you're looking for.
+                <CardDescription className="text-white/60 text-base max-w-lg mx-auto">
+                    The more details you share, the better we can match you with someone truly compatible. Please be as thorough as possible to maximize your chances of finding a meaningful connection.
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-10 pt-8">
+            <CardContent className="space-y-6 pt-6">
                 {/* Photo Upload - Centered & Premium */}
                 <div className="flex flex-col items-center gap-6">
                     <div className={cn(
@@ -86,7 +86,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                 formData.photo_url ? "bg-green-500" : "bg-dating-terracotta"
                         )} />
                         <Avatar className={cn(
-                            "h-40 w-40 border-4 transition-all duration-300",
+                            "h-28 w-28 border-4 transition-all duration-300",
                             hasError('photo_url')
                                 ? "border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.3)]"
                                 : formData.photo_url

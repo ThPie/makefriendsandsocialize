@@ -78,7 +78,7 @@ export const Header = () => {
               </TransitionLink>
               <TransitionLink to="/portal/profile">
                 <Avatar className="h-8 w-8 border border-white/20 hover:opacity-80 transition-opacity">
-                  <AvatarImage src={profile?.avatar_urls?.[0]} />
+                  <AvatarImage src={profile?.avatar_urls?.[0] || user?.user_metadata?.avatar_url} />
                   <AvatarFallback className="bg-primary/80 text-primary-foreground text-xs">
                     {profile?.first_name?.[0] || user.email?.[0]?.toUpperCase() || 'M'}{(profile?.last_name?.[0] || '').toUpperCase()}
                   </AvatarFallback>
