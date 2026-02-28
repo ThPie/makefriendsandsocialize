@@ -86,6 +86,7 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
           <!-- Header -->
           <tr>
             <td style="padding:40px 40px 24px;text-align:center;background-color:${headerBg};">
+              <img src="${SITE_URL}/favicon.png" alt="Make Friends and Socialize" width="60" height="60" style="display:block;margin:0 auto 16px;border-radius:8px;" />
               <h1 style="margin:0;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:28px;font-weight:600;font-style:italic;color:#B8892A;letter-spacing:0.02em;">
                 ${heading}
               </h1>
@@ -103,8 +104,11 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
           <tr>
             <td style="padding:24px 40px;border-top:1px solid #E3E0D8;text-align:center;">
               ${footerBlock}
-              <p style="margin:0;font-size:12px;color:#9BA89D;">
+              <p style="margin:0 0 8px;font-size:12px;color:#9BA89D;">
                 ${COPYRIGHT}
+              </p>
+              <p style="margin:0;font-size:11px;color:#9BA89D;">
+                Salt Lake City, Utah, USA
               </p>
             </td>
           </tr>
