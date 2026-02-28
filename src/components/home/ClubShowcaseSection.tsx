@@ -10,10 +10,10 @@ import womenSocietyImg from '@/assets/women-society-hero.jpg';
 import foundersImg from '@/assets/founders-hero-new.jpg';
 import slowDatingImg from '@/assets/slow-dating-new.jpg';
 import lesAmisImg from '@/assets/les-amis-stock.jpg';
-import couplesCircleImg from '@/assets/couples-circle-hero.jpg';
+import couplesCircleImg from '@/assets/circles/couples-circle-hero.png';
 
 // Active & Outdoor uses golf-themed imagery
-const activeOutdoorImg = '/images/gallery/golf-outdoor.jpg';
+import activeOutdoorImg from '@/assets/active-outdoor-hero-new.jpg';
 
 const clubs = [
   {

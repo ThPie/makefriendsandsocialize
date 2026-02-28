@@ -28,7 +28,7 @@ export const WhyChooseSection = () => {
         <div className="section-header">
           <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))] text-gold">How It Works</span>
           <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1]">
-            Three Simple <span className="italic">Steps</span>
+            Three Simple <span className="italic text-[hsl(var(--accent-gold))]">Steps</span>
           </h2>
         </div>
 

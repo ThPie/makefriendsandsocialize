@@ -50,7 +50,7 @@ export const SocialProofBanner = () => {
   const proofItems = [
     {
       icon: Users,
-      value: displayCount > 0 ? displayCount.toLocaleString() + '+' : '—',
+      value: displayCount > 0 ? displayCount.toLocaleString() : '—',
       label: 'Active Members',
       color: 'text-primary',
     },
