@@ -19,7 +19,8 @@ const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { reportId, userId, severity, redFlags, aiRecommendation, riskAssessment }: SecurityAlertRequest = await req.json();
+    const body = await req.json();
+    const { reportId, userId, severity = 'medium', redFlags = [], aiRecommendation = '', riskAssessment = '' }: SecurityAlertRequest = body;
 
     const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "", { auth: { persistSession: false } });
 
