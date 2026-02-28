@@ -112,13 +112,13 @@ export const EventSection = () => {
   }, [queryClient]);
 
   return (
-    <section className="section-spacing bg-background" id="events">
+    <section className="section-spacing bg-card border-t border-border" id="events">
       <div ref={ref} className="content-container">
         {/* Header */}
         <div className="section-header">
           <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))] text-gold">Calendar</span>
           <h2 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1]">
-            Upcoming <span className="italic">Gatherings</span>
+            Upcoming <span className="italic text-[hsl(var(--accent-gold))]">Gatherings</span>
           </h2>
         </div>
 

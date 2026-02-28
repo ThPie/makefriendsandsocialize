@@ -4,7 +4,7 @@ const ThePartnersPage = () => (
   <CirclePageTemplate
     config={{
       circleTag: "couples-circle",
-      heroImage: "/images/founders/founder-duo.jpg",
+      heroImage: "/images/circles/couples-circle-hero.png",
       heroImageAlt: "Couples connecting",
       title: (
         <>

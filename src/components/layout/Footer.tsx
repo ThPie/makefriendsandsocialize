@@ -127,13 +127,13 @@ export const Footer = () => {
           </p>
 
           <div className="flex items-center gap-5">
-            <a href="https://www.facebook.com/profile.php?id=61575868888590" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150" aria-label="Facebook">
+            <a href="https://www.facebook.com/profile.php?id=61575868888590" target="_blank" rel="noopener noreferrer" className="text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150" aria-label="Facebook">
               <Facebook className="h-5 w-5" strokeWidth={1.5} />
             </a>
-            <a href="https://www.instagram.com/makefriendsandsocialize/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150" aria-label="Instagram">
+            <a href="https://www.instagram.com/makefriendsandsocialize/" target="_blank" rel="noopener noreferrer" className="text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150" aria-label="Instagram">
               <Instagram className="h-5 w-5" strokeWidth={1.5} />
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150" aria-label="LinkedIn">
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-[hsl(var(--accent-gold))] hover:text-[hsl(var(--accent-gold-light))] transition-colors duration-150" aria-label="LinkedIn">
               <Linkedin className="h-5 w-5" strokeWidth={1.5} />
             </a>
           </div>
