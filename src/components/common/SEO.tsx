@@ -47,7 +47,7 @@ export const SEO = ({
             <meta property="og:type" content={ogType} />
             <meta property="og:url" content={canonical || siteUrl} />
             <meta property="og:image" content={ogImage || 'https://lovable.dev/opengraph-image-p98pqg.png'} />
-            <meta property="og:site_name" content="MakeFriends Social Club" />
+            <meta property="og:site_name" content="Make Friends and Socialize" />
 
             {/* Twitter */}
             <meta name="twitter:card" content={twitterCard} />

@@ -30,7 +30,7 @@ interface SEOProps {
 
 const BASE_URL = 'https://makefriendsandsocialize.com';
 const DEFAULT_IMAGE = 'https://lovable.dev/opengraph-image-p98pqg.png';
-const SITE_NAME = 'MakeFriends Social Club';
+const SITE_NAME = 'Make Friends and Socialize';
 
 export function SEOHead({
   title,
@@ -152,7 +152,7 @@ function addEventStructuredData(event: NonNullable<SEOProps['event']>) {
     } : undefined,
     organizer: {
       '@type': 'Organization',
-      name: event.organizer || 'MakeFriends Social Club',
+      name: event.organizer || 'Make Friends and Socialize',
       url: BASE_URL,
     },
   };
@@ -183,7 +183,7 @@ function addArticleStructuredData(article: {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'MakeFriends Social Club',
+      name: 'Make Friends and Socialize',
       logo: {
         '@type': 'ImageObject',
         url: `${BASE_URL}/logo.png`,
