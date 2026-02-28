@@ -112,13 +112,18 @@ const NewsletterForm = () => {
     setEmail('');
     setAgreed(false);
 
-    // Send confirmation email via edge function (fire & forget)
+    // Send confirmation email & sync to Mailchimp (fire & forget)
     try {
-      await supabase.functions.invoke('send-newsletter-confirmation', {
-        body: { email: trimmed },
-      });
-    } catch (emailErr) {
-      console.error('Failed to send confirmation email:', emailErr);
+      await Promise.allSettled([
+        supabase.functions.invoke('send-newsletter-confirmation', {
+          body: { email: trimmed },
+        }),
+        supabase.functions.invoke('sync-mailchimp-subscriber', {
+          body: { email: trimmed },
+        }),
+      ]);
+    } catch (err) {
+      console.error('Post-subscribe tasks error:', err);
     }
   };
 
