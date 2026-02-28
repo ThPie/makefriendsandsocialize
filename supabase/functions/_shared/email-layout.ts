@@ -5,6 +5,7 @@
 
 export const SITE_URL = "https://makefriendsandsocializecom.lovable.app";
 export const BRAND_NAME = "Make Friends and Socialize";
+export const BRAND_LOGO_URL = "https://qzqomqctuqldexnxgmlh.supabase.co/storage/v1/object/public/email-assets/logo-monogram.png";
 export const COPYRIGHT = `© ${new Date().getFullYear()} Make Friends and Socialize LLC`;
 
 // Sender addresses by role
@@ -86,7 +87,7 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
           <!-- Header -->
           <tr>
             <td style="padding:40px 40px 24px;text-align:center;background-color:${headerBg};">
-              <img src="${SITE_URL}/favicon.png" alt="Make Friends and Socialize" width="60" height="60" style="display:block;margin:0 auto 16px;border-radius:8px;" />
+              <img src="${BRAND_LOGO_URL}" alt="Make Friends and Socialize" width="60" height="60" style="display:block;margin:0 auto 16px;border-radius:8px;" />
               <h1 style="margin:0;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:28px;font-weight:600;font-style:italic;color:#B8892A;letter-spacing:0.02em;">
                 ${heading}
               </h1>
