@@ -171,7 +171,7 @@ const ContactPage = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="font-display text-5xl md:text-6xl text-foreground mb-4 leading-[1.1]"
           >
-            Let's <span className="text-gradient">Connect</span>
+            Let's <span className="text-[hsl(var(--accent-gold))] italic">Connect</span>
           </motion.h1>
 
           <motion.p
@@ -200,7 +200,7 @@ const ContactPage = () => {
             <motion.div
               key={item.label}
               variants={itemVariants}
-              className="group bg-white/[0.04] border border-white/[0.08] rounded-2xl p-6 flex items-center gap-4 hover-lift"
+              className="group bg-card border border-border rounded-2xl p-6 flex items-center gap-4 hover-lift"
             >
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/20">
                 <item.icon className="w-6 h-6" strokeWidth={1.5} />
@@ -231,7 +231,7 @@ const ContactPage = () => {
             initial={{ opacity: 0, x: -30 }}
             animate={formAnimation.isVisible ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7 }}
-            className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8"
+            className="bg-card border border-border rounded-2xl p-8"
           >
             <div className="flex items-center gap-4 mb-8">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -294,7 +294,7 @@ const ContactPage = () => {
                   <SelectTrigger className="w-full rounded-xl border border-border/50 py-3.5 px-4 bg-secondary/30 text-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-sm h-auto">
                     <SelectValue placeholder="Select an inquiry type..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#0a1f0f] border border-white/[0.08]">
+                  <SelectContent className="bg-popover border border-border">
                     <SelectItem value="membership">Membership Questions</SelectItem>
                     <SelectItem value="events">Event Information</SelectItem>
                     <SelectItem value="private-events">Private Events & Bookings</SelectItem>
@@ -345,7 +345,7 @@ const ContactPage = () => {
                 <AccordionItem
                   key={index}
                   value={`item-${index}`}
-                  className="group bg-white/[0.04] border border-white/[0.08] rounded-2xl px-5 data-[state=open]:border-primary/30"
+                  className="group bg-card border border-border rounded-2xl px-5 data-[state=open]:border-primary/30"
                 >
                   <AccordionTrigger className="text-foreground font-semibold text-left hover:no-underline py-5">
                     {faq.question}
@@ -360,7 +360,7 @@ const ContactPage = () => {
             {/* Appeal Link */}
             <motion.div
               variants={itemVariants}
-              className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-5 hover-lift mt-4"
+              className="bg-card border border-border rounded-2xl p-5 hover-lift mt-4"
             >
               <div className="flex items-start gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary flex-shrink-0">
@@ -396,7 +396,7 @@ const ContactPage = () => {
                 href="https://tiktok.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.04] border border-white/[0.08] text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/30"
+                className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-card border border-border text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))] hover:text-white hover:border-[hsl(var(--accent-gold))] transition-all duration-200"
               >
                 <TikTokIcon className="w-6 h-6" />
               </a>
@@ -404,7 +404,7 @@ const ContactPage = () => {
                 href="https://www.facebook.com/profile.php?id=61575868888590"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.04] border border-white/[0.08] text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/30"
+                className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-card border border-border text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))] hover:text-white hover:border-[hsl(var(--accent-gold))] transition-all duration-200"
               >
                 <FacebookIcon className="w-6 h-6" />
               </a>
@@ -412,7 +412,7 @@ const ContactPage = () => {
                 href="https://www.instagram.com/makefriendsandsocialize/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.04] border border-white/[0.08] text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/30"
+                className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-card border border-border text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))] hover:text-white hover:border-[hsl(var(--accent-gold))] transition-all duration-200"
               >
                 <InstagramIcon className="w-6 h-6" />
               </a>
@@ -420,7 +420,7 @@ const ContactPage = () => {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.04] border border-white/[0.08] text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/30"
+                className="group flex h-14 w-14 items-center justify-center rounded-2xl bg-card border border-border text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))] hover:text-white hover:border-[hsl(var(--accent-gold))] transition-all duration-200"
               >
                 <LinkedInIcon className="w-6 h-6" />
               </a>

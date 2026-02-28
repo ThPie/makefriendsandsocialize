@@ -81,7 +81,7 @@ const JournalPage = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-4 leading-[1.1]"
           >
-            <span className="text-gradient">Blog</span>
+            The <span className="text-[hsl(var(--accent-gold))] italic">Blog</span>
           </motion.h1>
 
           <div className="mb-8" />
@@ -95,7 +95,7 @@ const JournalPage = () => {
           >
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <input
-              className="w-full h-12 pl-12 pr-4 rounded-full bg-white/[0.04] border border-white/[0.08] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+              className="w-full h-12 pl-12 pr-4 rounded-full bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
               placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -105,15 +105,15 @@ const JournalPage = () => {
       </section>
 
       {/* Categories */}
-      <section className="w-full max-w-5xl px-4 pb-8">
+      <section className="w-full content-container pb-8">
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
           {blogCategories.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 cursor-pointer transition-all duration-300 ${activeCategory === cat
-                  ? 'bg-primary text-primary-foreground font-medium shadow-lg shadow-primary/20'
-                  : 'bg-white/[0.04] border border-white/[0.08] text-muted-foreground hover:bg-secondary hover:border-primary/30'
+              className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-5 cursor-pointer transition-all duration-200 ${activeCategory === cat
+                  ? 'bg-primary text-primary-foreground font-medium'
+                  : 'bg-card border border-border text-muted-foreground hover:bg-secondary hover:border-primary/30'
                 }`}
             >
               <span className="text-sm font-medium leading-normal whitespace-nowrap">{cat}</span>
@@ -125,7 +125,7 @@ const JournalPage = () => {
       {/* Articles */}
       <section
         ref={articlesAnimation.ref}
-        className={`w-full max-w-5xl px-4 pb-20 scroll-animate ${articlesAnimation.isVisible ? 'visible' : ''}`}
+        className={`w-full content-container pb-20 scroll-animate ${articlesAnimation.isVisible ? 'visible' : ''}`}
       >
         {filteredArticles.length === 0 ? (
           <div className="text-center py-16">
@@ -145,7 +145,7 @@ const JournalPage = () => {
             {/* Featured */}
             {featuredArticle && (
               <motion.div variants={itemVariants}>
-                <Link to={`/journal/${featuredArticle.id}`} className="group block bg-white/[0.04] border border-white/[0.08] rounded-2xl overflow-hidden hover-lift transition-all duration-300 hover:border-primary/50">
+                <Link to={`/journal/${featuredArticle.id}`} className="group block bg-card border border-border rounded-2xl overflow-hidden hover-lift transition-all duration-200 hover:border-primary/50">
                   <div className="flex flex-col lg:flex-row">
                     <div className="w-full lg:w-1/2 aspect-video lg:aspect-auto lg:min-h-[320px] overflow-hidden">
                       <div
@@ -191,7 +191,7 @@ const JournalPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {regularArticles.map((article) => (
                 <motion.div key={article.id} variants={itemVariants}>
-                  <Link to={`/journal/${article.id}`} className="group flex flex-col h-full bg-white/[0.04] border border-white/[0.08] rounded-2xl overflow-hidden hover-lift transition-all duration-300 hover:border-primary/50">
+                  <Link to={`/journal/${article.id}`} className="group flex flex-col h-full bg-card border border-border rounded-2xl overflow-hidden hover-lift transition-all duration-200 hover:border-primary/50">
                     <div className="aspect-video overflow-hidden relative">
                       <div
                         className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"

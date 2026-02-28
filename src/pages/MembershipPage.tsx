@@ -244,7 +244,7 @@ const MembershipPage = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
           >
-            Join an Inner Circle of <span className="text-primary">Distinction</span>
+            Join an Inner Circle of <span className="text-[hsl(var(--accent-gold))] italic">Distinction</span>
           </motion.h1>
 
           <motion.p
@@ -302,7 +302,7 @@ const MembershipPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + index * 0.1 }}
-                className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.04] border border-white/[0.08]"
+                className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border"
               >
                 <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center`}>
                   <item.icon className={`w-5 h-5 ${item.color}`} />
@@ -326,7 +326,7 @@ const MembershipPage = () => {
           <div className="text-center mb-16">
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Foundation</p>
             <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-              A Legacy of Connection
+              A Legacy of <span className="text-[hsl(var(--accent-gold))] italic">Connection</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
               MakeFriends Socialize is founded on the principle that the most meaningful moments are shared.
@@ -340,7 +340,7 @@ const MembershipPage = () => {
             animate={legacyAnimation.isVisible ? "visible" : "hidden"}
             className="grid grid-cols-1 md:grid-cols-2 gap-8"
           >
-            <motion.div variants={itemVariants} className="group bg-white/[0.04] border border-white/[0.08] rounded-2xl overflow-hidden hover-lift">
+              <motion.div variants={itemVariants} className="group bg-card border border-border rounded-2xl overflow-hidden hover-lift">
               <div
                 className="w-full aspect-video bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                 style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDruggrnBN-9qTOe1Fc9qMF_JtiW_VnADSmII4S2ux8MqT6fOs2HG-ghWwtzWWHqkDaTAmD4LSpx6E1Hm-sS0Zl0P8VefX-D5Etk3lO-dk0r-NPEcPKRUOBu-2UdNaKofKZFu5q8ho1Fl3MglVTEqdi6uRMGWJ9_6kBmYVGB1jvjTPhvJuXwwTTesD0I1g-PsBP4RwCkV1vaqccSNY-5TXH6oF1728qjz6PlerqNSYPtnIdaWjHcaH5T-JfK_fO9GunPtHGxtXhJY3C")' }}
@@ -356,7 +356,7 @@ const MembershipPage = () => {
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="group bg-white/[0.04] border border-white/[0.08] rounded-2xl overflow-hidden hover-lift">
+            <motion.div variants={itemVariants} className="group bg-card border border-border rounded-2xl overflow-hidden hover-lift">
               <div
                 className="w-full aspect-video bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                 style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDB4GSC6Jo5fw67mSMHAPEJFdrOGuo0YWScMlid-EMsl053fi94hxzLQ8Gr2YRsYR2xZGZv3UIXwrM1WpGe8ugpoAv-7Px5WKpOsLDczUkvB7yCVf7gZssUxy7wEBOhd78EareiANb92XxNzKtQSoAxWjQ0CdI2DdoWkLuMOsVHXKvf9qwBFAhSfiXgI1tZ5k__18haE_z-XAzllweTDSNcZEad7ucCeinEDHN5ftXsXCEMDuS2_Z3ofrUh-vEyWcFG3oMIK2NqS4Ho")' }}
@@ -384,7 +384,7 @@ const MembershipPage = () => {
           <div className="text-center mb-10">
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Membership Tiers</p>
             <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-              Choose Your Experience
+              Choose Your <span className="text-[hsl(var(--accent-gold))] italic">Experience</span>
             </h2>
             <p className="text-foreground/80 text-base italic max-w-2xl mx-auto mb-6 border-l-2 border-primary pl-4 text-left">
               Make Friends & Socialize is a private social club — not a dating app.
@@ -429,12 +429,12 @@ const MembershipPage = () => {
                 <motion.div
                   key={tier.name}
                   variants={itemVariants}
-                  className={`relative flex flex-col h-full rounded-2xl p-8 transition-all duration-300 border ${
+                  className={`relative flex flex-col h-full rounded-2xl p-8 transition-all duration-200 border ${
                     isCurrent
-                      ? 'bg-[#122b22] border-primary/40 shadow-xl scale-105 z-10 opacity-75'
+                      ? 'bg-card border-primary/40 scale-105 z-10 opacity-75'
                       : tier.featured
-                        ? 'bg-[#122b22] border-[hsl(43,55%,45%)] shadow-xl scale-105 z-10'
-                        : 'bg-[#0f251d] border-transparent hover:border-white/10 opacity-90 hover:opacity-100'
+                        ? 'bg-card border-[hsl(var(--accent-gold))] scale-105 z-10'
+                        : 'bg-card border-border opacity-90 hover:opacity-100'
                   }`}
                 >
                   {/* Current Plan Badge */}
@@ -449,22 +449,22 @@ const MembershipPage = () => {
                   {/* Most Popular Badge (only when not current) */}
                   {tier.featured && !isCurrent && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <Badge className="bg-[hsl(43,55%,45%)] text-[#0f251d] hover:bg-[hsl(43,55%,40%)] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border-none">
+                      <Badge className="gold-gradient-bg text-white hover:opacity-90 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border-none">
                         Most Popular
                       </Badge>
                     </div>
                   )}
 
                   <div className="flex flex-col gap-1 mb-6">
-                    <h3 className="font-display text-xl text-[#d4c5a3] font-medium">{tier.name}</h3>
+                    <h3 className="font-display text-xl text-[hsl(var(--accent-gold))] font-medium">{tier.name}</h3>
                     <p className="flex items-baseline gap-1 mt-2">
-                      <span className={`font-display text-5xl font-normal ${tier.featured ? 'text-white' : 'text-[#d4c5a3]'}`}>
+                      <span className={`font-display text-5xl font-normal ${tier.featured ? 'text-foreground' : 'text-[hsl(var(--accent-gold))]'}`}>
                         {tier.price}
                       </span>
-                      {tier.price !== 'Free' && <span className="text-[#a3b3aa] text-sm font-light">{tier.period}</span>}
+                      {tier.price !== 'Free' && <span className="text-muted-foreground text-sm font-light">{tier.period}</span>}
                     </p>
                     {tier.description && (
-                      <p className="text-[#a3b3aa] text-sm mt-3 font-light leading-relaxed">
+                      <p className="text-muted-foreground text-sm mt-3 font-light leading-relaxed">
                         {tier.description}
                       </p>
                     )}
@@ -474,8 +474,8 @@ const MembershipPage = () => {
                   <ul className="space-y-4 mb-8 flex-1">
                     {tier.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
-                        <Check className="h-5 w-5 text-[hsl(43,55%,45%)] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
-                        <span className="text-sm text-[#e8e4d9] font-light leading-snug">{feature}</span>
+                        <Check className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                        <span className="text-sm text-foreground font-light leading-snug">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -484,7 +484,7 @@ const MembershipPage = () => {
                   <div className="text-center mb-6">
                     <button
                       onClick={() => toggleExpanded(tier.id)}
-                      className="text-[hsl(43,55%,45%)] text-sm hover:text-white transition-colors flex items-center justify-center gap-1 mx-auto"
+                      className="text-[hsl(var(--accent-gold))] text-sm hover:text-foreground transition-colors flex items-center justify-center gap-1 mx-auto"
                     >
                       See all benefits <ChevronDown className="w-3 h-3" />
                     </button>
@@ -501,21 +501,21 @@ const MembershipPage = () => {
                       </Button>
                     ) : tier.id === 'socialite' ? (
                       <Button
-                        className="w-full rounded-full h-12 bg-[#1a382e] hover:bg-[#23453a] text-white border border-white/5 font-medium transition-all"
+                        className="w-full rounded-full h-12 bg-card hover:bg-accent text-foreground border border-border font-medium transition-all"
                         asChild
                       >
                         <Link to="/auth">{getCtaLabel(tier.id, tier.name)}</Link>
                       </Button>
                     ) : tier.id === 'insider' ? (
                       <Button
-                        className="w-full rounded-full h-12 bg-[hsl(43,55%,45%)] hover:bg-[hsl(43,55%,40%)] text-[#0f251d] font-bold transition-all shadow-lg shadow-black/20"
+                        className="w-full rounded-full h-12 gold-fill font-bold transition-all"
                         onClick={() => tier.stripeId && handleStartTrial(tier.stripeId)}
                       >
                         {getCtaLabel(tier.id, tier.name)}
                       </Button>
                     ) : (
                       <Button
-                        className="w-full rounded-full h-12 bg-[#1a382e] hover:bg-[#23453a] text-white border border-white/5 font-medium transition-all"
+                        className="w-full rounded-full h-12 bg-card hover:bg-accent text-foreground border border-border font-medium transition-all"
                         onClick={() => tier.stripeId && handleSubscribe(tier.stripeId)}
                       >
                         {getCtaLabel(tier.id, tier.name)}
@@ -538,7 +538,7 @@ const MembershipPage = () => {
           <div className="text-center mb-16">
             <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">How It Works</p>
             <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-              Get Started in Minutes
+              Get Started in <span className="text-[hsl(var(--accent-gold))] italic">Minutes</span>
             </h2>
             <p className="text-muted-foreground text-lg">
               No application required. Start your free trial today.
@@ -599,7 +599,7 @@ const MembershipPage = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="font-display text-4xl md:text-5xl text-foreground mb-6"
           >
-            Begin Your Journey
+            Begin Your <span className="text-[hsl(var(--accent-gold))] italic">Journey</span>
           </motion.h2>
 
           <motion.p

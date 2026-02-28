@@ -49,7 +49,7 @@ interface Event {
 
 const EventSkeleton = () => (
   <motion.div
-    className="flex flex-col gap-4 rounded-2xl bg-white/[0.04] overflow-hidden border border-white/[0.08]"
+    className="flex flex-col gap-4 rounded-2xl bg-card overflow-hidden border border-border"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
   >
@@ -254,7 +254,7 @@ const EventsPage = () => {
         schema={[...upcomingEventsSchema, breadcrumbSchema]}
       />
       {/* Header */}
-      <div className="w-full max-w-[1440px] px-4 md:px-10 py-12 flex flex-col gap-8">
+      <div className="w-full content-container py-12 flex flex-col gap-8">
         <motion.div
           className="flex flex-col md:flex-row md:items-center justify-between gap-4"
           initial={{ opacity: 0, y: -20 }}
@@ -262,14 +262,14 @@ const EventsPage = () => {
         >
           <div>
             <h1 className="text-foreground text-4xl md:text-5xl font-light leading-tight tracking-tight font-display">
-              Events Calendar
+              Events <span className="text-[hsl(var(--accent-gold))] italic">Calendar</span>
             </h1>
             <p className="text-muted-foreground text-lg font-normal mt-3">
               Curated gatherings for the discerning few.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-white/[0.04] p-1 rounded-xl border border-white/[0.08] self-start md:self-auto">
+          <div className="flex items-center gap-2 bg-card p-1 rounded-xl border border-border self-start md:self-auto">
             <button
               onClick={() => setViewMode('grid')}
               className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground'}`}
@@ -294,7 +294,7 @@ const EventsPage = () => {
           transition={{ delay: 0.1 }}
         >
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as EventTab)} className="w-full">
-            <TabsList className="bg-white/[0.04] border border-white/[0.08] w-full md:w-auto">
+            <TabsList className="bg-card border border-border w-full md:w-auto">
               <TabsTrigger value="upcoming" className="flex-1 md:flex-none gap-2">
                 <Calendar className="h-4 w-4" />
                 Upcoming Events
@@ -309,7 +309,7 @@ const EventsPage = () => {
 
         {/* Filters */}
         <motion.div
-          className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-white/[0.04] p-5 rounded-2xl border border-white/[0.08]"
+          className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-card p-5 rounded-2xl border border-border"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
@@ -335,7 +335,7 @@ const EventsPage = () => {
                   onClick={() => setActiveCategory(cat)}
                   className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${activeCategory === cat
                     ? 'bg-primary text-primary-foreground'
-                    : 'bg-white/[0.04] border border-white/[0.08] text-muted-foreground hover:text-foreground hover:border-primary/30'
+                    : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/30'
                     }`}
                 >
                   {cat}
@@ -349,7 +349,7 @@ const EventsPage = () => {
                 <SelectTrigger className="w-full rounded-xl bg-background border border-border text-foreground text-sm font-medium focus:ring-2 focus:ring-primary/20">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-[#0a1f0f] border border-white/[0.08]">
+                <SelectContent className="bg-popover border border-border">
                   <SelectItem value="date-asc">Date: Soonest</SelectItem>
                   <SelectItem value="date-desc">Date: Latest</SelectItem>
                   <SelectItem value="title-asc">Title: A-Z</SelectItem>
@@ -362,7 +362,7 @@ const EventsPage = () => {
       </div>
 
       {/* Events Grid */}
-      <div className="w-full max-w-[1440px] px-4 md:px-10 pb-20">
+      <div className="w-full content-container pb-20">
         {isLoading ? (
           <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
             {[1, 2, 3, 4, 5, 6].map(i => <EventSkeleton key={i} />)}
@@ -380,7 +380,7 @@ const EventsPage = () => {
                   key={event.id}
                   variants={itemVariants}
                   layout
-                  className={`group flex flex-col bg-white/[0.04] rounded-2xl overflow-hidden border border-white/[0.08] hover:border-primary/30 transition-all duration-300 ${viewMode === 'list' ? 'md:flex-row' : ''}`}
+                  className={`group flex flex-col bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-200 ${viewMode === 'list' ? 'md:flex-row' : ''}`}
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 >
                   {/* Image */}
