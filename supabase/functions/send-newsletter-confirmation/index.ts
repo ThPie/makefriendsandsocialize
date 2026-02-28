@@ -27,7 +27,7 @@ serve(async (req) => {
 
     const html = buildBrandedEmail({
       preheader: "Welcome to the MakeFriends community newsletter",
-      heading: "MakeFriends Social Club",
+      heading: "Make Friends and Socialize",
       subheading: "Welcome to the Community",
       body: `
         ${p("Thank you for subscribing to our newsletter. You'll receive curated updates on upcoming events, community stories, and exclusive invitations.")}
