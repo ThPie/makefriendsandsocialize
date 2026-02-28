@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { BrandLogo } from '@/components/common/BrandLogo';
 import { Facebook, Instagram, Linkedin, ChevronDown } from 'lucide-react';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import { DailyQuote } from '@/components/common/DailyQuote';
 
 const footerLinks = {
   experience: {
@@ -120,8 +121,11 @@ export const Footer = () => {
           </div>
         </div>
 
+        {/* Daily Quote - all devices */}
+        <DailyQuote />
+
         {/* Bottom bar */}
-        <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Make Friends and Socialize LLC. All rights reserved.
           </p>
