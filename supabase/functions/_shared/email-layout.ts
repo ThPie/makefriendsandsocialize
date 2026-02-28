@@ -3,11 +3,11 @@
 // Typography: Cormorant Garamond (headings), Inter (body)
 // Production URL: makefriendsandsocializecom.lovable.app
 
-export const SITE_URL = "https://makefriendsandsocializecom.lovable.app";
+export const SITE_URL = "https://makefriendsandsocialize.com";
 export const BRAND_NAME = "Make Friends and Socialize";
-export const BRAND_LOGO_URL = "https://qzqomqctuqldexnxgmlh.supabase.co/storage/v1/object/public/email-assets/logo-monogram.png";
-export const BRAND_LOGO_FULL_URL = "https://qzqomqctuqldexnxgmlh.supabase.co/storage/v1/object/public/email-assets/logo-full-white.png";
-export const HEADER_BG_URL = "https://qzqomqctuqldexnxgmlh.supabase.co/storage/v1/object/public/email-assets/header-bg.jpg";
+export const BRAND_LOGO_URL = "https://makefriendsandsocialize.com/images/logo-monogram.png";
+export const BRAND_LOGO_FULL_URL = "https://makefriendsandsocialize.com/images/logo-full-white.png";
+export const HEADER_BG_URL = "https://makefriendsandsocialize.com/images/email-header-bg.jpg";
 export const COPYRIGHT = `© ${new Date().getFullYear()} Make Friends and Socialize LLC`;
 
 // Sender addresses by role
@@ -95,9 +95,6 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
               <v:textbox style="mso-fit-shape-to-text:true" inset="40px,40px,24px,40px">
               <![endif]-->
               <div style="background:rgba(0,0,0,0.55);border-radius:16px 16px 0 0;margin:-40px -40px -24px;padding:40px 40px 24px;">
-                <h1 style="margin:0;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:28px;font-weight:600;font-style:italic;color:#B8892A;letter-spacing:0.02em;">
-                  ${heading}
-                </h1>
                 ${subheadingBlock}
               </div>
               <!--[if gte mso 9]>
@@ -115,7 +112,7 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
           </tr>
           <!-- Footer -->
           <tr>
-            <td style="padding:24px 40px;border-top:1px solid #E3E0D8;text-align:center;background-color:#0D1F0F;">
+            <td style="padding:24px 40px;border-top:1px solid #E3E0D8;text-align:center;background-color:#0D1F0F;border-radius:0 0 16px 16px;">
               <img src="${BRAND_LOGO_FULL_URL}" alt="Make Friends and Socialize" width="160" height="auto" style="display:block;margin:0 auto 16px;max-width:160px;" />
               ${footerBlock}
               <p style="margin:0 0 8px;font-size:12px;color:#9BA89D;">

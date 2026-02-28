@@ -158,7 +158,7 @@ serve(async (req: Request) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              from: "HAVN <noreply@havn.xyz>",
+              from: "Make Friends and Socialize <noreply@makefriendsandsocialize.com>",
               to: [recipientEmail],
               subject: `⏰ Follow-up reminder: ${lead.contact_name} ${urgencyMessage.split(" ")[0]}...`,
               html: `
