@@ -75,13 +75,17 @@ const FooterCollapsible = ({ section }: { section: { title: string; links: { lab
 const NewsletterForm = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreed) {
+      toast({ title: 'Please agree to receive updates', variant: 'destructive' });
+      return;
+    }
     const trimmed = email.trim();
     if (!trimmed || trimmed.length > 255) return;
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(trimmed)) {
       toast({ title: 'Please enter a valid email address', variant: 'destructive' });
@@ -106,6 +110,7 @@ const NewsletterForm = () => {
 
     toast({ title: 'Welcome to the community!', description: 'You\'ll receive our latest updates.' });
     setEmail('');
+    setAgreed(false);
   };
 
   return (
@@ -132,6 +137,20 @@ const NewsletterForm = () => {
             <span className="hidden sm:inline">Subscribe</span>
           </button>
         </form>
+        <label className="flex items-start gap-2 mt-3 text-left cursor-pointer">
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            className="mt-0.5 accent-[hsl(var(--accent-gold))] w-4 h-4 shrink-0"
+          />
+          <span className="text-xs text-muted-foreground leading-relaxed">
+            I agree to receive newsletters and updates. View our{' '}
+            <a href="/privacy" className="text-[hsl(var(--accent-gold))] underline">Privacy Policy</a>{' '}
+            and{' '}
+            <a href="/terms" className="text-[hsl(var(--accent-gold))] underline">Terms of Service</a>.
+          </span>
+        </label>
       </div>
     </div>
   );
