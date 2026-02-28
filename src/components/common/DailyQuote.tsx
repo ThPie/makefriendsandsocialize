@@ -33,8 +33,8 @@ export function DailyQuote() {
   return (
     <div className="w-full py-4 border-t border-border">
       <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 text-center">Daily Quote</p>
-      <p className="text-sm text-foreground/80 italic font-display leading-relaxed text-center max-w-md mx-auto">
-        {quote}
+      <p className="text-sm text-[hsl(var(--accent-gold))] italic font-display leading-relaxed text-center max-w-md mx-auto">
+        &ldquo;{quote}&rdquo;
       </p>
     </div>
   );

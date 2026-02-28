@@ -295,14 +295,14 @@ const MembershipPage = () => {
       {/* Value Highlights */}
       <section className="py-10 w-full">
         <div className="container max-w-4xl">
-          <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide md:grid md:grid-cols-3 md:overflow-visible">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {valueHighlights.map((item, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + index * 0.1 }}
-                className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border snap-center min-w-[calc(50%-8px)] shrink-0 md:min-w-0 md:shrink"
+                className={`flex items-center gap-4 p-4 rounded-xl bg-card border border-border ${index === valueHighlights.length - 1 ? 'col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto md:max-w-none' : ''}`}
               >
                 <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center shrink-0`}>
                   <item.icon className={`w-5 h-5 ${item.color}`} />
@@ -549,13 +549,13 @@ const MembershipPage = () => {
             variants={containerVariants}
             initial="hidden"
             animate={processAnimation.isVisible ? "visible" : "hidden"}
-            className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide md:grid md:grid-cols-3 md:overflow-visible pb-2"
+            className="grid grid-cols-2 gap-4 md:grid-cols-3 pb-2"
           >
-            {processSteps.map((item) => (
+            {processSteps.map((item, index) => (
               <motion.div
                 key={item.step}
                 variants={itemVariants}
-                className="flex flex-col items-center text-center group snap-center min-w-[calc(50%-8px)] shrink-0 md:min-w-0 md:shrink"
+                className={`flex flex-col items-center text-center group ${index === processSteps.length - 1 ? 'col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto md:max-w-none' : ''}`}
               >
                 <div className="relative mb-6">
                   <div className="w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center transition-all duration-200 group-hover:border-primary/50">

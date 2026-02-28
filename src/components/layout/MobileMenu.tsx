@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
+import { TikTokIcon } from '@/components/common/TikTokIcon';
 
 import lesAmisImg from '@/assets/les-amis-hero-new.webp';
 import gentlemenImg from '@/assets/gentlemen-hero-new.webp';
@@ -34,6 +35,7 @@ const circleItems = [
 const socialLinks = [
   { href: 'https://www.instagram.com/makefriendsandsocialize/', icon: Instagram, label: 'Instagram' },
   { href: 'https://www.facebook.com/profile.php?id=61575868888590', icon: Facebook, label: 'Facebook' },
+  { href: 'https://www.tiktok.com/@makefriendsandsocialize', icon: TikTokIcon, label: 'TikTok' },
   { href: 'https://linkedin.com', icon: Linkedin, label: 'LinkedIn' },
 ];
 
@@ -207,8 +209,8 @@ export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {
           {dailyQuote && (
             <div className="px-5 py-4 border-t border-border">
               <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Daily Quote</p>
-              <p className="text-sm text-foreground/80 italic font-display leading-relaxed">
-                {dailyQuote}
+              <p className="text-sm text-[hsl(var(--accent-gold))] italic font-display leading-relaxed">
+                &ldquo;{dailyQuote}&rdquo;
               </p>
             </div>
           )}
