@@ -21,8 +21,8 @@
 
   /* ===== Light Theme — Warm Ivory ===== */
   :root {
-    --background: 40 11% 98%;
-    /* #FAFAF8 — Off-white */
+    --background: 0 0% 100%;
+    /* #FFFFFF — Pure white */
     --foreground: 140 34% 9%;
     /* #0D1F0F */
 
