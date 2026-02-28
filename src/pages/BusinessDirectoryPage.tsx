@@ -146,7 +146,7 @@ export default function BusinessDirectoryPage() {
               animate={{ opacity: 1, y: 0 }}
               className="max-w-2xl mx-auto mb-12"
             >
-              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-8 text-center">
+              <div className="rounded-2xl border border-border bg-card p-8 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <Lock className="w-8 h-8 text-primary" />
                 </div>

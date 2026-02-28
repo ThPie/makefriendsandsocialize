@@ -218,7 +218,7 @@ const JournalPostPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.55 }}
-          className="mt-12 p-8 bg-white/[0.04] border border-white/[0.08] rounded-2xl"
+          className="mt-12 p-8 bg-card border border-border rounded-2xl"
         >
           <div className="flex items-start gap-4">
             <img

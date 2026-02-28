@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { SEO } from '@/components/common/SEO';
 
 const values = [
   {
@@ -57,8 +58,6 @@ const itemVariants = {
   },
 };
 
-import { SEO } from '@/components/common/SEO';
-
 const AboutPage = () => {
   const heroAnimation = useScrollAnimation();
   const storyAnimation = useScrollAnimation();
@@ -75,7 +74,6 @@ const AboutPage = () => {
       />
       {/* Hero Section */}
       <section className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
@@ -84,7 +82,6 @@ const AboutPage = () => {
         />
         <div className="absolute inset-0 bg-black/50" />
 
-        {/* Floating Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
             className="absolute top-1/3 right-1/4 w-64 h-64 rounded-full bg-primary/10 blur-3xl"
@@ -118,7 +115,7 @@ const AboutPage = () => {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
           >
-            About <span className="text-gradient">Us</span>
+            About <span className="text-[hsl(var(--accent-gold))] italic">Us</span>
           </motion.h1>
 
           <motion.p
@@ -131,7 +128,6 @@ const AboutPage = () => {
           </motion.p>
         </div>
 
-        {/* Scroll Indicator */}
         <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           initial={{ opacity: 0 }}
@@ -161,11 +157,10 @@ const AboutPage = () => {
             animate={storyAnimation.isVisible ? "visible" : "hidden"}
             className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"
           >
-            {/* Story */}
-            <motion.div variants={itemVariants} className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 hover-lift">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Story</p>
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-2xl p-8 hover-lift">
+              <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">Our Story</p>
               <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
-                A Vision Realized
+                A Vision <span className="text-[hsl(var(--accent-gold))] italic">Realized</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 Founded in 2025, MakeFriends & Socialize was born from a vision to create meaningful connections in an increasingly digital world.
@@ -175,11 +170,10 @@ const AboutPage = () => {
               </p>
             </motion.div>
 
-            {/* Mission */}
-            <motion.div variants={itemVariants} className="bg-white/[0.04] border border-white/[0.08] rounded-2xl p-8 hover-lift">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Mission</p>
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-2xl p-8 hover-lift">
+              <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">Our Mission</p>
               <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
-                Cultivating Connection
+                Cultivating <span className="text-[hsl(var(--accent-gold))] italic">Connection</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 To cultivate a vibrant network of like-minded individuals through meticulously crafted luxury experiences that foster genuine connections.
@@ -189,11 +183,10 @@ const AboutPage = () => {
               </p>
             </motion.div>
 
-            {/* Values Summary */}
             <motion.div variants={itemVariants} className="bg-gradient-to-br from-primary/10 to-primary/5 border border-[hsl(var(--accent-gold))]/20 rounded-2xl p-8 hover-lift">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Our Values</p>
+              <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">Our Values</p>
               <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4">
-                Guiding Principles
+                Guiding <span className="text-[hsl(var(--accent-gold))] italic">Principles</span>
               </h2>
               <p className="text-muted-foreground leading-relaxed">
                 These core principles guide every decision we make and every experience we create: Exclusivity, Quality, Discretion, Authenticity, Elegance, and Community.
@@ -210,9 +203,9 @@ const AboutPage = () => {
           className={`content-container scroll-animate ${valuesAnimation.isVisible ? 'visible' : ''}`}
         >
           <div className="text-center mb-16">
-            <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">What We Stand For</p>
+            <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">What We Stand For</p>
             <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-              Our Core Values
+              Our Core <span className="text-[hsl(var(--accent-gold))] italic">Values</span>
             </h2>
           </div>
 
@@ -226,9 +219,9 @@ const AboutPage = () => {
               <motion.div
                 key={i}
                 variants={itemVariants}
-                className="group flex flex-col items-center text-center p-8 bg-white/[0.04] border border-white/[0.08] rounded-2xl hover-lift"
+                className="group flex flex-col items-center text-center p-8 bg-card border border-border rounded-2xl hover-lift"
               >
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 transition-all duration-300 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/20">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 transition-all duration-200 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/20">
                   <item.icon className="w-8 h-8 text-primary" strokeWidth={1.5} />
                 </div>
                 <h3 className="text-foreground text-xl font-bold mb-3 font-display">{item.title}</h3>
@@ -246,9 +239,9 @@ const AboutPage = () => {
           className={`content-container scroll-animate ${experienceAnimation.isVisible ? 'visible' : ''}`}
         >
           <div className="text-center mb-16">
-            <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Captured Moments</p>
+            <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">Captured Moments</p>
             <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
-              The Experience
+              The <span className="text-[hsl(var(--accent-gold))] italic">Experience</span>
             </h2>
           </div>
 
@@ -274,7 +267,7 @@ const AboutPage = () => {
                   alt="Society event"
                   src={img}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
               </motion.div>
             ))}
           </motion.div>
@@ -283,7 +276,7 @@ const AboutPage = () => {
 
       {/* CTA Section */}
       <section className="py-24 md:py-32 w-full relative overflow-hidden">
-        <div className="absolute inset-0 bg-white/[0.02]" />
+        <div className="absolute inset-0 bg-secondary/5" />
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[hsl(var(--accent-gold))]/5 blur-3xl" />
         </div>
@@ -307,7 +300,7 @@ const AboutPage = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="font-display text-4xl md:text-5xl text-foreground mb-6"
           >
-            Join Our Community
+            Join Our <span className="text-[hsl(var(--accent-gold))] italic">Community</span>
           </motion.h2>
 
           <motion.p

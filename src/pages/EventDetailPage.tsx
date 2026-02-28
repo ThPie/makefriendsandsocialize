@@ -229,9 +229,9 @@ const EventDetailPage = () => {
         </div>
         <div className="w-full max-w-4xl mx-auto px-6 -mt-20 relative z-10 pb-20">
           <div className="bg-white/[0.04] rounded-2xl border border-white/[0.08] p-8 md:p-12 space-y-6">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-12 w-full" />
-            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-8 w-48 bg-secondary" />
+            <Skeleton className="h-12 w-full bg-secondary" />
+            <Skeleton className="h-32 w-full bg-secondary" />
           </div>
         </div>
       </div>
@@ -315,7 +315,7 @@ const EventDetailPage = () => {
 
       {/* Content */}
       <section className="w-full max-w-4xl mx-auto px-6 -mt-20 relative z-10 pb-20">
-        <div className="bg-white/[0.04] rounded-2xl border border-white/[0.08] shadow-xl p-8 md:p-12">
+        <div className="bg-card rounded-2xl border border-border shadow-xl p-8 md:p-12">
           {/* Header */}
           <div className="mb-8">
             <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -346,7 +346,7 @@ const EventDetailPage = () => {
           </div>
 
           {/* Details Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-6 bg-white/[0.03] rounded-xl border border-white/[0.06]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 p-6 bg-secondary/10 rounded-xl border border-border/50">
             <div className="flex items-start gap-3">
               <Clock className="h-5 w-5 text-primary mt-0.5" />
               <div>

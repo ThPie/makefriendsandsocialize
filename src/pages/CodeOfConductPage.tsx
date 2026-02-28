@@ -97,14 +97,16 @@ const CodeOfConductPage = () => {
   return (
     <main className="flex-grow flex flex-col items-center">
       {/* Hero */}
-      <div className="w-full max-w-[1440px] mt-8 p-4">
+      <div className="w-full content-container mt-8">
         <div
-          className="flex min-h-[300px] flex-col gap-4 bg-white/[0.03] border border-white/[0.08] rounded-xl items-center justify-center p-8 text-center"
+          className="flex min-h-[300px] flex-col gap-4 bg-card border border-border rounded-xl items-center justify-center p-8 text-center"
         >
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-primary mb-2">
             <CheckCircle className="w-8 h-8" strokeWidth={1.5} />
           </div>
-          <h1 className="text-foreground text-4xl md:text-5xl font-black leading-tight tracking-tight font-display">Community Rules</h1>
+          <h1 className="text-foreground text-4xl md:text-5xl font-black leading-tight tracking-tight font-display">
+            Community <span className="text-[hsl(var(--accent-gold))] italic">Rules</span>
+          </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl">
             Our community thrives on mutual respect, kindness, and genuine connections. These guidelines ensure everyone has a positive experience.
           </p>
@@ -113,7 +115,7 @@ const CodeOfConductPage = () => {
 
       {/* Intro */}
       <div ref={ref} className="w-full max-w-5xl px-4 md:px-10 mt-12">
-        <div className={`bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 md:p-8 text-center scroll-animate ${isVisible ? 'visible' : ''}`}>
+        <div className={`bg-card border border-border rounded-xl p-6 md:p-8 text-center scroll-animate ${isVisible ? 'visible' : ''}`}>
           <p className="text-muted-foreground leading-relaxed">
             By joining Make Friends and Socialize, you agree to uphold these community standards.
             These rules exist to protect all members and create a welcoming environment for meaningful connections.
@@ -127,9 +129,9 @@ const CodeOfConductPage = () => {
           {sections.map((section, index) => (
             <div
               key={section.title}
-              className={`group bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 hover:border-primary/50 transition-all duration-300 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
+              className={`group bg-card border border-border rounded-xl p-6 hover:border-primary/50 transition-all duration-200 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary mb-4 transition-all duration-300 group-hover:bg-primary/30 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary mb-4 transition-all duration-200 group-hover:bg-primary/30 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)]">
                 <section.icon className="w-6 h-6" strokeWidth={1.5} />
               </div>
               <h2 className="text-foreground text-lg font-bold font-display mb-1">{section.title}</h2>
@@ -149,13 +151,13 @@ const CodeOfConductPage = () => {
 
       {/* Enforcement Policy */}
       <div className="w-full max-w-5xl px-4 md:px-10 mt-12 mb-20">
-        <div className={`bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 md:p-10 scroll-animate ${isVisible ? 'visible' : ''}`}>
+        <div className={`bg-card border border-border rounded-xl p-6 md:p-10 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <h2 className="text-foreground text-2xl font-bold font-display text-center mb-8">Enforcement Policy</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {enforcementSteps.map((step, index) => (
               <div
                 key={step.title}
-                className={`bg-white/[0.04] border border-white/[0.08] rounded-xl p-5 text-center scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
+                className={`bg-secondary/10 border border-border rounded-xl p-5 text-center scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
               >
                 <div className={`flex h-12 w-12 items-center justify-center rounded-full ${step.color} mx-auto mb-4`}>
                   <step.icon className="w-6 h-6" strokeWidth={2} />
