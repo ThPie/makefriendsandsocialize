@@ -206,7 +206,7 @@ export default function SlowDatingLandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="h-full bg-white/[0.04] backdrop-blur border-white/[0.08] hover:border-primary/30 transition-colors">
+                <Card className="h-full bg-card backdrop-blur border-border hover:border-primary/30 transition-colors">
                   <CardContent className="p-6 text-center">
                     <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
                       <benefit.icon className="w-6 h-6 text-primary" />

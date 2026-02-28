@@ -125,22 +125,22 @@ const ConnectedCirclePage = () => {
     return (
       <motion.div
         variants={itemVariants}
-        className="text-center p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-colors"
+        className="text-center p-6 bg-card border border-border rounded-2xl hover:bg-secondary/30 transition-colors"
       >
         <div className="w-12 h-12 rounded-xl bg-[hsl(var(--accent-gold))]/20 flex items-center justify-center mx-auto mb-4">
           <Icon className="h-6 w-6 text-[hsl(var(--accent-gold))]" />
         </div>
-        <div className="font-display text-4xl md:text-5xl text-white mb-2">
+        <div className="font-display text-4xl md:text-5xl text-foreground mb-2">
           {count.toLocaleString()}{suffix}
         </div>
-        <p className="text-white/60 text-sm">{label}</p>
+        <p className="text-muted-foreground text-sm">{label}</p>
       </motion.div>
     );
   };
 
   return (
     <Layout>
-      <div className="min-h-screen bg-[#0a0f0b]">
+      <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative min-h-[90vh] flex items-center overflow-hidden">
           {/* Background Image */}
@@ -150,7 +150,7 @@ const ConnectedCirclePage = () => {
               alt="Professional business networking"
               className="w-full h-full object-cover opacity-60"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f0b]/80 via-[#0a0f0b]/50 to-[#0a0f0b]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/50 to-background" />
           </div>
 
           <div
@@ -162,7 +162,7 @@ const ConnectedCirclePage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="font-display text-5xl md:text-6xl lg:text-7xl text-white mb-6 leading-[1.1]"
+                className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
               >
                 The Founders
                 <br />
@@ -173,7 +173,7 @@ const ConnectedCirclePage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                className="text-white/80 text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-light"
+                className="text-muted-foreground text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-light"
               >
                 Where visionary founders connect and thrive. An exclusive directory of verified
                 member-founded companies, creating opportunities for meaningful professional
@@ -199,7 +199,7 @@ const ConnectedCirclePage = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base border-white/20 text-white hover:bg-white/10 hover:text-white"
+                  className="rounded-full px-8 min-h-[52px] text-base border-border text-foreground hover:bg-secondary hover:text-foreground"
                   onClick={(e) => {
                     e.preventDefault();
                     document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
@@ -218,9 +218,9 @@ const ConnectedCirclePage = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.5 }}
           >
-            <span className="text-xs text-white/40 uppercase tracking-widest">Scroll</span>
+            <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll</span>
             <motion.div
-              className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center p-1"
+              className="w-5 h-8 rounded-full border border-border flex items-start justify-center p-1"
               animate={{ y: [0, 5, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
@@ -237,10 +237,10 @@ const ConnectedCirclePage = () => {
           >
             <div className="text-center mb-16">
               <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">Why Join</p>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
-                Elevate Your Business
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+                Elevate Your <span className="text-[hsl(var(--accent-gold))] italic">Business</span>
               </h2>
-              <p className="text-white/60 text-lg max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                 The Founders Circle isn't just a directory—it's a gateway to
                 meaningful founder-to-founder relationships built on trust, innovation, and mutual respect.
               </p>
@@ -256,13 +256,13 @@ const ConnectedCirclePage = () => {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  className="group bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-all duration-300"
+                  className="group bg-card border border-border rounded-2xl p-8 hover:bg-secondary/30 transition-all duration-200"
                 >
                   <div className="w-14 h-14 rounded-2xl bg-[hsl(var(--accent-gold))]/20 flex items-center justify-center mb-6 transition-colors group-hover:bg-[hsl(var(--accent-gold))]/30">
                     <item.icon className="h-7 w-7 text-[hsl(var(--accent-gold))]" />
                   </div>
-                  <h3 className="font-display text-2xl text-white mb-3">{item.title}</h3>
-                  <p className="text-white/60 leading-relaxed font-light">{item.description}</p>
+                  <h3 className="font-display text-2xl text-foreground mb-3">{item.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed font-light">{item.description}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -270,15 +270,15 @@ const ConnectedCirclePage = () => {
         </section>
 
         {/* How It Works Section */}
-        <section className="py-24 md:py-32 bg-white/5 border-y border-white/5 scroll-mt-32" id="how-it-works">
+        <section className="py-24 md:py-32 bg-secondary/30 border-y border-border scroll-mt-32" id="how-it-works">
           <div
             ref={processAnimation.ref}
             className={`container max-w-5xl scroll-animate ${processAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
               <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">The Process</p>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
-                Get Your Company Listed
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+                Get Your Company <span className="text-[hsl(var(--accent-gold))] italic">Listed</span>
               </h2>
             </div>
 
@@ -313,14 +313,14 @@ const ConnectedCirclePage = () => {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  className="bg-[#0a0f0b] border border-white/10 rounded-2xl p-6 flex flex-col items-center text-center group h-full hover:border-[hsl(var(--accent-gold))]/30 transition-colors"
+                  className="bg-background border border-border rounded-2xl p-6 flex flex-col items-center text-center group h-full hover:border-[hsl(var(--accent-gold))]/30 transition-colors"
                 >
                   <div className="w-16 h-16 rounded-2xl bg-[hsl(var(--accent-gold))]/10 border border-[hsl(var(--accent-gold))]/20 flex items-center justify-center mb-4 transition-all group-hover:bg-[hsl(var(--accent-gold))]/20 group-hover:scale-110">
                     <span className="font-display text-2xl font-bold text-[hsl(var(--accent-gold))]">{item.step}</span>
                   </div>
 
-                  <h3 className="font-display text-xl text-white mb-3">{item.title}</h3>
-                  <p className="text-white/60 text-sm leading-relaxed">{item.description}</p>
+                  <h3 className="font-display text-xl text-foreground mb-3">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -335,10 +335,10 @@ const ConnectedCirclePage = () => {
           >
             <div className="text-center mb-16">
               <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">Our Community</p>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
-                Founders in Action
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+                Founders in <span className="text-[hsl(var(--accent-gold))] italic">Action</span>
               </h2>
-              <p className="text-white/60 text-lg max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                 Glimpses from our exclusive founder gatherings and networking events.
               </p>
             </div>
@@ -353,7 +353,7 @@ const ConnectedCirclePage = () => {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  className="group relative overflow-hidden rounded-2xl aspect-[4/3] border border-white/10"
+                  className="group relative overflow-hidden rounded-2xl aspect-[4/3] border border-border"
                 >
                   <img
                     src={image.src}
@@ -369,15 +369,15 @@ const ConnectedCirclePage = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-24 md:py-32 bg-white/5 border-t border-white/5">
+        <section className="py-24 md:py-32 bg-secondary/30 border-t border-border">
           <div
             ref={faqAnimation.ref}
             className={`container max-w-4xl scroll-animate ${faqAnimation.isVisible ? 'visible' : ''}`}
           >
             <div className="text-center mb-16">
               <p className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest mb-4">FAQs</p>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-white mb-6">
-                Common Questions
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
+                Common <span className="text-[hsl(var(--accent-gold))] italic">Questions</span>
               </h2>
             </div>
 

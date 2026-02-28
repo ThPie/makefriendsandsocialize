@@ -125,12 +125,12 @@ export default function BusinessLandingPage() {
   if (isLoading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-[#0a0f0b] text-white">
+    <div className="min-h-screen bg-background text-foreground">
           <div className="container max-w-4xl mx-auto py-12 px-4">
-            <Skeleton className="h-32 w-32 rounded-full mx-auto mb-6 bg-white/10" />
-            <Skeleton className="h-10 w-64 mx-auto mb-4 bg-white/10" />
-            <Skeleton className="h-24 w-full mb-8 bg-white/10" />
-            <Skeleton className="h-96 w-full bg-white/10" />
+            <Skeleton className="h-32 w-32 rounded-full mx-auto mb-6 bg-secondary" />
+            <Skeleton className="h-10 w-64 mx-auto mb-4 bg-secondary" />
+            <Skeleton className="h-24 w-full mb-8 bg-secondary" />
+            <Skeleton className="h-96 w-full bg-secondary" />
           </div>
         </div>
       </Layout>
@@ -140,11 +140,11 @@ export default function BusinessLandingPage() {
   if (error || !business) {
     return (
       <Layout>
-        <div className="min-h-screen bg-[#0a0f0b] flex items-center justify-center">
+        <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="container max-w-4xl mx-auto px-4 text-center">
-            <Building2 className="h-16 w-16 mx-auto text-white/30 mb-6" />
-            <h1 className="text-2xl font-bold mb-4 text-white">Business Not Found</h1>
-            <p className="text-white/60">
+            <Building2 className="h-16 w-16 mx-auto text-muted-foreground/30 mb-6" />
+            <h1 className="text-2xl font-bold mb-4 text-foreground">Business Not Found</h1>
+            <p className="text-muted-foreground">
               The business you're looking for doesn't exist or is no longer available.
             </p>
           </div>
@@ -160,7 +160,7 @@ export default function BusinessLandingPage() {
         description={business.description || `Connect with ${business.business_name} through the MakeFriends Founders Circle.`}
       />
 
-      <div className="min-h-screen bg-[#0a0f0b] text-white">
+      <div className="min-h-screen bg-background text-foreground">
         {/* Hero Section */}
         <section className="py-16 md:py-24 relative overflow-hidden">
           {/* Ambient background */}

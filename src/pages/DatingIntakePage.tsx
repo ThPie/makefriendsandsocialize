@@ -28,10 +28,10 @@ export const DatingIntakePage = () => {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0a0f0b] flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--accent-gold))] mx-auto mb-4" />
-          <p className="text-white/60">Loading...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );

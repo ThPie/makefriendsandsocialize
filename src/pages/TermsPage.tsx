@@ -76,24 +76,26 @@ const TermsPage = () => {
   return (
     <main className="flex-grow flex flex-col items-center">
       {/* Hero */}
-      <div className="w-full max-w-[1440px] mt-8 p-4">
+      <div className="w-full content-container mt-8">
         <div
-          className="flex min-h-[300px] flex-col gap-4 bg-white/[0.03] border border-white/[0.08] rounded-xl items-center justify-center p-8 text-center"
+          className="flex min-h-[300px] flex-col gap-4 bg-card border border-border rounded-xl items-center justify-center p-8 text-center"
         >
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-primary mb-2">
             <FileText className="w-8 h-8" strokeWidth={1.5} />
           </div>
-          <h1 className="text-foreground text-4xl md:text-5xl font-black leading-tight tracking-tight font-display">Terms & Conditions</h1>
+          <h1 className="text-foreground text-4xl md:text-5xl font-black leading-tight tracking-tight font-display">
+            Terms & <span className="text-[hsl(var(--accent-gold))] italic">Conditions</span>
+          </h1>
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl">
             Please read these terms carefully before using our services. By joining our community, you agree to these terms.
           </p>
-          <p className="text-primary text-sm font-medium mt-2">Effective: June 2025</p>
+          <p className="text-[hsl(var(--accent-gold))] text-sm font-medium mt-2">Effective: June 2025</p>
         </div>
       </div>
 
       {/* Intro */}
       <div ref={ref} className="w-full max-w-4xl px-4 md:px-10 mt-12">
-        <div className={`bg-white/[0.04] border border-white/[0.08] rounded-xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
+        <div className={`bg-card border border-border rounded-xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
           <p className="text-muted-foreground leading-relaxed">
             Welcome to Make Friends and Socialize. These Terms and Conditions govern your use of our website, services,
             and participation in our events. By becoming a member or attending our events, you agree to be bound by these terms.
@@ -108,11 +110,11 @@ const TermsPage = () => {
             <AccordionItem
               key={section.title}
               value={section.title}
-              className={`bg-white/[0.04] border border-white/[0.08] rounded-xl overflow-hidden data-[state=open]:border-primary/50 transition-all duration-300 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
+              className={`bg-card border border-border rounded-xl overflow-hidden data-[state=open]:border-primary/50 transition-all duration-200 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
             >
               <AccordionTrigger className="px-6 py-5 hover:no-underline group">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary transition-all duration-300 group-hover:bg-primary/30 group-hover:shadow-[0_0_15px_hsl(var(--primary)/0.3)]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary transition-all duration-200 group-hover:bg-primary/30 group-hover:shadow-[0_0_15px_hsl(var(--primary)/0.3)]">
                     <section.icon className="w-5 h-5" strokeWidth={2} />
                   </div>
                   <span className="text-foreground text-lg font-bold font-display text-left">{section.title}</span>

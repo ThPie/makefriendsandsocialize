@@ -198,7 +198,7 @@ export default function FAQPage() {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
           >
-            Frequently Asked <span className="text-gradient">Questions</span>
+            Frequently Asked <span className="text-[hsl(var(--accent-gold))] italic">Questions</span>
           </motion.h1>
 
           <motion.p
@@ -233,7 +233,7 @@ export default function FAQPage() {
                   <AccordionItem
                     key={faqIndex}
                     value={`${categoryIndex}-${faqIndex}`}
-                    className="border border-white/[0.08] rounded-xl px-6 bg-white/[0.04] hover:border-primary/30 transition-colors"
+                    className="border border-border rounded-xl px-6 bg-card hover:border-primary/30 transition-colors"
                   >
                     <AccordionTrigger className="text-left font-medium text-foreground hover:no-underline py-5 gap-4">
                       <div className="flex items-center gap-4">
@@ -254,7 +254,7 @@ export default function FAQPage() {
 
       {/* Still Have Questions CTA */}
       <section className="py-24 md:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 bg-white/[0.02]" />
+        <div className="absolute inset-0 bg-secondary/5" />
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
         </div>
@@ -278,7 +278,7 @@ export default function FAQPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="font-display text-4xl md:text-5xl text-foreground mb-6"
           >
-            Still Have Questions?
+            Still Have <span className="text-[hsl(var(--accent-gold))] italic">Questions?</span>
           </motion.h2>
 
           <motion.p
