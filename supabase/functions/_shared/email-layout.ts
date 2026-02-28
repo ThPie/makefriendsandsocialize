@@ -6,18 +6,20 @@
 export const SITE_URL = "https://makefriendsandsocializecom.lovable.app";
 export const BRAND_NAME = "Make Friends and Socialize";
 export const BRAND_LOGO_URL = "https://qzqomqctuqldexnxgmlh.supabase.co/storage/v1/object/public/email-assets/logo-monogram.png";
+export const BRAND_LOGO_FULL_URL = "https://qzqomqctuqldexnxgmlh.supabase.co/storage/v1/object/public/email-assets/logo-full-white.png";
+export const HEADER_BG_URL = "https://qzqomqctuqldexnxgmlh.supabase.co/storage/v1/object/public/email-assets/header-bg.jpg";
 export const COPYRIGHT = `© ${new Date().getFullYear()} Make Friends and Socialize LLC`;
 
 // Sender addresses by role
 export const SENDERS = {
-  events: "MakeFriends Events <events@makefriendsandsocialize.com>",
+  events: "Make Friends and Socialize <events@makefriendsandsocialize.com>",
   dating: "Intentional Connections <dating@makefriendsandsocialize.com>",
-  referrals: "MakeFriends <referrals@makefriendsandsocialize.com>",
-  security: "MakeFriends Security <security@makefriendsandsocialize.com>",
-  billing: "MakeFriends Billing <billing@makefriendsandsocialize.com>",
+  referrals: "Make Friends and Socialize <referrals@makefriendsandsocialize.com>",
+  security: "Make Friends and Socialize <security@makefriendsandsocialize.com>",
+  billing: "Make Friends and Socialize <billing@makefriendsandsocialize.com>",
   business: "The Founders Circle <business@makefriendsandsocialize.com>",
-  noreply: "MakeFriends <noreply@makefriendsandsocialize.com>",
-  hello: "MakeFriends <hello@makefriendsandsocialize.com>",
+  noreply: "Make Friends and Socialize <noreply@makefriendsandsocialize.com>",
+  hello: "Make Friends and Socialize <hello@makefriendsandsocialize.com>",
 };
 
 interface EmailLayoutOptions {
@@ -35,7 +37,7 @@ interface EmailLayoutOptions {
 }
 
 /**
- * Wraps email content in the branded MakeFriends layout.
+ * Wraps email content in the branded Make Friends and Socialize layout.
  * Uses table-based HTML for maximum email client compatibility.
  */
 export function buildBrandedEmail(options: EmailLayoutOptions): string {
@@ -64,7 +66,7 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
     : "";
 
   const subheadingBlock = subheading
-    ? `<p style="margin:8px 0 0;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#9BA89D;">${subheading}</p>`
+    ? `<p style="margin:8px 0 0;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);">${subheading}</p>`
     : "";
 
   const footerBlock = footerText
@@ -84,14 +86,24 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
     <tr>
       <td align="center" style="padding:40px 20px;">
         <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#F2F1EE;border-radius:16px;overflow:hidden;">
-          <!-- Header -->
+          <!-- Header with background image -->
           <tr>
-            <td style="padding:40px 40px 24px;text-align:center;background-color:${headerBg};">
-              <img src="${BRAND_LOGO_URL}" alt="Make Friends and Socialize" width="60" height="60" style="display:block;margin:0 auto 16px;border-radius:8px;" />
-              <h1 style="margin:0;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:28px;font-weight:600;font-style:italic;color:#B8892A;letter-spacing:0.02em;">
-                ${heading}
-              </h1>
-              ${subheadingBlock}
+            <td style="padding:40px 40px 24px;text-align:center;background-image:url('${HEADER_BG_URL}');background-size:cover;background-position:center;background-color:${headerBg};">
+              <!--[if gte mso 9]>
+              <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;">
+              <v:fill type="frame" src="${HEADER_BG_URL}" />
+              <v:textbox style="mso-fit-shape-to-text:true" inset="40px,40px,24px,40px">
+              <![endif]-->
+              <div style="background:rgba(0,0,0,0.55);border-radius:16px 16px 0 0;margin:-40px -40px -24px;padding:40px 40px 24px;">
+                <h1 style="margin:0;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:28px;font-weight:600;font-style:italic;color:#B8892A;letter-spacing:0.02em;">
+                  ${heading}
+                </h1>
+                ${subheadingBlock}
+              </div>
+              <!--[if gte mso 9]>
+              </v:textbox>
+              </v:rect>
+              <![endif]-->
             </td>
           </tr>
           <!-- Body -->
@@ -103,7 +115,8 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
           </tr>
           <!-- Footer -->
           <tr>
-            <td style="padding:24px 40px;border-top:1px solid #E3E0D8;text-align:center;">
+            <td style="padding:24px 40px;border-top:1px solid #E3E0D8;text-align:center;background-color:#0D1F0F;">
+              <img src="${BRAND_LOGO_FULL_URL}" alt="Make Friends and Socialize" width="160" height="auto" style="display:block;margin:0 auto 16px;max-width:160px;" />
               ${footerBlock}
               <p style="margin:0 0 8px;font-size:12px;color:#9BA89D;">
                 ${COPYRIGHT}
