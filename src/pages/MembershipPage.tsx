@@ -295,21 +295,21 @@ const MembershipPage = () => {
       {/* Value Highlights */}
       <section className="py-10 w-full">
         <div className="container max-w-4xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide md:grid md:grid-cols-3 md:overflow-visible">
             {valueHighlights.map((item, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + index * 0.1 }}
-                className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border"
+                className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border snap-center min-w-[calc(50%-8px)] shrink-0 md:min-w-0 md:shrink"
               >
-                <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center`}>
+                <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center shrink-0`}>
                   <item.icon className={`w-5 h-5 ${item.color}`} />
                 </div>
                 <div>
-                  <p className="font-medium text-foreground">{item.label}</p>
-                  <p className="text-sm text-muted-foreground">{item.sublabel}</p>
+                  <p className="font-medium text-foreground text-sm">{item.label}</p>
+                  <p className="text-xs text-muted-foreground">{item.sublabel}</p>
                 </div>
               </motion.div>
             ))}
@@ -549,16 +549,16 @@ const MembershipPage = () => {
             variants={containerVariants}
             initial="hidden"
             animate={processAnimation.isVisible ? "visible" : "hidden"}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide md:grid md:grid-cols-3 md:overflow-visible pb-2"
           >
             {processSteps.map((item) => (
               <motion.div
                 key={item.step}
                 variants={itemVariants}
-                className="flex flex-col items-center text-center group"
+                className="flex flex-col items-center text-center group snap-center min-w-[calc(50%-8px)] shrink-0 md:min-w-0 md:shrink"
               >
                 <div className="relative mb-6">
-                  <div className="w-20 h-20 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-lg group-hover:shadow-primary/10">
+                  <div className="w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center transition-all duration-200 group-hover:border-primary/50">
                     <item.icon className="h-8 w-8 text-primary" />
                   </div>
                   <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
@@ -566,7 +566,7 @@ const MembershipPage = () => {
                   </div>
                 </div>
                 <h3 className="font-bold mb-3 font-display text-xl text-foreground">{item.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
+                <p className="text-muted-foreground leading-relaxed text-sm">{item.desc}</p>
               </motion.div>
             ))}
           </motion.div>
