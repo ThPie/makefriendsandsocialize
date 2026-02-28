@@ -72,17 +72,6 @@ export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {
 
   return (
     <div className="md:hidden flex items-center gap-3">
-      {/* Avatar on mobile when logged in */}
-      {user && (
-        <TransitionLink to="/portal">
-          <Avatar className="h-10 w-10 border-2 border-[hsl(var(--accent-gold))]/60">
-            <AvatarImage src={profile?.avatar_urls?.[0]} />
-            <AvatarFallback className="bg-primary/80 text-primary-foreground text-xs font-medium">
-              {profile?.first_name?.[0] || user.email?.[0]?.toUpperCase() || 'M'}{(profile?.last_name?.[0] || '').toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </TransitionLink>
-      )}
 
       {/* Hamburger trigger */}
       <button
@@ -114,7 +103,26 @@ export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {
       >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border">
-          <BrandLogo width={120} height={34} />
+          <div className="flex items-center gap-3">
+            {user ? (
+              <TransitionLink to="/portal" onClick={() => setOpen(false)}>
+                <Avatar className="h-10 w-10 border-2 border-[hsl(var(--accent-gold))]/60">
+                  <AvatarImage src={profile?.avatar_urls?.[0]} />
+                  <AvatarFallback className="bg-primary/80 text-primary-foreground text-xs font-medium">
+                    {profile?.first_name?.[0] || user.email?.[0]?.toUpperCase() || 'M'}{(profile?.last_name?.[0] || '').toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </TransitionLink>
+            ) : (
+              <BrandLogo width={120} height={34} />
+            )}
+            {user && (
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-foreground">{profile?.first_name || 'Member'}</span>
+                <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Member</span>
+              </div>
+            )}
+          </div>
           <button
             onClick={() => setOpen(false)}
             className="w-9 h-9 flex items-center justify-center rounded-full border border-border text-foreground hover:bg-accent transition-colors"
