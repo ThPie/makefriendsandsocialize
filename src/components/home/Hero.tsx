@@ -53,7 +53,7 @@ export const Hero = () => {
 
             {/* Clean headline — Soho House scale */}
             <h1 className="font-display italic text-[36px] md:text-[48px] leading-[1.15] tracking-tight text-white mb-4">
-              Where exceptional people find their circle
+              Where exceptional people find <span className="text-[hsl(var(--accent-gold))]">their circle</span>
             </h1>
 
             {/* Two CTA buttons */}
