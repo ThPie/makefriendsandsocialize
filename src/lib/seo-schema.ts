@@ -35,10 +35,10 @@ export const generateOrganizationSchema = () => {
     return {
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "MakeFriends Social Club",
+        "name": "Make Friends and Socialize",
         "url": siteUrl,
-        "logo": "https://lovable.dev/opengraph-image-p98pqg.png",
-        "description": "A private social club for professionals in NYC offering curated events and matchmaking.",
+        "logo": "https://makefriendsandsocialize.com/favicon.png",
+        "description": "A private social club based in Salt Lake City, Utah for professionals seeking authentic connections, curated events, and meaningful friendships.",
         "sameAs": [
             "https://instagram.com/makefriendsandsocialize",
             "https://www.meetup.com/makefriendsandsocialize"
@@ -92,7 +92,7 @@ export const generateEventSchema = (event: any) => {
         },
         "organizer": {
             "@type": "Organization",
-            "name": "MakeFriends Social Club",
+            "name": "Make Friends and Socialize",
             "url": siteUrl
         }
     };

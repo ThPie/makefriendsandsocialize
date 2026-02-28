@@ -28,7 +28,7 @@ export function generateGoogleCalendarUrl(event: {
   };
   
   const location = event.venue_name || event.location || '';
-  const description = event.description || 'MakeFriends Social Club Event';
+  const description = event.description || 'Make Friends and Socialize Event';
   
   const params = new URLSearchParams({
     action: 'TEMPLATE',
@@ -71,11 +71,11 @@ export function generateICalContent(event: {
   };
   
   const location = event.venue_name || event.location || '';
-  const description = (event.description || 'MakeFriends Social Club Event').replace(/\n/g, '\\n');
+  const description = (event.description || 'Make Friends and Socialize Event').replace(/\n/g, '\\n');
   
   return `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//MakeFriends Social Club//Event//EN
+PRODID:-//Make Friends and Socialize//Event//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
