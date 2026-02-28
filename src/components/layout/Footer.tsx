@@ -111,6 +111,15 @@ const NewsletterForm = () => {
     toast({ title: 'Welcome to the community!', description: 'You\'ll receive our latest updates.' });
     setEmail('');
     setAgreed(false);
+
+    // Send confirmation email via edge function (fire & forget)
+    try {
+      await supabase.functions.invoke('send-newsletter-confirmation', {
+        body: { email: trimmed },
+      });
+    } catch (emailErr) {
+      console.error('Failed to send confirmation email:', emailErr);
+    }
   };
 
   return (
