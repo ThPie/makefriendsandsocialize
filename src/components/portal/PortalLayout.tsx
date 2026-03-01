@@ -149,21 +149,6 @@ export function PortalLayout({ children }: PortalLayoutProps) {
               </SidebarHeader>
 
               <SidebarContent className="p-4">
-                {/* Profile Section */}
-                <div className="flex items-center gap-3 p-3 mb-4 rounded-lg bg-muted/50">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={profile?.avatar_urls?.[0]} />
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {profile?.first_name || 'Member'}
-                    </p>
-                    {tierBadge}
-                  </div>
-                </div>
 
                 <SidebarGroup>
                   <SidebarGroupContent>
