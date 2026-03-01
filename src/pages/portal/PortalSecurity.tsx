@@ -128,10 +128,10 @@ export default function PortalSecurity() {
   }
 
   return (
-    <div className="w-full pb-16 space-y-8">
-      <div className="text-center max-w-[680px] mx-auto mb-8">
-        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">Security</h1>
-        <p className="text-muted-foreground">Manage your account security settings</p>
+    <div className="w-full max-w-3xl mx-auto pb-16 space-y-8">
+      <div className="mb-6">
+        <h1 className="font-display text-2xl md:text-3xl text-foreground">Security</h1>
+        <p className="text-sm text-muted-foreground mt-1">Manage your account security settings</p>
       </div>
 
       {/* MFA Card */}
