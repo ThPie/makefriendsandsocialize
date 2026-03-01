@@ -108,6 +108,8 @@ const MembershipPage = () => {
   };
 
   const isCurrentTier = (tierName: string) => {
+    // Only show "current plan" for logged-in users
+    if (!user) return false;
     if (!subscription) return tierName === 'socialite';
     const tierMap: Record<string, string> = {
       patron: 'socialite',
