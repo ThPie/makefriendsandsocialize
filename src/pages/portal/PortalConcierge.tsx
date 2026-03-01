@@ -223,15 +223,17 @@ export default function PortalConcierge() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="text-center max-w-[680px] mx-auto mb-8">
-        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
-          Concierge Services
-        </h1>
-        <p className="text-muted-foreground">
-          Your personal guide to an exceptional membership
-        </p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl md:text-3xl text-foreground">
+            Concierge Services
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Your personal guide to an exceptional membership
+          </p>
+        </div>
         {!showForm && upcomingBookings.length === 0 && (
-          <Button onClick={() => setShowForm(true)}>
+          <Button onClick={() => setShowForm(true)} size="sm">
             <Headphones className="h-4 w-4 mr-2" />
             Book Session
           </Button>

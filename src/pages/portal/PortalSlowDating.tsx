@@ -263,9 +263,9 @@ export default function PortalSlowDating() {
         onRevealSuccess={handleRevealSuccess}
       />
 
-      <div>
-        <h1 className="text-3xl font-display font-light text-foreground mb-2">Slow Dating</h1>
-        <p className="text-muted-foreground">Your personalized matchmaking journey</p>
+      <div className="mb-6">
+        <h1 className="font-display text-2xl md:text-3xl text-foreground">Slow Dating</h1>
+        <p className="text-sm text-muted-foreground mt-1">Your personalized matchmaking journey</p>
       </div>
 
       {/* Upgrade Prompt for Free Users */}

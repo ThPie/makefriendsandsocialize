@@ -6,7 +6,7 @@ interface BrandedLoaderProps {
 
 export function BrandedLoader({ message }: BrandedLoaderProps) {
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)]" />
       

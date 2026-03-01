@@ -193,11 +193,11 @@ export default function PortalNetwork() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="text-center max-w-[680px] mx-auto mb-8">
-        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2">
+      <div className="mb-6">
+        <h1 className="font-display text-2xl md:text-3xl text-foreground">
           The Network
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm text-muted-foreground mt-1">
           Discover like-minded members and request introductions
         </p>
       </div>
