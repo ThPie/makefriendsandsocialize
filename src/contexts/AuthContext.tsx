@@ -228,8 +228,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithGoogle = async () => {
     try {
       const { lovable } = await import('@/integrations/lovable/index');
+      // Always redirect to the .lovable.app domain so the OAuth proxy accepts it.
+      // PublishedDomainRedirect will then bridge the session back to the custom domain.
       const result = await lovable.auth.signInWithOAuth('google', {
-        redirect_uri: window.location.origin,
+        redirect_uri: 'https://makefriendsandsocializecom.lovable.app',
       });
       if (result.error) {
         return { error: result.error instanceof Error ? result.error : new Error(String(result.error)) };
