@@ -93,50 +93,34 @@ export default function AuthCallbackPage() {
         return;
       }
 
-      // Check for tokens in hash fragment (implicit flow)
-      // Supabase client automatically handles hash fragments on initialization
-      // We just need to wait for the session to be established
+      // Check for tokens in hash fragment (implicit flow or cross-domain transfer)
       const hashParams = new URLSearchParams(location.hash.substring(1));
       const accessToken = hashParams.get("access_token");
+      const refreshToken = hashParams.get("refresh_token");
       
-      if (accessToken) {
-        // Hash contains tokens - Supabase client should handle this automatically
-        // Wait a moment for the auth state to update, then check session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
+      if (accessToken && refreshToken) {
+        // Explicitly set the session using the provided tokens
+        const { data, error: setSessionError } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+
         if (cancelled) return;
 
-        if (sessionError) {
-          const msg = sessionError.message || "Failed to establish session.";
+        if (setSessionError) {
+          const msg = setSessionError.message || "Failed to establish session.";
           setErrorMsg(msg);
           toast.error("Could not finish sign-in", { description: msg });
           return;
         }
 
-        if (session?.user) {
-          const destination = await getRedirectDestination(session.user.id);
+        if (data.session?.user) {
+          const destination = await getRedirectDestination(data.session.user.id);
           navigate(destination, { replace: true });
           return;
         }
 
-        // If no session yet, set up a listener to wait for it
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-          if (session?.user && !cancelled) {
-            subscription.unsubscribe();
-            const destination = await getRedirectDestination(session.user.id);
-            navigate(destination, { replace: true });
-          }
-        });
-
-        // Timeout after 10 seconds
-        setTimeout(() => {
-          if (!cancelled) {
-            subscription.unsubscribe();
-            setErrorMsg("Authentication timed out. Please try again.");
-            toast.error("Authentication timed out");
-          }
-        }, 10000);
-
+        setErrorMsg("Could not establish session. Please try signing in again.");
         return;
       }
 
