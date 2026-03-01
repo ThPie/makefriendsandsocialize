@@ -44,7 +44,7 @@ const defaultAvatars = [
 export default function AuthPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, signUp, signIn, isLoading } = useAuth();
+  const { user, signUp, signIn, signInWithGoogle, isLoading } = useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('email');
   const [step, setStep] = useState(1);
@@ -100,6 +100,14 @@ export default function AuthPage() {
     setFormError(null);
     setFormSuccess(null);
   }, []);
+
+  const handleGoogleSignIn = useCallback(async () => {
+    clearFormFeedback();
+    const { error } = await signInWithGoogle();
+    if (error) {
+      setFormError(error.message || 'Could not connect to Google.');
+    }
+  }, [clearFormFeedback, signInWithGoogle]);
 
   // Real-time email validation
   const validateEmail = useCallback((value: string) => {
@@ -888,15 +896,7 @@ export default function AuthPage() {
               {/* Social Login Buttons */}
               <div className="grid grid-cols-1 gap-3">
                 <button
-                  onClick={async () => {
-                    clearFormFeedback();
-                    try {
-                      const { lovable } = await import('@/integrations/lovable/index');
-                      const redirectUri = window.location.hostname.endsWith('.lovable.app') ? window.location.origin : 'https://makefriendsandsocializecom.lovable.app';
-                      const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: redirectUri });
-                      if (result.error) setFormError(result.error.message || 'Could not connect to Google.');
-                    } catch { setFormError('Could not connect to Google.'); }
-                  }}
+                  onClick={handleGoogleSignIn}
                   disabled={isSubmitting || isRateLimited}
                   className="flex items-center justify-center gap-2.5 py-3 rounded-xl border border-border bg-card hover:bg-accent text-foreground font-medium transition-colors duration-200 disabled:opacity-50"
                 >
@@ -1016,15 +1016,7 @@ export default function AuthPage() {
               </div>
 
               <button
-                onClick={async () => {
-                  clearFormFeedback();
-                  try {
-                    const { lovable } = await import('@/integrations/lovable/index');
-                    const redirectUri = window.location.hostname.endsWith('.lovable.app') ? window.location.origin : 'https://makefriendsandsocializecom.lovable.app';
-                    const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: redirectUri });
-                    if (result.error) setFormError(result.error.message || 'Could not connect to Google.');
-                  } catch { setFormError('Could not connect to Google.'); }
-                }}
+                onClick={handleGoogleSignIn}
                 disabled={isSubmitting || isRateLimited}
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-border bg-card hover:bg-accent text-foreground font-medium transition-colors duration-200 disabled:opacity-50"
               >
