@@ -37,9 +37,9 @@ export const EmailChangeEmail = ({
       <Container style={container}>
         <Section style={logoSection}>
           <Img
-            src="https://makefriendsandsocialize.com/images/logo-monogram.png"
-            width="48"
-            height="48"
+            src="https://makefriendsandsocialize.com/images/email-logo-dark.png"
+            width="200"
+            height="auto"
             alt="Make Friends and Socialize"
             style={logo}
           />
