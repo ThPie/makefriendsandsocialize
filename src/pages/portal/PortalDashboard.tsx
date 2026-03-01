@@ -4,7 +4,6 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { SubmitReview } from '@/components/portal/SubmitReview';
 import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
-import { BadgeDisplay } from '@/components/portal/BadgeDisplay';
 import { FeatureUnlockCard } from '@/components/portal/FeatureUnlockCard';
 import { OnboardingWizard } from '@/components/portal/OnboardingWizard';
 import { BadgeUnlockModal } from '@/components/portal/BadgeUnlockModal';
@@ -14,6 +13,9 @@ import { WidgetErrorBoundary } from '@/components/ui/widget-error-boundary';
 import { RelationshipHealthSection } from '@/components/portal/RelationshipHealthSection';
 import { DashboardStats } from '@/components/portal/dashboard/DashboardStats';
 import { UpcomingSchedule } from '@/components/portal/dashboard/UpcomingSchedule';
+import { QuickActions } from '@/components/portal/dashboard/QuickActions';
+import { BadgeDisplay } from '@/components/portal/BadgeDisplay';
+import { format } from 'date-fns';
 
 export default function PortalDashboard() {
   const { user, profile, refreshProfile, canAccessMatchmaking } = useAuth();
@@ -22,7 +24,6 @@ export default function PortalDashboard() {
   const [earnedBadges, setEarnedBadges] = useState<{ badge_type: string; earned_at: string }[]>([]);
   const [newBadge, setNewBadge] = useState<{ name: string; icon: string; description: string; features?: string[] } | null>(null);
 
-  // Memoize completion calculation
   const completionPercentage = useMemo(() => {
     if (!profile) return 0;
     let score = 0;
@@ -40,20 +41,16 @@ export default function PortalDashboard() {
 
   const isProfileComplete = completionPercentage === 100;
 
-  // Fetch badges
   useEffect(() => {
     if (user) {
       supabase
         .from('member_badges')
         .select('badge_type, earned_at')
         .eq('user_id', user.id)
-        .then(({ data }) => {
-          if (data) setEarnedBadges(data);
-        });
+        .then(({ data }) => { if (data) setEarnedBadges(data); });
     }
   }, [user]);
 
-  // Show onboarding for new users
   useEffect(() => {
     if (profile && !profile.onboarding_completed && completionPercentage < 50) {
       setShowOnboarding(true);
@@ -65,19 +62,18 @@ export default function PortalDashboard() {
     await refreshProfile();
   };
 
+  const today = format(new Date(), 'EEEE, MMMM do yyyy');
+
   return (
-    <div className="space-y-10">
-      {/* Email Verification Banner */}
+    <div className="space-y-6">
       <EmailVerificationBanner />
 
-      {/* Onboarding Wizard */}
       <OnboardingWizard
         isOpen={showOnboarding}
         onClose={() => setShowOnboarding(false)}
         onComplete={handleOnboardingComplete}
       />
 
-      {/* Badge Unlock Modal */}
       {newBadge && (
         <BadgeUnlockModal
           isOpen={!!newBadge}
@@ -89,38 +85,42 @@ export default function PortalDashboard() {
         />
       )}
 
-      {/* Welcome Header */}
-      <div className="text-center max-w-[680px] mx-auto mb-8">
-        <h1 className="font-display font-semibold text-3xl md:text-4xl text-foreground mb-2">
-          Welcome back, {profile?.first_name || 'Member'}
+      {/* Welcome header — left-aligned, clean */}
+      <div>
+        <h1 className="font-display font-semibold text-2xl md:text-3xl text-foreground">
+          Welcome back, {profile?.first_name || 'Member'} 👋
         </h1>
-        <p className="text-muted-foreground text-lg">
-          Here is a curated look at what's happening in your social circle today.
-        </p>
+        <p className="text-sm text-muted-foreground mt-1">{today}</p>
       </div>
 
-      {/* Upgrade Banner for Free Users */}
+      {/* Upgrade Banner */}
       {(!subscription?.subscribed || subscription?.tier === 'patron') && !subscription?.is_trialing && (
         <UpgradePromptCard variant="compact" context="general" />
       )}
 
-      {/* Main Stats Row */}
+      {/* Stats Row */}
       <WidgetErrorBoundary title="Dashboard Stats">
         <DashboardStats />
       </WidgetErrorBoundary>
 
-      {/* Upcoming Schedule */}
-      <WidgetErrorBoundary title="Upcoming Schedule">
-        <UpcomingSchedule />
-      </WidgetErrorBoundary>
+      {/* Two-column layout: Schedule + Quick Actions */}
+      <div className="grid gap-6 lg:grid-cols-5">
+        <div className="lg:col-span-3">
+          <WidgetErrorBoundary title="Upcoming Schedule">
+            <UpcomingSchedule />
+          </WidgetErrorBoundary>
+        </div>
+        <div className="lg:col-span-2">
+          <QuickActions />
+        </div>
+      </div>
 
-      {/* Profile Completion & Feature Unlocks */}
+      {/* Profile Completion */}
       {profile && completionPercentage < 100 && (
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <WidgetErrorBoundary title="Profile Progress">
             <ProfileCompletionIndicator profile={profile} />
           </WidgetErrorBoundary>
-
           <WidgetErrorBoundary title="Feature Status">
             <FeatureUnlockCard
               completionPercentage={completionPercentage}
@@ -130,15 +130,15 @@ export default function PortalDashboard() {
         </div>
       )}
 
-      {/* Relationship Health Section - Only for matchmaking users */}
+      {/* Relationship Health */}
       {canAccessMatchmaking && user && (
         <RelationshipHealthSection userId={user.id} />
       )}
 
-      {/* Badges - Show if any owned */}
+      {/* Badges */}
       {earnedBadges.length > 0 && (
-        <div className="mt-8">
-          <h3 className="font-display text-xl font-semibold mb-4">Your Achievements</h3>
+        <div className="rounded-2xl border border-border bg-card p-6">
+          <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Your Achievements</h3>
           <WidgetErrorBoundary title="Your Badges">
             <BadgeDisplay earnedBadges={earnedBadges} showAll={false} compact />
           </WidgetErrorBoundary>
