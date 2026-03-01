@@ -43,7 +43,7 @@ const defaultAvatars = [
 export default function AuthPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, signUp, signIn, isLoading } = useAuth();
+  const { user, signUp, signIn, signInWithGoogle, isLoading } = useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('email');
   const [step, setStep] = useState(1);
@@ -655,20 +655,20 @@ export default function AuthPage() {
     return (
       <div className="min-h-screen flex relative bg-background">
         {/* Left Side — Image panel (55%) — hidden on mobile */}
-        <div className="hidden lg:flex lg:w-[55%] relative flex-col justify-center items-center overflow-hidden">
+        <div className="hidden lg:flex lg:w-[55%] relative flex-col justify-end items-center overflow-hidden">
           <img
-            src="/images/hero-poster.webp"
-            alt="Luxury social gathering"
+            src="/images/founders/founder-group-hero.jpg"
+            alt="MakeFriends members socializing at an event"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="relative z-10 text-center px-12">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
+          <div className="relative z-10 text-center px-12 mb-24">
             <h2 className="font-display italic text-3xl xl:text-4xl text-white mb-4 leading-tight">
-              Where exceptional people<br />find their circle.
+              Where Connections<br />Become Community.
             </h2>
           </div>
-          {/* Member count social proof — bottom-left */}
-          <div className="absolute bottom-8 left-8 z-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5">
+          {/* Member count social proof — bottom-center */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-6 py-4">
             <MemberAvatars
               avatarUrls={avatarUrls}
               memberCount={memberCount}
@@ -715,12 +715,9 @@ export default function AuthPage() {
                 onClick={async () => {
                   clearFormFeedback();
                   try {
-                    const { lovable } = await import('@/integrations/lovable/index');
-                    const result = await lovable.auth.signInWithOAuth('google', {
-                      redirect_uri: window.location.origin,
-                    });
-                    if (result.error) {
-                      setFormError(result.error.message || 'Could not connect to Google. Please try again.');
+                    const { error } = await signInWithGoogle();
+                    if (error) {
+                      setFormError(error.message || 'Could not connect to Google. Please try again.');
                     }
                   } catch (err) {
                     setFormError('Could not connect to Google. Please try again.');
