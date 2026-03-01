@@ -183,9 +183,12 @@ export default function AuthPage() {
       const timeout = setTimeout(async () => {
         setIsCheckingPassword(true);
         try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
           const { data, error } = await supabase.functions.invoke('check-password-strength', {
             body: { password: value },
           });
+          clearTimeout(timeoutId);
 
           if (!error && data && !data.isSecure) {
             // Show breach count in error message
@@ -378,13 +381,14 @@ export default function AuthPage() {
       setIsCheckingPassword(true);
       setIsSubmitting(true);
       try {
-        const { data, error } = await supabase.functions.invoke('check-password-strength', {
+        const checkPromise = supabase.functions.invoke('check-password-strength', {
           body: { password },
         });
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
+        const { data, error } = await Promise.race([checkPromise, timeoutPromise]) as any;
 
         if (error) {
           console.error('Password check error:', error);
-          // Don't block signup on API errors, just log and continue
         } else if (data && !data.isSecure) {
           setFormError(data.reason || 'Please choose a stronger password');
           setPasswordServerError(data.reason);
@@ -393,8 +397,7 @@ export default function AuthPage() {
           return;
         }
       } catch (err) {
-        console.error('Error checking password:', err);
-        // Continue if the check fails
+        console.error('Error checking password (skipping):', err);
       }
       setIsCheckingPassword(false);
       setIsSubmitting(false);
