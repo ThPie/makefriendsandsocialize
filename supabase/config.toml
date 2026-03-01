@@ -117,3 +117,5 @@ project_id = "qzqomqctuqldexnxgmlh"
     verify_jwt = true
   [functions.verify-social-profiles]
     verify_jwt = true
+  [functions.user-mfa]
+    verify_jwt = true
