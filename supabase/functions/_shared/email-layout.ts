@@ -5,7 +5,7 @@
 
 export const SITE_URL = "https://makefriendsandsocialize.com";
 export const BRAND_NAME = "Make Friends and Socialize";
-export const BRAND_LOGO_URL = "https://makefriendsandsocialize.com/images/logo-monogram.png";
+export const BRAND_LOGO_URL = "https://makefriendsandsocialize.com/images/email-logo-dark.png";
 export const BRAND_LOGO_FULL_URL = "https://makefriendsandsocialize.com/images/logo-full-white.png";
 export const HEADER_BG_URL = "https://makefriendsandsocialize.com/images/email-header-bg.jpg";
 export const COPYRIGHT = `© ${new Date().getFullYear()} Make Friends and Socialize LLC`;
