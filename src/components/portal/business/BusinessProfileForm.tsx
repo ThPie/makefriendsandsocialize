@@ -1,10 +1,12 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Building2, Upload, Plus, X, MapPin, Globe, Mail } from "lucide-react";
+import { Loader2, Building2, Upload, Plus, X, MapPin, Globe, Mail, Sparkles, Check } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
     Select,
     SelectContent,
@@ -62,9 +64,100 @@ export const BusinessProfileForm = ({
     isEdit = false,
 }: BusinessProfileFormProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isScraping, setIsScraping] = useState(false);
+    const [scraped, setScraped] = useState(false);
+    const [websiteUrl, setWebsiteUrl] = useState(formData.website || "");
+
+    const handleScrapeWebsite = async () => {
+        if (!websiteUrl.trim()) {
+            toast.error("Please enter a website URL");
+            return;
+        }
+
+        setIsScraping(true);
+        setScraped(false);
+        try {
+            const { data, error } = await supabase.functions.invoke('scrape-business-website', {
+                body: { url: websiteUrl.trim() },
+            });
+
+            if (error) throw error;
+
+            // Autofill form with scraped data (only fill empty fields)
+            setFormData((prev: typeof formData) => ({
+                ...prev,
+                website: data.website || prev.website || websiteUrl,
+                business_name: data.business_name || prev.business_name,
+                description: data.description || prev.description,
+                industry: data.industry || prev.industry,
+                logo_url: data.logo_url || prev.logo_url,
+                location: data.location || prev.location,
+                services: data.services?.length ? data.services : prev.services,
+            }));
+
+            setScraped(true);
+            toast.success("Website info extracted! Review and edit the details below.");
+        } catch (err) {
+            console.error('Scrape error:', err);
+            toast.error("Could not extract website info. Please fill in the details manually.");
+        } finally {
+            setIsScraping(false);
+        }
+    };
 
     return (
         <form onSubmit={onSubmit} className="space-y-8">
+            {/* Website URL - First Step */}
+            <div className="bg-card border border-border/50 rounded-2xl p-6">
+                <h2 className="font-display text-xl text-foreground mb-2">
+                    {isEdit ? "Website" : "Get Started"}
+                </h2>
+                {!isEdit && (
+                    <p className="text-sm text-muted-foreground mb-4">
+                        Enter your website URL and we'll automatically fill in your business details.
+                    </p>
+                )}
+                <div className="flex gap-3">
+                    <div className="relative flex-1">
+                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            value={websiteUrl}
+                            onChange={(e) => {
+                                setWebsiteUrl(e.target.value);
+                                setFormData((prev: typeof formData) => ({ ...prev, website: e.target.value }));
+                                setScraped(false);
+                            }}
+                            placeholder="https://www.yourbusiness.com"
+                            className="pl-10"
+                        />
+                    </div>
+                    <Button
+                        type="button"
+                        variant={scraped ? "outline" : "default"}
+                        onClick={handleScrapeWebsite}
+                        disabled={isScraping || !websiteUrl.trim()}
+                        className="min-w-[140px]"
+                    >
+                        {isScraping ? (
+                            <>
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                Scanning...
+                            </>
+                        ) : scraped ? (
+                            <>
+                                <Check className="h-4 w-4 mr-2" />
+                                Scanned
+                            </>
+                        ) : (
+                            <>
+                                <Sparkles className="h-4 w-4 mr-2" />
+                                Auto-Fill
+                            </>
+                        )}
+                    </Button>
+                </div>
+            </div>
+
             {/* Logo */}
             <div className="bg-card border border-border/50 rounded-2xl p-6">
                 <h2 className="font-display text-xl text-foreground mb-4">Business Logo</h2>
@@ -102,7 +195,7 @@ export const BusinessProfileForm = ({
                             Upload Logo
                         </Button>
                         <p className="text-xs text-muted-foreground mt-2">
-                            Recommended: Square image, at least 200x200px
+                            {formData.logo_url ? "Logo detected from website. You can replace it." : "Recommended: Square image, at least 200x200px"}
                         </p>
                     </div>
                 </div>
@@ -117,7 +210,7 @@ export const BusinessProfileForm = ({
                         <Input
                             id="business_name"
                             value={formData.business_name}
-                            onChange={(e) => setFormData(prev => ({ ...prev, business_name: e.target.value }))}
+                            onChange={(e) => setFormData((prev: typeof formData) => ({ ...prev, business_name: e.target.value }))}
                             placeholder="Your Business Name"
                             required
                         />
@@ -127,7 +220,7 @@ export const BusinessProfileForm = ({
                         <Input
                             id="industry"
                             value={formData.industry}
-                            onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
+                            onChange={(e) => setFormData((prev: typeof formData) => ({ ...prev, industry: e.target.value }))}
                             placeholder="e.g., Technology, Consulting, Design"
                         />
                     </div>
@@ -135,7 +228,7 @@ export const BusinessProfileForm = ({
                         <Label htmlFor="category">Category *</Label>
                         <Select
                             value={formData.category}
-                            onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+                            onValueChange={(value) => setFormData((prev: typeof formData) => ({ ...prev, category: value }))}
                         >
                             <SelectTrigger id="category">
                                 <SelectValue placeholder="Select a category" />
@@ -154,7 +247,7 @@ export const BusinessProfileForm = ({
                         <Textarea
                             id="description"
                             value={formData.description}
-                            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                            onChange={(e) => setFormData((prev: typeof formData) => ({ ...prev, description: e.target.value }))}
                             placeholder="Tell us about your business..."
                             rows={4}
                             maxLength={500}
@@ -207,21 +300,8 @@ export const BusinessProfileForm = ({
                             <Input
                                 id="location"
                                 value={formData.location}
-                                onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                                onChange={(e) => setFormData((prev: typeof formData) => ({ ...prev, location: e.target.value }))}
                                 placeholder="City, Country"
-                                className="pl-10"
-                            />
-                        </div>
-                    </div>
-                    <div>
-                        <Label htmlFor="website">Website</Label>
-                        <div className="relative">
-                            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                id="website"
-                                value={formData.website}
-                                onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-                                placeholder="https://www.example.com"
                                 className="pl-10"
                             />
                         </div>
@@ -234,7 +314,7 @@ export const BusinessProfileForm = ({
                                 id="contact_email"
                                 type="email"
                                 value={formData.contact_email}
-                                onChange={(e) => setFormData(prev => ({ ...prev, contact_email: e.target.value }))}
+                                onChange={(e) => setFormData((prev: typeof formData) => ({ ...prev, contact_email: e.target.value }))}
                                 placeholder="business@example.com"
                                 className="pl-10"
                             />
