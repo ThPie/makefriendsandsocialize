@@ -59,6 +59,7 @@ const menuItems = [
   { title: 'Perks', url: '/portal/perks', icon: Gift, requiresApproval: false },
   { title: 'Concierge', url: '/portal/concierge', icon: Crown, requiresApproval: true },
   { title: 'Referrals', url: '/portal/referrals', icon: Gift, requiresApproval: false },
+  { title: 'Security', url: '/portal/security', icon: Shield, requiresApproval: false },
 ];
 
 export function PortalLayout({ children }: PortalLayoutProps) {
