@@ -9,6 +9,7 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { SessionProvider } from "@/contexts/SessionContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { PublishedDomainRedirect } from "@/components/PublishedDomainRedirect";
 import { isSlowDatingSubdomain, isCanadianDomain } from "@/lib/subdomain-utils";
 import { CountryRedirectBanner } from "@/components/ui/country-redirect-banner";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -50,6 +51,7 @@ const App = () => {
             <AuthProvider>
               <TooltipProvider>
                 <RegisterSW />
+                <PublishedDomainRedirect />
                 <BrowserRouter>
                   <SessionProvider>
                     <ScrollToTop />
