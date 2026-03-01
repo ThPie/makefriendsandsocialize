@@ -22,7 +22,11 @@ export default function PortalSecurity() {
   const [showDisable, setShowDisable] = useState(false);
 
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (step === 'loading') setStep('disabled');
+    }, 8000);
     checkMFAStatus();
+    return () => clearTimeout(timeout);
   }, []);
 
   const checkMFAStatus = async () => {
