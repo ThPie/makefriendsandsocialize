@@ -88,7 +88,7 @@ export default function PortalDashboard() {
       {/* Welcome header — left-aligned, clean */}
       <div>
         <h1 className="font-display font-semibold text-2xl md:text-3xl text-foreground">
-          Welcome back, {profile?.first_name || 'Member'} 👋
+          Welcome back, <span className="text-[hsl(var(--accent-gold))]">{profile?.first_name || user?.user_metadata?.full_name?.split(' ')[0] || 'Member'}</span> 👋
         </h1>
         <p className="text-sm text-muted-foreground mt-1">{today}</p>
       </div>
