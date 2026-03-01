@@ -41,7 +41,16 @@ export function usePublishedDomainRedirect(): boolean {
     };
 
     const run = async () => {
-      // First check if there's already a session
+      // If there are tokens in the hash (from OAuth callback), forward them immediately
+      if (window.location.hash && window.location.hash.includes('access_token')) {
+        if (cancelled) return;
+        window.location.replace(
+          `${CUSTOM_DOMAIN}/auth/callback${window.location.hash}`
+        );
+        return;
+      }
+
+      // Check if there's already a session
       const { data: { session } } = await supabase.auth.getSession();
 
       if (cancelled) return;
