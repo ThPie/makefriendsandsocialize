@@ -77,9 +77,13 @@ export default function PortalEvents() {
         .gte('date', today)
         .order('date', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.warn('Events fetch error:', error.message);
+        return [];
+      }
       return data as Event[];
     },
+    retry: 1,
   });
 
   // Fetch past events
@@ -96,9 +100,13 @@ export default function PortalEvents() {
         .order('date', { ascending: false })
         .limit(12);
 
-      if (error) throw error;
+      if (error) {
+        console.warn('Past events fetch error:', error.message);
+        return [];
+      }
       return data as Event[];
     },
+    retry: 1,
   });
 
   const events = activeTab === 'upcoming' ? upcomingEvents : pastEvents;

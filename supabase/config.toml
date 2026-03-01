@@ -119,3 +119,7 @@ project_id = "qzqomqctuqldexnxgmlh"
     verify_jwt = true
   [functions.user-mfa]
     verify_jwt = true
+  [functions.enhance-bio]
+    verify_jwt = true
+  [functions.scrape-business-website]
+    verify_jwt = true

@@ -1,11 +1,11 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Camera, Loader2, MapPin, Save } from 'lucide-react';
+import { Camera, Loader2, Save, Sparkles, MapPin } from 'lucide-react';
 import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
 import { VerificationBadge } from '@/components/portal/VerificationBadge';
 import { VpnBlockedModal } from '@/components/portal/VpnBlockedModal';
@@ -17,6 +17,8 @@ export default function PortalProfile() {
   const [showVpnModal, setShowVpnModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isEnhancingBio, setIsEnhancingBio] = useState(false);
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
@@ -30,6 +32,34 @@ export default function PortalProfile() {
     city: profile?.city || '',
     country: profile?.country || '',
   });
+
+  // Auto-detect location on mount if not set
+  useEffect(() => {
+    if (!formData.city && !formData.country && user) {
+      detectLocation();
+    }
+  }, []);
+
+  const detectLocation = async () => {
+    setIsDetectingLocation(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('detect-location');
+      if (error) throw error;
+      if (data?.vpnDetected) {
+        // Don't auto-fill if VPN detected, just skip silently
+        return;
+      }
+      setFormData(prev => ({
+        ...prev,
+        city: prev.city || data?.city || '',
+        country: prev.country || data?.country || '',
+      }));
+    } catch (err) {
+      console.warn('Location detection failed:', err);
+    } finally {
+      setIsDetectingLocation(false);
+    }
+  };
 
   const initials = profile?.first_name && profile?.last_name
     ? `${profile.first_name[0]}${profile.last_name[0]}`
@@ -83,6 +113,29 @@ export default function PortalProfile() {
       toast.error('Failed to upload photo');
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handleEnhanceBio = async () => {
+    if (!formData.bio || formData.bio.trim().length < 5) {
+      toast.error('Write a few words about yourself first, then let AI polish it.');
+      return;
+    }
+    setIsEnhancingBio(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('enhance-bio', {
+        body: { bio: formData.bio, firstName: formData.first_name },
+      });
+      if (error) throw error;
+      if (data?.enhancedBio) {
+        setFormData(prev => ({ ...prev, bio: data.enhancedBio }));
+        toast.success('Bio enhanced! Review and save when ready.');
+      }
+    } catch (err: any) {
+      console.error('Bio enhancement error:', err);
+      toast.error('Failed to enhance bio. Try again.');
+    } finally {
+      setIsEnhancingBio(false);
     }
   };
 
@@ -197,7 +250,24 @@ export default function PortalProfile() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="bio">Bio</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="bio">Bio</Label>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleEnhanceBio}
+                disabled={isEnhancingBio}
+                className="text-xs h-7 gap-1.5 text-primary hover:text-primary/80"
+              >
+                {isEnhancingBio ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <Sparkles className="h-3 w-3" />
+                )}
+                {isEnhancingBio ? 'Enhancing...' : 'AI Polish'}
+              </Button>
+            </div>
             <Textarea
               id="bio"
               name="bio"
@@ -209,11 +279,32 @@ export default function PortalProfile() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="city">City</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="city">City</Label>
+                {isDetectingLocation && (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Loader2 className="h-3 w-3 animate-spin" /> Detecting...
+                  </span>
+                )}
+              </div>
               <Input id="city" name="city" value={formData.city} onChange={handleChange} placeholder="e.g. Paris" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="country">Country</Label>
+                {!formData.country && !isDetectingLocation && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={detectLocation}
+                    className="text-xs h-7 gap-1 text-primary hover:text-primary/80"
+                  >
+                    <MapPin className="h-3 w-3" />
+                    Auto-detect
+                  </Button>
+                )}
+              </div>
               <Input id="country" name="country" value={formData.country} onChange={handleChange} placeholder="e.g. France" />
             </div>
           </div>
