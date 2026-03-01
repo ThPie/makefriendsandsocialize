@@ -1,28 +1,112 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Settings, MapPin, Edit3, Camera, Briefcase, Award, Play, Info } from 'lucide-react';
-import { WidgetErrorBoundary } from '@/components/ui/widget-error-boundary';
-import { ProfileEditModal } from '@/components/profile/ProfileEditModal';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Camera, Loader2, MapPin, Save } from 'lucide-react';
 import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
 import { VerificationBadge } from '@/components/portal/VerificationBadge';
 import { VpnBlockedModal } from '@/components/portal/VpnBlockedModal';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 export default function PortalProfile() {
-  const { user, profile } = useAuth();
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { user, profile, refreshProfile } = useAuth();
   const [showVpnModal, setShowVpnModal] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handlePhotoEdit = () => {
-    toast.info("Photo editing is coming soon!");
+  const [formData, setFormData] = useState({
+    first_name: profile?.first_name || '',
+    last_name: profile?.last_name || '',
+    bio: profile?.bio || '',
+    job_title: profile?.job_title || '',
+    company: profile?.company || '',
+    industry: profile?.industry || '',
+    linkedin_url: profile?.linkedin_url || '',
+    city: profile?.city || '',
+    country: profile?.country || '',
+  });
+
+  const initials = profile?.first_name && profile?.last_name
+    ? `${profile.first_name[0]}${profile.last_name[0]}`
+    : user?.email?.[0]?.toUpperCase() || 'M';
+
+  const avatarSrc = profile?.avatar_urls?.[0]
+    || user?.user_metadata?.avatar_url
+    || undefined;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const displayProfile = {
-    ...profile,
-    job_title: profile?.job_title || 'Member',
-    location: profile?.city || 'Global',
-    age: profile?.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : '',
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be under 5MB');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const ext = file.name.split('.').pop();
+      const path = `${user.id}/avatar.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(path, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(path);
+
+      const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_urls: [newUrl] })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      await refreshProfile();
+      toast.success('Profile photo updated');
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      toast.error('Failed to upload photo');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update(formData)
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      await refreshProfile();
+      toast.success('Profile updated successfully');
+    } catch (error: any) {
+      console.error('Error updating profile:', error);
+      toast.error('Failed to update profile');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const profileData = {
@@ -38,12 +122,10 @@ export default function PortalProfile() {
   };
 
   return (
-    <div className="w-full pb-16 space-y-8">
-      <ProfileEditModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} />
-
+    <div className="w-full max-w-3xl mx-auto space-y-8 pb-16">
       {/* Header */}
-      <div className="text-center max-w-[680px] mx-auto mb-8">
-        <h1 className="font-display text-3xl md:text-4xl text-foreground mb-2 inline-flex items-center gap-2">
+      <div>
+        <h1 className="font-display text-2xl md:text-3xl text-foreground inline-flex items-center gap-2">
           My Profile
           <VerificationBadge
             isVerified={profile?.is_security_verified || false}
@@ -51,160 +133,129 @@ export default function PortalProfile() {
             size="lg"
           />
         </h1>
-        <p className="text-muted-foreground">
-          Build your profile to connect with our community
+        <p className="text-sm text-muted-foreground mt-1">
+          Manage your personal information and how others see you.
         </p>
-        <Button variant="outline" onClick={() => setIsEditModalOpen(true)} className="hidden md:inline-flex items-center gap-2 mt-4">
-          <Settings className="w-4 h-4" /> Edit Profile
-        </Button>
       </div>
 
+      {/* Profile Completion */}
       <ProfileCompletionIndicator profile={profileData} />
 
-      {/* Photo Grid — wider on desktop */}
-      <section className="grid grid-cols-3 gap-4 h-[320px] md:h-[380px]">
-        {/* Main Photo - Large */}
-        <div className="col-span-2 relative rounded-2xl overflow-hidden border border-border group">
-          {profile?.avatar_urls?.[0] ? (
-            <img src={profile.avatar_urls[0]} alt="Profile" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full bg-card flex items-center justify-center">
-              <span className="text-6xl font-display text-foreground/20">
-                {profile?.first_name?.[0]}{profile?.last_name?.[0]}
-              </span>
-            </div>
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
-          <button
-            onClick={handlePhotoEdit}
-            className="absolute bottom-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur-md p-3 rounded-full transition-all"
-          >
-            <Edit3 className="w-5 h-5 text-white" />
-          </button>
-        </div>
-
-        {/* Secondary Photos Column */}
-        <div className="col-span-1 flex flex-col gap-4 h-full">
-          <div className="flex-1 rounded-2xl overflow-hidden border border-border relative">
-            {profile?.avatar_urls?.[1] ? (
-              <img src={profile.avatar_urls[1]} alt="Secondary 1" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full bg-muted flex items-center justify-center">
-                <Camera className="w-8 h-8 text-muted-foreground/40" />
-              </div>
-            )}
-          </div>
-          <div className="flex-1 rounded-2xl overflow-hidden border border-border relative">
-            {profile?.avatar_urls?.[2] ? (
-              <img src={profile.avatar_urls[2]} alt="Secondary 2" className="w-full h-full object-cover" />
-            ) : (
-              <div
-                onClick={handlePhotoEdit}
-                className="w-full h-full bg-card border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-muted transition-colors"
+      {/* Avatar + Form */}
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Avatar Section */}
+        <div className="rounded-2xl border border-border bg-card p-6">
+          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Profile Photo</h2>
+          <div className="flex items-center gap-5">
+            <div className="relative">
+              <Avatar className="h-20 w-20 border-2 border-primary/20">
+                <AvatarImage src={avatarSrc} />
+                <AvatarFallback className="bg-primary text-primary-foreground text-xl">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors"
               >
-                <Camera className="w-8 h-8 text-muted-foreground/40" />
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Info Cards — two-column on desktop */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Basic Info Card */}
-        <section className="bg-card rounded-xl p-6 border border-border shadow-sm">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold text-foreground">Basic Info</h2>
-            <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="text-[hsl(var(--accent-gold))] text-sm font-medium hover:text-[hsl(var(--accent-gold))]/80"
-            >
-              Edit
-            </button>
-          </div>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Full Name</p>
-                <p className="text-sm font-medium text-foreground">{profile?.first_name} {profile?.last_name}</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Age</p>
-                <p className="text-sm font-medium text-foreground">{displayProfile.age || '-'}</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Location</p>
-                <div className="flex items-center gap-1 text-foreground">
-                  <MapPin className="w-3 h-3 text-[hsl(var(--accent-gold))]" />
-                  <span className="text-sm font-medium">{displayProfile.location}</span>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Member Since</p>
-                <p className="text-sm font-medium text-foreground">2024</p>
-              </div>
+                {isUploading ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Camera className="h-3.5 w-3.5" />
+                )}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarUpload}
+              />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Bio</p>
-              <p className="text-sm text-muted-foreground leading-relaxed font-light">
-                {profile?.bio || 'No bio yet. Click edit to add one!'}
+              <p className="text-sm font-medium text-foreground">
+                {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : 'Upload a photo'}
               </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Professional Info Card */}
-        <section className="bg-card rounded-xl p-6 border border-border shadow-sm">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-bold text-foreground">Professional Info</h2>
-            <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="text-[hsl(var(--accent-gold))] text-sm font-medium hover:text-[hsl(var(--accent-gold))]/80"
-            >
-              Edit
-            </button>
-          </div>
-          <div className="space-y-4">
-            <div>
-              <p className="text-xs text-muted-foreground mb-1">Job Title</p>
-              <p className="text-sm font-medium text-foreground">{displayProfile.job_title}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground mb-2">Interests</p>
-              <div className="flex flex-wrap gap-2">
-                {profile?.interests?.map((interest: string) => (
-                  <span key={interest} className="px-3 py-1 bg-muted rounded-full text-xs font-medium text-muted-foreground border border-border">
-                    {interest}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      {/* Vibe Clip Card — full width */}
-      <section className="bg-card rounded-xl p-6 border border-border shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-foreground">Vibe Clip</h2>
-          <span className="text-xs text-muted-foreground">0:15s</span>
-        </div>
-        <div className="relative w-full h-40 md:h-48 rounded-lg overflow-hidden bg-background group cursor-pointer">
-          <div className="absolute inset-0 opacity-60 bg-gradient-to-r from-purple-900 via-blue-900 to-background"></div>
-          <div className="absolute inset-0 flex items-center justify-center gap-1 opacity-50">
-            <div className="w-1 h-8 bg-[hsl(var(--accent-gold))] rounded-full animate-pulse"></div>
-            <div className="w-1 h-12 bg-[hsl(var(--accent-gold))] rounded-full animate-pulse delay-75"></div>
-            <div className="w-1 h-6 bg-[hsl(var(--accent-gold))] rounded-full animate-pulse delay-100"></div>
-            <div className="w-1 h-10 bg-[hsl(var(--accent-gold))] rounded-full animate-pulse delay-150"></div>
-            <div className="w-1 h-4 bg-[hsl(var(--accent-gold))] rounded-full animate-pulse delay-200"></div>
-          </div>
-          <div className="absolute inset-0 flex items-center justify-center z-10">
-            <div className="w-14 h-14 rounded-full bg-[hsl(var(--accent-gold))]/20 backdrop-blur-sm flex items-center justify-center border border-[hsl(var(--accent-gold))]/50 group-hover:scale-110 transition-transform">
-              <Play className="w-6 h-6 text-[hsl(var(--accent-gold))] fill-current" />
+              <p className="text-xs text-muted-foreground mt-0.5">JPG, PNG under 5MB. This will be visible to other members.</p>
             </div>
           </div>
         </div>
-      </section>
+
+        {/* Basic Info */}
+        <div className="rounded-2xl border border-border bg-card p-6 space-y-5">
+          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Basic Information</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="first_name">First Name</Label>
+              <Input id="first_name" name="first_name" value={formData.first_name} onChange={handleChange} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="last_name">Last Name</Label>
+              <Input id="last_name" name="last_name" value={formData.last_name} onChange={handleChange} />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bio">Bio</Label>
+            <Textarea
+              id="bio"
+              name="bio"
+              value={formData.bio}
+              onChange={handleChange}
+              placeholder="Tell the community about yourself..."
+              className="min-h-[100px]"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="city">City</Label>
+              <Input id="city" name="city" value={formData.city} onChange={handleChange} placeholder="e.g. Paris" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="country">Country</Label>
+              <Input id="country" name="country" value={formData.country} onChange={handleChange} placeholder="e.g. France" />
+            </div>
+          </div>
+        </div>
+
+        {/* Professional Info */}
+        <div className="rounded-2xl border border-border bg-card p-6 space-y-5">
+          <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Professional</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="job_title">Job Title</Label>
+              <Input id="job_title" name="job_title" value={formData.job_title} onChange={handleChange} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="company">Company</Label>
+              <Input id="company" name="company" value={formData.company} onChange={handleChange} />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="industry">Industry</Label>
+              <Input id="industry" name="industry" value={formData.industry} onChange={handleChange} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="linkedin_url">LinkedIn URL</Label>
+              <Input id="linkedin_url" name="linkedin_url" value={formData.linkedin_url} onChange={handleChange} placeholder="https://linkedin.com/in/..." />
+            </div>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isSaving} className="min-w-[140px]">
+            {isSaving ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : (
+              <Save className="h-4 w-4 mr-2" />
+            )}
+            Save Changes
+          </Button>
+        </div>
+      </form>
 
       <VpnBlockedModal isOpen={showVpnModal} />
     </div>
