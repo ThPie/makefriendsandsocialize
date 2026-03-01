@@ -2,6 +2,10 @@
     "framework": "vite",
     "rewrites": [
         {
+            "source": "/~oauth/(.*)",
+            "destination": "https://makefriendsandsocializecom.lovable.app/~oauth/$1"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }
