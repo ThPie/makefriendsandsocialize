@@ -892,7 +892,8 @@ export default function AuthPage() {
                     clearFormFeedback();
                     try {
                       const { lovable } = await import('@/integrations/lovable/index');
-                      const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: window.location.origin });
+                      const redirectUri = window.location.hostname.endsWith('.lovable.app') ? window.location.origin : 'https://makefriendsandsocializecom.lovable.app';
+                      const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: redirectUri });
                       if (result.error) setFormError(result.error.message || 'Could not connect to Google.');
                     } catch { setFormError('Could not connect to Google.'); }
                   }}
@@ -1019,7 +1020,8 @@ export default function AuthPage() {
                   clearFormFeedback();
                   try {
                     const { lovable } = await import('@/integrations/lovable/index');
-                    const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: window.location.origin });
+                    const redirectUri = window.location.hostname.endsWith('.lovable.app') ? window.location.origin : 'https://makefriendsandsocializecom.lovable.app';
+                    const result = await lovable.auth.signInWithOAuth('google', { redirect_uri: redirectUri });
                     if (result.error) setFormError(result.error.message || 'Could not connect to Google.');
                   } catch { setFormError('Could not connect to Google.'); }
                 }}
