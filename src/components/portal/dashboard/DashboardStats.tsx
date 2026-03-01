@@ -1,60 +1,46 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, Crown, Bell, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Calendar, Crown, Bell, Heart, Users, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getTierDisplayName } from '@/lib/tier-utils';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export function DashboardStats() {
-    const { user, membership, profile } = useAuth();
+    const { user, membership } = useAuth();
 
-    // 1. Upcoming Events Count
     const { data: eventCount = 0, isLoading: loadingEvents } = useQuery({
         queryKey: ['dashboard-stats-events', user?.id],
         queryFn: async () => {
             if (!user) return 0;
-            const now = new Date();
-            const today = now.toISOString().split('T')[0];
+            const today = new Date().toISOString().split('T')[0];
             const { count, error } = await supabase
                 .from('event_rsvps')
                 .select('event_id, events!inner(date)', { count: 'exact', head: true })
                 .eq('user_id', user.id)
                 .eq('status', 'confirmed')
                 .gte('events.date', today);
-            if (error) { console.error('Error fetching event stats:', error); return 0; }
+            if (error) return 0;
             return count || 0;
         },
         enabled: !!user,
     });
 
-    // 2. Loyalty / Points 
-    // We'll use badge count as a proxy for now if loyalty_points doesn't exist on profile type yet
-    // If profile has loyalty_points, we use that.
-    const loyaltyPoints = (profile as any)?.loyalty_points || 0;
-
-    const { data: badgeCount = 0, isLoading: loadingBadges } = useQuery({
-        queryKey: ['dashboard-stats-badges', user?.id],
+    const { data: connectionCount = 0, isLoading: loadingConnections } = useQuery({
+        queryKey: ['dashboard-stats-connections', user?.id],
         queryFn: async () => {
             if (!user) return 0;
             const { count, error } = await supabase
-                .from('member_badges')
+                .from('connections')
                 .select('*', { count: 'exact', head: true })
-                .eq('user_id', user.id);
-            if (error) { console.error('Error fetching badge stats:', error); return 0; }
+                .or(`requester_id.eq.${user.id},requested_id.eq.${user.id}`)
+                .eq('status', 'accepted');
+            if (error) return 0;
             return count || 0;
         },
         enabled: !!user,
     });
 
-    const displayPoints = loyaltyPoints > 0 ? loyaltyPoints : (badgeCount * 150);
-    const nextTierPoints = 2000;
-    const progress = Math.min((displayPoints / nextTierPoints) * 100, 100);
-
-    // 3. Unread Notifications
     const { data: notificationCount = 0, isLoading: loadingNotifications } = useQuery({
         queryKey: ['dashboard-stats-notifications', user?.id],
         queryFn: async () => {
@@ -64,26 +50,38 @@ export function DashboardStats() {
                 .select('*', { count: 'exact', head: true })
                 .eq('user_id', user.id)
                 .eq('is_read', false);
-            if (error) { console.error('Error fetching notification stats:', error); return 0; }
+            if (error) return 0;
             return count || 0;
         },
         enabled: !!user,
         refetchInterval: 30000,
     });
 
-    const isLoading = loadingEvents || loadingBadges || loadingNotifications;
+    const { data: badgeCount = 0, isLoading: loadingBadges } = useQuery({
+        queryKey: ['dashboard-stats-badges', user?.id],
+        queryFn: async () => {
+            if (!user) return 0;
+            const { count, error } = await supabase
+                .from('member_badges')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', user.id);
+            if (error) return 0;
+            return count || 0;
+        },
+        enabled: !!user,
+    });
+
+    const isLoading = loadingEvents || loadingConnections || loadingNotifications || loadingBadges;
 
     if (isLoading) {
         return (
-            <div className="grid gap-6 md:grid-cols-3">
-                {[1, 2, 3].map(i => (
-                    <Card key={i} className="h-48 bg-card border-border">
-                        <CardContent className="p-6">
-                            <Skeleton className="h-12 w-12 rounded-xl mb-4" />
-                            <Skeleton className="h-8 w-16 mb-2" />
-                            <Skeleton className="h-4 w-24" />
-                        </CardContent>
-                    </Card>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="rounded-2xl border border-border bg-card p-5">
+                        <Skeleton className="h-4 w-20 mb-4" />
+                        <Skeleton className="h-9 w-12 mb-2" />
+                        <Skeleton className="h-3 w-16" />
+                    </div>
                 ))}
             </div>
         );
@@ -91,110 +89,64 @@ export function DashboardStats() {
 
     const stats = [
         {
-            id: 'events',
             label: 'Upcoming Events',
-            value: String(eventCount).padStart(2, '0'),
-            subtext: '+1 this week',
+            value: eventCount,
+            change: '+1 this week',
             icon: Calendar,
-            color: 'text-primary',
-            bg: 'bg-primary/10',
-            link: '/portal/events',
-            linkText: 'VIEW CALENDAR',
-            showProgress: false,
+            iconBg: 'bg-primary/10',
+            iconColor: 'text-primary',
         },
         {
-            id: 'loyalty',
-            label: 'Loyalty Points',
-            value: displayPoints.toLocaleString(),
-            subtext: null,
-            icon: Crown,
-            color: 'text-[hsl(var(--accent-gold))]',
-            bg: 'bg-[hsl(var(--accent-gold))]/10',
-            tierBadge: getTierDisplayName(membership?.tier).toUpperCase(),
-            showProgress: true,
-            progressValue: progress,
-            progressText: `${nextTierPoints - displayPoints} pts to Platinum`
+            label: 'Connections',
+            value: connectionCount,
+            change: 'Active',
+            icon: Heart,
+            iconBg: 'bg-[hsl(var(--accent-gold))]/10',
+            iconColor: 'text-[hsl(var(--accent-gold))]',
         },
         {
-            id: 'notifications',
-            label: 'New Notifications',
-            value: String(notificationCount).padStart(2, '0'),
-            subtext: 'Last: 2h ago',
+            label: 'Notifications',
+            value: notificationCount,
+            change: 'Unread',
             icon: Bell,
-            color: 'text-primary',
-            bg: 'bg-primary/10',
-            link: '/portal/notifications',
-            showProgress: false,
-            preview: true,
-        }
+            iconBg: 'bg-primary/10',
+            iconColor: 'text-primary',
+        },
+        {
+            label: 'Achievements',
+            value: badgeCount,
+            change: getTierDisplayName(membership?.tier),
+            icon: Crown,
+            iconBg: 'bg-[hsl(var(--accent-gold))]/10',
+            iconColor: 'text-[hsl(var(--accent-gold))]',
+        },
     ];
 
     return (
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {stats.map((stat) => (
-                <Card key={stat.id} className="relative overflow-hidden border-border bg-card transition-colors duration-200">
-                    <CardContent className="p-6">
-                        <div className="flex justify-between items-start mb-6">
-                            <div className={cn("p-3 rounded-xl", stat.bg)}>
-                                <stat.icon className={cn("h-6 w-6", stat.color)} />
-                            </div>
-
-                            {stat.tierBadge && (
-                                <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold tracking-widest text-primary uppercase">
-                                    {stat.tierBadge}
-                                </div>
-                            )}
-
-                            {stat.subtext && (
-                                <div className="text-xs font-medium text-[hsl(var(--accent-gold))] bg-[hsl(var(--accent-gold))]/10 px-2 py-1 rounded-md">
-                                    {stat.subtext}
-                                </div>
-                            )}
+                <div
+                    key={stat.label}
+                    className="rounded-2xl border border-border bg-card p-5 flex flex-col justify-between min-h-[130px]"
+                >
+                    <div className="flex items-center justify-between mb-4">
+                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                            {stat.label}
+                        </span>
+                        <div className={cn('p-2 rounded-xl', stat.iconBg)}>
+                            <stat.icon className={cn('h-4 w-4', stat.iconColor)} />
                         </div>
-
-                        <div className="space-y-1">
-                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{stat.label}</p>
-                            <h3 className="text-4xl font-display font-semibold text-foreground tracking-tight flex items-baseline gap-2">
-                                {stat.value}
-                                {stat.showProgress && <span className="text-sm text-muted-foreground font-sans font-normal opacity-60">/ 2,000 pts</span>}
-                            </h3>
-                        </div>
-
-                        {stat.showProgress && (
-                            <div className="mt-6 space-y-2">
-                                <div className="h-2 w-full bg-secondary/50 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-[hsl(var(--accent-gold))] rounded-full transition-all duration-1000 ease-out"
-                                        style={{ width: `${stat.progressValue}%` }}
-                                    />
-                                </div>
-                                <p className="text-[10px] text-right text-muted-foreground uppercase tracking-wider">{stat.progressText}</p>
-                            </div>
-                        )}
-
-                        {!stat.showProgress && stat.link && (
-                            <div className="mt-6">
-                                <Button variant="link" className="p-0 h-auto text-primary hover:text-primary/80 group" asChild>
-                                    <Link to={stat.link} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
-                                        {stat.linkText} <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
-                                    </Link>
-                                </Button>
-                            </div>
-                        )}
-
-                        {stat.preview && (
-                            <div className="mt-6 flex items-center">
-                                <div className="flex -space-x-3">
-                                    <div className="h-8 w-8 rounded-full bg-muted border-2 border-card flex items-center justify-center text-xs">A</div>
-                                    <div className="h-8 w-8 rounded-full bg-muted-foreground/20 border-2 border-card flex items-center justify-center text-xs">B</div>
-                                    <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-[10px] font-bold text-primary-foreground border-2 border-card shadow-sm z-10">
-                                        +3
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                    </div>
+                    <div>
+                        <h3 className="text-3xl font-display font-semibold text-foreground leading-none mb-1">
+                            {stat.value}
+                        </h3>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                            <TrendingUp className="h-3 w-3 text-primary" />
+                            {stat.change}
+                        </span>
+                    </div>
+                </div>
             ))}
         </div>
     );
