@@ -144,7 +144,7 @@ const NewsletterForm = () => {
           />
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !agreed}
             className="h-11 px-5 rounded-md bg-[hsl(var(--accent-gold))] text-white text-sm font-medium tracking-wide uppercase hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2 shrink-0"
           >
             <Send className="w-4 h-4" />
@@ -156,6 +156,7 @@ const NewsletterForm = () => {
             type="checkbox"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
+            required
             className="mt-0.5 accent-[hsl(var(--accent-gold))] w-4 h-4 shrink-0"
           />
           <span className="text-xs text-muted-foreground leading-relaxed">
@@ -163,6 +164,7 @@ const NewsletterForm = () => {
             <a href="/privacy" className="text-[hsl(var(--accent-gold))] underline">Privacy Policy</a>{' '}
             and{' '}
             <a href="/terms" className="text-[hsl(var(--accent-gold))] underline">Terms of Service</a>.
+            <span className="text-destructive ml-1">*</span>
           </span>
         </label>
       </div>

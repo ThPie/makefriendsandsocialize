@@ -21,7 +21,7 @@ import { SimpleCaptcha } from '@/components/auth/SimpleCaptcha';
 import { useAuthRateLimit } from '@/hooks/useAuthRateLimit';
 import { useSessionManager } from '@/hooks/useSessionManager';
 import { BrandLogo } from '@/components/common/BrandLogo';
-import gentlemenImg from '@/assets/gentlemen-hero-new.webp';
+import golfSunsetImg from '@/assets/golf-sunset-hero.jpg';
 
 // Enhanced email validation
 const emailSchema = z.string()
@@ -671,8 +671,8 @@ export default function AuthPage() {
           {/* Left Side — Image Panel with overlay */}
           <div className="relative w-1/2 rounded-2xl overflow-hidden">
             <img
-              src={gentlemenImg}
-              alt="Members gathering"
+              src={golfSunsetImg}
+              alt="Golf course sunset"
               className="absolute inset-0 w-full h-full object-cover"
             />
             {/* Dark gradient overlay */}
@@ -692,11 +692,12 @@ export default function AuthPage() {
               </Link>
             </div>
 
-            {/* Bottom tagline */}
+            {/* Bottom tagline + member avatars */}
             <div className="absolute bottom-10 left-8 right-8 z-10">
-              <h2 className="font-display italic text-3xl xl:text-4xl text-white leading-tight">
+              <h2 className="font-display italic text-3xl xl:text-4xl text-white leading-tight mb-6">
                 Where Connections<br />Become Community
               </h2>
+              <MemberAvatars avatarUrls={avatarUrls} memberCount={memberCount} isLoading={isLoadingStats} />
             </div>
           </div>
 
@@ -893,7 +894,7 @@ export default function AuthPage() {
         <div className="lg:hidden min-h-screen flex flex-col bg-background">
           {/* Mobile image header */}
           <div className="relative h-56 overflow-hidden">
-            <img src={gentlemenImg} alt="Members gathering" className="w-full h-full object-cover" />
+            <img src={golfSunsetImg} alt="Golf course sunset" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
             <Link to="/" className="absolute top-4 left-4 z-10">
               <BrandLogo forceWhite className="h-8 w-auto" />
