@@ -5,9 +5,9 @@
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Brain } from 'lucide-react';
+import { CardContent } from '@/components/ui/card';
 import { CoreValuesPicker } from '@/components/dating/CoreValuesPicker';
+import { WeightBadge } from '@/components/dating/WeightBadge';
 import type { IntakeFormContext } from '../useIntakeForm';
 
 interface DeepDiveStepProps {
@@ -46,9 +46,12 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
             <CardContent className="space-y-8 pt-4">
                 {/* Conflict Resolution */}
                 <div className="space-y-3">
-                    <Label htmlFor="conflict_resolution" className="text-white/80 text-lg">
-                        Conflict Resolution
-                    </Label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Label htmlFor="conflict_resolution" className="text-white/80 text-lg">
+                            Conflict Resolution
+                        </Label>
+                        <WeightBadge weight={6} />
+                    </div>
                     <p className="text-sm text-white/40">
                         {getConflictPrompt()}
                     </p>
@@ -105,7 +108,10 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
 
                 {/* Love Language */}
                 <div className="space-y-3">
-                    <Label className="text-white/80">What's your primary love language?</Label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Label className="text-white/80">What's your primary love language?</Label>
+                        <WeightBadge weight={3} />
+                    </div>
                     <Select value={formData.love_language} onValueChange={(value) => updateField("love_language", value)}>
                         <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                             <SelectValue placeholder="Select love language" />
@@ -191,12 +197,15 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
 
                 {/* Core Values */}
                 <div className="space-y-4">
-                    <Label className="text-white/80 text-lg flex items-center gap-2">
-                        Core Values
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Label className="text-white/80 text-lg">
+                            Core Values
+                        </Label>
+                        <WeightBadge weight={10} />
                         <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-0.5 rounded-full border border-[hsl(var(--accent-gold))]/20">
                             Research-backed
                         </span>
-                    </Label>
+                    </div>
                     <p className="text-sm text-white/40">
                         Select and rank your top 5 values. Shared core values are the #1 predictor of long-term compatibility.
                     </p>
@@ -211,7 +220,10 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
 
                 {/* Attachment Style */}
                 <div className="space-y-3">
-                    <Label className="text-white/80">Attachment Style (optional)</Label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Label className="text-white/80">Attachment Style (optional)</Label>
+                        <WeightBadge weight={4} />
+                    </div>
                     <p className="text-sm text-white/40">
                         {formData.been_married
                             ? "Based on your past relationship experiences, what attachment style resonates with you?"
@@ -245,7 +257,10 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
 
                     {/* Communication Style */}
                     <div className="space-y-3">
-                        <Label className="text-white/80">When you're upset with a partner, do you tend to:</Label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <Label className="text-white/80">When you're upset with a partner, do you tend to:</Label>
+                            <WeightBadge weight={5} />
+                        </div>
                         <Select value={formData.communication_style} onValueChange={(value) => updateField("communication_style", value)}>
                             <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select your communication style" />
@@ -262,7 +277,10 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
 
                     {/* Repair Attempt Response */}
                     <div className="space-y-3">
-                        <Label className="text-white/80">During an argument, if your partner tries to lighten the mood...</Label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <Label className="text-white/80">During an argument, if your partner tries to lighten the mood...</Label>
+                            <WeightBadge weight={8} />
+                        </div>
                         <p className="text-sm text-white/40">
                             This is called a "repair attempt" - the #1 predictor of relationship success according to 50 years of research.
                         </p>
@@ -281,7 +299,10 @@ export const DeepDiveStep = ({ form }: DeepDiveStepProps) => {
 
                     {/* Stress Response */}
                     <div className="space-y-3">
-                        <Label className="text-white/80">When life gets overwhelming, I typically:</Label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <Label className="text-white/80">When life gets overwhelming, I typically:</Label>
+                            <WeightBadge weight={4} />
+                        </div>
                         <Select value={formData.stress_response} onValueChange={(value) => updateField("stress_response", value)}>
                             <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select your stress response" />

@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Users } from 'lucide-react';
+import { CardContent } from '@/components/ui/card';
+import { WeightBadge } from '@/components/dating/WeightBadge';
 import type { IntakeFormContext } from '../useIntakeForm';
 
 interface FamilyStepProps {
@@ -17,15 +17,13 @@ interface FamilyStepProps {
 export const FamilyStep = ({ form }: FamilyStepProps) => {
     const { formData, updateField, fieldErrors, isSeekingSerious } = form;
 
-    // Error helpers
     const hasError = (field: string) => !!fieldErrors[field];
     const errorMsg = (field: string) => fieldErrors[field];
 
-    // Helper to convert boolean to tristate string (yes/no/prefer_not)
     const boolToTristate = (val: boolean | null | undefined) => {
         if (val === true) return "yes";
         if (val === false) return "no";
-        return ""; // unselected by default
+        return "";
     };
 
     const getWantsChildrenOptions = () => {
@@ -59,13 +57,11 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
         </div>
     );
 
-    // Show children-timing question only when user wants children
     const showChildrenTiming = formData.wants_children === 'yes' || formData.wants_children === 'open';
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             <CardContent className="space-y-8 pt-4">
-                {/* Only show marriage questions if seeking serious relationship */}
                 {isSeekingSerious && (
                     <div className="space-y-4 animate-fade-in">
                         <Label className="text-white/90 text-lg">Have you been married before?</Label>
@@ -87,7 +83,6 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                     </div>
                 )}
 
-                {/* Marriage history - only if been married */}
                 {isSeekingSerious && formData.been_married && (
                     <div className="space-y-2 animate-fade-in">
                         <Label htmlFor="marriage_history" className="text-white/80">Brief context (optional)</Label>
@@ -115,7 +110,6 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                     </RadioGroup>
                 </div>
 
-                {/* Children details - only if has children */}
                 {formData.has_children && (
                     <div className="space-y-2 animate-fade-in">
                         <Label htmlFor="children_details" className="text-white/80">Tell us about your children</Label>
@@ -129,13 +123,15 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                     </div>
                 )}
 
-                {/* Children preferences side by side */}
+                {/* Children preferences */}
                 <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
-                    {/* Adaptive children question */}
                     <div className="space-y-3 animate-fade-in">
-                        <Label className="text-white/80">
-                            {formData.has_children ? "Do you want more children?" : "Do you want children?"}
-                        </Label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <Label className="text-white/80">
+                                {formData.has_children ? "Do you want more children?" : "Do you want children?"}
+                            </Label>
+                            <WeightBadge weight={7} />
+                        </div>
                         <Select value={formData.wants_children} onValueChange={(value) => updateField("wants_children", value)}>
                             <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select your preference" />
@@ -150,7 +146,6 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                         </Select>
                     </div>
 
-                    {/* Open to partner with children */}
                     <div className="space-y-3 animate-fade-in">
                         <Label className="text-white/80">Are you open to dating someone who already has children?</Label>
                         <Select
@@ -169,10 +164,13 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                     </div>
                 </div>
 
-                {/* Marriage timeline - only show for serious/marriage-minded when they want children */}
+                {/* Marriage timeline */}
                 {isSeekingSerious && (
                     <div className="space-y-3 animate-fade-in">
-                        <Label className="text-white/80">{getMarriageTimelineLabel()}</Label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <Label className="text-white/80">{getMarriageTimelineLabel()}</Label>
+                            <WeightBadge weight={5} />
+                        </div>
                         <Select value={formData.marriage_timeline} onValueChange={(value) => updateField("marriage_timeline", value)}>
                             <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select timeline" />
@@ -188,7 +186,7 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                     </div>
                 )}
 
-                {/* NEW: Family Dynamics */}
+                {/* Family Dynamics */}
                 {isSeekingSerious && (
                     <div className="space-y-6 pt-6 border-t border-white/10 animate-fade-in">
                         <div className="flex items-center gap-2">
@@ -201,7 +199,10 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                         </div>
 
                         <div className="space-y-3">
-                            <Label className="text-white/80">How would you describe your relationship with your family of origin?</Label>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <Label className="text-white/80">How would you describe your relationship with your family of origin?</Label>
+                                <WeightBadge weight={4} />
+                            </div>
                             <p className="text-sm text-white/40">
                                 Research shows family-of-origin patterns often repeat in romantic relationships.
                             </p>
@@ -220,7 +221,10 @@ export const FamilyStep = ({ form }: FamilyStepProps) => {
                         </div>
 
                         <div className="space-y-3">
-                            <Label className="text-white/80">How involved do you expect your partner's family to be?</Label>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <Label className="text-white/80">How involved do you expect your partner's family to be?</Label>
+                                <WeightBadge weight={4} />
+                            </div>
                             <p className="text-sm text-white/40">
                                 In-law dynamics are cited in 43% of divorces. Setting expectations matters.
                             </p>

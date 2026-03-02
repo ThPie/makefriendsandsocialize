@@ -5,8 +5,8 @@
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Briefcase } from 'lucide-react';
+import { CardContent } from '@/components/ui/card';
+import { WeightBadge } from '@/components/dating/WeightBadge';
 import type { IntakeFormContext } from '../useIntakeForm';
 
 interface LifestyleStepProps {
@@ -16,7 +16,6 @@ interface LifestyleStepProps {
 export const LifestyleStep = ({ form }: LifestyleStepProps) => {
     const { formData, updateField, fieldErrors, isSeekingSerious } = form;
 
-    // Error helpers
     const hasError = (field: string) => !!fieldErrors[field];
     const errorMsg = (field: string) => fieldErrors[field];
     const inputErrorClass = (field: string) =>
@@ -48,11 +47,14 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             <CardContent className="space-y-8 pt-4">
-                {/* Adaptive Tuesday Night Test */}
+                {/* Tuesday Night Test */}
                 <div className="space-y-3">
-                    <Label htmlFor="tuesday_night_test" className="text-white/80 text-lg">
-                        The Tuesday Night Test
-                    </Label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Label htmlFor="tuesday_night_test" className="text-white/80 text-lg">
+                            The Tuesday Night Test
+                        </Label>
+                        <WeightBadge weight={4} />
+                    </div>
                     <p className="text-sm text-white/40">
                         {getTuesdayNightPrompt()}
                     </p>
@@ -65,12 +67,15 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                     />
                 </div>
 
-                {/* Adaptive Financial Philosophy - only for serious daters */}
+                {/* Financial Philosophy */}
                 {isSeekingSerious && (
                     <div className="space-y-3 animate-fade-in">
-                        <Label htmlFor="financial_philosophy" className="text-white/80 text-lg">
-                            Financial Philosophy
-                        </Label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <Label htmlFor="financial_philosophy" className="text-white/80 text-lg">
+                                Financial Philosophy
+                            </Label>
+                            <WeightBadge weight={6} />
+                        </div>
                         <p className="text-sm text-white/40">
                             {getFinancialPrompt()}
                         </p>
@@ -84,7 +89,7 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                     </div>
                 )}
 
-                {/* Adaptive Current Curiosity */}
+                {/* Current Curiosity */}
                 <div className="space-y-3">
                     <Label htmlFor="current_curiosity" className="text-white/80 text-lg">
                         Current Curiosity
@@ -101,7 +106,7 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                     />
                 </div>
 
-                {/* NEW: Financial Deep Dive - #2 divorce cause */}
+                {/* Financial Deep Dive */}
                 {isSeekingSerious && (
                     <div className="space-y-6 pt-6 border-t border-white/10 animate-fade-in">
                         <div className="flex items-center gap-2">
@@ -133,7 +138,10 @@ export const LifestyleStep = ({ form }: LifestyleStepProps) => {
                         </div>
 
                         <div className="space-y-3">
-                            <Label htmlFor="career_ambition" className="text-white/80">Work-Life Balance</Label>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <Label htmlFor="career_ambition" className="text-white/80">Work-Life Balance</Label>
+                                <WeightBadge weight={5} />
+                            </div>
                             <p className="text-sm text-white/40">
                                 What does success look like to you? How much does career drive your identity?
                             </p>
