@@ -131,12 +131,15 @@ export const BlurredMatchCard = ({
   const dimensions = match.match_dimensions;
 
   return (
-    <Card className={cn(
-      "overflow-hidden transition-all duration-300",
-      isRevealed
-        ? "border-primary shadow-lg shadow-primary/10"
-        : "border-border hover:shadow-md"
-    )}>
+    <Card 
+      className={cn(
+        "overflow-hidden transition-all duration-300 cursor-pointer",
+        isRevealed
+          ? "border-primary shadow-lg shadow-primary/10"
+          : "border-border hover:shadow-md"
+      )}
+      onClick={onViewDetails}
+    >
       <CardContent className="p-0">
         {/* Revealed celebration banner */}
         {isRevealed && (
@@ -294,7 +297,7 @@ export const BlurredMatchCard = ({
             )}
 
             {/* Action Buttons */}
-            <div className="flex gap-2 pt-1">
+            <div className="flex gap-2 pt-1" onClick={(e) => e.stopPropagation()}>
               {awaitingDecision ? (
                 <Button
                   size="sm"

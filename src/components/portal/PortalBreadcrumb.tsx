@@ -14,6 +14,7 @@ const portalRouteLabels: Record<string, string> = {
   '/portal/network': 'The Network',
   '/portal/connections': 'Connections',
   '/portal/slow-dating': 'Slow Dating',
+  '/portal/match': 'Match Details',
   '/portal/events': 'Events',
   '/portal/perks': 'Perks',
   '/portal/concierge': 'Concierge',
@@ -21,6 +22,7 @@ const portalRouteLabels: Record<string, string> = {
   '/portal/business': 'Founder Profile',
   '/portal/onboarding': 'Onboarding',
   '/portal/billing': 'Billing',
+  '/portal/security': 'Security',
 };
 
 const adminRouteLabels: Record<string, string> = {
@@ -57,8 +59,20 @@ export function PortalBreadcrumb({ type }: PortalBreadcrumbProps) {
   const basePath = type === 'portal' ? '/portal' : '/admin';
   const baseLabel = type === 'portal' ? 'Portal' : 'Admin';
   
-  // Get the current page label
-  const currentLabel = routeLabels[location.pathname] || 'Page';
+  // Get the current page label - handle dynamic routes like /portal/match/:id
+  const getLabel = () => {
+    if (routeLabels[location.pathname]) return routeLabels[location.pathname];
+    // Check parent path for dynamic routes (e.g., /portal/match/123 -> /portal/match)
+    const segments = location.pathname.split('/');
+    if (segments.length > 3) {
+      const parentPath = segments.slice(0, 3).join('/');
+      if (routeLabels[parentPath]) return routeLabels[parentPath];
+    }
+    // Fallback: capitalize last segment
+    const lastSegment = segments[segments.length - 1];
+    return lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1).replace(/-/g, ' ');
+  };
+  const currentLabel = getLabel();
   const isBasePage = location.pathname === basePath;
 
   return (
