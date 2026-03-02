@@ -3112,6 +3112,10 @@ export type Database = {
           twitter_url: string
         }[]
       }
+      get_matched_dating_profile_ids: {
+        Args: { _user_id: string }
+        Returns: string[]
+      }
       get_matched_profile_safe: {
         Args: { _dating_profile_id: string }
         Returns: {
