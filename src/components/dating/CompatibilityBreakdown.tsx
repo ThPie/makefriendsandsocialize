@@ -9,11 +9,16 @@ import {
   Users,
   Target,
   Brain,
-  Zap
+  Zap,
+  User,
+  Home,
+  Flame,
+  BookOpen,
+  Scale,
+  Compass,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Core values mapping for display
 const CORE_VALUES_MAP: Record<string, { label: string; icon: string }> = {
   honesty: { label: "Honesty & Transparency", icon: "🤝" },
   loyalty: { label: "Loyalty & Commitment", icon: "💎" },
@@ -73,63 +78,39 @@ export const CompatibilityBreakdown = ({
   theirRepairResponse,
   className,
 }: CompatibilityBreakdownProps) => {
-  // Calculate shared values
   const sharedValues = (myValues || []).filter(v => (theirValues || []).includes(v));
-  const valuesScore = Math.min(100, (sharedValues.length / 5) * 100);
 
-  // Calculate communication compatibility
   const getCommunicationScore = () => {
     if (!myCommunicationStyle || !theirCommunicationStyle) return null;
-
-    // Complementary styles score higher
-    const complementary = [
-      ['direct', 'patient'],
-      ['analytical', 'expressive'],
-    ];
-
+    const complementary = [['direct', 'patient'], ['analytical', 'expressive']];
     if (myCommunicationStyle === theirCommunicationStyle) return 70;
-
     for (const pair of complementary) {
-      if (pair.includes(myCommunicationStyle) && pair.includes(theirCommunicationStyle)) {
-        return 90;
-      }
+      if (pair.includes(myCommunicationStyle) && pair.includes(theirCommunicationStyle)) return 90;
     }
     return 75;
   };
 
-  // Calculate repair attempt compatibility (Gottman's #1 predictor)
   const getRepairScore = () => {
     if (!myRepairResponse || !theirRepairResponse) return null;
-
     const positiveResponses = ['accept_easily', 'usually_accept', 'accept'];
     const myPositive = positiveResponses.some(r => myRepairResponse.toLowerCase().includes(r.replace('_', ' ')));
     const theirPositive = positiveResponses.some(r => theirRepairResponse.toLowerCase().includes(r.replace('_', ' ')));
-
     if (myPositive && theirPositive) return 95;
     if (myPositive || theirPositive) return 70;
     return 45;
   };
 
-  // Calculate stress response compatibility
   const getStressScore = () => {
     if (!myStressResponse || !theirStressResponse) return null;
-
-    // Similar stress responses indicate compatibility
     if (myStressResponse === theirStressResponse) return 85;
-
-    // Complementary responses
     const leanIn = ['lean_on_partner', 'talk_it_out', 'seek_support'];
-    const needSpace = ['need_space', 'withdraw', 'alone_time'];
-
     const myLeanIn = leanIn.some(r => myStressResponse.toLowerCase().includes(r.replace('_', ' ')));
     const theirLeanIn = leanIn.some(r => theirStressResponse.toLowerCase().includes(r.replace('_', ' ')));
-
     if (myLeanIn && theirLeanIn) return 80;
-    if (!myLeanIn && !theirLeanIn) return 60; // Both withdraw - not ideal
-    return 70; // One leans in, one needs space - workable
+    if (!myLeanIn && !theirLeanIn) return 60;
+    return 70;
   };
 
-  // Use AI-computed dimensions if available, otherwise fall back to calculated scores
   const communicationScore = matchDimensions?.communication ?? getCommunicationScore();
   const repairScore = matchDimensions?.red_flags ?? getRepairScore();
   const stressScore = getStressScore();
@@ -137,35 +118,23 @@ export const CompatibilityBreakdown = ({
   const goalsScore = matchDimensions?.goals;
   const lifestyleScore = matchDimensions?.lifestyle;
 
-  // Calculate Gottman Score from AI dimensions or compute locally
   const gottmanScore = matchDimensions?.gottman_score ?? ((): number | null => {
-    const gottmanFactors = [
+    const factors = [
       { score: repairScore, weight: 3 },
       { score: communicationScore, weight: 2 },
       { score: stressScore, weight: 2 },
     ].filter(f => f.score !== null);
-
-    return gottmanFactors.length > 0
-      ? Math.round(
-        gottmanFactors.reduce((acc, f) => acc + (f.score || 0) * f.weight, 0) /
-        gottmanFactors.reduce((acc, f) => acc + f.weight, 0)
-      )
+    return factors.length > 0
+      ? Math.round(factors.reduce((acc, f) => acc + (f.score || 0) * f.weight, 0) / factors.reduce((acc, f) => acc + f.weight, 0))
       : null;
   })();
 
   const getScoreColor = (score: number) => {
-    if (score >= 85) return "text-green-600";
-    if (score >= 70) return "text-amber-600";
-    return "text-red-500";
+    if (score >= 85) return "text-emerald-500";
+    if (score >= 70) return "text-amber-400";
+    return "text-red-400";
   };
 
-  const getScoreBg = (score: number) => {
-    if (score >= 85) return "bg-green-500";
-    if (score >= 70) return "bg-amber-500";
-    return "bg-red-500";
-  };
-
-  // Text labels for accessibility (color-blind friendly)
   const getScoreLabel = (score: number): string => {
     if (score >= 85) return "Excellent";
     if (score >= 70) return "Good";
@@ -173,80 +142,173 @@ export const CompatibilityBreakdown = ({
     return "Needs Work";
   };
 
+  // Map sections to the intake form steps
+  const sections = [
+    // Step 1: The Basics → Overall score header
+    // Step 2: Family & Future
+    goalsScore !== undefined && {
+      key: 'goals',
+      icon: Compass,
+      label: 'Family & Future Goals',
+      step: 'Step 2',
+      score: goalsScore,
+      description: goalsScore >= 85
+        ? "Aligned vision for family and the future"
+        : goalsScore >= 70
+          ? "Similar direction with some differences"
+          : "Different goals — worth discussing early",
+    },
+    // Step 3: Habits & Lifestyle
+    lifestyleScore !== undefined && {
+      key: 'lifestyle',
+      icon: Home,
+      label: 'Habits & Lifestyle',
+      step: 'Step 3',
+      score: lifestyleScore,
+      description: lifestyleScore >= 85
+        ? "Very compatible daily routines and habits"
+        : lifestyleScore >= 70
+          ? "Mostly compatible lifestyle choices"
+          : "Different lifestyles — could complement each other",
+    },
+    // Step 4: Lifestyle / Social
+    valuesScoreAI !== undefined && {
+      key: 'values',
+      icon: Heart,
+      label: 'Core Values',
+      step: 'Step 4',
+      score: valuesScoreAI,
+      description: valuesScoreAI >= 85
+        ? "Strong alignment on what matters most"
+        : valuesScoreAI >= 70
+          ? "Good overlap in core values"
+          : "Different values — a growth opportunity",
+    },
+    // Step 5: Deep Dive → Communication
+    communicationScore !== null && {
+      key: 'communication',
+      icon: MessageCircle,
+      label: 'Communication Style',
+      step: 'Step 5',
+      score: communicationScore,
+      description: communicationScore >= 85
+        ? "Complementary styles — you balance each other"
+        : communicationScore >= 70
+          ? "Compatible communication patterns"
+          : "Different styles — may need extra understanding",
+    },
+    // Step 5 continued: Conflict Resolution
+    repairScore !== null && {
+      key: 'repair',
+      icon: Shield,
+      label: 'Conflict Resolution',
+      step: 'Step 5',
+      score: repairScore,
+      description: repairScore >= 85
+        ? "Both open to repair — strongest predictor of lasting love"
+        : repairScore >= 70
+          ? "Good potential for working through disagreements"
+          : "May need to develop repair skills together",
+    },
+    // Step 5 continued: Stress Response
+    stressScore !== null && {
+      key: 'stress',
+      icon: Target,
+      label: 'Stress Response',
+      step: 'Step 5',
+      score: stressScore,
+      description: stressScore >= 80
+        ? "Compatible coping styles — you support each other naturally"
+        : stressScore >= 65
+          ? "Different but workable approaches"
+          : "Complementary growth opportunity here",
+    },
+  ].filter(Boolean) as Array<{
+    key: string;
+    icon: any;
+    label: string;
+    step: string;
+    score: number;
+    description: string;
+  }>;
+
   return (
-    <Card className={cn("border-dating-forest/20", className)}>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Brain className="h-5 w-5 text-dating-forest" />
-          Compatibility Breakdown
+    <Card className={cn("border-border", className)}>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg flex items-center gap-2 text-foreground">
+          <Brain className="h-5 w-5 text-primary" />
+          Your Compatibility Breakdown
         </CardTitle>
+        <p className="text-sm text-muted-foreground">
+          Based on the questionnaire you both completed during sign-up
+        </p>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Overall Score */}
         <div
-          className="text-center p-4 bg-gradient-to-br from-dating-forest/10 to-dating-terracotta/10 rounded-xl"
+          className="text-center p-5 bg-accent rounded-xl border border-border"
           role="region"
           aria-label={`Overall compatibility score: ${compatibilityScore}%`}
         >
-          <div className="text-5xl font-display font-bold text-dating-forest">
+          <div className="text-5xl font-display font-bold text-foreground">
             {compatibilityScore}%
           </div>
           <p className="text-sm text-muted-foreground mt-1">
             Overall Compatibility
-            <span className="sr-only"> - {getScoreLabel(compatibilityScore)}</span>
           </p>
         </div>
 
         {/* Gottman Score */}
         {gottmanScore !== null && (
-          <div
-            className="p-4 bg-muted/30 rounded-lg border border-border/50"
-            role="region"
-            aria-label={`Gottman Research Score: ${gottmanScore}% - ${getScoreLabel(gottmanScore)}`}
-          >
+          <div className="p-4 bg-accent rounded-lg border border-border">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-dating-terracotta" aria-hidden="true" />
-                <span className="font-medium text-sm">Gottman Research Score</span>
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span className="font-medium text-sm text-foreground">Gottman Research Score</span>
               </div>
               <span className={cn("font-bold text-lg", getScoreColor(gottmanScore))}>
                 {gottmanScore}%
-                <span className="text-xs font-normal ml-1">({getScoreLabel(gottmanScore)})</span>
+                <span className="text-xs font-normal ml-1 text-muted-foreground">({getScoreLabel(gottmanScore)})</span>
               </span>
             </div>
-            <Progress value={gottmanScore} className="h-2" aria-label={`${gottmanScore}% score`} />
+            <Progress value={gottmanScore} className="h-2" />
             <p className="text-xs text-muted-foreground mt-2">
               Based on 50+ years of relationship research predicting long-term success
             </p>
           </div>
         )}
 
-        {/* AI-Computed Dimensions (if available) */}
-        {matchDimensions && (goalsScore || lifestyleScore || valuesScoreAI) && (
-          <div className="space-y-3 p-3 bg-gradient-to-r from-dating-forest/5 to-dating-terracotta/5 rounded-lg border border-dating-forest/10">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="h-4 w-4 text-dating-terracotta" />
-              <span className="font-medium text-sm">AI Compatibility Analysis</span>
-            </div>
-
-            {valuesScoreAI !== undefined && (
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Core Values</span>
-                <span className={cn("font-semibold", getScoreColor(valuesScoreAI))}>{valuesScoreAI}%</span>
-              </div>
-            )}
-            {goalsScore !== undefined && (
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Relationship Goals</span>
-                <span className={cn("font-semibold", getScoreColor(goalsScore))}>{goalsScore}%</span>
-              </div>
-            )}
-            {lifestyleScore !== undefined && (
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Lifestyle Fit</span>
-                <span className={cn("font-semibold", getScoreColor(lifestyleScore))}>{lifestyleScore}%</span>
-              </div>
-            )}
+        {/* Dimension Sections mapped to intake steps */}
+        {sections.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-primary" />
+              Breakdown by Profile Section
+            </h3>
+            {sections.map((section) => {
+              const Icon = section.icon;
+              return (
+                <div key={section.key} className="space-y-2 p-3 rounded-lg bg-accent/50 border border-border/50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Icon className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium text-sm text-foreground">{section.label}</span>
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 text-muted-foreground border-border">
+                        {section.step}
+                      </Badge>
+                    </div>
+                    <span className={cn("font-semibold", getScoreColor(section.score))}>
+                      {section.score}%
+                      <span className="text-xs font-normal ml-1 text-muted-foreground">
+                        ({getScoreLabel(section.score)})
+                      </span>
+                    </span>
+                  </div>
+                  <Progress value={section.score} className="h-1.5" />
+                  <p className="text-xs text-muted-foreground">{section.description}</p>
+                </div>
+              );
+            })}
           </div>
         )}
 
@@ -254,9 +316,9 @@ export const CompatibilityBreakdown = ({
         {sharedValues.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <Heart className="h-4 w-4 text-dating-terracotta" />
-              <span className="font-medium text-sm">Shared Core Values</span>
-              <Badge variant="secondary" className="ml-auto">
+              <Heart className="h-4 w-4 text-primary" />
+              <span className="font-medium text-sm text-foreground">Shared Core Values</span>
+              <Badge variant="secondary" className="ml-auto text-xs">
                 {sharedValues.length} of 5
               </Badge>
             </div>
@@ -264,10 +326,7 @@ export const CompatibilityBreakdown = ({
               {sharedValues.map((value) => {
                 const valueInfo = CORE_VALUES_MAP[value];
                 return (
-                  <Badge
-                    key={value}
-                    className="bg-dating-forest/10 text-dating-forest border-dating-forest/20 hover:bg-dating-forest/20"
-                  >
+                  <Badge key={value} variant="secondary" className="text-xs">
                     <span className="mr-1">{valueInfo?.icon || "💫"}</span>
                     {valueInfo?.label || value}
                   </Badge>
@@ -275,87 +334,18 @@ export const CompatibilityBreakdown = ({
               })}
             </div>
             {sharedValues.length >= 3 && (
-              <p className="text-xs text-green-600 flex items-center gap-1">
+              <p className="text-xs text-emerald-500 flex items-center gap-1">
                 <Zap className="h-3 w-3" />
-                Strong values alignment - a key predictor of relationship success!
+                Strong values alignment — a key predictor of relationship success!
               </p>
             )}
           </div>
         )}
 
-        {/* Communication Style */}
-        {communicationScore !== null && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <MessageCircle className="h-4 w-4 text-blue-500" />
-                <span className="font-medium text-sm">Communication Style</span>
-              </div>
-              <span className={cn("font-semibold", getScoreColor(communicationScore))}>
-                {communicationScore}% <span className="text-xs font-normal">({getScoreLabel(communicationScore)})</span>
-              </span>
-            </div>
-            <Progress value={communicationScore} className="h-1.5" />
-            <p className="text-xs text-muted-foreground">
-              {communicationScore >= 85
-                ? "Complementary styles - you balance each other well"
-                : communicationScore >= 70
-                  ? "Compatible communication patterns"
-                  : "Different styles - may require extra understanding"}
-            </p>
-          </div>
-        )}
-
-        {/* Repair Attempts */}
-        {repairScore !== null && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-purple-500" />
-                <span className="font-medium text-sm">Conflict Resolution</span>
-              </div>
-              <span className={cn("font-semibold", getScoreColor(repairScore))}>
-                {repairScore}% <span className="text-xs font-normal">({getScoreLabel(repairScore)})</span>
-              </span>
-            </div>
-            <Progress value={repairScore} className="h-1.5" />
-            <p className="text-xs text-muted-foreground">
-              {repairScore >= 85
-                ? "Both open to repair - strongest predictor of lasting relationships"
-                : repairScore >= 70
-                  ? "Good potential for working through disagreements"
-                  : "May need to develop repair skills together"}
-            </p>
-          </div>
-        )}
-
-        {/* Stress Response */}
-        {stressScore !== null && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Target className="h-4 w-4 text-orange-500" />
-                <span className="font-medium text-sm">Stress Response</span>
-              </div>
-              <span className={cn("font-semibold", getScoreColor(stressScore))}>
-                {stressScore}% <span className="text-xs font-normal">({getScoreLabel(stressScore)})</span>
-              </span>
-            </div>
-            <Progress value={stressScore} className="h-1.5" />
-            <p className="text-xs text-muted-foreground">
-              {stressScore >= 80
-                ? "Compatible coping styles - you support each other naturally"
-                : stressScore >= 65
-                  ? "Different but workable approaches to stress"
-                  : "Complementary growth opportunity in this area"}
-            </p>
-          </div>
-        )}
-
-        {/* Match Reason Quote */}
-        <div className="pt-2 border-t border-border/50">
+        {/* AI Match Reason */}
+        <div className="pt-3 border-t border-border">
           <div className="flex items-start gap-2">
-            <Users className="h-4 w-4 text-dating-forest mt-0.5 shrink-0" />
+            <Users className="h-4 w-4 text-primary mt-0.5 shrink-0" />
             <div>
               <span className="text-xs uppercase tracking-wide text-muted-foreground">AI Matchmaker Says</span>
               <p className="text-sm italic text-foreground mt-1">"{matchReason}"</p>
