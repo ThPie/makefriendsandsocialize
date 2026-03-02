@@ -4,27 +4,16 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
   Heart,
-  MessageCircle,
   Shield,
   Sparkles,
   Users,
-  Target,
   Brain,
   Zap,
-  Home,
-  Flame,
   BookOpen,
-  Compass,
   ChevronDown,
   ChevronUp,
-  UserCheck,
-  Bell,
-  Ban,
-  ClipboardCheck,
   Coffee,
-  User,
   Wine,
-  Briefcase,
   ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -76,30 +65,27 @@ interface CompatibilityBreakdownProps {
   className?: string;
 }
 
-// Normalize: if value <= 1, treat as 0-1 and multiply by 100
 const normalizeScore = (score: number | undefined | null): number | null => {
   if (score === undefined || score === null) return null;
   return score <= 1 ? Math.round(score * 100) : Math.round(score);
 };
 
 /**
- * The 6 scored intake steps (Steps 1, 7, 8 are not scored for compatibility).
- * Each step has a weight. The weighted scores produce the overall %.
- * 
- * Mapping from match_dimensions to steps:
- *   goals    → Step 2: Life & Family
- *   lifestyle → Step 3: Lifestyle  
- *   values   → Step 4: Daily Life & Values
- *   communication → Step 5: Deep Dive (Communication)
- *   redFlags → Step 6: Dealbreakers
+ * Per-question weights within each step. These are ABSOLUTE weights out of 100.
+ * The sum of all question weights across all steps = 100.
  */
+interface QuestionWeight {
+  label: string;
+  description: string;
+  weight: number; // absolute weight out of 100
+}
+
 interface StepBreakdown {
   stepNum: number;
   title: string;
   icon: React.ElementType;
   dimensionKey: keyof MatchDimensions;
-  weight: number; // out of 100
-  questions: { label: string; description: string }[];
+  questions: QuestionWeight[];
   explanation: string;
 }
 
@@ -109,12 +95,11 @@ const STEP_BREAKDOWNS: StepBreakdown[] = [
     title: "Life & Family",
     icon: Users,
     dimensionKey: "goals",
-    weight: 20,
     questions: [
-      { label: "Children preferences", description: "Whether you both align on wanting/having children" },
-      { label: "Marriage timeline", description: "How closely your timelines for marriage match" },
-      { label: "Family involvement", description: "How you each view family's role in your relationship" },
-      { label: "Past family experiences", description: "Compatibility in family backgrounds and values" },
+      { label: "Children preferences", description: "Whether you both align on wanting/having children", weight: 7 },
+      { label: "Marriage timeline", description: "How closely your timelines for marriage match", weight: 5 },
+      { label: "Family involvement", description: "How you each view family's role in your relationship", weight: 4 },
+      { label: "Past family experiences", description: "Compatibility in family backgrounds and values", weight: 4 },
     ],
     explanation: "This score reflects how aligned your visions are on family, marriage, and long-term life planning. Couples who agree here navigate major decisions more smoothly.",
   },
@@ -123,26 +108,24 @@ const STEP_BREAKDOWNS: StepBreakdown[] = [
     title: "Lifestyle & Habits",
     icon: Wine,
     dimensionKey: "lifestyle",
-    weight: 15,
     questions: [
-      { label: "Smoking & drinking habits", description: "Whether your substance habits are compatible" },
-      { label: "Exercise & health", description: "How well your fitness routines align" },
-      { label: "Diet preferences", description: "Dietary compatibility for cohabitation" },
-      { label: "Screen time habits", description: "How you each spend downtime" },
+      { label: "Smoking & drinking habits", description: "Whether your substance habits are compatible", weight: 3 },
+      { label: "Exercise & health", description: "How well your fitness routines align", weight: 2 },
+      { label: "Diet preferences", description: "Dietary compatibility for cohabitation", weight: 2 },
+      { label: "Screen time habits", description: "How you each spend downtime", weight: 1 },
     ],
-    explanation: "Daily habits like exercise, diet, and substance use affect everyday harmony. Compatible lifestyles reduce friction and make sharing a life more natural.",
+    explanation: "Daily habits affect everyday harmony. Compatible lifestyles reduce friction, though these carry less weight than values and communication.",
   },
   {
     stepNum: 4,
     title: "Daily Life & Values",
     icon: Coffee,
     dimensionKey: "values",
-    weight: 25,
     questions: [
-      { label: "Tuesday night test", description: "How a typical quiet evening looks for each of you" },
-      { label: "Financial philosophy", description: "How you each think about money and spending" },
-      { label: "Career ambition", description: "Whether your professional drives complement each other" },
-      { label: "Core values alignment", description: "How many of your top 5 values overlap" },
+      { label: "Tuesday night test", description: "How a typical quiet evening looks for each of you", weight: 4 },
+      { label: "Financial philosophy", description: "How you each think about money and spending", weight: 6 },
+      { label: "Career ambition", description: "Whether your professional drives complement each other", weight: 5 },
+      { label: "Core values alignment", description: "How many of your top 5 values overlap — the foundation of lasting love", weight: 10 },
     ],
     explanation: "Core values are the foundation of lasting relationships. This score reflects alignment on your daily rhythms, financial outlook, and what matters most to you both.",
   },
@@ -151,14 +134,13 @@ const STEP_BREAKDOWNS: StepBreakdown[] = [
     title: "Deep Dive & Communication",
     icon: Brain,
     dimensionKey: "communication",
-    weight: 25,
     questions: [
-      { label: "Communication style", description: "Whether your styles (direct, patient, analytical, expressive) complement each other" },
-      { label: "Conflict resolution", description: "How you each approach disagreements" },
-      { label: "Love language", description: "Whether your ways of giving/receiving love align" },
-      { label: "Attachment style", description: "How your attachment patterns interact (secure, anxious, avoidant)" },
-      { label: "Stress response", description: "How you each cope under pressure and lean on a partner" },
-      { label: "Repair attempts", description: "Willingness to make and accept apologies — the #1 predictor of lasting love" },
+      { label: "Communication style", description: "Whether your styles (direct, patient, analytical, expressive) complement each other", weight: 5 },
+      { label: "Conflict resolution", description: "How you each approach disagreements — a key Gottman predictor", weight: 6 },
+      { label: "Love language", description: "Whether your ways of giving/receiving love align", weight: 3 },
+      { label: "Attachment style", description: "How your attachment patterns interact (secure, anxious, avoidant)", weight: 4 },
+      { label: "Stress response", description: "How you each cope under pressure and lean on a partner", weight: 4 },
+      { label: "Repair attempts", description: "Willingness to make and accept apologies — the #1 predictor of lasting love", weight: 8 },
     ],
     explanation: "How you express yourself, handle conflict, and repair after disagreements are the strongest predictors of relationship success. Based on research by Dr. John Gottman.",
   },
@@ -167,13 +149,12 @@ const STEP_BREAKDOWNS: StepBreakdown[] = [
     title: "Dealbreakers & Beliefs",
     icon: Shield,
     dimensionKey: "redFlags",
-    weight: 15,
     questions: [
-      { label: "Dealbreaker check", description: "Whether either of you triggers the other's non-negotiables" },
-      { label: "Political alignment", description: "How your political views interact" },
-      { label: "Religious compatibility", description: "Whether your spiritual beliefs and practices align" },
-      { label: "Trust & fidelity views", description: "Shared expectations around trust and exclusivity" },
-      { label: "10-year vision", description: "Whether your long-term visions for life align" },
+      { label: "Dealbreaker check", description: "Whether either of you triggers the other's non-negotiables", weight: 5 },
+      { label: "Political alignment", description: "How your political views interact", weight: 3 },
+      { label: "Religious compatibility", description: "Whether your spiritual beliefs and practices align", weight: 4 },
+      { label: "Trust & fidelity views", description: "Shared expectations around trust and exclusivity", weight: 5 },
+      { label: "10-year vision", description: "Whether your long-term visions for life align", weight: 5 },
     ],
     explanation: "This checks your stated dealbreakers, political views, religious beliefs, and long-term vision against each other. A high score means no red flags were detected.",
   },
@@ -189,36 +170,27 @@ export const CompatibilityBreakdown = ({
 }: CompatibilityBreakdownProps) => {
   const sharedValues = (myValues || []).filter(v => (theirValues || []).includes(v));
 
-  // Resolve dimension scores, handling both camelCase and snake_case
   const getDimensionScore = (key: keyof MatchDimensions): number | null => {
     if (!matchDimensions) return null;
-    // Handle redFlags/red_flags
     if (key === "redFlags") {
       const val = matchDimensions.redFlags ?? matchDimensions.red_flags;
       if (val === undefined || val === null) return null;
-      // redFlags is inverted: 0.05 means 95% compatible (few red flags)
       const normalized = val <= 1 ? val : val / 100;
       return Math.round((1 - normalized) * 100);
     }
     return normalizeScore(matchDimensions[key]);
   };
 
-  // Build scored steps
   const scoredSteps = STEP_BREAKDOWNS.map(step => {
     const score = getDimensionScore(step.dimensionKey);
-    return { ...step, score };
-  }).filter(step => step.score !== null) as (StepBreakdown & { score: number })[];
+    const stepWeight = step.questions.reduce((sum, q) => sum + q.weight, 0);
+    return { ...step, score, stepWeight };
+  }).filter(step => step.score !== null) as (StepBreakdown & { score: number; stepWeight: number })[];
 
-  // Calculate weighted contribution of each step to the overall score
-  const totalWeight = scoredSteps.reduce((sum, s) => sum + s.weight, 0);
   const stepsWithContribution = scoredSteps.map(step => {
-    const normalizedWeight = totalWeight > 0 ? step.weight / totalWeight : 0;
-    const contribution = Math.round(step.score * normalizedWeight);
-    const weightPercent = Math.round(normalizedWeight * 100);
-    return { ...step, contribution, weightPercent };
+    const contribution = Math.round((step.score / 100) * step.stepWeight);
+    return { ...step, contribution };
   });
-
-  const calculatedTotal = stepsWithContribution.reduce((sum, s) => sum + s.contribution, 0);
 
   const getScoreColor = (score: number) => {
     if (score >= 85) return "text-emerald-500";
@@ -247,7 +219,7 @@ export const CompatibilityBreakdown = ({
           Your Compatibility Breakdown
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Here's how your answers compared across each section of the questionnaire, and how much each section contributes to your overall score.
+          Here's how your answers compared across each section. Each question has a specific weight based on its importance for long-term compatibility.
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -267,7 +239,7 @@ export const CompatibilityBreakdown = ({
             <div className="flex flex-wrap justify-center gap-2 mt-4">
               {stepsWithContribution.map(step => (
                 <Badge key={step.stepNum} variant="outline" className="text-xs border-border text-muted-foreground">
-                  Step {step.stepNum}: +{step.contribution}%
+                  {step.title}: +{step.contribution}% <span className="text-muted-foreground/50 ml-1">/ {step.stepWeight}%</span>
                 </Badge>
               ))}
             </div>
@@ -282,7 +254,7 @@ export const CompatibilityBreakdown = ({
               Score Breakdown by Profile Step
             </h3>
             <p className="text-xs text-muted-foreground">
-              Each step has a weight based on its importance for long-term compatibility. Click any step to see which questions contributed.
+              Each question has a specific weight (out of 100%) based on relationship science. Click any step to see individual question scores.
             </p>
             {stepsWithContribution.map((step) => (
               <ExpandableStep
@@ -314,7 +286,27 @@ export const CompatibilityBreakdown = ({
                   Dr. John Gottman
                   <ExternalLink className="h-3 w-3" />
                 </a>
-                {" "}at the University of Washington, which identified the key predictors of lasting relationships.
+                {" "}at the University of Washington. Questions like{" "}
+                <a
+                  href="https://www.gottman.com/blog/r-e-p-a-i-r-is-the-secret-weapon-of-emotionally-connected-couples/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-2 hover:text-primary/80 inline-flex items-center gap-0.5"
+                >
+                  repair attempts (8%)
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+                {" "}and{" "}
+                <a
+                  href="https://www.gottman.com/blog/manage-conflict-the-six-skills/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-2 hover:text-primary/80 inline-flex items-center gap-0.5"
+                >
+                  conflict resolution (6%)
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+                {" "}carry the most weight because they are the strongest predictors of lasting relationships.
               </p>
             </div>
           </div>
@@ -365,14 +357,14 @@ export const CompatibilityBreakdown = ({
   );
 };
 
-// Expandable step with question-level breakdown
+// Expandable step with per-question weight breakdown
 function ExpandableStep({
   step,
   getScoreColor,
   getScoreLabel,
   getProgressColor,
 }: {
-  step: StepBreakdown & { score: number; contribution: number; weightPercent: number };
+  step: StepBreakdown & { score: number; contribution: number; stepWeight: number };
   getScoreColor: (s: number) => string;
   getScoreLabel: (s: number) => string;
   getProgressColor: (s: number) => string;
@@ -391,9 +383,12 @@ function ExpandableStep({
             <div className="text-left">
               <div className="flex items-center gap-2">
                 <span className="font-medium text-sm text-foreground">Step {step.stepNum}: {step.title}</span>
+                <Badge variant="outline" className="text-[10px] border-border text-muted-foreground">
+                  {step.stepWeight}% weight
+                </Badge>
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Contributes <strong className="text-foreground">{step.contribution}%</strong> to your overall score (weight: {step.weightPercent}%)
+                Contributes <strong className="text-foreground">{step.contribution}%</strong> out of {step.stepWeight}% possible
               </p>
             </div>
           </div>
@@ -435,22 +430,20 @@ function ExpandableStep({
                     rel="noopener noreferrer"
                     className="text-primary underline underline-offset-2 hover:text-primary/80 inline-flex items-center gap-0.5"
                   >
-                    Learn more
+                    Learn more about the 5:1 ratio
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 </>
               )}
             </p>
 
-            {/* Question breakdown with per-question % */}
+            {/* Per-question breakdown with individual weights */}
             <div className="space-y-2">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Questions evaluated in this step
+                Question-level scoring
               </h4>
               {step.questions.map((q, i) => {
-                // Distribute the step's contribution evenly across its questions
-                const questionWeight = step.weightPercent / step.questions.length;
-                const questionContribution = (step.score / 100) * questionWeight;
+                const questionScore = (step.score / 100) * q.weight;
                 return (
                   <div key={i} className="flex items-start gap-2 py-2 border-b border-border/50 last:border-0">
                     <div className={cn(
@@ -460,12 +453,19 @@ function ExpandableStep({
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
                         <div className="text-sm font-medium text-foreground">{q.label}</div>
-                        <div className="text-sm font-semibold text-muted-foreground ml-2 shrink-0">
-                          <span className={getScoreColor(step.score)}>{questionContribution.toFixed(1)}%</span>
-                          <span className="text-xs text-muted-foreground/60 ml-1">/ {questionWeight.toFixed(1)}%</span>
+                        <div className="text-sm font-semibold ml-2 shrink-0">
+                          <span className={getScoreColor(step.score)}>{questionScore.toFixed(1)}%</span>
+                          <span className="text-muted-foreground/60 text-xs ml-1">/ {q.weight}%</span>
                         </div>
                       </div>
                       <div className="text-xs text-muted-foreground">{q.description}</div>
+                      {/* Mini progress bar */}
+                      <div className="mt-1.5 h-1 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className={cn("h-full rounded-full transition-all", getProgressColor(step.score))}
+                          style={{ width: `${step.score}%` }}
+                        />
+                      </div>
                     </div>
                   </div>
                 );
