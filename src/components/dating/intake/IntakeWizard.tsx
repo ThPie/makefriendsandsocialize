@@ -5,6 +5,7 @@
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { ProfileStrengthIndicator } from '@/components/dating/ProfileStrengthIndicator';
 import { ChevronLeft, ChevronRight, Heart, CheckCircle, Loader2, Clock, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { IntakeProgress } from './IntakeProgress';
@@ -203,6 +204,12 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                     onStepClick={handleStepClick}
                     completedSteps={form.completedSteps}
                 />
+                {/* Profile Strength - shows after step 2 */}
+                {step >= 2 && (
+                    <div className="mt-6">
+                        <ProfileStrengthIndicator formData={formData} />
+                    </div>
+                )}
             </aside>
 
             {/* Main Content */}

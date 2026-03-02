@@ -493,44 +493,49 @@ Self-Awareness:
 
 ---
 
-**SCORING GUIDE (Weight these heavily):**
+**SCORING GUIDE — Per-Question Weights (total = 100%):**
 
-**COMMUNICATION & REPAIR (Gottman's #1 predictor) - 25% of score:**
-- Both accept repair attempts readily → +25 points
-- One resistant to repair attempts → -15 points (major red flag)
-- Complementary communication styles → +10 points
-- Both "shut down" or both "explode" → -10 points (conflict escalation pattern)
+**STEP 5: DEEP DIVE & COMMUNICATION — 30% total (Gottman's strongest predictors)**
+- Repair attempts: 8% — #1 predictor of lasting love. Both accept repair readily → full marks. One resistant → heavy penalty.
+- Conflict resolution: 6% — How they approach disagreements. Complementary styles score high.
+- Communication style: 5% — Direct/patient/analytical/expressive. Complementary > identical.
+- Attachment style: 4% — Secure-Secure ideal (+4). Secure+Anxious/Avoidant workable (+3). Anxious-Avoidant challenging (+1). Both Avoidant risky (0).
+- Stress response: 4% — Both lean on partner = high interdependence (+4). Complementary = +3. Both withdraw = risk (0).
+- Love language: 3% — Aligned = +3. Different but aware = +2.
 
-**STRESS RESPONSE COMPATIBILITY - 15% of score:**
-- Both lean on partner → +15 (high interdependence)
-- One needs space, one leans in → +8 (complementary if they understand each other)
-- Both withdraw → -5 (isolation pattern risk)
+**STEP 4: DAILY LIFE & VALUES — 25% total**
+- Core values alignment: 10% — 3+ shared in top 5 = full marks. #1 match = bonus. 0 shared = major red flag.
+- Financial philosophy: 6% — Same approach = +6. Complementary (saver/spender aware) = +4.
+- Career ambition: 5% — Complementary drives = +5. Both hyper-ambitious or both passive = +3.
+- Tuesday night test: 4% — Similar ideal evenings = +4. Very different = +2.
 
-**CORE VALUES ALIGNMENT - 25% of score:**
-- 3+ shared values in top 5 → +25 points
-- #1 value matches → +5 bonus
-- 0 shared values → -15 points (fundamental incompatibility)
+**STEP 2: LIFE & FAMILY — 20% total**
+- Children preferences: 7% — Aligned = +7. One unsure = +4. Opposite = 0 (hard dealbreaker already filtered).
+- Marriage timeline: 5% — Same timeline = +5. Within 2 years = +3.
+- Family involvement: 4% — Compatible expectations = +4.
+- Past family experiences: 4% — Complementary backgrounds = +4.
 
-**RELATIONSHIP GOALS & FAMILY - 15% of score:**
-- Same relationship goals → +15 points
-- Children preferences aligned → +10 points
-- Family involvement expectations match → +5 points
+**STEP 6: DEALBREAKERS & BELIEFS — 17% total**
+- Dealbreaker check: 5% — No triggers = +5. Any trigger = 0.
+- Trust & fidelity views: 5% — Aligned = +5.
+- 10-year vision: 4% — Compatible visions = +4.
+- Religious compatibility: 3% — Aligned or respectful = +3.
 
-**ATTACHMENT STYLE - 10% of score:**
-- Secure-Secure → +10 points (ideal)
-- Secure paired with Anxious/Avoidant → +7 points (can work)
-- Anxious-Avoidant → +3 points (challenging but workable)
-- Both Avoidant → -5 points (connection difficulty)
+**STEP 3: LIFESTYLE & HABITS — 8% total**
+- Smoking & drinking: 3% — Compatible = +3.
+- Exercise & health: 2% — Similar routines = +2.
+- Diet preferences: 2% — Compatible = +2.
+- Screen time: 1% — Similar = +1.
 
-**LIFESTYLE & INTIMACY - 10% of score:**
-- Same intimacy expectations → +10 points
-- Lifestyle habits align → +5 points
+**TEXT DEPTH CONFIDENCE BONUS:**
+When a person provides detailed, thoughtful answers (50+ words) on critical questions like repair attempts, conflict resolution, or core values, apply a CONFIDENCE MULTIPLIER:
+- Detailed answers (50+ words): 1.3x confidence on that dimension
+- Moderate answers (20-50 words): 1.0x (baseline)
+- Vague/short answers (<20 words): 0.7x confidence (less reliable)
+- "Not specified": 0.5x confidence
 
-**CONFIDENCE SCORING:**
-Evaluate how confident you are in this match based on:
-- Profile completeness: ${Math.round(Math.min(targetCompleteness, candidateCompleteness) * 100)}% minimum
-- Specificity of answers (vague vs detailed)
-- Number of "Not specified" fields
+Profile completeness: ${Math.round(Math.min(targetCompleteness, candidateCompleteness) * 100)}% minimum
+Higher confidence = we trust the score more. Lower confidence = the match may need more conversation to verify.
 
 Be realistic. Most people are NOT highly compatible. A 60%+ match meets our threshold for introduction.
 
