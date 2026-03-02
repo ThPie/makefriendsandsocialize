@@ -59,7 +59,7 @@ const getNotificationMessage = (type: string, payload: Record<string, unknown>) 
 const getNotificationLink = (type: string, payload: Record<string, unknown>) => {
   const matchId = payload.match_id as string;
   if (matchId && ['new_match', 'meeting_scheduled', 'decision_time', 'mutual_match'].includes(type)) {
-    return `/portal/slow-dating/match/${matchId}`;
+    return `/portal/match/${matchId}`;
   }
   return '/portal/slow-dating';
 };
