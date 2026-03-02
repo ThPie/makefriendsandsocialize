@@ -87,7 +87,7 @@ const DEFAULT_VALUES = [
 ];
 
 export const MatchInsightsCard = ({
-    matchExplanation = "Based on our AI analysis, you share a remarkable alignment in core values, particularly around personal growth and family. Your communication styles complement each other, with both of you valuing honest, direct conversation.",
+    matchExplanation = "Based on our analysis, you share a remarkable alignment in core values, particularly around personal growth and family. Your communication styles complement each other, with both of you valuing honest, direct conversation.",
     compatibilityScore,
     sharedValues = DEFAULT_VALUES,
     conversationStarters = DEFAULT_STARTERS,
@@ -139,7 +139,7 @@ export const MatchInsightsCard = ({
             </CardHeader>
 
             <CardContent className="space-y-4">
-                {/* AI Explanation */}
+                {/* Match Explanation */}
                 <div className="p-4 rounded-lg bg-gradient-to-r from-dating-terracotta/5 to-transparent border border-dating-terracotta/10">
                     <div className="flex items-start gap-3">
                         <div className="p-1.5 rounded-full bg-dating-terracotta/10 mt-0.5">

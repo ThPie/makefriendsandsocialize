@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { User, Heart, Calendar, Clock, CheckCircle2, XCircle, PartyPopper, MessageCircle, Target, Sparkles, Home, Lock, Eye, Infinity } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useBlurredImage } from "@/hooks/useBlurredImage";
 
 interface DatingProfile {
   id: string;
@@ -64,6 +65,12 @@ export const BlurredMatchCard = ({
   const profile = match.matched_profile;
   const isRevealed = match.status === 'mutual_yes';
   const isDeclined = match.status === 'declined';
+
+  // Server-side blurred image for security
+  const { data: blurredPhotoUrl } = useBlurredImage(
+    profile?.photo_url,
+    !isRevealed && !!profile?.photo_url
+  );
 
   // Determine if user can take action based on meeting status
   const canProposeDates = isWoman && match.meeting_status === 'pending_woman';
@@ -151,29 +158,29 @@ export const BlurredMatchCard = ({
         )}
 
         <div className="flex">
-          {/* Photo Section - Much heavier blur before reveal */}
+          {/* Photo Section - server-side blur for security */}
           <div className="w-32 h-full min-h-[200px] relative flex-shrink-0 bg-muted/30 overflow-hidden">
-            {profile.photo_url ? (
+            {isRevealed && profile.photo_url ? (
               <img
                 src={profile.photo_url}
                 alt="Match"
-                className={cn(
-                  "w-full h-full object-cover transition-all duration-500",
-                  !isRevealed && "blur-3xl scale-125"
-                )}
+                className="w-full h-full object-cover transition-all duration-500"
+              />
+            ) : blurredPhotoUrl ? (
+              <img
+                src={blurredPhotoUrl}
+                alt="Match"
+                className="w-full h-full object-cover"
               />
             ) : (
-              <div className={cn(
-                "w-full h-full flex items-center justify-center",
-                !isRevealed && "blur-2xl"
-              )}>
+              <div className="w-full h-full flex items-center justify-center">
                 <User className="h-12 w-12 text-primary/30" />
               </div>
             )}
 
             {/* Overlay for blurred state */}
             {!isRevealed && (
-              <div className="absolute inset-0 bg-muted/50 flex items-center justify-center">
+              <div className="absolute inset-0 bg-muted/30 flex items-center justify-center">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
                   <Lock className="h-8 w-8 text-primary" />
                 </div>

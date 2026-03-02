@@ -89,7 +89,7 @@ export function BusinessVerificationStatus({ businessId, className }: BusinessVe
         label: 'Verification in Progress',
         icon: Clock,
         className: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-        description: 'Our AI is verifying your business information.',
+        description: 'Our system is verifying your business information.',
       };
     }
     
