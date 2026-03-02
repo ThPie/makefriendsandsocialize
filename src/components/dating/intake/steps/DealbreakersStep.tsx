@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Shield } from 'lucide-react';
+import { CardContent } from '@/components/ui/card';
+import { WeightBadge } from '@/components/dating/WeightBadge';
 import type { IntakeFormContext } from '../useIntakeForm';
 
 interface DealbreakersStepProps {
@@ -61,9 +61,12 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
             <CardContent className="space-y-8 pt-4">
                 {/* Dealbreakers */}
                 <div className="space-y-3">
-                    <Label htmlFor="dealbreakers" className="text-white/80 text-lg">
-                        Dealbreakers *
-                    </Label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Label htmlFor="dealbreakers" className="text-white/80 text-lg">
+                            Dealbreakers *
+                        </Label>
+                        <WeightBadge weight={5} />
+                    </div>
                     <p className="text-sm text-white/40">
                         {getDealbreakersPrompt()}
                     </p>
@@ -78,9 +81,12 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
 
                 {/* Political views */}
                 <div className="space-y-3">
-                    <Label htmlFor="politics_stance" className="text-white/80">
-                        Political Views {isCasualOnly && "(optional)"}
-                    </Label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Label htmlFor="politics_stance" className="text-white/80">
+                            Political Views {isCasualOnly && "(optional)"}
+                        </Label>
+                        <WeightBadge weight={3} />
+                    </div>
                     <p className="text-sm text-white/40">
                         {isCasualOnly
                             ? "If it matters to you, how important is political alignment?"
@@ -102,9 +108,12 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
 
                 {/* Religious views */}
                 <div className="space-y-3">
-                    <Label htmlFor="religion_stance" className="text-white/80">
-                        Religious/Spiritual Views {isCasualOnly && "(optional)"}
-                    </Label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Label htmlFor="religion_stance" className="text-white/80">
+                            Religious/Spiritual Views {isCasualOnly && "(optional)"}
+                        </Label>
+                        <WeightBadge weight={4} />
+                    </div>
                     <p className="text-sm text-white/40">
                         {isCasualOnly
                             ? "If it matters to you, how important is religious or spiritual alignment?"
@@ -221,7 +230,10 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         </div>
 
                         <div className="space-y-3">
-                            <Label htmlFor="trust_fidelity_views" className="text-white/80">Trust & Fidelity Views (optional but encouraged)</Label>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <Label htmlFor="trust_fidelity_views" className="text-white/80">Trust & Fidelity Views (optional but encouraged)</Label>
+                                <WeightBadge weight={5} />
+                            </div>
                             <p className="text-sm text-white/40">
                                 Have you ever been affected by infidelity? How has this shaped your views on trust?
                             </p>
@@ -250,7 +262,10 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         </div>
 
                         <div className="space-y-3">
-                            <Label htmlFor="ten_year_vision" className="text-white/80">10-Year Vision</Label>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <Label htmlFor="ten_year_vision" className="text-white/80">10-Year Vision</Label>
+                                <WeightBadge weight={5} />
+                            </div>
                             <p className="text-sm text-white/40">
                                 In 10 years, what does your ideal Saturday morning look like?
                             </p>

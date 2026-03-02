@@ -4,8 +4,8 @@
  */
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Cigarette } from 'lucide-react';
+import { CardContent } from '@/components/ui/card';
+import { WeightBadge } from '@/components/dating/WeightBadge';
 import type { IntakeFormContext } from '../useIntakeForm';
 
 interface HabitsStepProps {
@@ -15,7 +15,6 @@ interface HabitsStepProps {
 export const HabitsStep = ({ form }: HabitsStepProps) => {
     const { formData, updateField, fieldErrors } = form;
 
-    // Error helpers
     const hasError = (field: string) => !!fieldErrors[field];
     const errorMsg = (field: string) => fieldErrors[field];
 
@@ -31,7 +30,10 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                     <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
                         {/* Smoking */}
                         <div className="space-y-3">
-                            <Label className="text-white/80">Do you smoke?</Label>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <Label className="text-white/80">Do you smoke?</Label>
+                                <WeightBadge weight={3} />
+                            </div>
                             <Select value={formData.smoking_status} onValueChange={(value) => updateField("smoking_status", value)}>
                                 <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('smoking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50'}`}>
                                     <SelectValue placeholder="Select smoking status" />
@@ -48,7 +50,10 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
 
                         {/* Drinking */}
                         <div className="space-y-3">
-                            <Label className="text-white/80">Do you drink alcohol?</Label>
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <Label className="text-white/80">Do you drink alcohol?</Label>
+                                <WeightBadge weight={3} />
+                            </div>
                             <Select value={formData.drinking_status} onValueChange={(value) => updateField("drinking_status", value)}>
                                 <SelectTrigger className={`bg-white/5 text-white h-12 ${hasError('drinking_status') ? 'border-red-500/70 ring-1 ring-red-500/30' : 'border-white/10 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50'}`}>
                                     <SelectValue placeholder="Select drinking status" />
@@ -64,7 +69,7 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                         </div>
                     </div>
 
-                    {/* Structured drug use dropdown */}
+                    {/* Drug use */}
                     <div className="space-y-3 animate-fade-in">
                         <Label className="text-white/80">Recreational drug use</Label>
                         <Select value={formData.drug_use} onValueChange={(value) => updateField("drug_use", value)}>
@@ -81,11 +86,13 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                     </div>
                 </div>
 
-                {/* Exercise + Diet side by side */}
+                {/* Exercise + Diet */}
                 <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
-                    {/* Exercise */}
                     <div className="space-y-3">
-                        <Label className="text-white/80">How often do you exercise?</Label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <Label className="text-white/80">How often do you exercise?</Label>
+                            <WeightBadge weight={2} />
+                        </div>
                         <Select value={formData.exercise_frequency} onValueChange={(value) => updateField("exercise_frequency", value)}>
                             <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select exercise frequency" />
@@ -99,9 +106,11 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                         </Select>
                     </div>
 
-                    {/* Diet */}
                     <div className="space-y-3">
-                        <Label className="text-white/80">Diet preference</Label>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            <Label className="text-white/80">Diet preference</Label>
+                            <WeightBadge weight={2} />
+                        </div>
                         <Select value={formData.diet_preference} onValueChange={(value) => updateField("diet_preference", value)}>
                             <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                 <SelectValue placeholder="Select diet preference" />
@@ -121,14 +130,17 @@ export const HabitsStep = ({ form }: HabitsStepProps) => {
                     </div>
                 </div>
 
-                {/* Screen Time - Modern conflict source */}
+                {/* Screen Time */}
                 <div className="space-y-4 pt-6 border-t border-white/10">
                     <div className="flex items-center gap-2 mb-2">
                         <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full font-medium border border-[hsl(var(--accent-gold))]/20">
                             Modern factor
                         </span>
                     </div>
-                    <Label className="text-white/80">How do you feel about phones during quality time together?</Label>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <Label className="text-white/80">How do you feel about phones during quality time together?</Label>
+                        <WeightBadge weight={1} />
+                    </div>
                     <p className="text-sm text-white/40">
                         Screen time is an increasingly common source of relationship conflict.
                     </p>
