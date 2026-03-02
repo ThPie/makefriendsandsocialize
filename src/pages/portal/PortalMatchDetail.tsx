@@ -307,7 +307,7 @@ export default function PortalMatchDetail() {
                   decoding="async"
                   className={cn(
                     "w-full h-full object-cover",
-                    !isRevealed && "blur-3xl scale-125"
+                    !isRevealed && "blur-xl scale-110"
                   )}
                 />
               ) : (
@@ -316,15 +316,10 @@ export default function PortalMatchDetail() {
                 </div>
               )}
               {!isRevealed && (
-                <div className="absolute inset-0 bg-muted/60 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-3">
-                      <Lock className="h-10 w-10 text-muted-foreground" />
-                    </div>
-                    <p className="text-sm text-muted-foreground font-medium">
-                      Profile reveals after mutual connection
-                    </p>
-                  </div>
+                <div className="absolute inset-0 flex items-end justify-center pb-4">
+                  <p className="text-xs text-muted-foreground bg-background/80 backdrop-blur-sm rounded-full px-3 py-1">
+                    Photo reveals after mutual connection
+                  </p>
                 </div>
               )}
             </div>
@@ -355,13 +350,15 @@ export default function PortalMatchDetail() {
                       </div>
                     </>
                   ) : (
-                    <>
-                      <h1 className="text-2xl font-display text-foreground">Your Match</h1>
-                      <p className="text-muted-foreground mt-1">{matchedProfile.age} years old</p>
-                      <p className="text-sm text-muted-foreground/70 mt-1">
-                        Complete the journey to reveal full profile
-                      </p>
-                    </>
+                     <>
+                       <h1 className="text-2xl font-display text-foreground blur-sm select-none" aria-hidden="true">
+                         {matchedProfile.display_name}
+                       </h1>
+                       <p className="text-muted-foreground mt-1">{matchedProfile.age} years old</p>
+                       <p className="text-xs text-muted-foreground/70 mt-1">
+                         Name reveals after mutual connection
+                       </p>
+                     </>
                   )}
                 </div>
                 <Badge className="text-lg px-3 py-1 bg-primary/10 text-primary border-primary/20">

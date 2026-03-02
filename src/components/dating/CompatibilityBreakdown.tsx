@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -10,14 +11,20 @@ import {
   Target,
   Brain,
   Zap,
-  User,
   Home,
   Flame,
   BookOpen,
-  Scale,
   Compass,
+  ChevronDown,
+  ChevronUp,
+  UserCheck,
+  Bell,
+  Ban,
+  ClipboardCheck,
+  Coffee,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const CORE_VALUES_MAP: Record<string, { label: string; icon: string }> = {
   honesty: { label: "Honesty & Transparency", icon: "🤝" },
@@ -63,6 +70,12 @@ interface CompatibilityBreakdownProps {
   theirRepairResponse?: string | null;
   className?: string;
 }
+
+// Normalize scores: if value is <= 1, treat as 0-1 range and multiply by 100
+const normalizeScore = (score: number | undefined | null): number | null => {
+  if (score === undefined || score === null) return null;
+  return score <= 1 ? Math.round(score * 100) : Math.round(score);
+};
 
 export const CompatibilityBreakdown = ({
   compatibilityScore,
@@ -111,14 +124,14 @@ export const CompatibilityBreakdown = ({
     return 70;
   };
 
-  const communicationScore = matchDimensions?.communication ?? getCommunicationScore();
-  const repairScore = matchDimensions?.red_flags ?? getRepairScore();
+  const communicationScore = normalizeScore(matchDimensions?.communication) ?? getCommunicationScore();
+  const repairScore = normalizeScore(matchDimensions?.red_flags) ?? getRepairScore();
   const stressScore = getStressScore();
-  const valuesScoreAI = matchDimensions?.values;
-  const goalsScore = matchDimensions?.goals;
-  const lifestyleScore = matchDimensions?.lifestyle;
+  const valuesScoreAI = normalizeScore(matchDimensions?.values);
+  const goalsScore = normalizeScore(matchDimensions?.goals);
+  const lifestyleScore = normalizeScore(matchDimensions?.lifestyle);
 
-  const gottmanScore = matchDimensions?.gottman_score ?? ((): number | null => {
+  const gottmanScore = normalizeScore(matchDimensions?.gottman_score) ?? ((): number | null => {
     const factors = [
       { score: repairScore, weight: 3 },
       { score: communicationScore, weight: 2 },
@@ -142,94 +155,119 @@ export const CompatibilityBreakdown = ({
     return "Needs Work";
   };
 
-  // Map sections to the intake form steps
+  const getProgressColor = (score: number): string => {
+    if (score >= 85) return "bg-emerald-500";
+    if (score >= 70) return "bg-amber-400";
+    return "bg-red-400";
+  };
+
+  const getStepDescription = (key: string, score: number): { summary: string; detail: string } => {
+    const descriptions: Record<string, { high: string; mid: string; low: string; detail: string }> = {
+      goals: {
+        high: "Aligned vision for family and the future",
+        mid: "Similar direction with some differences",
+        low: "Different goals — worth discussing early",
+        detail: "This score reflects how aligned your views are on family planning, marriage timeline, having children, and long-term life vision. Couples who share similar future goals tend to navigate major life decisions more smoothly.",
+      },
+      lifestyle: {
+        high: "Very compatible daily routines and habits",
+        mid: "Mostly compatible lifestyle choices",
+        low: "Different lifestyles — could complement each other",
+        detail: "This measures compatibility in daily habits like morning/night preferences, exercise routines, diet, smoking, drinking, and screen time. Compatible lifestyles reduce everyday friction and make cohabitation more natural.",
+      },
+      dailyLife: {
+        high: "Your social and daily lives mesh well",
+        mid: "Some overlap in how you spend your time",
+        low: "Different day-to-day rhythms — room for balance",
+        detail: "This covers your social preferences (introvert/extrovert), hobbies, weekend activities, and how you recharge. It helps predict how naturally you'll integrate into each other's daily lives.",
+      },
+      values: {
+        high: "Strong alignment on what matters most",
+        mid: "Good overlap in core values",
+        low: "Different values — a growth opportunity",
+        detail: "Core values are the foundation of lasting relationships. This score reflects alignment on your top-ranked values like honesty, family, ambition, kindness, and spirituality. Shared values predict long-term satisfaction more than shared interests.",
+      },
+      communication: {
+        high: "Complementary styles — you balance each other",
+        mid: "Compatible communication patterns",
+        low: "Different styles — may need extra understanding",
+        detail: "How you express yourself and listen to each other matters deeply. This measures whether your communication styles (direct, patient, analytical, expressive) complement or clash. Good communication compatibility is a top predictor of relationship health.",
+      },
+      repair: {
+        high: "Both open to repair — strongest predictor of lasting love",
+        mid: "Good potential for working through disagreements",
+        low: "May need to develop repair skills together",
+        detail: "Based on Gottman's research, the ability to make and accept 'repair attempts' during conflict is the #1 predictor of relationship longevity. This score reflects how both of you handle conflict resolution and apologies.",
+      },
+      stress: {
+        high: "Compatible coping styles — you support each other naturally",
+        mid: "Different but workable approaches",
+        low: "Complementary growth opportunity here",
+        detail: "How you each handle stress and lean on a partner during tough times affects daily harmony. This score looks at whether your stress responses (seeking support, needing space, talking it out) align or complement each other.",
+      },
+      dealbreakers: {
+        high: "No red flags detected between you two",
+        mid: "Minor differences that are manageable",
+        low: "Some potential friction points to be aware of",
+        detail: "This checks your stated dealbreakers against the other person's profile. A high score means neither of you triggers the other's non-negotiables, which is essential for a viable match.",
+      },
+    };
+
+    const d = descriptions[key] || { high: "Good compatibility", mid: "Moderate compatibility", low: "Lower compatibility", detail: "Based on your questionnaire responses." };
+    const summary = score >= 85 ? d.high : score >= 70 ? d.mid : d.low;
+    return { summary, detail: d.detail };
+  };
+
+  // Map to the 8 intake steps
   const sections = [
-    // Step 1: The Basics → Overall score header
-    // Step 2: Family & Future
-    goalsScore !== undefined && {
+    goalsScore !== null && {
       key: 'goals',
       icon: Compass,
-      label: 'Family & Future Goals',
-      step: 'Step 2',
+      label: 'Life & Family',
+      stepNum: 2,
       score: goalsScore,
-      description: goalsScore >= 85
-        ? "Aligned vision for family and the future"
-        : goalsScore >= 70
-          ? "Similar direction with some differences"
-          : "Different goals — worth discussing early",
     },
-    // Step 3: Habits & Lifestyle
-    lifestyleScore !== undefined && {
+    lifestyleScore !== null && {
       key: 'lifestyle',
       icon: Home,
-      label: 'Habits & Lifestyle',
-      step: 'Step 3',
+      label: 'Lifestyle',
+      stepNum: 3,
       score: lifestyleScore,
-      description: lifestyleScore >= 85
-        ? "Very compatible daily routines and habits"
-        : lifestyleScore >= 70
-          ? "Mostly compatible lifestyle choices"
-          : "Different lifestyles — could complement each other",
     },
-    // Step 4: Lifestyle / Social
-    valuesScoreAI !== undefined && {
-      key: 'values',
-      icon: Heart,
-      label: 'Core Values',
-      step: 'Step 4',
+    valuesScoreAI !== null && {
+      key: 'dailyLife',
+      icon: Coffee,
+      label: 'Daily Life',
+      stepNum: 4,
       score: valuesScoreAI,
-      description: valuesScoreAI >= 85
-        ? "Strong alignment on what matters most"
-        : valuesScoreAI >= 70
-          ? "Good overlap in core values"
-          : "Different values — a growth opportunity",
     },
-    // Step 5: Deep Dive → Communication
     communicationScore !== null && {
       key: 'communication',
       icon: MessageCircle,
       label: 'Communication Style',
-      step: 'Step 5',
+      stepNum: 5,
       score: communicationScore,
-      description: communicationScore >= 85
-        ? "Complementary styles — you balance each other"
-        : communicationScore >= 70
-          ? "Compatible communication patterns"
-          : "Different styles — may need extra understanding",
     },
-    // Step 5 continued: Conflict Resolution
     repairScore !== null && {
       key: 'repair',
       icon: Shield,
       label: 'Conflict Resolution',
-      step: 'Step 5',
+      stepNum: 5,
       score: repairScore,
-      description: repairScore >= 85
-        ? "Both open to repair — strongest predictor of lasting love"
-        : repairScore >= 70
-          ? "Good potential for working through disagreements"
-          : "May need to develop repair skills together",
     },
-    // Step 5 continued: Stress Response
     stressScore !== null && {
       key: 'stress',
       icon: Target,
       label: 'Stress Response',
-      step: 'Step 5',
+      stepNum: 5,
       score: stressScore,
-      description: stressScore >= 80
-        ? "Compatible coping styles — you support each other naturally"
-        : stressScore >= 65
-          ? "Different but workable approaches"
-          : "Complementary growth opportunity here",
     },
   ].filter(Boolean) as Array<{
     key: string;
     icon: any;
     label: string;
-    step: string;
+    stepNum: number;
     score: number;
-    description: string;
   }>;
 
   return (
@@ -240,7 +278,7 @@ export const CompatibilityBreakdown = ({
           Your Compatibility Breakdown
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Based on the questionnaire you both completed during sign-up
+          Here's how your answers compared across each section of the questionnaire
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -271,44 +309,30 @@ export const CompatibilityBreakdown = ({
                 <span className="text-xs font-normal ml-1 text-muted-foreground">({getScoreLabel(gottmanScore)})</span>
               </span>
             </div>
-            <Progress value={gottmanScore} className="h-2" />
+            <Progress value={gottmanScore} className="h-2" indicatorClassName={getProgressColor(gottmanScore)} />
             <p className="text-xs text-muted-foreground mt-2">
               Based on 50+ years of relationship research predicting long-term success
             </p>
           </div>
         )}
 
-        {/* Dimension Sections mapped to intake steps */}
+        {/* Dimension Sections with expandable dropdowns */}
         {sections.length > 0 && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
               <BookOpen className="h-4 w-4 text-primary" />
               Breakdown by Profile Section
             </h3>
-            {sections.map((section) => {
-              const Icon = section.icon;
-              return (
-                <div key={section.key} className="space-y-2 p-3 rounded-lg bg-accent/50 border border-border/50">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Icon className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium text-sm text-foreground">{section.label}</span>
-                      <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 text-muted-foreground border-border">
-                        {section.step}
-                      </Badge>
-                    </div>
-                    <span className={cn("font-semibold", getScoreColor(section.score))}>
-                      {section.score}%
-                      <span className="text-xs font-normal ml-1 text-muted-foreground">
-                        ({getScoreLabel(section.score)})
-                      </span>
-                    </span>
-                  </div>
-                  <Progress value={section.score} className="h-1.5" />
-                  <p className="text-xs text-muted-foreground">{section.description}</p>
-                </div>
-              );
-            })}
+            {sections.map((section) => (
+              <ExpandableSection
+                key={section.key}
+                section={section}
+                getScoreColor={getScoreColor}
+                getScoreLabel={getScoreLabel}
+                getProgressColor={getProgressColor}
+                getStepDescription={getStepDescription}
+              />
+            ))}
           </div>
         )}
 
@@ -356,3 +380,70 @@ export const CompatibilityBreakdown = ({
     </Card>
   );
 };
+
+// Expandable section component
+function ExpandableSection({
+  section,
+  getScoreColor,
+  getScoreLabel,
+  getProgressColor,
+  getStepDescription,
+}: {
+  section: { key: string; icon: any; label: string; stepNum: number; score: number };
+  getScoreColor: (s: number) => string;
+  getScoreLabel: (s: number) => string;
+  getProgressColor: (s: number) => string;
+  getStepDescription: (key: string, score: number) => { summary: string; detail: string };
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const Icon = section.icon;
+  const { summary, detail } = getStepDescription(section.key, section.score);
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <div className="rounded-lg border border-border bg-card overflow-hidden">
+        <CollapsibleTrigger className="w-full p-4 flex items-center justify-between hover:bg-accent/50 transition-colors cursor-pointer">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+              <Icon className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div className="text-left">
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-sm text-foreground">{section.label}</span>
+                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 text-muted-foreground border-border">
+                  Step {section.stepNum}
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">{summary}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className={cn("font-bold text-lg", getScoreColor(section.score))}>
+              {section.score}%
+            </span>
+            {isOpen ? (
+              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            )}
+          </div>
+        </CollapsibleTrigger>
+
+        <CollapsibleContent>
+          <div className="px-4 pb-4 space-y-3 border-t border-border pt-3">
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>Compatibility</span>
+                <span className={getScoreColor(section.score)}>{getScoreLabel(section.score)}</span>
+              </div>
+              <Progress value={section.score} className="h-2" indicatorClassName={getProgressColor(section.score)} />
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {detail}
+            </p>
+          </div>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
+  );
+}
