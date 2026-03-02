@@ -330,7 +330,7 @@ export const DateScheduler = ({
                           <div className="absolute top-0 right-0">
                             <div className="bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-bl-lg flex items-center gap-1 font-bold">
                               <Zap className="h-2.5 w-2.5" />
-                              AI SUGGESTED
+                              SUGGESTED
                             </div>
                           </div>
                         )}

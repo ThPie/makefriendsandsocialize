@@ -350,12 +350,12 @@ export const CompatibilityBreakdown = ({
           </div>
         )}
 
-        {/* AI Match Reason */}
+        {/* Match Reason */}
         <div className="pt-3 border-t border-border">
           <div className="flex items-start gap-2">
             <Users className="h-4 w-4 text-primary mt-0.5 shrink-0" />
             <div>
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">AI Matchmaker Says</span>
+              <span className="text-xs uppercase tracking-wide text-muted-foreground">Why You Were Matched</span>
               <p className="text-sm italic text-foreground mt-1">"{matchReason}"</p>
             </div>
           </div>
@@ -442,23 +442,34 @@ function ExpandableStep({
               )}
             </p>
 
-            {/* Question breakdown */}
+            {/* Question breakdown with per-question % */}
             <div className="space-y-2">
               <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                 Questions evaluated in this step
               </h4>
-              {step.questions.map((q, i) => (
-                <div key={i} className="flex items-start gap-2 py-1.5 border-b border-border/50 last:border-0">
-                  <div className={cn(
-                    "w-2 h-2 rounded-full mt-1.5 shrink-0",
-                    getProgressColor(step.score)
-                  )} />
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-foreground">{q.label}</div>
-                    <div className="text-xs text-muted-foreground">{q.description}</div>
+              {step.questions.map((q, i) => {
+                // Distribute the step's contribution evenly across its questions
+                const questionWeight = step.weightPercent / step.questions.length;
+                const questionContribution = (step.score / 100) * questionWeight;
+                return (
+                  <div key={i} className="flex items-start gap-2 py-2 border-b border-border/50 last:border-0">
+                    <div className={cn(
+                      "w-2 h-2 rounded-full mt-1.5 shrink-0",
+                      getProgressColor(step.score)
+                    )} />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-medium text-foreground">{q.label}</div>
+                        <div className="text-sm font-semibold text-muted-foreground ml-2 shrink-0">
+                          <span className={getScoreColor(step.score)}>{questionContribution.toFixed(1)}%</span>
+                          <span className="text-xs text-muted-foreground/60 ml-1">/ {questionWeight.toFixed(1)}%</span>
+                        </div>
+                      </div>
+                      <div className="text-xs text-muted-foreground">{q.description}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </CollapsibleContent>

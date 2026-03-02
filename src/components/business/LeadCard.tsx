@@ -43,7 +43,7 @@ const statusConfig = {
 
 const sourceConfig = {
   direct: { label: "Direct", icon: Link2 },
-  ai_matched: { label: "AI Matched", icon: Sparkles },
+  ai_matched: { label: "Smart Matched", icon: Sparkles },
   referral: { label: "Referral", icon: ArrowRight }
 };
 

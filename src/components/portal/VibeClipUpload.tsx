@@ -74,7 +74,7 @@ export const VibeClipUpload = ({ userId, existingUrl, status, onSuccess }: VibeC
                 if (verError) throw verError;
 
                 if (verData?.is_verified) {
-                    toast.success('AI Verified: ' + verData.reason);
+                    toast.success('Verified: ' + verData.reason);
                 } else {
                     toast.warning('Verification Issue: ' + verData.reason);
                 }
@@ -129,12 +129,12 @@ export const VibeClipUpload = ({ userId, existingUrl, status, onSuccess }: VibeC
                             {verifying ? (
                                 <span className="bg-primary/90 text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
                                     <Loader2 className="h-2.5 w-2.5 animate-spin" />
-                                    AI VERIFYING...
+                                    VERIFYING...
                                 </span>
                             ) : status === 'verified' ? (
                                 <span className="bg-green-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
                                     <CheckCircle className="h-2.5 w-2.5" />
-                                    AI VERIFIED
+                                    VERIFIED
                                 </span>
                             ) : (
                                 <span className="bg-amber-500/90 text-white text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">

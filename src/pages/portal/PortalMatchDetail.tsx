@@ -12,6 +12,7 @@ import { CompatibilityBreakdown } from '@/components/dating/CompatibilityBreakdo
 import { MeetingFeedbackForm } from '@/components/dating/MeetingFeedbackForm';
 import { MeetingModeUI } from '@/components/dating/MeetingModeUI';
 import { MatchRevealMoment } from '@/components/dating/MatchRevealMoment';
+import { useBlurredImage } from '@/hooks/useBlurredImage';
 import {
   ArrowLeft,
   Heart,
@@ -161,6 +162,12 @@ export default function PortalMatchDetail() {
   const awaitingDecision = match?.meeting_status === 'met';
   const isScheduled = match?.meeting_status === 'scheduled';
 
+  // Server-side blurred image - original URL never sent to client
+  const { data: blurredPhotoUrl } = useBlurredImage(
+    matchedProfile?.photo_url,
+    !isRevealed && !!matchedProfile?.photo_url
+  );
+
   const [showReveal, setShowReveal] = useState(false);
 
   useEffect(() => {
@@ -295,20 +302,25 @@ export default function PortalMatchDetail() {
       <Card className="overflow-hidden border-border">
         <CardContent className="p-0">
           <div className="md:flex">
-            {/* Photo */}
-            <div className="md:w-1/3 min-h-[300px] relative bg-muted/30">
-              {matchedProfile.photo_url ? (
+            {/* Photo - server-side blur for security */}
+            <div className="md:w-1/3 min-h-[300px] relative bg-muted/30 overflow-hidden">
+              {isRevealed && matchedProfile.photo_url ? (
                 <img
                   src={matchedProfile.photo_url}
-                  alt={isRevealed ? matchedProfile.display_name : 'Your Match'}
+                  alt={matchedProfile.display_name}
                   width={300}
                   height={300}
                   loading="lazy"
                   decoding="async"
-                  className={cn(
-                    "w-full h-full object-cover",
-                    !isRevealed && "blur-xl scale-110"
-                  )}
+                  className="w-full h-full object-cover"
+                />
+              ) : blurredPhotoUrl ? (
+                <img
+                  src={blurredPhotoUrl}
+                  alt="Your Match"
+                  width={300}
+                  height={300}
+                  className="w-full h-full object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
