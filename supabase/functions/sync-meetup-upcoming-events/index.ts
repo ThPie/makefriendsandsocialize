@@ -391,8 +391,26 @@ serve(async (req) => {
       }
       processedEvents.add(eventKey);
 
-      // Use the pre-built map for O(1) lookup instead of querying DB for each event
-      const matchingEvent = existingEventsMap.get(eventKey);
+      // Use exact key match first, then fuzzy cross-platform match
+      let matchingEvent = existingEventsMap.get(eventKey);
+
+      // If no exact match, try fuzzy title matching against all events on that date
+      if (!matchingEvent) {
+        const sameDateEvents = existingByDate.get(event.date) || [];
+        for (const existing of sameDateEvents) {
+          const normExisting = normalizeTitle(existing.title);
+          const wordsA = new Set(normalizedTitle.split(' ').filter((w: string) => w.length > 3));
+          const wordsB = new Set(normExisting.split(' ').filter((w: string) => w.length > 3));
+          if (wordsA.size === 0 || wordsB.size === 0) continue;
+          const intersection = [...wordsA].filter((w: string) => wordsB.has(w));
+          const similarity = intersection.length / Math.min(wordsA.size, wordsB.size);
+          if (similarity >= 0.5) {
+            matchingEvent = existing;
+            console.log(`Cross-platform match: "${event.title}" ↔ "${existing.title}" (${existing.source})`);
+            break;
+          }
+        }
+      }
 
       const meetupRsvp = event.rsvpCount || 0;
       const eventData = {
@@ -413,11 +431,10 @@ serve(async (req) => {
 
       if (matchingEvent) {
         // Recalculate total by combining meetup count with other platforms
-        const existingFull = existingEventsMap.get(eventKey);
-        const totalRsvp = meetupRsvp + (existingFull?.eventbrite_rsvp_count || 0) + (existingFull?.luma_rsvp_count || 0);
+        const totalRsvp = meetupRsvp + (matchingEvent.eventbrite_rsvp_count || 0) + (matchingEvent.luma_rsvp_count || 0);
         const { error } = await supabase
           .from('events')
-          .update({ ...eventData, rsvp_count: totalRsvp })
+          .update({ ...eventData, rsvp_count: totalRsvp, source: 'meetup' })
           .eq('id', matchingEvent.id);
 
         if (!error) updatedCount++;
