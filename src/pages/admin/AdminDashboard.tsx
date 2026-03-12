@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TransitionLink } from '@/components/ui/TransitionLink';
-import { supabase } from '@/integrations/supabase/client';
+import { getAdminStats, type AdminStats as Stats } from '@/services/admin';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -15,66 +15,20 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 
-interface Stats {
-  pendingApplications: number;
-  totalMembers: number;
-  activeConnections: number;
-  tierBreakdown: {
-    patron: number;
-    fellow: number;
-    founder: number;
-  };
-}
-
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchStats() {
-      const [
-        { count: pendingCount },
-        { count: activeMembers },
-        { count: acceptedConnections },
-        { data: memberships },
-      ] = await Promise.all([
-        supabase
-          .from('application_waitlist')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'pending'),
-        supabase
-          .from('memberships')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'active'),
-        supabase
-          .from('connections')
-          .select('*', { count: 'exact', head: true })
-          .eq('status', 'accepted'),
-        supabase
-          .from('memberships')
-          .select('tier')
-          .eq('status', 'active'),
-      ]);
-
-      const tierBreakdown = {
-        patron: 0,
-        fellow: 0,
-        founder: 0,
-      };
-
-      memberships?.forEach((m) => {
-        if (m.tier === 'patron') tierBreakdown.patron++;
-        else if (m.tier === 'fellow') tierBreakdown.fellow++;
-        else if (m.tier === 'founder') tierBreakdown.founder++;
-      });
-
-      setStats({
-        pendingApplications: pendingCount || 0,
-        totalMembers: activeMembers || 0,
-        activeConnections: acceptedConnections || 0,
-        tierBreakdown,
-      });
-      setIsLoading(false);
+      try {
+        const data = await getAdminStats();
+        setStats(data);
+      } catch (error) {
+        console.error('Error fetching admin stats:', error);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
     fetchStats();

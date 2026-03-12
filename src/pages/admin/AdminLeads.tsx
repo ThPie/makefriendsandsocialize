@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { getLeads, updateLead, deleteLead, type Lead } from '@/services/admin';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -33,28 +34,7 @@ import {
   Clock,
 } from 'lucide-react';
 
-type LeadStatus = 'new' | 'contacted' | 'converted' | 'dismissed';
 
-interface Lead {
-  id: string;
-  source_platform: string;
-  source_url: string | null;
-  lead_name: string | null;
-  lead_email: string | null;
-  lead_location: string | null;
-  lead_interests: string[];
-  relevance_score: number;
-  status: LeadStatus;
-  outreach_suggestion: string | null;
-  raw_content: string | null;
-  notes: string | null;
-  discovered_at: string;
-  contacted_at: string | null;
-  converted_at: string | null;
-  audience_segment: string | null;
-  is_automated: boolean | null;
-  discovery_run_id: string | null;
-}
 
 const AUDIENCE_SEGMENTS: Record<string, { label: string; color: string }> = {
   singles: { label: 'Singles', color: 'bg-pink-500/10 text-pink-500 border-pink-500/20' },
@@ -66,7 +46,7 @@ const AUDIENCE_SEGMENTS: Record<string, { label: string; color: string }> = {
   newly_single: { label: 'Newly Single', color: 'bg-rose-500/10 text-rose-500 border-rose-500/20' },
 };
 
-const statusConfig: Record<LeadStatus, { label: string; color: string; icon: typeof CheckCircle }> = {
+const statusConfig: Record<Lead['status'], { label: string; color: string; icon: typeof CheckCircle }> = {
   new: { label: 'New', color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]', icon: Sparkles },
   contacted: { label: 'Contacted', color: 'bg-amber-500/10 text-amber-500', icon: MessageSquare },
   converted: { label: 'Converted', color: 'bg-green-500/10 text-green-500', icon: CheckCircle },
@@ -87,23 +67,14 @@ export default function AdminLeads() {
   const [targetCities, setTargetCities] = useState('New York, Los Angeles, Miami');
   const [targetKeywords, setTargetKeywords] = useState('looking for friends, new to city, social events');
   const [notes, setNotes] = useState('');
-  const [activeTab, setActiveTab] = useState<LeadStatus | 'all'>('all');
+  const [activeTab, setActiveTab] = useState<Lead['status'] | 'all'>('all');
   const [segmentFilter, setSegmentFilter] = useState<string>('all');
   const queryClient = useQueryClient();
 
   // Fetch leads
   const { data: leads, isLoading } = useQuery({
     queryKey: ['leads'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('leads')
-        .select('*')
-        .order('relevance_score', { ascending: false })
-        .limit(200);
-
-      if (error) throw error;
-      return data as Lead[];
-    },
+    queryFn: () => getLeads(200),
   });
 
   // Update lead mutation
@@ -114,10 +85,10 @@ export default function AdminLeads() {
       notes
     }: {
       leadId: string;
-      status: LeadStatus;
+      status: Lead['status'];
       notes?: string;
     }) => {
-      const updateData: Record<string, unknown> = { status };
+      const updateData: any = { status };
 
       if (notes !== undefined) {
         updateData.notes = notes;
@@ -129,12 +100,7 @@ export default function AdminLeads() {
         updateData.converted_at = new Date().toISOString();
       }
 
-      const { error } = await supabase
-        .from('leads')
-        .update(updateData)
-        .eq('id', leadId);
-
-      if (error) throw error;
+      await updateLead(leadId, updateData);
     },
     onSuccess: () => {
       toast.success('Lead updated');
@@ -149,14 +115,7 @@ export default function AdminLeads() {
 
   // Delete lead mutation
   const deleteLeadMutation = useMutation({
-    mutationFn: async (leadId: string) => {
-      const { error } = await supabase
-        .from('leads')
-        .delete()
-        .eq('id', leadId);
-
-      if (error) throw error;
-    },
+    mutationFn: (leadId: string) => deleteLead(leadId),
     onSuccess: () => {
       toast.success('Lead deleted');
       queryClient.invalidateQueries({ queryKey: ['leads'] });
@@ -201,7 +160,7 @@ export default function AdminLeads() {
     }
   };
 
-  const handleStatusChange = (status: LeadStatus) => {
+  const handleStatusChange = (status: Lead['status']) => {
     if (!selectedLead) return;
     updateLeadMutation.mutate({
       leadId: selectedLead.id,
@@ -425,7 +384,7 @@ export default function AdminLeads() {
               Refresh
             </Button>
           </div>
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as LeadStatus | 'all')}>
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as Lead['status'] | 'all')}>
             <TabsList>
               <TabsTrigger value="all">All ({stats.total})</TabsTrigger>
               <TabsTrigger value="new">New ({stats.new})</TabsTrigger>

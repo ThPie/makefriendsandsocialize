@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getMembersWithMembership, updateMemberTier as updateTier } from '@/services/admin';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -52,54 +52,31 @@ export default function AdminMembers() {
   }, []);
 
   async function fetchMembers() {
-    const { data: profiles, error: profilesError } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(200);
-
-    if (profilesError) {
-      toast.error('Failed to fetch members');
-      return;
+    setIsLoading(true);
+    try {
+      const data = await getMembersWithMembership(200);
+      setMembers(data as Member[]);
+    } catch (error) {
+      console.error('Error fetching members:', error);
+      toast.error('Failed to load members');
+    } finally {
+      setIsLoading(false);
     }
-
-    const { data: memberships, error: membershipsError } = await supabase
-      .from('memberships')
-      .select('*')
-      .limit(500);
-
-    if (membershipsError) {
-      toast.error('Failed to fetch memberships');
-      return;
-    }
-
-    const membersWithMembership = profiles?.map((profile) => ({
-      ...profile,
-      membership: memberships?.find((m) => m.user_id === profile.id),
-    })) || [];
-
-    setMembers(membersWithMembership);
-    setIsLoading(false);
   }
 
   async function updateMemberTier(memberId: string, newTier: 'patron' | 'fellow' | 'founder') {
     setIsUpdating(true);
-
-    const { error } = await supabase
-      .from('memberships')
-      .update({ tier: newTier })
-      .eq('user_id', memberId);
-
-    if (error) {
+    try {
+      await updateTier(memberId, newTier);
+      toast.success(`Tier updated to ${newTier}`);
+      fetchMembers();
+      setSelectedMember(null);
+    } catch (error) {
+      console.error('Error updating member tier:', error);
       toast.error('Failed to update tier');
+    } finally {
       setIsUpdating(false);
-      return;
     }
-
-    toast.success(`Tier updated to ${newTier}`);
-    setIsUpdating(false);
-    fetchMembers();
-    setSelectedMember(null);
   }
 
   const filteredMembers = members.filter((member) => {

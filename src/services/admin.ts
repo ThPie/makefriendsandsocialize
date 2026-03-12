@@ -6,6 +6,13 @@ import { supabase } from '@/integrations/supabase/client';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
+export interface SecurityReport {
+    id: string;
+    status: string;
+    severity: string | null;
+    red_flags: string[] | null;
+}
+
 export interface AdminStats {
     pendingApplications: number;
     totalMembers: number;
@@ -29,12 +36,7 @@ export interface ApplicationWithReport {
     style_description: string | null;
     values_in_partner: string | null;
     user_email?: string;
-    security_report?: {
-        id: string;
-        status: string;
-        severity: string | null;
-        red_flags: string[] | null;
-    } | null;
+    security_report?: SecurityReport | null;
 }
 
 // ── Dashboard ────────────────────────────────────────────────────────────────
@@ -114,10 +116,11 @@ export async function getApplications(limit = 200): Promise<ApplicationWithRepor
 }
 
 /**
- * Approve an application.
+ * Approve an application and activate membership.
  */
-export async function approveApplication(appId: string, adminNotes?: string) {
-    const { error } = await supabase
+export async function approveApplication(appId: string, userId: string, adminNotes?: string) {
+    // 1. Update application status
+    const { error: appError } = await supabase
         .from('application_waitlist')
         .update({
             status: 'approved',
@@ -126,7 +129,18 @@ export async function approveApplication(appId: string, adminNotes?: string) {
         })
         .eq('id', appId);
 
-    if (error) throw error;
+    if (appError) throw appError;
+
+    // 2. Activate membership
+    const { error: membershipError } = await supabase
+        .from('memberships')
+        .update({
+            status: 'active',
+            started_at: new Date().toISOString(),
+        })
+        .eq('user_id', userId);
+
+    if (membershipError) throw membershipError;
 }
 
 /**
@@ -186,6 +200,75 @@ export async function updateMemberTier(
         .from('memberships')
         .update({ tier: newTier })
         .eq('user_id', memberId);
+
+    if (error) throw error;
+}
+
+// ── Leads ────────────────────────────────────────────────────────────────────
+
+export interface Lead {
+    id: string;
+    source_platform: string;
+    source_url: string | null;
+    lead_name: string | null;
+    lead_email: string | null;
+    lead_location: string | null;
+    lead_interests: string[];
+    relevance_score: number;
+    status: 'new' | 'contacted' | 'converted' | 'dismissed';
+    outreach_suggestion: string | null;
+    raw_content: string | null;
+    notes: string | null;
+    discovered_at: string;
+    contacted_at: string | null;
+    converted_at: string | null;
+    audience_segment: string | null;
+    is_automated: boolean | null;
+    discovery_run_id: string | null;
+}
+
+/**
+ * Fetch leads with a limit.
+ */
+export async function getLeads(limit = 200): Promise<Lead[]> {
+    const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .order('relevance_score', { ascending: false })
+        .limit(limit);
+
+    if (error) throw error;
+    return data as Lead[];
+}
+
+/**
+ * Update a lead's status or notes.
+ */
+export async function updateLead(
+    leadId: string,
+    updates: {
+        status?: Lead['status'];
+        notes?: string | null;
+        contacted_at?: string | null;
+        converted_at?: string | null;
+    }
+) {
+    const { error } = await supabase
+        .from('leads')
+        .update(updates)
+        .eq('id', leadId);
+
+    if (error) throw error;
+}
+
+/**
+ * Delete a lead.
+ */
+export async function deleteLead(leadId: string) {
+    const { error } = await supabase
+        .from('leads')
+        .delete()
+        .eq('id', leadId);
 
     if (error) throw error;
 }

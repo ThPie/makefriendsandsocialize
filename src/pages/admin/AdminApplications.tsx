@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import {
+  getApplications,
+  approveApplication,
+  rejectApplication,
+  type ApplicationWithReport as Application,
+  type SecurityReport
+} from '@/services/admin';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -18,27 +25,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { format } from 'date-fns';
 
-interface SecurityReport {
-  id: string;
-  status: string;
-  severity: string | null;
-  red_flags: string[] | null;
-}
 
-interface Application {
-  id: string;
-  user_id: string;
-  status: 'pending' | 'approved' | 'rejected';
-  submitted_at: string;
-  reviewed_at: string | null;
-  admin_notes: string | null;
-  interests: string[] | null;
-  favorite_brands: string[] | null;
-  style_description: string | null;
-  values_in_partner: string | null;
-  user_email?: string;
-  security_report?: SecurityReport | null;
-}
 
 export default function AdminApplications() {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -53,100 +40,48 @@ export default function AdminApplications() {
   }, []);
 
   async function fetchApplications() {
-    const { data, error } = await supabase
-      .from('application_waitlist')
-      .select('*')
-      .order('submitted_at', { ascending: false })
-      .limit(200);
-
-    if (error) {
-      toast.error('Failed to fetch applications');
-      return;
+    setIsLoading(true);
+    try {
+      const data = await getApplications(200);
+      setApplications(data);
+    } catch (error) {
+      console.error('Error fetching applications:', error);
+      toast.error('Failed to load applications');
+    } finally {
+      setIsLoading(false);
     }
-
-    // Fetch security reports for each application
-    const applicationsWithReports = await Promise.all(
-      (data || []).map(async (app) => {
-        const { data: report } = await supabase
-          .from('member_security_reports')
-          .select('id, status, severity, red_flags')
-          .eq('user_id', app.user_id)
-          .order('scanned_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-
-        return { ...app, security_report: report };
-      })
-    );
-
-    setApplications(applicationsWithReports);
-    setIsLoading(false);
   }
 
   async function handleApprove(app: Application) {
     setIsProcessing(true);
-
-    // Update application status
-    const { error: appError } = await supabase
-      .from('application_waitlist')
-      .update({
-        status: 'approved',
-        reviewed_at: new Date().toISOString(),
-        admin_notes: adminNotes || null,
-      })
-      .eq('id', app.id);
-
-    if (appError) {
+    try {
+      await approveApplication(app.id, app.user_id, adminNotes);
+      toast.success('Application approved');
+      setSelectedApp(null);
+      setAdminNotes('');
+      fetchApplications();
+    } catch (error) {
+      console.error('Error approving application:', error);
       toast.error('Failed to approve application');
+    } finally {
       setIsProcessing(false);
-      return;
     }
-
-    // Activate membership
-    const { error: membershipError } = await supabase
-      .from('memberships')
-      .update({
-        status: 'active',
-        started_at: new Date().toISOString(),
-      })
-      .eq('user_id', app.user_id);
-
-    if (membershipError) {
-      toast.error('Failed to activate membership');
-      setIsProcessing(false);
-      return;
-    }
-
-    toast.success('Application approved');
-    setSelectedApp(null);
-    setAdminNotes('');
-    setIsProcessing(false);
-    fetchApplications();
   }
 
   async function handleReject(app: Application) {
     setIsProcessing(true);
-
-    const { error } = await supabase
-      .from('application_waitlist')
-      .update({
-        status: 'rejected',
-        reviewed_at: new Date().toISOString(),
-        admin_notes: adminNotes || null,
-      })
-      .eq('id', app.id);
-
-    if (error) {
+    try {
+      await rejectApplication(app.id, adminNotes);
+      toast.success('Application rejected');
+      setSelectedApp(null);
+      setAdminNotes('');
+      fetchApplications();
+    } catch (error) {
+      console.error('Error rejecting application:', error);
       toast.error('Failed to reject application');
+    } finally {
       setIsProcessing(false);
-      return;
     }
-
-    toast.success('Application rejected');
-    setSelectedApp(null);
-    setAdminNotes('');
-    setIsProcessing(false);
-    fetchApplications();
   }
 
   async function handleRunScan(app: Application) {
