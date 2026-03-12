@@ -55,7 +55,8 @@ export default function AdminMembers() {
     const { data: profiles, error: profilesError } = await supabase
       .from('profiles')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(200);
 
     if (profilesError) {
       toast.error('Failed to fetch members');
@@ -64,7 +65,8 @@ export default function AdminMembers() {
 
     const { data: memberships, error: membershipsError } = await supabase
       .from('memberships')
-      .select('*');
+      .select('*')
+      .limit(500);
 
     if (membershipsError) {
       toast.error('Failed to fetch memberships');
@@ -178,8 +180,8 @@ export default function AdminMembers() {
                             member.membership.tier === 'founder'
                               ? 'default'
                               : member.membership.tier === 'fellow'
-                              ? 'secondary'
-                              : 'outline'
+                                ? 'secondary'
+                                : 'outline'
                           }
                           className="text-xs"
                         >
@@ -236,7 +238,7 @@ export default function AdminMembers() {
                   Security History
                 </TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="profile" className="flex-1 overflow-auto mt-4">
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
@@ -326,7 +328,7 @@ export default function AdminMembers() {
                   </div>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="security" className="flex-1 overflow-auto mt-4">
                 <ScanHistoryTimeline userId={selectedMember.id} />
               </TabsContent>

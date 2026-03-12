@@ -17,8 +17,8 @@ import { EventImageUpload } from '@/components/admin/EventImageUpload';
 import { EventQRCodeDialog } from '@/components/admin/EventQRCodeDialog';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { 
-  Calendar, MapPin, Users, Plus, Edit, Trash2, Loader2, 
+import {
+  Calendar, MapPin, Users, Plus, Edit, Trash2, Loader2,
   Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw, QrCode
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -141,7 +141,8 @@ export default function AdminEvents() {
       const { data: eventsData, error } = await supabase
         .from('events')
         .select('*')
-        .order('date', { ascending: false });
+        .order('date', { ascending: false })
+        .limit(200);
 
       if (error) throw error;
 
@@ -363,10 +364,10 @@ export default function AdminEvents() {
           <h1 className="font-display text-3xl text-foreground text-center">Events</h1>
           <p className="text-muted-foreground mt-1 text-center">Manage all society events</p>
         </motion.div>
-        
+
         <div className="flex items-center gap-3">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="rounded-xl"
             onClick={async () => {
               setIsSyncingMeetup(true);
@@ -395,14 +396,14 @@ export default function AdminEvents() {
             )}
             Sync from Meetup
           </Button>
-          
+
           <Button variant="outline" asChild className="rounded-xl">
             <Link to="/admin/event-analytics">
               <BarChart3 className="h-4 w-4 mr-2" />
               View Analytics
             </Link>
           </Button>
-          
+
           <Dialog open={isDialogOpen} onOpenChange={(open) => open ? setIsDialogOpen(true) : handleDialogClose()}>
             <DialogTrigger asChild>
               <AnimatedButton>
@@ -410,294 +411,294 @@ export default function AdminEvents() {
                 Create Event
               </AnimatedButton>
             </DialogTrigger>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="font-display text-2xl">
-                {editingEvent ? 'Edit Event' : 'Create New Event'}
-              </DialogTitle>
-            </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-              {/* Basic Info Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Basic Information</h3>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="title">Event Title *</Label>
-                  <Input
-                    id="title"
-                    value={form.title}
-                    onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    placeholder="Wine Tasting Evening"
-                    required
-                    className="rounded-xl"
-                  />
-                </div>
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="font-display text-2xl">
+                  {editingEvent ? 'Edit Event' : 'Create New Event'}
+                </DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+                {/* Basic Info Section */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Basic Information</h3>
 
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    rows={3}
-                    placeholder="Describe the event experience..."
-                    className="rounded-xl"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="tags">Tags (comma separated)</Label>
-                  <div className="flex gap-2">
-                    <Tag className="h-4 w-4 mt-3 text-muted-foreground" />
-                    <Input
-                      id="tags"
-                      value={form.tags}
-                      onChange={(e) => setForm({ ...form, tags: e.target.value })}
-                      placeholder="dining, wine, networking"
-                      className="rounded-xl"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Image Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Event Image</h3>
-                
-                <EventImageUpload
-                  value={form.image_url}
-                  onChange={(url) => setForm({ ...form, image_url: url })}
-                  disabled={isSubmitting}
-                />
-              </div>
-
-              {/* Date & Time Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Date & Time</h3>
-                
-                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="date">Date *</Label>
+                    <Label htmlFor="title">Event Title *</Label>
                     <Input
-                      id="date"
-                      type="date"
-                      value={form.date}
-                      onChange={(e) => setForm({ ...form, date: e.target.value })}
+                      id="title"
+                      value={form.title}
+                      onChange={(e) => setForm({ ...form, title: e.target.value })}
+                      placeholder="Wine Tasting Evening"
                       required
                       className="rounded-xl"
                     />
                   </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="time">Time</Label>
-                    <Input
-                      id="time"
-                      type="time"
-                      value={form.time}
-                      onChange={(e) => setForm({ ...form, time: e.target.value })}
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      value={form.description}
+                      onChange={(e) => setForm({ ...form, description: e.target.value })}
+                      rows={3}
+                      placeholder="Describe the event experience..."
                       className="rounded-xl"
                     />
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="registration_deadline">Registration Deadline</Label>
-                  <div className="flex gap-2">
-                    <Clock className="h-4 w-4 mt-3 text-muted-foreground" />
-                    <Input
-                      id="registration_deadline"
-                      type="datetime-local"
-                      value={form.registration_deadline}
-                      onChange={(e) => setForm({ ...form, registration_deadline: e.target.value })}
-                      className="rounded-xl"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Location Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Location</h3>
-                
-                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="venue_name">Venue Name</Label>
-                    <Input
-                      id="venue_name"
-                      value={form.venue_name}
-                      onChange={(e) => setForm({ ...form, venue_name: e.target.value })}
-                      placeholder="The Grand Ballroom"
-                      className="rounded-xl"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="venue_address">Venue Address</Label>
-                    <Input
-                      id="venue_address"
-                      value={form.venue_address}
-                      onChange={(e) => setForm({ ...form, venue_address: e.target.value })}
-                      placeholder="123 Main Street"
-                      className="rounded-xl"
-                    />
+                    <Label htmlFor="tags">Tags (comma separated)</Label>
+                    <div className="flex gap-2">
+                      <Tag className="h-4 w-4 mt-3 text-muted-foreground" />
+                      <Input
+                        id="tags"
+                        value={form.tags}
+                        onChange={(e) => setForm({ ...form, tags: e.target.value })}
+                        placeholder="dining, wine, networking"
+                        className="rounded-xl"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>City</Label>
-                    <LocationCombobox
-                      value={form.city}
-                      onValueChange={(value) => setForm({ ...form, city: value })}
-                      options={popularCities}
-                      placeholder="Select city..."
-                      searchPlaceholder="Search cities..."
-                      allowCustom={true}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Country</Label>
-                    <LocationCombobox
-                      value={form.country}
-                      onValueChange={(value) => setForm({ ...form, country: value })}
-                      options={popularCountries}
-                      placeholder="Select country..."
-                      searchPlaceholder="Search countries..."
-                      allowCustom={true}
-                    />
-                  </div>
-                </div>
+                {/* Image Section */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Event Image</h3>
 
-                <div className="space-y-2">
-                  <Label htmlFor="location">Display Location (shown to users)</Label>
-                  <Input
-                    id="location"
-                    value={form.location}
-                    onChange={(e) => setForm({ ...form, location: e.target.value })}
-                    placeholder="e.g., The Community House, London"
-                    className="rounded-xl"
+                  <EventImageUpload
+                    value={form.image_url}
+                    onChange={(url) => setForm({ ...form, image_url: url })}
+                    disabled={isSubmitting}
                   />
                 </div>
-              </div>
 
-              {/* Capacity & Pricing Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Capacity & Pricing</h3>
-                
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="capacity">Capacity</Label>
-                    <div className="flex gap-2">
-                      <Users className="h-4 w-4 mt-3 text-muted-foreground" />
+                {/* Date & Time Section */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Date & Time</h3>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="date">Date *</Label>
                       <Input
-                        id="capacity"
-                        type="number"
-                        value={form.capacity}
-                        onChange={(e) => setForm({ ...form, capacity: e.target.value })}
-                        placeholder="50"
+                        id="date"
+                        type="date"
+                        value={form.date}
+                        onChange={(e) => setForm({ ...form, date: e.target.value })}
+                        required
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="time">Time</Label>
+                      <Input
+                        id="time"
+                        type="time"
+                        value={form.time}
+                        onChange={(e) => setForm({ ...form, time: e.target.value })}
                         className="rounded-xl"
                       />
                     </div>
                   </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="ticket_price">Ticket Price</Label>
+                    <Label htmlFor="registration_deadline">Registration Deadline</Label>
                     <div className="flex gap-2">
-                      <DollarSign className="h-4 w-4 mt-3 text-muted-foreground" />
+                      <Clock className="h-4 w-4 mt-3 text-muted-foreground" />
                       <Input
-                        id="ticket_price"
-                        type="number"
-                        step="0.01"
-                        value={form.ticket_price}
-                        onChange={(e) => setForm({ ...form, ticket_price: e.target.value })}
-                        placeholder="0.00"
+                        id="registration_deadline"
+                        type="datetime-local"
+                        value={form.registration_deadline}
+                        onChange={(e) => setForm({ ...form, registration_deadline: e.target.value })}
                         className="rounded-xl"
                       />
                     </div>
                   </div>
+                </div>
+
+                {/* Location Section */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Location</h3>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="venue_name">Venue Name</Label>
+                      <Input
+                        id="venue_name"
+                        value={form.venue_name}
+                        onChange={(e) => setForm({ ...form, venue_name: e.target.value })}
+                        placeholder="The Grand Ballroom"
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="venue_address">Venue Address</Label>
+                      <Input
+                        id="venue_address"
+                        value={form.venue_address}
+                        onChange={(e) => setForm({ ...form, venue_address: e.target.value })}
+                        placeholder="123 Main Street"
+                        className="rounded-xl"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>City</Label>
+                      <LocationCombobox
+                        value={form.city}
+                        onValueChange={(value) => setForm({ ...form, city: value })}
+                        options={popularCities}
+                        placeholder="Select city..."
+                        searchPlaceholder="Search cities..."
+                        allowCustom={true}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Country</Label>
+                      <LocationCombobox
+                        value={form.country}
+                        onValueChange={(value) => setForm({ ...form, country: value })}
+                        options={popularCountries}
+                        placeholder="Select country..."
+                        searchPlaceholder="Search countries..."
+                        allowCustom={true}
+                      />
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="currency">Currency</Label>
-                    <Select value={form.currency} onValueChange={(value) => setForm({ ...form, currency: value })}>
-                      <SelectTrigger className="rounded-xl">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="USD">USD</SelectItem>
-                        <SelectItem value="EUR">EUR</SelectItem>
-                        <SelectItem value="GBP">GBP</SelectItem>
-                        <SelectItem value="CAD">CAD</SelectItem>
-                        <SelectItem value="AUD">AUD</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="location">Display Location (shown to users)</Label>
+                    <Input
+                      id="location"
+                      value={form.location}
+                      onChange={(e) => setForm({ ...form, location: e.target.value })}
+                      placeholder="e.g., The Community House, London"
+                      className="rounded-xl"
+                    />
                   </div>
                 </div>
-              </div>
 
-              {/* Settings Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Settings</h3>
-                
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="tier">Membership Tier *</Label>
-                    <Select value={form.tier} onValueChange={(value: 'patron' | 'fellow' | 'founder') => setForm({ ...form, tier: value })}>
-                      <SelectTrigger className="rounded-xl">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="patron">Patron</SelectItem>
-                        <SelectItem value="fellow">Fellow</SelectItem>
-                        <SelectItem value="founder">Founder</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="status">Status *</Label>
-                    <Select value={form.status} onValueChange={(value) => setForm({ ...form, status: value })}>
-                      <SelectTrigger className="rounded-xl">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="upcoming">Upcoming</SelectItem>
-                        <SelectItem value="ongoing">Ongoing</SelectItem>
-                        <SelectItem value="past">Past</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Featured</Label>
-                    <div className="flex items-center gap-2 h-10">
-                      <input
-                        type="checkbox"
-                        id="is_featured"
-                        checked={form.is_featured}
-                        onChange={(e) => setForm({ ...form, is_featured: e.target.checked })}
-                        className="h-4 w-4 rounded border-border"
-                      />
-                      <Label htmlFor="is_featured" className="text-sm font-normal cursor-pointer">
-                        Show as featured
-                      </Label>
+                {/* Capacity & Pricing Section */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Capacity & Pricing</h3>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="capacity">Capacity</Label>
+                      <div className="flex gap-2">
+                        <Users className="h-4 w-4 mt-3 text-muted-foreground" />
+                        <Input
+                          id="capacity"
+                          type="number"
+                          value={form.capacity}
+                          onChange={(e) => setForm({ ...form, capacity: e.target.value })}
+                          placeholder="50"
+                          className="rounded-xl"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="ticket_price">Ticket Price</Label>
+                      <div className="flex gap-2">
+                        <DollarSign className="h-4 w-4 mt-3 text-muted-foreground" />
+                        <Input
+                          id="ticket_price"
+                          type="number"
+                          step="0.01"
+                          value={form.ticket_price}
+                          onChange={(e) => setForm({ ...form, ticket_price: e.target.value })}
+                          placeholder="0.00"
+                          className="rounded-xl"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="currency">Currency</Label>
+                      <Select value={form.currency} onValueChange={(value) => setForm({ ...form, currency: value })}>
+                        <SelectTrigger className="rounded-xl">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="USD">USD</SelectItem>
+                          <SelectItem value="EUR">EUR</SelectItem>
+                          <SelectItem value="GBP">GBP</SelectItem>
+                          <SelectItem value="CAD">CAD</SelectItem>
+                          <SelectItem value="AUD">AUD</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-border">
-                <Button type="button" variant="outline" onClick={handleDialogClose} className="rounded-xl">
-                  Cancel
-                </Button>
-                <AnimatedButton type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    editingEvent ? 'Update Event' : 'Create Event'
-                  )}
-                </AnimatedButton>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+                {/* Settings Section */}
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Settings</h3>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="tier">Membership Tier *</Label>
+                      <Select value={form.tier} onValueChange={(value: 'patron' | 'fellow' | 'founder') => setForm({ ...form, tier: value })}>
+                        <SelectTrigger className="rounded-xl">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="patron">Patron</SelectItem>
+                          <SelectItem value="fellow">Fellow</SelectItem>
+                          <SelectItem value="founder">Founder</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="status">Status *</Label>
+                      <Select value={form.status} onValueChange={(value) => setForm({ ...form, status: value })}>
+                        <SelectTrigger className="rounded-xl">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="upcoming">Upcoming</SelectItem>
+                          <SelectItem value="ongoing">Ongoing</SelectItem>
+                          <SelectItem value="past">Past</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Featured</Label>
+                      <div className="flex items-center gap-2 h-10">
+                        <input
+                          type="checkbox"
+                          id="is_featured"
+                          checked={form.is_featured}
+                          onChange={(e) => setForm({ ...form, is_featured: e.target.checked })}
+                          className="h-4 w-4 rounded border-border"
+                        />
+                        <Label htmlFor="is_featured" className="text-sm font-normal cursor-pointer">
+                          Show as featured
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                  <Button type="button" variant="outline" onClick={handleDialogClose} className="rounded-xl">
+                    Cancel
+                  </Button>
+                  <AnimatedButton type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      editingEvent ? 'Update Event' : 'Create Event'
+                    )}
+                  </AnimatedButton>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -748,14 +749,14 @@ export default function AdminEvents() {
                       {/* Event Image */}
                       {event.image_url && (
                         <div className="hidden md:block w-32 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-muted">
-                          <img 
-                            src={event.image_url} 
+                          <img
+                            src={event.image_url}
                             alt={event.title}
                             className="w-full h-full object-cover"
                           />
                         </div>
                       )}
-                      
+
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2 flex-wrap">
                           {event.is_featured && (
@@ -774,13 +775,13 @@ export default function AdminEvents() {
                             </Badge>
                           )}
                         </div>
-                        
+
                         {event.description && (
                           <p className="text-muted-foreground text-sm line-clamp-2 mb-3">
                             {event.description}
                           </p>
                         )}
-                        
+
                         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
@@ -806,8 +807,8 @@ export default function AdminEvents() {
                         {/* Capacity Progress */}
                         {event.capacity && event.capacity > 0 && (
                           <div className="mt-3">
-                            <Progress 
-                              value={(event.rsvp_count || 0) / event.capacity * 100} 
+                            <Progress
+                              value={(event.rsvp_count || 0) / event.capacity * 100}
                               className="h-1.5"
                             />
                             <p className="text-xs text-muted-foreground mt-1">
@@ -820,7 +821,7 @@ export default function AdminEvents() {
                         {event.tags && event.tags.length > 0 && (
                           <div className="flex gap-1 mt-3 flex-wrap">
                             {event.tags.map((tag, i) => (
-                              <span 
+                              <span
                                 key={i}
                                 className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground"
                               >
@@ -830,20 +831,20 @@ export default function AdminEvents() {
                           </div>
                         )}
                       </div>
-                      
+
                       <div className="flex items-center gap-1">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => setQrDialogEvent(event)}
                           className="text-muted-foreground hover:text-primary"
                           title="Check-in QR"
                         >
                           <QrCode className="h-4 w-4" />
                         </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleToggleFeatured(event)}
                           className="text-muted-foreground hover:text-amber-400"
                         >

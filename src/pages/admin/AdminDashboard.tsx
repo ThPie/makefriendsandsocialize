@@ -143,11 +143,14 @@ export default function AdminDashboard() {
     },
     {
       label: 'Revenue',
-      value: '$' + ((stats?.totalMembers ?? 0) * 15).toLocaleString(),
+      value: '$' + (
+        (stats?.tierBreakdown.fellow ?? 0) * 49 +
+        (stats?.tierBreakdown.founder ?? 0) * 79
+      ).toLocaleString(),
       icon: DollarSign,
       iconBg: 'bg-muted',
       iconColor: 'text-muted-foreground',
-      sub: 'Est. monthly',
+      sub: 'Est. monthly (subscriptions)',
       isString: true,
     },
   ];

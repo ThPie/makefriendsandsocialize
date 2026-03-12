@@ -11,7 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { 
+import {
   Search,
   Loader2,
   Eye,
@@ -98,7 +98,8 @@ export default function AdminLeads() {
       const { data, error } = await supabase
         .from('leads')
         .select('*')
-        .order('relevance_score', { ascending: false });
+        .order('relevance_score', { ascending: false })
+        .limit(200);
 
       if (error) throw error;
       return data as Lead[];
@@ -107,21 +108,21 @@ export default function AdminLeads() {
 
   // Update lead mutation
   const updateLeadMutation = useMutation({
-    mutationFn: async ({ 
-      leadId, 
-      status, 
-      notes 
-    }: { 
-      leadId: string; 
-      status: LeadStatus; 
+    mutationFn: async ({
+      leadId,
+      status,
+      notes
+    }: {
+      leadId: string;
+      status: LeadStatus;
       notes?: string;
     }) => {
       const updateData: Record<string, unknown> = { status };
-      
+
       if (notes !== undefined) {
         updateData.notes = notes;
       }
-      
+
       if (status === 'contacted') {
         updateData.contacted_at = new Date().toISOString();
       } else if (status === 'converted') {
@@ -230,8 +231,8 @@ export default function AdminLeads() {
     new: leads?.filter(l => l.status === 'new').length || 0,
     contacted: leads?.filter(l => l.status === 'contacted').length || 0,
     converted: leads?.filter(l => l.status === 'converted').length || 0,
-    avgScore: leads?.length 
-      ? Math.round(leads.reduce((sum, l) => sum + (l.relevance_score || 0), 0) / leads.length) 
+    avgScore: leads?.length
+      ? Math.round(leads.reduce((sum, l) => sum + (l.relevance_score || 0), 0) / leads.length)
       : 0,
   };
 
@@ -469,15 +470,15 @@ export default function AdminLeads() {
                           <p className="font-medium">
                             {lead.lead_name || 'Anonymous Lead'}
                           </p>
-                          <Badge 
-                            variant="outline" 
+                          <Badge
+                            variant="outline"
                             className={platformConfig[platform]?.color || platformConfig.unknown.color}
                           >
                             {lead.source_platform}
                           </Badge>
                           {lead.audience_segment && AUDIENCE_SEGMENTS[lead.audience_segment] && (
-                            <Badge 
-                              variant="outline" 
+                            <Badge
+                              variant="outline"
                               className={AUDIENCE_SEGMENTS[lead.audience_segment].color}
                             >
                               {AUDIENCE_SEGMENTS[lead.audience_segment].label}
@@ -528,7 +529,7 @@ export default function AdminLeads() {
               Lead Details
             </DialogTitle>
             <DialogDescription>
-              {selectedLead?.lead_name || 'Anonymous'} • 
+              {selectedLead?.lead_name || 'Anonymous'} •
               Discovered {selectedLead && new Date(selectedLead.discovered_at).toLocaleDateString()}
             </DialogDescription>
           </DialogHeader>
@@ -549,8 +550,8 @@ export default function AdminLeads() {
                   <Card>
                     <CardContent className="p-4 text-center">
                       <p className="text-sm text-muted-foreground mb-1">Platform</p>
-                      <Badge 
-                        variant="outline" 
+                      <Badge
+                        variant="outline"
                         className={platformConfig[selectedLead.source_platform?.toLowerCase() || 'unknown']?.color}
                       >
                         {selectedLead.source_platform}
@@ -594,9 +595,9 @@ export default function AdminLeads() {
                     <CardContent className="p-4">
                       <div className="flex items-center gap-2">
                         <Globe className="h-4 w-4 text-muted-foreground" />
-                        <a 
-                          href={selectedLead.source_url} 
-                          target="_blank" 
+                        <a
+                          href={selectedLead.source_url}
+                          target="_blank"
                           rel="noopener noreferrer"
                           className="text-primary hover:underline flex items-center gap-1"
                         >

@@ -56,7 +56,8 @@ export default function AdminApplications() {
     const { data, error } = await supabase
       .from('application_waitlist')
       .select('*')
-      .order('submitted_at', { ascending: false });
+      .order('submitted_at', { ascending: false })
+      .limit(200);
 
     if (error) {
       toast.error('Failed to fetch applications');
@@ -339,7 +340,7 @@ export default function AdminApplications() {
         </TabsList>
 
         <TabsContent value="pending" className="mt-6">
-            <div className="rounded-xl border border-border bg-card">
+          <div className="rounded-xl border border-border bg-card">
             {pendingApps.length === 0 ? (
               <EmptyState
                 icon={FileText}
@@ -355,7 +356,7 @@ export default function AdminApplications() {
         </TabsContent>
 
         <TabsContent value="approved" className="mt-6">
-            <div className="rounded-xl border border-border bg-card">
+          <div className="rounded-xl border border-border bg-card">
             {approvedApps.length === 0 ? (
               <EmptyState
                 icon={Check}

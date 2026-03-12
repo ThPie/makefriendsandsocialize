@@ -16,7 +16,6 @@
     "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^3.0.30",
     "@capacitor/app": "^6.0.2",
     "@capacitor/core": "^6.2.0",
     "@dnd-kit/core": "^6.3.1",
@@ -56,7 +55,6 @@
     "@supabase/supabase-js": "^2.89.0",
     "@tanstack/react-query": "^5.83.0",
     "@vercel/speed-insights": "^1.3.1",
-    "ai": "^6.0.68",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
