@@ -13,7 +13,7 @@ import { isSlowDatingSubdomain, isCanadianDomain } from "@/lib/subdomain-utils";
 import { CountryRedirectBanner } from "@/components/ui/country-redirect-banner";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { HelmetProvider } from 'react-helmet-async';
-import { RegisterSW } from "./components/common/RegisterSW";
+
 
 import { SlowDatingRoutes, MainRoutes } from "@/routes/config";
 
@@ -49,7 +49,7 @@ const App = () => {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <AuthProvider>
               <TooltipProvider>
-                <RegisterSW />
+
                 <BrowserRouter>
                   <SessionProvider>
                     <ScrollToTop />

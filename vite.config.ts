@@ -23,10 +23,15 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
+            if (id.includes('@supabase')) return 'supabase';
+            if (id.includes('@sentry')) return 'sentry';
+            if (id.includes('@tanstack/react-query')) return 'query-libs';
             if (id.includes('recharts')) return 'charts';
             if (id.includes('framer-motion')) return 'framer';
             if (id.includes('lucide-react')) return 'icons';
             if (id.includes('@radix-ui')) return 'ui-libs';
+            if (id.includes('date-fns')) return 'date-utils';
+            if (id.includes('react-dom')) return 'react-vendor';
           }
         },
       },

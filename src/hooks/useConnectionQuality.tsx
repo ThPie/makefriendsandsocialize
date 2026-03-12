@@ -20,7 +20,7 @@ declare global {
 }
 
 export const useConnectionQuality = (): ConnectionQuality => {
-  const [quality, setQuality] = useState<ConnectionQuality>('high');
+  const [quality, setQuality] = useState<ConnectionQuality>('low');
 
   useEffect(() => {
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -48,7 +48,7 @@ export const useConnectionQuality = (): ConnectionQuality => {
     connection.addEventListener('change', updateQuality);
     window.addEventListener('online', updateQuality);
     window.addEventListener('offline', () => setQuality('offline'));
-    
+
     updateQuality();
 
     return () => {
