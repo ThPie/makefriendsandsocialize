@@ -117,6 +117,16 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                         </div>
                                     </TransitionLink>
 
+                                    <TransitionLink to="/circles/the-exchange" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                                            <Lightbulb strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">The Exchange</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Learn, teach, and share skills.</p>
+                                        </div>
+                                    </TransitionLink>
+
                                     <TransitionLink to="/circles/the-ladies-society" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
                                             <Circle strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
