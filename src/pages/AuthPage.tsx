@@ -159,7 +159,7 @@ export default function AuthPage() {
   };
 
   // Debounce timer ref for password breach check
-  const [passwordCheckTimeout, setPasswordCheckTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [passwordCheckTimeout, setPasswordCheckTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   // Update password with validation and debounced breach check
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {

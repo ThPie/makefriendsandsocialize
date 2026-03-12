@@ -30,6 +30,7 @@ const circleItems = [
   { label: 'Les Amis', to: '/circles/les-amis', image: lesAmisImg },
   { label: "Couple's Circle", to: '/circles/couples-circle', image: couplesCircleImg },
   { label: 'Active & Outdoor', to: '/circles/active-outdoor', image: activeOutdoorImg },
+  { label: 'The Exchange', to: '/circles/the-exchange', image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=200&auto=format&fit=crop' },
 ];
 
 const socialLinks = [

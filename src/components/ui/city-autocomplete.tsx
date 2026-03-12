@@ -42,7 +42,7 @@ export function CityAutocomplete({
   const [searchValue, setSearchValue] = React.useState("");
   const [cities, setCities] = React.useState<CityResult[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  const debounceRef = React.useRef<NodeJS.Timeout>();
+  const debounceRef = React.useRef<ReturnType<typeof setTimeout>>();
 
   // Debounced search function
   const searchCities = React.useCallback(async (query: string) => {

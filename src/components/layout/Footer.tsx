@@ -27,6 +27,7 @@ const footerLinks = {
       { label: "Slow Dating", href: "/slow-dating" },
       { label: "Couple's Circle", href: "/circles/the-partners" },
       { label: "Active & Outdoor", href: "/circles/the-pursuits" },
+      { label: "Become a Host", href: "/become-a-host" },
     ],
   },
   inquiries: {

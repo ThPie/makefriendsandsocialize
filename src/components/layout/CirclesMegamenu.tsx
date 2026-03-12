@@ -1,7 +1,7 @@
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Hexagon, Diamond, BringToFront, Circle } from 'lucide-react';
+import { Hexagon, Diamond, BringToFront, Circle, Lightbulb } from 'lucide-react';
 
 interface CirclesMegamenuProps {
     isTransparent?: boolean;
@@ -114,6 +114,16 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                         <div>
                                             <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">Active & Outdoor</h4>
                                             <p className="text-muted-foreground font-light text-[13px] mt-0.5">Adventures and active lifestyle.</p>
+                                        </div>
+                                    </TransitionLink>
+
+                                    <TransitionLink to="/circles/the-exchange" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                        <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                                            <Lightbulb strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-foreground font-medium text-sm group-hover:text-[hsl(var(--accent-gold))] transition-colors">The Exchange</h4>
+                                            <p className="text-muted-foreground font-light text-[13px] mt-0.5">Learn, teach, and share skills.</p>
                                         </div>
                                     </TransitionLink>
 

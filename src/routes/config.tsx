@@ -72,6 +72,8 @@ const CirclesPage = lazy(() => import("@/pages/CirclesPage"));
 const TheGentlemenPage = lazy(() => import("@/pages/circles/TheGentlemenPage"));
 const TheLadiesSocietyPage = lazy(() => import("@/pages/circles/TheLadiesSocietyPage"));
 const LesAmisPage = lazy(() => import("@/pages/circles/LesAmisPage"));
+const TheExchangePage = lazy(() => import("@/pages/circles/TheExchangePage"));
+const HostApplicationPage = lazy(() => import("@/pages/HostApplicationPage"));
 const HealthCheckPage = lazy(() => import("@/pages/HealthCheckPage"));
 const PortalOnboarding = lazy(() => import("@/pages/portal/PortalOnboarding"));
 const PortalPerks = lazy(() => import("@/pages/portal/PortalPerks"));
@@ -135,6 +137,8 @@ export const MainRoutes = () => (
         <Route path="/circles/les-amis" element={<LesAmisPage />} />
         <Route path="/circles/the-partners" element={<ThePartnersPage />} />
         <Route path="/circles/the-pursuits" element={<ThePursuitsPage />} />
+        <Route path="/circles/the-exchange" element={<TheExchangePage />} />
+        <Route path="/become-a-host" element={<HostApplicationPage />} />
         <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
 
         {/* Health check endpoint for deployment verification */}

@@ -5,6 +5,7 @@ import { EthosSection } from '@/components/home/EthosSection';
 // Lazy load below-the-fold sections for faster initial load
 const ClubShowcaseSection = lazy(() => import('@/components/home/ClubShowcaseSection').then(m => ({ default: m.ClubShowcaseSection })));
 const EventSection = lazy(() => import('@/components/home/EventSection').then(m => ({ default: m.EventSection })));
+const BecomeAHostSection = lazy(() => import('@/components/home/BecomeAHostSection').then(m => ({ default: m.BecomeAHostSection })));
 const PhotoGallerySection = lazy(() => import('@/components/home/PhotoGallerySection').then(m => ({ default: m.PhotoGallerySection })));
 const WhyChooseSection = lazy(() => import('@/components/home/WhyChooseSection').then(m => ({ default: m.WhyChooseSection })));
 const PricingSection = lazy(() => import('@/components/home/PricingSection').then(m => ({ default: m.PricingSection })));
@@ -54,22 +55,29 @@ const HomePage = () => {
         </Suspense>
       </div>
 
+      {/* Become a Host CTA */}
+      <div className="order-4 md:order-5">
+        <Suspense fallback={<SectionSkeleton />}>
+          <BecomeAHostSection />
+        </Suspense>
+      </div>
+
       {/* Moments from the Circle */}
-      <div className="order-5">
+      <div className="order-6">
         <Suspense fallback={<SectionSkeleton />}>
           <PhotoGallerySection />
         </Suspense>
       </div>
 
       {/* How It Works */}
-      <div className="order-6">
+      <div className="order-7">
         <Suspense fallback={<SectionSkeleton />}>
           <WhyChooseSection />
         </Suspense>
       </div>
 
       {/* What Our Members Say — last section before footer */}
-      <div className="order-7">
+      <div className="order-8">
         <Suspense fallback={<SectionSkeleton />}>
           <TestimonialsSection />
         </Suspense>
