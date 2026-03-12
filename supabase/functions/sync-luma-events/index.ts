@@ -202,14 +202,15 @@ serve(async (req) => {
       };
 
       if (titleMatch) {
-        // Merge into existing event
+        // Merge into existing event — sum platform-specific counts
         const mergedRsvp = (titleMatch.meetup_rsvp_count || 0) + (titleMatch.eventbrite_rsvp_count || 0) + attendeeCount;
         const { error } = await supabase
           .from('events')
           .update({
             ...eventData,
             rsvp_count: mergedRsvp,
-            source: titleMatch.source || 'luma',
+            // Keep meetup or eventbrite as primary source
+            source: (titleMatch.source === 'meetup' || titleMatch.source === 'eventbrite') ? titleMatch.source : 'luma',
           })
           .eq('id', titleMatch.id);
 
