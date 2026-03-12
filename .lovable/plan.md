@@ -1,45 +1,25 @@
 
 
-## Plan: Mobile Grid Layouts, Quote Styling, TikTok Icon & Newsletter
+## Eventbrite API Authentication Issue
 
-### 1. Value Highlights — 2x2 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 298-316)
+### Problem
+The Private Token (`NGYUSFDHUGXM7LQ6CKNH`) is being rejected by Eventbrite with `INVALID_AUTH`. I just re-tested it and confirmed the 401 persists. This is **not** a secret-storage issue — the token itself is not being accepted by Eventbrite's API.
 
-Change the horizontal scroll container to a `grid grid-cols-2` on mobile. The 3 items will show as 2 on top, 1 on bottom (centered).
+### Why This Is Happening
+Eventbrite private tokens are typically **50+ characters long**. The token you shared is only 20 characters, which suggests one of:
+1. **The Eventbrite app hasn't been fully activated** — sometimes new apps need approval or the token isn't ready yet
+2. **The token was regenerated** and the old one shown on the page is stale (page needs a refresh)
+3. **The app was created on a different Eventbrite account** than the one that owns the organizer page (Make Friends & Socialize)
 
-### 2. Process Steps — 2+1 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 548-572)
+### What To Try
 
-Replace the horizontal scroll with `grid grid-cols-2` on mobile. The 3 steps will display as 2 on top, 1 centered on bottom.
+1. **Go to [eventbrite.com/platform/api-keys](https://www.eventbrite.com/platform/api-keys)** while logged into the **same Eventbrite account** that manages "Make Friends & Socialize" events
+2. **Refresh the page** and re-copy the Private Token — make sure it's the full string
+3. If the token is still 20 characters, try clicking into the app details and look for a longer "Your personal OAuth token" value
+4. If you see a "Get a free API Key" button instead of an existing app, the account may not have an API app yet — create one and use the generated private token
 
-### 3. Daily Quote — gold text with quotation marks
-**File:** `src/components/common/DailyQuote.tsx`
-
-- Change quote text color to `text-[hsl(var(--accent-gold))]`
-- Wrap quote text in `"` `"` (curly quotation marks)
-- Apply same gold styling in the mobile menu quote section (`MobileMenu.tsx`, line 210-211)
-
-### 4. TikTok icon — add to Footer & MobileMenu
-**Files:** `src/components/layout/Footer.tsx`, `src/components/layout/MobileMenu.tsx`
-
-Lucide doesn't have a TikTok icon. Create a small inline SVG component for the TikTok logo. Add it to:
-- Footer social links (line 133-143)
-- MobileMenu social links array (line 34-38)
-
-### 5. Newsletter subscription in Footer
-**File:** `src/components/layout/Footer.tsx`
-
-Add a newsletter section with:
-- Email input + "Subscribe" button
-- Inserts into the existing `newsletter_subscribers` table (columns: `email`, `source: 'footer'`, `is_active: true`)
-- Duplicate email handling (show friendly message)
-- Success toast on subscribe
-- Placed above the Daily Quote section, visible on both mobile and desktop
-
-### Technical details
-
-- The `newsletter_subscribers` table already exists with the right schema — no DB migration needed
-- TikTok SVG will be a minimal `<svg>` component (~10 lines), not a new dependency
-- Grid changes use standard Tailwind: `grid grid-cols-2 gap-4 md:grid-cols-3`
-- For the 2+1 layout, the last item gets `col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto` on mobile to center it
+### Plan Once We Have a Valid Token
+1. Update the `EVENTBRITE_API_KEY` secret with the correct long-form token
+2. Test `sync-eventbrite-events` to confirm it fetches events
+3. Run `sync-all-events` to do a full cross-platform sync
 
