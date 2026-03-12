@@ -4,9 +4,6 @@ import { getCorsHeaders } from '../_shared/cors.ts';
 
 const EVENTBRITE_ORGANIZER_URL = 'https://www.eventbrite.com/o/make-friends-socialize-109567181801';
 
-// Extract organizer ID from URL
-const ORGANIZER_ID = '109567181801';
-
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') {
@@ -33,16 +30,41 @@ serve(async (req) => {
       );
     }
 
-    console.log('Fetching Eventbrite events for organizer:', ORGANIZER_ID, 'token length:', eventbriteApiKey.length, 'first4:', eventbriteApiKey.substring(0, 4));
+    // First, discover the organization ID for this token
+    console.log('Discovering organization ID from token...');
+    const orgResponse = await fetch(
+      `https://www.eventbriteapi.com/v3/users/me/organizations/?token=${eventbriteApiKey}`,
+      { headers: { 'Content-Type': 'application/json' } }
+    );
 
-    // Fetch events from Eventbrite API (use token query param for compatibility)
+    if (!orgResponse.ok) {
+      const errText = await orgResponse.text();
+      console.error('Failed to get organizations:', orgResponse.status, errText);
+      return new Response(
+        JSON.stringify({ success: false, error: `Failed to get organizations [${orgResponse.status}]: ${errText}` }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const orgData = await orgResponse.json();
+    const organizations = orgData.organizations || [];
+    console.log('Found organizations:', organizations.map((o: any) => `${o.name} (${o.id})`));
+
+    if (organizations.length === 0) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'No organizations found for this token' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Use the first organization (or find the matching one)
+    const ORGANIZER_ID = organizations[0].id;
+    console.log('Using organization ID:', ORGANIZER_ID, 'token length:', eventbriteApiKey.length, 'first4:', eventbriteApiKey.substring(0, 4));
+
+    // Fetch events from Eventbrite API
     const eventsResponse = await fetch(
       `https://www.eventbriteapi.com/v3/organizations/${ORGANIZER_ID}/events/?status=live,started&order_by=start_asc&expand=venue,ticket_availability&token=${eventbriteApiKey}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
+      { headers: { 'Content-Type': 'application/json' } }
     );
 
     if (!eventsResponse.ok) {
