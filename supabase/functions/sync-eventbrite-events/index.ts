@@ -179,34 +179,23 @@ serve(async (req) => {
         }
       }
 
-      const eventData = {
-        time: formattedTime,
-        location: venueAddress || `${city}, ${country === 'US' ? 'UT' : country}`,
-        venue_name: venueName,
-        venue_address: venueAddress,
-        city,
-        country: country === 'US' ? 'United States' : country,
-        image_url: imageUrl,
-        description,
-        ticket_price: ticketPrice,
-        currency: 'USD',
-        status: 'published',
-        tags: ['eventbrite'],
-        updated_at: new Date().toISOString(),
-        eventbrite_id: eventbriteId,
-        eventbrite_rsvp_count: attendeeCount,
-        external_url: event.url,
-      };
-
       if (match) {
-        // Merge into existing event — sum platform-specific counts
+        // Merge into existing event — only update platform-specific fields, preserve tags
         const mergedRsvp = (match.meetup_rsvp_count || 0) + attendeeCount + (match.luma_rsvp_count || 0);
         const { error } = await supabase
           .from('events')
           .update({
-            ...eventData,
+            eventbrite_id: eventbriteId,
+            eventbrite_rsvp_count: attendeeCount,
             rsvp_count: mergedRsvp,
-            // Keep meetup as primary source if it was the original
+            external_url: event.url,
+            image_url: imageUrl || undefined,
+            description: description || undefined,
+            venue_name: venueName || undefined,
+            venue_address: venueAddress || undefined,
+            ticket_price: ticketPrice,
+            updated_at: new Date().toISOString(),
+            // Keep existing source priority
             source: match.source === 'meetup' ? 'meetup' : (match.source || 'eventbrite'),
           })
           .eq('id', match.id);
