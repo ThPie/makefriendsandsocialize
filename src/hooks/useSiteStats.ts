@@ -11,7 +11,7 @@ interface SiteStats {
 
 /**
  * Single source of truth for site-wide statistics.
- * Prioritizes Meetup stats for member count and avatars.
+ * Aggregates member/attendee counts across all platforms (Meetup, Eventbrite, Luma).
  */
 export const useSiteStats = () => {
   return useQuery({
@@ -25,7 +25,7 @@ export const useSiteStats = () => {
         console.error('[useSiteStats] Events count error:', eventsError);
       }
 
-      // Get stats from meetup_stats - this is the primary source for member count and avatars
+      // Get stats from meetup_stats - primary source for avatars and base member count
       const { data: meetupStats, error: meetupError } = await supabase
         .from('meetup_stats')
         .select('member_count, rating, avatar_urls, joined_this_week')
@@ -37,8 +37,25 @@ export const useSiteStats = () => {
         console.error('[useSiteStats] Meetup stats error:', meetupError);
       }
 
-      // Use Meetup member count as primary source (real community size)
-      // Fall back to profiles count only if Meetup data is unavailable
+      // Aggregate total RSVP/attendee counts across all platform-specific fields
+      const { data: platformTotals, error: platformError } = await supabase
+        .from('events')
+        .select('meetup_rsvp_count, eventbrite_rsvp_count, luma_rsvp_count');
+
+      if (platformError) {
+        console.error('[useSiteStats] Platform totals error:', platformError);
+      }
+
+      let totalEventbriteAttendees = 0;
+      let totalLumaAttendees = 0;
+      if (platformTotals) {
+        for (const e of platformTotals) {
+          totalEventbriteAttendees += e.eventbrite_rsvp_count || 0;
+          totalLumaAttendees += e.luma_rsvp_count || 0;
+        }
+      }
+
+      // Use Meetup member count as base, add unique attendees from other platforms
       let memberCount = meetupStats?.member_count || 0;
       
       if (!memberCount) {
@@ -47,8 +64,11 @@ export const useSiteStats = () => {
         memberCount = profileCount || 0;
       }
 
+      // Add cross-platform attendees to total community size
+      const totalCommunitySize = memberCount + totalEventbriteAttendees + totalLumaAttendees;
+
       return {
-        memberCount,
+        memberCount: totalCommunitySize,
         upcomingEventsCount: eventsCountData || 0,
         rating: meetupStats?.rating || null,
         joinedThisWeek: meetupStats?.joined_this_week || 0,
