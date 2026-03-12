@@ -5,6 +5,7 @@ import { EthosSection } from '@/components/home/EthosSection';
 // Lazy load below-the-fold sections for faster initial load
 const ClubShowcaseSection = lazy(() => import('@/components/home/ClubShowcaseSection').then(m => ({ default: m.ClubShowcaseSection })));
 const EventSection = lazy(() => import('@/components/home/EventSection').then(m => ({ default: m.EventSection })));
+const BecomeAHostSection = lazy(() => import('@/components/home/BecomeAHostSection').then(m => ({ default: m.BecomeAHostSection })));
 const PhotoGallerySection = lazy(() => import('@/components/home/PhotoGallerySection').then(m => ({ default: m.PhotoGallerySection })));
 const WhyChooseSection = lazy(() => import('@/components/home/WhyChooseSection').then(m => ({ default: m.WhyChooseSection })));
 const PricingSection = lazy(() => import('@/components/home/PricingSection').then(m => ({ default: m.PricingSection })));
