@@ -1638,11 +1638,16 @@ export type Database = {
           currency: string | null
           date: string
           description: string | null
+          eventbrite_id: string | null
+          eventbrite_rsvp_count: number | null
           external_url: string | null
           id: string
           image_url: string | null
           is_featured: boolean | null
           location: string | null
+          luma_id: string | null
+          luma_rsvp_count: number | null
+          meetup_rsvp_count: number | null
           registration_deadline: string | null
           rsvp_count: number | null
           source: string | null
@@ -1665,11 +1670,16 @@ export type Database = {
           currency?: string | null
           date: string
           description?: string | null
+          eventbrite_id?: string | null
+          eventbrite_rsvp_count?: number | null
           external_url?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
           location?: string | null
+          luma_id?: string | null
+          luma_rsvp_count?: number | null
+          meetup_rsvp_count?: number | null
           registration_deadline?: string | null
           rsvp_count?: number | null
           source?: string | null
@@ -1692,11 +1702,16 @@ export type Database = {
           currency?: string | null
           date?: string
           description?: string | null
+          eventbrite_id?: string | null
+          eventbrite_rsvp_count?: number | null
           external_url?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
           location?: string | null
+          luma_id?: string | null
+          luma_rsvp_count?: number | null
+          meetup_rsvp_count?: number | null
           registration_deadline?: string | null
           rsvp_count?: number | null
           source?: string | null
