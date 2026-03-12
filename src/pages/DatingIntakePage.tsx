@@ -42,7 +42,7 @@ export const DatingIntakePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0f0b] py-8 md:py-16 bg-[url('/noise.png')] bg-repeat opacity-100">
+    <div className="min-h-screen bg-[#0a0f0b] py-8 md:py-16 opacity-100">
       {/* Subtle background glow */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-dating-terracotta/5 blur-[100px]" />
