@@ -164,7 +164,7 @@ const EventsPage = () => {
       if (url) window.open(url, '_blank', 'noopener,noreferrer');
       setRsvpFeedback({
         type: 'info',
-        message: `Opening ${getSourceLabel(event)} to complete your RSVP.`,
+        message: `Opening event page to complete your RSVP.`,
       });
       setTimeout(() => setRsvpFeedback(null), 4000);
       return;
