@@ -55,6 +55,13 @@ const HomePage = () => {
         </Suspense>
       </div>
 
+      {/* Become a Host CTA */}
+      <div className="order-4 md:order-5">
+        <Suspense fallback={<SectionSkeleton />}>
+          <BecomeAHostSection />
+        </Suspense>
+      </div>
+
       {/* Moments from the Circle */}
       <div className="order-5">
         <Suspense fallback={<SectionSkeleton />}>

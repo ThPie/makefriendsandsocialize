@@ -137,6 +137,8 @@ export const MainRoutes = () => (
         <Route path="/circles/les-amis" element={<LesAmisPage />} />
         <Route path="/circles/the-partners" element={<ThePartnersPage />} />
         <Route path="/circles/the-pursuits" element={<ThePursuitsPage />} />
+        <Route path="/circles/the-exchange" element={<TheExchangePage />} />
+        <Route path="/become-a-host" element={<HostApplicationPage />} />
         <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
 
         {/* Health check endpoint for deployment verification */}

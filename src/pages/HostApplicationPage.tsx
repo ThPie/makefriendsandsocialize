@@ -44,10 +44,11 @@ const HostApplicationPage = () => {
     }
 
     setLoading(true);
-    const { error } = await supabase.from('host_applications').insert({
+    const insertData: Record<string, unknown> = {
       ...parsed.data,
       user_id: user?.id || null,
-    });
+    };
+    const { error } = await supabase.from('host_applications').insert(insertData as any);
     setLoading(false);
 
     if (error) {

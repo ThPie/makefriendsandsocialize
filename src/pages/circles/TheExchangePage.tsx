@@ -28,7 +28,7 @@ const TheExchangePage = () => (
         { id: "03", title: "Community Learning", description: "Small-group classes designed for real skill-building, not passive lectures." },
         { id: "04", title: "Cross-Industry Exchange", description: "Learn from professionals across every field — tech, arts, trades, wellness, and more." },
       ],
-      isSelective: false,
+      ctaDescription: "The Exchange is open to all members. Join us and start learning — or teaching — today.",
     }}
   />
 );

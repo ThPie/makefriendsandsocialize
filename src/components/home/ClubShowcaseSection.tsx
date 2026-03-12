@@ -64,6 +64,14 @@ const clubs = [
     image: activeOutdoorImg,
     link: '/circles/active-outdoor'
   },
+  {
+    id: 'the-exchange',
+    category: 'Learning',
+    title: 'The Exchange',
+    description: 'Learn, teach, and share knowledge across every field — from technology and business to cooking classes and bike repair workshops.',
+    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2940&auto=format&fit=crop',
+    link: '/circles/the-exchange'
+  },
 ];
 
 const datingClub = {

@@ -1,7 +1,7 @@
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Hexagon, Diamond, BringToFront, Circle } from 'lucide-react';
+import { Hexagon, Diamond, BringToFront, Circle, Lightbulb } from 'lucide-react';
 
 interface CirclesMegamenuProps {
     isTransparent?: boolean;

@@ -62,7 +62,16 @@ const CirclesPage = () => {
       tags: ["Golf", "Wellness", "Adventure"],
       path: "/circles/active-outdoor",
       isFree: false,
-      colSpan: "md:col-span-3",
+      colSpan: "md:col-span-1",
+    },
+    {
+      title: "The Exchange",
+      description: "Learn, teach, and share knowledge — from technology to cooking classes to bike repair workshops.",
+      image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2940&auto=format&fit=crop",
+      tags: ["Skills", "Workshops", "Open to All"],
+      path: "/circles/the-exchange",
+      isFree: true,
+      colSpan: "md:col-span-2",
     },
   ];
 
