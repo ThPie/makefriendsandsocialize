@@ -489,12 +489,6 @@ const EventsPage = () => {
                           return null;
                         })()}
                       </div>
-                      {isExternalEvent(event) && (
-                        <span className="flex items-center gap-1 text-primary text-xs font-bold bg-primary/10 px-2 py-1 rounded-full">
-                          <ExternalLink className="h-3.5 w-3.5" />
-                          External
-                        </span>
-                      )}
                     </div>
 
                     <h3 className="text-foreground text-xl font-semibold font-display leading-tight mb-3 group-hover:text-primary transition-colors">
