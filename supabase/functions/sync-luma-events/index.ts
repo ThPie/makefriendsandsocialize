@@ -168,44 +168,24 @@ serve(async (req) => {
       const attendeeCount = event.attendees || 0;
       const lumaId = event.lumaId || event.eventUrl?.split('/').pop() || null;
 
-      // Normalize title for matching
-      const normalizedTitle = title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
-      const titleSearchPart = title.substring(0, 30).replace(/'/g, "''");
-
-      // Check if event already exists
-      const { data: existing } = await supabase
+      // --- Cross-platform matching ---
+      // Fetch ALL events on this date for robust matching
+      const { data: dateEvents } = await supabase
         .from('events')
-        .select('id, source, luma_id, rsvp_count, meetup_rsvp_count, eventbrite_rsvp_count')
-        .or(`luma_id.eq.${lumaId || 'NONE'},and(date.eq.${eventDate})`)
-        .limit(5);
+        .select('id, title, source, luma_id, rsvp_count, meetup_rsvp_count, eventbrite_rsvp_count, luma_rsvp_count')
+        .eq('date', eventDate);
 
-      // Find a match by title similarity
-      const matchingEvent = existing?.find(e => {
-        // Already linked by luma_id
-        if (e.luma_id === lumaId && lumaId) return true;
-        return false;
-      });
+      let titleMatch = dateEvents?.find(e => e.luma_id === lumaId && lumaId) || null;
 
-      // Also try title+date fuzzy match against all events on that date
-      let titleMatch = matchingEvent;
-      if (!titleMatch) {
-        const { data: dateEvents } = await supabase
-          .from('events')
-          .select('id, title, source, luma_id, rsvp_count, meetup_rsvp_count, eventbrite_rsvp_count')
-          .eq('date', eventDate);
-
-        if (dateEvents) {
-          titleMatch = dateEvents.find(e => {
-            const existingNorm = e.title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
-            // Check if titles share significant overlap (>60% of words match)
-            const words1 = new Set(normalizedTitle.split(' ').filter(w => w.length > 3));
-            const words2 = new Set(existingNorm.split(' ').filter(w => w.length > 3));
-            if (words1.size === 0 || words2.size === 0) return false;
-            const intersection = [...words1].filter(w => words2.has(w));
-            const similarity = intersection.length / Math.min(words1.size, words2.size);
-            return similarity >= 0.6;
-          });
-        }
+      if (!titleMatch && dateEvents) {
+        titleMatch = dateEvents.find(e => {
+          const existingNorm = e.title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
+          const words1 = new Set(normalizedTitle.split(' ').filter((w: string) => w.length > 3));
+          const words2 = new Set(existingNorm.split(' ').filter((w: string) => w.length > 3));
+          if (words1.size === 0 || words2.size === 0) return false;
+          const intersection = [...words1].filter((w: string) => words2.has(w));
+          return intersection.length / Math.min(words1.size, words2.size) >= 0.5;
+        }) || null;
       }
 
       const eventData = {
