@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getCorsHeaders } from '../_shared/cors.ts';
 
 
@@ -19,35 +20,35 @@ async function encrypt(plaintext: string, keyString: string): Promise<string> {
   const key = await getKey(keyString);
   const iv = crypto.getRandomValues(new Uint8Array(12)); // 96-bit IV for GCM
   const encodedText = new TextEncoder().encode(plaintext);
-  
+
   const ciphertext = await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv },
     key,
     encodedText
   );
-  
+
   // Combine IV + ciphertext and encode as base64
   const combined = new Uint8Array(iv.length + new Uint8Array(ciphertext).length);
   combined.set(iv);
   combined.set(new Uint8Array(ciphertext), iv.length);
-  
+
   return btoa(String.fromCharCode(...combined));
 }
 
 async function decrypt(ciphertext: string, keyString: string): Promise<string> {
   const key = await getKey(keyString);
   const combined = Uint8Array.from(atob(ciphertext), c => c.charCodeAt(0));
-  
+
   // Extract IV (first 12 bytes) and ciphertext (rest)
   const iv = combined.slice(0, 12);
   const encryptedData = combined.slice(12);
-  
+
   const decrypted = await crypto.subtle.decrypt(
     { name: 'AES-GCM', iv },
     key,
     encryptedData
   );
-  
+
   return new TextDecoder().decode(decrypted);
 }
 
@@ -59,8 +60,31 @@ serve(async (req) => {
   }
 
   try {
+    // === AUTHENTICATION CHECK ===
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const encryptionKey = Deno.env.get('DATING_ENCRYPTION_KEY');
-    
+
     if (!encryptionKey) {
       console.error('DATING_ENCRYPTION_KEY not configured');
       return new Response(
@@ -70,7 +94,7 @@ serve(async (req) => {
     }
 
     const { action, data } = await req.json();
-    
+
     if (!action || !data) {
       return new Response(
         JSON.stringify({ error: 'Missing action or data' }),

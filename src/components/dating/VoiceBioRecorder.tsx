@@ -1,8 +1,7 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle, AlertCircle, Sparkles } from "lucide-react";
-import { generateText } from "ai";
-import { getModel } from "@/lib/ai";
+import { generateText } from "@/lib/ai";
 
 interface VoiceBioRecorderProps {
   currentBio: string;
@@ -26,7 +25,7 @@ export const VoiceBioRecorder = ({ currentBio, onBioUpdate }: VoiceBioRecorderPr
 
     try {
       const { text } = await generateText({
-        model: getModel("google/gemini-2.0-flash-001"),
+        model: "google/gemini-2.0-flash-001",
         prompt: `Polish this dating bio into a well-written, engaging first-person paragraph. Keep the same meaning, personality, and key details. Fix grammar and make it flow naturally. Keep it under 200 words. Do NOT add quotes or labels—just return the polished bio text.\n\nRaw bio: ${bioText}`,
       });
 
@@ -65,8 +64,8 @@ export const VoiceBioRecorder = ({ currentBio, onBioUpdate }: VoiceBioRecorderPr
       {status && (
         <div
           className={`flex items-start gap-2 p-2 rounded-lg text-xs ${status.type === "success"
-              ? "bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400"
-              : "bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400"
+            ? "bg-green-500/10 border border-green-500/20 text-green-600 dark:text-green-400"
+            : "bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400"
             }`}
         >
           {status.type === "success" ? (

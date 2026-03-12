@@ -22,11 +22,11 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Get IP address from various headers
-    const ipAddress = 
+    const ipAddress =
       req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
       req.headers.get('cf-connecting-ip') ||
       req.headers.get('x-real-ip') ||
@@ -68,15 +68,15 @@ serve(async (req) => {
           resetAt: limitStatus.reset_at,
           limit: MAX_REQUESTS
         }),
-        { 
-          status: limitStatus.allowed ? 200 : 429, 
-          headers: { 
-            ...corsHeaders, 
+        {
+          status: limitStatus.allowed ? 200 : 429,
+          headers: {
+            ...corsHeaders,
             'Content-Type': 'application/json',
             'X-RateLimit-Limit': MAX_REQUESTS.toString(),
             'X-RateLimit-Remaining': limitStatus.remaining_requests.toString(),
             'X-RateLimit-Reset': limitStatus.reset_at || ''
-          } 
+          }
         }
       );
     }
@@ -103,16 +103,16 @@ serve(async (req) => {
               limit: MAX_REQUESTS,
               error: 'Rate limit exceeded. Please try again later.'
             }),
-            { 
-              status: 429, 
-              headers: { 
-                ...corsHeaders, 
+            {
+              status: 429,
+              headers: {
+                ...corsHeaders,
                 'Content-Type': 'application/json',
                 'X-RateLimit-Limit': MAX_REQUESTS.toString(),
                 'X-RateLimit-Remaining': '0',
                 'X-RateLimit-Reset': limitStatus.reset_at || '',
                 'Retry-After': '900' // 15 minutes in seconds
-              } 
+              }
             }
           );
         }
@@ -145,15 +145,15 @@ serve(async (req) => {
           resetAt: updatedStatus.reset_at,
           limit: MAX_REQUESTS
         }),
-        { 
-          status: 200, 
-          headers: { 
-            ...corsHeaders, 
+        {
+          status: 200,
+          headers: {
+            ...corsHeaders,
             'Content-Type': 'application/json',
             'X-RateLimit-Limit': MAX_REQUESTS.toString(),
             'X-RateLimit-Remaining': updatedStatus.remaining_requests.toString(),
             'X-RateLimit-Reset': updatedStatus.reset_at || ''
-          } 
+          }
         }
       );
     }
@@ -161,7 +161,7 @@ serve(async (req) => {
     if (action === 'cleanup') {
       // Cleanup old rate limit records
       const { data: deletedCount, error } = await supabase.rpc('cleanup_old_api_rate_limits');
-      
+
       if (error) {
         console.error('Cleanup error:', error);
         return new Response(
@@ -185,7 +185,7 @@ serve(async (req) => {
     console.error('Error in api-rate-limiter:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: errorMessage }),
+      JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

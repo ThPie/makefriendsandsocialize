@@ -25,10 +25,10 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    
+
     // Create admin client for service operations
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-    
+
     // Get the authorization header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
@@ -73,7 +73,7 @@ serve(async (req) => {
     if (action === 'check') {
       // Check rate limit status
       const config = RATE_LIMITS[endpoint] || RATE_LIMITS['default'];
-      
+
       const { data: rateLimit } = await supabaseAdmin.rpc('check_admin_rate_limit', {
         _admin_id: user.id,
         _endpoint: endpoint,
@@ -86,7 +86,7 @@ serve(async (req) => {
       // Log to audit if nearing limit (80%)
       if (limitStatus.remaining_requests <= config.maxRequests * 0.2) {
         console.warn(`Admin ${user.id} is at ${Math.round((1 - limitStatus.remaining_requests / config.maxRequests) * 100)}% rate limit for ${endpoint}`);
-        
+
         // Queue alert notification if at 80%
         if (limitStatus.remaining_requests === Math.floor(config.maxRequests * 0.2)) {
           await supabaseAdmin
@@ -111,15 +111,15 @@ serve(async (req) => {
           resetAt: limitStatus.reset_at,
           limit: config.maxRequests
         }),
-        { 
-          status: limitStatus.allowed ? 200 : 429, 
-          headers: { 
-            ...corsHeaders, 
+        {
+          status: limitStatus.allowed ? 200 : 429,
+          headers: {
+            ...corsHeaders,
             'Content-Type': 'application/json',
             'X-RateLimit-Limit': config.maxRequests.toString(),
             'X-RateLimit-Remaining': limitStatus.remaining_requests.toString(),
             'X-RateLimit-Reset': limitStatus.reset_at || ''
-          } 
+          }
         }
       );
     }
@@ -153,10 +153,10 @@ serve(async (req) => {
     if (action === 'status') {
       // Get current rate limit status for all endpoints
       const statuses: Record<string, any> = {};
-      
+
       for (const [ep, config] of Object.entries(RATE_LIMITS)) {
         if (ep === 'default') continue;
-        
+
         const { data: rateLimit } = await supabaseAdmin.rpc('check_admin_rate_limit', {
           _admin_id: user.id,
           _endpoint: ep,
@@ -165,7 +165,7 @@ serve(async (req) => {
         });
 
         const limitStatus = rateLimit?.[0] || { allowed: true, remaining_requests: config.maxRequests, reset_at: null };
-        
+
         statuses[ep] = {
           limit: config.maxRequests,
           remaining: limitStatus.remaining_requests,
@@ -189,7 +189,7 @@ serve(async (req) => {
     console.error('Error in admin-rate-limiter:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: errorMessage }),
+      JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

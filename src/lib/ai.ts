@@ -1,17 +1,32 @@
-import { createOpenAI } from '@ai-sdk/openai';
+import { supabase } from '@/integrations/supabase/client';
 
-// Initialize OpenRouter provider
-// detailed documentation: https://sdk.vercel.ai/providers/ai-sdk-providers/openrouter
-export const openrouter = createOpenAI({
-    baseURL: 'https://openrouter.ai/api/v1',
-    apiKey: import.meta.env.VITE_OPENROUTER_API_KEY,
-    headers: {
-        "HTTP-Referer": import.meta.env.VITE_SITE_URL || "http://localhost:5173", // Optional, for including your app on openrouter.ai rankings
-        "X-Title": "Make Friends & Socialize", // Optional, shows in rankings on openrouter.ai
+/**
+ * Call the server-side AI proxy edge function.
+ * The OpenRouter API key is kept server-side — never exposed to the browser.
+ */
+export async function generateText({
+    model,
+    prompt,
+    maxTokens,
+}: {
+    model?: string;
+    prompt: string;
+    maxTokens?: number;
+}): Promise<{ text: string }> {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData?.session?.access_token;
+
+    if (!token) {
+        throw new Error('Not authenticated');
     }
-});
 
-// Helper to get a model instance
-export const getModel = (modelName: string = 'anthropic/claude-3-5-sonnet') => {
-    return openrouter(modelName);
-};
+    const response = await supabase.functions.invoke('ai-proxy', {
+        body: { model, prompt, maxTokens },
+    });
+
+    if (response.error) {
+        throw new Error(response.error.message || 'AI request failed');
+    }
+
+    return { text: response.data?.text || '' };
+}

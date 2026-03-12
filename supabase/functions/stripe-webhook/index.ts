@@ -127,22 +127,20 @@ serve(async (req) => {
     return new Response("Missing signature", { status: 400 });
   }
 
+  if (!webhookSecret) {
+    logStep("STRIPE_WEBHOOK_SECRET not configured");
+    return new Response("Webhook secret not configured", { status: 500 });
+  }
+
   let event: Stripe.Event;
   const body = await req.text();
 
   try {
-    // If webhook secret is set, verify the signature
-    if (webhookSecret) {
-      event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
-    } else {
-      // For development, parse without verification
-      event = JSON.parse(body) as Stripe.Event;
-      logStep("Warning: No webhook secret configured, skipping signature verification");
-    }
+    event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     logStep("Webhook signature verification failed", { error: errorMessage });
-    return new Response(`Webhook Error: ${errorMessage}`, { status: 400 });
+    return new Response("Webhook signature verification failed", { status: 400 });
   }
 
   // Only log event type and ID, never the full payload
@@ -189,7 +187,7 @@ serve(async (req) => {
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("Error handling event", { error: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), { status: 500 });
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500 });
   }
 });
 

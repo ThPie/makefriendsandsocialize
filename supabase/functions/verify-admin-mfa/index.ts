@@ -14,10 +14,10 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    
+
     // Create admin client for service operations
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-    
+
     // Get the authorization header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
@@ -111,7 +111,7 @@ serve(async (req) => {
 
       // Determine which factor ID to use
       let targetFactorId = providedFactorId;
-      
+
       // If no factorId provided, try to get from listFactors (for already verified factors)
       if (!targetFactorId) {
         const { data: factors } = await supabaseUser.auth.mfa.listFactors();
@@ -119,7 +119,7 @@ serve(async (req) => {
           targetFactorId = factors.totp[0].id;
         }
       }
-      
+
       if (!targetFactorId) {
         return new Response(
           JSON.stringify({ error: 'No MFA factor found. Please set up MFA first.' }),
@@ -258,7 +258,7 @@ serve(async (req) => {
     console.error('Error in verify-admin-mfa:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: errorMessage }),
+      JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
