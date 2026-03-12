@@ -158,12 +158,13 @@ const EventsPage = () => {
   };
 
   const handleRSVP = (event: Event) => {
-    // For external events (Meetup), redirect to Meetup
+    // For external events, redirect to external platform
     if (isExternalEvent(event)) {
-      window.open(getMeetupUrl(event), '_blank', 'noopener,noreferrer');
+      const url = getExternalUrl(event);
+      if (url) window.open(url, '_blank', 'noopener,noreferrer');
       setRsvpFeedback({
         type: 'info',
-        message: "Opening Meetup to complete your RSVP.",
+        message: `Opening ${getSourceLabel(event)} to complete your RSVP.`,
       });
       setTimeout(() => setRsvpFeedback(null), 4000);
       return;
