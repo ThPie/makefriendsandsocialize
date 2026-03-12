@@ -33,7 +33,7 @@ serve(async (req) => {
       );
     }
 
-    console.log('Fetching Eventbrite events for organizer:', ORGANIZER_ID);
+    console.log('Fetching Eventbrite events for organizer:', ORGANIZER_ID, 'token length:', eventbriteApiKey.length, 'first4:', eventbriteApiKey.substring(0, 4));
 
     // Fetch events from Eventbrite API (use token query param for compatibility)
     const eventsResponse = await fetch(
