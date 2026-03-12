@@ -2,7 +2,18 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1';
 import { getCorsHeaders } from '../_shared/cors.ts';
 
-const EVENTBRITE_ORGANIZER_URL = 'https://www.eventbrite.com/o/make-friends-socialize-109567181801';
+// Normalize title for fuzzy matching
+const normalizeTitle = (t: string) =>
+  t.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
+
+// Calculate word-overlap similarity between two titles
+const titleSimilarity = (a: string, b: string): number => {
+  const wordsA = new Set(normalizeTitle(a).split(' ').filter(w => w.length > 3));
+  const wordsB = new Set(normalizeTitle(b).split(' ').filter(w => w.length > 3));
+  if (wordsA.size === 0 || wordsB.size === 0) return 0;
+  const intersection = [...wordsA].filter(w => wordsB.has(w));
+  return intersection.length / Math.min(wordsA.size, wordsB.size);
+};
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -30,7 +41,7 @@ serve(async (req) => {
       );
     }
 
-    // First, discover the organization ID for this token
+    // Discover the organization ID for this token
     console.log('Discovering organization ID from token...');
     const orgResponse = await fetch(
       `https://www.eventbriteapi.com/v3/users/me/organizations/?token=${eventbriteApiKey}`,
@@ -57,9 +68,8 @@ serve(async (req) => {
       );
     }
 
-    // Use the first organization (or find the matching one)
     const ORGANIZER_ID = organizations[0].id;
-    console.log('Using organization ID:', ORGANIZER_ID, 'token length:', eventbriteApiKey.length, 'first4:', eventbriteApiKey.substring(0, 4));
+    console.log('Using organization ID:', ORGANIZER_ID);
 
     // Fetch events from Eventbrite API
     const eventsResponse = await fetch(
@@ -82,11 +92,29 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get today's date in Mountain Time
     const today = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'America/Denver',
       year: 'numeric', month: '2-digit', day: '2-digit',
     }).format(new Date());
+
+    // Pre-fetch ALL future events from DB for cross-platform matching
+    const { data: allExistingEvents } = await supabase
+      .from('events')
+      .select('id, title, date, source, eventbrite_id, rsvp_count, meetup_rsvp_count, eventbrite_rsvp_count, luma_rsvp_count')
+      .gte('date', today)
+      .neq('status', 'cancelled');
+
+    // Build lookup maps
+    const byEventbriteId = new Map<string, any>();
+    const byDate = new Map<string, any[]>();
+    if (allExistingEvents) {
+      for (const e of allExistingEvents) {
+        if (e.eventbrite_id) byEventbriteId.set(e.eventbrite_id, e);
+        const dateEvents = byDate.get(e.date) || [];
+        dateEvents.push(e);
+        byDate.set(e.date, dateEvents);
+      }
+    }
 
     let insertedCount = 0;
     let updatedCount = 0;
@@ -95,37 +123,29 @@ serve(async (req) => {
       const title = event.name?.text?.trim();
       if (!title) continue;
 
-      // Parse date from Eventbrite format (ISO 8601)
-      const startLocal = event.start?.local; // "2026-03-21T18:00:00"
+      const startLocal = event.start?.local;
       if (!startLocal) continue;
 
       const eventDate = startLocal.split('T')[0];
       if (eventDate < today) continue;
 
-      // Parse time
       const timePart = startLocal.split('T')[1];
       const formattedTime = timePart ? timePart.substring(0, 5) : null;
 
-      // Venue info
       const venue = event.venue;
       const venueName = venue?.name || null;
       const venueAddress = venue?.address?.localized_address_display || null;
       const city = venue?.address?.city || 'Salt Lake City';
       const country = venue?.address?.country || 'US';
-
-      // Description
       const description = event.description?.text || event.summary || null;
-
-      // Image
       const imageUrl = event.logo?.original?.url || event.logo?.url || null;
 
-      // Ticket price
       let ticketPrice = 0;
       if (event.is_free === false && event.ticket_availability?.minimum_ticket_price) {
         ticketPrice = parseFloat(event.ticket_availability.minimum_ticket_price.major_value) || 0;
       }
 
-      // Attendee count - fetch from attendees endpoint
+      // Fetch attendee count
       let attendeeCount = 0;
       try {
         const attendeeResponse = await fetch(
@@ -135,22 +155,29 @@ serve(async (req) => {
           const attendeeData = await attendeeResponse.json();
           attendeeCount = attendeeData.pagination?.object_count || 0;
         } else {
-          // Consume the response body
           await attendeeResponse.text();
         }
       } catch (e) {
         console.error('Error fetching attendees for event', event.id, e);
       }
 
-      const eventbriteId = event.id;
+      const eventbriteId = String(event.id);
 
-      // Check if event already exists (by eventbrite_id or title+date match)
-      const { data: existing } = await supabase
-        .from('events')
-        .select('id, source, eventbrite_id, rsvp_count, meetup_rsvp_count, luma_rsvp_count')
-        .or(`eventbrite_id.eq.${eventbriteId},and(title.ilike.%${title.substring(0, 30)}%,date.eq.${eventDate})`)
-        .limit(1)
-        .single();
+      // --- Cross-platform matching ---
+      // 1) Match by eventbrite_id
+      let match = byEventbriteId.get(eventbriteId);
+
+      // 2) Match by title similarity on the same date
+      if (!match) {
+        const sameDateEvents = byDate.get(eventDate) || [];
+        for (const existing of sameDateEvents) {
+          if (titleSimilarity(title, existing.title) >= 0.5) {
+            match = existing;
+            console.log(`Matched by title: "${title}" ↔ "${existing.title}" (${existing.source})`);
+            break;
+          }
+        }
+      }
 
       const eventData = {
         time: formattedTime,
@@ -171,24 +198,30 @@ serve(async (req) => {
         external_url: event.url,
       };
 
-      if (existing) {
-        // Update existing event - merge attendee counts
-        const mergedRsvp = (existing.meetup_rsvp_count || 0) + attendeeCount + (existing.luma_rsvp_count || 0);
+      if (match) {
+        // Merge into existing event — sum platform-specific counts
+        const mergedRsvp = (match.meetup_rsvp_count || 0) + attendeeCount + (match.luma_rsvp_count || 0);
         const { error } = await supabase
           .from('events')
           .update({
             ...eventData,
             rsvp_count: mergedRsvp,
-            // Keep existing source if it was meetup (primary), otherwise set to eventbrite
-            source: existing.source || 'eventbrite',
+            // Keep meetup as primary source if it was the original
+            source: match.source === 'meetup' ? 'meetup' : (match.source || 'eventbrite'),
           })
-          .eq('id', existing.id);
+          .eq('id', match.id);
 
-        if (!error) updatedCount++;
-        else console.error('Error updating event:', error);
+        if (!error) {
+          updatedCount++;
+          // Update our local map so subsequent matches see the updated eventbrite_id
+          match.eventbrite_id = eventbriteId;
+          match.eventbrite_rsvp_count = attendeeCount;
+        } else {
+          console.error('Error updating event:', error);
+        }
       } else {
-        // Insert new event
-        const { error } = await supabase
+        // No match found — insert new event
+        const { data: inserted, error } = await supabase
           .from('events')
           .insert({
             title,
@@ -199,10 +232,21 @@ serve(async (req) => {
             rsvp_count: attendeeCount,
             meetup_rsvp_count: 0,
             luma_rsvp_count: 0,
-          });
+          })
+          .select('id')
+          .single();
 
-        if (error) console.error('Error inserting event:', error);
-        else insertedCount++;
+        if (error) {
+          console.error('Error inserting event:', error);
+        } else {
+          insertedCount++;
+          // Add to local maps for subsequent matching
+          const newEvent = { id: inserted.id, title, date: eventDate, source: 'eventbrite', eventbrite_id: eventbriteId, meetup_rsvp_count: 0, eventbrite_rsvp_count: attendeeCount, luma_rsvp_count: 0, rsvp_count: attendeeCount };
+          byEventbriteId.set(eventbriteId, newEvent);
+          const dateEvents = byDate.get(eventDate) || [];
+          dateEvents.push(newEvent);
+          byDate.set(eventDate, dateEvents);
+        }
       }
     }
 
@@ -211,11 +255,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        data: {
-          eventsFound: events.length,
-          eventsInserted: insertedCount,
-          eventsUpdated: updatedCount,
-        },
+        data: { eventsFound: events.length, eventsInserted: insertedCount, eventsUpdated: updatedCount },
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

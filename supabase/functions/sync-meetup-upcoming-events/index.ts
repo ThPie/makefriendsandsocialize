@@ -341,19 +341,23 @@ serve(async (req) => {
     // Track normalized titles we've processed to avoid duplicates
     const processedEvents = new Set<string>();
 
-    // Get all existing meetup events to check for deletions - include titles for efficient matching
-    const { data: existingMeetupEvents } = await supabase
+    // Get ALL existing future events (not just meetup) for cross-platform matching
+    const { data: allExistingEvents } = await supabase
       .from('events')
-      .select('id, title, date, eventbrite_rsvp_count, luma_rsvp_count')
-      .eq('source', 'meetup')
-      .gte('date', today);
+      .select('id, title, date, source, eventbrite_id, luma_id, eventbrite_rsvp_count, luma_rsvp_count, meetup_rsvp_count')
+      .gte('date', today)
+      .neq('status', 'cancelled');
 
-    // Build a map of existing events by normalized key for O(1) lookup
-    const existingEventsMap = new Map<string, { id: string; title: string; date: string }>();
-    if (existingMeetupEvents) {
-      for (const existing of existingMeetupEvents) {
+    // Build a map by normalized title+date for O(1) lookup
+    const existingEventsMap = new Map<string, any>();
+    const existingByDate = new Map<string, any[]>();
+    if (allExistingEvents) {
+      for (const existing of allExistingEvents) {
         const key = `${normalizeTitle(existing.title)}|${existing.date}`;
         existingEventsMap.set(key, existing);
+        const dateEvents = existingByDate.get(existing.date) || [];
+        dateEvents.push(existing);
+        existingByDate.set(existing.date, dateEvents);
       }
     }
 
@@ -361,9 +365,10 @@ serve(async (req) => {
       validEvents.map(e => `${normalizeTitle(e.title)}|${e.date}`)
     );
 
-    // Mark events that are no longer on Meetup as cancelled
-    if (existingMeetupEvents) {
-      for (const existing of existingMeetupEvents) {
+    // Mark meetup-sourced events that are no longer on Meetup as cancelled
+    if (allExistingEvents) {
+      for (const existing of allExistingEvents) {
+        if (existing.source !== 'meetup') continue;
         const existingKey = `${normalizeTitle(existing.title)}|${existing.date}`;
         if (!scrapedEventKeys.has(existingKey)) {
           console.log('Event no longer on Meetup, marking as cancelled:', existing.title);
@@ -386,8 +391,26 @@ serve(async (req) => {
       }
       processedEvents.add(eventKey);
 
-      // Use the pre-built map for O(1) lookup instead of querying DB for each event
-      const matchingEvent = existingEventsMap.get(eventKey);
+      // Use exact key match first, then fuzzy cross-platform match
+      let matchingEvent = existingEventsMap.get(eventKey);
+
+      // If no exact match, try fuzzy title matching against all events on that date
+      if (!matchingEvent) {
+        const sameDateEvents = existingByDate.get(event.date) || [];
+        for (const existing of sameDateEvents) {
+          const normExisting = normalizeTitle(existing.title);
+          const wordsA = new Set(normalizedTitle.split(' ').filter((w: string) => w.length > 3));
+          const wordsB = new Set(normExisting.split(' ').filter((w: string) => w.length > 3));
+          if (wordsA.size === 0 || wordsB.size === 0) continue;
+          const intersection = [...wordsA].filter((w: string) => wordsB.has(w));
+          const similarity = intersection.length / Math.min(wordsA.size, wordsB.size);
+          if (similarity >= 0.5) {
+            matchingEvent = existing;
+            console.log(`Cross-platform match: "${event.title}" ↔ "${existing.title}" (${existing.source})`);
+            break;
+          }
+        }
+      }
 
       const meetupRsvp = event.rsvpCount || 0;
       const eventData = {
@@ -408,11 +431,10 @@ serve(async (req) => {
 
       if (matchingEvent) {
         // Recalculate total by combining meetup count with other platforms
-        const existingFull = existingEventsMap.get(eventKey);
-        const totalRsvp = meetupRsvp + (existingFull?.eventbrite_rsvp_count || 0) + (existingFull?.luma_rsvp_count || 0);
+        const totalRsvp = meetupRsvp + (matchingEvent.eventbrite_rsvp_count || 0) + (matchingEvent.luma_rsvp_count || 0);
         const { error } = await supabase
           .from('events')
-          .update({ ...eventData, rsvp_count: totalRsvp })
+          .update({ ...eventData, rsvp_count: totalRsvp, source: 'meetup' })
           .eq('id', matchingEvent.id);
 
         if (!error) updatedCount++;
