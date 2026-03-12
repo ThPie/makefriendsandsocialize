@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -10,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { InlineFeedback } from '@/components/ui/inline-feedback';
 import { format, differenceInDays } from 'date-fns';
-import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2, ExternalLink } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2 } from 'lucide-react';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
 import { parseLocalDate } from '@/lib/date-utils';
 import { categorizeEvent } from '@/lib/event-categorization';
@@ -45,6 +45,7 @@ interface Event {
   rsvp_count?: number | null;
   source?: string | null;
   external_url?: string | null;
+  eventbrite_id?: string | null;
 }
 
 const EventSkeleton = () => (
@@ -82,7 +83,21 @@ const EventsPage = () => {
   const [activeTab, setActiveTab] = useState<EventTab>('upcoming');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [rsvpFeedback, setRsvpFeedback] = useState<{ type: 'success' | 'info'; message: string } | null>(null);
+  const [ebWidgetLoaded, setEbWidgetLoaded] = useState(false);
   const categories = ["All", "Networking", "Social", "Dining", "Art & Culture", "Sports", "Music", "Dating"];
+
+  // Load Eventbrite embedded checkout widget script
+  useEffect(() => {
+    if (document.querySelector('script[src*="eb_widgets.js"]')) {
+      setEbWidgetLoaded(true);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://www.eventbrite.com/static/widgets/eb_widgets.js';
+    script.async = true;
+    script.onload = () => setEbWidgetLoaded(true);
+    document.head.appendChild(script);
+  }, []);
 
   // Fetch events from database
   const { data: events = [], isLoading } = useQuery({
@@ -141,6 +156,11 @@ const EventsPage = () => {
     return event.source === 'meetup' || event.source === 'eventbrite' || event.source === 'luma' || event.external_url;
   };
 
+  // Check if event has Eventbrite embedded checkout available
+  const isEventbriteEvent = (event: Event) => {
+    return event.source === 'eventbrite' && event.eventbrite_id;
+  };
+
   // Get the external URL for an event
   const getExternalUrl = (event: Event) => {
     if (event.external_url) return event.external_url;
@@ -148,23 +168,44 @@ const EventsPage = () => {
     return null;
   };
 
-  const getSourceLabel = (event: Event) => {
-    switch (event.source) {
-      case 'meetup': return 'Meetup';
-      case 'eventbrite': return 'Eventbrite';
-      case 'luma': return 'Luma';
-      default: return 'External';
+  // Open Eventbrite embedded checkout modal
+  const openEventbriteCheckout = useCallback((event: Event) => {
+    if (!event.eventbrite_id || !(window as any).EBWidgets) {
+      // Fallback: open Eventbrite page
+      const url = event.external_url || `https://www.eventbrite.com/e/${event.eventbrite_id}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+      return;
     }
-  };
+
+    (window as any).EBWidgets.createWidget({
+      widgetType: 'checkout',
+      eventId: event.eventbrite_id,
+      modal: true,
+      modalTriggerElementId: `eb-trigger-${event.id}`,
+      onOrderComplete: () => {
+        setRsvpFeedback({
+          type: 'success',
+          message: 'You\'re registered! Check your email for confirmation.',
+        });
+        setTimeout(() => setRsvpFeedback(null), 5000);
+      },
+    });
+  }, []);
 
   const handleRSVP = (event: Event) => {
-    // For external events, redirect to external platform
+    // For Eventbrite events, use embedded checkout
+    if (isEventbriteEvent(event)) {
+      openEventbriteCheckout(event);
+      return;
+    }
+
+    // For other external events, redirect to external platform
     if (isExternalEvent(event)) {
       const url = getExternalUrl(event);
       if (url) window.open(url, '_blank', 'noopener,noreferrer');
       setRsvpFeedback({
         type: 'info',
-        message: `Opening event page to complete your RSVP.`,
+        message: 'Opening event page to complete your RSVP.',
       });
       setTimeout(() => setRsvpFeedback(null), 4000);
       return;
@@ -448,12 +489,6 @@ const EventsPage = () => {
                           return null;
                         })()}
                       </div>
-                      {isExternalEvent(event) && (
-                        <span className="flex items-center gap-1 text-primary text-xs font-bold bg-primary/10 px-2 py-1 rounded-full">
-                          <ExternalLink className="h-3.5 w-3.5" />
-                          External
-                        </span>
-                      )}
                     </div>
 
                     <h3 className="text-foreground text-xl font-semibold font-display leading-tight mb-3 group-hover:text-primary transition-colors">
@@ -514,19 +549,12 @@ const EventsPage = () => {
                       {activeTab === 'upcoming' ? (
                         <>
                           <AnimatedButton
+                            id={isEventbriteEvent(event) ? `eb-trigger-${event.id}` : undefined}
                             onClick={() => handleRSVP(event)}
-                            variant={isExternalEvent(event) ? "outline" : "default"}
-                            className={`flex-1 min-w-[100px] ${isExternalEvent(event) ? 'border-primary/50 text-primary hover:bg-primary/10' : ''}`}
-                            aria-label={isExternalEvent(event) ? `RSVP for ${event.title}` : `RSVP for ${event.title}`}
+                            className="flex-1 min-w-[100px]"
+                            aria-label={`RSVP for ${event.title}`}
                           >
-                            {isExternalEvent(event) ? (
-                              <>
-                                <ExternalLink className="h-4 w-4 mr-2" />
-                                RSVP
-                              </>
-                            ) : (
-                              'RSVP Now'
-                            )}
+                            RSVP Now
                           </AnimatedButton>
                           <AddToCalendarButton event={event} />
                           <Button variant="outline" asChild className="rounded-xl">
