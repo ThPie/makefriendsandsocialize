@@ -41,7 +41,7 @@ export default function ResetPasswordPage() {
   const [isCheckingPassword, setIsCheckingPassword] = useState(false);
   const [passwordServerError, setPasswordServerError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [passwordCheckTimeout, setPasswordCheckTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [passwordCheckTimeout, setPasswordCheckTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   // Check for MFA factors when session is established
   useEffect(() => {

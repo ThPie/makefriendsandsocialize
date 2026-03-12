@@ -1748,6 +1748,57 @@ export type Database = {
           },
         ]
       }
+      host_applications: {
+        Row: {
+          admin_notes: string | null
+          availability: string | null
+          created_at: string
+          email: string
+          experience_description: string | null
+          full_name: string
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          skill_topic: string
+          status: string
+          teaching_format: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          availability?: string | null
+          created_at?: string
+          email: string
+          experience_description?: string | null
+          full_name: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          skill_topic: string
+          status?: string
+          teaching_format?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          availability?: string | null
+          created_at?: string
+          email?: string
+          experience_description?: string | null
+          full_name?: string
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          skill_topic?: string
+          status?: string
+          teaching_format?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       instagram_settings: {
         Row: {
           auto_sync_enabled: boolean
