@@ -136,25 +136,35 @@ const EventsPage = () => {
     };
   }, [queryClient]);
 
-  // Check if event is external (Meetup)
+  // Check if event is external (Meetup, Eventbrite, Luma)
   const isExternalEvent = (event: Event) => {
-    return event.source === 'meetup' || event.external_url;
+    return event.source === 'meetup' || event.source === 'eventbrite' || event.source === 'luma' || event.external_url;
   };
 
-  // Get the Meetup URL for an event
-  const getMeetupUrl = (event: Event) => {
+  // Get the external URL for an event
+  const getExternalUrl = (event: Event) => {
     if (event.external_url) return event.external_url;
-    // Fallback: construct URL based on event title
-    return 'https://www.meetup.com/makefriendsandsocialize/events/';
+    if (event.source === 'meetup') return 'https://www.meetup.com/makefriendsandsocialize/events/';
+    return null;
+  };
+
+  const getSourceLabel = (event: Event) => {
+    switch (event.source) {
+      case 'meetup': return 'Meetup';
+      case 'eventbrite': return 'Eventbrite';
+      case 'luma': return 'Luma';
+      default: return 'External';
+    }
   };
 
   const handleRSVP = (event: Event) => {
-    // For external events (Meetup), redirect to Meetup
+    // For external events, redirect to external platform
     if (isExternalEvent(event)) {
-      window.open(getMeetupUrl(event), '_blank', 'noopener,noreferrer');
+      const url = getExternalUrl(event);
+      if (url) window.open(url, '_blank', 'noopener,noreferrer');
       setRsvpFeedback({
         type: 'info',
-        message: "Opening Meetup to complete your RSVP.",
+        message: `Opening ${getSourceLabel(event)} to complete your RSVP.`,
       });
       setTimeout(() => setRsvpFeedback(null), 4000);
       return;
@@ -439,9 +449,9 @@ const EventsPage = () => {
                         })()}
                       </div>
                       {isExternalEvent(event) && (
-                        <span className="flex items-center gap-1 text-blue-400 text-xs font-bold bg-blue-500/10 px-2 py-1 rounded-full">
+                        <span className="flex items-center gap-1 text-primary text-xs font-bold bg-primary/10 px-2 py-1 rounded-full">
                           <ExternalLink className="h-3.5 w-3.5" />
-                          Meetup
+                          {getSourceLabel(event)}
                         </span>
                       )}
                     </div>
@@ -506,13 +516,13 @@ const EventsPage = () => {
                           <AnimatedButton
                             onClick={() => handleRSVP(event)}
                             variant={isExternalEvent(event) ? "outline" : "default"}
-                            className={`flex-1 min-w-[100px] ${isExternalEvent(event) ? 'border-blue-500/50 text-blue-500 hover:bg-blue-500/10' : ''}`}
-                            aria-label={isExternalEvent(event) ? `RSVP on Meetup for ${event.title}` : `RSVP for ${event.title}`}
+                            className={`flex-1 min-w-[100px] ${isExternalEvent(event) ? 'border-primary/50 text-primary hover:bg-primary/10' : ''}`}
+                            aria-label={isExternalEvent(event) ? `RSVP on ${getSourceLabel(event)} for ${event.title}` : `RSVP for ${event.title}`}
                           >
                             {isExternalEvent(event) ? (
                               <>
                                 <ExternalLink className="h-4 w-4 mr-2" />
-                                RSVP on Meetup
+                                RSVP on {getSourceLabel(event)}
                               </>
                             ) : (
                               'RSVP Now'

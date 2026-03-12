@@ -344,7 +344,7 @@ serve(async (req) => {
     // Get all existing meetup events to check for deletions - include titles for efficient matching
     const { data: existingMeetupEvents } = await supabase
       .from('events')
-      .select('id, title, date')
+      .select('id, title, date, eventbrite_rsvp_count, luma_rsvp_count')
       .eq('source', 'meetup')
       .gte('date', today);
 
@@ -389,6 +389,7 @@ serve(async (req) => {
       // Use the pre-built map for O(1) lookup instead of querying DB for each event
       const matchingEvent = existingEventsMap.get(eventKey);
 
+      const meetupRsvp = event.rsvpCount || 0;
       const eventData = {
         time: event.time || '18:00',
         location: event.location || 'Salt Lake City, UT',
@@ -402,13 +403,16 @@ serve(async (req) => {
         tags: ['meetup', 'networking'],
         updated_at: new Date().toISOString(),
         description: event.description || 'Join us for this exciting networking event!',
-        rsvp_count: event.rsvpCount || 0,
+        meetup_rsvp_count: meetupRsvp,
       };
 
       if (matchingEvent) {
+        // Recalculate total by combining meetup count with other platforms
+        const existingFull = existingEventsMap.get(eventKey);
+        const totalRsvp = meetupRsvp + (existingFull?.eventbrite_rsvp_count || 0) + (existingFull?.luma_rsvp_count || 0);
         const { error } = await supabase
           .from('events')
-          .update(eventData)
+          .update({ ...eventData, rsvp_count: totalRsvp })
           .eq('id', matchingEvent.id);
 
         if (!error) updatedCount++;
@@ -420,6 +424,9 @@ serve(async (req) => {
             title: event.title,
             date: event.date,
             ...eventData,
+            rsvp_count: meetupRsvp,
+            eventbrite_rsvp_count: 0,
+            luma_rsvp_count: 0,
             tier: 'patron',
             city: 'Salt Lake City',
             country: 'United States',
