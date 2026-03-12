@@ -423,18 +423,19 @@ serve(async (req) => {
         external_url: event.externalUrl,
         ticket_price: event.price || 0,
         currency: 'USD',
-        tags: ['meetup', 'networking'],
+        // Don't set tags here — auto-tag-events will assign circle tags
         updated_at: new Date().toISOString(),
         description: event.description || 'Join us for this exciting networking event!',
         meetup_rsvp_count: meetupRsvp,
       };
 
       if (matchingEvent) {
-        // Recalculate total by combining meetup count with other platforms
+        // Only update meetup-specific fields, preserve existing tags
         const totalRsvp = meetupRsvp + (matchingEvent.eventbrite_rsvp_count || 0) + (matchingEvent.luma_rsvp_count || 0);
+        const { time, location, venue_name, image_url, status, external_url, ticket_price, currency, description, meetup_rsvp_count, updated_at } = eventData;
         const { error } = await supabase
           .from('events')
-          .update({ ...eventData, rsvp_count: totalRsvp, source: 'meetup' })
+          .update({ time, location, venue_name, image_url, status, external_url, ticket_price, currency, description, meetup_rsvp_count, updated_at, rsvp_count: totalRsvp, source: 'meetup' })
           .eq('id', matchingEvent.id);
 
         if (!error) updatedCount++;
@@ -445,7 +446,18 @@ serve(async (req) => {
           .insert({
             title: event.title,
             date: event.date,
-            ...eventData,
+            time: eventData.time,
+            location: eventData.location,
+            venue_name: eventData.venue_name,
+            image_url: eventData.image_url,
+            status: eventData.status,
+            source: 'meetup',
+            external_url: eventData.external_url,
+            ticket_price: eventData.ticket_price,
+            currency: eventData.currency,
+            description: eventData.description,
+            meetup_rsvp_count: meetupRsvp,
+            tags: [],
             rsvp_count: meetupRsvp,
             eventbrite_rsvp_count: 0,
             luma_rsvp_count: 0,

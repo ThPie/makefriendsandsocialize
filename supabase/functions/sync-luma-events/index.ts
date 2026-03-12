@@ -188,28 +188,17 @@ serve(async (req) => {
         }) || null;
       }
 
-      const eventData = {
-        time: formattedTime,
-        location: event.location || null,
-        image_url: event.imageUrl || null,
-        description: event.description || null,
-        status: 'published',
-        tags: ['luma'],
-        updated_at: new Date().toISOString(),
-        luma_id: lumaId,
-        luma_rsvp_count: attendeeCount,
-        external_url: event.eventUrl || LUMA_PROFILE_URL,
-      };
-
       if (titleMatch) {
-        // Merge into existing event — sum platform-specific counts
+        // Merge into existing event — only update luma-specific fields, preserve tags
         const mergedRsvp = (titleMatch.meetup_rsvp_count || 0) + (titleMatch.eventbrite_rsvp_count || 0) + attendeeCount;
         const { error } = await supabase
           .from('events')
           .update({
-            ...eventData,
+            luma_id: lumaId,
+            luma_rsvp_count: attendeeCount,
             rsvp_count: mergedRsvp,
-            // Keep meetup or eventbrite as primary source
+            external_url: event.eventUrl || LUMA_PROFILE_URL,
+            updated_at: new Date().toISOString(),
             source: (titleMatch.source === 'meetup' || titleMatch.source === 'eventbrite') ? titleMatch.source : 'luma',
           })
           .eq('id', titleMatch.id);
@@ -223,7 +212,15 @@ serve(async (req) => {
           .insert({
             title,
             date: eventDate,
-            ...eventData,
+            time: formattedTime,
+            location: event.location || null,
+            image_url: event.imageUrl || null,
+            description: event.description || null,
+            status: 'published',
+            tags: [],
+            luma_id: lumaId,
+            luma_rsvp_count: attendeeCount,
+            external_url: event.eventUrl || LUMA_PROFILE_URL,
             source: 'luma',
             tier: 'patron',
             city: 'Salt Lake City',

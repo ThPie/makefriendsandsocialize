@@ -325,10 +325,9 @@ const EventDetailPage = () => {
               <Badge className={getTierBadgeColor(event.tier)}>
                 {event.tier.charAt(0).toUpperCase() + event.tier.slice(1)} Tier
               </Badge>
-              {event.source === 'meetup' && (
-                <Badge variant="outline" className="text-xs">
-                  <ExternalLink className="h-3 w-3 mr-1" />
-                  Meetup
+              {event.tags && event.tags[0] && (
+                <Badge variant="outline" className="text-xs uppercase tracking-wider">
+                  {event.tags[0]}
                 </Badge>
               )}
             </div>
