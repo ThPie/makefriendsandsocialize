@@ -63,21 +63,21 @@ const HomePage = () => {
       </div>
 
       {/* Moments from the Circle */}
-      <div className="order-5">
+      <div className="order-6">
         <Suspense fallback={<SectionSkeleton />}>
           <PhotoGallerySection />
         </Suspense>
       </div>
 
       {/* How It Works */}
-      <div className="order-6">
+      <div className="order-7">
         <Suspense fallback={<SectionSkeleton />}>
           <WhyChooseSection />
         </Suspense>
       </div>
 
       {/* What Our Members Say — last section before footer */}
-      <div className="order-7">
+      <div className="order-8">
         <Suspense fallback={<SectionSkeleton />}>
           <TestimonialsSection />
         </Suspense>
