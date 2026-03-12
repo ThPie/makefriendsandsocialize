@@ -446,17 +446,11 @@ const EventsPage = () => {
                       )}
                     </div>
 
-                    <h3 className="text-foreground text-xl font-semibold font-display leading-tight mb-2 group-hover:text-primary transition-colors">
+                    <h3 className="text-foreground text-xl font-semibold font-display leading-tight mb-3 group-hover:text-primary transition-colors">
                       {event.title}
                     </h3>
 
-                    {event.description && (
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
-                        {event.description}
-                      </p>
-                    )}
-
-                    <div className="flex flex-col gap-2 text-muted-foreground text-sm mb-6 mt-auto">
+                    <div className="flex flex-col gap-2 text-muted-foreground text-sm mb-4">
                       {event.time && (
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4" />
@@ -499,6 +493,12 @@ const EventsPage = () => {
                         })()}
                       </div>
                     </div>
+
+                    {event.description && (
+                      <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
+                        {event.description}
+                      </p>
+                    )}
 
                     <div className="flex flex-wrap gap-2 md:gap-3 mt-auto border-t border-border pt-4">
                       {activeTab === 'upcoming' ? (
