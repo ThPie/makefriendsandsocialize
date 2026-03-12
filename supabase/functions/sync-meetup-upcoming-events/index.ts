@@ -407,9 +407,12 @@ serve(async (req) => {
       };
 
       if (matchingEvent) {
+        // Recalculate total by combining meetup count with other platforms
+        const existingFull = existingEventsMap.get(eventKey);
+        const totalRsvp = meetupRsvp + (existingFull?.eventbrite_rsvp_count || 0) + (existingFull?.luma_rsvp_count || 0);
         const { error } = await supabase
           .from('events')
-          .update(eventData)
+          .update({ ...eventData, rsvp_count: totalRsvp })
           .eq('id', matchingEvent.id);
 
         if (!error) updatedCount++;
