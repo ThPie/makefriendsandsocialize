@@ -341,19 +341,23 @@ serve(async (req) => {
     // Track normalized titles we've processed to avoid duplicates
     const processedEvents = new Set<string>();
 
-    // Get all existing meetup events to check for deletions - include titles for efficient matching
-    const { data: existingMeetupEvents } = await supabase
+    // Get ALL existing future events (not just meetup) for cross-platform matching
+    const { data: allExistingEvents } = await supabase
       .from('events')
-      .select('id, title, date, eventbrite_rsvp_count, luma_rsvp_count')
-      .eq('source', 'meetup')
-      .gte('date', today);
+      .select('id, title, date, source, eventbrite_id, luma_id, eventbrite_rsvp_count, luma_rsvp_count, meetup_rsvp_count')
+      .gte('date', today)
+      .neq('status', 'cancelled');
 
-    // Build a map of existing events by normalized key for O(1) lookup
-    const existingEventsMap = new Map<string, { id: string; title: string; date: string }>();
-    if (existingMeetupEvents) {
-      for (const existing of existingMeetupEvents) {
+    // Build a map by normalized title+date for O(1) lookup
+    const existingEventsMap = new Map<string, any>();
+    const existingByDate = new Map<string, any[]>();
+    if (allExistingEvents) {
+      for (const existing of allExistingEvents) {
         const key = `${normalizeTitle(existing.title)}|${existing.date}`;
         existingEventsMap.set(key, existing);
+        const dateEvents = existingByDate.get(existing.date) || [];
+        dateEvents.push(existing);
+        existingByDate.set(existing.date, dateEvents);
       }
     }
 
