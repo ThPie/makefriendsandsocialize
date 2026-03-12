@@ -164,7 +164,7 @@ const EventsPage = () => {
       if (url) window.open(url, '_blank', 'noopener,noreferrer');
       setRsvpFeedback({
         type: 'info',
-        message: `Opening ${getSourceLabel(event)} to complete your RSVP.`,
+        message: `Opening event page to complete your RSVP.`,
       });
       setTimeout(() => setRsvpFeedback(null), 4000);
       return;
@@ -451,7 +451,7 @@ const EventsPage = () => {
                       {isExternalEvent(event) && (
                         <span className="flex items-center gap-1 text-primary text-xs font-bold bg-primary/10 px-2 py-1 rounded-full">
                           <ExternalLink className="h-3.5 w-3.5" />
-                          {getSourceLabel(event)}
+                          External
                         </span>
                       )}
                     </div>
@@ -517,12 +517,12 @@ const EventsPage = () => {
                             onClick={() => handleRSVP(event)}
                             variant={isExternalEvent(event) ? "outline" : "default"}
                             className={`flex-1 min-w-[100px] ${isExternalEvent(event) ? 'border-primary/50 text-primary hover:bg-primary/10' : ''}`}
-                            aria-label={isExternalEvent(event) ? `RSVP on ${getSourceLabel(event)} for ${event.title}` : `RSVP for ${event.title}`}
+                            aria-label={isExternalEvent(event) ? `RSVP for ${event.title}` : `RSVP for ${event.title}`}
                           >
                             {isExternalEvent(event) ? (
                               <>
                                 <ExternalLink className="h-4 w-4 mr-2" />
-                                RSVP on {getSourceLabel(event)}
+                                RSVP
                               </>
                             ) : (
                               'RSVP Now'
