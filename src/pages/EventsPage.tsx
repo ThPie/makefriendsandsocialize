@@ -136,16 +136,25 @@ const EventsPage = () => {
     };
   }, [queryClient]);
 
-  // Check if event is external (Meetup)
+  // Check if event is external (Meetup, Eventbrite, Luma)
   const isExternalEvent = (event: Event) => {
-    return event.source === 'meetup' || event.external_url;
+    return event.source === 'meetup' || event.source === 'eventbrite' || event.source === 'luma' || event.external_url;
   };
 
-  // Get the Meetup URL for an event
-  const getMeetupUrl = (event: Event) => {
+  // Get the external URL for an event
+  const getExternalUrl = (event: Event) => {
     if (event.external_url) return event.external_url;
-    // Fallback: construct URL based on event title
-    return 'https://www.meetup.com/makefriendsandsocialize/events/';
+    if (event.source === 'meetup') return 'https://www.meetup.com/makefriendsandsocialize/events/';
+    return null;
+  };
+
+  const getSourceLabel = (event: Event) => {
+    switch (event.source) {
+      case 'meetup': return 'Meetup';
+      case 'eventbrite': return 'Eventbrite';
+      case 'luma': return 'Luma';
+      default: return 'External';
+    }
   };
 
   const handleRSVP = (event: Event) => {
