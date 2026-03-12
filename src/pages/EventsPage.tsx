@@ -45,6 +45,7 @@ interface Event {
   rsvp_count?: number | null;
   source?: string | null;
   external_url?: string | null;
+  eventbrite_id?: string | null;
 }
 
 const EventSkeleton = () => (
