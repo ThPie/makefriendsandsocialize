@@ -35,12 +35,11 @@ serve(async (req) => {
 
     console.log('Fetching Eventbrite events for organizer:', ORGANIZER_ID);
 
-    // Fetch events from Eventbrite API
+    // Fetch events from Eventbrite API (use token query param for compatibility)
     const eventsResponse = await fetch(
-      `https://www.eventbriteapi.com/v3/organizations/${ORGANIZER_ID}/events/?status=live,started&order_by=start_asc&expand=venue,ticket_availability`,
+      `https://www.eventbriteapi.com/v3/organizations/${ORGANIZER_ID}/events/?status=live,started&order_by=start_asc&expand=venue,ticket_availability&token=${eventbriteApiKey}`,
       {
         headers: {
-          'Authorization': `Bearer ${eventbriteApiKey}`,
           'Content-Type': 'application/json',
         },
       }
