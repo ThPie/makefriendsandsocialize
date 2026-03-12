@@ -430,11 +430,12 @@ serve(async (req) => {
       };
 
       if (matchingEvent) {
-        // Recalculate total by combining meetup count with other platforms
+        // Only update meetup-specific fields, preserve existing tags
         const totalRsvp = meetupRsvp + (matchingEvent.eventbrite_rsvp_count || 0) + (matchingEvent.luma_rsvp_count || 0);
+        const { time, location, venue_name, image_url, status, external_url, ticket_price, currency, description, meetup_rsvp_count, updated_at } = eventData;
         const { error } = await supabase
           .from('events')
-          .update({ ...eventData, rsvp_count: totalRsvp, source: 'meetup' })
+          .update({ time, location, venue_name, image_url, status, external_url, ticket_price, currency, description, meetup_rsvp_count, updated_at, rsvp_count: totalRsvp, source: 'meetup' })
           .eq('id', matchingEvent.id);
 
         if (!error) updatedCount++;
