@@ -423,7 +423,7 @@ serve(async (req) => {
         external_url: event.externalUrl,
         ticket_price: event.price || 0,
         currency: 'USD',
-        tags: ['meetup', 'networking'],
+        // Don't set tags here — auto-tag-events will assign circle tags
         updated_at: new Date().toISOString(),
         description: event.description || 'Join us for this exciting networking event!',
         meetup_rsvp_count: meetupRsvp,
