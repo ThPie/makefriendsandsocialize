@@ -4,9 +4,6 @@ import { getCorsHeaders } from '../_shared/cors.ts';
 
 const EVENTBRITE_ORGANIZER_URL = 'https://www.eventbrite.com/o/make-friends-socialize-109567181801';
 
-// Extract organizer ID from URL
-const ORGANIZER_ID = '109567181801';
-
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') {
