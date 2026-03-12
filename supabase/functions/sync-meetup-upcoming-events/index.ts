@@ -344,7 +344,7 @@ serve(async (req) => {
     // Get all existing meetup events to check for deletions - include titles for efficient matching
     const { data: existingMeetupEvents } = await supabase
       .from('events')
-      .select('id, title, date')
+      .select('id, title, date, eventbrite_rsvp_count, luma_rsvp_count')
       .eq('source', 'meetup')
       .gte('date', today);
 
