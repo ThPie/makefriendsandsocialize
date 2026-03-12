@@ -107,10 +107,7 @@ serve(async (req) => {
       let attendeeCount = 0;
       try {
         const attendeeResponse = await fetch(
-          `https://www.eventbriteapi.com/v3/events/${event.id}/attendees/?status=attending`,
-          {
-            headers: { 'Authorization': `Bearer ${eventbriteApiKey}` },
-          }
+          `https://www.eventbriteapi.com/v3/events/${event.id}/attendees/?status=attending&token=${eventbriteApiKey}`,
         );
         if (attendeeResponse.ok) {
           const attendeeData = await attendeeResponse.json();
