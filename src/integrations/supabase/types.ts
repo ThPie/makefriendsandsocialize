@@ -2199,9 +2199,11 @@ export type Database = {
         Row: {
           avatar_urls: string[] | null
           created_at: string
+          eventbrite_follower_count: number | null
           id: string
           joined_this_week: number | null
           last_updated: string
+          luma_follower_count: number | null
           meetup_url: string | null
           member_count: number
           previous_member_count: number | null
@@ -2211,9 +2213,11 @@ export type Database = {
         Insert: {
           avatar_urls?: string[] | null
           created_at?: string
+          eventbrite_follower_count?: number | null
           id?: string
           joined_this_week?: number | null
           last_updated?: string
+          luma_follower_count?: number | null
           meetup_url?: string | null
           member_count?: number
           previous_member_count?: number | null
@@ -2223,9 +2227,11 @@ export type Database = {
         Update: {
           avatar_urls?: string[] | null
           created_at?: string
+          eventbrite_follower_count?: number | null
           id?: string
           joined_this_week?: number | null
           last_updated?: string
+          luma_follower_count?: number | null
           meetup_url?: string | null
           member_count?: number
           previous_member_count?: number | null
