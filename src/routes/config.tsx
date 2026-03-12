@@ -72,6 +72,8 @@ const CirclesPage = lazy(() => import("@/pages/CirclesPage"));
 const TheGentlemenPage = lazy(() => import("@/pages/circles/TheGentlemenPage"));
 const TheLadiesSocietyPage = lazy(() => import("@/pages/circles/TheLadiesSocietyPage"));
 const LesAmisPage = lazy(() => import("@/pages/circles/LesAmisPage"));
+const TheExchangePage = lazy(() => import("@/pages/circles/TheExchangePage"));
+const HostApplicationPage = lazy(() => import("@/pages/HostApplicationPage"));
 const HealthCheckPage = lazy(() => import("@/pages/HealthCheckPage"));
 const PortalOnboarding = lazy(() => import("@/pages/portal/PortalOnboarding"));
 const PortalPerks = lazy(() => import("@/pages/portal/PortalPerks"));
