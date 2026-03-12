@@ -516,13 +516,13 @@ const EventsPage = () => {
                           <AnimatedButton
                             onClick={() => handleRSVP(event)}
                             variant={isExternalEvent(event) ? "outline" : "default"}
-                            className={`flex-1 min-w-[100px] ${isExternalEvent(event) ? 'border-blue-500/50 text-blue-500 hover:bg-blue-500/10' : ''}`}
-                            aria-label={isExternalEvent(event) ? `RSVP on Meetup for ${event.title}` : `RSVP for ${event.title}`}
+                            className={`flex-1 min-w-[100px] ${isExternalEvent(event) ? 'border-primary/50 text-primary hover:bg-primary/10' : ''}`}
+                            aria-label={isExternalEvent(event) ? `RSVP on ${getSourceLabel(event)} for ${event.title}` : `RSVP for ${event.title}`}
                           >
                             {isExternalEvent(event) ? (
                               <>
                                 <ExternalLink className="h-4 w-4 mr-2" />
-                                RSVP on Meetup
+                                RSVP on {getSourceLabel(event)}
                               </>
                             ) : (
                               'RSVP Now'
