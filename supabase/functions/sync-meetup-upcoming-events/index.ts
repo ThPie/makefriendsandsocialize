@@ -389,6 +389,7 @@ serve(async (req) => {
       // Use the pre-built map for O(1) lookup instead of querying DB for each event
       const matchingEvent = existingEventsMap.get(eventKey);
 
+      const meetupRsvp = event.rsvpCount || 0;
       const eventData = {
         time: event.time || '18:00',
         location: event.location || 'Salt Lake City, UT',
@@ -402,7 +403,7 @@ serve(async (req) => {
         tags: ['meetup', 'networking'],
         updated_at: new Date().toISOString(),
         description: event.description || 'Join us for this exciting networking event!',
-        rsvp_count: event.rsvpCount || 0,
+        meetup_rsvp_count: meetupRsvp,
       };
 
       if (matchingEvent) {
