@@ -156,6 +156,11 @@ const EventsPage = () => {
     return event.source === 'meetup' || event.source === 'eventbrite' || event.source === 'luma' || event.external_url;
   };
 
+  // Check if event has Eventbrite embedded checkout available
+  const isEventbriteEvent = (event: Event) => {
+    return event.source === 'eventbrite' && event.eventbrite_id;
+  };
+
   // Get the external URL for an event
   const getExternalUrl = (event: Event) => {
     if (event.external_url) return event.external_url;
@@ -163,23 +168,44 @@ const EventsPage = () => {
     return null;
   };
 
-  const getSourceLabel = (event: Event) => {
-    switch (event.source) {
-      case 'meetup': return 'Meetup';
-      case 'eventbrite': return 'Eventbrite';
-      case 'luma': return 'Luma';
-      default: return 'External';
+  // Open Eventbrite embedded checkout modal
+  const openEventbriteCheckout = useCallback((event: Event) => {
+    if (!event.eventbrite_id || !(window as any).EBWidgets) {
+      // Fallback: open Eventbrite page
+      const url = event.external_url || `https://www.eventbrite.com/e/${event.eventbrite_id}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+      return;
     }
-  };
+
+    (window as any).EBWidgets.createWidget({
+      widgetType: 'checkout',
+      eventId: event.eventbrite_id,
+      modal: true,
+      modalTriggerElementId: `eb-trigger-${event.id}`,
+      onOrderComplete: () => {
+        setRsvpFeedback({
+          type: 'success',
+          message: 'You\'re registered! Check your email for confirmation.',
+        });
+        setTimeout(() => setRsvpFeedback(null), 5000);
+      },
+    });
+  }, []);
 
   const handleRSVP = (event: Event) => {
-    // For external events, redirect to external platform
+    // For Eventbrite events, use embedded checkout
+    if (isEventbriteEvent(event)) {
+      openEventbriteCheckout(event);
+      return;
+    }
+
+    // For other external events, redirect to external platform
     if (isExternalEvent(event)) {
       const url = getExternalUrl(event);
       if (url) window.open(url, '_blank', 'noopener,noreferrer');
       setRsvpFeedback({
         type: 'info',
-        message: `Opening event page to complete your RSVP.`,
+        message: 'Opening event page to complete your RSVP.',
       });
       setTimeout(() => setRsvpFeedback(null), 4000);
       return;
