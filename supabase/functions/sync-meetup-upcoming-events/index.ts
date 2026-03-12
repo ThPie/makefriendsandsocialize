@@ -365,9 +365,10 @@ serve(async (req) => {
       validEvents.map(e => `${normalizeTitle(e.title)}|${e.date}`)
     );
 
-    // Mark events that are no longer on Meetup as cancelled
-    if (existingMeetupEvents) {
-      for (const existing of existingMeetupEvents) {
+    // Mark meetup-sourced events that are no longer on Meetup as cancelled
+    if (allExistingEvents) {
+      for (const existing of allExistingEvents) {
+        if (existing.source !== 'meetup') continue;
         const existingKey = `${normalizeTitle(existing.title)}|${existing.date}`;
         if (!scrapedEventKeys.has(existingKey)) {
           console.log('Event no longer on Meetup, marking as cancelled:', existing.title);
