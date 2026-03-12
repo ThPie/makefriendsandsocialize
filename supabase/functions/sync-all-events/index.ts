@@ -199,6 +199,24 @@ serve(async (req) => {
       }
     }
 
+    // 6. Run AI auto-tagging on events with missing/platform-only tags
+    console.log('=== Step 6: AI Auto-Tagging ===');
+    try {
+      const tagRes = await fetch(`${supabaseUrl}/functions/v1/auto-tag-events`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${supabaseAnonKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ time: new Date().toISOString() }),
+      });
+      results.autoTag = await tagRes.json();
+      console.log('Auto-tag result:', JSON.stringify(results.autoTag));
+    } catch (e) {
+      console.error('Auto-tag error:', e);
+      results.autoTag = { error: e instanceof Error ? e.message : 'Failed' };
+    }
+
     return new Response(
       JSON.stringify({ success: true, data: results }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

@@ -534,6 +534,9 @@ const EventsPage = () => {
                           if (cap) {
                             return <span>{attending} / {cap} attending</span>;
                           }
+                          if (attending > 0) {
+                            return <span>{attending} attending</span>;
+                          }
                           return <span>Open event</span>;
                         })()}
                       </div>
