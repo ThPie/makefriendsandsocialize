@@ -517,12 +517,12 @@ const EventsPage = () => {
                             onClick={() => handleRSVP(event)}
                             variant={isExternalEvent(event) ? "outline" : "default"}
                             className={`flex-1 min-w-[100px] ${isExternalEvent(event) ? 'border-primary/50 text-primary hover:bg-primary/10' : ''}`}
-                            aria-label={isExternalEvent(event) ? `RSVP on ${getSourceLabel(event)} for ${event.title}` : `RSVP for ${event.title}`}
+                            aria-label={isExternalEvent(event) ? `RSVP for ${event.title}` : `RSVP for ${event.title}`}
                           >
                             {isExternalEvent(event) ? (
                               <>
                                 <ExternalLink className="h-4 w-4 mr-2" />
-                                RSVP on {getSourceLabel(event)}
+                                RSVP
                               </>
                             ) : (
                               'RSVP Now'
