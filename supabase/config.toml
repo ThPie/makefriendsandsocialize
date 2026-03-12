@@ -54,9 +54,9 @@ project_id = "qzqomqctuqldexnxgmlh"
   [functions.scheduled-lead-discovery]
     verify_jwt = true
   [functions.scrape-meetup]
-    verify_jwt = true
+    verify_jwt = false
   [functions.scrape-meetup-events]
-    verify_jwt = true
+    verify_jwt = false
   [functions.scrape-meetup-reviews]
     verify_jwt = true
   [functions.send-2hour-meeting-reminders]
@@ -102,7 +102,7 @@ project_id = "qzqomqctuqldexnxgmlh"
   [functions.submit-business-lead]
     verify_jwt = true
   [functions.sync-meetup-upcoming-events]
-    verify_jwt = true
+    verify_jwt = false
   [functions.test-push-notification]
     verify_jwt = true
   [functions.track-referral]
