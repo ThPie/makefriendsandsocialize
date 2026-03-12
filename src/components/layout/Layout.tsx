@@ -14,14 +14,17 @@ export const Layout = memo(forwardRef<HTMLDivElement, LayoutProps>(({ children }
   const isHome = location.pathname === '/';
 
   return (
-    <div ref={ref} className="min-h-screen flex flex-col">
+    <div ref={ref} className="h-full w-full flex flex-col overflow-hidden relative">
       <JsonLd />
       <SkipLink />
       <Header />
-      <main id="main-content" className={`flex-1 ${isHome ? 'pt-0' : 'pt-[68px]'}`}>
+      <main
+        id="main-content"
+        className={`flex-1 overflow-y-auto overflow-x-hidden scroll-smooth scroll-touch ${isHome ? 'pt-0' : 'pt-[60px] md:pt-[68px]'}`}
+      >
         {children}
+        <Footer />
       </main>
-      <Footer />
     </div>
   );
 }));

@@ -160,7 +160,9 @@
   html {
     scroll-behavior: smooth;
     touch-action: pan-x pan-y;
-    overscroll-behavior-y: contain;
+    overscroll-behavior-y: none;
+    height: 100dvh;
+    overflow: hidden;
   }
 
   body {
@@ -169,15 +171,31 @@
     font-weight: 400;
     font-size: 16px;
     line-height: 1.7;
-    overscroll-behavior-y: contain;
+    overscroll-behavior-y: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    height: 100dvh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
   }
 
-  /* Standalone PWA safe area */
+  /* Safe area and root layout */
+  #root {
+    height: 100dvh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
   @media (display-mode: standalone) {
-    body {
+    body, #root {
       padding-bottom: env(safe-area-inset-bottom, 0px);
+      padding-top: env(safe-area-inset-top, 0px);
     }
   }
 

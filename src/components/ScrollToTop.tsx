@@ -9,17 +9,20 @@ export const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    // Scroll to top
-    window.scrollTo(0, 0);
-
-    // Focus main content for accessibility
+    // Focus main content for accessibility and reset scroll
     const mainContent = document.getElementById('main-content');
     if (mainContent) {
+      // Reset internal scroll container
+      mainContent.scrollTo(0, 0);
+
       // Make it focusable if not already
       if (!mainContent.hasAttribute('tabindex')) {
         mainContent.setAttribute('tabindex', '-1');
       }
       mainContent.focus();
+    } else {
+      // Fallback for pages not using the standard layout
+      window.scrollTo(0, 0);
     }
   }, [pathname]);
 

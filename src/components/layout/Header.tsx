@@ -20,12 +20,16 @@ export const Header = () => {
   const isAuth = location.pathname.startsWith('/auth');
 
   useEffect(() => {
+    const mainContent = document.getElementById('main-content');
+    if (!mainContent) return;
+
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(mainContent.scrollTop > 20);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+
+    mainContent.addEventListener('scroll', handleScroll, { passive: true });
+    return () => mainContent.removeEventListener('scroll', handleScroll);
+  }, [location.pathname]); // Re-attach listener on route change to be safe
 
   // Hide header on portal, admin, and auth pages
   if (isPortal || isAdmin || isAuth) return null;
