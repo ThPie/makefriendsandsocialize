@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { type DBTier, isTierAtLeast, toStripeCheckoutTier } from '@/lib/tier-utils';
+import { type DBTier, isTierAtLeast } from '@/lib/tier-utils';
 
 export interface SubscriptionStatus {
   subscribed: boolean;
@@ -12,149 +13,79 @@ export interface SubscriptionStatus {
   available_reveals: number;
 }
 
-// Cache subscription data to prevent duplicate calls
-const subscriptionCache: {
-  data: SubscriptionStatus | null;
-  timestamp: number;
-  userId: string | null;
-} = {
-  data: null,
-  timestamp: 0,
-  userId: null,
+const DEFAULT_SUBSCRIPTION: SubscriptionStatus = {
+  subscribed: false,
+  tier: 'patron',
+  subscription_end: null,
+  is_trialing: false,
+  trial_ends_at: null,
+  available_reveals: 0,
 };
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
 
+/**
+ * Fetch subscription data from the edge function.
+ * Extracted for use as a TanStack Query queryFn.
+ */
+async function fetchSubscription(): Promise<SubscriptionStatus> {
+  const { data, error } = await supabase.functions.invoke('check-subscription');
+  if (error) throw error;
+  return data as SubscriptionStatus;
+}
+
+/**
+ * useSubscription — manages subscription status via TanStack Query.
+ *
+ * Replaces the previous mutable module-level cache with React Query's
+ * built-in deduplication, stale-while-revalidate, and window refocus.
+ */
 export function useSubscription() {
   const { user } = useAuth();
-  const [subscription, setSubscription] = useState<SubscriptionStatus | null>(subscriptionCache.data);
-  const [isLoading, setIsLoading] = useState(!subscriptionCache.data);
-  const [error, setError] = useState<string | null>(null);
-  const isCheckingRef = useRef(false);
-  const lastCheckRef = useRef(0);
+  const queryClient = useQueryClient();
 
-  const checkSubscription = useCallback(async (force = false) => {
-    if (!user) {
-      setSubscription(null);
-      setIsLoading(false);
-      return;
-    }
+  const {
+    data: subscription,
+    isLoading,
+    error,
+  } = useQuery<SubscriptionStatus>({
+    queryKey: ['subscription', user?.id],
+    queryFn: fetchSubscription,
+    enabled: !!user,
+    staleTime: 5 * 60 * 1000,       // 5 min — won't refetch if fresh
+    gcTime: 10 * 60 * 1000,          // 10 min — keep in cache after unmount
+    refetchOnWindowFocus: true,       // re-check when tab regains focus
+    refetchInterval: 5 * 60 * 1000,  // poll every 5 min (only when visible)
+    refetchIntervalInBackground: false,
+    retry: 2,
+    placeholderData: DEFAULT_SUBSCRIPTION,
+  });
 
-    const now = Date.now();
+  const checkSubscription = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['subscription', user?.id] });
+  }, [queryClient, user?.id]);
 
-    // Use cache if still valid and not forcing refresh
-    if (!force &&
-      subscriptionCache.userId === user.id &&
-      subscriptionCache.data &&
-      (now - subscriptionCache.timestamp) < CACHE_DURATION) {
-      setSubscription(subscriptionCache.data);
-      setIsLoading(false);
-      return;
-    }
-
-    // Prevent duplicate calls
-    if (isCheckingRef.current) return;
-
-    // Debounce rapid calls
-    if (now - lastCheckRef.current < 5000) return;
-
-    isCheckingRef.current = true;
-    lastCheckRef.current = now;
-
-    try {
-      setIsLoading(true);
-      const { data, error } = await supabase.functions.invoke('check-subscription');
-
-      if (error) throw error;
-
-      // Update cache
-      subscriptionCache.data = data;
-      subscriptionCache.timestamp = now;
-      subscriptionCache.userId = user.id;
-
-      setSubscription(data);
-      setError(null);
-    } catch (err) {
-      console.error('Error checking subscription:', err);
-      setError(err instanceof Error ? err.message : 'Failed to check subscription');
-      // Default to free tier on error
-      const defaultData: SubscriptionStatus = {
-        subscribed: false,
-        tier: 'patron',
-        subscription_end: null,
-        is_trialing: false,
-        trial_ends_at: null,
-        available_reveals: 0,
-      };
-      setSubscription(defaultData);
-    } finally {
-      setIsLoading(false);
-      isCheckingRef.current = false;
-    }
-  }, [user]);
-
-  useEffect(() => {
-    checkSubscription();
-
-    // Visibility-based refresh - only check when tab becomes visible
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        checkSubscription();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    // Reduced polling: 5 minutes instead of 60 seconds
-    const interval = setInterval(() => {
-      if (document.visibilityState === 'visible') {
-        checkSubscription();
-      }
-    }, 5 * 60 * 1000);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      clearInterval(interval);
-    };
-  }, [checkSubscription]);
-
-  const openCheckout = useCallback(async (tier: 'member' | 'fellow', billingPeriod: 'monthly' | 'annual', trial = false) => {
-    try {
-      const { data, error } = await supabase.functions.invoke('create-subscription-checkout', {
-        body: { tier, billing_period: billingPeriod, trial },
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      }
-    } catch (err) {
-      console.error('Error creating checkout:', err);
-      throw err;
-    }
+  const openCheckout = useCallback(async (
+    tier: 'member' | 'fellow',
+    billingPeriod: 'monthly' | 'annual',
+    trial = false,
+  ) => {
+    const { data, error } = await supabase.functions.invoke('create-subscription-checkout', {
+      body: { tier, billing_period: billingPeriod, trial },
+    });
+    if (error) throw error;
+    if (data?.url) window.open(data.url, '_blank');
   }, []);
 
   const openCustomerPortal = useCallback(async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke('customer-portal');
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      }
-    } catch (err) {
-      console.error('Error opening customer portal:', err);
-      throw err;
-    }
+    const { data, error } = await supabase.functions.invoke('customer-portal');
+    if (error) throw error;
+    if (data?.url) window.open(data.url, '_blank');
   }, []);
 
-  // Memoize return value to prevent unnecessary re-renders
   return useMemo(() => ({
-    subscription,
+    subscription: subscription ?? DEFAULT_SUBSCRIPTION,
     isLoading,
-    error,
-    checkSubscription: () => checkSubscription(true),
+    error: error instanceof Error ? error.message : error ? String(error) : null,
+    checkSubscription,
     openCheckout,
     openCustomerPortal,
     hasUnlimitedReveals: isTierAtLeast(subscription?.tier, 'fellow'),
