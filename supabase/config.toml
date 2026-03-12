@@ -123,3 +123,11 @@ project_id = "qzqomqctuqldexnxgmlh"
     verify_jwt = true
   [functions.scrape-business-website]
     verify_jwt = true
+  [functions.auto-tag-events]
+    verify_jwt = false
+  [functions.sync-eventbrite-events]
+    verify_jwt = false
+  [functions.sync-luma-events]
+    verify_jwt = false
+  [functions.sync-all-events]
+    verify_jwt = false
