@@ -15,6 +15,7 @@ import { CompatibilityTimeline } from '@/components/dating/CompatibilityTimeline
 import { MeetingFeedbackForm } from '@/components/dating/MeetingFeedbackForm';
 import { MeetingModeUI } from '@/components/dating/MeetingModeUI';
 import { MatchRevealMoment } from '@/components/dating/MatchRevealMoment';
+import { MatchChat } from '@/components/dating/MatchChat';
 import {
   ArrowLeft,
   Heart,
@@ -526,6 +527,15 @@ export default function PortalMatchDetail() {
           />
           <CompatibilityTimeline />
         </div>
+      )}
+
+      {/* Chat — only for mutual matches */}
+      {isRevealed && user?.id && (
+        <MatchChat
+          matchId={match.id}
+          userId={user.id}
+          matchedName={matchedProfile.display_name}
+        />
       )}
 
       {/* Scheduler or Decision UI */}

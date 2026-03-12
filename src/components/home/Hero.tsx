@@ -3,52 +3,67 @@ import { Button } from '@/components/ui/button';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useSiteStats } from '@/hooks/useSiteStats';
 import { MemberAvatars } from '@/components/home/MemberAvatars';
+import { useConnectionQuality } from '@/hooks/useConnectionQuality';
 
 export const Hero = () => {
   const { data: stats, isLoading } = useSiteStats();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const connectionQuality = useConnectionQuality();
+
+  // Only attempt video on high-quality connections
+  const shouldLoadVideo = connectionQuality === 'high';
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || !shouldLoadVideo) return;
 
-    video.playbackRate = 1.8;
-
-    // Fallback: show video after 3s even if canplay/loadeddata don't fire
-    const timer = setTimeout(() => {
+    const showVideo = () => {
       video.style.opacity = '1';
-    }, 3000);
+    };
 
-    return () => clearTimeout(timer);
-  }, []);
+    video.addEventListener('canplay', showVideo);
+    video.addEventListener('loadeddata', showVideo);
 
-  const showVideo = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    e.currentTarget.style.opacity = '1';
-  };
+    // Fallback: show video after 5s even if events don't fire
+    const timer = setTimeout(showVideo, 5000);
+
+    return () => {
+      video.removeEventListener('canplay', showVideo);
+      video.removeEventListener('loadeddata', showVideo);
+      clearTimeout(timer);
+    };
+  }, [shouldLoadVideo]);
 
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
-      {/* Full-bleed background video */}
-      <video
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        poster={`${import.meta.env.BASE_URL}videos/hero-poster.jpg`}
-        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
-        onCanPlay={showVideo}
-        onLoadedData={showVideo}
-        onError={(e) => {
-          // If video fails to load, show poster by making video element visible
-          e.currentTarget.style.opacity = '1';
-        }}
-        style={{ opacity: 0 }}
-      >
-        <source src={`${import.meta.env.BASE_URL}videos/hero-background.mp4`} type="video/mp4" />
-      </video>
+      {/* Poster image — always visible immediately */}
+      <img
+        src={`${import.meta.env.BASE_URL}videos/hero-poster.jpg`}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+        fetchPriority="high"
+      />
 
-      {/* Luxury dark overlay — removed multiply to avoid absolute blackness if video is slow */}
+      {/* Video — only loaded on fast connections, fades in over poster */}
+      {shouldLoadVideo && (
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+          onError={(e) => {
+            e.currentTarget.style.opacity = '1';
+          }}
+          style={{ opacity: 0 }}
+        >
+          <source src={`${import.meta.env.BASE_URL}videos/hero-background.mp4`} type="video/mp4" />
+        </video>
+      )}
+
+      {/* Luxury dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
 
       {/* Subtle gradient overlay — bottom-left bias for text readability */}
