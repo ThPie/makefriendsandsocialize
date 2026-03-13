@@ -4,6 +4,11 @@ import { getCorsHeaders } from '../_shared/cors.ts';
 
 const LUMA_PROFILE_URL = 'https://lu.ma/user/PieDigit';
 
+/**
+ * Luma sync — ATTENDEE-ONLY mode.
+ * Luma never creates new events. It only updates luma_rsvp_count
+ * on existing events (owned by Eventbrite) when a fuzzy title match is found.
+ */
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') {
@@ -16,7 +21,6 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
     if (!firecrawlApiKey) {
-      console.error('FIRECRAWL_API_KEY not configured');
       return new Response(
         JSON.stringify({ success: false, error: 'Firecrawl not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -32,7 +36,6 @@ serve(async (req) => {
 
     console.log('Scraping Luma events from:', LUMA_PROFILE_URL);
 
-    // Use Firecrawl to scrape Luma profile page
     const scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
       method: 'POST',
       headers: {
@@ -41,7 +44,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         url: LUMA_PROFILE_URL,
-        formats: ['extract', 'markdown'],
+        formats: ['extract'],
         extract: {
           schema: {
             type: 'object',
@@ -53,10 +56,6 @@ serve(async (req) => {
                   properties: {
                     title: { type: 'string', description: 'The event title/name' },
                     rawDate: { type: 'string', description: 'The date as shown, e.g. "Sat, Mar 21"' },
-                    time: { type: 'string', description: 'Event time, e.g. "6:00 PM"' },
-                    location: { type: 'string', description: 'Venue or location name' },
-                    description: { type: 'string', description: 'Event description or summary' },
-                    imageUrl: { type: 'string', description: 'Event cover image URL' },
                     attendees: { type: 'number', description: 'Number of people going/registered' },
                     eventUrl: { type: 'string', description: 'Direct URL to the event page on Luma' },
                     lumaId: { type: 'string', description: 'The Luma event ID from the URL' },
@@ -68,7 +67,7 @@ serve(async (req) => {
             },
             required: ['events']
           },
-          prompt: 'Extract ALL upcoming events from this Luma user profile. For each event get: title, date, time, location/venue, description, image URL, number of attendees/registrations shown, and the direct event URL. Only extract events that are in the future.'
+          prompt: 'Extract ALL upcoming events from this Luma user profile. For each event get: title, date, number of attendees/registrations, and the direct event URL. Only extract future events.'
         },
         waitFor: 5000,
       }),
@@ -84,8 +83,7 @@ serve(async (req) => {
       );
     }
 
-    const extractedData = scrapeData.data?.extract || scrapeData.extract || {};
-    const extractedEvents = extractedData.events || [];
+    const extractedEvents = scrapeData.data?.extract?.events || scrapeData.extract?.events || [];
     console.log('Found', extractedEvents.length, 'Luma events');
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -99,7 +97,6 @@ serve(async (req) => {
     const currentYear = parseInt(today.split('-')[0]);
     const currentMonth = parseInt(today.split('-')[1]);
 
-    // Month name lookup
     const months: Record<string, string> = {
       'JAN': '01', 'JANUARY': '01', 'FEB': '02', 'FEBRUARY': '02',
       'MAR': '03', 'MARCH': '03', 'APR': '04', 'APRIL': '04',
@@ -136,8 +133,27 @@ serve(async (req) => {
       return null;
     };
 
-    let insertedCount = 0;
+    const normalizeTitle = (t: string): string =>
+      t.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
+
+    // Get ALL existing future events for matching
+    const { data: allExistingEvents } = await supabase
+      .from('events')
+      .select('id, title, date, luma_id, meetup_rsvp_count, eventbrite_rsvp_count, luma_rsvp_count')
+      .gte('date', today)
+      .neq('status', 'cancelled');
+
+    const existingByDate = new Map<string, typeof allExistingEvents>();
+    if (allExistingEvents) {
+      for (const e of allExistingEvents) {
+        const dateEvents = existingByDate.get(e.date) || [];
+        dateEvents.push(e);
+        existingByDate.set(e.date, dateEvents);
+      }
+    }
+
     let updatedCount = 0;
+    let skippedCount = 0;
 
     for (const event of extractedEvents) {
       if (!event.title?.trim()) continue;
@@ -147,104 +163,75 @@ serve(async (req) => {
       const eventDate = parseEventDate(dateStr);
 
       if (!eventDate || eventDate < today) {
-        console.log('Skipping Luma event (past or no date):', title, dateStr);
+        console.log('Skipping Luma event (past or no date):', title);
         continue;
-      }
-
-      // Parse time to 24h
-      let formattedTime = event.time || null;
-      if (formattedTime) {
-        const timeMatch = formattedTime.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
-        if (timeMatch) {
-          let hours = parseInt(timeMatch[1]);
-          const minutes = timeMatch[2];
-          const period = timeMatch[3]?.toUpperCase();
-          if (period === 'PM' && hours !== 12) hours += 12;
-          if (period === 'AM' && hours === 12) hours = 0;
-          formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}`;
-        }
       }
 
       const attendeeCount = event.attendees || 0;
       const lumaId = event.lumaId || event.eventUrl?.split('/').pop() || null;
 
-      // --- Cross-platform matching ---
-      // Fetch ALL events on this date for robust matching
-      const { data: dateEvents } = await supabase
-        .from('events')
-        .select('id, title, source, luma_id, rsvp_count, meetup_rsvp_count, eventbrite_rsvp_count, luma_rsvp_count')
-        .eq('date', eventDate);
+      // Find matching existing event
+      const sameDateEvents = existingByDate.get(eventDate) || [];
+      let matchingEvent: any = null;
 
-      let titleMatch = dateEvents?.find(e => e.luma_id === lumaId && lumaId) || null;
-
-      if (!titleMatch && dateEvents) {
-        const normalizedTitle = title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
-        titleMatch = dateEvents.find((e) => {
-          const existingNorm = e.title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
-          const words1 = new Set<string>(normalizedTitle.split(' ').filter((w: string) => w.length > 3));
-          const words2 = new Set<string>(existingNorm.split(' ').filter((w: string) => w.length > 3));
-          if (words1.size === 0 || words2.size === 0) return false;
-          const intersection = [...words1].filter((w) => words2.has(w));
-          return intersection.length / Math.min(words1.size, words2.size) >= 0.5;
-        }) || null;
+      // First try luma_id match
+      if (lumaId) {
+        matchingEvent = sameDateEvents.find((e: any) => e.luma_id === lumaId) || null;
       }
 
-      if (titleMatch) {
-        // Merge into existing event — only update luma-specific fields, preserve tags
-        const mergedRsvp = (titleMatch.meetup_rsvp_count || 0) + (titleMatch.eventbrite_rsvp_count || 0) + attendeeCount;
+      // Then try fuzzy title match
+      if (!matchingEvent) {
+        const normalizedTitle = normalizeTitle(title);
+        for (const existing of sameDateEvents) {
+          const existingNorm = normalizeTitle(existing.title);
+          if (normalizedTitle === existingNorm) {
+            matchingEvent = existing;
+            break;
+          }
+          const wordsA = new Set<string>(normalizedTitle.split(' ').filter((w: string) => w.length > 3));
+          const wordsB = new Set<string>(existingNorm.split(' ').filter((w: string) => w.length > 3));
+          if (wordsA.size === 0 || wordsB.size === 0) continue;
+          const intersection = [...wordsA].filter((w: string) => wordsB.has(w));
+          const similarity = intersection.length / Math.min(wordsA.size, wordsB.size);
+          if (similarity >= 0.5) {
+            matchingEvent = existing;
+            console.log(`Luma matched: "${title}" ↔ "${existing.title}"`);
+            break;
+          }
+        }
+      }
+
+      if (matchingEvent) {
+        // Only update luma-specific fields — do NOT touch Eventbrite-owned fields
+        const totalRsvp = (matchingEvent.meetup_rsvp_count || 0) + (matchingEvent.eventbrite_rsvp_count || 0) + attendeeCount;
         const { error } = await supabase
           .from('events')
           .update({
             luma_id: lumaId,
             luma_rsvp_count: attendeeCount,
-            rsvp_count: mergedRsvp,
-            external_url: event.eventUrl || LUMA_PROFILE_URL,
+            rsvp_count: totalRsvp,
             updated_at: new Date().toISOString(),
-            source: (titleMatch.source === 'meetup' || titleMatch.source === 'eventbrite') ? titleMatch.source : 'luma',
           })
-          .eq('id', titleMatch.id);
+          .eq('id', matchingEvent.id);
 
         if (!error) updatedCount++;
         else console.error('Error updating event:', error);
       } else {
-        // Insert new event
-        const { error } = await supabase
-          .from('events')
-          .insert({
-            title,
-            date: eventDate,
-            time: formattedTime,
-            location: event.location || null,
-            image_url: event.imageUrl || null,
-            description: event.description || null,
-            status: 'published',
-            tags: [],
-            luma_id: lumaId,
-            luma_rsvp_count: attendeeCount,
-            external_url: event.eventUrl || LUMA_PROFILE_URL,
-            source: 'luma',
-            tier: 'patron',
-            city: 'Salt Lake City',
-            country: 'United States',
-            rsvp_count: attendeeCount,
-            meetup_rsvp_count: 0,
-            eventbrite_rsvp_count: 0,
-          });
-
-        if (error) console.error('Error inserting event:', error);
-        else insertedCount++;
+        // No matching event found — skip (Eventbrite owns event creation)
+        console.log('No matching Eventbrite event for Luma event, skipping:', title, eventDate);
+        skippedCount++;
       }
     }
 
-    console.log(`Luma sync complete: ${insertedCount} inserted, ${updatedCount} updated`);
+    console.log(`Luma sync complete: ${updatedCount} updated, ${skippedCount} skipped (no match)`);
 
     return new Response(
       JSON.stringify({
         success: true,
         data: {
           eventsFound: extractedEvents.length,
-          eventsInserted: insertedCount,
           eventsUpdated: updatedCount,
+          eventsSkipped: skippedCount,
         },
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

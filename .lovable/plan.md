@@ -1,53 +1,45 @@
 
 
-## Problem Summary
+## Plan: Mobile Grid Layouts, Quote Styling, TikTok Icon & Newsletter
 
-Currently, all three platforms (Eventbrite, Meetup, Luma) can independently create event cards on the site. This causes duplicates and stale titles. The user wants:
+### 1. Value Highlights — 2x2 grid on mobile
+**File:** `src/pages/MembershipPage.tsx` (lines 298-316)
 
-1. **Eventbrite is the single source of truth** for event cards — only Eventbrite events create/own cards
-2. **Meetup & Luma never create new events** — they only add their attendee counts to matching Eventbrite events
-3. **Event titles stay updated** from Eventbrite (e.g., "AI Builders Night" → "AI Build Night")
-4. **Smarter AI-powered matching** between platforms when titles differ slightly
+Change the horizontal scroll container to a `grid grid-cols-2` on mobile. The 3 items will show as 2 on top, 1 on bottom (centered).
 
-## Plan
+### 2. Process Steps — 2+1 grid on mobile
+**File:** `src/pages/MembershipPage.tsx` (lines 548-572)
 
-### 1. Make Eventbrite the primary source — update sync-eventbrite-events
+Replace the horizontal scroll with `grid grid-cols-2` on mobile. The 3 steps will display as 2 on top, 1 centered on bottom.
 
-- When upserting events, always update the `title` from Eventbrite so name changes propagate immediately
-- Set `source: 'eventbrite'` always (stop preserving meetup as source priority)
-- Already handles insert + update correctly; just needs the title update on match
+### 3. Daily Quote — gold text with quotation marks
+**File:** `src/components/common/DailyQuote.tsx`
 
-### 2. Change sync-meetup-upcoming-events to never insert new events
+- Change quote text color to `text-[hsl(var(--accent-gold))]`
+- Wrap quote text in `"` `"` (curly quotation marks)
+- Apply same gold styling in the mobile menu quote section (`MobileMenu.tsx`, line 210-211)
 
-- Remove the INSERT branch entirely — Meetup sync should only UPDATE existing events
-- When a fuzzy title match is found on the same date, update only `meetup_rsvp_count` and recalculate `rsvp_count`
-- Do NOT overwrite title, description, image, time, location, source, or any other Eventbrite-owned fields
-- Remove the "mark as cancelled" logic that cancels events missing from Meetup (since Eventbrite owns the lifecycle)
+### 4. TikTok icon — add to Footer & MobileMenu
+**Files:** `src/components/layout/Footer.tsx`, `src/components/layout/MobileMenu.tsx`
 
-### 3. Change sync-luma-events to never insert new events
+Lucide doesn't have a TikTok icon. Create a small inline SVG component for the TikTok logo. Add it to:
+- Footer social links (line 133-143)
+- MobileMenu social links array (line 34-38)
 
-- Same approach: remove the INSERT branch
-- Only update `luma_rsvp_count` and `luma_id` on matching events, recalculate `rsvp_count`
-- Do NOT overwrite title, description, image, source, or other Eventbrite-owned fields
+### 5. Newsletter subscription in Footer
+**File:** `src/components/layout/Footer.tsx`
 
-### 4. Update sync-all-events orchestrator
+Add a newsletter section with:
+- Email input + "Subscribe" button
+- Inserts into the existing `newsletter_subscribers` table (columns: `email`, `source: 'footer'`, `is_active: true`)
+- Duplicate email handling (show friendly message)
+- Success toast on subscribe
+- Placed above the Daily Quote section, visible on both mobile and desktop
 
-- Ensure Eventbrite syncs FIRST (it already does as step 2, but Meetup runs first)
-- Reorder: Eventbrite → Meetup → Luma → matching → recalc → auto-tag
-- The cross-platform matching in step 4 can remain as a safety net
+### Technical details
 
-### 5. Improve title matching with AI (using existing auto-tag pattern)
-
-- Use Lovable AI (Gemini Flash) in the orchestrator's matching step for ambiguous cases where word-overlap similarity is between 0.3–0.6
-- Send pairs of titles to AI asking "are these the same event?" for borderline matches
-- This handles cases like "AI Builders Night" vs "AI Build Night" which share few exact words
-
-### Files to modify
-
-| File | Changes |
-|------|---------|
-| `supabase/functions/sync-all-events/index.ts` | Reorder: Eventbrite first, then Meetup & Luma. Add AI-assisted matching for ambiguous title pairs. |
-| `supabase/functions/sync-eventbrite-events/index.ts` | Always update title on match. Always set `source: 'eventbrite'`. |
-| `supabase/functions/sync-meetup-upcoming-events/index.ts` | Remove INSERT branch. Only update `meetup_rsvp_count` on matched events. Remove cancel logic. Don't overwrite Eventbrite fields. |
-| `supabase/functions/sync-luma-events/index.ts` | Remove INSERT branch. Only update `luma_rsvp_count` on matched events. Don't overwrite Eventbrite fields. |
+- The `newsletter_subscribers` table already exists with the right schema — no DB migration needed
+- TikTok SVG will be a minimal `<svg>` component (~10 lines), not a new dependency
+- Grid changes use standard Tailwind: `grid grid-cols-2 gap-4 md:grid-cols-3`
+- For the 2+1 layout, the last item gets `col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto` on mobile to center it
 

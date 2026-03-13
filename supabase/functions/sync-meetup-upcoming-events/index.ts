@@ -3,8 +3,11 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { getCorsHeaders } from '../_shared/cors.ts';
 
-
-
+/**
+ * Meetup sync — ATTENDEE-ONLY mode.
+ * Meetup never creates new events. It only updates meetup_rsvp_count
+ * on existing events (owned by Eventbrite) when a fuzzy title match is found.
+ */
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') {
@@ -24,13 +27,16 @@ serve(async (req) => {
       );
     }
 
-    // RE-ENABLED with stricter filtering for "Make Friends and Socialize" group only
-    const ENABLE_MEETUP_SYNC = true;
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Supabase not configured' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     const upcomingEventsUrl = 'https://www.meetup.com/makefriendsandsocialize/events/';
     console.log('Scraping upcoming events from:', upcomingEventsUrl);
 
-    // Use Firecrawl's extract format with JSON schema
     const scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
       method: 'POST',
       headers: {
@@ -39,7 +45,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         url: upcomingEventsUrl,
-        formats: ['extract', 'markdown', 'html'],
+        formats: ['extract'],
         extract: {
           schema: {
             type: 'object',
@@ -51,13 +57,7 @@ serve(async (req) => {
                   properties: {
                     title: { type: 'string', description: 'The complete event title/name exactly as shown' },
                     rawDate: { type: 'string', description: 'The date text exactly as shown on the page like "THU, JAN 23, 2026"' },
-                    time: { type: 'string', description: 'Event start time like "6:00 PM MST"' },
-                    location: { type: 'string', description: 'Full venue name and address' },
-                    venueName: { type: 'string', description: 'Just the venue name like "HAVN at Salt Lake Crossing"' },
-                    description: { type: 'string', description: 'Event description or summary text' },
-                    imageUrl: { type: 'string', description: 'URL to the event cover image' },
-                    price: { type: 'string', description: 'Ticket price if shown, e.g. "$50.00" or "Free"' },
-                    attendees: { type: 'number', description: 'Number of attendees or RSVPs shown, look for text like "47 attendees" or "23 going"' },
+                    attendees: { type: 'number', description: 'Number of attendees or RSVPs shown' },
                   },
                   required: ['title']
                 },
@@ -66,22 +66,13 @@ serve(async (req) => {
             },
             required: ['events']
           },
-          prompt: 'IMPORTANT: Only extract events HOSTED BY "Make Friends and Socialize" group. DO NOT include "suggested events", "events near you", "similar events", or events from other Meetup groups shown in sidebars or recommendations. Look ONLY in the main event list area. For each event, get: 1) The full event title, 2) The date shown (e.g. "THU, JAN 23, 2026"), 3) The time (e.g. "6:00 PM MST"), 4) The venue name (usually HAVN at Salt Lake Crossing), 5) Any description text, 6) The event image URL, 7) The ticket price if shown.'
+          prompt: 'IMPORTANT: Only extract events HOSTED BY "Make Friends and Socialize" group. DO NOT include "suggested events" or events from other groups. For each event get the title, date, and attendee count.'
         },
-        onlyMainContent: false,
         waitFor: 5000,
       }),
     });
 
     const scrapeData = await scrapeResponse.json();
-
-    // Log Firecrawl Usage for budget monitoring
-    const usage = {
-      cost: scrapeResponse.headers.get('x-firecrawl-cost'),
-      remaining: scrapeResponse.headers.get('x-firecrawl-remaining'),
-      quota: scrapeResponse.headers.get('x-firecrawl-quota'),
-    };
-    console.log('Firecrawl Usage:', usage);
 
     if (!scrapeResponse.ok) {
       console.error('Firecrawl API error:', scrapeData);
@@ -91,402 +82,149 @@ serve(async (req) => {
       );
     }
 
-    console.log('Scrape successful, processing extracted data...');
+    const extractedEvents = scrapeData.data?.extract?.events || scrapeData.extract?.events || [];
+    console.log('Found', extractedEvents.length, 'Meetup events');
 
-    // Safety check: Log warning if extraction seems excessive
-    const rawEventsCount = (scrapeData.data?.extract?.events || scrapeData.extract?.events || []).length;
-    if (rawEventsCount > 30) {
-      console.warn(`WARNING: High event count detected (${rawEventsCount}). This may include irrelevant "Suggested" items. Check extraction prompt.`);
-    }
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get the extracted data
-    const extractedData = scrapeData.data?.extract || scrapeData.extract || {};
-    const extractedEvents = extractedData.events || [];
-    const html = scrapeData.data?.html || scrapeData.html || '';
-    const markdown = scrapeData.data?.markdown || scrapeData.markdown || '';
-
-    console.log('Raw extracted events:', JSON.stringify(extractedEvents, null, 2));
-    console.log('Markdown preview:', markdown.substring(0, 1000));
-
-    // Extract image URLs from HTML as backup
-    const eventImagePattern = /<img[^>]*src=["']([^"']*(?:meetupstatic\.com|secure\.meetupstatic\.com)[^"']*(?:event|photo)[^"']*)["'][^>]*>/gi;
-    const eventImages: string[] = [];
-    let imgMatch;
-    while ((imgMatch = eventImagePattern.exec(html)) !== null && eventImages.length < 30) {
-      let url = imgMatch[1];
-      url = url.replace(/\/thumb_/, '/highres_').replace(/\/clean_/, '/highres_');
-      if (!eventImages.includes(url)) {
-        eventImages.push(url);
-      }
-    }
-    console.log('Found', eventImages.length, 'images in HTML');
-
-    interface ParsedEvent {
-      title: string;
-      date: string;
-      time: string | null;
-      location: string | null;
-      venueName: string | null;
-      description: string | null;
-      imageUrl: string | null;
-      price: number | null;
-      rsvpCount: number | null;
-      externalUrl: string | null;
-    }
-
-    // Helper function to normalize title for deduplication
-    const normalizeTitle = (title: string): string => {
-      return title
-        .toLowerCase()
-        .replace(/[^\w\s]/g, '') // Remove special characters
-        .replace(/\s+/g, ' ')    // Normalize whitespace
-        .trim();
-    };
-
-    // Meetup events are primarily Salt Lake City (Mountain Time). Using UTC here causes
-    // "today" to roll over early and incorrectly treat same-day events as "past".
-    // Using an IANA timezone also correctly handles DST.
+    // Today in Mountain Time
     const MEETUP_TIME_ZONE = 'America/Denver';
+    const today = new Intl.DateTimeFormat('en-CA', {
+      timeZone: MEETUP_TIME_ZONE,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(new Date());
 
-    const formatDateInTimeZone = (date: Date, timeZone: string): string => {
-      // en-CA yields YYYY-MM-DD
-      return new Intl.DateTimeFormat('en-CA', {
-        timeZone,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      }).format(date);
-    };
-
-    const today = formatDateInTimeZone(new Date(), MEETUP_TIME_ZONE);
     const [currentYearStr, currentMonthStr] = today.split('-');
     const currentYear = Number(currentYearStr);
     const currentMonth = Number(currentMonthStr);
 
-    // Helper function to parse various date formats
+    const months: Record<string, string> = {
+      'JAN': '01', 'JANUARY': '01', 'FEB': '02', 'FEBRUARY': '02',
+      'MAR': '03', 'MARCH': '03', 'APR': '04', 'APRIL': '04',
+      'MAY': '05', 'JUN': '06', 'JUNE': '06', 'JUL': '07', 'JULY': '07',
+      'AUG': '08', 'AUGUST': '08', 'SEP': '09', 'SEPTEMBER': '09',
+      'OCT': '10', 'OCTOBER': '10', 'NOV': '11', 'NOVEMBER': '11',
+      'DEC': '12', 'DECEMBER': '12',
+    };
+
     const parseEventDate = (dateStr: string): string | null => {
       if (!dateStr) return null;
-
-      // Already in YYYY-MM-DD format
-      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-        return dateStr;
-      }
-
-      // Parse formats like "THU, JAN 23, 2026" or "January 23, 2026" or "FRI, JAN 23"
-      const months: { [key: string]: string } = {
-        'JAN': '01', 'JANUARY': '01',
-        'FEB': '02', 'FEBRUARY': '02',
-        'MAR': '03', 'MARCH': '03',
-        'APR': '04', 'APRIL': '04',
-        'MAY': '05',
-        'JUN': '06', 'JUNE': '06',
-        'JUL': '07', 'JULY': '07',
-        'AUG': '08', 'AUGUST': '08',
-        'SEP': '09', 'SEPTEMBER': '09',
-        'OCT': '10', 'OCTOBER': '10',
-        'NOV': '11', 'NOVEMBER': '11',
-        'DEC': '12', 'DECEMBER': '12',
-      };
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
 
       const upper = dateStr.toUpperCase();
-
       for (const [monthName, monthNum] of Object.entries(months)) {
         if (upper.includes(monthName)) {
           const dayMatch = dateStr.match(/(\d{1,2})/);
           const yearMatch = dateStr.match(/(\d{4})/);
-
           if (dayMatch) {
             const day = dayMatch[1].padStart(2, '0');
             const monthNumber = parseInt(monthNum);
-
-            // If year is specified, use it; otherwise infer from current date
             let year = yearMatch ? parseInt(yearMatch[1]) : currentYear;
-
-            // If no year specified and the month is before current month, assume next year
-            if (!yearMatch && monthNumber < currentMonth) {
-              year = currentYear + 1;
-            }
-
+            if (!yearMatch && monthNumber < currentMonth) year = currentYear + 1;
             return `${year}-${monthNum}-${day}`;
           }
         }
       }
 
-      // Try native Date parsing as fallback
       try {
         const parsed = new Date(dateStr);
-        if (!isNaN(parsed.getTime())) {
-          return parsed.toISOString().split('T')[0];
-        }
-      } catch {
-        // Continue
-      }
+        if (!isNaN(parsed.getTime())) return parsed.toISOString().split('T')[0];
+      } catch { /* skip */ }
 
       return null;
     };
 
-    // Process and validate extracted events
-    const validEvents: ParsedEvent[] = [];
-    let imageIndex = 0;
-    // Note: "today" is computed in MEETUP_TIME_ZONE above.
+    const normalizeTitle = (t: string): string =>
+      t.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
 
-    console.log('Processing', extractedEvents.length, 'extracted events');
-
-    for (const event of extractedEvents) {
-      if (!event.title) {
-        console.log('Skipping event without title');
-        continue;
-      }
-
-      // Parse date from rawDate or date field
-      const dateStr = event.rawDate || event.date || '';
-      const eventDate = parseEventDate(dateStr);
-
-      if (!eventDate) {
-        console.log('Could not parse date for event:', event.title, 'raw:', dateStr);
-        continue;
-      }
-
-      // Skip past events
-      if (eventDate < today) {
-        console.log('Skipping past event:', event.title, eventDate);
-        continue;
-      }
-
-      // Clean title
-      const title = event.title.trim();
-      if (title.length < 5 || title.length > 300) continue;
-
-      // Skip navigation items
-      const skipWords = ['Events', 'Members', 'Photos', 'Discussions', 'About', 'See all', 'Load more'];
-      if (skipWords.some(w => title === w || title.startsWith(w + ' '))) continue;
-
-      // STRICT VALIDATION: Only accept events from "Make Friends and Socialize" group
-      const venue = (event.venueName || event.location || '').toLowerCase();
-
-      const isValidVenue = venue.includes('havn') ||
-        venue.includes('salt lake') ||
-        venue.includes('slc') ||
-        venue === '';
-
-      // Skip events that are clearly from other groups (suggested events)
-      const suspiciousKeywords = ['singles mix', 'mingle', 'quiet conversation', 'speed dating', 'christian', 'jewish', 'muslim', 'hindu', 'senior', 'over 40', 'over 50', 'lgbtq', 'divorce', 'widowed'];
-      const titleLower = title.toLowerCase();
-      const isSuspiciousEvent = suspiciousKeywords.some(kw => titleLower.includes(kw));
-
-      if (isSuspiciousEvent && !isValidVenue) {
-        console.log('Skipping event from another group:', title);
-        continue;
-      }
-
-      // Use extracted image or fallback to scraped images
-      let imageUrl = event.imageUrl || null;
-      if (!imageUrl && eventImages[imageIndex]) {
-        imageUrl = eventImages[imageIndex];
-        imageIndex++;
-      }
-
-      // Parse price
-      let price: number | null = null;
-      if (event.price) {
-        const priceMatch = event.price.match(/\$?(\d+(?:\.\d{2})?)/);
-        if (priceMatch) {
-          price = parseFloat(priceMatch[1]);
-        }
-      }
-
-      // Format time to 24h format for storage
-      let formattedTime = event.time || null;
-      if (formattedTime) {
-        // Try to standardize time format
-        const timeMatch = formattedTime.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
-        if (timeMatch) {
-          let hours = parseInt(timeMatch[1]);
-          const minutes = timeMatch[2];
-          const period = timeMatch[3]?.toUpperCase();
-
-          if (period === 'PM' && hours !== 12) hours += 12;
-          if (period === 'AM' && hours === 12) hours = 0;
-
-          formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}`;
-        }
-      }
-
-      console.log('Valid event found:', title, eventDate);
-
-      // Construct external URL for Meetup event
-      const externalUrl = `https://www.meetup.com/makefriendsandsocialize/events/`;
-
-      validEvents.push({
-        title,
-        date: eventDate,
-        time: formattedTime,
-        location: event.location || null,
-        venueName: event.venueName || null,
-        description: event.description || null,
-        imageUrl,
-        price,
-        rsvpCount: event.attendees || null,
-        externalUrl,
-      });
-    }
-
-    console.log('Validated', validEvents.length, 'upcoming events');
-
-    // Store events in database with improved deduplication
-    const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
-    let insertedCount = 0;
-    let updatedCount = 0;
-
-    // Track normalized titles we've processed to avoid duplicates
-    const processedEvents = new Set<string>();
-
-    // Get ALL existing future events (not just meetup) for cross-platform matching
+    // Get ALL existing future events for matching
     const { data: allExistingEvents } = await supabase
       .from('events')
-      .select('id, title, date, source, eventbrite_id, luma_id, eventbrite_rsvp_count, luma_rsvp_count, meetup_rsvp_count')
+      .select('id, title, date, meetup_rsvp_count, eventbrite_rsvp_count, luma_rsvp_count')
       .gte('date', today)
       .neq('status', 'cancelled');
 
-    // Build a map by normalized title+date for O(1) lookup
-    const existingEventsMap = new Map<string, any>();
-    const existingByDate = new Map<string, any[]>();
+    const existingByDate = new Map<string, typeof allExistingEvents>();
     if (allExistingEvents) {
-      for (const existing of allExistingEvents) {
-        const key = `${normalizeTitle(existing.title)}|${existing.date}`;
-        existingEventsMap.set(key, existing);
-        const dateEvents = existingByDate.get(existing.date) || [];
-        dateEvents.push(existing);
-        existingByDate.set(existing.date, dateEvents);
+      for (const e of allExistingEvents) {
+        const dateEvents = existingByDate.get(e.date) || [];
+        dateEvents.push(e);
+        existingByDate.set(e.date, dateEvents);
       }
     }
 
-    const scrapedEventKeys = new Set(
-      validEvents.map(e => `${normalizeTitle(e.title)}|${e.date}`)
-    );
+    let updatedCount = 0;
+    let skippedCount = 0;
 
-    // Mark meetup-sourced events that are no longer on Meetup as cancelled
-    if (allExistingEvents) {
-      for (const existing of allExistingEvents) {
-        if (existing.source !== 'meetup') continue;
-        const existingKey = `${normalizeTitle(existing.title)}|${existing.date}`;
-        if (!scrapedEventKeys.has(existingKey)) {
-          console.log('Event no longer on Meetup, marking as cancelled:', existing.title);
-          await supabase
-            .from('events')
-            .update({ status: 'cancelled', updated_at: new Date().toISOString() })
-            .eq('id', existing.id);
-        }
-      }
-    }
+    for (const event of extractedEvents) {
+      if (!event.title?.trim()) continue;
 
-    for (const event of validEvents) {
-      const normalizedTitle = normalizeTitle(event.title);
-      const eventKey = `${normalizedTitle}|${event.date}`;
+      const title = event.title.trim();
+      const dateStr = event.rawDate || event.date || '';
+      const eventDate = parseEventDate(dateStr);
 
-      // Skip if we've already processed this event in this sync batch
-      if (processedEvents.has(eventKey)) {
-        console.log('Skipping duplicate in batch:', event.title);
+      if (!eventDate || eventDate < today) {
+        console.log('Skipping Meetup event (past or no date):', title);
         continue;
       }
-      processedEvents.add(eventKey);
 
-      // Use exact key match first, then fuzzy cross-platform match
-      let matchingEvent = existingEventsMap.get(eventKey);
+      const meetupRsvp = event.attendees || 0;
 
-      // If no exact match, try fuzzy title matching against all events on that date
-      if (!matchingEvent) {
-        const sameDateEvents = existingByDate.get(event.date) || [];
-        for (const existing of sameDateEvents) {
-          const normExisting = normalizeTitle(existing.title);
-          const wordsA = new Set(normalizedTitle.split(' ').filter((w: string) => w.length > 3));
-          const wordsB = new Set(normExisting.split(' ').filter((w: string) => w.length > 3));
-          if (wordsA.size === 0 || wordsB.size === 0) continue;
-          const intersection = [...wordsA].filter((w: string) => wordsB.has(w));
-          const similarity = intersection.length / Math.min(wordsA.size, wordsB.size);
-          if (similarity >= 0.5) {
-            matchingEvent = existing;
-            console.log(`Cross-platform match: "${event.title}" ↔ "${existing.title}" (${existing.source})`);
-            break;
-          }
+      // Find matching existing event by fuzzy title on the same date
+      const sameDateEvents = existingByDate.get(eventDate) || [];
+      const normalizedTitle = normalizeTitle(title);
+      let matchingEvent: any = null;
+
+      for (const existing of sameDateEvents) {
+        const existingNorm = normalizeTitle(existing.title);
+        // Exact match
+        if (normalizedTitle === existingNorm) {
+          matchingEvent = existing;
+          break;
+        }
+        // Fuzzy word-overlap match
+        const wordsA = new Set<string>(normalizedTitle.split(' ').filter((w: string) => w.length > 3));
+        const wordsB = new Set<string>(existingNorm.split(' ').filter((w: string) => w.length > 3));
+        if (wordsA.size === 0 || wordsB.size === 0) continue;
+        const intersection = [...wordsA].filter((w: string) => wordsB.has(w));
+        const similarity = intersection.length / Math.min(wordsA.size, wordsB.size);
+        if (similarity >= 0.5) {
+          matchingEvent = existing;
+          console.log(`Meetup matched: "${title}" ↔ "${existing.title}"`);
+          break;
         }
       }
 
-      const meetupRsvp = event.rsvpCount || 0;
-      const eventData = {
-        time: event.time || '18:00',
-        location: event.location || 'Salt Lake City, UT',
-        venue_name: event.venueName || 'HAVN at Salt Lake Crossing',
-        image_url: event.imageUrl,
-        status: 'published',
-        source: 'meetup',
-        external_url: event.externalUrl,
-        ticket_price: event.price || 0,
-        currency: 'USD',
-        // Don't set tags here — auto-tag-events will assign circle tags
-        updated_at: new Date().toISOString(),
-        description: event.description || 'Join us for this exciting networking event!',
-        meetup_rsvp_count: meetupRsvp,
-      };
-
       if (matchingEvent) {
-        // Only update meetup-specific fields, preserve existing tags
+        // Only update meetup_rsvp_count and recalculate total — do NOT touch Eventbrite-owned fields
         const totalRsvp = meetupRsvp + (matchingEvent.eventbrite_rsvp_count || 0) + (matchingEvent.luma_rsvp_count || 0);
-        const { time, location, venue_name, image_url, status, external_url, ticket_price, currency, description, meetup_rsvp_count, updated_at } = eventData;
         const { error } = await supabase
           .from('events')
-          .update({ time, location, venue_name, image_url, status, external_url, ticket_price, currency, description, meetup_rsvp_count, updated_at, rsvp_count: totalRsvp, source: 'meetup' })
+          .update({
+            meetup_rsvp_count: meetupRsvp,
+            rsvp_count: totalRsvp,
+            updated_at: new Date().toISOString(),
+          })
           .eq('id', matchingEvent.id);
 
         if (!error) updatedCount++;
         else console.error('Error updating event:', error);
       } else {
-        const { error } = await supabase
-          .from('events')
-          .insert({
-            title: event.title,
-            date: event.date,
-            time: eventData.time,
-            location: eventData.location,
-            venue_name: eventData.venue_name,
-            image_url: eventData.image_url,
-            status: eventData.status,
-            source: 'meetup',
-            external_url: eventData.external_url,
-            ticket_price: eventData.ticket_price,
-            currency: eventData.currency,
-            description: eventData.description,
-            meetup_rsvp_count: meetupRsvp,
-            tags: [],
-            rsvp_count: meetupRsvp,
-            eventbrite_rsvp_count: 0,
-            luma_rsvp_count: 0,
-            tier: 'patron',
-            city: 'Salt Lake City',
-            country: 'United States',
-          });
-
-        if (error) {
-          console.error('Error inserting event:', error);
-        } else {
-          insertedCount++;
-        }
+        // No matching event found — skip (Eventbrite owns event creation)
+        console.log('No matching Eventbrite event for Meetup event, skipping:', title, eventDate);
+        skippedCount++;
       }
     }
 
-    console.log('Inserted', insertedCount, 'new events, updated', updatedCount);
-
-    // Keep original Meetup images - no AI generation
-    console.log('Using original Meetup event images');
+    console.log(`Meetup sync complete: ${updatedCount} updated, ${skippedCount} skipped (no match)`);
 
     return new Response(
       JSON.stringify({
         success: true,
         data: {
-          eventsFound: validEvents.length,
-          eventsInserted: insertedCount,
+          eventsFound: extractedEvents.length,
           eventsUpdated: updatedCount,
-          events: validEvents,
+          eventsSkipped: skippedCount,
         },
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
