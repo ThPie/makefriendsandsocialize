@@ -49,34 +49,9 @@ const SlowDatingPage = () => {
     },
   };
 
-  // Stats data - use real member count where applicable
+  // Stats data - use real member count
   const stats = [
-    { value: 500, suffix: "+", label: "Successful Matches", icon: Heart },
-    { value: realMemberCount || 500, suffix: "+", label: "Active Members", icon: Users },
-    { value: 87, suffix: "%", label: "Success Rate", icon: TrendingUp },
-    { value: 15, suffix: "+", label: "Cities Served", icon: Award },
-  ];
-
-  // Testimonials data
-  const testimonials = [
-    {
-      quote: "Slow Dating helped me find someone who truly understands my values. We're getting married next spring.",
-      names: "Sarah & Michael",
-      location: "New York",
-      rating: 5,
-    },
-    {
-      quote: "After years of disappointing apps, this was a breath of fresh air. The human touch made all the difference.",
-      names: "Emma & David",
-      location: "London",
-      rating: 5,
-    },
-    {
-      quote: "The matchmaking team took the time to understand what I was really looking for. Found my partner in my second introduction.",
-      names: "Priya & James",
-      location: "San Francisco",
-      rating: 5,
-    },
+    { value: realMemberCount || 0, suffix: "+", label: "Active Members", icon: Users },
   ];
 
   // FAQ data

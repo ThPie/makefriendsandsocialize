@@ -54,11 +54,6 @@ const processSteps = [
   { number: '04', title: 'Meet', description: 'Schedule your first date with our concierge support if desired.' }
 ];
 
-const stats = [
-  { value: '500+', label: 'Matches Made' },
-  { value: '87%', label: 'Second Date Rate' },
-  { value: '45+', label: 'Relationships Formed' }
-];
 
 export default function SlowDatingLandingPage() {
   const navigate = useNavigate();
