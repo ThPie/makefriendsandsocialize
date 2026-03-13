@@ -181,8 +181,8 @@ serve(async (req) => {
         const normalizedTitle = title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
         titleMatch = dateEvents.find((e) => {
           const existingNorm = e.title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
-          const words1 = new Set<string>(normalizedTitle.split(' ').filter((w) => w.length > 3));
-          const words2 = new Set<string>(existingNorm.split(' ').filter((w) => w.length > 3));
+          const words1 = new Set<string>(normalizedTitle.split(' ').filter((w: string) => w.length > 3));
+          const words2 = new Set<string>(existingNorm.split(' ').filter((w: string) => w.length > 3));
           if (words1.size === 0 || words2.size === 0) return false;
           const intersection = [...words1].filter((w) => words2.has(w));
           return intersection.length / Math.min(words1.size, words2.size) >= 0.5;
