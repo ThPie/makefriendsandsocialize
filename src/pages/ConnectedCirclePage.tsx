@@ -194,9 +194,9 @@ const ConnectedCirclePage = () => {
                   </Link>
                 </Button>
                 <Button
-                  variant="outline"
-                  size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base border-border text-foreground hover:bg-secondary hover:text-foreground"
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-full px-6 text-sm text-white/80 hover:text-white hover:bg-white/10"
                   onClick={(e) => {
                     e.preventDefault();
                     document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' });
@@ -207,23 +207,6 @@ const ConnectedCirclePage = () => {
               </motion.div>
             </div>
           </div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.5 }}
-          >
-            <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll</span>
-            <motion.div
-              className="w-5 h-8 rounded-full border border-border flex items-start justify-center p-1"
-              animate={{ y: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              <div className="w-1 h-2 rounded-full bg-[hsl(var(--accent-gold))]" />
-            </motion.div>
-          </motion.div>
         </section>
 
         {/* Benefits Section */}
