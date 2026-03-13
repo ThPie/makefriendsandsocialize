@@ -379,7 +379,12 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        data: { eventsFound: events.length, eventsInserted: insertedCount, eventsUpdated: updatedCount },
+        data: {
+          eventsFound: events.length,
+          eventsInserted: insertedCount,
+          eventsUpdated: updatedCount,
+          eventbriteFollowerCount,
+        },
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
