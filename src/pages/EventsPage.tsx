@@ -462,7 +462,6 @@ const EventsPage = () => {
                       {activeTab === 'upcoming' ? (
                         <>
                           <AnimatedButton
-                            id={hasEventbriteCheckout(event) ? `eb-trigger-${event.id}` : undefined}
                             onClick={() => handleRSVP(event)}
                             className="flex-1 min-w-[100px]"
                             aria-label={`Reserve spot for ${event.title}`}
