@@ -82,22 +82,7 @@ const EventsPage = () => {
   const [sortOrder, setSortOrder] = useState<SortOption>('date-desc');
   const [activeTab, setActiveTab] = useState<EventTab>('upcoming');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [rsvpFeedback, setRsvpFeedback] = useState<{ type: 'success' | 'info'; message: string } | null>(null);
-  const [ebWidgetLoaded, setEbWidgetLoaded] = useState(false);
   const categories = ["All", "Networking", "Social", "Dining", "Art & Culture", "Sports", "Music", "Dating"];
-
-  // Load Eventbrite embedded checkout widget script
-  useEffect(() => {
-    if (document.querySelector('script[src*="eb_widgets.js"]')) {
-      setEbWidgetLoaded(true);
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://www.eventbrite.com/static/widgets/eb_widgets.js';
-    script.async = true;
-    script.onload = () => setEbWidgetLoaded(true);
-    document.head.appendChild(script);
-  }, []);
 
   // Fetch events from database
   const { data: events = [], isLoading } = useQuery({
