@@ -22,7 +22,7 @@ const SlowDatingPage = () => {
   const processAnimation = useScrollAnimation({ rootMargin: '100px' });
   const valuesAnimation = useScrollAnimation({ rootMargin: '100px' });
   const statsAnimation = useScrollAnimation({ rootMargin: '100px' });
-  const testimonialsAnimation = useScrollAnimation({ rootMargin: '100px' });
+  const testimonialsAnimation = useScrollAnimation({ rootMargin: '100px' }); // kept for potential future use
   const faqAnimation = useScrollAnimation({ rootMargin: '100px' });
   const ctaAnimation = useScrollAnimation({ rootMargin: '100px' });
 
