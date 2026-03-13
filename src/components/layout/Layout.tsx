@@ -4,6 +4,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { SkipLink } from '@/components/ui/skip-link';
 import { JsonLd } from '@/components/common/JsonLd';
+import { PageTransition } from '@/components/ui/page-transition';
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,7 +20,9 @@ export const Layout = memo(forwardRef<HTMLDivElement, LayoutProps>(({ children }
       <SkipLink />
       <Header />
       <main id="main-content" className={`flex-1 ${isHome ? 'pt-0' : 'pt-[68px]'}`}>
-        {children}
+        <PageTransition>
+          {children}
+        </PageTransition>
       </main>
       <Footer />
     </div>

@@ -1,27 +1,44 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { ReactNode } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 
 interface PageTransitionProps {
   children: ReactNode;
 }
 
-export function PageTransition({ children }: PageTransitionProps) {
-  const location = useLocation();
-  const [isVisible, setIsVisible] = useState(false);
+const variants = {
+  initial: { opacity: 0, y: 14 },
+  enter: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] as const },
+  },
+  exit: {
+    opacity: 0,
+    y: -8,
+    transition: { duration: 0.18, ease: [0.4, 0, 1, 1] as const },
+  },
+};
 
-  useEffect(() => {
-    setIsVisible(false);
-    const timer = setTimeout(() => setIsVisible(true), 10);
-    return () => clearTimeout(timer);
-  }, [location.pathname]);
+/**
+ * Wraps page content with a smooth fade + slide-up animation on every route change.
+ * Used inside the Layout component so every page gets the transition automatically.
+ */
+export function PageTransition({ children }: PageTransitionProps) {
+  const { pathname } = useLocation();
 
   return (
-    <div
-      className={`transition-all duration-300 ease-out ${
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
-      }`}
-    >
-      {children}
-    </div>
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={pathname}
+        variants={variants}
+        initial="initial"
+        animate="enter"
+        exit="exit"
+        style={{ willChange: 'opacity, transform' }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
   );
 }

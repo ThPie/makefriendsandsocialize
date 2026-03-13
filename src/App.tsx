@@ -15,6 +15,7 @@ import { CountryRedirectBanner } from "@/components/ui/country-redirect-banner";
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { HelmetProvider } from 'react-helmet-async';
 import { RegisterSW } from "./components/common/RegisterSW";
+import { BackToTop } from "@/components/ui/back-to-top";
 
 import { SlowDatingRoutes, MainRoutes } from "@/routes/config";
 
@@ -61,6 +62,7 @@ const App = () => {
                     <Suspense fallback={<BrandedLoader />}>
                       {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
                     </Suspense>
+                    <BackToTop />
                     <SpeedInsights />
                   </SessionProvider>
                 </BrowserRouter>

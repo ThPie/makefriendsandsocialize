@@ -497,19 +497,33 @@ const EventsPage = () => {
           </motion.div>
         ) : (
           <motion.div
-            className="text-center py-20"
+            className="text-center py-20 flex flex-col items-center gap-4"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <Calendar className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              No {activeTab} events found
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <Calendar className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold text-foreground">
+              {searchQuery
+                ? `No events matching "${searchQuery}"`
+                : activeCategory !== 'All'
+                ? `No ${activeTab} "${activeCategory}" events`
+                : `No ${activeTab} events found`}
             </h3>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground max-w-xs">
               {activeTab === 'upcoming'
-                ? 'Check back soon for new events'
-                : 'No past events to show'}
+                ? 'Try adjusting your filters or check back soon for new events.'
+                : 'No past events match your current filters.'}
             </p>
+            {(searchQuery || activeCategory !== 'All') && (
+              <button
+                onClick={() => { setSearchQuery(''); setActiveCategory('All'); }}
+                className="mt-2 inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
+                Clear Filters
+              </button>
+            )}
           </motion.div>
         )}
       </div>

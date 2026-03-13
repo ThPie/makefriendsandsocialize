@@ -131,13 +131,35 @@ const JournalPage = () => {
         className={`w-full content-container pb-20 scroll-animate ${articlesAnimation.isVisible ? 'visible' : ''}`}
       >
         {filteredArticles.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-6">
-              <FileText className="h-8 w-8 text-muted-foreground" />
+          <motion.div
+            className="text-center py-20 flex flex-col items-center gap-4"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <FileText className="h-8 w-8 text-primary" />
             </div>
-            <h3 className="text-xl font-display text-foreground mb-2">No Articles Yet</h3>
-            <p className="text-muted-foreground text-lg">Check back soon for insights on connection, community, and growth.</p>
-          </div>
+            <h3 className="text-xl font-display text-foreground">
+              {searchQuery
+                ? `No articles matching "${searchQuery}"`
+                : activeCategory !== 'All Posts'
+                ? `No articles in "${activeCategory}"`
+                : 'No Articles Yet'}
+            </h3>
+            <p className="text-muted-foreground max-w-xs">
+              {searchQuery || activeCategory !== 'All Posts'
+                ? 'Try adjusting your search or clearing the category filter.'
+                : 'Check back soon for insights on connection, community, and growth.'}
+            </p>
+            {(searchQuery || activeCategory !== 'All Posts') && (
+              <button
+                onClick={() => { setSearchQuery(''); setActiveCategory('All Posts'); }}
+                className="mt-2 inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
+                Clear Filters
+              </button>
+            )}
+          </motion.div>
         ) : (
           <motion.div
             variants={containerVariants}
