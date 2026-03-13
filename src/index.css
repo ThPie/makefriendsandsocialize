@@ -34,8 +34,8 @@
     /* #FFFFFF → surface-raised */
     --popover-foreground: 140 34% 9%;
 
-    /* Primary — Forest Green (kept for compatibility) */
-    --primary: 143 55% 23%;
+    /* Primary — Gold (unified with accent-gold for brand consistency) */
+    --primary: 43 76% 31%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary — warm ivory */
@@ -100,8 +100,8 @@
     /* #112D1A → surface-raised */
     --popover-foreground: 36 24% 93%;
 
-    /* Primary — Forest Green */
-    --primary: 143 55% 23%;
+    /* Primary — Gold (unified with accent-gold for brand consistency) */
+    --primary: 43 76% 31%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary — deep forest */
@@ -352,7 +352,10 @@
 
   /* Premium text gradient - gold accent */
   .text-gradient {
-    @apply bg-gradient-to-r from-primary via-[hsl(var(--accent-gold))] to-primary bg-clip-text text-transparent;
+    background: linear-gradient(to right, hsl(var(--accent-gold-light)), hsl(var(--accent-gold)), hsl(var(--accent-gold-light)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   /* Gold gradient text — luxury accent for headings & badges */

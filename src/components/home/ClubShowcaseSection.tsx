@@ -5,12 +5,13 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 // Assets
-import gentlemenImg from '@/assets/gentlemen-stock.jpg';
+import gentlemenImg from '@/assets/gentlemen-circle-new.webp';
 import womenSocietyImg from '@/assets/women-society-hero.webp';
 import foundersImg from '@/assets/founders-hero-new.webp';
 import slowDatingImg from '@/assets/slow-dating-new.webp';
-import lesAmisImg from '@/assets/les-amis-stock.jpg';
-import couplesCircleImg from '@/assets/circles/couples-circle-hero.webp';
+import lesAmisImg from '@/assets/les-amis-circle-new.webp';
+import exchangeImg from '@/assets/exchange-circle-new.webp';
+import couplesCircleImg from '@/assets/couples-circle-new.webp';
 
 // Active & Outdoor uses golf-themed imagery
 import activeOutdoorImg from '@/assets/active-outdoor-hero-new.webp';
@@ -69,7 +70,7 @@ const clubs = [
     category: 'Learning',
     title: 'The Exchange',
     description: 'Learn, teach, and share knowledge across every field — from technology and business to cooking classes and bike repair workshops.',
-    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2940&auto=format&fit=crop',
+    image: exchangeImg,
     link: '/circles/the-exchange'
   },
 ];

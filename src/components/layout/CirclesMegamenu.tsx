@@ -47,9 +47,15 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                             </span>
                         </div>
 
-                        {/* Bottom image layer context if needed */}
+                        {/* Member album photos grid */}
                         <div className="relative z-10 mt-auto">
-                            {/* Empty spacing block in the reference to push text up */}
+                            <p className="text-white/50 text-[10px] uppercase tracking-widest mb-2">Our Members</p>
+                            <div className="grid grid-cols-2 gap-1.5">
+                                <img src="/images/members/album-1.webp" alt="Member event" className="w-full h-16 object-cover rounded-xl opacity-80 hover:opacity-100 transition-opacity duration-200" loading="lazy" />
+                                <img src="/images/members/album-2.webp" alt="Member event" className="w-full h-16 object-cover rounded-xl opacity-80 hover:opacity-100 transition-opacity duration-200" loading="lazy" />
+                                <img src="/images/members/album-3.webp" alt="Member event" className="w-full h-16 object-cover rounded-xl opacity-80 hover:opacity-100 transition-opacity duration-200" loading="lazy" />
+                                <img src="/images/members/album-4.webp" alt="Member event" className="w-full h-16 object-cover rounded-xl opacity-80 hover:opacity-100 transition-opacity duration-200" loading="lazy" />
+                            </div>
                         </div>
                     </div>
 
