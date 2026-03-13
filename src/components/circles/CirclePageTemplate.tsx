@@ -75,43 +75,44 @@ const CirclePageTemplate = ({ config }: { config: CircleConfig }) => {
     <Layout>
       <div className="min-h-screen bg-background text-foreground">
         {/* Hero Section */}
-        <section className="relative h-[80vh] flex items-center overflow-hidden">
+        <section className="relative h-[80vh] flex items-end overflow-hidden">
           <div className="absolute inset-0">
             <img
               src={config.heroImage}
               alt={config.heroImageAlt}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/50" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
           </div>
 
           <div
             ref={heroAnimation.ref}
-            className={`content-container relative z-10 py-20 pl-8 md:pl-16 border-l border-white/20 ml-4 md:ml-12 scroll-animate ${heroAnimation.isVisible ? "visible" : ""}`}
+            className={`content-container relative z-10 pb-16 md:pb-20 scroll-animate ${heroAnimation.isVisible ? "visible" : ""}`}
           >
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7 }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
             >
-              <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-white mb-8 leading-[0.9]">
-                {config.title}
-              </h1>
+              <div className="max-w-lg">
+                <h1 className="font-display text-3xl md:text-4xl text-white mb-3 leading-[1.1]">
+                  {config.title}
+                </h1>
 
-              <p className="text-white/90 text-xl max-w-xl leading-relaxed mb-12 border-l-2 border-primary pl-6 font-light">
-                {config.heroDescription}
-              </p>
+                <p className="text-white/70 text-sm md:text-base max-w-md leading-relaxed mb-6">
+                  {config.heroDescription}
+                </p>
 
-              {showCta && (
-                <Button
-                  size="lg"
-                  className="rounded-full px-10 h-14 text-lg font-medium bg-white text-black hover:bg-white/90 transition-colors shadow-xl shadow-black/20"
-                  onClick={() => navigate("/membership")}
-                >
-                  Become a Member
-                </Button>
-              )}
+                {showCta && (
+                  <Button
+                    size="sm"
+                    className="rounded-full px-6 text-sm font-medium bg-white text-black hover:bg-white/90 transition-colors"
+                    onClick={() => navigate("/membership")}
+                  >
+                    Become a Member
+                  </Button>
+                )}
+              </div>
             </motion.div>
           </div>
         </section>

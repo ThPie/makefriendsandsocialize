@@ -164,48 +164,33 @@ export default function FAQPage() {
     <main className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative w-full py-20 md:py-28 overflow-hidden">
-        {/* Floating Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            className="absolute top-1/3 right-1/4 w-64 h-64 rounded-full bg-primary/10 blur-3xl"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full bg-primary/5 blur-3xl"
-            animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
-
         <div
           ref={heroAnimation.ref}
-          className={`container max-w-4xl text-center relative z-10 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+          className={`container max-w-4xl relative z-10 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-6"
+            transition={{ duration: 0.5 }}
+            className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground mb-3"
           >
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">Help Center</span>
-          </motion.div>
+            Help Center
+          </motion.p>
 
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="font-display text-3xl md:text-4xl text-foreground mb-3 leading-[1.1]"
           >
             Frequently Asked <span className="text-[hsl(var(--accent-gold))] italic">Questions</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-muted-foreground text-sm md:text-base max-w-md leading-relaxed"
           >
             Everything you need to know about our community, membership, events, and more.
           </motion.p>

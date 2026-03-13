@@ -130,56 +130,41 @@ const ContactPage = () => {
   return (
     <div className="flex-grow flex flex-col items-center bg-background">
       {/* Hero Section */}
-      <section className="relative w-full min-h-[50vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full min-h-[50vh] flex items-end overflow-hidden">
         {/* Background */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: "url('/images/gallery/event-1.webp')" }}
         />
-        <div className="absolute inset-0 bg-black/60" />
-
-        {/* Floating Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-primary/10 blur-3xl"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-1/4 left-1/3 w-80 h-80 rounded-full bg-primary/5 blur-3xl"
-            animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
         <div
           ref={heroAnimation.ref}
-          className={`relative z-10 container max-w-4xl text-center py-16 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+          className={`relative z-10 container max-w-4xl pb-16 md:pb-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-6"
+            transition={{ duration: 0.5 }}
+            className="text-xs font-medium uppercase tracking-[0.2em] text-white/60 mb-3"
           >
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-white">Get In Touch</span>
-          </motion.div>
+            Get In Touch
+          </motion.p>
 
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-display text-5xl md:text-6xl text-white mb-4 leading-[1.1]"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="font-display text-3xl md:text-4xl text-white mb-3 leading-[1.1]"
           >
-            Let's <span className="text-[hsl(var(--accent-gold))] italic">Connect</span>
+            Let's <span className="italic">Connect</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-white/80 text-lg md:text-xl max-w-xl mx-auto"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-white/70 text-sm md:text-base max-w-md leading-relaxed"
           >
             Have questions about membership or events? We'd love to hear from you.
           </motion.p>
