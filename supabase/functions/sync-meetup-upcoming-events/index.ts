@@ -5,8 +5,10 @@ import { getCorsHeaders } from '../_shared/cors.ts';
 
 /**
  * Meetup sync — ATTENDEE-ONLY mode.
- * Meetup never creates new events. It only updates meetup_rsvp_count
- * on existing events (owned by Eventbrite) when a fuzzy title match is found.
+ * Two-phase approach:
+ * 1. Scrape the listing page for event links
+ * 2. Scrape each individual event page for accurate attendee counts
+ * Meetup never creates new events — only updates meetup_rsvp_count on existing DB events.
  */
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -20,70 +22,17 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
     if (!firecrawlApiKey) {
-      console.error('FIRECRAWL_API_KEY not configured');
       return new Response(
         JSON.stringify({ success: false, error: 'Firecrawl not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
     if (!supabaseUrl || !supabaseServiceKey) {
       return new Response(
         JSON.stringify({ success: false, error: 'Supabase not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    const upcomingEventsUrl = 'https://www.meetup.com/makefriendsandsocialize/events/';
-    console.log('Scraping upcoming events from:', upcomingEventsUrl);
-
-    const scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${firecrawlApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        url: upcomingEventsUrl,
-        formats: ['extract'],
-        extract: {
-          schema: {
-            type: 'object',
-            properties: {
-              events: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {
-                    title: { type: 'string', description: 'The complete event title/name exactly as shown' },
-                    rawDate: { type: 'string', description: 'The date text exactly as shown on the page like "THU, JAN 23, 2026"' },
-                    attendees: { type: 'number', description: 'Number of attendees or RSVPs shown' },
-                  },
-                  required: ['title']
-                },
-                description: 'All upcoming events listed on this Meetup group events page'
-              }
-            },
-            required: ['events']
-          },
-          prompt: 'IMPORTANT: Only extract events HOSTED BY "Make Friends and Socialize" group. DO NOT include "suggested events" or events from other groups. For each event get the title, date, and attendee count.'
-        },
-        waitFor: 5000,
-      }),
-    });
-
-    const scrapeData = await scrapeResponse.json();
-
-    if (!scrapeResponse.ok) {
-      console.error('Firecrawl API error:', scrapeData);
-      return new Response(
-        JSON.stringify({ success: false, error: scrapeData.error || 'Scrape failed' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const extractedEvents = scrapeData.data?.extract?.events || scrapeData.extract?.events || [];
-    console.log('Found', extractedEvents.length, 'Meetup events');
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -94,10 +43,42 @@ serve(async (req) => {
       year: 'numeric', month: '2-digit', day: '2-digit',
     }).format(new Date());
 
-    const [currentYearStr, currentMonthStr] = today.split('-');
-    const currentYear = Number(currentYearStr);
-    const currentMonth = Number(currentMonthStr);
+    // PHASE 1: Discover all event URLs from the group page using Firecrawl map
+    const groupUrl = 'https://www.meetup.com/makefriendsandsocialize/';
+    console.log('Phase 1: Mapping event URLs from:', groupUrl);
 
+    const mapResponse = await fetch('https://api.firecrawl.dev/v1/map', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${firecrawlApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        url: groupUrl,
+        search: 'events',
+        limit: 100,
+        includeSubdomains: false,
+      }),
+    });
+
+    const mapData = await mapResponse.json();
+    const allLinks: string[] = mapData.links || mapData.data?.links || [];
+    
+    // Filter for individual event page URLs (pattern: /events/XXXXXX/)
+    const eventUrlPattern = /\/makefriendsandsocialize\/events\/(\d+)\/?/;
+    const eventUrls = [...new Set(
+      allLinks
+        .filter((link: string) => eventUrlPattern.test(link))
+        .map((link: string) => {
+          const match = link.match(eventUrlPattern);
+          return match ? `https://www.meetup.com/makefriendsandsocialize/events/${match[1]}/` : null;
+        })
+        .filter(Boolean) as string[]
+    )];
+
+    console.log(`Found ${eventUrls.length} individual event URLs:`, eventUrls);
+
+    // PHASE 2: Scrape each individual event page for title, date, and attendee count
     const months: Record<string, string> = {
       'JAN': '01', 'JANUARY': '01', 'FEB': '02', 'FEBRUARY': '02',
       'MAR': '03', 'MARCH': '03', 'APR': '04', 'APRIL': '04',
@@ -106,6 +87,10 @@ serve(async (req) => {
       'OCT': '10', 'OCTOBER': '10', 'NOV': '11', 'NOVEMBER': '11',
       'DEC': '12', 'DECEMBER': '12',
     };
+
+    const [currentYearStr, currentMonthStr] = today.split('-');
+    const currentYear = Number(currentYearStr);
+    const currentMonth = Number(currentMonthStr);
 
     const parseEventDate = (dateStr: string): string | null => {
       if (!dateStr) return null;
@@ -130,14 +115,68 @@ serve(async (req) => {
         const parsed = new Date(dateStr);
         if (!isNaN(parsed.getTime())) return parsed.toISOString().split('T')[0];
       } catch { /* skip */ }
-
       return null;
     };
 
     const normalizeTitle = (t: string): string =>
       t.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ').trim();
 
-    // Get ALL existing future events for matching
+    // Scrape each event page
+    interface MeetupEvent {
+      title: string;
+      date: string | null;
+      attendees: number;
+    }
+    const meetupEvents: MeetupEvent[] = [];
+
+    for (const eventUrl of eventUrls) {
+      try {
+        console.log('Scraping individual event page:', eventUrl);
+        const scrapeResp = await fetch('https://api.firecrawl.dev/v1/scrape', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${firecrawlApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            url: eventUrl,
+            formats: ['extract'],
+            extract: {
+              schema: {
+                type: 'object',
+                properties: {
+                  title: { type: 'string', description: 'The event title/name' },
+                  date: { type: 'string', description: 'The event date, e.g. "Wed, Apr 2, 2026"' },
+                  attendeeCount: { type: 'number', description: 'The number of attendees shown on the page (look for a number near "Attendees" heading)' },
+                },
+                required: ['title', 'date', 'attendeeCount']
+              },
+              prompt: 'Extract the event title, date, and the attendee count number shown near the "Attendees" section heading.'
+            },
+            waitFor: 3000,
+          }),
+        });
+
+        const scrapeData = await scrapeResp.json();
+        const extracted = scrapeData.data?.extract || scrapeData.extract;
+
+        if (extracted?.title) {
+          const eventDate = parseEventDate(extracted.date || '');
+          meetupEvents.push({
+            title: extracted.title.trim(),
+            date: eventDate,
+            attendees: extracted.attendeeCount || 0,
+          });
+          console.log(`  → "${extracted.title}" | ${eventDate} | ${extracted.attendeeCount} attendees`);
+        }
+      } catch (err) {
+        console.error('Error scraping event page:', eventUrl, err);
+      }
+    }
+
+    console.log(`Phase 2 complete: scraped ${meetupEvents.length} events`);
+
+    // PHASE 3: Match with existing DB events and update meetup_rsvp_count
     const { data: allExistingEvents } = await supabase
       .from('events')
       .select('id, title, date, meetup_rsvp_count, eventbrite_rsvp_count, luma_rsvp_count')
@@ -156,33 +195,23 @@ serve(async (req) => {
     let updatedCount = 0;
     let skippedCount = 0;
 
-    for (const event of extractedEvents) {
-      if (!event.title?.trim()) continue;
-
-      const title = event.title.trim();
-      const dateStr = event.rawDate || event.date || '';
-      const eventDate = parseEventDate(dateStr);
-
-      if (!eventDate || eventDate < today) {
-        console.log('Skipping Meetup event (past or no date):', title);
+    for (const event of meetupEvents) {
+      if (!event.title || !event.date || event.date < today) {
+        console.log('Skipping (past or no date):', event.title);
         continue;
       }
 
       const meetupRsvp = event.attendees || 0;
-
-      // Find matching existing event by fuzzy title on the same date
-      const sameDateEvents = existingByDate.get(eventDate) || [];
-      const normalizedTitle = normalizeTitle(title);
+      const sameDateEvents = existingByDate.get(event.date) || [];
+      const normalizedTitle = normalizeTitle(event.title);
       let matchingEvent: any = null;
 
       for (const existing of sameDateEvents) {
         const existingNorm = normalizeTitle(existing.title);
-        // Exact match
         if (normalizedTitle === existingNorm) {
           matchingEvent = existing;
           break;
         }
-        // Fuzzy word-overlap match
         const wordsA = new Set<string>(normalizedTitle.split(' ').filter((w: string) => w.length > 3));
         const wordsB = new Set<string>(existingNorm.split(' ').filter((w: string) => w.length > 3));
         if (wordsA.size === 0 || wordsB.size === 0) continue;
@@ -190,13 +219,12 @@ serve(async (req) => {
         const similarity = intersection.length / Math.min(wordsA.size, wordsB.size);
         if (similarity >= 0.5) {
           matchingEvent = existing;
-          console.log(`Meetup matched: "${title}" ↔ "${existing.title}"`);
+          console.log(`Matched: "${event.title}" ↔ "${existing.title}"`);
           break;
         }
       }
 
       if (matchingEvent) {
-        // Only update meetup_rsvp_count and recalculate total — do NOT touch Eventbrite-owned fields
         const totalRsvp = meetupRsvp + (matchingEvent.eventbrite_rsvp_count || 0) + (matchingEvent.luma_rsvp_count || 0);
         const { error } = await supabase
           .from('events')
@@ -207,22 +235,26 @@ serve(async (req) => {
           })
           .eq('id', matchingEvent.id);
 
-        if (!error) updatedCount++;
-        else console.error('Error updating event:', error);
+        if (!error) {
+          updatedCount++;
+          console.log(`Updated "${matchingEvent.title}": meetup=${meetupRsvp}, total=${totalRsvp}`);
+        } else {
+          console.error('Error updating event:', error);
+        }
       } else {
-        // No matching event found — skip (Eventbrite owns event creation)
-        console.log('No matching Eventbrite event for Meetup event, skipping:', title, eventDate);
+        console.log('No matching DB event for Meetup event:', event.title, event.date);
         skippedCount++;
       }
     }
 
-    console.log(`Meetup sync complete: ${updatedCount} updated, ${skippedCount} skipped (no match)`);
+    console.log(`Meetup sync complete: ${updatedCount} updated, ${skippedCount} skipped`);
 
     return new Response(
       JSON.stringify({
         success: true,
         data: {
-          eventsFound: extractedEvents.length,
+          eventUrlsFound: eventUrls.length,
+          eventsScraped: meetupEvents.length,
           eventsUpdated: updatedCount,
           eventsSkipped: skippedCount,
         },
@@ -230,7 +262,7 @@ serve(async (req) => {
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Error in sync-meetup-upcoming-events function:', error);
+    console.error('Error in sync-meetup-upcoming-events:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
       JSON.stringify({ success: false, error: errorMessage }),
