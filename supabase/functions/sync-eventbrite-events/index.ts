@@ -110,6 +110,7 @@ serve(async (req) => {
 
   try {
     const eventbriteApiKey = Deno.env.get('EVENTBRITE_API_KEY');
+    const firecrawlApiKey = Deno.env.get('FIRECRAWL_API_KEY');
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
@@ -127,6 +128,8 @@ serve(async (req) => {
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Discover the organization ID for this token
     console.log('Discovering organization ID from token...');
@@ -155,8 +158,41 @@ serve(async (req) => {
       );
     }
 
-    const ORGANIZER_ID = organizations[0].id;
+    const ORGANIZER_ID = String(organizations[0].id);
     console.log('Using organization ID:', ORGANIZER_ID);
+
+    let eventbriteFollowerCount: number | null = null;
+    try {
+      eventbriteFollowerCount = await fetchEventbriteFollowerCount(ORGANIZER_ID, eventbriteApiKey, firecrawlApiKey || undefined);
+
+      if (eventbriteFollowerCount !== null) {
+        const { data: latestStats } = await supabase
+          .from('meetup_stats')
+          .select('id')
+          .order('last_updated', { ascending: false })
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (latestStats?.id) {
+          const { error: statsUpdateError } = await supabase
+            .from('meetup_stats')
+            .update({
+              eventbrite_follower_count: eventbriteFollowerCount,
+              last_updated: new Date().toISOString(),
+            })
+            .eq('id', latestStats.id);
+
+          if (statsUpdateError) {
+            console.error('Failed to update eventbrite follower count:', statsUpdateError);
+          } else {
+            console.log('Updated Eventbrite follower count:', eventbriteFollowerCount);
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('Could not refresh Eventbrite follower count:', error);
+    }
 
     // Fetch events from Eventbrite API
     const eventsResponse = await fetch(
@@ -176,8 +212,6 @@ serve(async (req) => {
     const eventsData = await eventsResponse.json();
     const events = eventsData.events || [];
     console.log('Found', events.length, 'Eventbrite events');
-
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const today = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'America/Denver',
