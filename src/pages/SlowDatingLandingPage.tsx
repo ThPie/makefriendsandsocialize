@@ -149,18 +149,6 @@ export default function SlowDatingLandingPage() {
             )}
           </motion.div>
 
-          {/* Stats */}
-          <motion.div
-            variants={itemVariants}
-            className="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto"
-          >
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</div>
-                <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
-              </div>
-            ))}
-          </motion.div>
         </motion.div>
 
         {/* Scroll Indicator */}
