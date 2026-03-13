@@ -164,37 +164,6 @@ serve(async (req) => {
     console.log('Using organization ID:', ORGANIZER_ID);
 
     let eventbriteFollowerCount: number | null = null;
-    try {
-      eventbriteFollowerCount = await fetchEventbriteFollowerCount(ORGANIZER_ID, eventbriteApiKey, firecrawlApiKey || undefined);
-
-      if (eventbriteFollowerCount !== null) {
-        const { data: latestStats } = await supabase
-          .from('meetup_stats')
-          .select('id')
-          .order('last_updated', { ascending: false })
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-
-        if (latestStats?.id) {
-          const { error: statsUpdateError } = await supabase
-            .from('meetup_stats')
-            .update({
-              eventbrite_follower_count: eventbriteFollowerCount,
-              last_updated: new Date().toISOString(),
-            })
-            .eq('id', latestStats.id);
-
-          if (statsUpdateError) {
-            console.error('Failed to update eventbrite follower count:', statsUpdateError);
-          } else {
-            console.log('Updated Eventbrite follower count:', eventbriteFollowerCount);
-          }
-        }
-      }
-    } catch (error) {
-      console.warn('Could not refresh Eventbrite follower count:', error);
-    }
 
     // Fetch events from Eventbrite API
     const eventsResponse = await fetch(
