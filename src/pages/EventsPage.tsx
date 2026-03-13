@@ -151,28 +151,16 @@ const EventsPage = () => {
     };
   }, [queryClient]);
 
-  // Check if event is external (Meetup, Eventbrite, Luma)
-  const isExternalEvent = (event: Event) => {
-    return event.source === 'meetup' || event.source === 'eventbrite' || event.source === 'luma' || event.external_url;
-  };
-
   // Check if event has Eventbrite embedded checkout available
-  const isEventbriteEvent = (event: Event) => {
-    return event.source === 'eventbrite' && event.eventbrite_id;
+  const hasEventbriteCheckout = (event: Event) => {
+    return !!event.eventbrite_id;
   };
 
-  // Get the external URL for an event
-  const getExternalUrl = (event: Event) => {
-    if (event.external_url) return event.external_url;
-    if (event.source === 'meetup') return 'https://www.meetup.com/makefriendsandsocialize/events/';
-    return null;
-  };
-
-  // Open Eventbrite embedded checkout modal
+  // Open Eventbrite embedded checkout modal (stays on site)
   const openEventbriteCheckout = useCallback((event: Event) => {
     if (!event.eventbrite_id || !(window as any).EBWidgets) {
-      // Fallback: open Eventbrite page
-      const url = event.external_url || `https://www.eventbrite.com/e/${event.eventbrite_id}`;
+      // Fallback: open Eventbrite page in background
+      const url = `https://www.eventbrite.com/e/${event.eventbrite_id}`;
       window.open(url, '_blank', 'noopener,noreferrer');
       return;
     }
@@ -193,37 +181,13 @@ const EventsPage = () => {
   }, []);
 
   const handleRSVP = (event: Event) => {
-    // For Eventbrite events, use embedded checkout
-    if (isEventbriteEvent(event)) {
+    // For events with Eventbrite ID, use embedded checkout (no redirect)
+    if (hasEventbriteCheckout(event)) {
       openEventbriteCheckout(event);
       return;
     }
 
-    // For other external events, redirect to external platform
-    if (isExternalEvent(event)) {
-      const url = getExternalUrl(event);
-      if (url) window.open(url, '_blank', 'noopener,noreferrer');
-      setRsvpFeedback({
-        type: 'info',
-        message: 'Opening event page to complete your RSVP.',
-      });
-      setTimeout(() => setRsvpFeedback(null), 4000);
-      return;
-    }
-
-    // For internal events, require authentication
-    if (!user) {
-      setRsvpFeedback({
-        type: 'info',
-        message: "Please sign in to RSVP for this event.",
-      });
-      setTimeout(() => {
-        navigate('/auth?returnTo=/portal/events');
-      }, 1500);
-      return;
-    }
-
-    // Redirect to event detail page for proper RSVP handling (which includes auth/tier checks)
+    // For all other events, go to detail page for RSVP
     navigate(`/events/${event.id}`);
   };
 
