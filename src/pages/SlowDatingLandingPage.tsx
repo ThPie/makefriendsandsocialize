@@ -148,7 +148,7 @@ export default function SlowDatingLandingPage() {
           </div>
         </motion.div>
 
-        </motion.div>
+
 
         {/* Scroll Indicator */}
         <motion.div
