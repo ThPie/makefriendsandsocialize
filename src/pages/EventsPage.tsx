@@ -513,12 +513,12 @@ const EventsPage = () => {
                       {activeTab === 'upcoming' ? (
                         <>
                           <AnimatedButton
-                            id={isEventbriteEvent(event) ? `eb-trigger-${event.id}` : undefined}
+                            id={hasEventbriteCheckout(event) ? `eb-trigger-${event.id}` : undefined}
                             onClick={() => handleRSVP(event)}
                             className="flex-1 min-w-[100px]"
-                            aria-label={`RSVP for ${event.title}`}
+                            aria-label={`Reserve spot for ${event.title}`}
                           >
-                            RSVP Now
+                            Reserve
                           </AnimatedButton>
                           <AddToCalendarButton event={event} />
                           <Button variant="outline" asChild className="rounded-xl">
