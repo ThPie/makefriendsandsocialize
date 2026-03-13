@@ -371,58 +371,6 @@ const SlowDatingPage = () => {
           </div>
         </section>
 
-        {/* Testimonials Section */}
-        <section className="py-24 md:py-32">
-          <div
-            ref={testimonialsAnimation.ref}
-            className={`container max-w-6xl scroll-animate ${testimonialsAnimation.isVisible ? 'visible' : ''}`}
-          >
-            <div className="text-center mb-16">
-              <p className="text-primary text-sm font-semibold uppercase tracking-widest mb-4">Success Stories</p>
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
-                Love Found Slowly
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Real stories from members who found meaningful connections through our curated approach.
-              </p>
-            </div>
-
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={testimonialsAnimation.isVisible ? "visible" : "hidden"}
-              className="grid md:grid-cols-3 gap-6 lg:gap-8"
-            >
-              {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={index}
-                  variants={itemVariants}
-                  className="bg-card border border-border/50 rounded-2xl p-8 relative hover-lift"
-                >
-                  <Quote className="h-10 w-10 text-primary/20 absolute top-6 right-6" />
-                  <div className="flex gap-1 mb-6">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-primary text-primary" />
-                    ))}
-                  </div>
-                  <p className="text-foreground text-lg leading-relaxed mb-6 italic">
-                    "{testimonial.quote}"
-                  </p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Heart className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground">{testimonial.names}</p>
-                      <p className="text-sm text-muted-foreground">{testimonial.location}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-
         {/* Values Section */}
         <section className="py-24 md:py-32 bg-secondary/30">
           <div
