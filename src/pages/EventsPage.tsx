@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -82,22 +82,7 @@ const EventsPage = () => {
   const [sortOrder, setSortOrder] = useState<SortOption>('date-desc');
   const [activeTab, setActiveTab] = useState<EventTab>('upcoming');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [rsvpFeedback, setRsvpFeedback] = useState<{ type: 'success' | 'info'; message: string } | null>(null);
-  const [ebWidgetLoaded, setEbWidgetLoaded] = useState(false);
   const categories = ["All", "Networking", "Social", "Dining", "Art & Culture", "Sports", "Music", "Dating"];
-
-  // Load Eventbrite embedded checkout widget script
-  useEffect(() => {
-    if (document.querySelector('script[src*="eb_widgets.js"]')) {
-      setEbWidgetLoaded(true);
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://www.eventbrite.com/static/widgets/eb_widgets.js';
-    script.async = true;
-    script.onload = () => setEbWidgetLoaded(true);
-    document.head.appendChild(script);
-  }, []);
 
   // Fetch events from database
   const { data: events = [], isLoading } = useQuery({
@@ -151,43 +136,7 @@ const EventsPage = () => {
     };
   }, [queryClient]);
 
-  // Check if event has Eventbrite embedded checkout available
-  const hasEventbriteCheckout = (event: Event) => {
-    return !!event.eventbrite_id;
-  };
-
-  // Open Eventbrite embedded checkout modal (stays on site)
-  const openEventbriteCheckout = useCallback((event: Event) => {
-    if (!event.eventbrite_id || !(window as any).EBWidgets) {
-      // Fallback: open Eventbrite page in background
-      const url = `https://www.eventbrite.com/e/${event.eventbrite_id}`;
-      window.open(url, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
-    (window as any).EBWidgets.createWidget({
-      widgetType: 'checkout',
-      eventId: event.eventbrite_id,
-      modal: true,
-      modalTriggerElementId: `eb-trigger-${event.id}`,
-      onOrderComplete: () => {
-        setRsvpFeedback({
-          type: 'success',
-          message: 'You\'re registered! Check your email for confirmation.',
-        });
-        setTimeout(() => setRsvpFeedback(null), 5000);
-      },
-    });
-  }, []);
-
   const handleRSVP = (event: Event) => {
-    // For events with Eventbrite ID, use embedded checkout (no redirect)
-    if (hasEventbriteCheckout(event)) {
-      openEventbriteCheckout(event);
-      return;
-    }
-
-    // For all other events, go to detail page for RSVP
     navigate(`/events/${event.id}`);
   };
 
@@ -513,7 +462,6 @@ const EventsPage = () => {
                       {activeTab === 'upcoming' ? (
                         <>
                           <AnimatedButton
-                            id={hasEventbriteCheckout(event) ? `eb-trigger-${event.id}` : undefined}
                             onClick={() => handleRSVP(event)}
                             className="flex-1 min-w-[100px]"
                             aria-label={`Reserve spot for ${event.title}`}
