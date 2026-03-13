@@ -36,6 +36,7 @@ const fetchEventbriteFollowerCount = async (
   organizationId: string,
   eventbriteApiKey: string,
   firecrawlApiKey?: string,
+  publicOrganizerId?: string,
 ): Promise<number | null> => {
   // 1) Try Eventbrite organization API directly first
   try {
@@ -70,6 +71,7 @@ const fetchEventbriteFollowerCount = async (
   const candidateUrls = [
     `https://www.eventbrite.com/o/${organizationId}`,
     `https://www.eventbrite.com/organizations/${organizationId}`,
+    ...(publicOrganizerId ? [`https://www.eventbrite.com/o/${publicOrganizerId}`] : []),
   ];
 
   for (const url of candidateUrls) {
