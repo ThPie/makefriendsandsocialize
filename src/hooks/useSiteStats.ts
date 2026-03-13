@@ -19,17 +19,14 @@ export const useSiteStats = () => {
     queryKey: ['site-stats'],
     queryFn: async (): Promise<SiteStats> => {
       // Run all independent queries in parallel — was sequential (3 round trips → 1)
-      const [eventsCountRes, meetupStatsRes, platformTotalsRes] = await Promise.all([
+      const [eventsCountRes, meetupStatsRes] = await Promise.all([
         supabase.rpc('get_upcoming_events_count'),
         supabase
           .from('meetup_stats')
-          .select('member_count, rating, avatar_urls, joined_this_week')
+          .select('member_count, rating, avatar_urls, joined_this_week, eventbrite_follower_count, luma_follower_count')
           .order('last_updated', { ascending: false })
           .limit(1)
           .single(),
-        supabase
-          .from('events')
-          .select('meetup_rsvp_count, eventbrite_rsvp_count, luma_rsvp_count'),
       ]);
 
       if (eventsCountRes.error) {
@@ -38,30 +35,20 @@ export const useSiteStats = () => {
       if (meetupStatsRes.error && meetupStatsRes.error.code !== 'PGRST116') {
         console.error('[useSiteStats] Meetup stats error:', meetupStatsRes.error);
       }
-      if (platformTotalsRes.error) {
-        console.error('[useSiteStats] Platform totals error:', platformTotalsRes.error);
-      }
 
       const meetupStats = meetupStatsRes.data;
-      const platformTotals = platformTotalsRes.data;
-
-      let totalEventbriteAttendees = 0;
-      let totalLumaAttendees = 0;
-      if (platformTotals) {
-        for (const e of platformTotals) {
-          totalEventbriteAttendees += e.eventbrite_rsvp_count || 0;
-          totalLumaAttendees += e.luma_rsvp_count || 0;
-        }
-      }
 
       // Use Meetup member count as base; fall back to DB count if unavailable
-      let memberCount = meetupStats?.member_count || 0;
+      let memberCount = (meetupStats as any)?.member_count || 0;
       if (!memberCount) {
         const { data: profileCount } = await supabase.rpc('get_active_member_count');
         memberCount = profileCount || 0;
       }
 
-      const totalCommunitySize = memberCount + totalEventbriteAttendees + totalLumaAttendees;
+      // Add platform follower counts (Eventbrite + Luma followers)
+      const eventbriteFollowers = (meetupStats as any)?.eventbrite_follower_count || 0;
+      const lumaFollowers = (meetupStats as any)?.luma_follower_count || 0;
+      const totalCommunitySize = memberCount + eventbriteFollowers + lumaFollowers;
 
       return {
         memberCount: totalCommunitySize,
