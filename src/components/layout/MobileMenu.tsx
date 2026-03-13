@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { X, Menu, Home, Calendar, Users, Heart, Newspaper, Mail, HelpCircle, ChevronDown, Instagram, Facebook, Linkedin } from 'lucide-react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { BrandLogo } from '@/components/common/BrandLogo';
@@ -45,6 +46,28 @@ export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {
   const [circlesOpen, setCirclesOpen] = useState(false);
   const [dailyQuote, setDailyQuote] = useState<string | null>(null);
   const { user, profile } = useAuth();
+  const location = useLocation();
+
+  // Auto-close menu on route change (safety net in case onClick doesn't fire)
+  useEffect(() => {
+    setOpen(false);
+    setCirclesOpen(false);
+  }, [location.pathname]);
+
+  // Lock body scroll when menu is open (prevents iOS bleed-through)
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [open]);
 
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0];
