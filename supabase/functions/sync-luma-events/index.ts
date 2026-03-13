@@ -6,8 +6,9 @@ const LUMA_PROFILE_URL = 'https://lu.ma/user/PieDigit';
 
 /**
  * Luma sync — ATTENDEE-ONLY mode.
- * Luma never creates new events. It only updates luma_rsvp_count
- * on existing events (owned by Eventbrite) when a fuzzy title match is found.
+ * 1. Scrapes the Luma profile to get event titles + URLs
+ * 2. Scrapes each individual event page to get accurate attendee counts
+ * 3. Updates luma_rsvp_count on matching Eventbrite events
  */
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -36,6 +37,7 @@ serve(async (req) => {
 
     console.log('Scraping Luma events from:', LUMA_PROFILE_URL);
 
+    // Step 1: Get event list from profile page (titles + URLs)
     const scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
       method: 'POST',
       headers: {
@@ -55,19 +57,18 @@ serve(async (req) => {
                   type: 'object',
                   properties: {
                     title: { type: 'string', description: 'The event title/name' },
-                    rawDate: { type: 'string', description: 'The date as shown, e.g. "Sat, Mar 21"' },
-                    attendees: { type: 'number', description: 'Number of people going/registered' },
-                    eventUrl: { type: 'string', description: 'Direct URL to the event page on Luma' },
-                    lumaId: { type: 'string', description: 'The Luma event ID from the URL' },
+                    rawDate: { type: 'string', description: 'The date as shown, e.g. "Thu, Apr 2"' },
+                    eventUrl: { type: 'string', description: 'Direct URL to the event page on Luma, e.g. https://lu.ma/mdrgl4dm or https://luma.com/mdrgl4dm' },
+                    lumaId: { type: 'string', description: 'The Luma event slug/ID from the URL, e.g. mdrgl4dm' },
                   },
                   required: ['title'],
                 },
-                description: 'All upcoming events listed on this Luma profile'
+                description: 'All upcoming events hosted by this user'
               }
             },
             required: ['events']
           },
-          prompt: 'Extract ALL upcoming events from this Luma user profile. For each event get: title, date, number of attendees/registrations, and the direct event URL. Only extract future events.'
+          prompt: 'Extract ALL upcoming events from this Luma user profile under the "Hosting" section. For each event get: title, date, and the direct event URL/link. Only extract future events that this user is hosting.'
         },
         waitFor: 5000,
       }),
@@ -84,7 +85,60 @@ serve(async (req) => {
     }
 
     const extractedEvents = scrapeData.data?.extract?.events || scrapeData.extract?.events || [];
-    console.log('Found', extractedEvents.length, 'Luma events');
+    console.log('Found', extractedEvents.length, 'Luma events from profile');
+
+    // Step 2: For each event with a URL, scrape the individual page to get attendee count
+    for (const event of extractedEvents) {
+      const eventUrl = event.eventUrl || (event.lumaId ? `https://lu.ma/${event.lumaId}` : null);
+      if (!eventUrl) {
+        console.log('No URL for event:', event.title, '- skipping attendee scrape');
+        continue;
+      }
+
+      // Normalize URL to lu.ma format
+      const normalizedUrl = eventUrl.replace('https://luma.com/', 'https://lu.ma/');
+
+      try {
+        console.log('Scraping event page for attendees:', normalizedUrl);
+        const eventScrape = await fetch('https://api.firecrawl.dev/v1/scrape', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${firecrawlApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            url: normalizedUrl,
+            formats: ['extract'],
+            extract: {
+              schema: {
+                type: 'object',
+                properties: {
+                  attendeeCount: { type: 'number', description: 'Number of people going/registered for this event' },
+                  title: { type: 'string', description: 'Event title' },
+                  date: { type: 'string', description: 'Event date' },
+                },
+                required: ['attendeeCount']
+              },
+              prompt: 'Extract the number of people going/registered for this event. Look for text like "X Going" or attendee count. Also get the event title and date.'
+            },
+            waitFor: 3000,
+          }),
+        });
+
+        if (eventScrape.ok) {
+          const eventData = await eventScrape.json();
+          const extracted = eventData.data?.extract || eventData.extract || {};
+          const attendeeCount = extracted.attendeeCount || 0;
+          console.log(`Event "${event.title}" has ${attendeeCount} attendees on Luma`);
+          event.attendees = attendeeCount;
+        } else {
+          const errText = await eventScrape.text();
+          console.error('Failed to scrape event page:', normalizedUrl, errText);
+        }
+      } catch (err) {
+        console.error('Error scraping event page:', normalizedUrl, err);
+      }
+    }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -168,7 +222,7 @@ serve(async (req) => {
       }
 
       const attendeeCount = event.attendees || 0;
-      const lumaId = event.lumaId || event.eventUrl?.split('/').pop() || null;
+      const lumaId = event.lumaId || event.eventUrl?.replace('https://luma.com/', '').replace('https://lu.ma/', '').split('/').pop() || null;
 
       // Find matching existing event
       const sameDateEvents = existingByDate.get(eventDate) || [];
@@ -202,8 +256,8 @@ serve(async (req) => {
       }
 
       if (matchingEvent) {
-        // Only update luma-specific fields — do NOT touch Eventbrite-owned fields
         const totalRsvp = (matchingEvent.meetup_rsvp_count || 0) + (matchingEvent.eventbrite_rsvp_count || 0) + attendeeCount;
+        console.log(`Updating "${matchingEvent.title}" with luma_rsvp_count=${attendeeCount}, total=${totalRsvp}`);
         const { error } = await supabase
           .from('events')
           .update({
@@ -217,7 +271,6 @@ serve(async (req) => {
         if (!error) updatedCount++;
         else console.error('Error updating event:', error);
       } else {
-        // No matching event found — skip (Eventbrite owns event creation)
         console.log('No matching Eventbrite event for Luma event, skipping:', title, eventDate);
         skippedCount++;
       }
