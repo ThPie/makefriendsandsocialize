@@ -184,6 +184,44 @@ serve(async (req) => {
     const events = eventsData.events || [];
     console.log('Found', events.length, 'Eventbrite events');
 
+    try {
+      const publicOrganizerId = events.find((event: any) => event?.organizer_id)?.organizer_id;
+      eventbriteFollowerCount = await fetchEventbriteFollowerCount(
+        ORGANIZER_ID,
+        eventbriteApiKey,
+        firecrawlApiKey || undefined,
+        publicOrganizerId ? String(publicOrganizerId) : undefined,
+      );
+
+      if (eventbriteFollowerCount !== null) {
+        const { data: latestStats } = await supabase
+          .from('meetup_stats')
+          .select('id')
+          .order('last_updated', { ascending: false })
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (latestStats?.id) {
+          const { error: statsUpdateError } = await supabase
+            .from('meetup_stats')
+            .update({
+              eventbrite_follower_count: eventbriteFollowerCount,
+              last_updated: new Date().toISOString(),
+            })
+            .eq('id', latestStats.id);
+
+          if (statsUpdateError) {
+            console.error('Failed to update eventbrite follower count:', statsUpdateError);
+          } else {
+            console.log('Updated Eventbrite follower count:', eventbriteFollowerCount);
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('Could not refresh Eventbrite follower count:', error);
+    }
+
     const today = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'America/Denver',
       year: 'numeric', month: '2-digit', day: '2-digit',
