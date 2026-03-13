@@ -4,7 +4,7 @@ const TheExchangePage = () => (
   <CirclePageTemplate
     config={{
       circleTag: "the-exchange",
-      heroImage: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2940&auto=format&fit=crop",
+      heroImage: "/images/circles/exchange-circle-hero-new.webp",
       heroImageAlt: "The Exchange - community workshop and skills sharing",
       title: (
         <>

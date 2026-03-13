@@ -7,9 +7,10 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 // Assets
-import lesAmisImg from "@/assets/les-amis-hero-new.webp";
-import gentlemenImg from "@/assets/gentlemen-hero-new.webp";
-import couplesCircleImg from "@/assets/circles/couples-circle-hero.webp";
+import lesAmisImg from "@/assets/les-amis-circle-new.webp";
+import gentlemenImg from "@/assets/gentlemen-circle-new.webp";
+import couplesCircleImg from "@/assets/couples-circle-new.webp";
+import exchangeCircleImg from "@/assets/exchange-circle-new.webp";
 const womenSocietyImg = "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?q=80&w=2938&auto=format&fit=crop";
 import activeOutdoorImg from "@/assets/active-outdoor-hero-new.webp";
 
@@ -67,7 +68,7 @@ const CirclesPage = () => {
     {
       title: "The Exchange",
       description: "Learn, teach, and share knowledge — from technology to cooking classes to bike repair workshops.",
-      image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2940&auto=format&fit=crop",
+      image: exchangeCircleImg,
       tags: ["Skills", "Workshops", "Open to All"],
       path: "/circles/the-exchange",
       isFree: true,

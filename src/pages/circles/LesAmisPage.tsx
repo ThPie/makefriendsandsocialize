@@ -1,5 +1,5 @@
 import CirclePageTemplate from "@/components/circles/CirclePageTemplate";
-import heroImage from "@/assets/les-amis-hero-new.webp";
+import heroImage from "@/assets/les-amis-circle-new.webp";
 
 const LesAmisPage = () => (
   <CirclePageTemplate

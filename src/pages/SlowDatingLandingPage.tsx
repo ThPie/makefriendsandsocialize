@@ -9,7 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useDatingProfile } from '@/hooks/useDatingProfile';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { AppStoreBadges } from '@/components/dating/AppStoreBadges';
-import slowDatingImage from '@/assets/slow-dating.webp';
+import slowDatingImage from '@/assets/slow-dating-hero-new.webp';
 
 const containerVariants = {
   hidden: { opacity: 0 },

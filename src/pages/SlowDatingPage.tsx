@@ -14,7 +14,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import slowDatingImage from "@/assets/slow-dating.webp";
+import slowDatingImage from "@/assets/slow-dating-hero-new.webp";
 
 const SlowDatingPage = () => {
   const heroAnimation = useScrollAnimation({ rootMargin: '100px' });
