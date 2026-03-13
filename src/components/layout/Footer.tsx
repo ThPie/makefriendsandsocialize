@@ -152,13 +152,13 @@ const NewsletterForm = () => {
             <span className="hidden sm:inline">Subscribe</span>
           </button>
         </form>
-        <label className="flex items-start gap-2 mt-3 text-left cursor-pointer">
+        <label className="flex items-center gap-2 mt-3 text-left cursor-pointer">
           <input
             type="checkbox"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
             required
-            className="mt-0.5 accent-[hsl(var(--accent-gold))] w-4 h-4 shrink-0"
+            className="accent-[hsl(var(--accent-gold))] w-4 h-4 shrink-0 self-start mt-0.5"
           />
           <span className="text-xs text-muted-foreground leading-relaxed">
             I agree to receive newsletters and updates. View our{' '}

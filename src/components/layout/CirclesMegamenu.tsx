@@ -15,7 +15,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                 isTransparent ? "text-white/90 hover:text-white" : "text-foreground hover:text-[hsl(var(--accent-gold))]"
             )}>
                 Circles
-                <ChevronDown className="h-3 w-3 opacity-50 group-hover:rotate-180 transition-transform duration-200" />
+                <ChevronDown className="h-3 w-3 opacity-70 group-hover:opacity-100 group-hover:rotate-180 transition-transform duration-200" />
             </button>
 
             {/* Dropdown Container */}

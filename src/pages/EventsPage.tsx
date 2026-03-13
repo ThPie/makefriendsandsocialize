@@ -292,7 +292,9 @@ const EventsPage = () => {
 
           <div className="flex flex-wrap gap-3 w-full lg:w-auto items-center">
             {/* Category Tabs */}
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 lg:pb-0">
+            <div className="relative w-full lg:w-auto">
+            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 lg:pb-0 pr-6 lg:pr-0">
+              <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-card to-transparent lg:hidden z-10" />
               {categories.map(cat => (
                 <button
                   key={cat}
@@ -305,6 +307,7 @@ const EventsPage = () => {
                   {cat}
                 </button>
               ))}
+            </div>
             </div>
 
             {/* Sort */}

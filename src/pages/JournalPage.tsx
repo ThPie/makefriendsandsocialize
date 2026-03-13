@@ -106,6 +106,7 @@ const JournalPage = () => {
 
       {/* Categories */}
       <section className="w-full content-container pb-8">
+        <div className="relative">
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
           {blogCategories.map(cat => (
             <button
@@ -119,6 +120,8 @@ const JournalPage = () => {
               <span className="text-sm font-medium leading-normal whitespace-nowrap">{cat}</span>
             </button>
           ))}
+        </div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent md:hidden" />
         </div>
       </section>
 

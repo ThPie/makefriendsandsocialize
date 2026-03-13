@@ -397,7 +397,7 @@ const MembershipPage = () => {
             </p>
 
             {/* Billing Toggle */}
-            <div className="flex items-center justify-center gap-3 mb-8">
+            <div className="flex items-center justify-center gap-3 mb-8 bg-card border border-border rounded-full px-6 py-3 w-fit mx-auto shadow-sm">
               <Label htmlFor="billing-toggle" className={`text-sm ${billingPeriod === 'monthly' ? 'text-foreground' : 'text-muted-foreground'}`}>
                 Monthly
               </Label>

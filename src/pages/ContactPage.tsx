@@ -133,9 +133,10 @@ const ContactPage = () => {
       <section className="relative w-full min-h-[50vh] flex items-center justify-center overflow-hidden">
         {/* Background */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-muted"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/images/gallery/event-1.webp')" }}
         />
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/60" />
 
         {/* Floating Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -162,14 +163,14 @@ const ContactPage = () => {
             className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-6"
           >
             <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">Get In Touch</span>
+            <span className="text-sm font-medium text-white">Get In Touch</span>
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-display text-5xl md:text-6xl text-foreground mb-4 leading-[1.1]"
+            className="font-display text-5xl md:text-6xl text-white mb-4 leading-[1.1]"
           >
             Let's <span className="text-[hsl(var(--accent-gold))] italic">Connect</span>
           </motion.h1>
@@ -178,7 +179,7 @@ const ContactPage = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-muted-foreground text-lg md:text-xl max-w-xl mx-auto"
+            className="text-white/80 text-lg md:text-xl max-w-xl mx-auto"
           >
             Have questions about membership or events? We'd love to hear from you.
           </motion.p>

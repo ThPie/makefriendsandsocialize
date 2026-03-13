@@ -128,6 +128,8 @@ export const MainRoutes = () => (
         <Route path="/founders-circle" element={<ConnectedCirclePage />} />
         <Route path="/founders-circle/directory" element={<ConnectedCircleDirectoryPage />} />
         {/* Redirects from old URLs for SEO */}
+        <Route path="/blog" element={<Navigate to="/journal" replace />} />
+        <Route path="/blog/:id" element={<Navigate to="/journal" replace />} />
         <Route path="/connected-circle" element={<Navigate to="/founders-circle" replace />} />
         <Route path="/connected-circle/directory" element={<Navigate to="/founders-circle/directory" replace />} />
         {/* Connected Circle / Founders Circle Routing */}

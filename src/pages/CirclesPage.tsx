@@ -160,7 +160,7 @@ const CirclesPage = () => {
                       {circle.description}
                     </p>
 
-                    <div className="mt-6 flex items-center text-white/50 group-hover:text-white transition-colors duration-200">
+                    <div className="mt-6 inline-flex items-center text-white/50 group-hover:text-white transition-colors duration-200 min-h-[44px] py-2">
                       <span className="text-sm font-medium tracking-widest uppercase">Explore Circle</span>
                       <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-200 text-[hsl(var(--accent-gold))]" />
                     </div>

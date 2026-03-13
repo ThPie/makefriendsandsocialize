@@ -101,9 +101,17 @@ const GalleryPage = () => {
             ))}
           </div>
         ) : photos.length === 0 ? (
-          <div className="text-center py-24 text-muted-foreground">
-            <p className="font-display text-2xl mb-2">No photos yet</p>
-            <p className="text-sm">Check back after our next event.</p>
+          <div className="text-center py-24 text-muted-foreground flex flex-col items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-2">
+              <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+            </div>
+            <p className="font-display text-2xl text-foreground">No Photos Yet</p>
+            <p className="text-sm max-w-xs leading-relaxed">Photos from our exclusive gatherings will appear here. Join us at our next event to be part of the story.</p>
+            <a href="/events" className="mt-2 inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+              View Upcoming Events →
+            </a>
           </div>
         ) : (
           <div className="columns-2 md:columns-3 lg:columns-4 gap-4">

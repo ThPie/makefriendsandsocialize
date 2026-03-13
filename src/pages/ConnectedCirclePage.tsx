@@ -386,9 +386,9 @@ const ConnectedCirclePage = () => {
                 <AccordionItem
                   key={index}
                   value={`item-${index}`}
-                  className="bg-[#0a0f0b] border border-white/10 rounded-2xl px-6 data-[state=open]:border-[hsl(var(--accent-gold))]/30 transition-colors"
+                  className="bg-card border border-border rounded-2xl px-6 data-[state=open]:border-[hsl(var(--accent-gold))]/30 transition-colors"
                 >
-                  <AccordionTrigger className="text-left font-display text-lg text-white hover:no-underline py-6 hover:text-[hsl(var(--accent-gold))] transition-colors">
+                  <AccordionTrigger className="text-left font-display text-lg text-foreground hover:no-underline py-6 hover:text-[hsl(var(--accent-gold))] transition-colors">
                     <div className="flex items-center gap-4">
                       <div className="w-8 h-8 rounded-lg bg-[hsl(var(--accent-gold))]/10 flex items-center justify-center flex-shrink-0">
                         <HelpCircle className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
@@ -396,7 +396,7 @@ const ConnectedCirclePage = () => {
                       {faq.question}
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="text-white/60 pb-6 pl-12 leading-relaxed">
+                  <AccordionContent className="text-muted-foreground pb-6 pl-12 leading-relaxed">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>

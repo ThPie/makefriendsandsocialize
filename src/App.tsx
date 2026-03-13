@@ -47,7 +47,7 @@ const App = () => {
     <ErrorBoundary>
       <HelmetProvider>
         <QueryClientProvider client={appQueryClient}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="makefriends-theme">
             <AuthProvider>
               <TooltipProvider>
                 <RegisterSW />
