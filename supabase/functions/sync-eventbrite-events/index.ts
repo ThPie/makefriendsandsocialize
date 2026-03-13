@@ -315,6 +315,7 @@ serve(async (req) => {
         const { error } = await supabase
           .from('events')
           .update({
+            title, // Always update title from Eventbrite (source of truth)
             eventbrite_id: eventbriteId,
             eventbrite_rsvp_count: attendeeCount,
             rsvp_count: mergedRsvp,
@@ -324,9 +325,9 @@ serve(async (req) => {
             venue_name: venueName || undefined,
             venue_address: venueAddress || undefined,
             ticket_price: ticketPrice,
+            time: formattedTime || undefined,
             updated_at: new Date().toISOString(),
-            // Keep existing source priority
-            source: match.source === 'meetup' ? 'meetup' : (match.source || 'eventbrite'),
+            source: 'eventbrite', // Eventbrite is always the primary source
           })
           .eq('id', match.id);
 
