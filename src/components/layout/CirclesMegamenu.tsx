@@ -29,7 +29,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                     <div className="w-[300px] m-2 rounded-[24px] overflow-hidden relative flex flex-col justify-between p-8 bg-[#1A1A1A]">
                         {/* Background Image with heavy overlay */}
                         <img
-                            src="/images/gallery/event-1.jpg"
+                            src="/images/gallery/event-1.webp"
                             alt="Services"
                             className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
                         />

@@ -6,14 +6,14 @@ import { useAuth } from '@/contexts/AuthContext';
 
 // Assets
 import gentlemenImg from '@/assets/gentlemen-stock.jpg';
-import womenSocietyImg from '@/assets/women-society-hero.jpg';
-import foundersImg from '@/assets/founders-hero-new.jpg';
-import slowDatingImg from '@/assets/slow-dating-new.jpg';
+import womenSocietyImg from '@/assets/women-society-hero.webp';
+import foundersImg from '@/assets/founders-hero-new.webp';
+import slowDatingImg from '@/assets/slow-dating-new.webp';
 import lesAmisImg from '@/assets/les-amis-stock.jpg';
-import couplesCircleImg from '@/assets/circles/couples-circle-hero.png';
+import couplesCircleImg from '@/assets/circles/couples-circle-hero.webp';
 
 // Active & Outdoor uses golf-themed imagery
-import activeOutdoorImg from '@/assets/active-outdoor-hero-new.jpg';
+import activeOutdoorImg from '@/assets/active-outdoor-hero-new.webp';
 
 const clubs = [
   {

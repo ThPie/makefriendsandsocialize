@@ -4,7 +4,7 @@ const TheGentlemenPage = () => (
   <CirclePageTemplate
     config={{
       circleTag: "the-gentlemen",
-      heroImage: "/images/gallery/golf-outdoor.jpg",
+      heroImage: "/images/gallery/golf-outdoor.webp",
       heroImageAlt: "The Gentlemen circle",
       title: (
         <>

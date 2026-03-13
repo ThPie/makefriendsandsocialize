@@ -4,12 +4,12 @@ import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Lightbox } from '@/components/ui/lightbox';
 
 const galleryPhotos = [
-  { id: '1', image_url: '/images/gallery/event-1.jpg', title: 'Cheers at the Lounge', category: 'Social' },
-  { id: '2', image_url: '/images/gallery/event-2.jpg', title: 'Elegant Attire', category: 'Members' },
-  { id: '3', image_url: '/images/gallery/event-3.jpg', title: 'Great Conversations', category: 'Social' },
-  { id: '4', image_url: '/images/gallery/event-4.jpg', title: 'Black Tie Evening', category: 'Events' },
-  { id: '5', image_url: '/images/gallery/event-5.jpg', title: 'Fireside Chat', category: 'Social' },
-  { id: '6', image_url: '/images/gallery/event-6.jpg', title: 'Networking Night', category: 'Events' },
+  { id: '1', image_url: '/images/gallery/event-1.webp', title: 'Cheers at the Lounge', category: 'Social' },
+  { id: '2', image_url: '/images/gallery/event-2.webp', title: 'Elegant Attire', category: 'Members' },
+  { id: '3', image_url: '/images/gallery/event-3.webp', title: 'Great Conversations', category: 'Social' },
+  { id: '4', image_url: '/images/gallery/event-4.webp', title: 'Black Tie Evening', category: 'Events' },
+  { id: '5', image_url: '/images/gallery/event-5.webp', title: 'Fireside Chat', category: 'Social' },
+  { id: '6', image_url: '/images/gallery/event-6.webp', title: 'Networking Night', category: 'Events' },
 ];
 
 export const PhotoGallerySection = () => {

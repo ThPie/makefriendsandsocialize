@@ -2,7 +2,7 @@ import { TransitionLink } from '@/components/ui/TransitionLink';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { LazyImage } from '@/components/ui/lazy-image';
-import workshopImage from '@/assets/exchange-host-workshop.jpg';
+import workshopImage from '@/assets/exchange-host-workshop.webp';
 
 export const BecomeAHostSection = () => {
   return (

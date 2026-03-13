@@ -1,44 +1,67 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { TransitionLink } from '@/components/ui/TransitionLink';
-import { useSiteStats } from '@/hooks/useSiteStats';
-import { MemberAvatars } from '@/components/home/MemberAvatars';
+
+// Lazy-load the member avatars — they require a Supabase fetch and are below the fold visually
+const MemberAvatarsLazy = lazy(() =>
+  import('@/components/home/MemberAvatars').then((m) => ({ default: m.MemberAvatars }))
+);
+// Lazy-load the stats hook wrapper so the Supabase query doesn't block initial render
+const MemberAvatarsWithStats = lazy(() =>
+  import('@/components/home/MemberAvatarsWithStats').then((m) => ({ default: m.MemberAvatarsWithStats }))
+);
 
 export const Hero = () => {
-  const { data: stats, isLoading } = useSiteStats();
   const videoRef = useRef<HTMLVideoElement>(null);
+  // Defer video load until after first paint to avoid blocking LCP
+  const [videoReady, setVideoReady] = useState(false);
+
+  useEffect(() => {
+    // Load video after the browser has painted the poster image
+    const raf = requestAnimationFrame(() => {
+      setVideoReady(true);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.playbackRate = 0.9;
     }
-  }, []);
+  }, [videoReady]);
 
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
-      {/* Full-bleed background video — object-position centers on people's faces */}
-      <video
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        poster="/videos/hero-poster.jpg"
-        className="absolute inset-0 w-full h-full object-cover object-[center_30%] md:object-center transition-opacity duration-1000"
-        onCanPlay={(e) => {
-          e.currentTarget.style.opacity = '1';
-        }}
-        style={{ opacity: 0 }}
-      >
-        <source src="/videos/hero-bg-new.mp4" type="video/mp4" />
-        <img
-          src="/videos/hero-poster.jpg"
-          alt="Luxury social experience"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      </video>
+      {/* Poster image shown immediately — acts as LCP element */}
+      <img
+        src="/images/hero-poster.webp"
+        alt="MakeFriends Social Club — luxury social experience"
+        fetchPriority="high"
+        decoding="async"
+        className="absolute inset-0 w-full h-full object-cover object-[center_30%] md:object-center"
+        style={{ display: videoReady ? 'none' : 'block' }}
+      />
 
-      {/* Luxury dark overlay — removed multiply to avoid absolute blackness if video is slow */}
+      {/* Full-bleed background video — loaded after first paint */}
+      {videoReady && (
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/images/hero-poster.webp"
+          className="absolute inset-0 w-full h-full object-cover object-[center_30%] md:object-center transition-opacity duration-1000"
+          onCanPlay={(e) => {
+            e.currentTarget.style.opacity = '1';
+          }}
+          style={{ opacity: 0 }}
+        >
+          <source src="/videos/hero-bg-new.mp4" type="video/mp4" />
+        </video>
+      )}
+
+      {/* Luxury dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
 
       {/* Subtle gradient overlay — bottom-left bias for text readability */}
@@ -74,12 +97,10 @@ export const Hero = () => {
               </TransitionLink>
             </div>
 
-            {/* Member avatars + count */}
-            <MemberAvatars
-              avatarUrls={stats?.avatarUrls || []}
-              memberCount={stats?.memberCount || 0}
-              isLoading={isLoading}
-            />
+            {/* Member avatars + count — deferred to avoid blocking initial render */}
+            <Suspense fallback={<div className="h-8" />}>
+              <MemberAvatarsWithStats />
+            </Suspense>
           </div>
         </div>
       </div>

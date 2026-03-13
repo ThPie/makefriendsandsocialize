@@ -15,20 +15,49 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   build: {
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 600,
     // Ensure assets use relative paths for Capacitor
     assetsDir: 'assets',
-    // Generate sourcemaps for debugging native issues
+    // Only generate sourcemaps in development
     sourcemap: mode === 'development',
+    // Enable esbuild minification
+    minify: 'esbuild',
+    target: 'es2020',
     rollupOptions: {
       output: {
+        // Fine-grained manual chunk splitting to reduce initial bundle size
         manualChunks: (id) => {
-          if (id.includes('node_modules')) {
-            if (id.includes('recharts')) return 'charts';
-            if (id.includes('framer-motion')) return 'framer';
-            if (id.includes('lucide-react')) return 'icons';
-            if (id.includes('@radix-ui')) return 'ui-libs';
-          }
+          if (!id.includes('node_modules')) return;
+          // React core — keep tiny
+          if (id.includes('/react/') || id.includes('/react-dom/')) return 'react-core';
+          // Router
+          if (id.includes('react-router')) return 'router';
+          // Supabase
+          if (id.includes('@supabase/')) return 'supabase';
+          // TanStack Query
+          if (id.includes('@tanstack/')) return 'query';
+          // Radix UI
+          if (id.includes('@radix-ui/')) return 'radix-ui';
+          // Recharts (heavy, admin-only)
+          if (id.includes('recharts') || id.includes('d3-') || id.includes('d3/')) return 'charts';
+          // Framer Motion
+          if (id.includes('framer-motion')) return 'framer';
+          // Lucide icons
+          if (id.includes('lucide-react')) return 'icons';
+          // Sentry — keep out of critical path
+          if (id.includes('@sentry/')) return 'sentry';
+          // AI SDK — only used in dating intake
+          if (id.includes('/ai/') || id.includes('@ai-sdk/')) return 'ai-sdk';
+          // Form libraries
+          if (id.includes('react-hook-form') || id.includes('@hookform/') || id.includes('/zod/')) return 'forms';
+          // Date utilities
+          if (id.includes('date-fns') || id.includes('react-day-picker')) return 'dates';
+          // DnD Kit
+          if (id.includes('@dnd-kit/')) return 'dnd';
+          // ElevenLabs (voice, rarely used)
+          if (id.includes('@elevenlabs/')) return 'elevenlabs';
+          // Capacitor (native app only)
+          if (id.includes('@capacitor/')) return 'capacitor';
         },
       },
     },
@@ -42,6 +71,35 @@ export default defineConfig(({ mode }) => ({
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       workbox: {
         navigateFallbackDenylist: [/^\/~oauth/],
+        // Cache strategies for better repeat-visit performance
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'gstatic-fonts-cache',
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            },
+          },
+        ],
       },
       manifest: {
         name: 'MakeFriends Social Club',

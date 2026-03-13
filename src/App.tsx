@@ -1,4 +1,4 @@
-import { useEffect, Suspense } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import { BrandedLoader } from "@/components/ui/branded-loader";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -12,7 +12,10 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PublishedDomainRedirect } from "@/components/PublishedDomainRedirect";
 import { isSlowDatingSubdomain, isCanadianDomain } from "@/lib/subdomain-utils";
 import { CountryRedirectBanner } from "@/components/ui/country-redirect-banner";
-import { SpeedInsights } from "@vercel/speed-insights/react";
+// Lazy-load SpeedInsights — it's non-critical and shouldn't block initial render
+const SpeedInsights = lazy(() =>
+  import('@vercel/speed-insights/react').then((m) => ({ default: m.SpeedInsights }))
+);
 import { HelmetProvider } from 'react-helmet-async';
 import { RegisterSW } from "./components/common/RegisterSW";
 
@@ -61,7 +64,7 @@ const App = () => {
                     <Suspense fallback={<BrandedLoader />}>
                       {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
                     </Suspense>
-                    <SpeedInsights />
+                    <Suspense fallback={null}><SpeedInsights /></Suspense>
                   </SessionProvider>
                 </BrowserRouter>
               </TooltipProvider>

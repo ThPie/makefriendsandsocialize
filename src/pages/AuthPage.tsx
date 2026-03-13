@@ -21,7 +21,7 @@ import { SimpleCaptcha } from '@/components/auth/SimpleCaptcha';
 import { useAuthRateLimit } from '@/hooks/useAuthRateLimit';
 import { useSessionManager } from '@/hooks/useSessionManager';
 import { BrandLogo } from '@/components/common/BrandLogo';
-import golfSunsetImg from '@/assets/golf-sunset-hero.jpg';
+import golfSunsetImg from '@/assets/golf-sunset-hero.webp';
 
 // Enhanced email validation
 const emailSchema = z.string()

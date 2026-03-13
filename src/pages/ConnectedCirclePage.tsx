@@ -17,9 +17,9 @@ import {
 // Gallery images for the Founders Circle
 const galleryImages = [
   // Using placeholders if original assets aren't perfectly matched, but keeping original paths
-  { src: "/images/founders/founder-gathering.jpg", alt: "Founder presenting to a group of entrepreneurs" },
-  { src: "/images/founders/founder-duo.jpg", alt: "Founders networking in an intimate setting" },
-  { src: "/images/founders/founder-chat.jpg", alt: "One-on-one conversation between founders" },
+  { src: "/images/founders/founder-gathering.webp", alt: "Founder presenting to a group of entrepreneurs" },
+  { src: "/images/founders/founder-duo.webp", alt: "Founders networking in an intimate setting" },
+  { src: "/images/founders/founder-chat.webp", alt: "One-on-one conversation between founders" },
 ];
 
 const ConnectedCirclePage = () => {
@@ -146,7 +146,7 @@ const ConnectedCirclePage = () => {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img
-              src="/images/founders/founder-group-hero.jpg"
+              src="/images/founders/founder-group-hero.webp"
               alt="Professional business networking"
               className="w-full h-full object-cover opacity-60"
             />

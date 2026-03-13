@@ -4,7 +4,7 @@ const ThePursuitsPage = () => (
   <CirclePageTemplate
     config={{
       circleTag: "active-outdoor",
-      heroImage: "/images/circles/active-outdoor-hero.jpg",
+      heroImage: "/images/circles/active-outdoor-hero.webp",
       heroImageAlt: "Active pursuits and golf",
       title: (
         <>

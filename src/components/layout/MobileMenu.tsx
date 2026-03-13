@@ -10,8 +10,8 @@ import { TikTokIcon } from '@/components/common/TikTokIcon';
 
 import lesAmisImg from '@/assets/les-amis-hero-new.webp';
 import gentlemenImg from '@/assets/gentlemen-hero-new.webp';
-import couplesCircleImg from '@/assets/circles/couples-circle-hero.png';
-import activeOutdoorImg from '@/assets/active-outdoor-hero-new.jpg';
+import couplesCircleImg from '@/assets/circles/couples-circle-hero.webp';
+import activeOutdoorImg from '@/assets/active-outdoor-hero-new.webp';
 
 const womenSocietyImg = 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?q=80&w=400&auto=format&fit=crop';
 
