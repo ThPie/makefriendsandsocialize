@@ -15,6 +15,93 @@ const titleSimilarity = (a: string, b: string): number => {
   return intersection.length / Math.min(wordsA.size, wordsB.size);
 };
 
+const extractFollowerCount = (text: string): number | null => {
+  const patterns = [
+    /(\d{1,3}(?:[,.]\d{3})*|\d+)\s*\+?\s*followers?/i,
+    /followers?\s*[:\-]?\s*(\d{1,3}(?:[,.]\d{3})*|\d+)/i,
+  ];
+
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match?.[1]) {
+      const parsed = Number.parseInt(match[1].replace(/[,.]/g, ''), 10);
+      if (Number.isFinite(parsed) && parsed >= 0) return parsed;
+    }
+  }
+
+  return null;
+};
+
+const fetchEventbriteFollowerCount = async (
+  organizationId: string,
+  eventbriteApiKey: string,
+  firecrawlApiKey?: string,
+): Promise<number | null> => {
+  // 1) Try Eventbrite organization API directly first
+  try {
+    const orgDetailsResponse = await fetch(
+      `https://www.eventbriteapi.com/v3/organizations/${organizationId}/?token=${eventbriteApiKey}`,
+      { headers: { 'Content-Type': 'application/json' } },
+    );
+
+    if (orgDetailsResponse.ok) {
+      const orgDetails = await orgDetailsResponse.json();
+      const directCount = [
+        orgDetails?.num_followers,
+        orgDetails?.followers,
+        orgDetails?.follower_count,
+        orgDetails?.followers_count,
+      ].find((value) => typeof value === 'number' && Number.isFinite(value));
+
+      if (typeof directCount === 'number') {
+        return Math.max(0, Math.floor(directCount));
+      }
+
+      const parsedFromJson = extractFollowerCount(JSON.stringify(orgDetails));
+      if (parsedFromJson !== null) return parsedFromJson;
+    }
+  } catch (error) {
+    console.warn('Could not fetch follower count from Eventbrite org API:', error);
+  }
+
+  // 2) Fallback: scrape organizer public page
+  if (!firecrawlApiKey) return null;
+
+  const candidateUrls = [
+    `https://www.eventbrite.com/o/${organizationId}`,
+    `https://www.eventbrite.com/organizations/${organizationId}`,
+  ];
+
+  for (const url of candidateUrls) {
+    try {
+      const scrapeResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${firecrawlApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url,
+          formats: ['markdown', 'html'],
+          onlyMainContent: false,
+          waitFor: 3000,
+        }),
+      });
+
+      if (!scrapeResponse.ok) continue;
+
+      const scrapeData = await scrapeResponse.json();
+      const pageText = `${scrapeData?.data?.markdown || ''}\n${scrapeData?.data?.html || ''}`;
+      const parsed = extractFollowerCount(pageText);
+      if (parsed !== null) return parsed;
+    } catch (error) {
+      console.warn(`Could not scrape Eventbrite followers from ${url}:`, error);
+    }
+  }
+
+  return null;
+};
+
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') {
