@@ -136,43 +136,7 @@ const EventsPage = () => {
     };
   }, [queryClient]);
 
-  // Check if event has Eventbrite embedded checkout available
-  const hasEventbriteCheckout = (event: Event) => {
-    return !!event.eventbrite_id;
-  };
-
-  // Open Eventbrite embedded checkout modal (stays on site)
-  const openEventbriteCheckout = useCallback((event: Event) => {
-    if (!event.eventbrite_id || !(window as any).EBWidgets) {
-      // Fallback: open Eventbrite page in background
-      const url = `https://www.eventbrite.com/e/${event.eventbrite_id}`;
-      window.open(url, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
-    (window as any).EBWidgets.createWidget({
-      widgetType: 'checkout',
-      eventId: event.eventbrite_id,
-      modal: true,
-      modalTriggerElementId: `eb-trigger-${event.id}`,
-      onOrderComplete: () => {
-        setRsvpFeedback({
-          type: 'success',
-          message: 'You\'re registered! Check your email for confirmation.',
-        });
-        setTimeout(() => setRsvpFeedback(null), 5000);
-      },
-    });
-  }, []);
-
   const handleRSVP = (event: Event) => {
-    // For events with Eventbrite ID, use embedded checkout (no redirect)
-    if (hasEventbriteCheckout(event)) {
-      openEventbriteCheckout(event);
-      return;
-    }
-
-    // For all other events, go to detail page for RSVP
     navigate(`/events/${event.id}`);
   };
 
