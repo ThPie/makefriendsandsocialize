@@ -187,31 +187,6 @@ const SlowDatingPage = () => {
           </div>
         </section>
 
-        {/* Stats Section */}
-        <section className="py-16 md:py-20 bg-secondary/30">
-          <div
-            ref={statsAnimation.ref}
-            className={`container max-w-6xl scroll-animate ${statsAnimation.isVisible ? 'visible' : ''}`}
-          >
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={statsAnimation.isVisible ? "visible" : "hidden"}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
-            >
-              {stats.map((stat, index) => (
-                <AnimatedStat
-                  key={index}
-                  value={stat.value}
-                  suffix={stat.suffix}
-                  label={stat.label}
-                  icon={stat.icon}
-                  isVisible={statsAnimation.isVisible}
-                />
-              ))}
-            </motion.div>
-          </div>
-        </section>
 
         {/* Philosophy Section */}
         <section className="py-24 md:py-32" id="how-it-works">
