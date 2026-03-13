@@ -5,13 +5,13 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 // Assets
-import gentlemenImg from '@/assets/gentlemen-circle-new.webp';
+import gentlemenImg from '@/assets/gentlemen-circle-stock.webp';
 import womenSocietyImg from '@/assets/women-society-hero.webp';
 import foundersImg from '@/assets/founders-hero-new.webp';
 import slowDatingImg from '@/assets/slow-dating-new.webp';
-import lesAmisImg from '@/assets/les-amis-circle-new.webp';
-import exchangeImg from '@/assets/exchange-circle-new.webp';
-import couplesCircleImg from '@/assets/couples-circle-new.webp';
+import lesAmisImg from '@/assets/les-amis-circle-stock.webp';
+import exchangeImg from '@/assets/exchange-circle-stock.webp';
+import couplesCircleImg from '@/assets/couples-circle-stock.webp';
 
 // Active & Outdoor uses golf-themed imagery
 import activeOutdoorImg from '@/assets/active-outdoor-hero-new.webp';

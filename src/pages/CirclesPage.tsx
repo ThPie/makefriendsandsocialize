@@ -7,10 +7,10 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 // Assets
-import lesAmisImg from "@/assets/les-amis-circle-new.webp";
-import gentlemenImg from "@/assets/gentlemen-circle-new.webp";
-import couplesCircleImg from "@/assets/couples-circle-new.webp";
-import exchangeCircleImg from "@/assets/exchange-circle-new.webp";
+import lesAmisImg from "@/assets/les-amis-circle-stock.webp";
+import gentlemenImg from "@/assets/gentlemen-circle-stock.webp";
+import couplesCircleImg from "@/assets/couples-circle-stock.webp";
+import exchangeCircleImg from "@/assets/exchange-circle-stock.webp";
 const womenSocietyImg = "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?q=80&w=2938&auto=format&fit=crop";
 import activeOutdoorImg from "@/assets/active-outdoor-hero-new.webp";
 
