@@ -81,7 +81,7 @@ export default function SlowDatingLandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-end overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
@@ -90,64 +90,63 @@ export default function SlowDatingLandingPage() {
             fetchPriority="high"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         </div>
 
         {/* Content */}
         <motion.div
-          className="relative z-10 container mx-auto px-6 py-20 text-center"
+          className="relative z-10 container mx-auto px-6 pb-16 md:pb-20"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
         >
-          <motion.div variants={itemVariants} className="mb-4">
-            <span className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
-              <Sparkles className="w-4 h-4" />
+          <div className="max-w-lg">
+            <motion.p variants={itemVariants} className="text-xs font-medium uppercase tracking-[0.2em] text-white/60 mb-3">
               A Member Privilege
-            </span>
-          </motion.div>
+            </motion.p>
 
-          <motion.h1
-            variants={itemVariants}
-            className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6"
-          >
-            Slow <span className="text-gradient">Dating</span>
-          </motion.h1>
+            <motion.h1
+              variants={itemVariants}
+              className="font-display text-3xl md:text-4xl text-white mb-3 leading-[1.1]"
+            >
+              Slow <span className="italic">Dating</span>
+            </motion.h1>
 
-          <motion.p
-            variants={itemVariants}
-            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
-          >
-            Intentional introductions for those who value depth over speed.
-            One meaningful connection at a time, personally selected by humans who understand what matters.
-          </motion.p>
+            <motion.p
+              variants={itemVariants}
+              className="text-white/70 text-sm md:text-base max-w-md mb-6 leading-relaxed"
+            >
+              Intentional introductions for those who value depth over speed.
+            </motion.p>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            {user ? (
-              hasDatingProfile ? null : (
-                <Button asChild size="lg" className="rounded-full px-8">
-                  <TransitionLink to="/dating/apply">
-                    Apply for Slow Dating
-                    <ChevronRight className="ml-2 w-4 h-4" />
-                  </TransitionLink>
-                </Button>
-              )
-            ) : (
-              <>
-                <Button asChild size="lg" className="rounded-full px-8">
-                  <TransitionLink to="/auth?redirect=/dating/apply">
-                    Apply Now
-                    <ChevronRight className="ml-2 w-4 h-4" />
-                  </TransitionLink>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="rounded-full px-8">
-                  <TransitionLink to="/auth?redirect=/portal/slow-dating">
-                    Login to Access
-                  </TransitionLink>
-                </Button>
-              </>
-            )}
-          </motion.div>
+            <motion.div variants={itemVariants} className="flex items-center gap-3">
+              {user ? (
+                hasDatingProfile ? null : (
+                  <Button asChild size="sm" className="rounded-full px-6 text-sm">
+                    <TransitionLink to="/dating/apply">
+                      Apply
+                      <ChevronRight className="ml-1.5 w-3.5 h-3.5" />
+                    </TransitionLink>
+                  </Button>
+                )
+              ) : (
+                <>
+                  <Button asChild size="sm" className="rounded-full px-6 text-sm">
+                    <TransitionLink to="/auth?redirect=/dating/apply">
+                      Apply Now
+                      <ChevronRight className="ml-1.5 w-3.5 h-3.5" />
+                    </TransitionLink>
+                  </Button>
+                  <Button asChild variant="ghost" size="sm" className="rounded-full px-6 text-sm text-white/80 hover:text-white hover:bg-white/10">
+                    <TransitionLink to="/auth?redirect=/portal/slow-dating">
+                      Login
+                    </TransitionLink>
+                  </Button>
+                </>
+              )}
+            </motion.div>
+          </div>
+        </motion.div>
 
         </motion.div>
 

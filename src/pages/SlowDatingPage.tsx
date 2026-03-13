@@ -113,7 +113,7 @@ const SlowDatingPage = () => {
     <Layout>
       <div className="min-h-screen bg-background">
         {/* Hero Section - Full viewport with image */}
-        <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        <section className="relative min-h-[90vh] flex items-end overflow-hidden">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0">
             <img
@@ -122,105 +122,69 @@ const SlowDatingPage = () => {
               className="w-full h-full object-cover"
               loading="eager"
             />
-            <div className="absolute inset-0 bg-black/50" />
-
-          </div>
-
-          {/* Floating Decorative Elements */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <motion.div
-              className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-primary/5 blur-3xl"
-              animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              className="absolute bottom-1/4 left-1/3 w-96 h-96 rounded-full bg-primary/5 blur-3xl"
-              animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
           </div>
 
           <div
             ref={heroAnimation.ref}
-            className={`container max-w-6xl relative z-10 py-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+            className={`container relative z-10 pb-16 md:pb-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
-            <div className="max-w-2xl">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
+            <div className="max-w-lg">
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8"
+                transition={{ duration: 0.5 }}
+                className="text-xs font-medium uppercase tracking-[0.2em] text-white/60 mb-3"
               >
-                <Sparkles className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">An Exclusive Member Experience</span>
-              </motion.div>
+                An Exclusive Member Experience
+              </motion.p>
 
               <motion.h1
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.1 }}
-                className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="font-display text-3xl md:text-4xl text-white mb-3 leading-[1.1]"
               >
-                Where Depth
-                <br />
-                <span className="text-gradient">Meets Desire</span>
+                Where Depth <span className="italic">Meets Desire</span>
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.2 }}
-                className="text-muted-foreground text-lg md:text-xl max-w-xl mb-10 leading-relaxed"
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-white/70 text-sm md:text-base max-w-md mb-6 leading-relaxed"
               >
                 Slow Dating is our intentional approach to meaningful connection.
-                No swiping, no algorithms—just thoughtful introductions curated
-                by our matchmaking team.
+                No swiping, no algorithms—just thoughtful introductions.
               </motion.p>
 
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.3 }}
-                className="flex flex-col sm:flex-row items-start gap-4"
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="flex items-center gap-3"
               >
                 <Button
                   asChild
-                  size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base font-medium group"
+                  size="sm"
+                  className="rounded-full px-6 text-sm font-medium"
                 >
                   <Link to="/dating/apply">
-                    Apply for Membership
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    Apply
+                    <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                   </Link>
                 </Button>
                 <Button
                   asChild
-                  variant="outline"
-                  size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base border-border/50 hover:bg-secondary"
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-full px-6 text-sm text-white/80 hover:text-white hover:bg-white/10"
                 >
                   <Link to="#how-it-works">How It Works</Link>
                 </Button>
               </motion.div>
             </div>
           </div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.5 }}
-          >
-            <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll</span>
-            <motion.div
-              className="w-5 h-8 rounded-full border border-border flex items-start justify-center p-1"
-              animate={{ y: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              <div className="w-1 h-2 rounded-full bg-primary" />
-            </motion.div>
-          </motion.div>
         </section>
 
         {/* Stats Section */}

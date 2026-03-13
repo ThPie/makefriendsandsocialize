@@ -142,58 +142,55 @@ const ConnectedCirclePage = () => {
     <Layout>
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
-        <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        <section className="relative min-h-[90vh] flex items-end overflow-hidden">
           {/* Background Image */}
           <div className="absolute inset-0">
             <img
               src="/images/founders/founder-group-hero.webp"
               alt="Professional business networking"
-              className="w-full h-full object-cover opacity-60"
+              className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/50 to-background" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
           </div>
 
           <div
             ref={heroAnimation.ref}
-            className={`content-container relative z-10 py-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+            className={`content-container relative z-10 pb-16 md:pb-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
           >
-            <div className="max-w-2xl">
+            <div className="max-w-lg">
               <motion.h1
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.1 }}
-                className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="font-display text-3xl md:text-4xl text-white mb-3 leading-[1.1]"
               >
-                The Founders
-                <br />
-                <span className="text-[hsl(var(--accent-gold))] italic">Circle</span>
+                The Founders <span className="italic">Circle</span>
               </motion.h1>
 
               <motion.p
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.2 }}
-                className="text-muted-foreground text-lg md:text-xl max-w-xl mb-10 leading-relaxed font-light"
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-white/70 text-sm md:text-base max-w-md mb-6 leading-relaxed"
               >
                 Where visionary founders connect and thrive. An exclusive directory of verified
-                member-founded companies, creating opportunities for meaningful professional
-                connections and strategic collaborations.
+                member-founded companies.
               </motion.p>
 
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.3 }}
-                className="flex flex-col sm:flex-row items-start gap-4"
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="flex items-center gap-3"
               >
                 <Button
                   asChild
-                  size="lg"
-                  className="rounded-full px-8 min-h-[52px] text-base font-medium bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-none"
+                  size="sm"
+                  className="rounded-full px-6 text-sm font-medium bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-none"
                 >
                   <Link to="/founders-circle/directory">
                     Browse Directory
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                   </Link>
                 </Button>
                 <Button

@@ -216,82 +216,63 @@ const MembershipPage = () => {
         keywords="social club membership, private club application, exclusive networking, slow dating membership NYC"
       />
       {/* Hero Section */}
-      <section className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden">
+      <section className="relative w-full min-h-[70vh] flex items-end overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuA1LPDNLmTM3QdP2Pr0_KuoEX2ABfPK8uOWYED8mrY7Vm_PWmos6JzhSkimaZ6s4lDEw-_pnBlX4nJbSAAMUJJrDg5sVnr05RQtaY2O0PShRnO4btK8Y248sf2ZXAIAx6DnGZIL388TKe51HP_Wwbt_2LkZ9FisLlXFm4XbwcttGVEcwEsoaIbo_T4KcuNryiU09AJ5jR-ds4q_z8noYp2Ga4TC-heUZNwTIoeTOsAJ5Xl7lsGhw4vlFiN2rW9ANb9IZSoxFaCWsxtA")'
           }}
         />
-        <div className="absolute inset-0 bg-black/50" />
-
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
         <div
           ref={heroAnimation.ref}
-          className={`relative z-10 container max-w-4xl text-center py-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
+          className={`relative z-10 container max-w-4xl pb-16 md:pb-20 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 glass border border-primary/20 rounded-full px-5 py-2.5 mb-8"
+            transition={{ duration: 0.5 }}
+            className="text-xs font-medium uppercase tracking-[0.2em] text-white/60 mb-3"
           >
-            <Check className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">Start Your 30-Day Free Trial</span>
-          </motion.div>
+            Start Your 30-Day Free Trial
+          </motion.p>
 
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-display text-5xl md:text-6xl lg:text-7xl text-foreground mb-6 leading-[1.1]"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="font-display text-3xl md:text-4xl text-white mb-3 leading-[1.1]"
           >
-            Join an Inner Circle of <span className="text-[hsl(var(--accent-gold))] italic">Distinction</span>
+            Join an Inner Circle of <span className="italic">Distinction</span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-white/70 text-sm md:text-base max-w-md mb-6 leading-relaxed"
           >
-            Unlock exclusive events, Slow Dating matchmaking, unlimited reveals, partner perks, and the Connected Circle.
+            Exclusive events, Slow Dating, partner perks, and the Connected Circle.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex items-center gap-3"
           >
-            <Button size="lg" className="rounded-full px-8 min-h-[52px] text-base font-medium group" onClick={() => handleStartTrial('member')}>
+            <Button size="sm" className="rounded-full px-6 text-sm font-medium" onClick={() => handleStartTrial('member')}>
               Start Free Trial
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
             </Button>
             {subscription?.subscribed && (
-              <Button size="lg" variant="outline" className="rounded-full px-8 min-h-[52px]" onClick={handleManageSubscription}>
+              <Button size="sm" variant="ghost" className="rounded-full px-6 text-sm text-white/80 hover:text-white hover:bg-white/10" onClick={handleManageSubscription}>
                 Manage Subscription
               </Button>
             )}
           </motion.div>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.5 }}
-        >
-          <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll</span>
-          <motion.div
-            className="w-5 h-8 rounded-full border border-border flex items-start justify-center p-1"
-            animate={{ y: [0, 5, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            <div className="w-1 h-2 rounded-full bg-primary" />
-          </motion.div>
-        </motion.div>
       </section>
 
       {/* Value Highlights */}

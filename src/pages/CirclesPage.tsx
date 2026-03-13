@@ -80,41 +80,42 @@ const CirclesPage = () => {
     <Layout>
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
-        <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20">
-          <div className="container relative z-10 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 border border-[hsl(var(--accent-gold))]/30 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm bg-[hsl(var(--accent-gold))]/10"
-            >
-              <span className="flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--accent-gold))] animate-pulse"></span>
-              <span className="text-xs font-medium text-[hsl(var(--accent-gold))] tracking-wider uppercase">Curated Communities</span>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="font-display text-5xl md:text-7xl lg:text-8xl text-foreground mb-6"
-            >
-              Our <span className="text-[hsl(var(--accent-gold))] italic">Circles</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-muted-foreground text-xl max-w-2xl mx-auto font-light"
-            >
-              Exclusive micro-communities built around shared tastes, culture, and connection.
-            </motion.p>
-          </div>
-
+        <section className="relative min-h-[60vh] flex items-end overflow-hidden pt-20">
           {/* Ambient Background */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-[hsl(var(--accent-gold))]/5 rounded-full blur-[120px]" />
             <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[hsl(var(--accent-gold))]/5 rounded-full blur-[120px]" />
+          </div>
+
+          <div className="container relative z-10 pb-16 md:pb-20">
+            <div className="max-w-lg">
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="text-xs font-medium uppercase tracking-[0.2em] text-[hsl(var(--accent-gold))]/60 mb-3"
+              >
+                Curated Communities
+              </motion.p>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="font-display text-3xl md:text-4xl text-foreground mb-3 leading-[1.1]"
+              >
+                Our <span className="text-[hsl(var(--accent-gold))] italic">Circles</span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-muted-foreground text-sm md:text-base max-w-md leading-relaxed"
+              >
+                Exclusive micro-communities built around shared tastes, culture, and connection.
+              </motion.p>
+            </div>
           </div>
         </section>
 
