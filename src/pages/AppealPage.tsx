@@ -150,7 +150,7 @@ const AppealPage = () => {
 
   if (isSubmitted) {
     return (
-      <Layout>
+      <>
         <section className="min-h-screen flex items-center justify-center py-20 relative overflow-hidden">
           {/* Floating elements */}
           <motion.div
@@ -187,12 +187,12 @@ const AppealPage = () => {
             </Button>
           </motion.div>
         </section>
-      </Layout>
+      </>
     );
   }
 
   return (
-    <Layout>
+    <>
       {/* Hero Section */}
       <section className="relative min-h-[40vh] flex items-center justify-center overflow-hidden">
         {/* Background gradient */}
@@ -447,7 +447,7 @@ const AppealPage = () => {
           </motion.div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 };
 

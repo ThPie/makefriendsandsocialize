@@ -110,7 +110,7 @@ const SlowDatingPage = () => {
   };
 
   return (
-    <Layout>
+    <>
       <div className="min-h-screen bg-background">
         {/* Hero Section - Full viewport with image */}
         <section className="relative min-h-[90vh] flex items-end overflow-hidden">
@@ -496,7 +496,7 @@ const SlowDatingPage = () => {
           </div>
         </section>
       </div>
-    </Layout>
+    </>
   );
 };
 

@@ -77,7 +77,7 @@ const CirclesPage = () => {
   ];
 
   return (
-    <Layout>
+    <>
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative min-h-[60vh] flex items-end overflow-hidden pt-20">
@@ -206,7 +206,7 @@ const CirclesPage = () => {
         </section>
 
       </div>
-    </Layout>
+    </>
   );
 };
 
