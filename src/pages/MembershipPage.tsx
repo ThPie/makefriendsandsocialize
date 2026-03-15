@@ -368,7 +368,7 @@ const MembershipPage = () => {
               </Label>
               {billingPeriod === 'annual' && (
                 <Badge variant="secondary" className="ml-2 bg-green-500/10 text-green-600 border-green-500/20">
-                  Save up to 32%
+                  Save 20%
                 </Badge>
               )}
             </div>
