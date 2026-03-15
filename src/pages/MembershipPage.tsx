@@ -350,7 +350,7 @@ const MembershipPage = () => {
               We create intentional connections through tailored events, community, and introductions.
             </p>
             <p className="text-muted-foreground text-lg mb-8">
-              Select the tier that best aligns with your vision. Start with a 30-day free trial.
+              Select the tier that best aligns with your vision. Start with a 14-day free trial.
             </p>
 
             {/* Billing Toggle */}
