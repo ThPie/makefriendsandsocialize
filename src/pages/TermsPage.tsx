@@ -1,6 +1,7 @@
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { FileText, Users, CreditCard, Calendar, Shield, Copyright, Mail } from 'lucide-react';
+import { SEO } from '@/components/common/SEO';
 
 const sections = [
   {
@@ -74,84 +75,82 @@ const TermsPage = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <main className="flex-grow flex flex-col items-center">
+    <main className="flex-grow flex flex-col">
+      <SEO title="Terms & Conditions" description="Read the terms and conditions for Make Friends & Socialize membership and events." />
+
       {/* Hero */}
-      <div className="w-full content-container mt-8">
-        <div
-          className="flex min-h-[300px] flex-col gap-4 bg-card border border-border rounded-xl items-center justify-center p-8 text-center"
-        >
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-primary mb-2">
-            <FileText className="w-8 h-8" strokeWidth={1.5} />
-          </div>
-          <h1 className="text-foreground text-4xl md:text-5xl font-black leading-tight tracking-tight font-display">
-            Terms & <span className="text-[hsl(var(--accent-gold))] italic">Conditions</span>
+      <section className="relative w-full min-h-[50vh] flex items-end overflow-hidden bg-card">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+        <div className="relative z-10 content-container pb-12 md:pb-16">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/60 mb-3">Legal</p>
+          <h1 className="font-display text-3xl md:text-4xl text-white mb-3 leading-[1.1]">
+            Terms & <span className="italic text-[hsl(var(--accent-gold))]">Conditions</span>
           </h1>
-          <p className="text-muted-foreground text-base md:text-lg max-w-2xl">
-            Please read these terms carefully before using our services. By joining our community, you agree to these terms.
+          <p className="text-white/70 text-sm md:text-base max-w-md leading-relaxed">
+            Please read these terms carefully before using our services.
           </p>
-          <p className="text-[hsl(var(--accent-gold))] text-sm font-medium mt-2">Effective: June 2025</p>
+          <p className="text-[hsl(var(--accent-gold))] text-xs font-medium mt-3">Effective: June 2025</p>
         </div>
-      </div>
+      </section>
 
-      {/* Intro */}
-      <div ref={ref} className="w-full max-w-4xl px-4 md:px-10 mt-12">
-        <div className={`bg-card border border-border rounded-xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <p className="text-muted-foreground leading-relaxed">
-            Welcome to Make Friends and Socialize. These Terms and Conditions govern your use of our website, services,
-            and participation in our events. By becoming a member or attending our events, you agree to be bound by these terms.
-          </p>
-        </div>
-      </div>
+      {/* Content */}
+      <section ref={ref} className="py-12 md:py-16 w-full">
+        <div className="content-container">
+          <div className={`bg-card border border-border rounded-2xl p-6 md:p-8 mb-10 scroll-animate ${isVisible ? 'visible' : ''}`}>
+            <p className="text-muted-foreground leading-relaxed">
+              Welcome to Make Friends and Socialize. These Terms and Conditions govern your use of our website, services,
+              and participation in our events. By becoming a member or attending our events, you agree to be bound by these terms.
+            </p>
+          </div>
 
-      {/* Accordion Sections */}
-      <div className="w-full max-w-4xl px-4 md:px-10 mt-8 mb-20">
-        <Accordion type="single" collapsible className="space-y-4">
-          {sections.map((section, index) => (
-            <AccordionItem
-              key={section.title}
-              value={section.title}
-              className={`bg-card border border-border rounded-xl overflow-hidden data-[state=open]:border-primary/50 transition-all duration-200 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
-            >
-              <AccordionTrigger className="px-6 py-5 hover:no-underline group">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary transition-all duration-200 group-hover:bg-primary/30 group-hover:shadow-[0_0_15px_hsl(var(--primary)/0.3)]">
-                    <section.icon className="w-5 h-5" strokeWidth={2} />
+          <Accordion type="multiple" className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {sections.map((section, index) => (
+              <AccordionItem
+                key={section.title}
+                value={section.title}
+                className={`bg-card border border-border rounded-2xl overflow-hidden data-[state=open]:border-primary/50 transition-all duration-200 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
+              >
+                <AccordionTrigger className="px-6 py-5 hover:no-underline group">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary flex-shrink-0">
+                      <section.icon className="w-5 h-5" strokeWidth={2} />
+                    </div>
+                    <span className="text-foreground text-base font-bold font-display text-left">{section.title}</span>
                   </div>
-                  <span className="text-foreground text-lg font-bold font-display text-left">{section.title}</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="px-6 pb-6">
-                <ul className="space-y-3 ml-14">
-                  {section.items.map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 text-muted-foreground">
-                      <span className="text-primary mt-1">•</span>
-                      <span className="leading-relaxed">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+                </AccordionTrigger>
+                <AccordionContent className="px-6 pb-6">
+                  <ul className="space-y-2 ml-14">
+                    {section.items.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-muted-foreground text-sm">
+                        <span className="text-primary mt-1">•</span>
+                        <span className="leading-relaxed">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
 
-        {/* Contact Footer */}
-        <div className={`mt-8 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary">
-              <Mail className="w-5 h-5" strokeWidth={2} />
-            </div>
-            <div>
-              <h3 className="text-foreground font-bold font-display">Questions About Terms?</h3>
-              <p className="text-muted-foreground text-sm">
-                Contact us at{' '}
-                <a href="mailto:hello@makefriendsandsocialize.com" className="text-primary hover:underline">
-                  hello@makefriendsandsocialize.com
-                </a>
-              </p>
+          {/* Contact Footer */}
+          <div className={`mt-10 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-6 md:p-8 scroll-animate ${isVisible ? 'visible' : ''}`}>
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20 text-primary">
+                <Mail className="w-5 h-5" strokeWidth={2} />
+              </div>
+              <div>
+                <h3 className="text-foreground font-bold font-display">Questions About Terms?</h3>
+                <p className="text-muted-foreground text-sm">
+                  Contact us at{' '}
+                  <a href="mailto:hello@makefriendsandsocialize.com" className="text-primary hover:underline">
+                    hello@makefriendsandsocialize.com
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </main>
   );
 };
