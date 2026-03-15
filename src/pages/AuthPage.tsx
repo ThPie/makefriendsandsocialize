@@ -670,16 +670,14 @@ export default function AuthPage() {
         <div className="hidden lg:flex w-full min-h-screen p-3">
           {/* Left Side — Image Panel with overlay */}
           <div className="relative w-1/2 rounded-2xl overflow-hidden">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              poster="/images/hero-poster.webp"
-              className="absolute inset-0 w-full h-full object-cover"
-            >
-              <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
-            </video>
+            <iframe
+              src="https://www.youtube.com/embed/bpRUQw2Gzmc?autoplay=1&mute=1&loop=1&playlist=bpRUQw2Gzmc&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+              className="absolute inset-0 w-full h-full pointer-events-none scale-[2] origin-center"
+              style={{ border: 'none' }}
+              title="Background video"
+            />
             {/* Dark gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-background/20" />
             
