@@ -10,9 +10,9 @@ export const STRIPE_PRODUCTS = {
     interval: 'month' as const,
   },
   MEMBER_ANNUAL: {
-    product_id: 'prod_TqU7b2DETbd3iZ',
-    price_id: 'price_1Ssn9f00I3YCY0DeLZZloqCJ',
-    price: 399,
+    product_id: 'prod_U9MAR2POGHT8u1',
+    price_id: 'price_1TB3S000I3YCY0DeptRFPoeL',
+    price: 470,
     interval: 'year' as const,
   },
   FELLOW_MONTHLY: {
