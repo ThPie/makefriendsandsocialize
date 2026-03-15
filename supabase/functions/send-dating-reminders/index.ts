@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { Resend } from "https://esm.sh/resend@2.0.0";
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { buildBrandedEmail, SITE_URL, SENDERS, p, infoBox, detailRow, alertBox } from '../_shared/email-layout.ts';
+import { sendSms } from '../_shared/sms.ts';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
