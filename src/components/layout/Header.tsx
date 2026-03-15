@@ -58,7 +58,7 @@ export const Header = () => {
               key={label}
               to={label === 'Blog' ? '/journal' : `/${label.toLowerCase()}`}
               className={cn(
-                "hidden md:inline-block text-sm font-light transition-colors duration-150",
+                "hidden lg:inline-block text-sm font-light transition-colors duration-150",
                 !scrolled ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
               )}
             >
