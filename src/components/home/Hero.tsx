@@ -22,34 +22,18 @@ export const Hero = () => {
 
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
-      {/* Poster image shown immediately — acts as LCP element */}
-      <img
-        src="/images/hero-poster.webp"
-        alt="MakeFriends Social Club — luxury social experience"
-        fetchPriority="high"
-        decoding="async"
+      {/* Full-bleed background video */}
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        poster="/images/hero-poster.webp"
         className="absolute inset-0 w-full h-full object-cover object-[center_30%] md:object-center"
-        style={{ display: videoReady ? 'none' : 'block' }}
-      />
-
-      {/* Full-bleed background video — loaded after first paint */}
-      {videoReady && (
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster="/images/hero-poster.webp"
-          className="absolute inset-0 w-full h-full object-cover object-[center_30%] md:object-center transition-opacity duration-1000"
-          onCanPlay={(e) => {
-            e.currentTarget.style.opacity = '1';
-          }}
-          style={{ opacity: 0 }}
-        >
-          <source src="/videos/hero-bg-new.mp4" type="video/mp4" />
-        </video>
-      )}
+      >
+        <source src="https://drive.google.com/uc?export=download&id=1kO-1_Scr58EDdNju76ma09ydUwrHSXQV" type="video/mp4" />
+      </video>
 
       {/* Luxury dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
