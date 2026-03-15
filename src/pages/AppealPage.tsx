@@ -187,7 +187,7 @@ const AppealPage = () => {
             </Button>
           </motion.div>
         </section>
-      </Layout>
+      </>
     );
   }
 
