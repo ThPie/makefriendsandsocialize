@@ -1,8 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { getCorsHeaders } from '../_shared/cors.ts';
-
-
+import { sendSms } from '../_shared/sms.ts';
 
 interface SMSRequest {
   to: string;
@@ -82,19 +81,6 @@ const handler = async (req: Request): Promise<Response> => {
       _endpoint: "send-sms",
     });
 
-    // === TWILIO CONFIGURATION ===
-    const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
-    const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
-    const fromNumber = Deno.env.get("TWILIO_PHONE_NUMBER");
-
-    if (!accountSid || !authToken || !fromNumber) {
-      console.error("[SEND-SMS] Missing Twilio credentials");
-      return new Response(
-        JSON.stringify({ error: "Twilio not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     const { to, message }: SMSRequest = await req.json();
 
     if (!to || !message) {
@@ -104,41 +90,17 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // === PHONE NUMBER VALIDATION ===
-    const phoneRegex = /^\+?[1-9]\d{6,14}$/;
-    if (!phoneRegex.test(to.replace(/[\s-]/g, ""))) {
-      return new Response(
-        JSON.stringify({ error: "Invalid phone number format" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     // Log sanitized info (no full phone number)
     console.log(`[SEND-SMS] Sending to ${to.substring(0, 6)}... by admin ${user.id}`);
 
-    const response = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic " + btoa(`${accountSid}:${authToken}`),
-        },
-        body: new URLSearchParams({
-          To: to,
-          From: fromNumber,
-          Body: message,
-        }),
-      }
-    );
+    // Use shared SMS helper (gateway-aware)
+    const result = await sendSms(to, message);
 
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error("[SEND-SMS] Twilio error (details redacted)");
+    if (!result.success) {
+      console.error("[SEND-SMS] Failed:", result.error);
       return new Response(
-        JSON.stringify({ error: "Failed to send SMS" }),
-        { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: result.error || "Failed to send SMS" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
