@@ -16,6 +16,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import { HelmetProvider } from 'react-helmet-async';
 import { RegisterSW } from "./components/common/RegisterSW";
 import { BackToTop } from "@/components/ui/back-to-top";
+import { Toaster } from "@/components/ui/toaster";
 
 import { SlowDatingRoutes, MainRoutes } from "@/routes/config";
 
