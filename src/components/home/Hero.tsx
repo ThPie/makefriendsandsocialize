@@ -15,9 +15,17 @@ export const Hero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 0.9;
-    }
+    const video = videoRef.current;
+    if (!video) return;
+    video.playbackRate = 0.9;
+
+    // Fallback: force loop restart if browser fails to loop natively
+    const handleEnded = () => {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    };
+    video.addEventListener('ended', handleEnded);
+    return () => video.removeEventListener('ended', handleEnded);
   }, []);
 
   return (
