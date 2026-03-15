@@ -195,7 +195,7 @@ export const Footer = () => {
         </div>
 
         {/* ── Desktop layout ── */}
-        <div className="hidden md:grid grid-cols-12 gap-8">
+        <div className="hidden lg:grid grid-cols-12 gap-8">
           <div className="col-span-4 flex flex-col gap-4">
             <BrandLogo width={160} height={48} />
             <p className="text-[13px] text-muted-foreground leading-relaxed max-w-[280px]">
