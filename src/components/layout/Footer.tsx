@@ -14,20 +14,22 @@ const footerLinks = {
     title: "THE EXPERIENCE",
     links: [
       { label: "About Us", href: "/about" },
+      { label: "Events", href: "/events" },
       { label: "Membership", href: "/membership" },
       { label: "Concierge", href: "/contact" },
       { label: "Gallery", href: "/gallery" },
     ],
   },
-  community: {
-    title: "COMMUNITY",
+  circles: {
+    title: "CIRCLES",
     links: [
-      { label: "Events", href: "/events" },
-      { label: "Founders Circle", href: "/founders-circle" },
-      { label: "Slow Dating", href: "/slow-dating" },
+      { label: "The Gentlemen", href: "/circles/the-gentlemen" },
+      { label: "The Ladies Society", href: "/circles/the-ladies" },
+      { label: "Les Amis", href: "/circles/les-amis" },
       { label: "Couple's Circle", href: "/circles/the-partners" },
       { label: "Active & Outdoor", href: "/circles/the-pursuits" },
-      { label: "Become a Host", href: "/become-a-host" },
+      { label: "Founders Circle", href: "/founders-circle" },
+      { label: "Slow Dating", href: "/slow-dating" },
     ],
   },
   inquiries: {
@@ -37,6 +39,7 @@ const footerLinks = {
       { label: "FAQ", href: "/faq" },
       { label: "Blog", href: "/journal" },
       { label: "Partnerships", href: "/contact" },
+      { label: "Become a Host", href: "/become-a-host" },
     ],
   },
   legal: {
