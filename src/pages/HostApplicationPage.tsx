@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Layout } from '@/components/layout/Layout';
 import { SEO } from '@/components/common/SEO';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -62,86 +61,89 @@ const HostApplicationPage = () => {
   const update = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
 
   return (
-    <Layout>
+    <main className="flex-grow flex flex-col">
       <SEO title="Become a Host — The Exchange" description="Apply to host a workshop, class, or demo and share your skills with our community." />
-      <div className="min-h-screen bg-background pt-24 pb-20">
-        <div className="content-container max-w-2xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            
+
+      {/* Hero */}
+      <section className="relative w-full min-h-[50vh] flex items-end overflow-hidden bg-card">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+        <div className="relative z-10 content-container pb-12 md:pb-16">
+          <div className="inline-flex items-center gap-2 border border-[hsl(var(--accent-gold))]/30 rounded-full px-4 py-1.5 mb-4 bg-[hsl(var(--accent-gold))]/10">
+            <Lightbulb className="w-3.5 h-3.5 text-[hsl(var(--accent-gold))]" />
+            <span className="text-xs font-medium text-[hsl(var(--accent-gold))] tracking-wider uppercase">The Exchange</span>
+          </div>
+          <h1 className="font-display text-3xl md:text-4xl text-white mb-3 leading-[1.1]">
+            Become a <span className="italic text-[hsl(var(--accent-gold))]">Host</span>
+          </h1>
+          <p className="text-white/70 text-sm md:text-base max-w-md leading-relaxed">
+            Share your expertise with our community. Tell us what you'd like to teach.
+          </p>
+        </div>
+      </section>
+
+      {/* Form Section */}
+      <section className="py-12 md:py-16 w-full">
+        <div className="content-container">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="max-w-3xl mx-auto">
             {submitted ? (
               <div className="text-center py-20">
                 <CheckCircle className="w-16 h-16 text-[hsl(var(--accent-gold))] mx-auto mb-6" />
-                <h1 className="font-display text-4xl text-foreground mb-4">Application Received!</h1>
+                <h2 className="font-display text-4xl text-foreground mb-4">Application Received!</h2>
                 <p className="text-muted-foreground text-lg">Thank you for offering to share your skills. We'll review your application and get back to you soon.</p>
               </div>
             ) : (
-              <>
-                <div className="text-center mb-12">
-                  <div className="inline-flex items-center gap-2 border border-[hsl(var(--accent-gold))]/30 rounded-full px-4 py-1.5 mb-6 bg-[hsl(var(--accent-gold))]/10">
-                    <Lightbulb className="w-3.5 h-3.5 text-[hsl(var(--accent-gold))]" />
-                    <span className="text-xs font-medium text-[hsl(var(--accent-gold))] tracking-wider uppercase">The Exchange</span>
+              <form onSubmit={handleSubmit} className="space-y-6 bg-card border border-border rounded-2xl p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="full_name">Full Name *</Label>
+                    <Input id="full_name" value={form.full_name} onChange={e => update('full_name', e.target.value)} required maxLength={100} />
                   </div>
-                  <h1 className="font-display text-4xl md:text-5xl text-foreground mb-4">
-                    Become a <span className="text-[hsl(var(--accent-gold))] italic">Host</span>
-                  </h1>
-                  <p className="text-muted-foreground text-lg max-w-lg mx-auto">
-                    Share your expertise with our community. Tell us what you'd like to teach.
-                  </p>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input id="email" type="email" value={form.email} onChange={e => update('email', e.target.value)} required maxLength={255} />
+                  </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6 bg-card border border-border rounded-2xl p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="full_name">Full Name *</Label>
-                      <Input id="full_name" value={form.full_name} onChange={e => update('full_name', e.target.value)} required maxLength={100} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email *</Label>
-                      <Input id="email" type="email" value={form.email} onChange={e => update('email', e.target.value)} required maxLength={255} />
-                    </div>
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="skill_topic">What would you like to teach? *</Label>
+                  <Input id="skill_topic" placeholder="e.g. Python basics, Sourdough bread, Bike maintenance" value={form.skill_topic} onChange={e => update('skill_topic', e.target.value)} required maxLength={200} />
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="skill_topic">What would you like to teach? *</Label>
-                    <Input id="skill_topic" placeholder="e.g. Python basics, Sourdough bread, Bike maintenance" value={form.skill_topic} onChange={e => update('skill_topic', e.target.value)} required maxLength={200} />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="experience_description">Tell us about your experience</Label>
+                  <Textarea id="experience_description" placeholder="What's your background with this skill? How long have you been doing it?" value={form.experience_description} onChange={e => update('experience_description', e.target.value)} maxLength={1000} rows={4} />
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="experience_description">Tell us about your experience</Label>
-                    <Textarea id="experience_description" placeholder="What's your background with this skill? How long have you been doing it?" value={form.experience_description} onChange={e => update('experience_description', e.target.value)} maxLength={1000} rows={4} />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="teaching_format">Preferred Format</Label>
+                  <Select value={form.teaching_format} onValueChange={v => update('teaching_format', v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a format" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="workshop">Hands-on Workshop</SelectItem>
+                      <SelectItem value="class">Class / Lecture</SelectItem>
+                      <SelectItem value="demo">Live Demo</SelectItem>
+                      <SelectItem value="mentoring">1-on-1 Mentoring</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="teaching_format">Preferred Format</Label>
-                    <Select value={form.teaching_format} onValueChange={v => update('teaching_format', v)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a format" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="workshop">Hands-on Workshop</SelectItem>
-                        <SelectItem value="class">Class / Lecture</SelectItem>
-                        <SelectItem value="demo">Live Demo</SelectItem>
-                        <SelectItem value="mentoring">1-on-1 Mentoring</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="availability">Availability</Label>
+                  <Input id="availability" placeholder="e.g. Weekends, Tuesday evenings, Flexible" value={form.availability} onChange={e => update('availability', e.target.value)} maxLength={500} />
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="availability">Availability</Label>
-                    <Input id="availability" placeholder="e.g. Weekends, Tuesday evenings, Flexible" value={form.availability} onChange={e => update('availability', e.target.value)} maxLength={500} />
-                  </div>
-
-                  <Button type="submit" disabled={loading} className="w-full h-12 gold-fill border-none text-white rounded-full text-base">
-                    {loading ? 'Submitting...' : 'Submit Application'}
-                  </Button>
-                </form>
-              </>
+                <Button type="submit" disabled={loading} className="w-full h-12 gold-fill border-none text-white rounded-full text-base">
+                  {loading ? 'Submitting...' : 'Submit Application'}
+                </Button>
+              </form>
             )}
           </motion.div>
         </div>
-      </div>
-    </Layout>
+      </section>
+    </main>
   );
 };
 
