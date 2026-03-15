@@ -19,8 +19,7 @@ import {
   Crown,
   Heart,
   Gift,
-  ChevronDown,
-  ChevronUp
+  ChevronDown
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -60,12 +59,8 @@ const MembershipPage = () => {
   const { subscription, isLoading: subscriptionLoading, openCheckout, openCustomerPortal } = useSubscription();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
-  const [expandedTiers, setExpandedTiers] = useState<Record<string, boolean>>({});
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
   const INITIAL_FEATURES_SHOWN = 4;
-
-  const toggleExpanded = (tierId: string) => {
-    setExpandedTiers(prev => ({ ...prev, [tierId]: !prev[tierId] }));
-  };
 
   const handleStartTrial = async (tier: 'member' | 'fellow') => {
     if (!user) {
@@ -427,8 +422,8 @@ const MembershipPage = () => {
                   </div>
 
                   {/* Features List */}
-                  <ul className="space-y-4 mb-8 flex-1">
-                    {tier.features.map((feature, i) => (
+                  <ul className="space-y-4 mb-4 flex-1">
+                    {tier.features.slice(0, INITIAL_FEATURES_SHOWN).map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <Check className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                         <span className="text-sm text-foreground font-light leading-snug">{feature}</span>
@@ -436,15 +431,41 @@ const MembershipPage = () => {
                     ))}
                   </ul>
 
-                  {/* See Details Link */}
-                  <div className="text-center mb-6">
-                    <button
-                      onClick={() => toggleExpanded(tier.id)}
-                      className="text-[hsl(var(--accent-gold))] text-sm hover:text-foreground transition-colors flex items-center justify-center gap-1 mx-auto"
-                    >
-                      See all benefits <ChevronDown className="w-3 h-3" />
-                    </button>
+                  {/* Expandable Features */}
+                  <div
+                    className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                      showAllFeatures ? 'max-h-[800px] opacity-100 mb-4' : 'max-h-0 opacity-0'
+                    }`}
+                  >
+                    <ul className="space-y-4">
+                      {tier.features.slice(INITIAL_FEATURES_SHOWN).map((feature, i) => (
+                        <li key={`extra-${i}`} className="flex items-start gap-3">
+                          <Check className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                          <span className="text-sm text-foreground font-light leading-snug">{feature}</span>
+                        </li>
+                      ))}
+                      {/* Missing features in grayscale */}
+                      {tier.missingFeatures.map((feature, i) => (
+                        <li key={`missing-${i}`} className="flex items-start gap-3 text-muted-foreground/50">
+                          <Check className="h-5 w-5 flex-shrink-0 mt-0.5 opacity-30" strokeWidth={1.5} />
+                          <span className="text-sm font-light leading-snug line-through">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
+
+                  {/* See all benefits toggle */}
+                  {(tier.features.length > INITIAL_FEATURES_SHOWN || tier.missingFeatures.length > 0) && (
+                    <div className="text-center mb-6">
+                      <button
+                        onClick={() => setShowAllFeatures(!showAllFeatures)}
+                        className="text-[hsl(var(--accent-gold))] text-sm hover:text-foreground transition-colors flex items-center justify-center gap-1 mx-auto"
+                      >
+                        {showAllFeatures ? 'Hide details' : 'See all benefits'}
+                        <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${showAllFeatures ? 'rotate-180' : ''}`} />
+                      </button>
+                    </div>
+                  )}
 
                   {/* Action Button */}
                   <div className="mt-auto">

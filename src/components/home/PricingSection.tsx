@@ -27,7 +27,7 @@ export const PricingSection = () => {
       href: '/membership',
       popular: true,
       style: 'featured' as const,
-      trial: '30-day free trial',
+      trial: '14-day free trial',
     },
     {
       id: 'patron',
@@ -36,7 +36,7 @@ export const PricingSection = () => {
       href: '/membership',
       popular: false,
       style: 'premium' as const,
-      trial: '30-day free trial',
+      trial: '14-day free trial',
     }
   ];
 
