@@ -32,7 +32,7 @@ export const Hero = () => {
         poster="/images/hero-poster.webp"
         className="absolute inset-0 w-full h-full object-cover object-[center_30%] md:object-center"
       >
-        <source src="https://drive.google.com/uc?export=download&id=1kO-1_Scr58EDdNju76ma09ydUwrHSXQV" type="video/mp4" />
+        <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
       </video>
 
       {/* Luxury dark overlay */}
