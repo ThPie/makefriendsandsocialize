@@ -19,8 +19,7 @@ import {
   Crown,
   Heart,
   Gift,
-  ChevronDown,
-  ChevronUp
+  ChevronDown
 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
