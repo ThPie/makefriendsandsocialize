@@ -580,6 +580,51 @@ const EventsPage = () => {
           </motion.div>
         )}
       </div>
+      {/* RSVP Confirmation Dialog */}
+      <Dialog open={!!rsvpDialogEvent} onOpenChange={(open) => { if (!open) { setRsvpDialogEvent(null); setRsvpSuccess(null); } }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl">
+              {rsvpSuccess === 'confirmed' ? 'You\'re In!' : rsvpSuccess === 'already' ? 'Already Reserved' : 'Confirm Reservation'}
+            </DialogTitle>
+            <DialogDescription>
+              {rsvpSuccess === 'confirmed'
+                ? `Your spot for "${rsvpDialogEvent?.title}" has been confirmed. See you there!`
+                : rsvpSuccess === 'already'
+                ? `You already have a reservation for "${rsvpDialogEvent?.title}".`
+                : `Reserve your spot for "${rsvpDialogEvent?.title}" on ${rsvpDialogEvent ? format(parseLocalDate(rsvpDialogEvent.date), 'MMMM d, yyyy') : ''}?`}
+            </DialogDescription>
+          </DialogHeader>
+          {rsvpSuccess === 'confirmed' && (
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-primary/10 border border-primary/20">
+              <CheckCircle2 className="h-6 w-6 text-primary shrink-0" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Reservation Confirmed</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {rsvpDialogEvent?.time && `${rsvpDialogEvent.time} • `}{rsvpDialogEvent?.venue_name || rsvpDialogEvent?.location || ''}
+                </p>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2 sm:gap-0">
+            {!rsvpSuccess ? (
+              <>
+                <Button variant="outline" onClick={() => setRsvpDialogEvent(null)} className="rounded-xl">
+                  Cancel
+                </Button>
+                <Button onClick={confirmRSVP} disabled={rsvpLoading} className="rounded-xl">
+                  {rsvpLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  Confirm Reservation
+                </Button>
+              </>
+            ) : (
+              <Button onClick={() => { setRsvpDialogEvent(null); setRsvpSuccess(null); }} className="rounded-xl w-full">
+                Done
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
