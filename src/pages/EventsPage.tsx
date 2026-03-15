@@ -514,7 +514,7 @@ const EventsPage = () => {
                       </p>
                     )}
 
-                    <div className="flex flex-wrap gap-2 md:gap-3 mt-auto border-t border-border pt-4">
+                    <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-auto border-t border-border pt-4">
                       {activeTab === 'upcoming' ? (
                         <>
                           <AnimatedButton
@@ -525,7 +525,7 @@ const EventsPage = () => {
                             Reserve
                           </AnimatedButton>
                           <AddToCalendarButton event={event} />
-                          <Button variant="outline" asChild className="rounded-xl">
+                          <Button variant="outline" asChild className="rounded-xl" size="sm">
                             <Link to={`/events/${event.id}`} aria-label={`View details for ${event.title}`}>Details</Link>
                           </Button>
                         </>
