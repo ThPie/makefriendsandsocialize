@@ -5,12 +5,8 @@ import { getCorsHeaders } from '../_shared/cors.ts';
 
 
 
-// Price IDs for reveal purchases - Updated January 2026
-const PRICE_IDS = {
-  SINGLE_REVEAL: "price_1TB3JG00I3YCY0Des2GB9S8P",   // $30
-  PACK_3_REVEAL: "price_1Ssn7v00I3YCY0DeELElTXPV",   // $49
-  PACK_5_REVEAL: "price_1Ssn8F00I3YCY0DeCCUvX7ZX",   // $69
-};
+// Price ID for single reveal purchase
+const SINGLE_REVEAL_PRICE_ID = "price_1TB3JG00I3YCY0Des2GB9S8P"; // $30
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
@@ -47,17 +43,11 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    // Determine price ID based on pack type
-    let priceId: string;
-    if (pack_type === "single") {
-      priceId = PRICE_IDS.SINGLE_REVEAL;
-    } else if (pack_type === "pack_3") {
-      priceId = PRICE_IDS.PACK_3_REVEAL;
-    } else if (pack_type === "pack_5") {
-      priceId = PRICE_IDS.PACK_5_REVEAL;
-    } else {
-      throw new Error("Invalid pack type specified. Use: single, pack_3, or pack_5");
+    // Only single reveal purchase is supported
+    if (pack_type !== "single") {
+      throw new Error("Invalid pack type. Only 'single' reveal purchase is available.");
     }
+    const priceId = SINGLE_REVEAL_PRICE_ID;
     logStep("Selected price", { pack_type, priceId });
 
     // Initialize Stripe
