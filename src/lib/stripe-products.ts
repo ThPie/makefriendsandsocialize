@@ -28,9 +28,9 @@ export const STRIPE_PRODUCTS = {
     interval: 'year' as const,
   },
   SINGLE_REVEAL: {
-    product_id: 'prod_TqU5DsuaEeLmKf',
-    price_id: 'price_1Ssn7X00I3YCY0DeIiMAOwSF',
-    price: 19,
+    product_id: 'prod_U9M1M3peuXrKcY',
+    price_id: 'price_1TB3JG00I3YCY0Des2GB9S8P',
+    price: 30,
   },
   PACK_3_REVEAL: {
     product_id: 'prod_TqU6reEEQMGRr4',
