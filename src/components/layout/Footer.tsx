@@ -227,8 +227,8 @@ export const Footer = () => {
         <DailyQuote />
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-center md:text-left">
+        <div className="pt-8 border-t border-border flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="text-center lg:text-left">
             <p className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} Make Friends and Socialize LLC. All rights reserved.
             </p>
