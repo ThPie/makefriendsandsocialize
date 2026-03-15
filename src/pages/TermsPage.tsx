@@ -79,8 +79,9 @@ const TermsPage = () => {
       <SEO title="Terms & Conditions" description="Read the terms and conditions for Make Friends & Socialize membership and events." />
 
       {/* Hero */}
-      <section className="relative w-full min-h-[50vh] flex items-end overflow-hidden bg-card">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+      <section className="relative w-full min-h-[50vh] flex items-end overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1920&q=80")' }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
         <div className="relative z-10 content-container pb-12 md:pb-16">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-white/60 mb-3">Legal</p>
           <h1 className="font-display text-3xl md:text-4xl text-white mb-3 leading-[1.1]">
