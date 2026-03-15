@@ -152,7 +152,7 @@ const ConnectedCircleDirectoryPage = () => {
   // Not logged in
   if (!user) {
     return (
-      <Layout>
+      <>
         <div className="min-h-[70vh] flex items-center justify-center">
           <div className="text-center max-w-md">
             <Building2 className="h-16 w-16 text-primary/50 mx-auto mb-6" />
