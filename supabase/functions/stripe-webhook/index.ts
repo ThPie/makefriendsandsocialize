@@ -19,8 +19,6 @@ const PRICE_IDS = {
   FELLOW_MONTHLY: "price_1Ssn9u00I3YCY0DeF6IQ05fB",   // $79/month
   FELLOW_ANNUAL: "price_1TB3Sj00I3YCY0DeyFYFnzVG",    // $758/year
   SINGLE_REVEAL: "price_1TB3JG00I3YCY0Des2GB9S8P",    // $30
-  PACK_3_REVEAL: "price_1Ssn7v00I3YCY0DeELElTXPV",    // $49
-  PACK_5_REVEAL: "price_1Ssn8F00I3YCY0DeCCUvX7ZX",    // $69
 };
 
 // Sanitize sensitive data before logging
