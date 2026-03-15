@@ -181,7 +181,7 @@ const ConnectedCircleDirectoryPage = () => {
   const showPreview = !canAccess && businesses && businesses.length > 0;
 
   return (
-    <Layout>
+    <>
       <div className="min-h-screen bg-background py-12 md:py-20">
         <div className="content-container">
           {/* Header */}
