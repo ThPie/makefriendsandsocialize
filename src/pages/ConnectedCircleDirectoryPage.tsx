@@ -173,7 +173,7 @@ const ConnectedCircleDirectoryPage = () => {
             </div>
           </div>
         </div>
-      </Layout>
+      </>
     );
   }
 
