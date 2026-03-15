@@ -275,30 +275,6 @@ const MembershipPage = () => {
         </div>
       </section>
 
-      {/* Value Highlights */}
-      <section className="py-10 w-full">
-        <div className="container max-w-4xl">
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-            {valueHighlights.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-                className={`flex items-center gap-4 p-4 rounded-xl bg-card border border-border ${index === valueHighlights.length - 1 ? 'col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto md:max-w-none' : ''}`}
-              >
-                <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center shrink-0`}>
-                  <item.icon className={`w-5 h-5 ${item.color}`} />
-                </div>
-                <div>
-                  <p className="font-medium text-foreground text-sm">{item.label}</p>
-                  <p className="text-xs text-muted-foreground">{item.sublabel}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Legacy Section */}
       <section className="py-16 md:py-20 w-full">
