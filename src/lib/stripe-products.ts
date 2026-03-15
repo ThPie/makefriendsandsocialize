@@ -32,16 +32,6 @@ export const STRIPE_PRODUCTS = {
     price_id: 'price_1TB3JG00I3YCY0Des2GB9S8P',
     price: 30,
   },
-  PACK_3_REVEAL: {
-    product_id: 'prod_TqU6reEEQMGRr4',
-    price_id: 'price_1Ssn7v00I3YCY0DeELElTXPV',
-    price: 49,
-  },
-  PACK_5_REVEAL: {
-    product_id: 'prod_TqU6hiX76tBzic',
-    price_id: 'price_1Ssn8F00I3YCY0DeCCUvX7ZX',
-    price: 69,
-  },
 } as const;
 
 // UI tier names mapped to database tier values
