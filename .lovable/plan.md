@@ -1,45 +1,49 @@
 
+Goal: fix your current Twilio credential error (`70051`) first, then make SMS work across all requested flows.
 
-## Plan: Mobile Grid Layouts, Quote Styling, TikTok Icon & Newsletter
+1) Fix the connector error (step-by-step in UI)
+- Step 1: In Twilio Console, open the exact account you want to use (main account or a specific subaccount).
+- Step 2: Confirm that account’s SID (`AC...`) and region (US1/IE1/AU1).  
+- Step 3: Create a **new Standard API Key** (not Restricted).  
+- Step 4: Copy values immediately:
+  - Account SID: `AC...` (from the same account)
+  - API Key SID: `SK...` (new key)
+  - API Key Secret: the one shown once at creation
+- Step 5: In Lovable connector form, paste those 3 values + matching region.
+- Step 6: Retry connection.
+- Step 7: If you still get `70051`, it means one of these is mismatched:
+  - key belongs to a different account/subaccount than the `AC...`
+  - key is inactive/revoked
+  - wrong key secret pasted
+  - wrong region selected
 
-### 1. Value Highlights — 2x2 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 298-316)
+2) Unblock immediately (fallback path)
+- Your backend already has Twilio secrets configured (`TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`), so we can continue implementation even if connector validation keeps failing.
 
-Change the horizontal scroll container to a `grid grid-cols-2` on mobile. The 3 items will show as 2 on top, 1 on bottom (centered).
+3) Implementation plan after credentials are fixed
+- Keep admin-only SMS sending for manual admin actions.
+- Add a shared SMS helper for system notifications.
+- Wire SMS into all requested use cases:
+  - RSVP confirmation SMS
+  - 24h event reminder SMS
+  - dating/match notification SMS
+- Ensure every SMS path logs success/failure and never breaks the user flow if SMS fails.
 
-### 2. Process Steps — 2+1 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 548-572)
+4) Important code issue I will fix in the same pass
+- Current background notification functions call `send-sms`, but `send-sms` is admin/JWT-guarded; this can block automated sends.
+- I’ll refactor automated notification functions to send through a safe server-side path that doesn’t depend on a logged-in admin token.
 
-Replace the horizontal scroll with `grid grid-cols-2` on mobile. The 3 steps will display as 2 on top, 1 centered on bottom.
+5) Validation checklist (end-to-end)
+- Test 1: Trigger RSVP → see on-screen success + receive SMS.
+- Test 2: Trigger event reminder job → receive SMS on opted-in user.
+- Test 3: Trigger dating notification/reminder → receive SMS on opted-in user.
+- Test 4: Verify failures are logged cleanly (no crash, no silent failure).
 
-### 3. Daily Quote — gold text with quotation marks
-**File:** `src/components/common/DailyQuote.tsx`
-
-- Change quote text color to `text-[hsl(var(--accent-gold))]`
-- Wrap quote text in `"` `"` (curly quotation marks)
-- Apply same gold styling in the mobile menu quote section (`MobileMenu.tsx`, line 210-211)
-
-### 4. TikTok icon — add to Footer & MobileMenu
-**Files:** `src/components/layout/Footer.tsx`, `src/components/layout/MobileMenu.tsx`
-
-Lucide doesn't have a TikTok icon. Create a small inline SVG component for the TikTok logo. Add it to:
-- Footer social links (line 133-143)
-- MobileMenu social links array (line 34-38)
-
-### 5. Newsletter subscription in Footer
-**File:** `src/components/layout/Footer.tsx`
-
-Add a newsletter section with:
-- Email input + "Subscribe" button
-- Inserts into the existing `newsletter_subscribers` table (columns: `email`, `source: 'footer'`, `is_active: true`)
-- Duplicate email handling (show friendly message)
-- Success toast on subscribe
-- Placed above the Daily Quote section, visible on both mobile and desktop
-
-### Technical details
-
-- The `newsletter_subscribers` table already exists with the right schema — no DB migration needed
-- TikTok SVG will be a minimal `<svg>` component (~10 lines), not a new dependency
-- Grid changes use standard Tailwind: `grid grid-cols-2 gap-4 md:grid-cols-3`
-- For the 2+1 layout, the last item gets `col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto` on mobile to center it
-
+Technical details (implementation)
+- Files to update:
+  - `supabase/functions/send-sms/index.ts` (admin/manual SMS path)
+  - `supabase/functions/send-rsvp-notification/index.ts` (add SMS)
+  - `supabase/functions/send-event-reminders/index.ts` (add SMS)
+  - `supabase/functions/send-dating-notification/index.ts` and `send-dating-reminders/index.ts` (replace blocked internal SMS invoke path)
+  - optional shared helper in `supabase/functions/_shared/`
+- No database schema change required.
