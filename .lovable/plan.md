@@ -1,45 +1,25 @@
 
 
-## Plan: Mobile Grid Layouts, Quote Styling, TikTok Icon & Newsletter
+## Replace Hero Video with Google Drive Hosted Video
 
-### 1. Value Highlights — 2x2 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 298-316)
+### Approach
+Use the Google Drive file as an external video source — no file uploaded to the project.
 
-Change the horizontal scroll container to a `grid grid-cols-2` on mobile. The 3 items will show as 2 on top, 1 on bottom (centered).
+### What changes
+1. **`Hero.tsx`** — Replace the local `/videos/hero-bg-new.mp4` source with the Google Drive direct-stream URL. Simplify the deferred loading logic.
+2. **Delete unused video files** — Remove `public/videos/hero-bg-new.mp4`, `hero-1.mp4`, and `hero-background.mp4` to shrink the repo.
+3. **Update `PortalOnboardingLayout.tsx`** — It references `/videos/hero-1.mp4`, update to use the same external URL or the poster image fallback.
 
-### 2. Process Steps — 2+1 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 548-572)
+### Important tradeoff
+Google Drive is **not a CDN**. Potential issues:
+- **Rate limiting** — If many users visit, Google may throttle or block the video.
+- **No edge caching** — Unlike Vercel/CDN-hosted assets, Drive serves from one region, so users far away get slower loads.
+- **Link can break** — If sharing settings change or Drive flags high traffic.
 
-Replace the horizontal scroll with `grid grid-cols-2` on mobile. The 3 steps will display as 2 on top, 1 centered on bottom.
+**Better alternative**: Host the video on a proper CDN like Cloudflare R2 (free egress), Bunny.net, or even a public S3 bucket. This gives you fast, reliable delivery without bloating the repo.
 
-### 3. Daily Quote — gold text with quotation marks
-**File:** `src/components/common/DailyQuote.tsx`
+### Recommendation
+If this is a low-traffic site or temporary solution, Google Drive works fine. For production with real users, a CDN is strongly recommended.
 
-- Change quote text color to `text-[hsl(var(--accent-gold))]`
-- Wrap quote text in `"` `"` (curly quotation marks)
-- Apply same gold styling in the mobile menu quote section (`MobileMenu.tsx`, line 210-211)
-
-### 4. TikTok icon — add to Footer & MobileMenu
-**Files:** `src/components/layout/Footer.tsx`, `src/components/layout/MobileMenu.tsx`
-
-Lucide doesn't have a TikTok icon. Create a small inline SVG component for the TikTok logo. Add it to:
-- Footer social links (line 133-143)
-- MobileMenu social links array (line 34-38)
-
-### 5. Newsletter subscription in Footer
-**File:** `src/components/layout/Footer.tsx`
-
-Add a newsletter section with:
-- Email input + "Subscribe" button
-- Inserts into the existing `newsletter_subscribers` table (columns: `email`, `source: 'footer'`, `is_active: true`)
-- Duplicate email handling (show friendly message)
-- Success toast on subscribe
-- Placed above the Daily Quote section, visible on both mobile and desktop
-
-### Technical details
-
-- The `newsletter_subscribers` table already exists with the right schema — no DB migration needed
-- TikTok SVG will be a minimal `<svg>` component (~10 lines), not a new dependency
-- Grid changes use standard Tailwind: `grid grid-cols-2 gap-4 md:grid-cols-3`
-- For the 2+1 layout, the last item gets `col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto` on mobile to center it
+**To proceed**: Make the Google Drive link public ("Anyone with the link"), and I'll wire it up directly — no upload to the project.
 
