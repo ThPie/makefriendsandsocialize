@@ -65,8 +65,9 @@ const HostApplicationPage = () => {
       <SEO title="Become a Host — The Exchange" description="Apply to host a workshop, class, or demo and share your skills with our community." />
 
       {/* Hero */}
-      <section className="relative w-full min-h-[50vh] flex items-end overflow-hidden bg-card">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+      <section className="relative w-full min-h-[50vh] flex items-end overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1920&q=80")' }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
         <div className="relative z-10 content-container pb-12 md:pb-16">
           <div className="inline-flex items-center gap-2 border border-[hsl(var(--accent-gold))]/30 rounded-full px-4 py-1.5 mb-4 bg-[hsl(var(--accent-gold))]/10">
             <Lightbulb className="w-3.5 h-3.5 text-[hsl(var(--accent-gold))]" />
