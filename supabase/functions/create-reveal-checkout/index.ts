@@ -43,17 +43,11 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    // Determine price ID based on pack type
-    let priceId: string;
-    if (pack_type === "single") {
-      priceId = PRICE_IDS.SINGLE_REVEAL;
-    } else if (pack_type === "pack_3") {
-      priceId = PRICE_IDS.PACK_3_REVEAL;
-    } else if (pack_type === "pack_5") {
-      priceId = PRICE_IDS.PACK_5_REVEAL;
-    } else {
-      throw new Error("Invalid pack type specified. Use: single, pack_3, or pack_5");
+    // Only single reveal purchase is supported
+    if (pack_type !== "single") {
+      throw new Error("Invalid pack type. Only 'single' reveal purchase is available.");
     }
+    const priceId = SINGLE_REVEAL_PRICE_ID;
     logStep("Selected price", { pack_type, priceId });
 
     // Initialize Stripe
