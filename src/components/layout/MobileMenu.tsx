@@ -95,7 +95,7 @@ export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {
   }, []);
 
   return (
-    <div className="md:hidden flex items-center gap-3">
+    <div className="lg:hidden flex items-center gap-3">
 
       {/* Hamburger trigger */}
       <button
