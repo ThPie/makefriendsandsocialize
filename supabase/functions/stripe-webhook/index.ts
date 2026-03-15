@@ -225,12 +225,6 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     if (priceId === PRICE_IDS.SINGLE_REVEAL) {
       await createRevealPurchase(userId, "single", 1, session.id);
       logStep("Created single reveal purchase");
-    } else if (priceId === PRICE_IDS.PACK_3_REVEAL) {
-      await createRevealPurchase(userId, "pack_3", 3, session.id);
-      logStep("Created 3-pack reveal purchase");
-    } else if (priceId === PRICE_IDS.PACK_5_REVEAL) {
-      await createRevealPurchase(userId, "pack_5", 5, session.id);
-      logStep("Created 5-pack reveal purchase");
     }
     return;
   }
