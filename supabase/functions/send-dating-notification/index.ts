@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { Resend } from "https://esm.sh/resend@2.0.0";
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { buildBrandedEmail, SITE_URL, SENDERS, p, h2, infoBox, detailRow, alertBox } from '../_shared/email-layout.ts';
+import { sendSms } from '../_shared/sms.ts';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -374,15 +375,11 @@ const handler = async (req: Request): Promise<Response> => {
           }
         }
 
-        // Send SMS if enabled
+        // Send SMS if enabled — direct Twilio call (no JWT needed)
         if (smsEnabled && smsMessage && phoneNumber) {
           try {
-            await supabaseClient.functions.invoke("send-sms", {
-              body: {
-                to: phoneNumber,
-                message: `${smsMessage} - Make Friends and Socialize`,
-              },
-            });
+            const smsResult = await sendSms(phoneNumber, `${smsMessage} - Make Friends and Socialize`);
+            if (!smsResult.success) console.warn("SMS failed:", smsResult.error);
           } catch (smsError) {
             console.error("SMS error:", smsError);
           }
