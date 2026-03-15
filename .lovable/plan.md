@@ -1,45 +1,42 @@
 
 
-## Plan: Mobile Grid Layouts, Quote Styling, TikTok Icon & Newsletter
+## Plan: Fix Membership Cards, Patron Matches, and Error Page
 
-### 1. Value Highlights — 2x2 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 298-316)
+### Issues to Fix
 
-Change the horizontal scroll container to a `grid grid-cols-2` on mobile. The 3 items will show as 2 on top, 1 on bottom (centered).
+1. **Patron matches: 5 → 4** in `stripe-products.ts`
+2. **Membership cards show "See all benefits" even when all features visible** — redesign the expand/collapse: cards should be **compact by default** (show only first ~4 features), clicking "See all benefits" on any card expands ALL cards and shows missing features in grayscale
+3. **Homepage PricingSection** — same expand/collapse behavior already works correctly (global toggle), but trial text says "30-day" — fix to "14-day"
+4. **Error page from screenshot** — this is the ErrorBoundary catching a runtime crash. The error itself is likely from stale cache (already addressed with skipWaiting). The error page UI itself is working as designed.
 
-### 2. Process Steps — 2+1 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 548-572)
+### Changes
 
-Replace the horizontal scroll with `grid grid-cols-2` on mobile. The 3 steps will display as 2 on top, 1 centered on bottom.
+**File 1: `src/lib/stripe-products.ts`**
+- Line 126: Change `'5 match reveals per month'` → `'4 match reveals per month'`
 
-### 3. Daily Quote — gold text with quotation marks
-**File:** `src/components/common/DailyQuote.tsx`
+**File 2: `src/pages/MembershipPage.tsx`**
+- Remove per-card `expandedTiers` state, replace with single `showAllFeatures` boolean (like PricingSection)
+- Cards show only first 4 features by default
+- When collapsed: show 4 features + "See all benefits" button
+- When expanded: show ALL features for every card + missing features in grayscale (muted color, line-through, faded check icon) — same pattern as PricingSection
+- Single toggle expands/collapses all cards simultaneously
+- Button text: "See all benefits" / "Hide details"
 
-- Change quote text color to `text-[hsl(var(--accent-gold))]`
-- Wrap quote text in `"` `"` (curly quotation marks)
-- Apply same gold styling in the mobile menu quote section (`MobileMenu.tsx`, line 210-211)
+**File 3: `src/components/home/PricingSection.tsx`**
+- Line 30: Change `'30-day free trial'` → `'14-day free trial'`
+- Line 39: Same change
 
-### 4. TikTok icon — add to Footer & MobileMenu
-**Files:** `src/components/layout/Footer.tsx`, `src/components/layout/MobileMenu.tsx`
+### Technical Details
 
-Lucide doesn't have a TikTok icon. Create a small inline SVG component for the TikTok logo. Add it to:
-- Footer social links (line 133-143)
-- MobileMenu social links array (line 34-38)
-
-### 5. Newsletter subscription in Footer
-**File:** `src/components/layout/Footer.tsx`
-
-Add a newsletter section with:
-- Email input + "Subscribe" button
-- Inserts into the existing `newsletter_subscribers` table (columns: `email`, `source: 'footer'`, `is_active: true`)
-- Duplicate email handling (show friendly message)
-- Success toast on subscribe
-- Placed above the Daily Quote section, visible on both mobile and desktop
-
-### Technical details
-
-- The `newsletter_subscribers` table already exists with the right schema — no DB migration needed
-- TikTok SVG will be a minimal `<svg>` component (~10 lines), not a new dependency
-- Grid changes use standard Tailwind: `grid grid-cols-2 gap-4 md:grid-cols-3`
-- For the 2+1 layout, the last item gets `col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto` on mobile to center it
+Membership card feature list structure (collapsed):
+```tsx
+{features.slice(0, 4).map(...)}  // Always visible
+<div className={showAllFeatures ? "max-h-[800px]" : "max-h-0"}>
+  {features.slice(4).map(...)}   // Remaining features
+  {missingFeatures.map(...)}     // Grayscale, line-through
+</div>
+<button onClick={() => setShowAllFeatures(!showAllFeatures)}>
+  {showAllFeatures ? "Hide details" : "See all benefits"}
+</button>
+```
 
