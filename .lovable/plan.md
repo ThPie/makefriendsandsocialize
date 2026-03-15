@@ -1,45 +1,43 @@
 
 
-## Plan: Mobile Grid Layouts, Quote Styling, TikTok Icon & Newsletter
+## Plan: Update Membership Page Content & Pricing
 
-### 1. Value Highlights — 2x2 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 298-316)
+### Changes Summary
 
-Change the horizontal scroll container to a `grid grid-cols-2` on mobile. The 3 items will show as 2 on top, 1 on bottom (centered).
+**1. Remove "Value Highlights" section** (lines 278-301 in MembershipPage.tsx)
+Remove the 3-card grid with "Slow Dating / Handpicked matchmaking", "Partner Perks / Exclusive discounts", and "Business Leads".
 
-### 2. Process Steps — 2+1 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 548-572)
+**2. Update trial from 30 days → 14 days** across both files:
+- `stripe-products.ts`: Change `trialDays: 30` → `trialDays: 14` for both insider and patron
+- `MembershipPage.tsx`: 
+  - Hero eyebrow: "Start Your 14-Day Free Trial"
+  - Process step 2: "Try Insider or Patron free for 14 days. Cancel anytime."
+  - Section text: "Start with a 14-day free trial"
 
-Replace the horizontal scroll with `grid grid-cols-2` on mobile. The 3 steps will display as 2 on top, 1 centered on bottom.
+**3. Update annual pricing to reflect 20% off monthly**
+- Insider: $49/mo × 12 × 0.8 = **$470/yr** (already correct)
+- Patron: $79/mo × 12 × 0.8 = **$758/yr** (already correct)
+- Annual savings badge in billing toggle: change "Save up to 32%" → "Save 20%"
 
-### 3. Daily Quote — gold text with quotation marks
-**File:** `src/components/common/DailyQuote.tsx`
+**4. Patron CTA: "Start Free Trial" instead of "Join Waitlist"**
+- In `getCtaLabel()` (line 135): change the fallback from `'Join Waitlist'` to `'Start Free Trial'`
+- Update the Patron button handler (lines 500-505) to call `handleStartTrial` instead of `handleSubscribe`
 
-- Change quote text color to `text-[hsl(var(--accent-gold))]`
-- Wrap quote text in `"` `"` (curly quotation marks)
-- Apply same gold styling in the mobile menu quote section (`MobileMenu.tsx`, line 210-211)
+**5. Update reveal/match features**
+- `stripe-products.ts` Socialite features: Change `'$19 per connection reveal'` → `'$30 per connection reveal'`
+- Insider features: Change `'Unlimited connection reveals'` → `'3 match reveals per month'`
+- Patron features: Add `'5 match reveals per month'` (replace "Everything in Insider" line or add separately)
 
-### 4. TikTok icon — add to Footer & MobileMenu
-**Files:** `src/components/layout/Footer.tsx`, `src/components/layout/MobileMenu.tsx`
+**6. Add "Access to all circles" to both paid tiers**
+- Add `'Access to all circles'` to insider and patron features in `stripe-products.ts`
 
-Lucide doesn't have a TikTok icon. Create a small inline SVG component for the TikTok logo. Add it to:
-- Footer social links (line 133-143)
-- MobileMenu social links array (line 34-38)
+**7. Update `REVEAL_PACKS` pricing** in stripe-products.ts:
+- Single reveal: $19 → $30
 
-### 5. Newsletter subscription in Footer
-**File:** `src/components/layout/Footer.tsx`
+**8. Update PricingSection.tsx** (homepage pricing) — same content changes propagate automatically since it reads from `TIER_BENEFITS`
 
-Add a newsletter section with:
-- Email input + "Subscribe" button
-- Inserts into the existing `newsletter_subscribers` table (columns: `email`, `source: 'footer'`, `is_active: true`)
-- Duplicate email handling (show friendly message)
-- Success toast on subscribe
-- Placed above the Daily Quote section, visible on both mobile and desktop
-
-### Technical details
-
-- The `newsletter_subscribers` table already exists with the right schema — no DB migration needed
-- TikTok SVG will be a minimal `<svg>` component (~10 lines), not a new dependency
-- Grid changes use standard Tailwind: `grid grid-cols-2 gap-4 md:grid-cols-3`
-- For the 2+1 layout, the last item gets `col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto` on mobile to center it
+### Files to Edit
+1. `src/lib/stripe-products.ts` — tier benefits, trial days, reveal pricing
+2. `src/pages/MembershipPage.tsx` — remove value highlights section, update trial text, fix Patron CTA
+3. `src/components/home/PricingSection.tsx` — update trial text reference if hardcoded
 
