@@ -131,30 +131,9 @@ export const TIER_BENEFITS = {
   },
 } as const;
 
-// Reveal pack options for purchase UI
-export const REVEAL_PACKS = {
-  single: {
-    name: 'Single Reveal',
-    price: 30,
-    reveals: 1,
-    pricePerReveal: 30,
-    description: 'Reveal this match only',
-  },
-  pack_3: {
-    name: '3-Pack Reveals',
-    price: 49,
-    reveals: 3,
-    pricePerReveal: 16.33,
-    savings: '14%',
-    description: '$16.33 per reveal • Valid 90 days',
-  },
-  pack_5: {
-    name: '5-Pack Reveals',
-    price: 69,
-    reveals: 5,
-    pricePerReveal: 13.80,
-    savings: '27%',
-    description: '$13.80 per reveal • Valid 90 days',
-    bestValue: true,
-  },
+// Single reveal for non-members (Socialite tier)
+export const REVEAL_PURCHASE = {
+  name: 'Connection Reveal',
+  price: 30,
+  description: 'Reveal this match\'s full profile (includes concierge support)',
 } as const;
