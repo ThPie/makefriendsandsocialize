@@ -212,7 +212,7 @@ const MembershipPage = () => {
     <div className="flex-1 w-full flex flex-col items-center bg-background">
       <SEO
         title="Exclusive Membership & Benefits"
-        description="Unlock access to exclusive events, personalized matchmaking, and a private network of high-achieving professionals. Start your 30-day trial today."
+        description="Unlock access to exclusive events, personalized matchmaking, and a private network of high-achieving professionals. Start your 14-day trial today."
         keywords="social club membership, private club application, exclusive networking, slow dating membership NYC"
       />
       {/* Hero Section */}
