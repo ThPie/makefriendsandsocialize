@@ -194,7 +194,7 @@ export const ClubShowcaseSection = () => {
 
       <div ref={ref} className={`transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="content-container">
-          <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4">
+          <div ref={scrollRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4">
             {clubs.map((club) => (
               <CircleCard key={club.id} club={club} />
             ))}
