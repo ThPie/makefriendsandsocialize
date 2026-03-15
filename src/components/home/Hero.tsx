@@ -1,4 +1,4 @@
-import { useEffect, useRef, lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 
@@ -12,22 +12,6 @@ const MemberAvatarsWithStats = lazy(() =>
 );
 
 export const Hero = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.playbackRate = 0.9;
-
-    // Fallback: force loop restart if browser fails to loop natively
-    const handleEnded = () => {
-      video.currentTime = 0;
-      video.play().catch(() => {});
-    };
-    video.addEventListener('ended', handleEnded);
-    return () => video.removeEventListener('ended', handleEnded);
-  }, []);
-
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
       {/* Full-bleed background video */}
