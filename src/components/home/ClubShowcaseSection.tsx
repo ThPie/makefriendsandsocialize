@@ -185,7 +185,7 @@ export const ClubShowcaseSection = () => {
             </div>
             <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-card text-foreground">
               <div className="flex items-center gap-3 mb-4">
-                <h3 className="font-display text-4xl md:text-5xl lg:text-6xl text-foreground dark:text-white">{datingClub.title}</h3>
+                <h3 className="font-display text-2xl md:text-3xl text-foreground dark:text-white">{datingClub.title}</h3>
               </div>
               <p className="text-sm md:text-base font-light leading-relaxed text-foreground/80 dark:text-white/90 max-w-[500px] mb-8">{datingClub.description}</p>
               <div>
