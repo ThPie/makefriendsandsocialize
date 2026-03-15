@@ -12,9 +12,9 @@ const WINDOW_MINUTES = 15;
 // Price IDs mapping - Updated January 2026
 const PRICE_IDS = {
   MEMBER_MONTHLY: "price_1Ssn8f00I3YCY0DeeE6nnMri",   // $49/month
-  MEMBER_ANNUAL: "price_1Ssn9f00I3YCY0DeLZZloqCJ",    // $399/year
+  MEMBER_ANNUAL: "price_1TB3S000I3YCY0DeptRFPoeL",     // $470/year
   FELLOW_MONTHLY: "price_1Ssn9u00I3YCY0DeF6IQ05fB",   // $79/month
-  FELLOW_ANNUAL: "price_1SsnAL00I3YCY0Def32T8PTg",    // $699/year
+  FELLOW_ANNUAL: "price_1TB3Sj00I3YCY0DeyFYFnzVG",    // $758/year
 };
 
 const logStep = (step: string, details?: any) => {
