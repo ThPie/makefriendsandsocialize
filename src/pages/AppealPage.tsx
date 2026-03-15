@@ -150,7 +150,7 @@ const AppealPage = () => {
 
   if (isSubmitted) {
     return (
-      <Layout>
+      <>
         <section className="min-h-screen flex items-center justify-center py-20 relative overflow-hidden">
           {/* Floating elements */}
           <motion.div
