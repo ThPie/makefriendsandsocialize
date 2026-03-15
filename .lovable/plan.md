@@ -1,46 +1,45 @@
 
 
-## Problem Analysis
+## Plan: Mobile Grid Layouts, Quote Styling, TikTok Icon & Newsletter
 
-Two issues reported:
+### 1. Value Highlights — 2x2 grid on mobile
+**File:** `src/pages/MembershipPage.tsx` (lines 298-316)
 
-### 1. Light Mode Header Invisible on Inner Pages
-**Root cause**: The Header uses `forceWhite={!scrolled}` for the logo and white text colors for nav links when not scrolled. This works on the homepage (dark hero, `pt-0` so header overlaps the hero). But on inner pages like `/membership`, the Layout applies `pt-[68px]` which pushes content below the fixed header. The header sits over white background in light mode, making everything invisible.
+Change the horizontal scroll container to a `grid grid-cols-2` on mobile. The 3 items will show as 2 on top, 1 on bottom (centered).
 
-However, looking at the membership page, it actually has a full-bleed dark hero (`min-h-[70vh]`). The real fix is twofold:
-- Pages with dark hero banners should use `pt-0` so the header overlaps the dark hero (same as homepage)
-- When scrolled (header gets frosted background), the logo and text should switch to dark variants in light mode -- this already works via `frosted-nav-light`
+### 2. Process Steps — 2+1 grid on mobile
+**File:** `src/pages/MembershipPage.tsx` (lines 548-572)
 
-**Plan**:
-- Modify `Layout.tsx` to remove `pt-[68px]` for pages that have full-bleed hero banners (membership, events, about, contact, circles, FAQ, journal, slow dating, connected circle pages). Since nearly all public pages now have full-bleed heroes with dark overlays, the simplest approach is to **remove the padding for all public pages** (non-portal/admin/auth) and keep `pt-0`.
-- Alternatively, just set `pt-0` globally since all pages have dark hero sections now after the recent banner redesign.
+Replace the horizontal scroll with `grid grid-cols-2` on mobile. The 3 steps will display as 2 on top, 1 centered on bottom.
 
-### 2. "Broken Links Showing Code"
-This likely refers to one of:
-- Stale service worker serving old cached content on a new visitor's browser
-- A deployment sync issue between Lovable and Vercel/GitHub
+### 3. Daily Quote — gold text with quotation marks
+**File:** `src/components/common/DailyQuote.tsx`
 
-I need to check the service worker registration to ensure it handles updates properly, and verify the `RegisterSW` component isn't serving stale content.
+- Change quote text color to `text-[hsl(var(--accent-gold))]`
+- Wrap quote text in `"` `"` (curly quotation marks)
+- Apply same gold styling in the mobile menu quote section (`MobileMenu.tsx`, line 210-211)
 
-## Implementation Steps
+### 4. TikTok icon — add to Footer & MobileMenu
+**Files:** `src/components/layout/Footer.tsx`, `src/components/layout/MobileMenu.tsx`
 
-1. **Fix Layout padding** -- Change `Layout.tsx` to use `pt-0` for all pages (remove the `isHome` conditional), since all public pages now have full-bleed dark hero banners that the header should overlap.
+Lucide doesn't have a TikTok icon. Create a small inline SVG component for the TikTok logo. Add it to:
+- Footer social links (line 133-143)
+- MobileMenu social links array (line 34-38)
 
-2. **Fix Header theme-awareness** -- Update `Header.tsx` so when `!scrolled` (transparent header), it checks if we're on the homepage vs inner pages. Since all pages now have dark heroes, keeping `forceWhite={!scrolled}` is correct. The padding fix alone should resolve the visibility issue.
+### 5. Newsletter subscription in Footer
+**File:** `src/components/layout/Footer.tsx`
 
-3. **Review service worker** -- Check `RegisterSW.tsx` to ensure it properly handles updates and doesn't serve stale content to new visitors. Add `skipWaiting` and proper update prompts if missing.
+Add a newsletter section with:
+- Email input + "Subscribe" button
+- Inserts into the existing `newsletter_subscribers` table (columns: `email`, `source: 'footer'`, `is_active: true`)
+- Duplicate email handling (show friendly message)
+- Success toast on subscribe
+- Placed above the Daily Quote section, visible on both mobile and desktop
 
-## Technical Details
+### Technical details
 
-**Layout.tsx change** (line 27):
-```tsx
-// Before:
-<main id="main-content" className={`flex-1 ${isHome ? 'pt-0' : 'pt-[68px]'}`}>
-
-// After:  
-<main id="main-content" className="flex-1">
-```
-This removes the `isHome` variable and the conditional padding entirely. All pages with full-bleed heroes will now have the header overlay them correctly.
-
-**Service worker** -- Will inspect `RegisterSW.tsx` and the Vite PWA config to ensure proper cache invalidation for new visitors.
+- The `newsletter_subscribers` table already exists with the right schema — no DB migration needed
+- TikTok SVG will be a minimal `<svg>` component (~10 lines), not a new dependency
+- Grid changes use standard Tailwind: `grid grid-cols-2 gap-4 md:grid-cols-3`
+- For the 2+1 layout, the last item gets `col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto` on mobile to center it
 
