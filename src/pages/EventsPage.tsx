@@ -508,12 +508,6 @@ const EventsPage = () => {
                       </div>
                     </div>
 
-                    {event.description && (
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
-                        {event.description}
-                      </p>
-                    )}
-
                     <div className="flex flex-wrap items-center gap-2 md:gap-3 mt-auto border-t border-border pt-4">
                       {activeTab === 'upcoming' ? (
                         <>

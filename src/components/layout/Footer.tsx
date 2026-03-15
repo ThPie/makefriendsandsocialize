@@ -182,40 +182,14 @@ export const Footer = () => {
       <div className="content-container pt-24 pb-12">
 
         {/* ── Mobile layout ── */}
-        <div className="lg:hidden flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-6">
           <BrandLogo width={160} height={48} />
           <p className="text-[13px] text-muted-foreground leading-relaxed text-center max-w-[280px]">
             A private sanctuary for meaningful connection, curated events, and genuine friendships.
           </p>
-          <div className="w-full mt-4">
+          <div className="w-full max-w-2xl mx-auto mt-4">
             {Object.values(footerLinks).map((section) => (
               <FooterCollapsible key={section.title} section={section} />
-            ))}
-          </div>
-        </div>
-
-        {/* ── Desktop layout ── */}
-        <div className="hidden lg:grid grid-cols-12 gap-8">
-          <div className="col-span-4 flex flex-col gap-4">
-            <BrandLogo width={160} height={48} />
-            <p className="text-[13px] text-muted-foreground leading-relaxed max-w-[280px]">
-              A private sanctuary for meaningful connection, curated events, and genuine friendships.
-            </p>
-          </div>
-          <div className="col-span-8 grid grid-cols-4 gap-6">
-            {Object.values(footerLinks).map((section) => (
-              <div key={section.title} className="flex flex-col gap-4">
-                <h3 className="eyebrow text-[hsl(var(--accent-gold))] text-gold">{section.title}</h3>
-                <ul className="flex flex-col gap-2.5">
-                  {section.links.map((link) => (
-                    <li key={link.label}>
-                      <Link to={link.href} className="text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors duration-150 text-sm">
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             ))}
           </div>
         </div>
