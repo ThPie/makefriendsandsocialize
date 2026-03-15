@@ -149,12 +149,11 @@ const handler = async (req: Request): Promise<Response> => {
           }
 
           if (profile.sms_notifications_enabled && profile.phone_number) {
-            await supabaseClient.functions.invoke("send-sms", {
-              body: {
-                to: profile.phone_number,
-                message: `⏰ Reminder: Your date with ${matchedProfile.display_name} is tomorrow! ${meetingTime}. Good luck! - Make Friends and Socialize`,
-              },
-            });
+            const smsResult = await sendSms(
+              profile.phone_number,
+              `⏰ Reminder: Your date with ${matchedProfile.display_name} is tomorrow! ${meetingTime}. Good luck! - Make Friends and Socialize`
+            );
+            if (!smsResult.success) console.warn("SMS reminder failed:", smsResult.error);
           }
 
           await supabaseClient

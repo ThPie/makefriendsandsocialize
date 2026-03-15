@@ -103,6 +103,21 @@ serve(async (req) => {
 
     console.log("Email sent successfully:", emailResponse);
 
+    // Send SMS notification
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('phone_number, sms_notifications_enabled')
+      .eq('id', userId)
+      .single();
+
+    if (profileData?.sms_notifications_enabled && profileData?.phone_number) {
+      const smsBody = action === 'rsvp'
+        ? `🎉 You're confirmed for ${event.title} on ${formattedDate}! See you there. - Make Friends and Socialize`
+        : `Your RSVP for ${event.title} has been cancelled. You can RSVP again anytime. - Make Friends and Socialize`;
+      const smsResult = await sendSms(profileData.phone_number, smsBody);
+      console.log("SMS result:", smsResult);
+    }
+
     return new Response(
       JSON.stringify({ success: true, message: "Notification sent" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
