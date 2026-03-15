@@ -132,7 +132,7 @@ const MembershipPage = () => {
     if (!user) {
       if (tierId === 'socialite') return 'Get Started';
       if (tierId === 'insider') return 'Start Free Trial';
-      return 'Join Waitlist';
+      return 'Start Free Trial';
     }
     const current = getCurrentTierName();
     if (current === tierId) return 'Your Plan';
@@ -197,22 +197,19 @@ const MembershipPage = () => {
 
   const processSteps = [
     { step: 1, title: 'Choose Your Tier', desc: 'Select the membership that matches your lifestyle.', icon: Briefcase },
-    { step: 2, title: 'Start Free Trial', desc: 'Try Insider or Patron free for 30 days. Cancel anytime.', icon: PlayCircle },
+    { step: 2, title: 'Start Free Trial', desc: 'Try Insider or Patron free for 14 days. Cancel anytime.', icon: PlayCircle },
     { step: 3, title: 'Unlock Everything', desc: 'Access events, matchmaking, partner perks & the Connected Circle.', icon: Crown },
   ];
 
-  const valueHighlights = [
-    { icon: Heart, label: 'Slow Dating', sublabel: 'Handpicked matchmaking', color: 'text-primary', bg: 'bg-primary/10' },
-    { icon: Gift, label: 'Partner Perks', sublabel: 'Exclusive discounts', color: 'text-[hsl(var(--accent-gold))]', bg: 'bg-[hsl(var(--accent-gold))]/10' },
-    { icon: Briefcase, label: 'Business Leads', sublabel: 'Patrons receive leads', color: 'text-primary', bg: 'bg-primary/10' },
-  ];
+
+
 
 
   return (
     <div className="flex-1 w-full flex flex-col items-center bg-background">
       <SEO
         title="Exclusive Membership & Benefits"
-        description="Unlock access to exclusive events, personalized matchmaking, and a private network of high-achieving professionals. Start your 30-day trial today."
+        description="Unlock access to exclusive events, personalized matchmaking, and a private network of high-achieving professionals. Start your 14-day trial today."
         keywords="social club membership, private club application, exclusive networking, slow dating membership NYC"
       />
       {/* Hero Section */}
@@ -235,7 +232,7 @@ const MembershipPage = () => {
             transition={{ duration: 0.5 }}
             className="text-xs font-medium uppercase tracking-[0.2em] text-white/60 mb-3"
           >
-            Start Your 30-Day Free Trial
+            Start Your 14-Day Free Trial
           </motion.p>
 
           <motion.h1
@@ -275,30 +272,6 @@ const MembershipPage = () => {
         </div>
       </section>
 
-      {/* Value Highlights */}
-      <section className="py-10 w-full">
-        <div className="container max-w-4xl">
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-            {valueHighlights.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-                className={`flex items-center gap-4 p-4 rounded-xl bg-card border border-border ${index === valueHighlights.length - 1 ? 'col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto md:max-w-none' : ''}`}
-              >
-                <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center shrink-0`}>
-                  <item.icon className={`w-5 h-5 ${item.color}`} />
-                </div>
-                <div>
-                  <p className="font-medium text-foreground text-sm">{item.label}</p>
-                  <p className="text-xs text-muted-foreground">{item.sublabel}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Legacy Section */}
       <section className="py-16 md:py-20 w-full">
@@ -374,7 +347,7 @@ const MembershipPage = () => {
               We create intentional connections through tailored events, community, and introductions.
             </p>
             <p className="text-muted-foreground text-lg mb-8">
-              Select the tier that best aligns with your vision. Start with a 30-day free trial.
+              Select the tier that best aligns with your vision. Start with a 14-day free trial.
             </p>
 
             {/* Billing Toggle */}
@@ -392,7 +365,7 @@ const MembershipPage = () => {
               </Label>
               {billingPeriod === 'annual' && (
                 <Badge variant="secondary" className="ml-2 bg-green-500/10 text-green-600 border-green-500/20">
-                  Save up to 32%
+                  Save 20%
                 </Badge>
               )}
             </div>
@@ -499,7 +472,7 @@ const MembershipPage = () => {
                     ) : (
                       <Button
                         className="w-full rounded-full h-12 bg-card hover:bg-accent text-foreground border border-border font-medium transition-all"
-                        onClick={() => tier.stripeId && handleSubscribe(tier.stripeId)}
+                        onClick={() => tier.stripeId && handleStartTrial(tier.stripeId)}
                       >
                         {getCtaLabel(tier.id, tier.name)}
                       </Button>

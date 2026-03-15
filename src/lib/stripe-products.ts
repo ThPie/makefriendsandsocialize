@@ -72,7 +72,7 @@ export const TIER_BENEFITS = {
       'Purchase event tickets at standard pricing',
       'Create a Connection Profile',
       'Hand-picked introductions by our team',
-      '$19 per connection reveal (includes concierge support)',
+      '$30 per connection reveal (includes concierge support)',
       'Access to Les Amis French circle',
       'Community newsletter',
     ],
@@ -95,13 +95,13 @@ export const TIER_BENEFITS = {
     annualPrice: 470,
     annualSavings: '20%',
     features: [
-      'Unlimited connection reveals',
+      '3 match reveals per month',
+      'Access to all circles',
       'Slow Dating access — matchmaking & curated dating events',
       '20% off all paid events',
       'Invitation-only member gatherings',
       'Discounts at partner businesses & Club members',
       'Connected Circle access — browse verified local businesses',
-      'Les Amis + apply to The Gentlemen (approval required)',
       'Insider badge on your profile',
       'Concierge support',
     ],
@@ -114,7 +114,7 @@ export const TIER_BENEFITS = {
       'Invitation-only Patron experiences',
     ],
     highlight: true,
-    trialDays: 30,
+    trialDays: 14,
   },
   patron: {
     name: 'Patron',
@@ -123,6 +123,8 @@ export const TIER_BENEFITS = {
     annualPrice: 758,
     annualSavings: '20%',
     features: [
+      '5 match reveals per month',
+      'Access to all circles',
       'Everything in Insider',
       '30% off all paid events',
       '+1 guest privileges — bring one guest to all events, free',
@@ -134,7 +136,7 @@ export const TIER_BENEFITS = {
       'Early access to new features and premium events',
     ],
     missingFeatures: [],
-    trialDays: 30,
+    trialDays: 14,
     exclusivityNote: 'Patron membership is limited and subject to availability.',
   },
 } as const;
@@ -143,9 +145,9 @@ export const TIER_BENEFITS = {
 export const REVEAL_PACKS = {
   single: {
     name: 'Single Reveal',
-    price: 19,
+    price: 30,
     reveals: 1,
-    pricePerReveal: 19,
+    pricePerReveal: 30,
     description: 'Reveal this match only',
   },
   pack_3: {
