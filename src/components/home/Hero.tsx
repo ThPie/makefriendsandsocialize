@@ -1,4 +1,4 @@
-import { useEffect, useRef, lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 
@@ -12,36 +12,17 @@ const MemberAvatarsWithStats = lazy(() =>
 );
 
 export const Hero = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.playbackRate = 0.9;
-
-    // Fallback: force loop restart if browser fails to loop natively
-    const handleEnded = () => {
-      video.currentTime = 0;
-      video.play().catch(() => {});
-    };
-    video.addEventListener('ended', handleEnded);
-    return () => video.removeEventListener('ended', handleEnded);
-  }, []);
-
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
       {/* Full-bleed background video */}
-      <video
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        poster="/images/hero-poster.webp"
-        className="absolute inset-0 w-full h-full object-cover object-[center_30%] md:object-center"
-      >
-        <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
-      </video>
+      <iframe
+        src="https://www.youtube.com/embed/bpRUQw2Gzmc?autoplay=1&mute=1&loop=1&playlist=bpRUQw2Gzmc&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+        allow="autoplay; encrypted-media"
+        allowFullScreen
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none scale-[2] md:scale-[1.5] origin-center"
+        style={{ border: 'none' }}
+        title="Background video"
+      />
 
       {/* Luxury dark overlay */}
       <div className="absolute inset-0 bg-black/50" />

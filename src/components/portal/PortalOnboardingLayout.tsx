@@ -16,16 +16,14 @@ export function PortalOnboardingLayout({
   return (
     <div className="min-h-screen relative flex flex-col overflow-hidden">
       {/* Video Background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover"
-        poster="/images/hero-poster.webp"
-      >
-        <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
-      </video>
+      <iframe
+        src="https://www.youtube.com/embed/bpRUQw2Gzmc?autoplay=1&mute=1&loop=1&playlist=bpRUQw2Gzmc&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+        allow="autoplay; encrypted-media"
+        allowFullScreen
+        className="absolute inset-0 w-full h-full pointer-events-none scale-[2] origin-center"
+        style={{ border: 'none' }}
+        title="Background video"
+      />
 
       {/* Gradient Overlay — Stitch forest green */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/85 to-background/80" />
