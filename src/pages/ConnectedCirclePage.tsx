@@ -139,7 +139,7 @@ const ConnectedCirclePage = () => {
   };
 
   return (
-    <Layout>
+    <>
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
         <section className="relative min-h-[90vh] flex items-end overflow-hidden">
