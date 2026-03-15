@@ -60,12 +60,8 @@ const MembershipPage = () => {
   const { subscription, isLoading: subscriptionLoading, openCheckout, openCustomerPortal } = useSubscription();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
-  const [expandedTiers, setExpandedTiers] = useState<Record<string, boolean>>({});
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
   const INITIAL_FEATURES_SHOWN = 4;
-
-  const toggleExpanded = (tierId: string) => {
-    setExpandedTiers(prev => ({ ...prev, [tierId]: !prev[tierId] }));
-  };
 
   const handleStartTrial = async (tier: 'member' | 'fellow') => {
     if (!user) {
