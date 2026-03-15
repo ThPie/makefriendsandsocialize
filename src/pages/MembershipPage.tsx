@@ -197,7 +197,7 @@ const MembershipPage = () => {
 
   const processSteps = [
     { step: 1, title: 'Choose Your Tier', desc: 'Select the membership that matches your lifestyle.', icon: Briefcase },
-    { step: 2, title: 'Start Free Trial', desc: 'Try Insider or Patron free for 30 days. Cancel anytime.', icon: PlayCircle },
+    { step: 2, title: 'Start Free Trial', desc: 'Try Insider or Patron free for 14 days. Cancel anytime.', icon: PlayCircle },
     { step: 3, title: 'Unlock Everything', desc: 'Access events, matchmaking, partner perks & the Connected Circle.', icon: Crown },
   ];
 
