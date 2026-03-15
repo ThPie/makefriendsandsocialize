@@ -434,7 +434,7 @@ const ConnectedCirclePage = () => {
           </div>
         </section>
       </div>
-    </Layout>
+    </>
   );
 };
 

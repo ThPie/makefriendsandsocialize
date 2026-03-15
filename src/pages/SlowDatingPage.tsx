@@ -496,7 +496,7 @@ const SlowDatingPage = () => {
           </div>
         </section>
       </div>
-    </Layout>
+    </>
   );
 };
 

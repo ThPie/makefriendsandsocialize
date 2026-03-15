@@ -397,7 +397,7 @@ const ConnectedCircleDirectoryPage = () => {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
       />
-    </Layout>
+    </>
   );
 };
 

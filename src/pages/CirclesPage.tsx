@@ -206,7 +206,7 @@ const CirclesPage = () => {
         </section>
 
       </div>
-    </Layout>
+    </>
   );
 };
 
