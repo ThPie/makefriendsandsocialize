@@ -145,8 +145,52 @@ const EventsPage = () => {
     };
   }, [queryClient]);
 
+  const [rsvpDialogEvent, setRsvpDialogEvent] = useState<Event | null>(null);
+  const [rsvpLoading, setRsvpLoading] = useState(false);
+  const [rsvpSuccess, setRsvpSuccess] = useState<string | null>(null);
+
   const handleRSVP = (event: Event) => {
-    navigate(`/events/${event.id}`);
+    if (!user) {
+      navigate(`/auth?redirect=/events`);
+      return;
+    }
+    setRsvpSuccess(null);
+    setRsvpDialogEvent(event);
+  };
+
+  const confirmRSVP = async () => {
+    if (!rsvpDialogEvent || !user) return;
+    setRsvpLoading(true);
+    try {
+      // Check if already RSVP'd
+      const { data: existing } = await supabase
+        .from('event_rsvps')
+        .select('id')
+        .eq('event_id', rsvpDialogEvent.id)
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (existing) {
+        setRsvpSuccess('already');
+        setRsvpLoading(false);
+        return;
+      }
+
+      const { error } = await supabase
+        .from('event_rsvps')
+        .insert({ event_id: rsvpDialogEvent.id, user_id: user.id, status: 'confirmed' });
+
+      if (error) throw error;
+
+      setRsvpSuccess('confirmed');
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+      toast({ title: 'You\'re in!', description: `Reservation confirmed for ${rsvpDialogEvent.title}.` });
+    } catch (err) {
+      console.error('RSVP error:', err);
+      toast({ title: 'Something went wrong', description: 'Please try again.', variant: 'destructive' });
+    } finally {
+      setRsvpLoading(false);
+    }
   };
 
   const filteredAndSortedEvents = useMemo(() => {
