@@ -64,6 +64,7 @@ const App = () => {
                       {showSlowDatingRoutes ? <SlowDatingRoutes /> : <MainRoutes />}
                     </Suspense>
                     <BackToTop />
+                    <Toaster />
                     <SpeedInsights />
                   </SessionProvider>
                 </BrowserRouter>
