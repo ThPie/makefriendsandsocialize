@@ -201,11 +201,8 @@ const MembershipPage = () => {
     { step: 3, title: 'Unlock Everything', desc: 'Access events, matchmaking, partner perks & the Connected Circle.', icon: Crown },
   ];
 
-  const valueHighlights = [
-    { icon: Heart, label: 'Slow Dating', sublabel: 'Handpicked matchmaking', color: 'text-primary', bg: 'bg-primary/10' },
-    { icon: Gift, label: 'Partner Perks', sublabel: 'Exclusive discounts', color: 'text-[hsl(var(--accent-gold))]', bg: 'bg-[hsl(var(--accent-gold))]/10' },
-    { icon: Briefcase, label: 'Business Leads', sublabel: 'Patrons receive leads', color: 'text-primary', bg: 'bg-primary/10' },
-  ];
+
+
 
 
   return (

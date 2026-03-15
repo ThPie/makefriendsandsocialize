@@ -136,7 +136,7 @@ export const TIER_BENEFITS = {
       'Early access to new features and premium events',
     ],
     missingFeatures: [],
-    trialDays: 30,
+    trialDays: 14,
     exclusivityNote: 'Patron membership is limited and subject to availability.',
   },
 } as const;
