@@ -8,11 +8,11 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Heart, Zap, Crown, Check, Loader2, Star } from 'lucide-react';
+import { Heart, Zap, Crown, Check, Loader2 } from 'lucide-react';
 import { useMatchReveal } from '@/hooks/useMatchReveal';
 import { useSubscription } from '@/hooks/useSubscription';
 import { cn } from '@/lib/utils';
-import { REVEAL_PACKS, TIER_BENEFITS } from '@/lib/stripe-products';
+import { REVEAL_PURCHASE, TIER_BENEFITS } from '@/lib/stripe-products';
 
 interface MatchRevealModalProps {
   isOpen: boolean;
@@ -31,7 +31,7 @@ export const MatchRevealModal = ({
 }: MatchRevealModalProps) => {
   const { availableReveals, revealMatch, openRevealCheckout, isRevealing } = useMatchReveal();
   const { openCheckout } = useSubscription();
-  const [selectedOption, setSelectedOption] = useState<'single' | 'pack_3' | 'pack_5' | 'membership' | null>(null);
+  const [selectedOption, setSelectedOption] = useState<'single' | 'membership' | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleRevealWithCredits = async () => {
@@ -44,10 +44,10 @@ export const MatchRevealModal = ({
     }
   };
 
-  const handlePurchase = async (option: 'single' | 'pack_3' | 'pack_5') => {
+  const handlePurchase = async () => {
     setIsProcessing(true);
     try {
-      await openRevealCheckout(option, matchId);
+      await openRevealCheckout('single', matchId);
       onClose();
     } finally {
       setIsProcessing(false);
@@ -127,65 +127,11 @@ export const MatchRevealModal = ({
                   <Heart className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <p className="font-semibold text-foreground">{REVEAL_PACKS.single.name}</p>
-                  <p className="text-sm text-muted-foreground">{REVEAL_PACKS.single.description}</p>
+                  <p className="font-semibold text-foreground">{REVEAL_PURCHASE.name}</p>
+                  <p className="text-sm text-muted-foreground">{REVEAL_PURCHASE.description}</p>
                 </div>
               </div>
-              <span className="font-bold text-lg">${REVEAL_PACKS.single.price}</span>
-            </div>
-          </button>
-
-          {/* 3-pack purchase */}
-          <button
-            onClick={() => setSelectedOption('pack_3')}
-            className={cn(
-              "w-full p-4 rounded-xl border-2 text-left transition-all relative",
-              selectedOption === 'pack_3'
-                ? "border-primary bg-primary/5"
-                : "border-border hover:border-primary/50"
-            )}
-          >
-            <Badge className="absolute -top-2 -right-2 bg-green-500 text-white">
-              Save {REVEAL_PACKS.pack_3.savings}
-            </Badge>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                  <Sparkles className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">{REVEAL_PACKS.pack_3.name}</p>
-                  <p className="text-sm text-muted-foreground">{REVEAL_PACKS.pack_3.description}</p>
-                </div>
-              </div>
-              <span className="font-bold text-lg">${REVEAL_PACKS.pack_3.price}</span>
-            </div>
-          </button>
-
-          {/* 5-pack purchase - Best Value */}
-          <button
-            onClick={() => setSelectedOption('pack_5')}
-            className={cn(
-              "w-full p-4 rounded-xl border-2 text-left transition-all relative",
-              selectedOption === 'pack_5'
-                ? "border-primary bg-primary/5"
-                : "border-border hover:border-primary/50"
-            )}
-          >
-            <Badge className="absolute -top-2 -right-2 bg-primary text-primary-foreground">
-              Best Value - Save {REVEAL_PACKS.pack_5.savings}
-            </Badge>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Star className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">{REVEAL_PACKS.pack_5.name}</p>
-                  <p className="text-sm text-muted-foreground">{REVEAL_PACKS.pack_5.description}</p>
-                </div>
-              </div>
-              <span className="font-bold text-lg">${REVEAL_PACKS.pack_5.price}</span>
+              <span className="font-bold text-lg">${REVEAL_PURCHASE.price}</span>
             </div>
           </button>
 
@@ -200,7 +146,7 @@ export const MatchRevealModal = ({
             )}
           >
             <Badge className="absolute -top-2 -right-2 bg-amber-500 text-white">
-              Unlimited
+              {TIER_BENEFITS.insider.features[0]}
             </Badge>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -210,7 +156,7 @@ export const MatchRevealModal = ({
                 <div>
                   <p className="font-semibold text-foreground">Become an Insider</p>
                   <p className="text-sm text-muted-foreground">
-                    <span className="text-primary font-medium">Unlimited reveals</span> + Slow Dating access
+                    <span className="text-primary font-medium">3 reveals/month included</span> + Slow Dating access
                   </p>
                 </div>
               </div>
@@ -220,7 +166,7 @@ export const MatchRevealModal = ({
               </div>
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
-              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">7-day free trial</span>
+              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">14-day free trial</span>
               <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">Cancel anytime</span>
             </div>
           </button>
@@ -234,11 +180,7 @@ export const MatchRevealModal = ({
               size="lg"
               onClick={() => {
                 if (selectedOption === 'single') {
-                  handlePurchase('single');
-                } else if (selectedOption === 'pack_3') {
-                  handlePurchase('pack_3');
-                } else if (selectedOption === 'pack_5') {
-                  handlePurchase('pack_5');
+                  handlePurchase();
                 } else if (selectedOption === 'membership') {
                   handleMembershipUpgrade();
                 }
@@ -250,9 +192,7 @@ export const MatchRevealModal = ({
               ) : (
                 <Check className="h-4 w-4 mr-2" />
               )}
-              {selectedOption === 'single' && 'Purchase Single Reveal'}
-              {selectedOption === 'pack_3' && 'Purchase 3-Pack'}
-              {selectedOption === 'pack_5' && 'Purchase 5-Pack'}
+              {selectedOption === 'single' && `Purchase Reveal — $${REVEAL_PURCHASE.price}`}
               {selectedOption === 'membership' && 'Start Free Trial'}
             </Button>
           </div>
