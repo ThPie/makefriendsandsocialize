@@ -9,12 +9,15 @@ import { getCorsHeaders } from '../_shared/cors.ts';
 const MAX_REQUESTS = 100;
 const WINDOW_MINUTES = 15;
 
-// Price IDs mapping to DB tiers - Updated January 2026
+// Price IDs mapping to DB tiers - Updated March 2026
 const PRICE_TO_TIER: Record<string, string> = {
   "price_1Ssn8f00I3YCY0DeeE6nnMri": "fellow",  // Member Monthly $49
-  "price_1Ssn9f00I3YCY0DeLZZloqCJ": "fellow",  // Member Annual $399
-  "price_1Ssn9u00I3YCY0DeF6IQ05fB": "founder", // Fellow Monthly $79
-  "price_1SsnAL00I3YCY0Def32T8PTg": "founder", // Fellow Annual $699
+  "price_1TB3S000I3YCY0DeptRFPoeL": "fellow",   // Member Annual $470
+  "price_1Ssn9u00I3YCY0DeF6IQ05fB": "founder",  // Fellow Monthly $79
+  "price_1TB3Sj00I3YCY0DeyFYFnzVG": "founder",  // Fellow Annual $758
+  // Legacy prices (for existing subscribers)
+  "price_1Ssn9f00I3YCY0DeLZZloqCJ": "fellow",   // Old Member Annual $399
+  "price_1SsnAL00I3YCY0Def32T8PTg": "founder",   // Old Fellow Annual $699
 };
 
 const logStep = (step: string, details?: any) => {

@@ -10,9 +10,9 @@ export const STRIPE_PRODUCTS = {
     interval: 'month' as const,
   },
   MEMBER_ANNUAL: {
-    product_id: 'prod_TqU7b2DETbd3iZ',
-    price_id: 'price_1Ssn9f00I3YCY0DeLZZloqCJ',
-    price: 399,
+    product_id: 'prod_U9MAR2POGHT8u1',
+    price_id: 'price_1TB3S000I3YCY0DeptRFPoeL',
+    price: 470,
     interval: 'year' as const,
   },
   FELLOW_MONTHLY: {
@@ -22,9 +22,9 @@ export const STRIPE_PRODUCTS = {
     interval: 'month' as const,
   },
   FELLOW_ANNUAL: {
-    product_id: 'prod_TqU8huV2JTgzHV',
-    price_id: 'price_1SsnAL00I3YCY0Def32T8PTg',
-    price: 699,
+    product_id: 'prod_U9MBZvWQ48CmiS',
+    price_id: 'price_1TB3Sj00I3YCY0DeyFYFnzVG',
+    price: 758,
     interval: 'year' as const,
   },
   SINGLE_REVEAL: {
