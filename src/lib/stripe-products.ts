@@ -123,6 +123,8 @@ export const TIER_BENEFITS = {
     annualPrice: 758,
     annualSavings: '20%',
     features: [
+      '5 match reveals per month',
+      'Access to all circles',
       'Everything in Insider',
       '30% off all paid events',
       '+1 guest privileges — bring one guest to all events, free',
