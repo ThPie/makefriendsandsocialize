@@ -14,15 +14,17 @@ const MemberAvatarsWithStats = lazy(() =>
 export const Hero = () => {
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
-      {/* Full-bleed background video */}
-      <iframe
-        src="https://www.youtube.com/embed/bpRUQw2Gzmc?autoplay=1&mute=1&loop=1&playlist=bpRUQw2Gzmc&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
-        allow="autoplay; encrypted-media"
-        allowFullScreen
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none scale-[2] md:scale-[1.5] origin-center"
-        style={{ border: 'none' }}
-        title="Background video"
-      />
+      {/* Full-bleed background video — 9:16 YouTube Short forced to cover landscape */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <iframe
+          src="https://www.youtube.com/embed/bpRUQw2Gzmc?autoplay=1&mute=1&loop=1&playlist=bpRUQw2Gzmc&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[177.78vh] min-h-[100vh] w-auto h-auto"
+          style={{ border: 'none', aspectRatio: '9/16' }}
+          title="Background video"
+        />
+      </div>
 
       {/* Luxury dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
