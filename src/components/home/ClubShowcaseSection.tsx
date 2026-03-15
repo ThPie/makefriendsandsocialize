@@ -107,6 +107,9 @@ export const ClubShowcaseSection = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const animationRef = useRef<number | null>(null);
+  const scrollSpeedRef = useRef(0);
+
   const updateScrollState = () => {
     const el = scrollRef.current;
     if (!el) return;
@@ -121,6 +124,45 @@ export const ClubShowcaseSection = () => {
     el.addEventListener('scroll', updateScrollState, { passive: true });
     return () => el.removeEventListener('scroll', updateScrollState);
   }, []);
+
+  // Auto-scroll animation loop
+  useEffect(() => {
+    const tick = () => {
+      const el = scrollRef.current;
+      if (el && scrollSpeedRef.current !== 0) {
+        el.scrollLeft += scrollSpeedRef.current;
+      }
+      animationRef.current = requestAnimationFrame(tick);
+    };
+    animationRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const pct = x / rect.width; // 0 = left edge, 1 = right edge
+    const deadZone = 0.15; // 15% dead zone in center each side
+    if (pct < 0.5 - deadZone) {
+      // Left side — scroll left, speed increases toward edge
+      const intensity = 1 - pct / (0.5 - deadZone);
+      scrollSpeedRef.current = -intensity * 6;
+    } else if (pct > 0.5 + deadZone) {
+      // Right side — scroll right
+      const intensity = (pct - (0.5 + deadZone)) / (0.5 - deadZone);
+      scrollSpeedRef.current = intensity * 6;
+    } else {
+      scrollSpeedRef.current = 0;
+    }
+  };
+
+  const handleMouseLeave = () => {
+    scrollSpeedRef.current = 0;
+  };
 
   const scroll = (dir: 'left' | 'right') => {
     const el = scrollRef.current;
@@ -152,7 +194,7 @@ export const ClubShowcaseSection = () => {
 
       <div ref={ref} className={`transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="content-container">
-          <div ref={scrollRef} className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4">
+          <div ref={scrollRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4">
             {clubs.map((club) => (
               <CircleCard key={club.id} club={club} />
             ))}
