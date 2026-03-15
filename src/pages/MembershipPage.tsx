@@ -235,7 +235,7 @@ const MembershipPage = () => {
             transition={{ duration: 0.5 }}
             className="text-xs font-medium uppercase tracking-[0.2em] text-white/60 mb-3"
           >
-            Start Your 30-Day Free Trial
+            Start Your 14-Day Free Trial
           </motion.p>
 
           <motion.h1
