@@ -5,12 +5,8 @@ import { getCorsHeaders } from '../_shared/cors.ts';
 
 
 
-// Price IDs for reveal purchases - Updated January 2026
-const PRICE_IDS = {
-  SINGLE_REVEAL: "price_1TB3JG00I3YCY0Des2GB9S8P",   // $30
-  PACK_3_REVEAL: "price_1Ssn7v00I3YCY0DeELElTXPV",   // $49
-  PACK_5_REVEAL: "price_1Ssn8F00I3YCY0DeCCUvX7ZX",   // $69
-};
+// Price ID for single reveal purchase
+const SINGLE_REVEAL_PRICE_ID = "price_1TB3JG00I3YCY0Des2GB9S8P"; // $30
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
