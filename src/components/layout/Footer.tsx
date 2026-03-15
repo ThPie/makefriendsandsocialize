@@ -182,7 +182,7 @@ export const Footer = () => {
       <div className="content-container pt-24 pb-12">
 
         {/* ── Mobile layout ── */}
-        <div className="md:hidden flex flex-col items-center gap-6">
+        <div className="lg:hidden flex flex-col items-center gap-6">
           <BrandLogo width={160} height={48} />
           <p className="text-[13px] text-muted-foreground leading-relaxed text-center max-w-[280px]">
             A private sanctuary for meaningful connection, curated events, and genuine friendships.
