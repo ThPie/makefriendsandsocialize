@@ -132,7 +132,7 @@ const MembershipPage = () => {
     if (!user) {
       if (tierId === 'socialite') return 'Get Started';
       if (tierId === 'insider') return 'Start Free Trial';
-      return 'Join Waitlist';
+      return 'Start Free Trial';
     }
     const current = getCurrentTierName();
     if (current === tierId) return 'Your Plan';
