@@ -182,7 +182,7 @@ export const Footer = () => {
       <div className="content-container pt-24 pb-12">
 
         {/* ── Mobile layout ── */}
-        <div className="md:hidden flex flex-col items-center gap-6">
+        <div className="lg:hidden flex flex-col items-center gap-6">
           <BrandLogo width={160} height={48} />
           <p className="text-[13px] text-muted-foreground leading-relaxed text-center max-w-[280px]">
             A private sanctuary for meaningful connection, curated events, and genuine friendships.
@@ -195,7 +195,7 @@ export const Footer = () => {
         </div>
 
         {/* ── Desktop layout ── */}
-        <div className="hidden md:grid grid-cols-12 gap-8">
+        <div className="hidden lg:grid grid-cols-12 gap-8">
           <div className="col-span-4 flex flex-col gap-4">
             <BrandLogo width={160} height={48} />
             <p className="text-[13px] text-muted-foreground leading-relaxed max-w-[280px]">
@@ -227,8 +227,8 @@ export const Footer = () => {
         <DailyQuote />
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-center md:text-left">
+        <div className="pt-8 border-t border-border flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="text-center lg:text-left">
             <p className="text-xs text-muted-foreground">
               © {new Date().getFullYear()} Make Friends and Socialize LLC. All rights reserved.
             </p>
