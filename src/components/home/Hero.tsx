@@ -11,20 +11,20 @@ const MemberAvatarsWithStats = lazy(() =>
   import('@/components/home/MemberAvatarsWithStats').then((m) => ({ default: m.MemberAvatarsWithStats }))
 );
 
-const HERO_VIDEO_URL = 'https://drive.usercontent.google.com/download?id=1kO-1_Scr58EDdNju76ma09ydUwrHSXQV&export=download&confirm=t';
+const HERO_VIDEO_ID = 'bpRUQw2Gzmc';
 
 export const Hero = () => {
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
-      {/* Full-bleed background video */}
+      {/* Full-bleed background video — 9:16 YouTube Short scaled to cover landscape */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <video
-          src={HERO_VIDEO_URL}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+        <iframe
+          src={`https://www.youtube.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${HERO_VIDEO_ID}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1`}
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{ border: 'none', width: '177.78vh', height: '100vh', minWidth: '100vw', minHeight: '56.25vw' }}
+          title="Background video"
         />
       </div>
 
