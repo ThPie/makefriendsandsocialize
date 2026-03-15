@@ -10,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { InlineFeedback } from '@/components/ui/inline-feedback';
 import { format, differenceInDays } from 'date-fns';
-import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2 } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, Star, Image, CalendarPlus, Grid, List, Search, ArrowUpDown, CheckCircle2, Loader2 } from 'lucide-react';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
 import { parseLocalDate } from '@/lib/date-utils';
 import { categorizeEvent } from '@/lib/event-categorization';
@@ -21,8 +21,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { SEO } from '@/components/common/SEO';
 import { generateEventSchema, generateBreadcrumbSchema } from '@/lib/seo-schema';
+import { toast } from '@/hooks/use-toast';
 
 type SortOption = 'date-asc' | 'date-desc' | 'title-asc' | 'title-desc';
 type EventTab = 'upcoming' | 'past';
