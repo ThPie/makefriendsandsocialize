@@ -124,23 +124,23 @@ export const MainRoutes = () => (
         <Route path="/rules" element={<Layout><CodeOfConductPage /></Layout>} />
         <Route path="/cookies" element={<Layout><CookiesPage /></Layout>} />
         <Route path="/faq" element={<Layout><FAQPage /></Layout>} />
-        <Route path="/slow-dating" element={<SlowDatingPage />} />
-        <Route path="/founders-circle" element={<ConnectedCirclePage />} />
-        <Route path="/founders-circle/directory" element={<ConnectedCircleDirectoryPage />} />
+        <Route path="/slow-dating" element={<Layout><SlowDatingPage /></Layout>} />
+        <Route path="/founders-circle" element={<Layout><ConnectedCirclePage /></Layout>} />
+        <Route path="/founders-circle/directory" element={<Layout><ConnectedCircleDirectoryPage /></Layout>} />
         {/* Redirects from old URLs for SEO */}
         <Route path="/blog" element={<Navigate to="/journal" replace />} />
         <Route path="/blog/:id" element={<Navigate to="/journal" replace />} />
         <Route path="/connected-circle" element={<Navigate to="/founders-circle" replace />} />
         <Route path="/connected-circle/directory" element={<Navigate to="/founders-circle/directory" replace />} />
         {/* Connected Circle / Founders Circle Routing */}
-        <Route path="/circles" element={<CirclesPage />} />
-        <Route path="/circles/the-gentlemen" element={<TheGentlemenPage />} />
-        <Route path="/circles/the-ladies-society" element={<TheLadiesSocietyPage />} />
-        <Route path="/circles/les-amis" element={<LesAmisPage />} />
-        <Route path="/circles/the-partners" element={<ThePartnersPage />} />
-        <Route path="/circles/the-pursuits" element={<ThePursuitsPage />} />
-        <Route path="/circles/the-exchange" element={<TheExchangePage />} />
-        <Route path="/become-a-host" element={<HostApplicationPage />} />
+        <Route path="/circles" element={<Layout><CirclesPage /></Layout>} />
+        <Route path="/circles/the-gentlemen" element={<Layout><TheGentlemenPage /></Layout>} />
+        <Route path="/circles/the-ladies-society" element={<Layout><TheLadiesSocietyPage /></Layout>} />
+        <Route path="/circles/les-amis" element={<Layout><LesAmisPage /></Layout>} />
+        <Route path="/circles/the-partners" element={<Layout><ThePartnersPage /></Layout>} />
+        <Route path="/circles/the-pursuits" element={<Layout><ThePursuitsPage /></Layout>} />
+        <Route path="/circles/the-exchange" element={<Layout><TheExchangePage /></Layout>} />
+        <Route path="/become-a-host" element={<Layout><HostApplicationPage /></Layout>} />
         <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
 
         {/* Health check endpoint for deployment verification */}
