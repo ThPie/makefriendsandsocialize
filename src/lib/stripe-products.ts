@@ -114,7 +114,7 @@ export const TIER_BENEFITS = {
       'Invitation-only Patron experiences',
     ],
     highlight: true,
-    trialDays: 30,
+    trialDays: 14,
   },
   patron: {
     name: 'Patron',
