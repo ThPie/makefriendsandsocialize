@@ -1,5 +1,4 @@
 import { forwardRef, ReactNode, memo } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { SkipLink } from '@/components/ui/skip-link';
