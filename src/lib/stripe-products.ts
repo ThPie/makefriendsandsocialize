@@ -72,7 +72,7 @@ export const TIER_BENEFITS = {
       'Purchase event tickets at standard pricing',
       'Create a Connection Profile',
       'Hand-picked introductions by our team',
-      '$19 per connection reveal (includes concierge support)',
+      '$30 per connection reveal (includes concierge support)',
       'Access to Les Amis French circle',
       'Community newsletter',
     ],
