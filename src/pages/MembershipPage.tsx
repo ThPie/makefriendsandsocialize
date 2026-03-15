@@ -475,7 +475,7 @@ const MembershipPage = () => {
                     ) : (
                       <Button
                         className="w-full rounded-full h-12 bg-card hover:bg-accent text-foreground border border-border font-medium transition-all"
-                        onClick={() => tier.stripeId && handleSubscribe(tier.stripeId)}
+                        onClick={() => tier.stripeId && handleStartTrial(tier.stripeId)}
                       >
                         {getCtaLabel(tier.id, tier.name)}
                       </Button>

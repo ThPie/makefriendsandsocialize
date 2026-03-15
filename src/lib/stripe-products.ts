@@ -145,9 +145,9 @@ export const TIER_BENEFITS = {
 export const REVEAL_PACKS = {
   single: {
     name: 'Single Reveal',
-    price: 19,
+    price: 30,
     reveals: 1,
-    pricePerReveal: 19,
+    pricePerReveal: 30,
     description: 'Reveal this match only',
   },
   pack_3: {

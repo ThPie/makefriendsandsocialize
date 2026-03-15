@@ -50,7 +50,7 @@ export const PricingSection = () => {
             Invest in <span className="italic text-[hsl(var(--accent-gold))]">Connection</span>
           </h2>
           <p className="text-muted-foreground text-base font-light">
-            Choose the membership that fits your lifestyle. All plans include a 30-day free trial.
+            Choose the membership that fits your lifestyle. All plans include a 14-day free trial.
           </p>
         </div>
 
