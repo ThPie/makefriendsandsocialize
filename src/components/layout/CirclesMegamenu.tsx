@@ -11,7 +11,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
     return (
         <div className="group relative h-full">
             <button className={cn(
-                "hidden md:flex items-center gap-1.5 text-sm font-medium transition-colors duration-150 h-full",
+                "hidden lg:flex items-center gap-1.5 text-sm font-medium transition-colors duration-150 h-full",
                 isTransparent ? "text-white/90 hover:text-white" : "text-foreground hover:text-[hsl(var(--accent-gold))]"
             )}>
                 Circles

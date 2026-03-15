@@ -58,7 +58,7 @@ export const Header = () => {
               key={label}
               to={label === 'Blog' ? '/journal' : `/${label.toLowerCase()}`}
               className={cn(
-                "hidden md:inline-block text-sm font-light transition-colors duration-150",
+                "hidden lg:inline-block text-sm font-light transition-colors duration-150",
                 !scrolled ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
               )}
             >
@@ -71,7 +71,7 @@ export const Header = () => {
             <TransitionLink
               to="/auth"
               className={cn(
-                "hidden md:inline-block text-sm font-light transition-colors duration-150",
+                "hidden lg:inline-block text-sm font-light transition-colors duration-150",
                 !scrolled ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
               )}
             >
@@ -81,7 +81,7 @@ export const Header = () => {
 
           {/* If logged in, show avatar */}
           {user && (
-            <TransitionLink to="/portal" className="hidden md:block">
+            <TransitionLink to="/portal" className="hidden lg:block">
               <Avatar className="h-11 w-11 border-2 border-[hsl(var(--accent-gold))]/60 hover:border-[hsl(var(--accent-gold))] transition-colors">
                 <AvatarImage src={profile?.avatar_urls?.[0] || user?.user_metadata?.avatar_url} />
                 <AvatarFallback className="bg-primary/80 text-primary-foreground text-sm font-medium">
