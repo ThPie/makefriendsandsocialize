@@ -116,9 +116,9 @@ const handler = async (req: Request): Promise<Response> => {
 
         // Send SMS reminder
         const { data: profileWithPhone } = await supabase
-          .from("profiles")
+          .from("dating_profiles")
           .select("phone_number, sms_notifications_enabled")
-          .eq("id", rsvp.user_id)
+          .eq("user_id", rsvp.user_id)
           .single();
 
         if (profileWithPhone?.sms_notifications_enabled && profileWithPhone?.phone_number) {

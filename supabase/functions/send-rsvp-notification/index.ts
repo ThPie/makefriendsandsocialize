@@ -105,9 +105,9 @@ serve(async (req) => {
 
     // Send SMS notification
     const { data: profileData } = await supabase
-      .from('profiles')
+      .from('dating_profiles')
       .select('phone_number, sms_notifications_enabled')
-      .eq('id', userId)
+      .eq('user_id', userId)
       .single();
 
     if (profileData?.sms_notifications_enabled && profileData?.phone_number) {
