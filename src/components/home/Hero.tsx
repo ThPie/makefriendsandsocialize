@@ -13,22 +13,12 @@ const MemberAvatarsWithStats = lazy(() =>
 
 export const Hero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  // Defer video load until after first paint to avoid blocking LCP
-  const [videoReady, setVideoReady] = useState(false);
-
-  useEffect(() => {
-    // Load video after the browser has painted the poster image
-    const raf = requestAnimationFrame(() => {
-      setVideoReady(true);
-    });
-    return () => cancelAnimationFrame(raf);
-  }, []);
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.playbackRate = 0.9;
     }
-  }, [videoReady]);
+  }, []);
 
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
