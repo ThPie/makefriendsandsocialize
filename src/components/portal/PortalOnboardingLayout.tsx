@@ -24,7 +24,7 @@ export function PortalOnboardingLayout({
         className="absolute inset-0 w-full h-full object-cover"
         poster="/images/hero-poster.webp"
       >
-        <source src="/videos/hero-1.mp4" type="video/mp4" />
+        <source src="https://drive.google.com/uc?export=download&id=1kO-1_Scr58EDdNju76ma09ydUwrHSXQV" type="video/mp4" />
       </video>
 
       {/* Gradient Overlay — Stitch forest green */}
