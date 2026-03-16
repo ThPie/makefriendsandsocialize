@@ -57,6 +57,7 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<{ error: Error | null; user?: User | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
+  signInWithApple: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   canAccessMatchmaking: boolean;
@@ -212,6 +213,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const signInWithApple = async () => {
+    try {
+      const { lovable } = await import('@/integrations/lovable/index');
+      const result = await lovable.auth.signInWithOAuth('apple', {
+        redirect_uri: 'https://makefriendsandsocializecom.lovable.app',
+      });
+      if (result.error) {
+        return { error: result.error instanceof Error ? result.error : new Error(String(result.error)) };
+      }
+      return { error: null };
+    } catch (e) {
+      return { error: e instanceof Error ? e : new Error(String(e)) };
+    }
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     const { clearAllCache } = await import('@/hooks/useCachedData');
@@ -252,6 +268,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signUp,
         signIn,
         signInWithGoogle,
+        signInWithApple,
         signOut,
         refreshProfile,
         canAccessMatchmaking,
@@ -279,6 +296,7 @@ export function useAuth() {
       signUp: async () => ({ error: new Error('Auth not ready'), user: null }),
       signIn: async () => ({ error: new Error('Auth not ready') }),
       signInWithGoogle: async () => ({ error: new Error('Auth not ready') }),
+      signInWithApple: async () => ({ error: new Error('Auth not ready') }),
       signOut: async () => { },
       refreshProfile: async () => { },
       canAccessMatchmaking: false,
