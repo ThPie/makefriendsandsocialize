@@ -197,7 +197,7 @@ export default function AdminMembers() {
                           {member.membership.tier === 'founder' && (
                             <Crown className="h-3 w-3 mr-1" />
                           )}
-                          {member.membership.tier}
+                          {getTierDisplayName(member.membership.tier)}
                         </Badge>
                       )}
                       <Badge
