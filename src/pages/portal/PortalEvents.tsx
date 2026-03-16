@@ -111,23 +111,25 @@ export default function PortalEvents() {
 
   const events = activeTab === 'upcoming' ? upcomingEvents : pastEvents;
 
-  // Fetch RSVP counts for events
+  // Fetch RSVP counts for events — single batch query instead of N+1
   const { data: rsvpCounts = {} } = useQuery({
     queryKey: ['event-rsvp-counts', events.map(e => e.id)],
     queryFn: async () => {
       if (events.length === 0) return {};
 
-      const counts: Record<string, number> = {};
-      for (const event of events) {
-        const { count, error } = await supabase
-          .from('event_rsvps')
-          .select('*', { count: 'exact', head: true })
-          .eq('event_id', event.id)
-          .eq('status', 'confirmed');
+      const eventIds = events.map(e => e.id);
+      const { data, error } = await supabase
+        .from('event_rsvps')
+        .select('event_id')
+        .in('event_id', eventIds)
+        .eq('status', 'confirmed');
 
-        if (!error) {
-          counts[event.id] = count || 0;
-        }
+      if (error) return {};
+
+      // Count client-side
+      const counts: Record<string, number> = {};
+      for (const row of data || []) {
+        counts[row.event_id] = (counts[row.event_id] || 0) + 1;
       }
       return counts;
     },
