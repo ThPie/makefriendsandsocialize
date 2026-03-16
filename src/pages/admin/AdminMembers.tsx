@@ -222,6 +222,8 @@ export default function AdminMembers() {
         })}
       </div>
 
+      <AdminPagination page={page} pageSize={PAGE_SIZE} totalCount={totalCount} onPageChange={setPage} />
+
       {filteredMembers.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
           No members found

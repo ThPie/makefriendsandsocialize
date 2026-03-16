@@ -34,18 +34,29 @@ const AdminDating = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { data: profiles, isLoading } = useQuery({
-    queryKey: ["dating-profiles"],
+  const [page, setPage] = useState(0);
+  const PAGE_SIZE = 25;
+
+  const { data: profilesData, isLoading } = useQuery({
+    queryKey: ["dating-profiles", page],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("dating_profiles")
-        .select("*")
-        .order("created_at", { ascending: false });
-      
-      if (error) throw error;
-      return data as DatingProfile[];
+      const from = page * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+      const [listRes, countRes] = await Promise.all([
+        supabase
+          .from("dating_profiles")
+          .select("id, user_id, display_name, age, gender, target_gender, location, occupation, bio, photo_url, status, is_active, created_at")
+          .order("created_at", { ascending: false })
+          .range(from, to),
+        supabase
+          .from("dating_profiles")
+          .select("*", { count: 'exact', head: true }),
+      ]);
+      if (listRes.error) throw listRes.error;
+      return { profiles: listRes.data as DatingProfile[], total: countRes.count || 0 };
     },
   });
+  const profiles = profilesData?.profiles;
 
   // Get matching stats - latest match and total count
   const { data: matchingStats } = useQuery({
