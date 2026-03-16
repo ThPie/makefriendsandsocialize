@@ -1,45 +1,84 @@
 
 
-## Plan: Mobile Grid Layouts, Quote Styling, TikTok Icon & Newsletter
+# Performance & Scaling Optimizations Plan
 
-### 1. Value Highlights — 2x2 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 298-316)
+## Current State
 
-Change the horizontal scroll container to a `grid grid-cols-2` on mobile. The 3 items will show as 2 on top, 1 on bottom (centered).
+Your app is in early stage (3 profiles, 37 events, ~190 rate limit entries). The architecture document outlines goals for 400K users. Several optimizations are already partially in place (caching hook, indexes, rate limiting, lazy routes). Here's what I'll implement to make the app production-ready for scale.
 
-### 2. Process Steps — 2+1 grid on mobile
-**File:** `src/pages/MembershipPage.tsx` (lines 548-572)
+---
 
-Replace the horizontal scroll with `grid grid-cols-2` on mobile. The 3 steps will display as 2 on top, 1 centered on bottom.
+## What's Already Working Well
+- Lazy-loaded routes (code splitting)
+- React Query with 5-min staleTime
+- Database-backed cache (`cache_metadata` table + `useCachedData` hook)
+- Rate limiting (API + admin + OAuth)
+- Vercel caching headers for static assets
+- Gallery page uses `useInfiniteQuery` (pagination)
+- Skeleton loaders on dashboard
 
-### 3. Daily Quote — gold text with quotation marks
-**File:** `src/components/common/DailyQuote.tsx`
+---
 
-- Change quote text color to `text-[hsl(var(--accent-gold))]`
-- Wrap quote text in `"` `"` (curly quotation marks)
-- Apply same gold styling in the mobile menu quote section (`MobileMenu.tsx`, line 210-211)
+## Implementation Plan
 
-### 4. TikTok icon — add to Footer & MobileMenu
-**Files:** `src/components/layout/Footer.tsx`, `src/components/layout/MobileMenu.tsx`
+### 1. Consolidate Dashboard Stats into a Single Query
+**Problem**: `DashboardStats.tsx` fires 4 separate queries on every dashboard load.
+**Fix**: Create a single database function `get_dashboard_stats(user_id)` that returns all 4 counts in one round trip, and update the component to use it.
 
-Lucide doesn't have a TikTok icon. Create a small inline SVG component for the TikTok logo. Add it to:
-- Footer social links (line 133-143)
-- MobileMenu social links array (line 34-38)
+### 2. Add Missing Database Indexes
+**Problem**: Several high-traffic query patterns lack indexes. Based on actual queries in the codebase:
+```text
+- events(date, status) — EventsPage filters by date and status
+- event_rsvps(user_id, status) — Dashboard + schedule queries
+- notification_queue(user_id, is_read) — Notification count polling
+- business_profiles(status, is_visible) — Directory page
+- profiles(onboarding_completed) — Active member count
+- dating_profiles(user_id) — Profile lookups
+- dating_profiles(is_active, status) — Match queries
+- dating_matches(user_a_id), dating_matches(user_b_id) — Match lookups
+- referrals(referrer_id, status) — Referral tracking
+- connections(requester_id, status), connections(requested_id, status)
+```
 
-### 5. Newsletter subscription in Footer
-**File:** `src/components/layout/Footer.tsx`
+### 3. Add Pagination to Admin Pages
+**Problem**: `AdminMembers`, `AdminDating`, `AdminBusinesses`, `AdminTestimonials`, `AdminReferrals` all fetch `SELECT *` with no limit. At scale, these will time out or return massive payloads.
+**Fix**: Add `.range()` pagination (25 per page) with page controls to admin list pages.
 
-Add a newsletter section with:
-- Email input + "Subscribe" button
-- Inserts into the existing `newsletter_subscribers` table (columns: `email`, `source: 'footer'`, `is_active: true`)
-- Duplicate email handling (show friendly message)
-- Success toast on subscribe
-- Placed above the Daily Quote section, visible on both mobile and desktop
+### 4. Select Only Needed Columns
+**Problem**: Many queries use `.select('*')` when only a few columns are needed (e.g., events list only displays title, date, location, image).
+**Fix**: Replace `select('*')` with specific column lists in the highest-traffic pages: `EventsPage`, `ConnectedCircleDirectoryPage`, `PortalSlowDating`, and admin pages.
 
-### Technical details
+### 5. Batch Notification Triggers on Dating Matches
+**Problem**: The `dating_matches` table has 5 AFTER triggers (new match, declined, meeting scheduled, decision time, mutual match). Each UPDATE fires all 5 trigger checks.
+**Fix**: Consolidate into a single trigger function that checks the specific status change and queues the appropriate notification, reducing trigger overhead from 5 to 1.
 
-- The `newsletter_subscribers` table already exists with the right schema — no DB migration needed
-- TikTok SVG will be a minimal `<svg>` component (~10 lines), not a new dependency
-- Grid changes use standard Tailwind: `grid grid-cols-2 gap-4 md:grid-cols-3`
-- For the 2+1 layout, the last item gets `col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto` on mobile to center it
+### 6. Add Periodic Cleanup via pg_cron
+**Problem**: Rate limit tables, expired sessions, and old audit logs accumulate without cleanup.
+**Fix**: Schedule pg_cron jobs to run cleanup functions (`cleanup_old_api_rate_limits`, `cleanup_expired_sessions`, `cleanup_expired_mfa_sessions`, `cleanup_old_oauth_rate_limits`) daily.
+
+### 7. Enable Realtime Only Where Needed
+**Problem**: `EventsPage` subscribes to realtime on the entire `events` table for all changes.
+**Fix**: Scope the realtime subscription to only listen for relevant events and ensure other tables don't have unnecessary realtime enabled.
+
+---
+
+## What I Won't Change (Already Optimal)
+- **Vercel hosting**: Keep it. CDN edge caching + static asset headers are already configured correctly.
+- **React Query config**: 5-min staleTime, 30-min gcTime, retry 1 — these are good defaults.
+- **Code splitting**: All routes are already lazy-loaded.
+- **Connection pooling**: Handled automatically by Lovable Cloud.
+
+---
+
+## Summary of Changes
+
+| Area | Files Changed | Impact |
+|------|--------------|--------|
+| Dashboard single query | 1 migration + 1 component | 4 queries → 1 |
+| Database indexes | 1 migration | Faster reads at scale |
+| Admin pagination | 5 admin pages | Prevents timeouts |
+| Column selection | 5-6 page files | Less data transfer |
+| Trigger consolidation | 1 migration | 5 triggers → 1 |
+| Cleanup cron jobs | 1 migration (pg_cron) | Prevents table bloat |
+| Realtime scoping | 1 page file | Less WebSocket load |
 
