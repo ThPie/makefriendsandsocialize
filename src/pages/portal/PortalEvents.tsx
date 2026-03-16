@@ -168,23 +168,24 @@ export default function PortalEvents() {
     enabled: !!user,
   });
 
-  // Fetch waitlist counts
+  // Fetch waitlist counts — single batch query
   const { data: waitlistCounts = {} } = useQuery({
     queryKey: ['waitlist-counts', events.map(e => e.id)],
     queryFn: async () => {
       if (events.length === 0) return {};
 
-      const counts: Record<string, number> = {};
-      for (const event of events) {
-        const { count, error } = await supabase
-          .from('event_waitlist')
-          .select('*', { count: 'exact', head: true })
-          .eq('event_id', event.id)
-          .eq('status', 'waiting');
+      const eventIds = events.map(e => e.id);
+      const { data, error } = await supabase
+        .from('event_waitlist')
+        .select('event_id')
+        .in('event_id', eventIds)
+        .eq('status', 'waiting');
 
-        if (!error) {
-          counts[event.id] = count || 0;
-        }
+      if (error) return {};
+
+      const counts: Record<string, number> = {};
+      for (const row of data || []) {
+        counts[row.event_id] = (counts[row.event_id] || 0) + 1;
       }
       return counts;
     },
