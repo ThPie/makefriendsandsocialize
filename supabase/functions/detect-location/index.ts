@@ -42,23 +42,52 @@ serve(async (req) => {
     }
 
     // Call ip-api.com for geolocation and VPN detection
-    // Using http (not https) as per their free tier requirements
-    // Fields: status, country, regionName (state), city, proxy (VPN), hosting (datacenter)
-    const apiUrl = `http://ip-api.com/json/${clientIp}?fields=status,message,country,regionName,city,proxy,hosting`;
-    
-    console.log('Calling ip-api.com:', apiUrl);
-    
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-    
-    console.log('ip-api.com response:', data);
-
-    if (data.status === 'fail') {
-      console.error('ip-api.com error:', data.message);
+    // Using HTTPS endpoint (pro endpoint works with HTTPS)
+    // Fallback: try HTTPS first, if it fails return graceful null response
+    let data: any;
+    try {
+      const apiUrl = `https://ipapi.co/${clientIp}/json/`;
+      console.log('Calling ipapi.co:', apiUrl);
+      const response = await fetch(apiUrl);
+      data = await response.json();
+      
+      // ipapi.co returns { error: true } on failure
+      if (data.error) {
+        console.warn('ipapi.co error:', data.reason);
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: data.reason || 'Geolocation lookup failed',
+            country: null,
+            state: null,
+            city: null,
+            isVpn: false
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      // Map ipapi.co response format
+      const isVpn = data.org?.toLowerCase().includes('vpn') || data.org?.toLowerCase().includes('hosting') || false;
+      
+      console.log('ipapi.co response:', { country: data.country_name, region: data.region, city: data.city });
+      
+      return new Response(
+        JSON.stringify({
+          success: true,
+          country: data.country_name || null,
+          state: data.region || null,
+          city: data.city || null,
+          isVpn: isVpn
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } catch (geoError) {
+      console.warn('Geolocation API failed, returning null location:', geoError);
       return new Response(
         JSON.stringify({
           success: false,
-          error: data.message || 'Geolocation lookup failed',
+          error: 'Geolocation service unavailable',
           country: null,
           state: null,
           city: null,
@@ -67,22 +96,6 @@ serve(async (req) => {
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    // VPN detection: proxy flag OR hosting flag (datacenter IPs are often VPNs)
-    const isVpn = data.proxy === true || data.hosting === true;
-    
-    console.log('VPN detection:', { proxy: data.proxy, hosting: data.hosting, isVpn });
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        country: data.country || null,
-        state: data.regionName || null,
-        city: data.city || null,
-        isVpn: isVpn
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
 
   } catch (error) {
     console.error('Error in detect-location function:', error);

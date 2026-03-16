@@ -67,11 +67,13 @@ export default function PortalEvents() {
   const EVENTS_PER_PAGE = 6;
 
   // Fetch upcoming events with pagination
-  const { data: upcomingEvents = [], isLoading: eventsLoading, hasNextPage: upcomingHasMore, fetchNextPage: fetchUpcomingNext, isFetchingNextPage: upcomingFetching } = useInfiniteQuery({
+  const { data: upcomingEventsData, isLoading: eventsLoading, hasNextPage: upcomingHasMore, fetchNextPage: fetchUpcomingNext, isFetchingNextPage: upcomingFetching } = useInfiniteQuery<{ events: Event[]; hasMore: boolean }>({
     queryKey: ['portal-events-upcoming'],
-    queryFn: async ({ pageParam = 0 }) => {
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }) => {
       const now = new Date();
       const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const page = pageParam as number;
 
       const { data, error, count } = await supabase
         .from('events')
@@ -79,7 +81,7 @@ export default function PortalEvents() {
         .in('status', ['upcoming', 'published'])
         .gte('date', today)
         .order('date', { ascending: true })
-        .range(pageParam * EVENTS_PER_PAGE, (pageParam + 1) * EVENTS_PER_PAGE - 1);
+        .range(page * EVENTS_PER_PAGE, (page + 1) * EVENTS_PER_PAGE - 1);
 
       if (error) {
         console.warn('Events fetch error:', error.message);
@@ -87,7 +89,7 @@ export default function PortalEvents() {
       }
       return { 
         events: data as Event[],
-        hasMore: (count || 0) > (pageParam + 1) * EVENTS_PER_PAGE
+        hasMore: (count || 0) > (page + 1) * EVENTS_PER_PAGE
       };
     },
     getNextPageParam: (lastPage, pages) => lastPage.hasMore ? pages.length : undefined,
@@ -95,18 +97,20 @@ export default function PortalEvents() {
   });
 
   // Fetch past events with pagination
-  const { data: pastEventsData = { pages: [] }, isLoading: pastEventsLoading, hasNextPage: pastHasMore, fetchNextPage: fetchPastNext, isFetchingNextPage: pastFetching } = useInfiniteQuery({
+  const { data: pastEventsData, isLoading: pastEventsLoading, hasNextPage: pastHasMore, fetchNextPage: fetchPastNext, isFetchingNextPage: pastFetching } = useInfiniteQuery<{ events: Event[]; hasMore: boolean }>({
     queryKey: ['portal-events-past'],
-    queryFn: async ({ pageParam = 0 }) => {
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }) => {
       const now = new Date();
       const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const page = pageParam as number;
 
       const { data, error, count } = await supabase
         .from('events')
         .select('*', { count: 'exact' })
         .or(`status.eq.past,date.lt.${today}`)
         .order('date', { ascending: false })
-        .range(pageParam * EVENTS_PER_PAGE, (pageParam + 1) * EVENTS_PER_PAGE - 1);
+        .range(page * EVENTS_PER_PAGE, (page + 1) * EVENTS_PER_PAGE - 1);
 
       if (error) {
         console.warn('Past events fetch error:', error.message);
@@ -114,38 +118,39 @@ export default function PortalEvents() {
       }
       return {
         events: data as Event[],
-        hasMore: (count || 0) > (pageParam + 1) * EVENTS_PER_PAGE
+        hasMore: (count || 0) > (page + 1) * EVENTS_PER_PAGE
       };
     },
     getNextPageParam: (lastPage, pages) => lastPage.hasMore ? pages.length : undefined,
     retry: 1,
   });
   
-  const pastEvents = pastEventsData.pages.flatMap(p => p.events);
+  const pastEvents = pastEventsData?.pages.flatMap(p => p.events) || [];
 
-  const allUpcomingEvents = upcomingEvents.pages?.flatMap(p => p.events) || [];
+  const allUpcomingEvents = upcomingEventsData?.pages.flatMap(p => p.events) || [];
   const events = activeTab === 'upcoming' ? allUpcomingEvents : pastEvents;
 
-  // Fetch RSVP counts for events using server-side aggregation
+  // Fetch RSVP counts for events
   const { data: rsvpCounts = {} } = useQuery({
     queryKey: ['event-rsvp-counts', events.map(e => e.id)],
     queryFn: async () => {
       if (events.length === 0) return {};
 
       const eventIds = events.map(e => e.id);
-      const { data, error } = await supabase.rpc('get_event_rsvp_counts', {
-        event_ids: eventIds,
-      });
+      const { data, error } = await supabase
+        .from('event_rsvps')
+        .select('event_id')
+        .in('event_id', eventIds)
+        .eq('status', 'confirmed');
 
       if (error) {
         console.warn('RSVP counts fetch error:', error.message);
         return {};
       }
 
-      // Convert array response to object for easier lookup
       const counts: Record<string, number> = {};
       for (const row of data || []) {
-        counts[row.event_id] = row.rsvp_count;
+        counts[row.event_id] = (counts[row.event_id] || 0) + 1;
       }
       return counts;
     },
@@ -184,26 +189,27 @@ export default function PortalEvents() {
     enabled: !!user,
   });
 
-  // Fetch waitlist counts using server-side aggregation
+  // Fetch waitlist counts
   const { data: waitlistCounts = {} } = useQuery({
     queryKey: ['waitlist-counts', events.map(e => e.id)],
     queryFn: async () => {
       if (events.length === 0) return {};
 
       const eventIds = events.map(e => e.id);
-      const { data, error } = await supabase.rpc('get_event_waitlist_counts', {
-        event_ids: eventIds,
-      });
+      const { data, error } = await supabase
+        .from('event_waitlist')
+        .select('event_id')
+        .in('event_id', eventIds)
+        .eq('status', 'waiting');
 
       if (error) {
         console.warn('Waitlist counts fetch error:', error.message);
         return {};
       }
 
-      // Convert array response to object for easier lookup
       const counts: Record<string, number> = {};
       for (const row of data || []) {
-        counts[row.event_id] = row.waitlist_count;
+        counts[row.event_id] = (counts[row.event_id] || 0) + 1;
       }
       return counts;
     },
@@ -414,7 +420,7 @@ export default function PortalEvents() {
                 <EventCardSkeleton key={i} />
               ))}
             </div>
-          ) : upcomingEvents.length === 0 ? (
+          ) : allUpcomingEvents.length === 0 ? (
             <Card className="p-12 text-center border-border bg-card">
               <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
               <h3 className="font-display text-xl mb-2 text-foreground">No Upcoming Events</h3>

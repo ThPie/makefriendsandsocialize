@@ -51,6 +51,7 @@ interface DatingProfile {
   // Intimacy & Fear
   intimacy_expectations: string | null;
   finding_love_fear: string | null;
+  updated_at: string | null;
 }
 
 interface MatchResult {
