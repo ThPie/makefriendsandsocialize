@@ -103,7 +103,7 @@ const EventsPage = () => {
 
       let query = supabase
         .from('events')
-        .select('*')
+        .select('id, title, date, time, location, venue_name, venue_address, image_url, description, status, tier, capacity, rsvp_count, external_url, tags, is_featured, source, city, country, ticket_price, currency, waitlist_enabled, registration_deadline, eventbrite_id, luma_id, meetup_rsvp_count, eventbrite_rsvp_count, luma_rsvp_count')
         .order('date', { ascending: activeTab === 'upcoming' ? true : false });
 
       if (activeTab === 'upcoming') {
@@ -123,7 +123,7 @@ const EventsPage = () => {
     },
   });
 
-  // Subscribe to real-time updates on events table
+  // Subscribe to real-time updates — scoped to UPDATE on rsvp_count changes only
   useEffect(() => {
     const channel = supabase
       .channel('events-page-realtime')
@@ -132,7 +132,8 @@ const EventsPage = () => {
         {
           event: 'UPDATE',
           schema: 'public',
-          table: 'events'
+          table: 'events',
+          filter: `status=eq.${activeTab === 'upcoming' ? 'upcoming' : 'past'}`
         },
         () => {
           queryClient.invalidateQueries({ queryKey: ['events'] });
@@ -143,7 +144,7 @@ const EventsPage = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [queryClient]);
+  }, [queryClient, activeTab]);
 
   const [rsvpDialogEvent, setRsvpDialogEvent] = useState<Event | null>(null);
   const [rsvpLoading, setRsvpLoading] = useState(false);

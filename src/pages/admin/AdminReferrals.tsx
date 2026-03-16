@@ -78,7 +78,7 @@ export default function AdminReferrals() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('referrals')
-        .select('*')
+        .select('id, referrer_id, referred_user_id, referral_code, referred_email, status, reward_type, reward_claimed, reward_claimed_at, created_at, converted_at, expires_at')
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data as Referral[];

@@ -53,18 +53,29 @@ const AdminBusinesses = () => {
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessProfile | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { data: businesses, isLoading } = useQuery({
-    queryKey: ['admin-businesses'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('business_profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
+  const [page, setPage] = useState(0);
+  const PAGE_SIZE = 25;
 
-      if (error) throw error;
-      return data as BusinessProfile[];
+  const { data: businessesData, isLoading } = useQuery({
+    queryKey: ['admin-businesses', page],
+    queryFn: async () => {
+      const from = page * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+      const [listRes, countRes] = await Promise.all([
+        supabase
+          .from('business_profiles')
+          .select('id, user_id, business_name, logo_url, description, industry, location, website, contact_email, services, status, is_visible, created_at, updated_at')
+          .order('created_at', { ascending: false })
+          .range(from, to),
+        supabase
+          .from('business_profiles')
+          .select('*', { count: 'exact', head: true }),
+      ]);
+      if (listRes.error) throw listRes.error;
+      return { businesses: listRes.data as BusinessProfile[], total: countRes.count || 0 };
     },
   });
+  const businesses = businessesData?.businesses;
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status, is_visible, business }: { id: string; status: 'pending' | 'approved' | 'featured' | 'rejected'; is_visible: boolean; business: BusinessProfile }) => {

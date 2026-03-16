@@ -22,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { Loader2, Search, Crown, User, Shield } from 'lucide-react';
 import { format } from 'date-fns';
+import { AdminPagination } from '@/components/admin/AdminPagination';
 import { ScanHistoryTimeline } from '@/components/admin/ScanHistoryTimeline';
 
 interface Member {
@@ -42,38 +43,48 @@ interface Member {
 
 export default function AdminMembers() {
   const [members, setMembers] = useState<Member[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const PAGE_SIZE = 25;
 
   useEffect(() => {
     fetchMembers();
-  }, []);
+  }, [page]);
 
   async function fetchMembers() {
-    const { data: profiles, error: profilesError } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
+    setIsLoading(true);
+    const from = page * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
 
-    if (profilesError) {
+    const [profilesRes, membershipsRes, countRes] = await Promise.all([
+      supabase
+        .from('profiles')
+        .select('id, first_name, last_name, bio, avatar_urls, interests, is_visible, created_at')
+        .order('created_at', { ascending: false })
+        .range(from, to),
+      supabase
+        .from('memberships')
+        .select('user_id, tier, status, started_at'),
+      supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true }),
+    ]);
+
+    if (profilesRes.error) {
       toast.error('Failed to fetch members');
+      setIsLoading(false);
       return;
     }
 
-    const { data: memberships, error: membershipsError } = await supabase
-      .from('memberships')
-      .select('*');
+    setTotalCount(countRes.count || 0);
 
-    if (membershipsError) {
-      toast.error('Failed to fetch memberships');
-      return;
-    }
-
-    const membersWithMembership = profiles?.map((profile) => ({
+    const membersWithMembership = profilesRes.data?.map((profile) => ({
       ...profile,
-      membership: memberships?.find((m) => m.user_id === profile.id),
+      membership: membershipsRes.data?.find((m) => m.user_id === profile.id),
     })) || [];
 
     setMembers(membersWithMembership);
@@ -210,6 +221,8 @@ export default function AdminMembers() {
           );
         })}
       </div>
+
+      <AdminPagination page={page} pageSize={PAGE_SIZE} totalCount={totalCount} onPageChange={setPage} />
 
       {filteredMembers.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
