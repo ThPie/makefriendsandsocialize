@@ -1,3 +1,4 @@
+import { getTierDisplayName } from '@/lib/tier-utils';
 import {
     Dialog,
     DialogContent,
