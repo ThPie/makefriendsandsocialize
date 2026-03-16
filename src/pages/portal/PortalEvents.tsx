@@ -420,7 +420,7 @@ export default function PortalEvents() {
                 <EventCardSkeleton key={i} />
               ))}
             </div>
-          ) : upcomingEvents.length === 0 ? (
+          ) : allUpcomingEvents.length === 0 ? (
             <Card className="p-12 text-center border-border bg-card">
               <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
               <h3 className="font-display text-xl mb-2 text-foreground">No Upcoming Events</h3>
