@@ -370,7 +370,7 @@ serve(async (req) => {
     const targetCompleteness = getProfileCompleteness(targetProfile);
     console.log(`Target profile completeness: ${Math.round(targetCompleteness * 100)}%`);
 
-    const qualifiedCandidates = candidatesAfterDealbreakers.filter((candidate: DatingProfile) => {
+    const qualifiedCandidates = candidatesAfterDedup.filter((candidate: DatingProfile) => {
       const completeness = getProfileCompleteness(candidate);
       if (completeness < PROFILE_COMPLETENESS_THRESHOLD) {
         console.log(`Skipping ${candidate.display_name}: Profile only ${Math.round(completeness * 100)}% complete`);
