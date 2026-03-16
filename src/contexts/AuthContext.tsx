@@ -213,7 +213,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signOut = async () => {
+  const signInWithApple = async () => {
+    try {
+      const { lovable } = await import('@/integrations/lovable/index');
+      const result = await lovable.auth.signInWithOAuth('apple', {
+        redirect_uri: 'https://makefriendsandsocializecom.lovable.app',
+      });
+      if (result.error) {
+        return { error: result.error instanceof Error ? result.error : new Error(String(result.error)) };
+      }
+      return { error: null };
+    } catch (e) {
+      return { error: e instanceof Error ? e : new Error(String(e)) };
+    }
+  };
+
     await supabase.auth.signOut();
     const { clearAllCache } = await import('@/hooks/useCachedData');
     clearAllCache();
