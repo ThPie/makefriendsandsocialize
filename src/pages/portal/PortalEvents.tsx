@@ -67,11 +67,13 @@ export default function PortalEvents() {
   const EVENTS_PER_PAGE = 6;
 
   // Fetch upcoming events with pagination
-  const { data: upcomingEvents = [], isLoading: eventsLoading, hasNextPage: upcomingHasMore, fetchNextPage: fetchUpcomingNext, isFetchingNextPage: upcomingFetching } = useInfiniteQuery({
+  const { data: upcomingEventsData, isLoading: eventsLoading, hasNextPage: upcomingHasMore, fetchNextPage: fetchUpcomingNext, isFetchingNextPage: upcomingFetching } = useInfiniteQuery<{ events: Event[]; hasMore: boolean }>({
     queryKey: ['portal-events-upcoming'],
-    queryFn: async ({ pageParam = 0 }) => {
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }) => {
       const now = new Date();
       const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const page = pageParam as number;
 
       const { data, error, count } = await supabase
         .from('events')
@@ -79,7 +81,7 @@ export default function PortalEvents() {
         .in('status', ['upcoming', 'published'])
         .gte('date', today)
         .order('date', { ascending: true })
-        .range(pageParam * EVENTS_PER_PAGE, (pageParam + 1) * EVENTS_PER_PAGE - 1);
+        .range(page * EVENTS_PER_PAGE, (page + 1) * EVENTS_PER_PAGE - 1);
 
       if (error) {
         console.warn('Events fetch error:', error.message);
@@ -87,7 +89,7 @@ export default function PortalEvents() {
       }
       return { 
         events: data as Event[],
-        hasMore: (count || 0) > (pageParam + 1) * EVENTS_PER_PAGE
+        hasMore: (count || 0) > (page + 1) * EVENTS_PER_PAGE
       };
     },
     getNextPageParam: (lastPage, pages) => lastPage.hasMore ? pages.length : undefined,
