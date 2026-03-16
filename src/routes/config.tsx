@@ -138,6 +138,7 @@ export const MainRoutes = () => (
         <Route path="/circles/the-ladies-society" element={<Layout><TheLadiesSocietyPage /></Layout>} />
         <Route path="/circles/les-amis" element={<Layout><LesAmisPage /></Layout>} />
         <Route path="/circles/the-partners" element={<Layout><ThePartnersPage /></Layout>} />
+        <Route path="/circles/couples-circle" element={<Layout><ThePartnersPage /></Layout>} />
         <Route path="/circles/the-pursuits" element={<Layout><ThePursuitsPage /></Layout>} />
         <Route path="/circles/the-exchange" element={<Layout><TheExchangePage /></Layout>} />
         <Route path="/become-a-host" element={<Layout><HostApplicationPage /></Layout>} />

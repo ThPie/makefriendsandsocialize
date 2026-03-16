@@ -103,7 +103,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                             <div>
                                 <h3 className="text-muted-foreground font-light text-sm mb-3">More Circles</h3>
                                 <div className="flex flex-col gap-2">
-                                    <TransitionLink to="/circles/the-partners" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                    <TransitionLink to="/circles/couples-circle" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
                                             <Circle strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
