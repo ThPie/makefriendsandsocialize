@@ -97,18 +97,20 @@ export default function PortalEvents() {
   });
 
   // Fetch past events with pagination
-  const { data: pastEventsData = { pages: [] }, isLoading: pastEventsLoading, hasNextPage: pastHasMore, fetchNextPage: fetchPastNext, isFetchingNextPage: pastFetching } = useInfiniteQuery({
+  const { data: pastEventsData, isLoading: pastEventsLoading, hasNextPage: pastHasMore, fetchNextPage: fetchPastNext, isFetchingNextPage: pastFetching } = useInfiniteQuery<{ events: Event[]; hasMore: boolean }>({
     queryKey: ['portal-events-past'],
-    queryFn: async ({ pageParam = 0 }) => {
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }) => {
       const now = new Date();
       const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const page = pageParam as number;
 
       const { data, error, count } = await supabase
         .from('events')
         .select('*', { count: 'exact' })
         .or(`status.eq.past,date.lt.${today}`)
         .order('date', { ascending: false })
-        .range(pageParam * EVENTS_PER_PAGE, (pageParam + 1) * EVENTS_PER_PAGE - 1);
+        .range(page * EVENTS_PER_PAGE, (page + 1) * EVENTS_PER_PAGE - 1);
 
       if (error) {
         console.warn('Past events fetch error:', error.message);
@@ -116,16 +118,16 @@ export default function PortalEvents() {
       }
       return {
         events: data as Event[],
-        hasMore: (count || 0) > (pageParam + 1) * EVENTS_PER_PAGE
+        hasMore: (count || 0) > (page + 1) * EVENTS_PER_PAGE
       };
     },
     getNextPageParam: (lastPage, pages) => lastPage.hasMore ? pages.length : undefined,
     retry: 1,
   });
   
-  const pastEvents = pastEventsData.pages.flatMap(p => p.events);
+  const pastEvents = pastEventsData?.pages.flatMap(p => p.events) || [];
 
-  const allUpcomingEvents = upcomingEvents.pages?.flatMap(p => p.events) || [];
+  const allUpcomingEvents = upcomingEventsData?.pages.flatMap(p => p.events) || [];
   const events = activeTab === 'upcoming' ? allUpcomingEvents : pastEvents;
 
   // Fetch RSVP counts for events using server-side aggregation
