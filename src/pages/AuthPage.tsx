@@ -109,6 +109,14 @@ export default function AuthPage() {
     }
   }, [clearFormFeedback, signInWithGoogle]);
 
+  const handleAppleSignIn = useCallback(async () => {
+    clearFormFeedback();
+    const { error } = await signInWithApple();
+    if (error) {
+      setFormError(error.message || 'Could not connect to Apple.');
+    }
+  }, [clearFormFeedback, signInWithApple]);
+
   // Real-time email validation
   const validateEmail = useCallback((value: string) => {
     if (!value) {
