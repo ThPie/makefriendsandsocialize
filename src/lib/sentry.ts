@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react';
 
 // Initialize Sentry
 export function initSentry() {
-  const dsn = import.meta.env.VITE_SENTRY_DSN;
+  const dsn = import.meta.env.VITE_SENTRY_DSN || 'https://cf8bbe3c67bf3ce60233665166599471@o4511056148299776.ingest.us.sentry.io/4511056164683776';
 
   if (!dsn) {
     if (import.meta.env.DEV) console.log('[Sentry] DSN not configured, error tracking disabled');
