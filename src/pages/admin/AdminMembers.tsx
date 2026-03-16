@@ -22,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { Loader2, Search, Crown, User, Shield } from 'lucide-react';
 import { format } from 'date-fns';
+import { AdminPagination } from '@/components/admin/AdminPagination';
 import { ScanHistoryTimeline } from '@/components/admin/ScanHistoryTimeline';
 
 interface Member {
