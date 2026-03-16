@@ -295,6 +295,7 @@ export function useAuth() {
       signUp: async () => ({ error: new Error('Auth not ready'), user: null }),
       signIn: async () => ({ error: new Error('Auth not ready') }),
       signInWithGoogle: async () => ({ error: new Error('Auth not ready') }),
+      signInWithApple: async () => ({ error: new Error('Auth not ready') }),
       signOut: async () => { },
       refreshProfile: async () => { },
       canAccessMatchmaking: false,
