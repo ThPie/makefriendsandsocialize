@@ -189,26 +189,27 @@ export default function PortalEvents() {
     enabled: !!user,
   });
 
-  // Fetch waitlist counts using server-side aggregation
+  // Fetch waitlist counts
   const { data: waitlistCounts = {} } = useQuery({
     queryKey: ['waitlist-counts', events.map(e => e.id)],
     queryFn: async () => {
       if (events.length === 0) return {};
 
       const eventIds = events.map(e => e.id);
-      const { data, error } = await supabase.rpc('get_event_waitlist_counts', {
-        event_ids: eventIds,
-      });
+      const { data, error } = await supabase
+        .from('event_waitlist')
+        .select('event_id')
+        .in('event_id', eventIds)
+        .eq('status', 'waiting');
 
       if (error) {
         console.warn('Waitlist counts fetch error:', error.message);
         return {};
       }
 
-      // Convert array response to object for easier lookup
       const counts: Record<string, number> = {};
       for (const row of data || []) {
-        counts[row.event_id] = row.waitlist_count;
+        counts[row.event_id] = (counts[row.event_id] || 0) + 1;
       }
       return counts;
     },
