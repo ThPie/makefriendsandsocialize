@@ -970,6 +970,41 @@ export default function AuthPage() {
               </div>
             )}
 
+            {/* Auth Method Toggle (Sign In only) */}
+            {mode === 'signin' && (
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => setAuthMethod('email')}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    authMethod === 'email'
+                      ? 'bg-primary/20 text-primary border border-primary/30'
+                      : 'bg-foreground/5 text-muted-foreground border border-foreground/10 hover:bg-foreground/10'
+                  }`}
+                >
+                  <Mail className="h-4 w-4" />
+                  Email
+                </button>
+                <button
+                  onClick={() => setAuthMethod('phone')}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    authMethod === 'phone'
+                      ? 'bg-primary/20 text-primary border border-primary/30'
+                      : 'bg-foreground/5 text-muted-foreground border border-foreground/10 hover:bg-foreground/10'
+                  }`}
+                >
+                  <Phone className="h-4 w-4" />
+                  Phone
+                </button>
+              </div>
+            )}
+
+            {mode === 'signin' && authMethod === 'phone' ? (
+              <PhoneOTPLogin
+                onSuccess={() => navigate('/portal/dashboard')}
+                onSwitchToEmail={() => setAuthMethod('email')}
+                disabled={isSubmitting}
+              />
+            ) : (
             <div className="space-y-4">
               {mode === 'signup' && (
                 <div className="grid grid-cols-2 gap-3">
@@ -1030,6 +1065,7 @@ export default function AuthPage() {
               </Button>
 
             </div>
+            )}
           </div>
         </div>
       </div>
