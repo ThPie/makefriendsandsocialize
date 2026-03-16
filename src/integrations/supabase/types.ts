@@ -3174,6 +3174,15 @@ export type Database = {
           job_title: string
         }[]
       }
+      get_dashboard_stats: {
+        Args: { _user_id: string }
+        Returns: {
+          badges: number
+          connections: number
+          unread_notifications: number
+          upcoming_events: number
+        }[]
+      }
       get_dating_profile_sensitive_data: {
         Args: { _dating_profile_id: string }
         Returns: {
