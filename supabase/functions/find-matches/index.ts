@@ -91,49 +91,42 @@ const passesDealbreakerCheck = (
   if (
     target.wants_children === "No, definitely not" &&
     candidate.wants_children?.includes("Yes")
-  ) {
-    console.log(`DEALBREAKER: ${target.display_name} doesn't want kids, ${candidate.display_name} does`);
-    return false;
-  }
+  ) return false;
   if (
     target.wants_children?.includes("Yes") &&
     candidate.wants_children === "No, definitely not"
-  ) {
-    console.log(`DEALBREAKER: ${target.display_name} wants kids, ${candidate.display_name} definitely doesn't`);
-    return false;
-  }
+  ) return false;
 
-  // Smoking dealbreaker (if specified in dealbreakers text)
+  // Smoking dealbreaker
   if (
-    target.dealbreakers?.toLowerCase().includes("smoker") &&
+    (target.dealbreakers?.toLowerCase().includes("smoker") ||
+     target.dealbreakers?.toLowerCase().includes("no smoking")) &&
     candidate.smoking_status === "Daily"
-  ) {
-    console.log(`DEALBREAKER: ${target.display_name} won't date smokers, ${candidate.display_name} smokes daily`);
-    return false;
-  }
+  ) return false;
+
+  // Drinking dealbreaker
   if (
-    target.dealbreakers?.toLowerCase().includes("no smoking") &&
-    candidate.smoking_status === "Daily"
-  ) {
-    console.log(`DEALBREAKER: ${target.display_name} won't date smokers, ${candidate.display_name} smokes daily`);
-    return false;
-  }
+    (target.dealbreakers?.toLowerCase().includes("heavy drink") ||
+     target.dealbreakers?.toLowerCase().includes("no drinking") ||
+     target.dealbreakers?.toLowerCase().includes("alcohol")) &&
+    candidate.drinking_status === "Heavy"
+  ) return false;
+  if (
+    (candidate.dealbreakers?.toLowerCase().includes("heavy drink") ||
+     candidate.dealbreakers?.toLowerCase().includes("no drinking") ||
+     candidate.dealbreakers?.toLowerCase().includes("alcohol")) &&
+    target.drinking_status === "Heavy"
+  ) return false;
 
   // Relationship type dealbreaker
   if (
     target.relationship_type === "Long-term relationship" &&
     candidate.relationship_type === "Casual dating"
-  ) {
-    console.log(`DEALBREAKER: Relationship type mismatch (${target.display_name} wants long-term, ${candidate.display_name} wants casual)`);
-    return false;
-  }
+  ) return false;
   if (
     target.relationship_type === "Casual dating" &&
     candidate.relationship_type === "Long-term relationship"
-  ) {
-    console.log(`DEALBREAKER: Relationship type mismatch (${target.display_name} wants casual, ${candidate.display_name} wants long-term)`);
-    return false;
-  }
+  ) return false;
 
   return true;
 };
