@@ -24,10 +24,10 @@ const footerLinks = {
     title: "CIRCLES",
     links: [
       { label: "The Gentlemen", href: "/circles/the-gentlemen" },
-      { label: "The Ladies Society", href: "/circles/the-ladies" },
+      { label: "The Ladies Society", href: "/circles/the-ladies-society" },
       { label: "Les Amis", href: "/circles/les-amis" },
       { label: "Couple's Circle", href: "/circles/couples-circle" },
-      { label: "Active & Outdoor", href: "/circles/the-pursuits" },
+      { label: "Active & Outdoor", href: "/circles/active-outdoor" },
       { label: "Founders Circle", href: "/founders-circle" },
       { label: "Slow Dating", href: "/slow-dating" },
     ],
