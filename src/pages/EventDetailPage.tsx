@@ -323,7 +323,7 @@ const EventDetailPage = () => {
                 {format(parseLocalDate(event.date), 'EEEE, MMMM d, yyyy')}
               </p>
               <Badge className={getTierBadgeColor(event.tier)}>
-                {event.tier.charAt(0).toUpperCase() + event.tier.slice(1)} Tier
+                {getTierDisplayName(event.tier)} Tier
               </Badge>
               {event.tags && event.tags[0] && (
                 <Badge variant="outline" className="text-xs uppercase tracking-wider">

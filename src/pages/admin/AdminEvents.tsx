@@ -674,9 +674,9 @@ export default function AdminEvents() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="patron">Patron</SelectItem>
-                        <SelectItem value="fellow">Fellow</SelectItem>
-                        <SelectItem value="founder">Founder</SelectItem>
+                        <SelectItem value="patron">Socialite</SelectItem>
+                        <SelectItem value="fellow">Insider</SelectItem>
+                        <SelectItem value="founder">Patron</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

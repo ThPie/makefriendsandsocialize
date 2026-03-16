@@ -58,7 +58,7 @@ export const EventCard = ({
         return (
             <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${colors[tier]}`}>
                 {tier === 'founder' && <Crown className="h-3 w-3" />}
-                {tier.charAt(0).toUpperCase() + tier.slice(1)} & Above
+                {getTierDisplayName(tier)} & Above
             </span>
         );
     };
