@@ -91,49 +91,42 @@ const passesDealbreakerCheck = (
   if (
     target.wants_children === "No, definitely not" &&
     candidate.wants_children?.includes("Yes")
-  ) {
-    console.log(`DEALBREAKER: ${target.display_name} doesn't want kids, ${candidate.display_name} does`);
-    return false;
-  }
+  ) return false;
   if (
     target.wants_children?.includes("Yes") &&
     candidate.wants_children === "No, definitely not"
-  ) {
-    console.log(`DEALBREAKER: ${target.display_name} wants kids, ${candidate.display_name} definitely doesn't`);
-    return false;
-  }
+  ) return false;
 
-  // Smoking dealbreaker (if specified in dealbreakers text)
+  // Smoking dealbreaker
   if (
-    target.dealbreakers?.toLowerCase().includes("smoker") &&
+    (target.dealbreakers?.toLowerCase().includes("smoker") ||
+     target.dealbreakers?.toLowerCase().includes("no smoking")) &&
     candidate.smoking_status === "Daily"
-  ) {
-    console.log(`DEALBREAKER: ${target.display_name} won't date smokers, ${candidate.display_name} smokes daily`);
-    return false;
-  }
+  ) return false;
+
+  // Drinking dealbreaker
   if (
-    target.dealbreakers?.toLowerCase().includes("no smoking") &&
-    candidate.smoking_status === "Daily"
-  ) {
-    console.log(`DEALBREAKER: ${target.display_name} won't date smokers, ${candidate.display_name} smokes daily`);
-    return false;
-  }
+    (target.dealbreakers?.toLowerCase().includes("heavy drink") ||
+     target.dealbreakers?.toLowerCase().includes("no drinking") ||
+     target.dealbreakers?.toLowerCase().includes("alcohol")) &&
+    candidate.drinking_status === "Heavy"
+  ) return false;
+  if (
+    (candidate.dealbreakers?.toLowerCase().includes("heavy drink") ||
+     candidate.dealbreakers?.toLowerCase().includes("no drinking") ||
+     candidate.dealbreakers?.toLowerCase().includes("alcohol")) &&
+    target.drinking_status === "Heavy"
+  ) return false;
 
   // Relationship type dealbreaker
   if (
     target.relationship_type === "Long-term relationship" &&
     candidate.relationship_type === "Casual dating"
-  ) {
-    console.log(`DEALBREAKER: Relationship type mismatch (${target.display_name} wants long-term, ${candidate.display_name} wants casual)`);
-    return false;
-  }
+  ) return false;
   if (
     target.relationship_type === "Casual dating" &&
     candidate.relationship_type === "Long-term relationship"
-  ) {
-    console.log(`DEALBREAKER: Relationship type mismatch (${target.display_name} wants casual, ${candidate.display_name} wants long-term)`);
-    return false;
-  }
+  ) return false;
 
   return true;
 };
@@ -353,12 +346,31 @@ serve(async (req) => {
     }
 
     // ============================================
+    // SKIP ALREADY-MATCHED CANDIDATES (saves AI calls)
+    // ============================================
+    const { data: existingMatches } = await supabase
+      .from("dating_matches")
+      .select("user_a_id, user_b_id")
+      .or(`user_a_id.eq.${profileId},user_b_id.eq.${profileId}`);
+
+    const alreadyMatchedIds = new Set(
+      (existingMatches || []).map(m =>
+        m.user_a_id === profileId ? m.user_b_id : m.user_a_id
+      )
+    );
+
+    const candidatesAfterDedup = candidatesAfterDealbreakers.filter(
+      (c: DatingProfile) => !alreadyMatchedIds.has(c.id)
+    );
+    console.log(`${candidatesAfterDedup.length} candidates after deduplication (skipped ${candidatesAfterDealbreakers.length - candidatesAfterDedup.length} already matched)`);
+
+    // ============================================
     // PROFILE COMPLETENESS FILTER
     // ============================================
     const targetCompleteness = getProfileCompleteness(targetProfile);
     console.log(`Target profile completeness: ${Math.round(targetCompleteness * 100)}%`);
 
-    const qualifiedCandidates = candidatesAfterDealbreakers.filter((candidate: DatingProfile) => {
+    const qualifiedCandidates = candidatesAfterDedup.filter((candidate: DatingProfile) => {
       const completeness = getProfileCompleteness(candidate);
       if (completeness < PROFILE_COMPLETENESS_THRESHOLD) {
         console.log(`Skipping ${candidate.display_name}: Profile only ${Math.round(completeness * 100)}% complete`);
@@ -564,7 +576,7 @@ Return JSON with:
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "google/gemini-2.5-pro",
+            model: "google/gemini-2.5-flash",
             messages: [
               { role: "system", content: "You are an expert matchmaker using Gottman Institute research. Always respond with valid JSON only." },
               { role: "user", content: prompt },

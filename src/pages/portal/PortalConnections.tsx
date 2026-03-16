@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Skeleton } from '@/components/ui/skeleton';
 import { ConnectionsLoadingSkeleton } from '@/components/ui/page-skeleton';
 import { toast } from 'sonner';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Loader2,
   Heart,
@@ -41,98 +40,82 @@ interface Connection {
 
 export default function PortalConnections() {
   const { user, canAccessMatchmaking, membership } = useAuth();
-  const [sentConnections, setSentConnections] = useState<Connection[]>([]);
-  const [receivedConnections, setReceivedConnections] = useState<Connection[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    if (canAccessMatchmaking && user) {
-      fetchConnections();
-    } else {
-      setIsLoading(false);
-    }
-  }, [canAccessMatchmaking, user]);
+  const { data: sentConnections = [], isLoading: sentLoading } = useQuery({
+    queryKey: ['connections-sent', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('connections')
+        .select(`
+          id, status, message, created_at, requester_id, requested_id,
+          profile:profiles!connections_requested_id_fkey(id, first_name, last_name, avatar_urls, signature_style)
+        `)
+        .eq('requester_id', user!.id)
+        .order('created_at', { ascending: false });
 
-  const fetchConnections = async () => {
-    if (!user) return;
+      if (error) throw error;
+      return (data as unknown as Connection[]) || [];
+    },
+    enabled: !!user && canAccessMatchmaking,
+  });
 
-    // Fetch sent connections
-    const { data: sent, error: sentError } = await supabase
-      .from('connections')
-      .select(`
-        id, status, message, created_at, requester_id, requested_id,
-        profile:profiles!connections_requested_id_fkey(id, first_name, last_name, avatar_urls, signature_style)
-      `)
-      .eq('requester_id', user.id)
-      .order('created_at', { ascending: false });
+  const { data: receivedConnections = [], isLoading: receivedLoading } = useQuery({
+    queryKey: ['connections-received', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('connections')
+        .select(`
+          id, status, message, created_at, requester_id, requested_id,
+          profile:profiles!connections_requester_id_fkey(id, first_name, last_name, avatar_urls, signature_style)
+        `)
+        .eq('requested_id', user!.id)
+        .order('created_at', { ascending: false });
 
-    // Fetch received connections
-    const { data: received, error: receivedError } = await supabase
-      .from('connections')
-      .select(`
-        id, status, message, created_at, requester_id, requested_id,
-        profile:profiles!connections_requester_id_fkey(id, first_name, last_name, avatar_urls, signature_style)
-      `)
-      .eq('requested_id', user.id)
-      .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data as unknown as Connection[]) || [];
+    },
+    enabled: !!user && canAccessMatchmaking,
+  });
 
-    if (sentError || receivedError) {
-      toast.error('Failed to load connections');
-      setIsLoading(false);
-      return;
-    }
+  const isLoading = sentLoading || receivedLoading;
 
-    setSentConnections((sent as unknown as Connection[]) || []);
-    setReceivedConnections((received as unknown as Connection[]) || []);
-    setIsLoading(false);
+  const invalidateConnections = () => {
+    queryClient.invalidateQueries({ queryKey: ['connections-sent'] });
+    queryClient.invalidateQueries({ queryKey: ['connections-received'] });
   };
 
-  const handleConnectionResponse = async (connectionId: string, accept: boolean) => {
-    setProcessingIds(prev => new Set([...prev, connectionId]));
+  const respondMutation = useMutation({
+    mutationFn: async ({ connectionId, accept }: { connectionId: string; accept: boolean }) => {
+      const { error } = await supabase
+        .from('connections')
+        .update({ status: accept ? 'accepted' : 'declined' })
+        .eq('id', connectionId);
+      if (error) throw error;
+      return accept;
+    },
+    onSuccess: (accept) => {
+      invalidateConnections();
+      toast.success(accept ? 'Introduction accepted!' : 'Introduction declined');
+    },
+    onError: () => toast.error('Failed to update connection'),
+  });
 
-    const { error } = await supabase
-      .from('connections')
-      .update({ status: accept ? 'accepted' : 'declined' })
-      .eq('id', connectionId);
-
-    setProcessingIds(prev => {
-      const newSet = new Set(prev);
-      newSet.delete(connectionId);
-      return newSet;
-    });
-
-    if (error) {
-      toast.error('Failed to update connection');
-      return;
-    }
-
-    toast.success(accept ? 'Introduction accepted!' : 'Introduction declined');
-    fetchConnections();
-  };
-
-  const handleWithdraw = async (connectionId: string) => {
-    setProcessingIds(prev => new Set([...prev, connectionId]));
-
-    const { error } = await supabase
-      .from('connections')
-      .delete()
-      .eq('id', connectionId);
-
-    setProcessingIds(prev => {
-      const newSet = new Set(prev);
-      newSet.delete(connectionId);
-      return newSet;
-    });
-
-    if (error) {
-      toast.error('Failed to withdraw request');
-      return;
-    }
-
-    toast.success('Introduction request withdrawn');
-    fetchConnections();
-  };
+  const withdrawMutation = useMutation({
+    mutationFn: async (connectionId: string) => {
+      const { error } = await supabase
+        .from('connections')
+        .delete()
+        .eq('id', connectionId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      invalidateConnections();
+      toast.success('Introduction request withdrawn');
+    },
+    onError: () => toast.error('Failed to withdraw request'),
+  });
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -296,18 +279,18 @@ export default function PortalConnections() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleConnectionResponse(connection.id, false)}
-                        disabled={processingIds.has(connection.id)}
+                        onClick={() => respondMutation.mutate({ connectionId: connection.id, accept: false })}
+                        disabled={respondMutation.isPending}
                       >
                         <X className="h-4 w-4 mr-1" />
                         Decline
                       </Button>
                       <Button
                         size="sm"
-                        onClick={() => handleConnectionResponse(connection.id, true)}
-                        disabled={processingIds.has(connection.id)}
+                        onClick={() => respondMutation.mutate({ connectionId: connection.id, accept: true })}
+                        disabled={respondMutation.isPending}
                       >
-                        {processingIds.has(connection.id) ? (
+                        {respondMutation.isPending ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
                           <>
@@ -371,10 +354,10 @@ export default function PortalConnections() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleWithdraw(connection.id)}
-                      disabled={processingIds.has(connection.id)}
+                      onClick={() => withdrawMutation.mutate(connection.id)}
+                      disabled={withdrawMutation.isPending}
                     >
-                      {processingIds.has(connection.id) ? (
+                      {withdrawMutation.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
                         'Withdraw'

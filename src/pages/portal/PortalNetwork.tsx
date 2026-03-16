@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
@@ -7,9 +6,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Search, Heart, Crown, ArrowRight, Filter, Users, Loader2 } from 'lucide-react';
 
 interface MemberProfile {
@@ -25,70 +25,49 @@ interface MemberProfile {
 
 export default function PortalNetwork() {
   const { user, canAccessMatchmaking, membership } = useAuth();
-  const [members, setMembers] = useState<MemberProfile[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInterest, setSelectedInterest] = useState<string | null>(null);
   const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null);
-  const [requestingIds, setRequestingIds] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    if (canAccessMatchmaking) {
-      fetchMembers();
-    } else {
-      setIsLoading(false);
-    }
-  }, [canAccessMatchmaking]);
+  const { data: members = [], isLoading } = useQuery({
+    queryKey: ['network-members', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, signature_style, avatar_urls, interests, industry, job_title')
+        .eq('is_visible', true)
+        .neq('id', user!.id);
 
-  const fetchMembers = async () => {
-    if (!user) return;
+      if (error) throw error;
+      return (data as MemberProfile[]) || [];
+    },
+    enabled: !!user && canAccessMatchmaking,
+  });
 
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id, first_name, last_name, signature_style, avatar_urls, interests, industry, job_title')
-      .eq('is_visible', true)
-      .neq('id', user.id);
+  const requestMutation = useMutation({
+    mutationFn: async (memberId: string) => {
+      const { error } = await supabase
+        .from('connections')
+        .insert({
+          requester_id: user!.id,
+          requested_id: memberId,
+          status: 'pending',
+        });
 
-    if (error) {
-      toast.error('Failed to load members');
-      setIsLoading(false);
-      return;
-    }
-
-    setMembers((data as MemberProfile[]) || []);
-    setIsLoading(false);
-  };
-
-  const handleRequestIntroduction = async (memberId: string) => {
-    if (!user) return;
-
-    setRequestingIds(prev => new Set([...prev, memberId]));
-
-    const { error } = await supabase
-      .from('connections')
-      .insert({
-        requester_id: user.id,
-        requested_id: memberId,
-        status: 'pending',
-      });
-
-    setRequestingIds(prev => {
-      const newSet = new Set(prev);
-      newSet.delete(memberId);
-      return newSet;
-    });
-
-    if (error) {
-      if (error.code === '23505') {
-        toast.error('You have already requested an introduction');
-      } else {
-        toast.error('Failed to request introduction');
+      if (error) {
+        if (error.code === '23505') {
+          throw new Error('You have already requested an introduction');
+        }
+        throw error;
       }
-      return;
-    }
-
-    toast.success('Introduction requested successfully');
-  };
+    },
+    onSuccess: () => {
+      toast.success('Introduction requested successfully');
+      queryClient.invalidateQueries({ queryKey: ['connections-sent'] });
+    },
+    onError: (error: Error) => toast.error(error.message || 'Failed to request introduction'),
+  });
 
   // Get unique interests and industries from all members
   const allInterests = [...new Set(members.flatMap(m => m.interests || []))];
@@ -339,10 +318,10 @@ export default function PortalNetwork() {
                   variant="outline"
                   size="sm"
                   className="w-full"
-                  onClick={() => handleRequestIntroduction(member.id)}
-                  disabled={requestingIds.has(member.id)}
+                  onClick={() => requestMutation.mutate(member.id)}
+                  disabled={requestMutation.isPending}
                 >
-                  {requestingIds.has(member.id) ? (
+                  {requestMutation.isPending ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <>
