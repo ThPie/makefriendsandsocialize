@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { getTierDisplayName } from '@/lib/tier-utils';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -197,7 +198,7 @@ export default function AdminMembers() {
                           {member.membership.tier === 'founder' && (
                             <Crown className="h-3 w-3 mr-1" />
                           )}
-                          {member.membership.tier}
+                          {getTierDisplayName(member.membership.tier)}
                         </Badge>
                       )}
                       <Badge
@@ -330,9 +331,9 @@ export default function AdminMembers() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="patron">Patron</SelectItem>
-                          <SelectItem value="fellow">Fellow</SelectItem>
-                          <SelectItem value="founder">Founder</SelectItem>
+                          <SelectItem value="patron">Socialite</SelectItem>
+                          <SelectItem value="fellow">Insider</SelectItem>
+                          <SelectItem value="founder">Patron</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { getTierDisplayName } from '@/lib/tier-utils';
 import { format } from 'date-fns';
 import { AddToCalendarButton } from '@/components/events/AddToCalendarButton';
 import { parseLocalDate } from '@/lib/date-utils';
@@ -323,7 +324,7 @@ const EventDetailPage = () => {
                 {format(parseLocalDate(event.date), 'EEEE, MMMM d, yyyy')}
               </p>
               <Badge className={getTierBadgeColor(event.tier)}>
-                {event.tier.charAt(0).toUpperCase() + event.tier.slice(1)} Tier
+                {getTierDisplayName(event.tier)} Tier
               </Badge>
               {event.tags && event.tags[0] && (
                 <Badge variant="outline" className="text-xs uppercase tracking-wider">

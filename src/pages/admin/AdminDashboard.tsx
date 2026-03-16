@@ -199,9 +199,9 @@ export default function AdminDashboard() {
         </h2>
         <div className="grid grid-cols-3 gap-4">
           {[
-            { label: 'Patron', count: stats?.tierBreakdown.patron ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
-            { label: 'Fellow', count: stats?.tierBreakdown.fellow ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
-            { label: 'Founder', count: stats?.tierBreakdown.founder ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
+            { label: 'Socialite', count: stats?.tierBreakdown.patron ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
+            { label: 'Insider', count: stats?.tierBreakdown.fellow ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
+            { label: 'Patron', count: stats?.tierBreakdown.founder ?? 0, color: 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]' },
           ].map((tier) => (
             <div
               key={tier.label}
