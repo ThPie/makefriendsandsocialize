@@ -44,7 +44,7 @@ const defaultAvatars = [
 export default function AuthPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, signUp, signIn, signInWithGoogle, isLoading } = useAuth();
+  const { user, signUp, signIn, signInWithGoogle, signInWithApple, isLoading } = useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [authMethod, setAuthMethod] = useState<'email' | 'phone'>('email');
   const [step, setStep] = useState(1);
