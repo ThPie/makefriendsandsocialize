@@ -91,7 +91,7 @@ export default function AdminTestimonials() {
     try {
       const { data, error } = await supabase
         .from('testimonials')
-        .select('*')
+        .select('id, author_name, role, quote, rating, source, image_url, is_approved, is_featured, created_at, external_id, external_url')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
