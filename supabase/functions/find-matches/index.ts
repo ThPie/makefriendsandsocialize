@@ -346,6 +346,25 @@ serve(async (req) => {
     }
 
     // ============================================
+    // SKIP ALREADY-MATCHED CANDIDATES (saves AI calls)
+    // ============================================
+    const { data: existingMatches } = await supabase
+      .from("dating_matches")
+      .select("user_a_id, user_b_id")
+      .or(`user_a_id.eq.${profileId},user_b_id.eq.${profileId}`);
+
+    const alreadyMatchedIds = new Set(
+      (existingMatches || []).map(m =>
+        m.user_a_id === profileId ? m.user_b_id : m.user_a_id
+      )
+    );
+
+    const candidatesAfterDedup = candidatesAfterDealbreakers.filter(
+      (c: DatingProfile) => !alreadyMatchedIds.has(c.id)
+    );
+    console.log(`${candidatesAfterDedup.length} candidates after deduplication (skipped ${candidatesAfterDealbreakers.length - candidatesAfterDedup.length} already matched)`);
+
+    // ============================================
     // PROFILE COMPLETENESS FILTER
     // ============================================
     const targetCompleteness = getProfileCompleteness(targetProfile);
