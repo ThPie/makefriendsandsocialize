@@ -267,6 +267,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signUp,
         signIn,
         signInWithGoogle,
+        signInWithApple,
         signOut,
         refreshProfile,
         canAccessMatchmaking,
