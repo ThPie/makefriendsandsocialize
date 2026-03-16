@@ -96,21 +96,14 @@ export default function PortalSlowDating() {
     queryFn: async () => {
       if (!profile?.id) return [];
 
-      // Get matches where user is either user_a or user_b
-      const { data: matchesA, error: errorA } = await supabase
+      // Get matches where user is either user_a or user_b — single query
+      const { data: allMatches, error } = await supabase
         .from('dating_matches')
-        .select('*')
-        .eq('user_a_id', profile.id);
+        .select('id, compatibility_score, match_reason, match_dimensions, status, meeting_status, meeting_date, meeting_time, user_a_response, user_b_response, user_a_id, user_b_id, created_at')
+        .or(`user_a_id.eq.${profile.id},user_b_id.eq.${profile.id}`);
 
-      const { data: matchesB, error: errorB } = await supabase
-        .from('dating_matches')
-        .select('*')
-        .eq('user_b_id', profile.id);
-
-      if (errorA) throw errorA;
-      if (errorB) throw errorB;
-
-      const allMatches = [...(matchesA || []), ...(matchesB || [])];
+      if (error) throw error;
+      if (!allMatches || allMatches.length === 0) return [];
 
       // Batch fetch all matched profile IDs in a single query (fixes N+1 problem)
       const profileIds = allMatches.map(m =>
