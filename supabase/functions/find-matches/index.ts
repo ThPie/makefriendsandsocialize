@@ -559,9 +559,41 @@ Return JSON with:
 - \"reason\": 2-3 sentence explanation (do NOT reveal specific personal details)`;
     };
 
-    // Process a single candidate with AI
+    // Process a single candidate with AI (with caching)
     const processCandidate = async (candidate: DatingProfile): Promise<MatchResult | null> => {
       try {
+        const startTime = Date.now();
+        
+        // Check cache first
+        const { data: cachedResult } = await supabase.rpc('get_cached_match_score', {
+          p_profile_a_id: profileId,
+          p_profile_b_id: candidate.id,
+          p_profile_a_updated_at: targetProfile.updated_at,
+          p_profile_b_updated_at: candidate.updated_at,
+        });
+
+        if (cachedResult && cachedResult.length > 0 && cachedResult[0].is_valid) {
+          console.log(`Using cached result for ${candidate.display_name}: ${cachedResult[0].ai_score}%`);
+          const cached = cachedResult[0];
+          if (cached.ai_score >= 60) {
+            return {
+              candidateId: candidate.id,
+              score: cached.ai_score,
+              gottmanScore: cached.ai_gottman_score || cached.ai_score,
+              confidence: cached.ai_confidence || 70,
+              reason: cached.ai_reason || "Cached compatibility analysis",
+              dimensions: cached.ai_dimensions || {
+                communication: cached.ai_gottman_score || cached.ai_score,
+                values: cached.ai_score,
+                goals: cached.ai_score,
+                lifestyle: cached.ai_score,
+                redFlags: 80,
+              },
+            };
+          }
+          return null;
+        }
+
         const sharedValues = getSharedValues(
           targetProfile.core_values_ranked,
           candidate.core_values_ranked
@@ -585,8 +617,22 @@ Return JSON with:
           }),
         });
 
+        const responseTime = Date.now() - startTime;
+
         if (!response.ok) {
           console.error(`AI API error for candidate ${candidate.id}:`, await response.text());
+          // Log failed API call
+          try {
+            await supabase.from('ai_api_calls').insert({
+              profile_id: profileId,
+              candidate_id: candidate.id,
+              success: false,
+              error_message: `HTTP ${response.status}`,
+              response_time_ms: responseTime,
+            });
+          } catch (e) {
+            console.log('Could not log API call');
+          }
           return null;
         }
 
@@ -609,6 +655,35 @@ Return JSON with:
         };
 
         console.log(`${candidate.display_name}: ${score}% (Gottman: ${gottmanScore}%, Confidence: ${confidence}%) - ${reason}`);
+
+        // Cache the result
+        try {
+          await supabase.rpc('cache_match_score', {
+            p_profile_a_id: profileId,
+            p_profile_b_id: candidate.id,
+            p_ai_score: score,
+            p_ai_gottman_score: gottmanScore,
+            p_ai_confidence: confidence,
+            p_ai_dimensions: dimensions,
+            p_ai_reason: reason,
+            p_profile_a_updated_at: targetProfile.updated_at,
+            p_profile_b_updated_at: candidate.updated_at,
+          });
+        } catch (e) {
+          console.log('Could not cache AI result');
+        }
+
+        // Log successful API call
+        try {
+          await supabase.from('ai_api_calls').insert({
+            profile_id: profileId,
+            candidate_id: candidate.id,
+            success: true,
+            response_time_ms: responseTime,
+          });
+        } catch (e) {
+          console.log('Could not log API call');
+        }
 
         // 60% threshold - provides foundation, real connection happens in person
         if (score >= 60) {

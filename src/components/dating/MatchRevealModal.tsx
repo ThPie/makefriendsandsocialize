@@ -78,7 +78,19 @@ export const MatchRevealModal = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-3 pt-4">
+        <div className="space-y-4 pt-4">
+          {/* Compatibility explanation */}
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+              <Zap className="h-4 w-4 text-primary" />
+              What's This Score?
+            </h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Our AI matchmaker analyzed {compatibilityScore}% compatibility based on your shared values, communication styles, life goals, and relationship expectations using Gottman Institute research. This score indicates potential for a meaningful connection, but real chemistry happens in conversation!
+            </p>
+          </div>
+
+          <div className="space-y-3">
           {/* Use existing credits */}
           {availableReveals > 0 && (
             <button
@@ -170,6 +182,14 @@ export const MatchRevealModal = ({
               <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">Cancel anytime</span>
             </div>
           </button>
+          </div>
+        </div>
+
+        {/* Transparency footer */}
+        <div className="bg-muted/30 rounded-lg p-3 mt-2">
+          <p className="text-xs text-muted-foreground text-center">
+            💡 <strong>Pro tip:</strong> High scores don't guarantee chemistry—they just mean our algorithm thinks you'd have great conversations. The real magic happens when you meet!
+          </p>
         </div>
 
         {/* Action button */}

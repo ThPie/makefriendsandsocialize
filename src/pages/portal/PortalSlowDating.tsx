@@ -91,7 +91,7 @@ export default function PortalSlowDating() {
   });
 
   // Fetch user's matches
-  const { data: matches, isLoading: matchesLoading } = useQuery({
+  const { data: matches, isLoading: matchesLoading, error: matchesError } = useQuery({
     queryKey: ['my-dating-matches', profile?.id],
     queryFn: async () => {
       if (!profile?.id) return [];
@@ -102,7 +102,10 @@ export default function PortalSlowDating() {
         .select('id, compatibility_score, match_reason, match_dimensions, status, meeting_status, meeting_date, meeting_time, user_a_response, user_b_response, user_a_id, user_b_id, created_at')
         .or(`user_a_id.eq.${profile.id},user_b_id.eq.${profile.id}`);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching matches:', error);
+        throw new Error('Failed to load your matches. Please try again.');
+      }
       if (!allMatches || allMatches.length === 0) return [];
 
       // Batch fetch all matched profile IDs in a single query (fixes N+1 problem)
@@ -116,7 +119,10 @@ export default function PortalSlowDating() {
         .select('id, display_name, photo_url, age, gender, location, occupation, bio')
         .in('id', profileIds);
 
-      if (profilesError) throw profilesError;
+      if (profilesError) {
+        console.error('Error fetching matched profiles:', profilesError);
+        throw new Error('Failed to load match details. Please try again.');
+      }
 
       // Create lookup map for O(1) access
       const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
@@ -176,6 +182,39 @@ export default function PortalSlowDating() {
   const revealedMatches = matches?.filter(m => m.status === 'mutual_yes') || [];
   const endedMatches = matches?.filter(m => m.status === 'declined') || [];
 
+  // Show loading skeleton for matches if still loading
+  if (matchesLoading && !profileLoading && !matchesError) {
+    return (
+      <div className="space-y-12">
+        <div>
+          <h1 className="text-3xl font-display font-light text-foreground mb-2">Slow Dating</h1>
+          <p className="text-muted-foreground">Loading your matches...</p>
+        </div>
+        <div className="space-y-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="rounded-xl border border-border bg-card p-4 space-y-4 animate-in fade-in duration-300" style={{ animationDelay: `${i * 100}ms` }}>
+              <div className="flex items-start gap-4">
+                <Skeleton className="h-32 w-32 rounded-lg skeleton-shimmer flex-shrink-0" />
+                <div className="flex-1 space-y-3">
+                  <Skeleton className="h-6 w-40 skeleton-shimmer" />
+                  <Skeleton className="h-4 w-32 skeleton-shimmer" />
+                  <div className="flex gap-2 pt-2">
+                    <Skeleton className="h-8 w-16 rounded-full skeleton-shimmer" />
+                    <Skeleton className="h-8 w-20 rounded-full skeleton-shimmer" />
+                  </div>
+                  <div className="flex gap-2 pt-4">
+                    <Skeleton className="h-10 flex-1 rounded-lg skeleton-shimmer" />
+                    <Skeleton className="h-10 flex-1 rounded-lg skeleton-shimmer" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   const handleRevealClick = (match: { id: string; compatibility_score: number }) => {
     setSelectedMatchForReveal({ id: match.id, score: match.compatibility_score });
     setRevealModalOpen(true);
@@ -186,24 +225,83 @@ export default function PortalSlowDating() {
     setSelectedMatchForReveal(null);
   };
 
+  // Show error state if matches failed to load
+  if (matchesError && !matchesLoading) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-display font-light text-foreground mb-2">Slow Dating</h1>
+          <p className="text-muted-foreground">Handpicked matchmaking for meaningful connections</p>
+        </div>
+        <Card className="border-destructive/50 bg-destructive/5">
+          <CardContent className="p-8">
+            <div className="flex items-start gap-4">
+              <XCircle className="h-6 w-6 text-destructive flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold text-destructive mb-2">Unable to Load Matches</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {matchesError.message || 'We encountered an error while loading your matches. Please try refreshing the page.'}
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.reload()}
+                >
+                  Refresh Page
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (profileLoading) {
     return (
       <div className="space-y-8 animate-in fade-in duration-300">
-        <Skeleton className="h-8 w-48" />
+        {/* Page title skeleton */}
+        <Skeleton className="h-8 w-48 skeleton-shimmer" />
+        
+        {/* Profile status card skeleton */}
         <div className="rounded-xl border border-border bg-card p-6 space-y-4">
           <div className="flex items-start gap-6">
-            <Skeleton className="h-20 w-20 rounded-full" />
+            <Skeleton className="h-20 w-20 rounded-full skeleton-shimmer" />
             <div className="flex-1 space-y-3">
-              <Skeleton className="h-6 w-40" />
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-8 w-24 rounded-full" />
+              <Skeleton className="h-6 w-40 skeleton-shimmer" />
+              <Skeleton className="h-4 w-32 skeleton-shimmer" />
+              <Skeleton className="h-8 w-24 rounded-full skeleton-shimmer" />
             </div>
           </div>
         </div>
-        <Skeleton className="h-6 w-32" />
+        
+        {/* Section heading skeleton */}
+        <Skeleton className="h-6 w-32 skeleton-shimmer" />
+        
+        {/* Match cards grid skeleton */}
         <div className="grid gap-6 md:grid-cols-2">
-          <Skeleton className="h-48 rounded-xl" />
-          <Skeleton className="h-48 rounded-xl" />
+          <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+            <Skeleton className="h-48 rounded-lg skeleton-shimmer" />
+            <div className="space-y-2">
+              <Skeleton className="h-5 w-3/4 skeleton-shimmer" />
+              <Skeleton className="h-4 w-1/2 skeleton-shimmer" />
+            </div>
+            <div className="flex gap-2">
+              <Skeleton className="h-10 flex-1 rounded-lg skeleton-shimmer" />
+              <Skeleton className="h-10 flex-1 rounded-lg skeleton-shimmer" />
+            </div>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 space-y-4">
+            <Skeleton className="h-48 rounded-lg skeleton-shimmer" />
+            <div className="space-y-2">
+              <Skeleton className="h-5 w-3/4 skeleton-shimmer" />
+              <Skeleton className="h-4 w-1/2 skeleton-shimmer" />
+            </div>
+            <div className="flex gap-2">
+              <Skeleton className="h-10 flex-1 rounded-lg skeleton-shimmer" />
+              <Skeleton className="h-10 flex-1 rounded-lg skeleton-shimmer" />
+            </div>
+          </div>
         </div>
       </div>
     );

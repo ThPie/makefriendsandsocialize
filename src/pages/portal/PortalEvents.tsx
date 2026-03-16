@@ -18,7 +18,7 @@ import { toast } from 'sonner';
 import { Calendar, MapPin, Clock, Crown, Users, ArrowRight, AlertCircle, ImageIcon, Clock3 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { parseLocalDate } from '@/lib/date-utils';
 import { EventAttendeePreview } from '@/components/portal/EventAttendeePreview';
 import { EventPhotoGallery } from '@/components/portal/EventPhotoGallery';
@@ -62,74 +62,90 @@ export default function PortalEvents() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const [activeTab, setActiveTab] = useState('upcoming');
+  const [upcomingPage, setUpcomingPage] = useState(0);
+  const [pastPage, setPastPage] = useState(0);
+  const EVENTS_PER_PAGE = 6;
 
-  // Fetch upcoming events
-  const { data: upcomingEvents = [], isLoading: eventsLoading } = useQuery({
+  // Fetch upcoming events with pagination
+  const { data: upcomingEvents = [], isLoading: eventsLoading, hasNextPage: upcomingHasMore, fetchNextPage: fetchUpcomingNext, isFetchingNextPage: upcomingFetching } = useInfiniteQuery({
     queryKey: ['portal-events-upcoming'],
-    queryFn: async () => {
+    queryFn: async ({ pageParam = 0 }) => {
       const now = new Date();
       const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from('events')
-        .select('*')
+        .select('*', { count: 'exact' })
         .in('status', ['upcoming', 'published'])
         .gte('date', today)
-        .order('date', { ascending: true });
+        .order('date', { ascending: true })
+        .range(pageParam * EVENTS_PER_PAGE, (pageParam + 1) * EVENTS_PER_PAGE - 1);
 
       if (error) {
         console.warn('Events fetch error:', error.message);
-        return [];
+        return { events: [], hasMore: false };
       }
-      return data as Event[];
+      return { 
+        events: data as Event[],
+        hasMore: (count || 0) > (pageParam + 1) * EVENTS_PER_PAGE
+      };
     },
+    getNextPageParam: (lastPage, pages) => lastPage.hasMore ? pages.length : undefined,
     retry: 1,
   });
 
-  // Fetch past events
-  const { data: pastEvents = [], isLoading: pastEventsLoading } = useQuery({
+  // Fetch past events with pagination
+  const { data: pastEventsData = { pages: [] }, isLoading: pastEventsLoading, hasNextPage: pastHasMore, fetchNextPage: fetchPastNext, isFetchingNextPage: pastFetching } = useInfiniteQuery({
     queryKey: ['portal-events-past'],
-    queryFn: async () => {
+    queryFn: async ({ pageParam = 0 }) => {
       const now = new Date();
       const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
-      const { data, error } = await supabase
+      const { data, error, count } = await supabase
         .from('events')
-        .select('*')
+        .select('*', { count: 'exact' })
         .or(`status.eq.past,date.lt.${today}`)
         .order('date', { ascending: false })
-        .limit(12);
+        .range(pageParam * EVENTS_PER_PAGE, (pageParam + 1) * EVENTS_PER_PAGE - 1);
 
       if (error) {
         console.warn('Past events fetch error:', error.message);
-        return [];
+        return { events: [], hasMore: false };
       }
-      return data as Event[];
+      return {
+        events: data as Event[],
+        hasMore: (count || 0) > (pageParam + 1) * EVENTS_PER_PAGE
+      };
     },
+    getNextPageParam: (lastPage, pages) => lastPage.hasMore ? pages.length : undefined,
     retry: 1,
   });
+  
+  const pastEvents = pastEventsData.pages.flatMap(p => p.events);
 
-  const events = activeTab === 'upcoming' ? upcomingEvents : pastEvents;
+  const allUpcomingEvents = upcomingEvents.pages?.flatMap(p => p.events) || [];
+  const events = activeTab === 'upcoming' ? allUpcomingEvents : pastEvents;
 
-  // Fetch RSVP counts for events — single batch query instead of N+1
+  // Fetch RSVP counts for events using server-side aggregation
   const { data: rsvpCounts = {} } = useQuery({
     queryKey: ['event-rsvp-counts', events.map(e => e.id)],
     queryFn: async () => {
       if (events.length === 0) return {};
 
       const eventIds = events.map(e => e.id);
-      const { data, error } = await supabase
-        .from('event_rsvps')
-        .select('event_id')
-        .in('event_id', eventIds)
-        .eq('status', 'confirmed');
+      const { data, error } = await supabase.rpc('get_event_rsvp_counts', {
+        event_ids: eventIds,
+      });
 
-      if (error) return {};
+      if (error) {
+        console.warn('RSVP counts fetch error:', error.message);
+        return {};
+      }
 
-      // Count client-side
+      // Convert array response to object for easier lookup
       const counts: Record<string, number> = {};
       for (const row of data || []) {
-        counts[row.event_id] = (counts[row.event_id] || 0) + 1;
+        counts[row.event_id] = row.rsvp_count;
       }
       return counts;
     },
@@ -168,31 +184,33 @@ export default function PortalEvents() {
     enabled: !!user,
   });
 
-  // Fetch waitlist counts — single batch query
+  // Fetch waitlist counts using server-side aggregation
   const { data: waitlistCounts = {} } = useQuery({
     queryKey: ['waitlist-counts', events.map(e => e.id)],
     queryFn: async () => {
       if (events.length === 0) return {};
 
       const eventIds = events.map(e => e.id);
-      const { data, error } = await supabase
-        .from('event_waitlist')
-        .select('event_id')
-        .in('event_id', eventIds)
-        .eq('status', 'waiting');
+      const { data, error } = await supabase.rpc('get_event_waitlist_counts', {
+        event_ids: eventIds,
+      });
 
-      if (error) return {};
+      if (error) {
+        console.warn('Waitlist counts fetch error:', error.message);
+        return {};
+      }
 
+      // Convert array response to object for easier lookup
       const counts: Record<string, number> = {};
       for (const row of data || []) {
-        counts[row.event_id] = (counts[row.event_id] || 0) + 1;
+        counts[row.event_id] = row.waitlist_count;
       }
       return counts;
     },
     enabled: events.length > 0,
   });
 
-  // RSVP mutation
+  // RSVP mutation with optimistic updates
   const rsvpMutation = useMutation({
     mutationFn: async ({ eventId, action }: { eventId: string; action: 'rsvp' | 'cancel' }) => {
       if (action === 'rsvp') {
@@ -224,6 +242,20 @@ export default function PortalEvents() {
         // by database triggers on the server-side.
       }
     },
+    onMutate: async ({ eventId, action }) => {
+      await queryClient.cancelQueries({ queryKey: ['user-rsvps'] });
+      await queryClient.cancelQueries({ queryKey: ['event-rsvp-counts'] });
+      const previousRsvps = queryClient.getQueryData(['user-rsvps']);
+      const previousCounts = queryClient.getQueryData(['event-rsvp-counts']);
+      if (action === 'rsvp') {
+        queryClient.setQueryData(['user-rsvps'], (old: any) => [...old, { event_id: eventId, status: 'confirmed' }]);
+        queryClient.setQueryData(['event-rsvp-counts'], (old: any) => ({ ...old, [eventId]: (old[eventId] || 0) + 1 }));
+      } else {
+        queryClient.setQueryData(['user-rsvps'], (old: any) => old.filter((r: any) => r.event_id !== eventId));
+        queryClient.setQueryData(['event-rsvp-counts'], (old: any) => ({ ...old, [eventId]: Math.max(0, (old[eventId] || 0) - 1) }));
+      }
+      return { previousRsvps, previousCounts };
+    },
     onSuccess: (_, { action }) => {
       queryClient.invalidateQueries({ queryKey: ['user-rsvps'] });
       queryClient.invalidateQueries({ queryKey: ['event-rsvp-counts'] });
@@ -231,7 +263,9 @@ export default function PortalEvents() {
       queryClient.invalidateQueries({ queryKey: ['user-waitlist'] });
       toast.success(action === 'rsvp' ? 'RSVP confirmed! We\'ll see you there.' : 'RSVP cancelled');
     },
-    onError: (error: any) => {
+    onError: (error: any, _, context: any) => {
+      if (context?.previousRsvps) queryClient.setQueryData(['user-rsvps'], context.previousRsvps);
+      if (context?.previousCounts) queryClient.setQueryData(['event-rsvp-counts'], context.previousCounts);
       toast.error(error.message || 'Failed to update RSVP');
     },
   });
@@ -262,12 +296,28 @@ export default function PortalEvents() {
         if (error) throw error;
       }
     },
+    onMutate: async ({ eventId, action }) => {
+      await queryClient.cancelQueries({ queryKey: ['user-waitlist'] });
+      await queryClient.cancelQueries({ queryKey: ['waitlist-counts'] });
+      const previousWaitlist = queryClient.getQueryData(['user-waitlist']);
+      const previousCounts = queryClient.getQueryData(['waitlist-counts']);
+      if (action === 'join') {
+        queryClient.setQueryData(['user-waitlist'], (old: any) => [...old, { event_id: eventId, position: (old?.length || 0) + 1, status: 'waiting' }]);
+        queryClient.setQueryData(['waitlist-counts'], (old: any) => ({ ...old, [eventId]: (old[eventId] || 0) + 1 }));
+      } else {
+        queryClient.setQueryData(['user-waitlist'], (old: any) => old.filter((w: any) => w.event_id !== eventId));
+        queryClient.setQueryData(['waitlist-counts'], (old: any) => ({ ...old, [eventId]: Math.max(0, (old[eventId] || 0) - 1) }));
+      }
+      return { previousWaitlist, previousCounts };
+    },
     onSuccess: (_, { action }) => {
       queryClient.invalidateQueries({ queryKey: ['user-waitlist'] });
       queryClient.invalidateQueries({ queryKey: ['waitlist-counts'] });
       toast.success(action === 'join' ? 'You\'ve been added to the waitlist!' : 'Removed from waitlist');
     },
-    onError: (error: any) => {
+    onError: (error: any, _, context: any) => {
+      if (context?.previousWaitlist) queryClient.setQueryData(['user-waitlist'], context.previousWaitlist);
+      if (context?.previousCounts) queryClient.setQueryData(['waitlist-counts'], context.previousCounts);
       toast.error(error.message || 'Failed to update waitlist');
     },
   });
@@ -350,7 +400,7 @@ export default function PortalEvents() {
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="upcoming">Upcoming ({upcomingEvents.length})</TabsTrigger>
+          <TabsTrigger value="upcoming">Upcoming ({allUpcomingEvents.length})</TabsTrigger>
           <TabsTrigger value="past">
             <ImageIcon className="h-4 w-4 mr-1" />
             Past Events ({pastEvents.length})
@@ -377,24 +427,37 @@ export default function PortalEvents() {
               </Button>
             </Card>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2">
-              {upcomingEvents.map((event) => (
-                <EventCard
-                  key={event.id}
-                  event={event}
-                  canAccess={canAccessEvent(event.tier)}
-                  isRSVPd={isUserRSVPd(event.id)}
-                  isFull={isEventFull(event)}
-                  attending={rsvpCounts[event.id] || 0}
-                  waitlistCount={waitlistCounts[event.id] || 0}
-                  waitlistEntry={getUserWaitlistEntry(event.id)}
-                  isRSVPPending={rsvpMutation.isPending}
-                  isWaitlistPending={waitlistMutation.isPending}
-                  onRSVP={handleRSVP}
-                  onLeaveWaitlist={handleLeaveWaitlist}
-                  onClaimSpot={handleClaimSpot}
-                />
-              ))}
+            <div className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
+                {allUpcomingEvents.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    canAccess={canAccessEvent(event.tier)}
+                    isRSVPd={isUserRSVPd(event.id)}
+                    isFull={isEventFull(event)}
+                    attending={rsvpCounts[event.id] || 0}
+                    waitlistCount={waitlistCounts[event.id] || 0}
+                    waitlistEntry={getUserWaitlistEntry(event.id)}
+                    isRSVPPending={rsvpMutation.isPending}
+                    isWaitlistPending={waitlistMutation.isPending}
+                    onRSVP={handleRSVP}
+                    onLeaveWaitlist={handleLeaveWaitlist}
+                    onClaimSpot={handleClaimSpot}
+                  />
+                ))}
+              </div>
+              {upcomingHasMore && (
+                <div className="flex justify-center pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => fetchUpcomingNext()}
+                    disabled={upcomingFetching}
+                  >
+                    {upcomingFetching ? 'Loading...' : 'Load More Events'}
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </TabsContent>
@@ -413,10 +476,23 @@ export default function PortalEvents() {
               <p className="text-muted-foreground">Event memories will appear here after they happen!</p>
             </Card>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {pastEvents.map((event) => (
-                <PastEventCard key={event.id} event={event} />
-              ))}
+            <div className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {pastEvents.map((event) => (
+                  <PastEventCard key={event.id} event={event} />
+                ))}
+              </div>
+              {pastHasMore && (
+                <div className="flex justify-center pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => fetchPastNext()}
+                    disabled={pastFetching}
+                  >
+                    {pastFetching ? 'Loading...' : 'Load More Past Events'}
+                  </Button>
+                </div>
+              )}
             </div>
           )}
         </TabsContent>
