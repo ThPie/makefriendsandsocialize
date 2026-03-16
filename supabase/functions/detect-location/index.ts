@@ -96,39 +96,6 @@ serve(async (req) => {
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-    
-    console.log('ip-api.com response:', data);
-
-    if (data.status === 'fail') {
-      console.error('ip-api.com error:', data.message);
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: data.message || 'Geolocation lookup failed',
-          country: null,
-          state: null,
-          city: null,
-          isVpn: false
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // VPN detection: proxy flag OR hosting flag (datacenter IPs are often VPNs)
-    const isVpn = data.proxy === true || data.hosting === true;
-    
-    console.log('VPN detection:', { proxy: data.proxy, hosting: data.hosting, isVpn });
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        country: data.country || null,
-        state: data.regionName || null,
-        city: data.city || null,
-        isVpn: isVpn
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
 
   } catch (error) {
     console.error('Error in detect-location function:', error);
