@@ -140,6 +140,7 @@ export const MainRoutes = () => (
         <Route path="/circles/the-partners" element={<Layout><ThePartnersPage /></Layout>} />
         <Route path="/circles/couples-circle" element={<Layout><ThePartnersPage /></Layout>} />
         <Route path="/circles/the-pursuits" element={<Layout><ThePursuitsPage /></Layout>} />
+        <Route path="/circles/active-outdoor" element={<Layout><ThePursuitsPage /></Layout>} />
         <Route path="/circles/the-exchange" element={<Layout><TheExchangePage /></Layout>} />
         <Route path="/become-a-host" element={<Layout><HostApplicationPage /></Layout>} />
         <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
