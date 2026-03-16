@@ -265,7 +265,7 @@ export const BlurredMatchCard = ({
               </div>
             )}
 
-            {/* Match Reason - Show generic teaser before reveal for privacy */}
+            {/* Match Reason - Dynamic teaser before reveal */}
             <div className="bg-primary/5 rounded-xl p-3 border border-primary/10">
               <p className="text-xs uppercase tracking-wide text-primary/70 mb-1">Why you match</p>
               {isRevealed ? (
@@ -274,7 +274,19 @@ export const BlurredMatchCard = ({
                 </p>
               ) : (
                 <p className="text-sm text-muted-foreground italic line-clamp-2">
-                  Strong compatibility in communication and shared values. Reveal to see full details.
+                  {(() => {
+                    const d = dimensions;
+                    if (!d) return "Strong compatibility detected. Reveal to see full details.";
+                    const entries = [
+                      { label: 'communication style', val: d.communication ?? 0 },
+                      { label: 'shared values', val: d.values ?? 0 },
+                      { label: 'life goals', val: d.goals ?? 0 },
+                      { label: 'lifestyle compatibility', val: d.lifestyle ?? 0 },
+                    ].sort((a, b) => b.val - a.val);
+                    const top = entries[0];
+                    const second = entries[1];
+                    return `Especially strong in ${top.label}${second.val >= 70 ? ` and ${second.label}` : ''}. Reveal to see full details.`;
+                  })()}
                 </p>
               )}
             </div>

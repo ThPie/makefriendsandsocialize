@@ -557,7 +557,7 @@ Return JSON with:
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "google/gemini-2.5-pro",
+            model: "google/gemini-2.5-flash",
             messages: [
               { role: "system", content: "You are an expert matchmaker using Gottman Institute research. Always respond with valid JSON only." },
               { role: "user", content: prompt },
