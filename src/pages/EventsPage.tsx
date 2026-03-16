@@ -103,7 +103,7 @@ const EventsPage = () => {
 
       let query = supabase
         .from('events')
-        .select('*')
+        .select('id, title, date, time, location, venue_name, venue_address, image_url, description, status, tier, capacity, rsvp_count, external_url, tags, is_featured, source, city, country, ticket_price, currency, waitlist_enabled, registration_deadline, eventbrite_id, luma_id, meetup_rsvp_count, eventbrite_rsvp_count, luma_rsvp_count')
         .order('date', { ascending: activeTab === 'upcoming' ? true : false });
 
       if (activeTab === 'upcoming') {
