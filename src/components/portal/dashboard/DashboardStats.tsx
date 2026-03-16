@@ -1,7 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Calendar, Crown, Bell, Heart, Users, TrendingUp } from 'lucide-react';
+import { Calendar, Crown, Bell, Heart, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -9,69 +9,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 export function DashboardStats() {
     const { user, membership } = useAuth();
 
-    const { data: eventCount = 0, isLoading: loadingEvents } = useQuery({
-        queryKey: ['dashboard-stats-events', user?.id],
+    const { data, isLoading } = useQuery({
+        queryKey: ['dashboard-stats', user?.id],
         queryFn: async () => {
-            if (!user) return 0;
-            const today = new Date().toISOString().split('T')[0];
-            const { count, error } = await supabase
-                .from('event_rsvps')
-                .select('event_id, events!inner(date)', { count: 'exact', head: true })
-                .eq('user_id', user.id)
-                .eq('status', 'confirmed')
-                .gte('events.date', today);
-            if (error) return 0;
-            return count || 0;
-        },
-        enabled: !!user,
-    });
-
-    const { data: connectionCount = 0, isLoading: loadingConnections } = useQuery({
-        queryKey: ['dashboard-stats-connections', user?.id],
-        queryFn: async () => {
-            if (!user) return 0;
-            const { count, error } = await supabase
-                .from('connections')
-                .select('*', { count: 'exact', head: true })
-                .or(`requester_id.eq.${user.id},requested_id.eq.${user.id}`)
-                .eq('status', 'accepted');
-            if (error) return 0;
-            return count || 0;
-        },
-        enabled: !!user,
-    });
-
-    const { data: notificationCount = 0, isLoading: loadingNotifications } = useQuery({
-        queryKey: ['dashboard-stats-notifications', user?.id],
-        queryFn: async () => {
-            if (!user) return 0;
-            const { count, error } = await supabase
-                .from('notification_queue')
-                .select('*', { count: 'exact', head: true })
-                .eq('user_id', user.id)
-                .eq('is_read', false);
-            if (error) return 0;
-            return count || 0;
+            if (!user) return { upcoming_events: 0, connections: 0, unread_notifications: 0, badges: 0 };
+            const { data, error } = await supabase.rpc('get_dashboard_stats', { _user_id: user.id });
+            if (error || !data || !data[0]) return { upcoming_events: 0, connections: 0, unread_notifications: 0, badges: 0 };
+            return data[0];
         },
         enabled: !!user,
         refetchInterval: 30000,
     });
-
-    const { data: badgeCount = 0, isLoading: loadingBadges } = useQuery({
-        queryKey: ['dashboard-stats-badges', user?.id],
-        queryFn: async () => {
-            if (!user) return 0;
-            const { count, error } = await supabase
-                .from('member_badges')
-                .select('*', { count: 'exact', head: true })
-                .eq('user_id', user.id);
-            if (error) return 0;
-            return count || 0;
-        },
-        enabled: !!user,
-    });
-
-    const isLoading = loadingEvents || loadingConnections || loadingNotifications || loadingBadges;
 
     if (isLoading) {
         return (
@@ -90,7 +38,7 @@ export function DashboardStats() {
     const stats = [
         {
             label: 'Upcoming Events',
-            value: eventCount,
+            value: data?.upcoming_events ?? 0,
             change: '+1 this week',
             icon: Calendar,
             iconBg: 'bg-primary/10',
@@ -98,7 +46,7 @@ export function DashboardStats() {
         },
         {
             label: 'Connections',
-            value: connectionCount,
+            value: data?.connections ?? 0,
             change: 'Active',
             icon: Heart,
             iconBg: 'bg-[hsl(var(--accent-gold))]/10',
@@ -106,7 +54,7 @@ export function DashboardStats() {
         },
         {
             label: 'Notifications',
-            value: notificationCount,
+            value: data?.unread_notifications ?? 0,
             change: 'Unread',
             icon: Bell,
             iconBg: 'bg-primary/10',
@@ -114,7 +62,7 @@ export function DashboardStats() {
         },
         {
             label: 'Achievements',
-            value: badgeCount,
+            value: data?.badges ?? 0,
             change: getTierDisplayName(membership?.tier),
             icon: Crown,
             iconBg: 'bg-[hsl(var(--accent-gold))]/10',
