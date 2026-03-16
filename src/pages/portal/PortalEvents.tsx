@@ -130,26 +130,27 @@ export default function PortalEvents() {
   const allUpcomingEvents = upcomingEventsData?.pages.flatMap(p => p.events) || [];
   const events = activeTab === 'upcoming' ? allUpcomingEvents : pastEvents;
 
-  // Fetch RSVP counts for events using server-side aggregation
+  // Fetch RSVP counts for events
   const { data: rsvpCounts = {} } = useQuery({
     queryKey: ['event-rsvp-counts', events.map(e => e.id)],
     queryFn: async () => {
       if (events.length === 0) return {};
 
       const eventIds = events.map(e => e.id);
-      const { data, error } = await supabase.rpc('get_event_rsvp_counts', {
-        event_ids: eventIds,
-      });
+      const { data, error } = await supabase
+        .from('event_rsvps')
+        .select('event_id')
+        .in('event_id', eventIds)
+        .eq('status', 'confirmed');
 
       if (error) {
         console.warn('RSVP counts fetch error:', error.message);
         return {};
       }
 
-      // Convert array response to object for easier lookup
       const counts: Record<string, number> = {};
       for (const row of data || []) {
-        counts[row.event_id] = row.rsvp_count;
+        counts[row.event_id] = (counts[row.event_id] || 0) + 1;
       }
       return counts;
     },
