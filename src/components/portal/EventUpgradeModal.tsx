@@ -33,7 +33,7 @@ export const EventUpgradeModal = ({
                         {eventTitle && eventTier && (
                             <>
                                 <strong>{eventTitle}</strong> is exclusive to{' '}
-                                {eventTier.charAt(0).toUpperCase() + eventTier.slice(1)} members and above.
+                                {getTierDisplayName(eventTier)} members and above.
                             </>
                         )}
                     </DialogDescription>
