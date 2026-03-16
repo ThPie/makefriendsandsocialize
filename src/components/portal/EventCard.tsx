@@ -1,4 +1,5 @@
 import { Calendar, MapPin, Clock, Crown, Users, AlertCircle, Clock3 } from 'lucide-react';
+import { getTierDisplayName } from '@/lib/tier-utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
