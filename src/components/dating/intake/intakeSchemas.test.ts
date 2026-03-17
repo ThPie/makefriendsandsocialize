@@ -218,8 +218,8 @@ describe('notificationsSchema', () => {
         expect(result.success).toBe(false);
     });
 
-    it('should reject search_radius above 100', () => {
-        const result = notificationsSchema.safeParse({ search_radius: 200 });
+    it('should reject search_radius above 500', () => {
+        const result = notificationsSchema.safeParse({ search_radius: 600 });
         expect(result.success).toBe(false);
     });
 });

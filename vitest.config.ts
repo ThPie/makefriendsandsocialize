@@ -14,6 +14,11 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       exclude: ['node_modules/', 'src/test/'],
     },
+    server: {
+      deps: {
+        inline: ['zod'],
+      },
+    },
   },
   resolve: {
     alias: {

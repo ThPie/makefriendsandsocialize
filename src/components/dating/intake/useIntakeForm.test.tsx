@@ -27,6 +27,10 @@ vi.mock('@/integrations/supabase/client', () => ({
         from: () => ({
             insert: vi.fn().mockReturnThis(),
             select: vi.fn().mockReturnThis(),
+            eq: vi.fn().mockReturnThis(),
+            delete: vi.fn().mockReturnThis(),
+            upsert: vi.fn().mockReturnThis(),
+            maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
             single: vi.fn().mockResolvedValue({ data: { id: 'new-profile-id' }, error: null }),
         }),
         functions: {
@@ -225,7 +229,7 @@ describe('useIntakeForm', () => {
     });
 
     describe('draft persistence', () => {
-        it('should load draft from localStorage on mount', () => {
+        it('should load draft from localStorage on mount', async () => {
             const savedDraft = {
                 step: 3,
                 formData: {
@@ -237,16 +241,20 @@ describe('useIntakeForm', () => {
 
             const { result } = renderHook(() => useIntakeForm(), { wrapper });
 
+            await new Promise(resolve => setTimeout(resolve, 50));
+
             expect(result.current.step).toBe(3);
             expect(result.current.formData.display_name).toBe('Saved User');
             expect(result.current.formData.age).toBe(32);
             expect(result.current.hasDraft).toBe(true);
         });
 
-        it('should handle invalid draft data gracefully', () => {
+        it('should handle invalid draft data gracefully', async () => {
             localStorage.setItem('dating_application_draft', 'invalid-json');
 
             const { result } = renderHook(() => useIntakeForm(), { wrapper });
+
+            await new Promise(resolve => setTimeout(resolve, 50));
 
             // Should fall back to defaults
             expect(result.current.step).toBe(1);
@@ -255,6 +263,9 @@ describe('useIntakeForm', () => {
 
         it('should save draft to localStorage on field update', async () => {
             const { result } = renderHook(() => useIntakeForm(), { wrapper });
+
+            // Wait for the initial draft load to finish setting dbDraftLoaded
+            await new Promise(resolve => setTimeout(resolve, 50));
 
             act(() => {
                 result.current.updateField('display_name', 'New Name');

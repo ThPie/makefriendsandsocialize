@@ -133,7 +133,7 @@ export const IntakeProgress = ({
 
             {/* Mobile: Current step title + progress bar */}
             <div className="md:hidden space-y-4">
-                <div className="text-center">
+                <div role="status" className="text-center">
                     <h2 className="text-[hsl(var(--accent-gold))] font-display text-xl">
                         {steps.find(s => s.number === currentStep)?.title}
                     </h2>

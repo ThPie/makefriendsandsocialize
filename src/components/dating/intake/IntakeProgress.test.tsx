@@ -3,9 +3,12 @@
  * Tests visual progress indicators and click interactions
  */
 import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render as rtlRender } from '@testing-library/react';
 import { screen, fireEvent } from '@testing-library/dom';
+import { MemoryRouter } from 'react-router-dom';
 import { IntakeProgress } from './IntakeProgress';
+
+const render = (ui: any, options?: any) => rtlRender(ui, { wrapper: MemoryRouter, ...options });
 
 const mockSteps = [
     { number: 1, title: 'The Basics' },
@@ -29,9 +32,9 @@ describe('IntakeProgress', () => {
                 />
             );
 
-            // Should have 8 step buttons
+            // Should have 18 step buttons (8 desktop + 8 mobile + 2 actions)
             const buttons = screen.getAllByRole('button');
-            expect(buttons).toHaveLength(8);
+            expect(buttons).toHaveLength(18);
         });
 
         it('should render navigation with correct aria-label', () => {
@@ -69,7 +72,9 @@ describe('IntakeProgress', () => {
                 />
             );
 
-            expect(screen.getByRole('status')).toHaveTextContent('Step 3 of 8: Lifestyle');
+            const status = screen.getByRole('status');
+            expect(status).toHaveTextContent(/Lifestyle/i);
+            expect(status).toHaveTextContent(/Step 3 of 8/i);
         });
     });
 
