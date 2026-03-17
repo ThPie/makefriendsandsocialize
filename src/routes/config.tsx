@@ -83,6 +83,8 @@ const AdminPerks = lazy(() => import("@/pages/admin/AdminPerks"));
 const AdminConcierge = lazy(() => import("@/pages/admin/AdminConcierge"));
 const AdminDatingReview = lazy(() => import("@/pages/admin/AdminDatingReview"));
 const PortalSecurity = lazy(() => import("@/pages/portal/PortalSecurity"));
+const SoulMapsPage = lazy(() => import("@/pages/SoulMapsPage"));
+const SoulMapsQuizPage = lazy(() => import("@/pages/SoulMapsQuizPage"));
 
 // Slow Dating subdomain routes
 export const SlowDatingRoutes = () => (
