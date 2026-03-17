@@ -53,7 +53,7 @@ export const Header = () => {
           <CirclesMegamenu isTransparent={!scrolled} />
 
           {/* Desktop nav links */}
-          {['Events', 'Membership', 'Blog'].map((label) => (
+          {['Events', 'Membership', 'Blog', 'Soul Maps'].map((label) => (
             <TransitionLink
               key={label}
               to={label === 'Blog' ? '/journal' : `/${label.toLowerCase()}`}
