@@ -20,6 +20,7 @@ const navLinks = [
   { label: 'Home', to: '/', icon: Home },
   { label: 'Events', to: '/events', icon: Calendar },
   { label: 'Membership', to: '/membership', icon: Heart },
+  { label: 'Soul Maps', to: '/soul-maps', icon: Compass },
   { label: 'Blog', to: '/journal', icon: Newspaper },
   { label: 'Contact', to: '/contact', icon: Mail },
   { label: 'FAQ', to: '/faq', icon: HelpCircle },
