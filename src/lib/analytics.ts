@@ -163,7 +163,7 @@ export function trackPurchase(
 
 // Initialize analytics
 export function initAnalytics() {
-  const ga4Id = import.meta.env.VITE_GA4_MEASUREMENT_ID;
+  const ga4Id = import.meta.env.VITE_GA4_MEASUREMENT_ID || 'G-YJRCT537BZ';
 
   if (ga4Id) {
     initGA4(ga4Id);
