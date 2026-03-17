@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { X, Menu, Home, Calendar, Users, Heart, Newspaper, Mail, HelpCircle, ChevronDown, Instagram, Facebook, Linkedin } from 'lucide-react';
+import { X, Menu, Home, Calendar, Users, Heart, Newspaper, Mail, HelpCircle, ChevronDown, Instagram, Facebook, Linkedin, Compass } from 'lucide-react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { BrandLogo } from '@/components/common/BrandLogo';
 import { useAuth } from '@/contexts/AuthContext';
