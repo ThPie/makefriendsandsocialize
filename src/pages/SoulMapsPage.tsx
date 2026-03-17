@@ -38,7 +38,7 @@ const comingSoon = [
   },
   {
     title: 'How Do You Handle Conflict?',
-    description: 'Your conflict style shapes every relationship. Find out what's really going on.',
+    description: "Your conflict style shapes every relationship. Find out what's really going on.",
     category: 'All Circles',
     time: '3 min',
     icon: Swords,
