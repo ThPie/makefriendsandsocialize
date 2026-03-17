@@ -1,43 +1,75 @@
+## Performance & Scaling Optimizations — IMPLEMENTED ✅
 
+### 1. ✅ Consolidated Dashboard Stats
+- Created `get_dashboard_stats(user_id)` DB function — 4 queries → 1 round trip
+- Updated `DashboardStats.tsx` to use single RPC call
 
-# Fix Plan: 3 Pre-Deployment Issues
+### 2. ✅ Database Indexes (14 indexes added)
+- events(date, status), event_rsvps(user_id, status), event_rsvps(event_id)
+- notification_queue(user_id, is_read), business_profiles(status, is_visible)
+- profiles(onboarding_completed), dating_profiles(user_id), dating_profiles(is_active, status)
+- dating_matches(user_a_id), dating_matches(user_b_id)
+- referrals(referrer_id, status), connections(requester_id, status), connections(requested_id, status)
+- member_badges(user_id)
 
-## Fix 1: Secure Exposed OpenRouter API Key
+### 3. ✅ Admin Pagination
+- AdminMembers: 25/page with range() pagination
+- AdminDating: 25/page with range() pagination  
+- AdminBusinesses: 25/page with range() pagination
+- Reusable `AdminPagination` component created
 
-**Problem:** `VITE_OPENROUTER_API_KEY` in `.env` is bundled into client-side JS, exposing the secret key to anyone viewing page source. Only `VoiceBioRecorder.tsx` uses it (via `src/lib/ai.ts`).
+### 4. ✅ Column Selection
+- EventsPage: explicit column list instead of select('*')
+- AdminDating, AdminBusinesses, AdminReferrals, AdminTestimonials: specific columns
 
-**Solution:** The `enhance-bio` edge function already exists and does the same thing (polishes bios via Lovable AI gateway). We will refactor `VoiceBioRecorder` to call `enhance-bio` instead of calling OpenRouter directly from the browser. Then remove `src/lib/ai.ts`, the `VITE_OPENROUTER_API_KEY` from `.env`, and the `ai`/`@ai-sdk/openai` client-side dependencies.
+### 5. ✅ Trigger Consolidation
+- 5 individual dating_matches triggers → 1 consolidated `handle_dating_match_notifications()`
+- Single trigger handles: new_match, declined, meeting_scheduled, decision_time, mutual_match
 
-**Changes:**
-1. **`src/components/dating/VoiceBioRecorder.tsx`** -- Replace `generateText` + `getModel` with `supabase.functions.invoke('enhance-bio', { body: { bio, firstName } })`. Parse `enhancedBio` from response.
-2. **Delete `src/lib/ai.ts`** -- No longer needed (only consumer was VoiceBioRecorder).
-3. **`.env`** -- Remove `VITE_OPENROUTER_API_KEY` line (cannot edit .env directly, but removing all references to it eliminates the exposure).
-4. **`scripts/`** -- The 3 scripts (`test-ai.ts`, `assess-codebase.ts`, `analyze-design.ts`) reference OpenRouter but are dev-only scripts, not bundled. Leave as-is since they read from `process.env`, not `import.meta.env`.
+### 6. ✅ Cleanup Cron Jobs (daily at 3 AM UTC)
+- cleanup-api-rate-limits, cleanup-expired-sessions, cleanup-expired-mfa-sessions
+- cleanup-oauth-rate-limits, cleanup-admin-rate-limits
 
-## Fix 2: Debug & Fix detect-location Edge Function
-
-**Problem:** The function uses `ipapi.co` which has rate limits (free tier: ~1000/day) and may reject requests from edge function IPs. The function also requires JWT (`verify_jwt = true`), which means unauthenticated users can't use it -- but the geo-redirect hook runs on the homepage for all visitors.
-
-**Solution:**
-1. **Change `verify_jwt` to `false`** in `config.toml` for `detect-location` -- the geo-redirect banner runs for unauthenticated visitors on the homepage.
-2. **Add a fallback geo API** -- If `ipapi.co` fails or rate-limits, fall back to `ip-api.com` (HTTP only but works from server-side edge functions). This provides resilience.
-3. **Add proper error handling** for rate-limit responses from ipapi.co (HTTP 429).
-
-**Changes:**
-1. **`supabase/config.toml`** -- Set `verify_jwt = false` for `detect-location`.
-2. **`supabase/functions/detect-location/index.ts`** -- Add fallback to `http://ip-api.com/json/{ip}?fields=country,regionName,city,proxy,hosting` when ipapi.co fails. Add 429 handling.
-
-## Fix 4: Update VITE_SITE_URL
-
-**Problem:** `VITE_SITE_URL` is set to `http://localhost:5173` but since `.env` is auto-managed and cannot be edited, and the only consumer is `src/lib/ai.ts` (which we're deleting in Fix 1), this issue resolves itself.
-
-The scripts in `scripts/` use `process.env.VITE_SITE_URL` but those are dev-only. No action needed beyond Fix 1.
+### 7. ✅ Realtime Scoping
+- EventsPage realtime subscription now filtered by active tab status
 
 ---
 
-**Summary of file changes:**
-- Edit `VoiceBioRecorder.tsx` to use `enhance-bio` edge function
-- Delete `src/lib/ai.ts`
-- Edit `supabase/functions/detect-location/index.ts` with fallback API + better error handling
-- Update `supabase/config.toml` to set `verify_jwt = false` for detect-location
+## Pre-Launch Audit Optimizations — IMPLEMENTED ✅
 
+### Phase 1: Performance Fixes
+
+#### 8. ✅ Fix PortalEvents N+1 RSVP Query
+- Replaced per-event `SELECT COUNT(*)` loop (37+ queries) with single batch `.in()` query
+- Same fix applied to waitlist counts
+
+#### 9. ✅ Migrate PortalConnections to React Query
+- Replaced `useEffect` + `setState` with `useQuery` hooks for sent/received connections
+- Added caching with staleTime, parallel fetching, and `useMutation` for actions
+
+#### 10. ✅ Migrate PortalNetwork to React Query
+- Replaced `useEffect` fetch with `useQuery` for member profiles
+- Added caching, replaced manual request handling with `useMutation`
+
+### Phase 2: Matchmaking Algorithm Fixes
+
+#### 11. ✅ Skip Already-Matched Candidates Before AI
+- Added deduplication step that queries existing `dating_matches` and skips known pairs
+- Saves AI API calls and cost
+
+#### 12. ✅ Switch AI Model to gemini-2.5-flash
+- Changed from `gemini-2.5-pro` to `gemini-2.5-flash` — 5-10x faster, minimal quality loss
+
+#### 13. ✅ Add Drinking Dealbreaker
+- Added heavy drinking check alongside smoking in `passesDealbreakerCheck`
+- Bidirectional: checks both target and candidate dealbreaker text
+
+#### 14. ✅ Merge SlowDating Match Queries
+- Replaced two separate queries (`user_a_id`, `user_b_id`) with single `.or()` query
+- Added specific column selection instead of `select('*')`
+
+### Phase 3: UX Polish
+
+#### 15. ✅ Dynamic Match Teaser Text
+- Replaced static "Strong compatibility in communication and shared values" with dynamic text
+- Now shows highest-scoring dimension from `match_dimensions` (e.g., "Especially strong in communication style and shared values")
