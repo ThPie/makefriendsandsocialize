@@ -1,75 +1,78 @@
-## Performance & Scaling Optimizations — IMPLEMENTED ✅
 
-### 1. ✅ Consolidated Dashboard Stats
-- Created `get_dashboard_stats(user_id)` DB function — 4 queries → 1 round trip
-- Updated `DashboardStats.tsx` to use single RPC call
 
-### 2. ✅ Database Indexes (14 indexes added)
-- events(date, status), event_rsvps(user_id, status), event_rsvps(event_id)
-- notification_queue(user_id, is_read), business_profiles(status, is_visible)
-- profiles(onboarding_completed), dating_profiles(user_id), dating_profiles(is_active, status)
-- dating_matches(user_a_id), dating_matches(user_b_id)
-- referrals(referrer_id, status), connections(requester_id, status), connections(requested_id, status)
-- member_badges(user_id)
+# Soul Maps — Quiz Hub Page
 
-### 3. ✅ Admin Pagination
-- AdminMembers: 25/page with range() pagination
-- AdminDating: 25/page with range() pagination  
-- AdminBusinesses: 25/page with range() pagination
-- Reusable `AdminPagination` component created
+## Overview
+Add a new `/soul-maps` route with a quiz hub page and a fully functional Attachment Style quiz at `/soul-maps/attachment-style`. Includes auth-gated results, database storage, and "Coming Soon" placeholder cards.
 
-### 4. ✅ Column Selection
-- EventsPage: explicit column list instead of select('*')
-- AdminDating, AdminBusinesses, AdminReferrals, AdminTestimonials: specific columns
+## Database Changes
 
-### 5. ✅ Trigger Consolidation
-- 5 individual dating_matches triggers → 1 consolidated `handle_dating_match_notifications()`
-- Single trigger handles: new_match, declined, meeting_scheduled, decision_time, mutual_match
+**New table: `soul_maps_results`**
+- `id` uuid PK
+- `user_id` uuid FK → auth.users (on delete cascade)
+- `quiz_slug` text (e.g. "attachment-style")
+- `answers` jsonb (stores selected answers)
+- `result_type` text (e.g. "secure", "anxious")
+- `scores` jsonb (percentage breakdown)
+- `created_at` timestamptz
+- RLS: users can insert/select their own rows; admins can read all
 
-### 6. ✅ Cleanup Cron Jobs (daily at 3 AM UTC)
-- cleanup-api-rate-limits, cleanup-expired-sessions, cleanup-expired-mfa-sessions
-- cleanup-oauth-rate-limits, cleanup-admin-rate-limits
+## New Files
 
-### 7. ✅ Realtime Scoping
-- EventsPage realtime subscription now filtered by active tab status
+1. **`src/pages/SoulMapsPage.tsx`** — Hub page with hero + quiz grid
+   - Hero: bottom-left aligned per existing pattern, "New — Soul Maps" badge, headline/subheadline
+   - Responsive grid: 2-col desktop, 1-col mobile
+   - Quiz cards using existing `Card` component styling (rounded-2xl, premium feel)
+   - Each card: category tag, title, description, time estimate, "Take Quiz" CTA
+   - 5 "Coming Soon" cards with locked/greyed state and opacity treatment
 
----
+2. **`src/pages/SoulMapsQuizPage.tsx`** — Attachment Style quiz page
+   - Route: `/soul-maps/attachment-style`
+   - Full-page quiz flow (matches existing page patterns better than modal)
+   - 7 questions, one at a time with progress bar
+   - Tracks answers in local state (secure/anxious/avoidant/disorganized per answer)
+   - On final "See My Results": check `useAuth()` for `user`
+     - If authenticated → calculate & show results, save to DB
+     - If not → show auth gate modal with "Sign Up Free" / "Sign In" buttons
+   - Auth redirect: encode answers in `sessionStorage` before redirecting to `/auth?redirect=/soul-maps/attachment-style&showResults=true`; on return, read answers from storage, compute results, save & display
+   - Results screen: title, subtitle, description, traits list, growth edge, percentage bars for all 4 styles
 
-## Pre-Launch Audit Optimizations — IMPLEMENTED ✅
+3. **`src/components/soul-maps/QuizCard.tsx`** — Reusable quiz card component
+4. **`src/components/soul-maps/AuthGateModal.tsx`** — Modal prompting sign-up/sign-in
+5. **`src/components/soul-maps/AttachmentResults.tsx`** — Results display component with percentage bars
 
-### Phase 1: Performance Fixes
+## Modified Files
 
-#### 8. ✅ Fix PortalEvents N+1 RSVP Query
-- Replaced per-event `SELECT COUNT(*)` loop (37+ queries) with single batch `.in()` query
-- Same fix applied to waitlist counts
+1. **`src/routes/config.tsx`** — Add two lazy routes:
+   - `/soul-maps` → `<Layout><SoulMapsPage /></Layout>`
+   - `/soul-maps/attachment-style` → `<Layout><SoulMapsQuizPage /></Layout>`
 
-#### 9. ✅ Migrate PortalConnections to React Query
-- Replaced `useEffect` + `setState` with `useQuery` hooks for sent/received connections
-- Added caching with staleTime, parallel fetching, and `useMutation` for actions
+2. **`src/components/layout/Header.tsx`** — Add "Soul Maps" to desktop nav links array (line 56, alongside Events/Membership/Blog)
 
-#### 10. ✅ Migrate PortalNetwork to React Query
-- Replaced `useEffect` fetch with `useQuery` for member profiles
-- Added caching, replaced manual request handling with `useMutation`
+3. **`src/components/layout/MobileMenu.tsx`** — Add `{ label: 'Soul Maps', to: '/soul-maps', icon: Compass }` to `navLinks` array
 
-### Phase 2: Matchmaking Algorithm Fixes
+## Auth Flow for Results
 
-#### 11. ✅ Skip Already-Matched Candidates Before AI
-- Added deduplication step that queries existing `dating_matches` and skips known pairs
-- Saves AI API calls and cost
+1. User completes quiz → clicks "See My Results"
+2. If `user` exists in AuthContext → compute scores, render results, save to `soul_maps_results`
+3. If no user → show `AuthGateModal` with headline "Your results are ready"
+4. On "Sign Up Free" / "Sign In" click → store answers in `sessionStorage`, navigate to `/auth?redirect=/soul-maps/attachment-style`
+5. After auth callback returns user to quiz page → detect stored answers, auto-compute and display results, save to DB
+6. No partial/teaser results shown without auth
 
-#### 12. ✅ Switch AI Model to gemini-2.5-flash
-- Changed from `gemini-2.5-pro` to `gemini-2.5-flash` — 5-10x faster, minimal quality loss
+## Quiz Scoring Logic
 
-#### 13. ✅ Add Drinking Dealbreaker
-- Added heavy drinking check alongside smoking in `passesDealbreakerCheck`
-- Bidirectional: checks both target and candidate dealbreaker text
+- Each of 7 answers maps to one of: secure, anxious, avoidant, disorganized
+- Tally counts per style, convert to percentages (count/7 × 100)
+- Winning style determines which result profile to display
+- All 4 percentages shown as horizontal bars
 
-#### 14. ✅ Merge SlowDating Match Queries
-- Replaced two separate queries (`user_a_id`, `user_b_id`) with single `.or()` query
-- Added specific column selection instead of `select('*')`
+## Design Approach
 
-### Phase 3: UX Polish
+- Hero: bottom-left aligned with `flex items-end`, subtle gradient overlay, matching existing hero pattern
+- Cards: `rounded-2xl border border-border/60 bg-card` (existing card tokens)
+- Category tags: small pill badges with category-specific muted colors
+- "Coming Soon" cards: `opacity-60`, no CTA button, "Coming Soon" badge instead
+- Lucide icons per category (Heart for Dating, Users for Friendship, Briefcase for Business, Sparkles for Self, Swords for Conflict)
+- SEO: Helmet with title "Soul Maps — Know Yourself. Connect Better." and appropriate description
 
-#### 15. ✅ Dynamic Match Teaser Text
-- Replaced static "Strong compatibility in communication and shared values" with dynamic text
-- Now shows highest-scoring dimension from `match_dimensions` (e.g., "Especially strong in communication style and shared values")
