@@ -1,15 +1,15 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle, AlertCircle, Sparkles } from "lucide-react";
-import { generateText } from "ai";
-import { getModel } from "@/lib/ai";
+import { supabase } from "@/integrations/supabase/client";
 
 interface VoiceBioRecorderProps {
   currentBio: string;
   onBioUpdate: (bio: string) => void;
+  firstName?: string;
 }
 
-export const VoiceBioRecorder = ({ currentBio, onBioUpdate }: VoiceBioRecorderProps) => {
+export const VoiceBioRecorder = ({ currentBio, onBioUpdate, firstName }: VoiceBioRecorderProps) => {
   const [isPolishing, setIsPolishing] = useState(false);
   const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
@@ -25,13 +25,22 @@ export const VoiceBioRecorder = ({ currentBio, onBioUpdate }: VoiceBioRecorderPr
     setStatus(null);
 
     try {
-      const { text } = await generateText({
-        model: getModel("google/gemini-2.0-flash-001"),
-        prompt: `Polish this dating bio into a well-written, engaging first-person paragraph. Keep the same meaning, personality, and key details. Fix grammar and make it flow naturally. Keep it under 200 words. Do NOT add quotes or labels—just return the polished bio text.\n\nRaw bio: ${bioText}`,
+      const { data, error } = await supabase.functions.invoke('enhance-bio', {
+        body: { bio: bioText, firstName: firstName || undefined },
       });
 
-      onBioUpdate(text.trim());
-      setStatus({ type: "success", message: "Bio polished with AI ✨" });
+      if (error) throw error;
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      if (data?.enhancedBio) {
+        onBioUpdate(data.enhancedBio);
+        setStatus({ type: "success", message: "Bio polished with AI ✨" });
+      } else {
+        throw new Error("No enhanced bio returned");
+      }
       setTimeout(() => setStatus(null), 3000);
     } catch (error: any) {
       console.error("AI polish error:", error);
@@ -40,7 +49,7 @@ export const VoiceBioRecorder = ({ currentBio, onBioUpdate }: VoiceBioRecorderPr
     } finally {
       setIsPolishing(false);
     }
-  }, [currentBio, onBioUpdate]);
+  }, [currentBio, onBioUpdate, firstName]);
 
   return (
     <div className="space-y-2">

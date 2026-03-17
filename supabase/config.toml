@@ -20,7 +20,7 @@ project_id = "qzqomqctuqldexnxgmlh"
   [functions.deep-osint-analysis]
     verify_jwt = true
   [functions.detect-location]
-    verify_jwt = true
+    verify_jwt = false
   [functions.elevenlabs-scribe-token]
     verify_jwt = true
   [functions.encrypt-sensitive-data]
