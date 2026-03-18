@@ -16,9 +16,9 @@ interface ReviewStepProps {
 const ReviewRow = ({ label, value }: { label: string; value?: string | null }) => {
     if (!value) return null;
     return (
-        <div className="flex gap-2 text-sm py-1.5 border-b border-white/5 last:border-0">
-            <span className="text-white/40 min-w-[140px] shrink-0">{label}</span>
-            <span className="text-white/80 capitalize">{value.replace(/_/g, ' ')}</span>
+        <div className="flex gap-2 text-sm py-1.5 border-b border-border/50 last:border-0">
+            <span className="text-muted-foreground min-w-[140px] shrink-0">{label}</span>
+            <span className="text-foreground/80 capitalize">{value.replace(/_/g, ' ')}</span>
         </div>
     );
 };
@@ -49,7 +49,7 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             <CardContent className="space-y-6 pt-4">
                 {/* Profile Summary Card */}
-                <div className="bg-white/5 rounded-xl p-6 space-y-4 border border-white/10">
+                <div className="bg-muted/50 rounded-xl p-6 space-y-4 border border-border">
                     <div className="flex items-center gap-4">
                         <Avatar className="h-16 w-16 border-2 border-[hsl(var(--accent-gold))]/20">
                             <AvatarImage src={formData.photo_url} />
@@ -58,8 +58,8 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                             </AvatarFallback>
                         </Avatar>
                         <div>
-                            <h3 className="font-display text-xl text-white">{formData.display_name}</h3>
-                            <p className="text-white/60">
+                            <h3 className="font-display text-xl text-foreground">{formData.display_name}</h3>
+                            <p className="text-muted-foreground">
                                 {formData.age} · {formData.gender} · {formData.location || "Location not specified"}
                             </p>
                         </div>
@@ -69,10 +69,10 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                 {/* Full Accordion Summary */}
                 <Accordion type="multiple" className="space-y-2">
                     {/* Step 1 */}
-                    <AccordionItem value="step1" className="bg-white/5 border border-white/10 rounded-xl px-4">
+                    <AccordionItem value="step1" className="bg-muted/50 border border-border rounded-xl px-4">
                         <AccordionTrigger className="hover:no-underline py-4">
                             <div className="flex items-center gap-3">
-                                <span className="text-white font-medium">The Basics</span>
+                                <span className="text-foreground font-medium">The Basics</span>
                                 <StepBadge complete={step1Complete} />
                             </div>
                         </AccordionTrigger>
@@ -90,10 +90,10 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                     </AccordionItem>
 
                     {/* Step 2 */}
-                    <AccordionItem value="step2" className="bg-white/5 border border-white/10 rounded-xl px-4">
+                    <AccordionItem value="step2" className="bg-muted/50 border border-border rounded-xl px-4">
                         <AccordionTrigger className="hover:no-underline py-4">
                             <div className="flex items-center gap-3">
-                                <span className="text-white font-medium">Life & Family</span>
+                                <span className="text-foreground font-medium">Life & Family</span>
                                 <StepBadge complete={step2Complete} />
                             </div>
                         </AccordionTrigger>
@@ -108,10 +108,10 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                     </AccordionItem>
 
                     {/* Step 3 */}
-                    <AccordionItem value="step3" className="bg-white/5 border border-white/10 rounded-xl px-4">
+                    <AccordionItem value="step3" className="bg-muted/50 border border-border rounded-xl px-4">
                         <AccordionTrigger className="hover:no-underline py-4">
                             <div className="flex items-center gap-3">
-                                <span className="text-white font-medium">Lifestyle</span>
+                                <span className="text-foreground font-medium">Lifestyle</span>
                                 <StepBadge complete={step3Complete} />
                             </div>
                         </AccordionTrigger>
@@ -126,10 +126,10 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                     </AccordionItem>
 
                     {/* Step 4 */}
-                    <AccordionItem value="step4" className="bg-white/5 border border-white/10 rounded-xl px-4">
+                    <AccordionItem value="step4" className="bg-muted/50 border border-border rounded-xl px-4">
                         <AccordionTrigger className="hover:no-underline py-4">
                             <div className="flex items-center gap-3">
-                                <span className="text-white font-medium">Daily Life</span>
+                                <span className="text-foreground font-medium">Daily Life</span>
                                 <StepBadge complete={step4Complete} />
                             </div>
                         </AccordionTrigger>
@@ -142,10 +142,10 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                     </AccordionItem>
 
                     {/* Step 5 */}
-                    <AccordionItem value="step5" className="bg-white/5 border border-white/10 rounded-xl px-4">
+                    <AccordionItem value="step5" className="bg-muted/50 border border-border rounded-xl px-4">
                         <AccordionTrigger className="hover:no-underline py-4">
                             <div className="flex items-center gap-3">
-                                <span className="text-white font-medium">Deep Dive</span>
+                                <span className="text-foreground font-medium">Deep Dive</span>
                                 <StepBadge complete={step5Complete} />
                             </div>
                         </AccordionTrigger>
@@ -159,10 +159,10 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                     </AccordionItem>
 
                     {/* Step 6 */}
-                    <AccordionItem value="step6" className="bg-white/5 border border-white/10 rounded-xl px-4">
+                    <AccordionItem value="step6" className="bg-muted/50 border border-border rounded-xl px-4">
                         <AccordionTrigger className="hover:no-underline py-4">
                             <div className="flex items-center gap-3">
-                                <span className="text-white font-medium">Dealbreakers</span>
+                                <span className="text-foreground font-medium">Dealbreakers</span>
                                 <StepBadge complete={step6Complete} />
                             </div>
                         </AccordionTrigger>
@@ -176,10 +176,10 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
                     </AccordionItem>
 
                     {/* Step 7 */}
-                    <AccordionItem value="step7" className="bg-white/5 border border-white/10 rounded-xl px-4">
+                    <AccordionItem value="step7" className="bg-muted/50 border border-border rounded-xl px-4">
                         <AccordionTrigger className="hover:no-underline py-4">
                             <div className="flex items-center gap-3">
-                                <span className="text-white font-medium">Notifications</span>
+                                <span className="text-foreground font-medium">Notifications</span>
                                 <StepBadge complete={step7Complete} />
                             </div>
                         </AccordionTrigger>
@@ -194,9 +194,9 @@ export const ReviewStep = ({ form }: ReviewStepProps) => {
 
                 {/* What happens next */}
                 <div className="bg-[hsl(var(--accent-gold))]/10 border border-[hsl(var(--accent-gold))]/20 rounded-xl p-4">
-                    <p className="text-sm text-white/80">
+                    <p className="text-sm text-foreground/80">
                         <strong className="text-[hsl(var(--accent-gold))]">What happens next?</strong> Your profile will be reviewed by our team within{' '}
-                        <strong className="text-white">24–48 hours</strong> after submission. Our matchmaking team will verify your social media
+                        <strong className="text-foreground">24–48 hours</strong> after submission. Our matchmaking team will verify your social media
                         and reach out to schedule a brief consultation if you're a great fit.
                     </p>
                 </div>

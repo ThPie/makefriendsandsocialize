@@ -20,30 +20,30 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             <CardContent className="space-y-6 pt-4">
                 {/* Explanation */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-                    <p className="text-sm text-white leading-relaxed">
+                <div className="bg-muted/50 border border-border rounded-xl p-6">
+                    <p className="text-sm text-foreground leading-relaxed">
                         <strong>We'll notify you about:</strong>
                     </p>
-                    <ul className="text-sm text-white/60 mt-2 space-y-1">
+                    <ul className="text-sm text-muted-foreground mt-2 space-y-1">
                         <li>• New matches selected for you</li>
                         <li>• When your match proposes dates</li>
                         <li>• Confirmed meeting reminders</li>
                         <li>• Post-meeting decisions</li>
                     </ul>
-                    <p className="text-xs text-white/40 mt-3 italic">
+                    <p className="text-xs text-muted-foreground/70 mt-3 italic">
                         Your information is never shared. You can update these preferences anytime.
                     </p>
                 </div>
 
                 {/* Email Notifications */}
-                <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border border-border/50">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-dating-terracotta/20 rounded-full">
                             <Mail className="h-5 w-5 text-dating-terracotta" aria-hidden="true" />
                         </div>
                         <div>
-                            <p className="font-medium text-white">Email Notifications</p>
-                            <p className="text-sm text-white/60">Receive updates in your inbox</p>
+                            <p className="font-medium text-foreground">Email Notifications</p>
+                            <p className="text-sm text-muted-foreground">Receive updates in your inbox</p>
                         </div>
                     </div>
                     <Button
@@ -53,7 +53,7 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                         onClick={() => updateField("email_notifications_enabled", !formData.email_notifications_enabled)}
                         className={formData.email_notifications_enabled
                             ? "bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-transparent"
-                            : "bg-transparent border-white/20 text-white hover:bg-white/10"}
+                            : "bg-transparent border-border text-foreground hover:bg-muted"}
                         aria-label={formData.email_notifications_enabled ? "Disable email notifications" : "Enable email notifications"}
                     >
                         {formData.email_notifications_enabled ? "On" : "Off"}
@@ -61,14 +61,14 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                 </div>
 
                 {/* Push Notifications */}
-                <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border border-border/50">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-dating-terracotta/20 rounded-full">
                             <Bell className="h-5 w-5 text-dating-terracotta" aria-hidden="true" />
                         </div>
                         <div>
-                            <p className="font-medium text-white">Push Notifications</p>
-                            <p className="text-sm text-white/60">Get instant browser notifications</p>
+                            <p className="font-medium text-foreground">Push Notifications</p>
+                            <p className="text-sm text-muted-foreground">Get instant browser notifications</p>
                         </div>
                     </div>
                     <Button
@@ -78,7 +78,7 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                         onClick={() => updateField("push_notifications_enabled", !formData.push_notifications_enabled)}
                         className={formData.push_notifications_enabled
                             ? "bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-transparent"
-                            : "bg-transparent border-white/20 text-white hover:bg-white/10"}
+                            : "bg-transparent border-border text-foreground hover:bg-muted"}
                         aria-label={formData.push_notifications_enabled ? "Disable push notifications" : "Enable push notifications"}
                     >
                         {formData.push_notifications_enabled ? "On" : "Off"}
@@ -86,15 +86,15 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                 </div>
 
                 {/* SMS Notifications */}
-                <div className="space-y-4 p-4 bg-white/5 rounded-lg border border-white/5">
+                <div className="space-y-4 p-4 bg-muted/50 rounded-lg border border-border/50">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-dating-terracotta/20 rounded-full">
                                 <Smartphone className="h-5 w-5 text-dating-terracotta" aria-hidden="true" />
                             </div>
                             <div>
-                                <p className="font-medium text-white">Text Message Reminders</p>
-                                <p className="text-sm text-white/60">Get SMS for important updates (optional)</p>
+                                <p className="font-medium text-foreground">Text Message Reminders</p>
+                                <p className="text-sm text-muted-foreground">Get SMS for important updates (optional)</p>
                             </div>
                         </div>
                         <Button
@@ -104,7 +104,7 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                             onClick={() => updateField("sms_notifications_enabled", !formData.sms_notifications_enabled)}
                             className={formData.sms_notifications_enabled
                                 ? "bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-transparent"
-                                : "bg-transparent border-white/20 text-white hover:bg-white/10"}
+                                : "bg-transparent border-border text-foreground hover:bg-muted"}
                             disabled={!formData.phone_number}
                             aria-label={formData.sms_notifications_enabled ? "Disable SMS notifications" : "Enable SMS notifications"}
                         >
@@ -113,9 +113,9 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                     </div>
 
                     <div className="space-y-2 pl-12">
-                        <Label htmlFor="phone_number" className="text-sm text-white/80">Phone Number (optional)</Label>
+                        <Label htmlFor="phone_number" className="text-sm text-foreground/80">Phone Number (optional)</Label>
                         <div className="flex items-center gap-2">
-                            <Phone className="h-4 w-4 text-white/40" aria-hidden="true" />
+                            <Phone className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                             <Input
                                 id="phone_number"
                                 type="tel"
@@ -127,10 +127,10 @@ export const NotificationsStep = ({ form }: NotificationsStepProps) => {
                                     }
                                 }}
                                 placeholder="+1 (555) 123-4567"
-                                className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20"
+                                className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20"
                             />
                         </div>
-                        <p className="text-xs text-white/40">
+                        <p className="text-xs text-muted-foreground">
                             We'll only text you about scheduled dates and time-sensitive updates.
                         </p>
                     </div>

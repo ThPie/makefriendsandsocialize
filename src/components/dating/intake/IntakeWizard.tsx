@@ -54,12 +54,12 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
                 <h2 className="font-display text-3xl md:text-4xl font-light text-[hsl(var(--accent-gold))]">
                     Application Received 🌿
                 </h2>
-                <p className="text-white/70 text-lg leading-relaxed">
-                    Thank you, <span className="text-white font-medium">{firstName}</span>. Your profile is now in the hands of our matchmaking team.
+                <p className="text-muted-foreground text-lg leading-relaxed">
+                    Thank you, <span className="text-foreground font-medium">{firstName}</span>. Your profile is now in the hands of our matchmaking team.
                 </p>
             </div>
 
-            <div className="w-full bg-white/[0.04] border border-white/10 rounded-xl p-6 text-left space-y-4">
+            <div className="w-full bg-muted/50 border border-border rounded-xl p-6 text-left space-y-4">
                 <div className="flex items-center gap-2 mb-2">
                     <Clock className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
                     <span className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest">What Happens Next</span>
@@ -71,17 +71,17 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
                 ].map(({ label, detail }) => (
                     <div key={label} className="flex items-start gap-3">
                         <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--accent-gold))] mt-2 flex-shrink-0" />
-                        <p className="text-white/70 text-sm leading-relaxed">
-                            <span className="text-white font-medium">{label}:</span> {detail}
+                        <p className="text-muted-foreground text-sm leading-relaxed">
+                            <span className="text-foreground font-medium">{label}:</span> {detail}
                         </p>
                     </div>
                 ))}
             </div>
 
-            <div className="flex items-start gap-3 bg-white/[0.03] border border-white/10 rounded-xl p-5 w-full text-left">
+            <div className="flex items-start gap-3 bg-muted/30 border border-border rounded-xl p-5 w-full text-left">
                 <Mail className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" />
-                <p className="text-white/60 text-sm leading-relaxed">
-                    <span className="text-white/80 font-medium">Check your inbox</span> — we've sent you a personalized message from your dating coach with encouragement for this journey.
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                    <span className="text-foreground/80 font-medium">Check your inbox</span> — we've sent you a personalized message from your dating coach with encouragement for this journey.
                 </p>
             </div>
 
@@ -253,7 +253,7 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
                         variant="ghost"
                         onClick={handleBack}
                         disabled={step === 1}
-                        className="gap-2 text-white/50 hover:text-white hover:bg-white/5 disabled:opacity-30"
+                        className="gap-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 disabled:opacity-30"
                         aria-label="Go to previous step"
                     >
                         <ChevronLeft className="h-4 w-4" aria-hidden="true" />
@@ -262,12 +262,12 @@ export const IntakeWizard = ({ profile }: IntakeWizardProps) => {
 
                     <div className="flex items-center gap-4">
                         {isSaving ? (
-                            <span className="hidden md:flex items-center gap-1.5 text-xs text-white/30">
+                            <span className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground/50">
                                 <Loader2 className="h-3 w-3 animate-spin" />
                                 Saving…
                             </span>
                         ) : (
-                            <span className="hidden md:flex items-center gap-1.5 text-xs text-white/20">
+                            <span className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground/40">
                                 <CheckCircle className="h-3 w-3" />
                                 Auto-saved
                             </span>
