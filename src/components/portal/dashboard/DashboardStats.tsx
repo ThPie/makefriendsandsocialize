@@ -66,9 +66,9 @@ export function DashboardStats() {
   ];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      {/* Primary — Upcoming Events (60%) */}
-      <div className="lg:col-span-7 rounded-2xl border border-border bg-card p-6 flex flex-col justify-between min-h-[140px] relative overflow-hidden">
+    <div className="space-y-4">
+      {/* Primary — Upcoming Events */}
+      <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 flex flex-col justify-between min-h-[120px] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="flex items-center justify-between mb-4 relative z-10">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-[0.15em]">
@@ -79,7 +79,7 @@ export function DashboardStats() {
           </div>
         </div>
         <div className="relative z-10">
-          <h3 className="text-5xl font-display font-semibold text-foreground leading-none mb-1.5">
+          <h3 className="text-4xl sm:text-5xl font-display font-semibold text-foreground leading-none mb-1.5">
             {eventsCount}
           </h3>
           <span className="text-xs text-muted-foreground">
@@ -88,26 +88,26 @@ export function DashboardStats() {
         </div>
       </div>
 
-      {/* Secondary stats (40%) */}
-      <div className="lg:col-span-5 grid grid-cols-3 gap-4">
+      {/* Secondary stats — horizontal row on mobile */}
+      <div className="grid grid-cols-3 gap-3">
         {secondaryStats.map((stat) => (
           <div
             key={stat.label}
-            className="rounded-2xl border border-border bg-card p-4 flex flex-col justify-between min-h-[140px]"
+            className="rounded-2xl border border-border bg-card p-3 sm:p-4 flex flex-col justify-between min-h-[100px] sm:min-h-[120px]"
           >
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.12em] leading-tight">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-[0.1em] leading-tight">
                 {stat.label}
               </span>
-              <div className={cn('p-1.5 rounded-lg', stat.bgClass)}>
-                <stat.icon size={16} weight="duotone" className={stat.accentClass} />
+              <div className={cn('p-1 sm:p-1.5 rounded-lg', stat.bgClass)}>
+                <stat.icon size={14} weight="duotone" className={stat.accentClass} />
               </div>
             </div>
             <div>
-              <h3 className="text-2xl font-display font-semibold text-foreground leading-none mb-1">
+              <h3 className="text-xl sm:text-2xl font-display font-semibold text-foreground leading-none mb-0.5 sm:mb-1">
                 {stat.value}
               </h3>
-              <span className="text-[10px] text-muted-foreground">{stat.subtitle}</span>
+              <span className="text-[9px] sm:text-[10px] text-muted-foreground leading-tight">{stat.subtitle}</span>
             </div>
           </div>
         ))}

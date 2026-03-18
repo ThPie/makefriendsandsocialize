@@ -130,32 +130,29 @@ function EventRow({ event }: { event: any }) {
   return (
     <TransitionLink
       to={`/portal/events/${event.id}`}
-      className="flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors duration-150"
+      className="flex items-start gap-3 sm:gap-4 px-4 sm:px-6 py-3.5 sm:py-4 hover:bg-muted/30 transition-colors duration-150"
     >
-      <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center">
+      <div className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center">
         <span className="text-[9px] font-bold text-primary tracking-wider leading-none">{month}</span>
-        <span className="text-lg font-display font-semibold text-foreground leading-none">{day}</span>
+        <span className="text-base sm:text-lg font-display font-semibold text-foreground leading-none">{day}</span>
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-foreground truncate">{event.title}</p>
-        <div className="flex items-center gap-3 mt-0.5">
+        <p className="text-sm font-medium text-foreground line-clamp-2 leading-snug">{event.title}</p>
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1">
           {event.location && (
-            <span className="text-xs text-muted-foreground flex items-center gap-1 truncate">
-              <MapPin size={12} className="flex-shrink-0" />
-              {event.location}
+            <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <MapPin size={11} className="flex-shrink-0" />
+              <span className="line-clamp-1">{event.location}</span>
             </span>
           )}
           {event.time && (
             <span className="text-xs text-muted-foreground flex items-center gap-1">
-              <Clock size={12} className="flex-shrink-0" />
+              <Clock size={11} className="flex-shrink-0" />
               {event.time}
             </span>
           )}
         </div>
       </div>
-      <Badge variant="secondary" className="text-[10px] capitalize hidden sm:inline-flex">
-        {event.tier}
-      </Badge>
     </TransitionLink>
   );
 }

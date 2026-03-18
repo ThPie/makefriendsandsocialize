@@ -103,16 +103,16 @@ export function DiscoverForYou() {
           <TransitionLink
             key={index}
             to={item.link}
-            className="flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors duration-150 group"
+            className="flex items-start gap-3 sm:gap-4 px-4 sm:px-6 py-3.5 sm:py-4 hover:bg-muted/30 transition-colors duration-150 group"
           >
-            <div className={cn('p-2.5 rounded-xl flex-shrink-0', item.accentClass)}>
-              <item.icon size={18} weight="duotone" />
+            <div className={cn('p-2 sm:p-2.5 rounded-xl flex-shrink-0 mt-0.5', item.accentClass)}>
+              <item.icon size={16} weight="duotone" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">{item.title}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{item.subtitle}</p>
+              <p className="text-sm font-medium text-foreground line-clamp-2 leading-snug">{item.title}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{item.subtitle}</p>
             </div>
-            <ArrowRight size={14} className="text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
+            <ArrowRight size={14} className="text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0 mt-1" />
           </TransitionLink>
         ))}
       </div>
