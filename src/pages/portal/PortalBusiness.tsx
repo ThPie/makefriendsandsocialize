@@ -247,12 +247,10 @@ const PortalBusiness = () => {
           Upgrade Required
         </h1>
         <p className="text-muted-foreground mb-8">
-          The Founders Circle is available to Fellow and Founder members.
+          The Founders Circle is available to Insider and Patron members.
           Upgrade your membership to list your company.
         </p>
-        <Button asChild>
-          <TransitionLink to="/membership">Upgrade Membership</TransitionLink>
-        </Button>
+        <UpgradeButton />
       </div>
     );
   }
