@@ -908,6 +908,65 @@ export type Database = {
           },
         ]
       }
+      content_research: {
+        Row: {
+          circle: string | null
+          created_at: string
+          id: string
+          key_insights: string[] | null
+          raw_data: Json | null
+          relevance_score: number | null
+          source_platform: string
+          status: string
+          suggested_angle: string | null
+          suggested_title: string | null
+          topic: string
+          trend_summary: string
+          updated_at: string
+          used_in_post_id: string | null
+        }
+        Insert: {
+          circle?: string | null
+          created_at?: string
+          id?: string
+          key_insights?: string[] | null
+          raw_data?: Json | null
+          relevance_score?: number | null
+          source_platform: string
+          status?: string
+          suggested_angle?: string | null
+          suggested_title?: string | null
+          topic: string
+          trend_summary: string
+          updated_at?: string
+          used_in_post_id?: string | null
+        }
+        Update: {
+          circle?: string | null
+          created_at?: string
+          id?: string
+          key_insights?: string[] | null
+          raw_data?: Json | null
+          relevance_score?: number | null
+          source_platform?: string
+          status?: string
+          suggested_angle?: string | null
+          suggested_title?: string | null
+          topic?: string
+          trend_summary?: string
+          updated_at?: string
+          used_in_post_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_research_used_in_post_id_fkey"
+            columns: ["used_in_post_id"]
+            isOneToOne: false
+            referencedRelation: "journal_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_quotes: {
         Row: {
           created_at: string
