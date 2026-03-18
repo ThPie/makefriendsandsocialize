@@ -12,6 +12,7 @@ import {
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts';
 import { format, subMonths, startOfMonth, endOfMonth, parseISO } from 'date-fns';
+import { parseLocalDate } from '@/lib/date-utils';
 import {
   TrendingUp, Users, Calendar, Star, MapPin, Clock,
   ArrowUpRight, ArrowDownRight, Loader2
@@ -338,7 +339,7 @@ export default function AdminEventAnalytics() {
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-foreground truncate">{event.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      {format(new Date(event.date), 'MMM d, yyyy')}
+                      {format(parseLocalDate(event.date), 'MMM d, yyyy')}
                       {event.city && ` • ${event.city}`}
                     </p>
                   </div>

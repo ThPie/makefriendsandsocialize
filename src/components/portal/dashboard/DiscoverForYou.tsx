@@ -1,4 +1,5 @@
 import { useAuth } from '@/contexts/AuthContext';
+import { parseLocalDate } from '@/lib/date-utils';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { TransitionLink } from '@/components/ui/TransitionLink';
@@ -41,7 +42,7 @@ export function DiscoverForYou() {
         .limit(2);
 
       events?.forEach((e) => {
-        const dateStr = new Date(e.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const dateStr = parseLocalDate(e.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         items.push({
           type: 'event',
           title: e.title,

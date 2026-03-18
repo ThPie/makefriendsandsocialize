@@ -2,6 +2,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { CalendarBlank, MapPin, Clock, ArrowRight, Sparkle } from '@phosphor-icons/react';
+import { parseLocalDate } from '@/lib/date-utils';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -122,7 +123,7 @@ export function UpcomingSchedule() {
 }
 
 function EventRow({ event }: { event: any }) {
-  const dateObj = new Date(event.date);
+  const dateObj = parseLocalDate(event.date);
   const month = dateObj.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
   const day = dateObj.getDate();
 

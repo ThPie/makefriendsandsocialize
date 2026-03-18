@@ -1,3 +1,5 @@
+import { parseLocalDate } from './date-utils';
+
 /**
  * Generate Google Calendar event URL
  */
@@ -9,7 +11,7 @@ export function generateGoogleCalendarUrl(event: {
   description?: string | null;
   venue_name?: string | null;
 }): string {
-  const startDate = new Date(event.date);
+  const startDate = parseLocalDate(event.date);
   
   // Parse time if available
   if (event.time) {
@@ -55,7 +57,7 @@ export function generateICalContent(event: {
   venue_name?: string | null;
   id: string;
 }): string {
-  const startDate = new Date(event.date);
+  const startDate = parseLocalDate(event.date);
   
   if (event.time) {
     const [hours, minutes] = event.time.split(':').map(Number);
