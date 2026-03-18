@@ -12,7 +12,7 @@ import { Heart, Zap, Crown, Check, Loader2 } from 'lucide-react';
 import { useMatchReveal } from '@/hooks/useMatchReveal';
 import { useSubscription } from '@/hooks/useSubscription';
 import { cn } from '@/lib/utils';
-import { REVEAL_PURCHASE, TIER_BENEFITS } from '@/lib/stripe-products';
+import { REVEAL_PURCHASE, TIER_BENEFITS } from '@/lib/square-products';
 
 interface MatchRevealModalProps {
   isOpen: boolean;
