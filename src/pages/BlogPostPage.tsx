@@ -109,7 +109,7 @@ const BlogPostPage = () => {
           transition={{ delay: 0.1 }}
         >
           <Button variant="ghost" asChild className="mb-6 -ml-4">
-            <TransitionLink to="/journal" className="flex items-center gap-2">
+            <TransitionLink to="/blog" className="flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back to Blog
             </TransitionLink>
