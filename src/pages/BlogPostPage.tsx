@@ -278,7 +278,7 @@ const BlogPostPage = () => {
 
           <div className="text-center mt-12">
             <Button asChild variant="outline" size="lg" className="rounded-full">
-              <TransitionLink to="/journal">
+              <TransitionLink to="/blog">
                 View All Articles
               </TransitionLink>
             </Button>
