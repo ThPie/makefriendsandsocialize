@@ -11,6 +11,16 @@ interface TrialCountdownBannerProps {
   isLoading?: boolean;
 }
 
+const TrialUpgradeButton = ({ urgencyLevel }: { urgencyLevel: string }) => {
+  const { openUpgrade } = useUpgrade();
+  return (
+    <Button size="sm" variant={urgencyLevel === 'critical' ? 'destructive' : 'default'} onClick={openUpgrade}>
+      Upgrade Now
+      <ArrowRight className="ml-2 h-4 w-4" />
+    </Button>
+  );
+};
+
 // Memoized component to prevent unnecessary re-renders
 export const TrialCountdownBanner = memo(function TrialCountdownBanner({ 
   className,
