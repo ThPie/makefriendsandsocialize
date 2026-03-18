@@ -16,7 +16,7 @@ const BlogPostPage = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: article, isLoading } = useQuery({
-    queryKey: ["journal-post", id],
+    queryKey: ["blog-post", id],
     queryFn: async () => {
       // Try by slug first, then by id
       let { data, error } = await supabase
