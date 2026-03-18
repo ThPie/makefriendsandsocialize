@@ -23,7 +23,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                 {/* Pointer Triangle intentionally omitted to match the clean rounded glass look of the reference */}
 
                 {/* Content Box - matching the exact reference layout: Left dark panel, right white options */}
-                <div className="bg-[#FAF9F6] dark:bg-card border border-border/40 rounded-[32px] shadow-2xl overflow-hidden flex flex-row min-h-[420px] max-h-[85vh]">
+                <div className="bg-background border border-border/40 rounded-[32px] shadow-2xl dark:shadow-none overflow-hidden flex flex-row min-h-[420px] max-h-[85vh]">
 
                     {/* LEFT PANEL - The dark rounded container inside */}
                     <div className="w-[300px] m-2 rounded-[24px] overflow-hidden relative flex flex-col justify-between p-8 bg-[#1A1A1A]">
