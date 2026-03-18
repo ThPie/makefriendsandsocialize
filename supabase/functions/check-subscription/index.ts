@@ -1,72 +1,11 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { getCorsHeaders } from '../_shared/cors.ts';
-
-
-
-// Rate limit: 100 requests per 15 minutes per IP
-const MAX_REQUESTS = 100;
-const WINDOW_MINUTES = 15;
-
-// Price IDs mapping to DB tiers - Updated March 2026
-const PRICE_TO_TIER: Record<string, string> = {
-  "price_1Ssn8f00I3YCY0DeeE6nnMri": "fellow",  // Member Monthly $49
-  "price_1TB3S000I3YCY0DeptRFPoeL": "fellow",   // Member Annual $470
-  "price_1Ssn9u00I3YCY0DeF6IQ05fB": "founder",  // Fellow Monthly $79
-  "price_1TB3Sj00I3YCY0DeyFYFnzVG": "founder",  // Fellow Annual $758
-  // Legacy prices (for existing subscribers)
-  "price_1Ssn9f00I3YCY0DeLZZloqCJ": "fellow",   // Old Member Annual $399
-  "price_1SsnAL00I3YCY0Def32T8PTg": "founder",   // Old Fellow Annual $699
-};
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
   console.log(`[CHECK-SUBSCRIPTION] ${step}${detailsStr}`);
 };
-
-/**
- * Check rate limit for the given IP and endpoint
- */
-async function checkRateLimit(supabase: any, ipAddress: string, endpoint: string): Promise<{ allowed: boolean; remaining: number; resetAt: string | null }> {
-  try {
-    const { data, error } = await supabase.rpc('check_api_rate_limit', {
-      _ip_address: ipAddress,
-      _endpoint: endpoint,
-      _max_requests: MAX_REQUESTS,
-      _window_minutes: WINDOW_MINUTES
-    });
-
-    if (error) {
-      console.error('Rate limit check error:', error);
-      return { allowed: true, remaining: MAX_REQUESTS, resetAt: null };
-    }
-
-    const status = data?.[0] || { allowed: true, remaining_requests: MAX_REQUESTS, reset_at: null };
-    return {
-      allowed: status.allowed,
-      remaining: status.remaining_requests,
-      resetAt: status.reset_at
-    };
-  } catch (err) {
-    console.error('Rate limit check failed:', err);
-    return { allowed: true, remaining: MAX_REQUESTS, resetAt: null };
-  }
-}
-
-/**
- * Increment rate limit counter
- */
-async function incrementRateLimit(supabase: any, ipAddress: string, endpoint: string): Promise<void> {
-  try {
-    await supabase.rpc('increment_api_rate_limit', {
-      _ip_address: ipAddress,
-      _endpoint: endpoint
-    });
-  } catch (err) {
-    console.error('Rate limit increment failed:', err);
-  }
-}
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -83,40 +22,6 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    // Get IP address for rate limiting
-    const ipAddress =
-      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-      req.headers.get('cf-connecting-ip') ||
-      req.headers.get('x-real-ip') ||
-      'unknown';
-
-    // Check rate limit
-    const rateLimit = await checkRateLimit(supabaseClient, ipAddress, 'check-subscription');
-
-    if (!rateLimit.allowed) {
-      logStep("Rate limit exceeded", { ip: ipAddress });
-      return new Response(
-        JSON.stringify({
-          error: "Rate limit exceeded. Please try again later.",
-          resetAt: rateLimit.resetAt
-        }),
-        {
-          status: 429,
-          headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json",
-            "Retry-After": "900"
-          },
-        }
-      );
-    }
-
-    // Increment rate limit counter
-    await incrementRateLimit(supabaseClient, ipAddress, 'check-subscription');
-
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
-
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header provided");
 
@@ -126,93 +31,49 @@ serve(async (req) => {
 
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
-    logStep("User authenticated", { userId: user.id, email: user.email });
+    logStep("User authenticated", { userId: user.id });
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-
-    // Step 1: Try O(1) indexed lookup in our DB first
-    logStep("Looking up customer in DB");
+    // DB-first approach — no external API calls needed
     const { data: membership, error: memError } = await supabaseClient
       .from("memberships")
-      .select("stripe_customer_id")
+      .select("tier, status, expires_at, started_at")
       .eq("user_id", user.id)
       .single();
 
-    let customerId = membership?.stripe_customer_id;
+    const isActive = membership?.status === "active" && 
+      (!membership.expires_at || new Date(membership.expires_at) > new Date());
+    const tier = isActive ? (membership?.tier || "patron") : "patron";
 
-    // Step 2: Fallback to email search if not found in DB
-    if (!customerId) {
-      logStep("Customer not in DB, falling back to Stripe email search");
-      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-      if (customers.data.length > 0) {
-        customerId = customers.data[0].id;
-      }
-    }
+    // Check for active trial
+    const { data: trial } = await supabaseClient
+      .from("membership_trials")
+      .select("ends_at, converted_at")
+      .eq("user_id", user.id)
+      .is("converted_at", null)
+      .gt("ends_at", new Date().toISOString())
+      .single();
 
-    if (!customerId) {
-      logStep("No customer found in DB or Stripe");
-      return new Response(
-        JSON.stringify({
-          subscribed: false,
-          tier: "patron",
-          available_reveals: await getAvailableReveals(user.id, supabaseClient),
-          has_trial: false,
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-      );
-    }
-
-    logStep("Found Stripe customer", { customerId });
-
-    // Check for active subscription
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      status: "active",
-      limit: 1,
-    });
-
-    // Also check for trialing subscriptions
-    const trialingSubscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      status: "trialing",
-      limit: 1,
-    });
-
-    const allSubs = [...subscriptions.data, ...trialingSubscriptions.data];
-    const hasActiveSub = allSubs.length > 0;
-
-    let tier = "patron";
-    let subscriptionEnd = null;
-    let isTrialing = false;
-    let trialEndsAt = null;
-
-    if (hasActiveSub) {
-      const subscription = allSubs[0];
-      subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
-      const priceId = subscription.items.data[0]?.price?.id;
-      tier = PRICE_TO_TIER[priceId] || "explorer";
-      isTrialing = subscription.status === "trialing";
-
-      if (isTrialing && subscription.trial_end) {
-        trialEndsAt = new Date(subscription.trial_end * 1000).toISOString();
-      }
-
-      logStep("Active subscription found", {
-        subscriptionId: subscription.id,
-        tier,
-        isTrialing,
-        endDate: subscriptionEnd
-      });
-    }
+    const isTrialing = !!trial;
+    const trialEndsAt = trial?.ends_at || null;
 
     // Get available reveal credits
-    const availableReveals = await getAvailableReveals(user.id, supabaseClient);
+    const { data: reveals } = await supabaseClient
+      .from("match_reveal_purchases")
+      .select("reveals_total, reveals_used")
+      .eq("user_id", user.id)
+      .gt("expires_at", new Date().toISOString());
+
+    const availableReveals = (reveals || []).reduce(
+      (sum: number, p: any) => sum + (p.reveals_total - p.reveals_used), 0
+    );
+
+    logStep("Subscription checked", { tier, isActive, isTrialing, availableReveals });
 
     return new Response(
       JSON.stringify({
-        subscribed: hasActiveSub,
+        subscribed: isActive || isTrialing,
         tier,
-        subscription_end: subscriptionEnd,
+        subscription_end: membership?.expires_at || null,
         is_trialing: isTrialing,
         trial_ends_at: trialEndsAt,
         available_reveals: availableReveals,
@@ -228,15 +89,3 @@ serve(async (req) => {
     );
   }
 });
-
-async function getAvailableReveals(userId: string, supabase: any): Promise<number> {
-  const { data, error } = await supabase
-    .from("match_reveal_purchases")
-    .select("reveals_total, reveals_used")
-    .eq("user_id", userId)
-    .gt("expires_at", new Date().toISOString());
-
-  if (error || !data) return 0;
-
-  return data.reduce((sum: number, p: any) => sum + (p.reveals_total - p.reveals_used), 0);
-}
