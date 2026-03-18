@@ -180,110 +180,53 @@ const JournalPage = () => {
             variants={containerVariants}
             initial="hidden"
             animate={articlesAnimation.isVisible ? "visible" : "hidden"}
-            className="grid grid-cols-1 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
           >
-            {/* Featured */}
-            {featuredArticle && (
-              <motion.div variants={itemVariants}>
-                <Link to={`/journal/${featuredArticle.slug}`} className="group block bg-card border border-border rounded-2xl overflow-hidden hover-lift transition-all duration-200 hover:border-primary/50">
-                  <div className="flex flex-col lg:flex-row">
-                    <div className="w-full lg:w-1/2 aspect-video lg:aspect-auto lg:min-h-[320px] overflow-hidden">
-                      {featuredArticle.cover_image ? (
-                        <div
-                          className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                          style={{ backgroundImage: `url("${featuredArticle.cover_image}")` }}
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-primary/10 flex items-center justify-center">
-                          <FileText className="h-16 w-16 text-primary/30" />
-                        </div>
+            {filteredArticles.map((article) => (
+              <motion.div key={article.id} variants={itemVariants}>
+                <Link to={`/journal/${article.slug}`} className="group flex flex-col h-full bg-card border border-border rounded-xl overflow-hidden hover-lift transition-all duration-200 hover:border-primary/50">
+                  <div className="aspect-[4/3] overflow-hidden relative">
+                    {article.cover_image ? (
+                      <div
+                        className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                        style={{ backgroundImage: `url("${article.cover_image}")` }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-primary/10 flex items-center justify-center">
+                        <FileText className="h-8 w-8 text-primary/30" />
+                      </div>
+                    )}
+                    {article.category && (
+                      <div className="absolute top-3 left-3">
+                        <span className="text-xs font-medium bg-background/90 backdrop-blur-sm text-primary px-2.5 py-0.5 rounded-full">
+                          {article.category}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 p-4 flex flex-col">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                      {article.reading_time_minutes && (
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {article.reading_time_minutes} min
+                        </span>
+                      )}
+                      {article.published_at && (
+                        <>
+                          <span>•</span>
+                          <span>{format(new Date(article.published_at), 'MMM d, yyyy')}</span>
+                        </>
                       )}
                     </div>
-                    <div className="flex-1 p-8 flex flex-col justify-center">
-                      <div className="flex items-center gap-4 mb-4">
-                        {featuredArticle.category && (
-                          <span className="text-primary text-sm font-medium bg-primary/10 px-3 py-1 rounded-full">{featuredArticle.category}</span>
-                        )}
-                        {featuredArticle.reading_time_minutes && (
-                          <span className="text-muted-foreground text-sm flex items-center gap-1">
-                            <Clock className="h-3.5 w-3.5" />
-                            {featuredArticle.reading_time_minutes} min read
-                          </span>
-                        )}
-                      </div>
-                      <h2 className="font-display text-2xl md:text-3xl text-foreground mb-4 group-hover:text-primary transition-colors">
-                        {featuredArticle.title}
-                      </h2>
-                      <p className="text-muted-foreground leading-relaxed mb-4">{featuredArticle.excerpt}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">
-                          {featuredArticle.published_at ? format(new Date(featuredArticle.published_at), 'MMM d, yyyy') : ''}
-                        </span>
-                        <span className="text-primary flex items-center gap-2 font-medium group-hover:gap-3 transition-all">
-                          Read More <ArrowRight className="h-4 w-4" />
-                        </span>
-                      </div>
-                    </div>
+                    <h3 className="font-display text-sm text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                      {article.title}
+                    </h3>
+                    <p className="text-muted-foreground text-xs leading-relaxed flex-1 line-clamp-2">{article.excerpt}</p>
                   </div>
                 </Link>
               </motion.div>
-            )}
-
-            {/* Grid */}
-            {regularArticles.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {regularArticles.map((article) => (
-                  <motion.div key={article.id} variants={itemVariants}>
-                    <Link to={`/journal/${article.slug}`} className="group flex flex-col h-full bg-card border border-border rounded-2xl overflow-hidden hover-lift transition-all duration-200 hover:border-primary/50">
-                      <div className="aspect-video overflow-hidden relative">
-                        {article.cover_image ? (
-                          <div
-                            className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                            style={{ backgroundImage: `url("${article.cover_image}")` }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-primary/10 flex items-center justify-center">
-                            <FileText className="h-12 w-12 text-primary/30" />
-                          </div>
-                        )}
-                        {article.category && (
-                          <div className="absolute top-4 left-4">
-                            <span className="text-sm font-medium bg-background/90 backdrop-blur-sm text-primary px-3 py-1 rounded-full">
-                              {article.category}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 p-6 flex flex-col">
-                        <div className="flex items-center gap-3 text-sm text-muted-foreground mb-3">
-                          {article.reading_time_minutes && (
-                            <span className="flex items-center gap-1">
-                              <Clock className="h-3.5 w-3.5" />
-                              {article.reading_time_minutes} min
-                            </span>
-                          )}
-                          {article.published_at && (
-                            <>
-                              <span>•</span>
-                              <span>{format(new Date(article.published_at), 'MMM d, yyyy')}</span>
-                            </>
-                          )}
-                        </div>
-                        <h3 className="font-display text-xl text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                          {article.title}
-                        </h3>
-                        <p className="text-muted-foreground text-sm leading-relaxed mb-4 flex-1 line-clamp-2">{article.excerpt}</p>
-                        <div className="flex items-center justify-end mt-auto pt-4 border-t border-border/50">
-                          <Button size="sm" variant="ghost" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                            Read <ArrowRight className="h-3.5 w-3.5 ml-1" />
-                          </Button>
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+            ))}
           </motion.div>
         )}
       </section>
