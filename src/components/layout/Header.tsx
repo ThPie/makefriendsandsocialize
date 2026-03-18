@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const { user, profile } = useAuth();
+  const { openUpgrade } = useUpgrade();
   const location = useLocation();
 
   // Don't show public header on portal/admin pages
