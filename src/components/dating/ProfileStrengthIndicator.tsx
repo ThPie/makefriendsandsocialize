@@ -109,12 +109,12 @@ export const ProfileStrengthIndicator = ({ formData, className }: ProfileStrengt
           </p>
           <div className="flex flex-wrap gap-1.5">
             {emptyHighImpact.map(f => (
-              <span key={f.key} className="text-[11px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
+              <span key={f.key} className="text-[11px] px-2 py-0.5 rounded-full bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border border-[hsl(var(--accent-gold))]/20">
                 {f.label} ({f.weight}%)
               </span>
             ))}
             {minimalFields.map(f => (
-              <span key={f.key} className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <span key={f.key} className="text-[11px] px-2 py-0.5 rounded-full bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border border-[hsl(var(--accent-gold))]/20">
                 {f.label} — add detail
               </span>
             ))}
