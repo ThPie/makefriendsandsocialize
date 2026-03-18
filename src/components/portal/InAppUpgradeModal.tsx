@@ -348,12 +348,14 @@ interface PaymentStepProps {
   billingPeriod: 'monthly' | 'annual';
   squareConfig: SquareConfig | null;
   configLoading: boolean;
+  configError: string | null;
   processing: boolean;
   isTrial: boolean;
   onBack: () => void;
   onTokenize: (token: { token: string }) => void;
   squareReady: boolean;
   setSquareReady: (v: boolean) => void;
+  onRetryConfig: () => void;
 }
 
 function PaymentStep({
@@ -361,12 +363,14 @@ function PaymentStep({
   billingPeriod,
   squareConfig,
   configLoading,
+  configError,
   processing,
   isTrial,
   onBack,
   onTokenize,
   squareReady,
   setSquareReady,
+  onRetryConfig,
 }: PaymentStepProps) {
   const [SquareComponents, setSquareComponents] = useState<{
     PaymentForm: any;
@@ -382,6 +386,21 @@ function PaymentStep({
       });
     });
   }, []);
+
+  if (configError) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 gap-4">
+        <AlertCircle className="h-8 w-8 text-destructive" />
+        <p className="text-sm text-muted-foreground text-center">{configError}</p>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={onBack}>
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back
+          </Button>
+          <Button size="sm" onClick={onRetryConfig}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
 
   if (configLoading || !squareConfig || !SquareComponents) {
     return (
