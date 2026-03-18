@@ -812,7 +812,7 @@ export default function AuthPage() {
                         placeholder="Harrington"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        className="bg-foreground/5 border-foreground/10 text-foreground placeholder:text-muted-foreground/50 focus:border-primary/50 focus:ring-primary/20"
+                        className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-primary/50 focus:ring-primary/20"
                         autoComplete="family-name"
                       />
                     </div>
