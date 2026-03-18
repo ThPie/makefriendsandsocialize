@@ -1,7 +1,6 @@
 import { useState, useEffect, memo } from 'react';
-import { Link } from 'react-router-dom';
-import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useSubscription, SubscriptionStatus } from '@/hooks/useSubscription';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { Button } from '@/components/ui/button';
 import { Clock, X, Sparkles, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
