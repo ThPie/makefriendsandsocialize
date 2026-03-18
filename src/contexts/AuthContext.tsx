@@ -123,10 +123,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         };
 
-        // Enforce maximum 10-second timeout on initialization
+        // Enforce maximum 6-second timeout on initialization
         await Promise.race([
           initPromise(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Auth initialization timed out')), 10000))
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Auth initialization timed out')), 6000))
         ]);
       } catch (error) {
         console.error('Error initializing auth:', error);
