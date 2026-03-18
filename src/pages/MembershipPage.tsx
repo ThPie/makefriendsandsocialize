@@ -425,7 +425,7 @@ const MembershipPage = () => {
                   <ul className="space-y-4 mb-4 flex-1">
                     {tier.features.slice(0, INITIAL_FEATURES_SHOWN).map((feature, i) => (
                       <li key={i} className="flex items-start gap-3">
-                        <Check className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                        <Check className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" strokeWidth={1} />
                         <span className="text-sm text-foreground font-light leading-snug">{feature}</span>
                       </li>
                     ))}
@@ -440,14 +440,14 @@ const MembershipPage = () => {
                     <ul className="space-y-4">
                       {tier.features.slice(INITIAL_FEATURES_SHOWN).map((feature, i) => (
                         <li key={`extra-${i}`} className="flex items-start gap-3">
-                          <Check className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                          <Check className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" strokeWidth={1} />
                           <span className="text-sm text-foreground font-light leading-snug">{feature}</span>
                         </li>
                       ))}
                       {/* Missing features in grayscale */}
                       {tier.missingFeatures.map((feature, i) => (
                         <li key={`missing-${i}`} className="flex items-start gap-3 text-muted-foreground/50">
-                          <Check className="h-5 w-5 flex-shrink-0 mt-0.5 opacity-30" strokeWidth={1.5} />
+                          <Check className="h-5 w-5 flex-shrink-0 mt-0.5 opacity-30" strokeWidth={1} />
                           <span className="text-sm font-light leading-snug line-through">{feature}</span>
                         </li>
                       ))}
@@ -535,10 +535,10 @@ const MembershipPage = () => {
                 className={`flex flex-col items-center text-center group ${index === processSteps.length - 1 ? 'col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto md:max-w-none' : ''}`}
               >
                 <div className="relative mb-6">
-                  <div className="w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center transition-all duration-200 group-hover:border-primary/50">
-                    <item.icon className="h-8 w-8 text-primary" />
+                  <div className="w-20 h-20 rounded-full border border-border flex items-center justify-center transition-all duration-200 group-hover:border-[hsl(var(--accent-gold))]">
+                    <item.icon className="h-7 w-7 text-foreground group-hover:text-[hsl(var(--accent-gold))]" strokeWidth={1} />
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-[hsl(var(--accent-gold))] text-background flex items-center justify-center font-bold text-sm">
                     {item.step}
                   </div>
                 </div>
@@ -565,9 +565,9 @@ const MembershipPage = () => {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={ctaAnimation.isVisible ? { scale: 1, opacity: 1 } : {}}
             transition={{ duration: 0.5 }}
-            className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-8"
+            className="w-20 h-20 rounded-full border border-border flex items-center justify-center mx-auto mb-8"
           >
-            <Crown className="h-10 w-10 text-primary" />
+            <Crown className="h-8 w-8 text-foreground" strokeWidth={1} />
           </motion.div>
 
           <motion.h2

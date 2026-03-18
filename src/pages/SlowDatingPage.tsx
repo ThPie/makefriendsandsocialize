@@ -233,8 +233,8 @@ const SlowDatingPage = () => {
                   variants={itemVariants}
                   className="group bg-card border border-border/50 rounded-2xl p-8 hover-lift"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 transition-colors group-hover:bg-primary/20">
-                    <item.icon className="h-7 w-7 text-primary" />
+                  <div className="w-14 h-14 rounded-full border border-border flex items-center justify-center mb-6 transition-colors group-hover:border-[hsl(var(--accent-gold))]">
+                    <item.icon className="h-6 w-6 text-foreground group-hover:text-[hsl(var(--accent-gold))]" strokeWidth={1} />
                   </div>
                   <h3 className="font-display text-2xl text-foreground mb-3">{item.title}</h3>
                   <p className="text-muted-foreground leading-relaxed">{item.description}</p>
