@@ -4,12 +4,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { useSubscription } from '@/hooks/useSubscription';
 
-// Import sidebar components directly — they're small and needed immediately for layout
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -20,19 +20,21 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
-  LayoutDashboard,
-  User,
-  Users,
-  Heart,
-  Calendar,
-  LogOut,
-  Loader2,
-  Crown,
-  Shield,
-  Home,
+  House,
+  SquaresFour,
+  UserCircle,
+  UsersThree,
+  Handshake,
+  HeartStraight,
+  CalendarBlank,
   Gift,
-  Mail
-} from 'lucide-react';
+  Crown,
+  ShieldCheck,
+  Buildings,
+  Headset,
+  SignOut,
+  ArrowLeft,
+} from '@phosphor-icons/react';
 import { NotificationBell } from './NotificationBell';
 import { TrialCountdownBanner } from './TrialCountdownBanner';
 import { PageTransition } from '@/components/ui/page-transition';
@@ -43,23 +45,41 @@ import { canAccessProtectedFeatures, getRestrictedRoutesForPending } from '@/lib
 const MobileDashboardNav = lazy(() => import('./MobileDashboardNav').then(module => ({ default: module.MobileDashboardNav })));
 import { SkipLink } from '@/components/ui/skip-link';
 import { PortalBottomNav } from './PortalBottomNav';
+import { Loader2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface PortalLayoutProps {
   children: ReactNode;
 }
 
-const menuItems = [
-  { title: 'Dashboard', url: '/portal', icon: LayoutDashboard, requiresApproval: false },
-  { title: 'My Profile', url: '/portal/profile', icon: User, requiresApproval: false },
-  { title: 'The Network', url: '/portal/network', icon: Users, requiresApproval: true },
-  { title: 'Connections', url: '/portal/connections', icon: Heart, requiresApproval: true },
-  { title: 'Slow Dating', url: '/portal/slow-dating', icon: Heart, requiresApproval: true },
-  { title: 'Founder Profile', url: '/portal/business', icon: Users, requiresApproval: false },
-  { title: 'Events', url: '/portal/events', icon: Calendar, requiresApproval: false },
-  { title: 'Perks', url: '/portal/perks', icon: Gift, requiresApproval: false },
-  { title: 'Concierge', url: '/portal/concierge', icon: Crown, requiresApproval: true },
-  { title: 'Referrals', url: '/portal/referrals', icon: Gift, requiresApproval: false },
-  { title: 'Security', url: '/portal/security', icon: Shield, requiresApproval: false },
+// Grouped navigation structure
+const navGroups = [
+  {
+    label: 'Personal',
+    items: [
+      { title: 'Dashboard', url: '/portal', icon: SquaresFour, requiresApproval: false },
+      { title: 'My Profile', url: '/portal/profile', icon: UserCircle, requiresApproval: false },
+      { title: 'Connections', url: '/portal/connections', icon: Handshake, requiresApproval: true },
+      { title: 'Slow Dating', url: '/portal/slow-dating', icon: HeartStraight, requiresApproval: true },
+    ],
+  },
+  {
+    label: 'Explore',
+    items: [
+      { title: 'The Network', url: '/portal/network', icon: UsersThree, requiresApproval: true },
+      { title: 'Events', url: '/portal/events', icon: CalendarBlank, requiresApproval: false },
+      { title: 'Perks', url: '/portal/perks', icon: Gift, requiresApproval: false },
+      { title: 'Referrals', url: '/portal/referrals', icon: Gift, requiresApproval: false },
+    ],
+  },
+  {
+    label: 'Support',
+    items: [
+      { title: 'Concierge', url: '/portal/concierge', icon: Headset, requiresApproval: true },
+      { title: 'Founder Profile', url: '/portal/business', icon: Buildings, requiresApproval: false },
+      { title: 'Security', url: '/portal/security', icon: ShieldCheck, requiresApproval: false },
+    ],
+  },
 ];
 
 export function PortalLayout({ children }: PortalLayoutProps) {
@@ -67,9 +87,6 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   const location = useLocation();
   const { user, profile, membership, applicationStatus, isLoading, isAdmin, signOut } = useAuth();
   const { subscription, isLoading: subscriptionLoading } = useSubscription();
-
-  // Memoize menu items to prevent re-creation on every render
-  const memoizedMenuItems = useMemo(() => menuItems, []);
 
   const isApproved = canAccessProtectedFeatures({
     applicationStatus,
@@ -79,16 +96,10 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   const restrictedRoutes = getRestrictedRoutesForPending();
 
   useEffect(() => {
-    // ProtectedRoute already guarantees user is authenticated.
-    // These are business-logic redirects only.
-
-    // Check if onboarding is complete first
     if (!isLoading && profile && !profile.onboarding_completed) {
       navigate('/portal/onboarding');
       return;
     }
-
-    // If pending and trying to access restricted routes, redirect
     if (!isLoading && user && isPending && restrictedRoutes.includes(location.pathname)) {
       navigate('/portal');
     }
@@ -107,53 +118,54 @@ export function PortalLayout({ children }: PortalLayoutProps) {
     );
   }
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   const initials = profile?.first_name && profile?.last_name
     ? `${profile.first_name[0]}${profile.last_name[0]}`
     : user.email?.[0]?.toUpperCase() || 'M';
 
   const tierBadge = membership?.tier ? (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${membership.tier === 'founder'
-      ? 'bg-primary/20 text-primary'
-      : membership.tier === 'fellow'
-        ? 'bg-accent/20 text-accent-foreground'
-        : 'bg-muted text-muted-foreground'
-      }`}>
-      {membership.tier === 'founder' && <Crown className="h-3 w-3" />}
+    <span className={cn(
+      'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium',
+      membership.tier === 'founder'
+        ? 'bg-primary/20 text-primary'
+        : membership.tier === 'fellow'
+          ? 'bg-accent/20 text-accent-foreground'
+          : 'bg-muted text-muted-foreground'
+    )}>
+      {membership.tier === 'founder' && <Crown size={12} weight="duotone" />}
       {getTierDisplayName(membership.tier)}
     </span>
   ) : null;
 
   return (
-    <>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full bg-background">
+          <SkipLink />
+          <Sidebar className="border-r border-border" aria-label="Portal Sidebar">
+            <SidebarHeader className="p-4 border-b border-border">
+              <Link to="/" className="block mb-3">
+                <BrandLogo className="h-10 w-auto" width={120} height={40} />
+              </Link>
+              <Link
+                to="/"
+                className="flex items-center gap-2 px-3 py-2 rounded-[10px] bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/20 transition-colors text-sm font-medium"
+              >
+                <House size={16} weight="duotone" />
+                <span>Back to Homepage</span>
+              </Link>
+            </SidebarHeader>
 
-      <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
-        <SidebarProvider>
-          <div className="min-h-screen flex w-full bg-background">
-            <SkipLink />
-            <Sidebar className="border-r border-border" aria-label="Portal Sidebar">
-              <SidebarHeader className="p-4 border-b border-border">
-                <Link to="/" className="block mb-3">
-                  <BrandLogo className="h-10 w-auto" width={120} height={40} />
-                </Link>
-                <Link
-                  to="/"
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/20 transition-colors text-sm font-medium"
-                >
-                  <Home className="h-4 w-4" />
-                  <span>Back to Homepage</span>
-                </Link>
-              </SidebarHeader>
-
-              <SidebarContent className="p-4">
-
-                <SidebarGroup>
+            <SidebarContent className="px-3 py-4">
+              {navGroups.map((group) => (
+                <SidebarGroup key={group.label} className="mb-2">
+                  <SidebarGroupLabel className="px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/60 mb-1">
+                    {group.label}
+                  </SidebarGroupLabel>
                   <SidebarGroupContent>
                     <SidebarMenu>
-                      {memoizedMenuItems.map((item) => {
+                      {group.items.map((item) => {
                         const isActive = location.pathname === item.url;
                         const isPatronRestricted = (item.url === '/portal/network' || item.url === '/portal/connections')
                           && membership?.tier === 'patron';
@@ -166,15 +178,22 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                               <Link
                                 to={isRestricted ? '#' : item.url}
                                 onClick={(e) => isRestricted && e.preventDefault()}
-                                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isActive
-                                  ? 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))]'
-                                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                                  } ${isRestricted ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                className={cn(
+                                  'flex items-center gap-3 px-3 py-2.5 rounded-[10px] transition-colors duration-150 text-sm',
+                                  isActive
+                                    ? 'bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] font-medium border-l-2 border-[hsl(var(--accent-gold))]'
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50',
+                                  isRestricted && 'opacity-40 cursor-not-allowed'
+                                )}
                               >
-                                <item.icon className="h-5 w-5" />
+                                <item.icon
+                                  size={20}
+                                  weight={isActive ? 'duotone' : 'regular'}
+                                  className="flex-shrink-0"
+                                />
                                 <span>{item.title}</span>
                                 {isRestricted && (
-                                  <Crown className="h-3 w-3 ml-auto text-[hsl(var(--accent-gold))]" />
+                                  <Crown size={12} weight="duotone" className="ml-auto text-[hsl(var(--accent-gold))]" />
                                 )}
                               </Link>
                             </SidebarMenuButton>
@@ -184,117 +203,105 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                     </SidebarMenu>
                   </SidebarGroupContent>
                 </SidebarGroup>
+              ))}
 
-                {/* Admin Link */}
-                {isAdmin && (
-                  <div className="mt-6 pt-6 border-t border-border">
-                    <Link
-                      to="/admin"
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/10 transition-colors"
-                    >
-                      <Shield className="h-5 w-5" />
-                      <span>Admin Dashboard</span>
-                    </Link>
-                  </div>
-                )}
-              </SidebarContent>
-
-              {/* Sign Out */}
-              <div className="p-4 mt-auto border-t border-border">
-                <Button
-                  variant="ghost"
-                  onClick={handleSignOut}
-                  className="w-full justify-start text-muted-foreground hover:text-foreground"
-                >
-                  <LogOut className="h-5 w-5 mr-3" />
-                  Sign Out
-                </Button>
-              </div>
-            </Sidebar>
-
-            <main id="main-content" className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
-              {/* Desktop Top Bar */}
-              <header className="hidden md:flex items-center justify-between h-20 px-8 border-b border-border bg-background/95 backdrop-blur z-40">
-                <div className="flex-1" />
-
-                <div className="flex items-center gap-6 ml-4">
-                  <NotificationBell />
-                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-                    <Mail className="h-5 w-5" />
-                  </Button>
-
-                  <div className="h-8 w-px bg-border/50 mx-2" />
-
-                  <div className="flex items-center gap-3">
-                    <div className="text-right hidden lg:block">
-                      <p className="text-sm font-medium leading-none">{profile?.first_name || 'Member'}</p>
-                      <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-bold text-[10px]">
-                        {getTierDisplayName(membership?.tier)} Member
-                      </p>
-                    </div>
-                    <Avatar className="h-10 w-10 border-2 border-primary/20">
-                      <AvatarImage src={profile?.avatar_urls?.[0]} />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                </div>
-              </header>
-
-              {/* Mobile Header — Stitch style */}
-              <header
-                className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border/30 bg-background/95 backdrop-blur-lg md:hidden"
-                style={{ paddingTop: 'var(--safe-top, 0px)' }}
-              >
-                <div className="flex items-center gap-3">
-                  <Link to="/" className="flex items-center gap-2">
-                    <BrandLogo className="h-8 w-auto" height={32} width={96} />
+              {/* Admin Link */}
+              {isAdmin && (
+                <div className="mt-4 pt-4 border-t border-border">
+                  <Link
+                    to="/admin"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/10 transition-colors text-sm font-medium"
+                  >
+                    <ShieldCheck size={20} weight="duotone" />
+                    <span>Admin Dashboard</span>
                   </Link>
                 </div>
+              )}
+            </SidebarContent>
+
+            {/* Sign Out */}
+            <div className="p-4 mt-auto border-t border-border">
+              <Button
+                variant="ghost"
+                onClick={handleSignOut}
+                className="w-full justify-start text-muted-foreground hover:text-foreground rounded-[10px]"
+              >
+                <SignOut size={20} weight="regular" className="mr-3" />
+                Sign Out
+              </Button>
+            </div>
+          </Sidebar>
+
+          <main id="main-content" className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
+            {/* Desktop Top Bar — clean, no mail icon */}
+            <header className="hidden md:flex items-center justify-between h-20 px-8 border-b border-border bg-background/95 backdrop-blur z-40">
+              <div className="flex-1" />
+              <div className="flex items-center gap-6 ml-4">
+                <NotificationBell />
+                <div className="h-8 w-px bg-border/50 mx-2" />
                 <div className="flex items-center gap-3">
-                  <NotificationBell />
-                  <Avatar className="h-8 w-8 border-2 border-primary/20">
+                  <div className="text-right hidden lg:block">
+                    <p className="text-sm font-medium leading-none">{profile?.first_name || 'Member'}</p>
+                    <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider font-bold text-[10px]">
+                      {getTierDisplayName(membership?.tier)} Member
+                    </p>
+                  </div>
+                  <Avatar className="h-10 w-10 border-2 border-primary/20">
                     <AvatarImage src={profile?.avatar_urls?.[0]} />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                    <AvatarFallback className="bg-primary text-primary-foreground">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
                 </div>
-              </header>
-
-              <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8 scroll-smooth scroll-touch pb-bottom-nav md:pb-8 lg:pb-8">
-                <div className="space-y-8">
-                  {/* Pending Member Banner */}
-                  {isPending && <PendingMemberBanner className="mb-6" />}
-
-                  {/* Trial Countdown Banner */}
-                  <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
-
-                  {/* Mobile Dashboard Navigation */}
-                  {location.pathname === '/portal' && (
-                    <Suspense fallback={<div className="h-24 w-full bg-muted/20 animate-pulse rounded-lg mb-8" />}>
-                      <MobileDashboardNav onSignOut={handleSignOut} className="mb-8" />
-                    </Suspense>
-                  )}
-
-                  {/* Breadcrumb Navigation */}
-                  <div className={location.pathname === '/portal' ? 'hidden' : 'block mb-6'}>
-                    <PortalBreadcrumb type="portal" />
-                  </div>
-
-                  <PageTransition>
-                    {children}
-                  </PageTransition>
-                </div>
               </div>
+            </header>
 
-              {/* Mobile Bottom Navigation */}
-              <PortalBottomNav />
-            </main>
-          </div>
-        </SidebarProvider>
-      </Suspense>
-    </>
+            {/* Mobile Header */}
+            <header
+              className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 border-b border-border/30 bg-background/95 backdrop-blur-lg md:hidden"
+              style={{ paddingTop: 'var(--safe-top, 0px)' }}
+            >
+              <div className="flex items-center gap-3">
+                <Link to="/" className="flex items-center gap-2">
+                  <BrandLogo className="h-8 w-auto" height={32} width={96} />
+                </Link>
+              </div>
+              <div className="flex items-center gap-3">
+                <NotificationBell />
+                <Avatar className="h-8 w-8 border-2 border-primary/20">
+                  <AvatarImage src={profile?.avatar_urls?.[0]} />
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+            </header>
+
+            <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8 scroll-smooth scroll-touch pb-bottom-nav md:pb-8 lg:pb-8">
+              <div className="space-y-8">
+                {isPending && <PendingMemberBanner className="mb-6" />}
+                <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
+
+                {location.pathname === '/portal' && (
+                  <Suspense fallback={<div className="h-24 w-full bg-muted/20 animate-pulse rounded-lg mb-8" />}>
+                    <MobileDashboardNav onSignOut={handleSignOut} className="mb-8" />
+                  </Suspense>
+                )}
+
+                <div className={location.pathname === '/portal' ? 'hidden' : 'block mb-6'}>
+                  <PortalBreadcrumb type="portal" />
+                </div>
+
+                <PageTransition>
+                  {children}
+                </PageTransition>
+              </div>
+            </div>
+
+            <PortalBottomNav />
+          </main>
+        </div>
+      </SidebarProvider>
+    </Suspense>
   );
 }
