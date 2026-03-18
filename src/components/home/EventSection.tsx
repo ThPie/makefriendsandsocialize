@@ -38,7 +38,7 @@ const EventCard = ({ event, className = '' }: {event: Event;className?: string;}
 
 
         <div className="w-full h-full bg-muted flex items-center justify-center">
-            <Calendar className="h-12 w-12 text-muted-foreground/20" />
+            <Calendar className="h-12 w-12 text-muted-foreground/20" strokeWidth={1} />
           </div>
         }
       </div>
