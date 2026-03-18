@@ -188,8 +188,8 @@ const ContactPage = () => {
               variants={itemVariants}
               className="group bg-card border border-border rounded-2xl p-6 flex items-center gap-4 hover-lift"
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/20">
-                <item.icon className="w-6 h-6" strokeWidth={1.5} />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-border transition-all duration-300 group-hover:border-[hsl(var(--accent-gold))]">
+                <item.icon className="w-6 h-6 text-foreground group-hover:text-[hsl(var(--accent-gold))]" strokeWidth={1} />
               </div>
               <div>
                 <p className="text-muted-foreground text-sm mb-1">{item.label}</p>
