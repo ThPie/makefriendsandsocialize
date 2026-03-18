@@ -75,8 +75,6 @@ const JournalPage = () => {
     return filtered;
   }, [activeCategory, searchQuery, posts]);
 
-  const featuredArticle = filteredArticles[0];
-  const regularArticles = filteredArticles.slice(1);
 
   return (
     <div className="flex-1 w-full flex flex-col items-center bg-background">
