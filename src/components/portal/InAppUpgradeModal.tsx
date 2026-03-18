@@ -49,6 +49,7 @@ export function InAppUpgradeModal() {
   const [configLoading, setConfigLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [squareReady, setSquareReady] = useState(false);
+  const [configError, setConfigError] = useState<string | null>(null);
 
   const currentDbTier = subscription?.tier || 'patron';
 
@@ -56,13 +57,16 @@ export function InAppUpgradeModal() {
   useEffect(() => {
     if (isUpgradeOpen && !squareConfig && !configLoading) {
       setConfigLoading(true);
+      setConfigError(null);
       supabase.functions.invoke('square-config')
         .then(({ data, error }) => {
           if (error) throw error;
+          if (data?.error) throw new Error(data.error);
           setSquareConfig(data);
         })
         .catch((err) => {
           console.error('Failed to load Square config:', err);
+          setConfigError('Unable to load payment system. Please try again.');
         })
         .finally(() => setConfigLoading(false));
     }
