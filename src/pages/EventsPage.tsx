@@ -273,7 +273,7 @@ const EventsPage = () => {
         schema={[...upcomingEventsSchema, breadcrumbSchema]}
       />
       {/* Header */}
-      <div className="w-full content-container py-12 flex flex-col gap-8">
+      <div className="w-full content-container pt-24 md:pt-28 pb-12 flex flex-col gap-8">
         <motion.div
           className="flex flex-col md:flex-row md:items-center justify-between gap-4"
           initial={{ opacity: 0, y: -20 }}

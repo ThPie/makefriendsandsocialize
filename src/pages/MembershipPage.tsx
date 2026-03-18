@@ -538,7 +538,7 @@ const MembershipPage = () => {
                   <div className="w-20 h-20 rounded-full border border-border flex items-center justify-center transition-all duration-200 group-hover:border-[hsl(var(--accent-gold))]">
                     <item.icon className="h-7 w-7 text-foreground group-hover:text-[hsl(var(--accent-gold))]" strokeWidth={1} />
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-[hsl(var(--accent-gold))] text-background flex items-center justify-center font-bold text-sm">
                     {item.step}
                   </div>
                 </div>

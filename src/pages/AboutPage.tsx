@@ -191,8 +191,8 @@ const AboutPage = () => {
                 variants={itemVariants}
                 className="group flex flex-col items-center text-center p-8 bg-card border border-border rounded-2xl hover-lift"
               >
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 transition-all duration-200 group-hover:bg-primary/20 group-hover:shadow-lg group-hover:shadow-primary/20">
-                  <item.icon className="w-8 h-8 text-primary" strokeWidth={1.5} />
+                <div className="w-14 h-14 rounded-full border border-border flex items-center justify-center mb-6 transition-all duration-200 group-hover:border-[hsl(var(--accent-gold))]">
+                  <item.icon className="w-6 h-6 text-foreground group-hover:text-[hsl(var(--accent-gold))]" strokeWidth={1} />
                 </div>
                 <h3 className="text-foreground text-xl font-bold mb-3 font-display">{item.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
