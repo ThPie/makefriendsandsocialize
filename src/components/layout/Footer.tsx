@@ -37,7 +37,7 @@ const footerLinks = {
     links: [
       { label: "Contact Us", href: "/contact" },
       { label: "FAQ", href: "/faq" },
-      { label: "Blog", href: "/journal" },
+      { label: "Blog", href: "/blog" },
       { label: "Partnerships", href: "/contact" },
       { label: "Become a Host", href: "/become-a-host" },
     ],

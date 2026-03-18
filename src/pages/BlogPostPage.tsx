@@ -317,4 +317,4 @@ function renderMarkdown(md: string): string {
     });
 }
 
-export default JournalPostPage;
+export default BlogPostPage;

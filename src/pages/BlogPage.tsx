@@ -235,4 +235,4 @@ const BlogPage = () => {
   );
 };
 
-export default JournalPage;
+export default BlogPage;
