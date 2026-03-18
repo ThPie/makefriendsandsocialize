@@ -440,7 +440,7 @@ const MembershipPage = () => {
                     <ul className="space-y-4">
                       {tier.features.slice(INITIAL_FEATURES_SHOWN).map((feature, i) => (
                         <li key={`extra-${i}`} className="flex items-start gap-3">
-                          <Check className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                          <Check className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" strokeWidth={1} />
                           <span className="text-sm text-foreground font-light leading-snug">{feature}</span>
                         </li>
                       ))}
