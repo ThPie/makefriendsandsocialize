@@ -551,7 +551,7 @@ export const useIntakeForm = (options?: UseIntakeFormOptions) => {
                 email_notifications_enabled: formData.email_notifications_enabled,
                 push_notifications_enabled: formData.push_notifications_enabled,
                 sms_notifications_enabled: formData.sms_notifications_enabled,
-                status: 'pending',
+                status: 'active',
             }).select().single();
 
             if (error) throw error;

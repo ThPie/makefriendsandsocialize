@@ -52,10 +52,10 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
 
             <div className="space-y-3">
                 <h2 className="font-display text-3xl md:text-4xl font-light text-[hsl(var(--accent-gold))]">
-                    Application Received 🌿
+                    You're In! 🌿
                 </h2>
                 <p className="text-muted-foreground text-lg leading-relaxed">
-                    Thank you, <span className="text-foreground font-medium">{firstName}</span>. Your profile is now in the hands of our matchmaking team.
+                    Welcome, <span className="text-foreground font-medium">{firstName}</span>. Your profile is live and our matchmaking team is already working on finding your best connections.
                 </p>
             </div>
 
@@ -65,9 +65,9 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
                     <span className="text-[hsl(var(--accent-gold))] text-sm font-semibold uppercase tracking-widest">What Happens Next</span>
                 </div>
                 {[
-                    { label: '24–48 hours', detail: 'Our team reviews your application personally.' },
-                    { label: 'Social verification', detail: 'We verify your profile to keep our community authentic.' },
-                    { label: 'We\'ll reach out', detail: 'Expect a brief consultation call if you\'re a great fit.' },
+                    { label: 'Your profile is active', detail: 'You are now in the matchmaking pool and eligible for matches.' },
+                    { label: 'We curate your matches', detail: 'Our team handpicks compatible people based on your answers.' },
+                    { label: 'You will hear from us', detail: 'When we find a great match, we will introduce you personally.' },
                 ].map(({ label, detail }) => (
                     <div key={label} className="flex items-start gap-3">
                         <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--accent-gold))] mt-2 flex-shrink-0" />
@@ -81,7 +81,7 @@ const SuccessView = ({ displayName }: { displayName: string }) => {
             <div className="flex items-start gap-3 bg-muted/30 border border-border rounded-xl p-5 w-full text-left">
                 <Mail className="h-5 w-5 text-[hsl(var(--accent-gold))] flex-shrink-0 mt-0.5" />
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                    <span className="text-foreground/80 font-medium">Check your inbox</span> — we've sent you a personalized message from your dating coach with encouragement for this journey.
+                    <span className="text-foreground/80 font-medium">Check your inbox</span> for a welcome message from your dating coach with tips to make the most of this experience.
                 </p>
             </div>
 
