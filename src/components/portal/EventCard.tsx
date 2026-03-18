@@ -73,7 +73,7 @@ export const EventCard = ({
     };
 
     return (
-        <Card className="overflow-hidden group border-border bg-card">
+        <Card className="overflow-hidden group border-border bg-card rounded-2xl">
             {/* Image */}
             <div className="aspect-[16/9] relative overflow-hidden">
                 <img
