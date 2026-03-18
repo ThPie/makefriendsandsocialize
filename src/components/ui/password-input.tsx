@@ -109,7 +109,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
                     key={req.label}
                     className={cn(
                       'flex items-center gap-1.5 text-xs transition-colors',
-                      passed ? 'text-green-400' : 'text-white/40'
+                      passed ? 'text-green-400' : 'text-muted-foreground/60'
                     )}
                   >
                     {passed ? (
