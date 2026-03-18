@@ -8,8 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { TransitionLink } from '@/components/ui/TransitionLink';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 
 interface EventUpgradeModalProps {
     isOpen: boolean;
@@ -24,6 +23,13 @@ export const EventUpgradeModal = ({
     eventTitle,
     eventTier,
 }: EventUpgradeModalProps) => {
+    const { openUpgrade } = useUpgrade();
+
+    const handleUpgrade = () => {
+        onClose();
+        openUpgrade();
+    };
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent>
@@ -49,11 +55,9 @@ export const EventUpgradeModal = ({
                         <Button variant="outline" onClick={onClose}>
                             Maybe Later
                         </Button>
-                        <Button asChild>
-                            <TransitionLink to="/membership" onClick={onClose}>
-                                View Membership Options
-                                <ArrowRight className="ml-2 h-4 w-4" />
-                            </TransitionLink>
+                        <Button onClick={handleUpgrade}>
+                            View Membership Options
+                            <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                     </div>
                 </div>
