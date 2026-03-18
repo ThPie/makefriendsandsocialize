@@ -250,7 +250,7 @@ const PortalBusiness = () => {
           The Founders Circle is available to Insider and Patron members.
           Upgrade your membership to list your company.
         </p>
-        <UpgradeButton />
+        <UpgradeButtonInline />
       </div>
     );
   }
