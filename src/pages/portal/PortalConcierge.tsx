@@ -171,50 +171,18 @@ export default function PortalConcierge() {
 
   if (!canBook) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-16">
-        <div className="mb-8">
-          <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
-            <Crown className="h-10 w-10 text-primary" />
-          </div>
-          <h1 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-            1:1 Concierge Support
-          </h1>
-          <p className="text-muted-foreground text-lg mb-8">
-            Get personalized guidance from our concierge team. Upgrade to Insider or Patron
-            to unlock dedicated support for networking, introductions, and membership questions.
-          </p>
-        </div>
-
-        <Card className="bg-card border-[hsl(var(--accent-gold))]/20 mb-8">
-          <CardContent className="p-8">
-            <h3 className="font-display text-xl text-foreground mb-4">Concierge Benefits</h3>
-            <ul className="text-left space-y-3 text-muted-foreground mb-6">
-              <li className="flex items-center gap-3">
-                <Headphones className="h-5 w-5 text-primary" />
-                <span>30-minute video consultations</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Headphones className="h-5 w-5 text-primary" />
-                <span>Personalized networking advice</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Headphones className="h-5 w-5 text-primary" />
-                <span>Introduction assistance</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Headphones className="h-5 w-5 text-primary" />
-                <span>Event planning support</span>
-              </li>
-            </ul>
-            <Button asChild size="lg" className="w-full">
-              <TransitionLink to="/membership">
-                Upgrade to Access
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </TransitionLink>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <PremiumPaywall
+        title="Concierge Services"
+        description="Get personalized guidance from our concierge team for networking, introductions, and membership questions."
+        features={[
+          '30-minute video consultations',
+          'Personalized networking advice',
+          'Introduction assistance',
+          'Event planning support',
+        ]}
+        currentTier={membership?.tier}
+        icon="concierge"
+      />
     );
   }
 
