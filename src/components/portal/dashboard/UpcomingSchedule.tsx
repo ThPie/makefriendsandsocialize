@@ -123,7 +123,7 @@ export function UpcomingSchedule() {
 }
 
 function EventRow({ event }: { event: any }) {
-  const dateObj = new Date(event.date);
+  const dateObj = parseLocalDate(event.date);
   const month = dateObj.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
   const day = dateObj.getDate();
 

@@ -57,7 +57,7 @@ export function generateICalContent(event: {
   venue_name?: string | null;
   id: string;
 }): string {
-  const startDate = new Date(event.date);
+  const startDate = parseLocalDate(event.date);
   
   if (event.time) {
     const [hours, minutes] = event.time.split(':').map(Number);

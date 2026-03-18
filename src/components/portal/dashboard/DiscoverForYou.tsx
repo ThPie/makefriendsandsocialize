@@ -42,7 +42,7 @@ export function DiscoverForYou() {
         .limit(2);
 
       events?.forEach((e) => {
-        const dateStr = new Date(e.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const dateStr = parseLocalDate(e.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         items.push({
           type: 'event',
           title: e.title,
