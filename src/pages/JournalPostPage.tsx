@@ -60,7 +60,7 @@ const JournalPostPage = () => {
   // Track page view
   useEffect(() => {
     if (article?.id) {
-      supabase.rpc('increment_post_view_count', { _post_id: article.id }).catch(() => {});
+      supabase.rpc('increment_post_view_count', { _post_id: article.id }).then(() => {}).catch(() => {});
     }
   }, [article?.id]);
 
