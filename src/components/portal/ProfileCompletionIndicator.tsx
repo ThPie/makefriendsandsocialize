@@ -53,16 +53,19 @@ export function ProfileCompletionIndicator({ profile }: ProfileCompletionIndicat
 
   const completionPercentage = completedFields.reduce((acc, field) => acc + field.weight, 0);
 
-  // Fire confetti when reaching 100% for the first time
+  // Only fire confetti when profile completion changes TO 100% after a save (not on initial load)
+  const prevPercentage = useRef(completionPercentage);
   useEffect(() => {
     const celebrationKey = 'profile-completion-celebrated';
     const alreadyCelebrated = localStorage.getItem(celebrationKey) === 'true';
     
-    if (completionPercentage === 100 && !alreadyCelebrated && !hasCelebrated.current) {
+    // Only celebrate if percentage changed (i.e. user just saved) and is now 100%
+    if (completionPercentage === 100 && prevPercentage.current < 100 && !alreadyCelebrated && !hasCelebrated.current) {
       hasCelebrated.current = true;
       localStorage.setItem(celebrationKey, 'true');
       fireOnce();
     }
+    prevPercentage.current = completionPercentage;
   }, [completionPercentage, fireOnce]);
   
   const getMessage = () => {

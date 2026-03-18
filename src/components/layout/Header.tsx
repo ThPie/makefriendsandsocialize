@@ -62,10 +62,10 @@ export const Header = () => {
           <CirclesMegamenu isTransparent={isTransparent} />
 
           {/* Desktop nav links */}
-          {['Events', 'Membership', 'Blog', 'Soul Maps'].map((label) => (
+          {['Events', 'Membership', 'Blog'].map((label) => (
             <TransitionLink
               key={label}
-              to={label === 'Blog' ? '/journal' : label === 'Soul Maps' ? '/soul-maps' : `/${label.toLowerCase()}`}
+              to={label === 'Blog' ? '/journal' : `/${label.toLowerCase()}`}
               className={cn(
                 "hidden lg:inline-block text-sm font-light transition-colors duration-150",
                 isTransparent ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"

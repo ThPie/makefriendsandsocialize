@@ -125,8 +125,29 @@ export default function PortalSecurity() {
 
   if (step === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="w-full max-w-3xl mx-auto pb-16 space-y-8">
+        <div className="mb-6">
+          <h1 className="font-display text-2xl md:text-3xl text-foreground">Security</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage your account security settings</p>
+        </div>
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                <Shield className="h-5 w-5 text-muted-foreground" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-5 w-48 bg-muted rounded animate-pulse" />
+                <div className="h-4 w-64 bg-muted rounded animate-pulse" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="h-4 w-full bg-muted rounded animate-pulse" />
+            <div className="h-4 w-3/4 bg-muted rounded animate-pulse" />
+            <div className="h-10 w-48 bg-muted rounded animate-pulse mt-4" />
+          </CardContent>
+        </Card>
       </div>
     );
   }

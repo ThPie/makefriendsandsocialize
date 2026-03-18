@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
+import { PremiumPaywall } from '@/components/portal/PremiumPaywall';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -148,30 +149,18 @@ export default function PortalConnections() {
   // Upgrade prompt for Patron members
   if (!canAccessMatchmaking) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-16">
-        <div className="mb-8">
-          <div className="w-20 h-20 mx-auto rounded-full bg-[hsl(var(--accent-gold))]/10 flex items-center justify-center mb-6 border border-[hsl(var(--accent-gold))]/20">
-            <Crown className="h-10 w-10 text-[hsl(var(--accent-gold))]" />
-          </div>
-          <h1 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-            The Network
-          </h1>
-          <p className="text-muted-foreground text-lg mb-8">
-            Upgrade to Fellow membership to request and receive introductions from fellow members.
-          </p>
-        </div>
-
-        <Button asChild size="lg">
-          <TransitionLink to="/membership">
-            Upgrade to Fellow
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </TransitionLink>
-        </Button>
-
-        <p className="text-sm text-muted-foreground mt-8">
-          Current membership: <span className="text-foreground">{getTierDisplayName(membership?.tier)}</span>
-        </p>
-      </div>
+      <PremiumPaywall
+        title="Connections"
+        description="Upgrade to Fellow membership to request and receive introductions from fellow members."
+        features={[
+          'Send & receive introduction requests',
+          'View member profiles & styles',
+          'Build meaningful professional relationships',
+          'Priority matching with like-minded members',
+        ]}
+        currentTier={membership?.tier}
+        icon="connections"
+      />
     );
   }
 

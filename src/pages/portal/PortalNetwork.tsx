@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
+import { PremiumPaywall } from '@/components/portal/PremiumPaywall';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -90,57 +91,20 @@ export default function PortalNetwork() {
     return matchesSearch && matchesInterest && matchesIndustry;
   });
 
-  // Upgrade prompt for Patron members
   if (!canAccessMatchmaking) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-16">
-        <div className="mb-8">
-          <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
-            <Crown className="h-10 w-10 text-primary" />
-          </div>
-          <h1 className="font-display text-3xl md:text-4xl text-foreground mb-4">
-            Unlock The Network
-          </h1>
-          <p className="text-muted-foreground text-lg mb-8">
-            The Network is where meaningful connections begin. Upgrade to Fellow membership
-            to browse member profiles and request curated introductions.
-          </p>
-        </div>
-
-        <Card className="bg-card border-[hsl(var(--accent-gold))]/20 mb-8">
-          <CardContent className="p-8">
-            <h3 className="font-display text-xl text-foreground mb-4">Fellow Membership Includes</h3>
-            <ul className="text-left space-y-3 text-muted-foreground mb-6">
-              <li className="flex items-center gap-3">
-                <Heart className="h-5 w-5 text-primary" />
-                <span>Curated member introductions</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Heart className="h-5 w-5 text-primary" />
-                <span>Access to The Network</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Heart className="h-5 w-5 text-primary" />
-                <span>Priority event access</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Heart className="h-5 w-5 text-primary" />
-                <span>Exclusive slow dating events</span>
-              </li>
-            </ul>
-            <Button asChild size="lg" className="w-full">
-              <TransitionLink to="/membership">
-                Upgrade to Fellow
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </TransitionLink>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <p className="text-sm text-muted-foreground">
-          Current membership: <span className="text-foreground">{getTierDisplayName(membership?.tier)}</span>
-        </p>
-      </div>
+      <PremiumPaywall
+        title="The Network"
+        description="Browse member profiles and request curated introductions to build meaningful connections."
+        features={[
+          'Browse verified member profiles',
+          'Request curated introductions',
+          'Priority event access',
+          'Exclusive slow dating events',
+        ]}
+        currentTier={membership?.tier}
+        icon="network"
+      />
     );
   }
 

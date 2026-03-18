@@ -115,12 +115,13 @@ const EventsPage = () => {
       const { data, error } = await query;
 
       if (error) {
-        console.error('Error fetching events:', error);
-        throw error;
+        console.warn('Error fetching events:', error.message);
+        return [];
       }
 
-      return data as Event[];
+      return (data || []) as Event[];
     },
+    retry: 1,
   });
 
   // Subscribe to real-time updates — scoped to UPDATE on rsvp_count changes only
