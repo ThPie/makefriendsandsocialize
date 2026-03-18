@@ -94,7 +94,7 @@ export function MobileDashboardNav({ onSignOut, className }: MobileDashboardNavP
                     <div className="p-2 rounded-xl bg-primary/10">
                         <Home className="h-5 w-5 text-primary" />
                     </div>
-                    <span className="font-medium text-foreground">Back to Website</span>
+                    <span className="font-medium text-foreground">Back to Homepage</span>
                 </div>
                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </Link>

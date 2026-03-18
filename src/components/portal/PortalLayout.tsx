@@ -144,7 +144,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                   className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/20 transition-colors text-sm font-medium"
                 >
                   <Home className="h-4 w-4" />
-                  <span>Back to Website</span>
+                  <span>Back to Homepage</span>
                 </Link>
               </SidebarHeader>
 
