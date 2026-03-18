@@ -24,7 +24,7 @@ export const Header = () => {
 
   // Pages with light/white backgrounds need dark header elements even when not scrolled
   const isLightHeroPage = [
-    '/soul-maps', '/journal', '/about', '/contact', '/faq',
+    '/soul-maps', '/blog', '/about', '/contact', '/faq',
     '/membership', '/privacy', '/terms', '/code-of-conduct', '/cookies',
   ].some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
 
