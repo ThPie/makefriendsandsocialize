@@ -340,7 +340,7 @@ export default function AdminEventAnalytics() {
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-foreground truncate">{event.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      {format(new Date(event.date), 'MMM d, yyyy')}
+                      {format(parseLocalDate(event.date), 'MMM d, yyyy')}
                       {event.city && ` • ${event.city}`}
                     </p>
                   </div>
