@@ -349,8 +349,8 @@ const ContactPage = () => {
               className="bg-card border border-border rounded-2xl p-5 hover-lift mt-4"
             >
               <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary flex-shrink-0">
-                  <FileText className="w-5 h-5" strokeWidth={1.5} />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border flex-shrink-0">
+                  <FileText className="w-5 h-5 text-foreground" strokeWidth={1} />
                 </div>
                 <div>
                   <h3 className="text-foreground font-semibold mb-2">Need to Submit an Appeal?</h3>

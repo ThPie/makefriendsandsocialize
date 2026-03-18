@@ -152,8 +152,8 @@ const JournalPage = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
-              <FileText className="h-8 w-8 text-primary" />
+            <div className="w-16 h-16 rounded-full border border-border flex items-center justify-center">
+              <FileText className="h-7 w-7 text-foreground" strokeWidth={1} />
             </div>
             <h3 className="text-xl font-display text-foreground">
               {searchQuery
