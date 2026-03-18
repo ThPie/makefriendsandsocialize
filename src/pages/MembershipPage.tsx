@@ -565,9 +565,9 @@ const MembershipPage = () => {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={ctaAnimation.isVisible ? { scale: 1, opacity: 1 } : {}}
             transition={{ duration: 0.5 }}
-            className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-8"
+            className="w-20 h-20 rounded-full border border-border flex items-center justify-center mx-auto mb-8"
           >
-            <Crown className="h-10 w-10 text-primary" />
+            <Crown className="h-8 w-8 text-foreground" strokeWidth={1} />
           </motion.div>
 
           <motion.h2
