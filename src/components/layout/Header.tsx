@@ -10,23 +10,22 @@ import { CirclesMegamenu } from './CirclesMegamenu';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { MobileMenu } from './MobileMenu';
 import { cn } from '@/lib/utils';
+import { useTheme } from 'next-themes';
 
 export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const { user, profile } = useAuth();
   const { openUpgrade } = useUpgrade();
   const location = useLocation();
+  const { resolvedTheme } = useTheme();
 
   // Don't show public header on portal/admin pages
   const isPortal = location.pathname.startsWith('/portal');
   const isAdmin = location.pathname.startsWith('/admin');
   const isAuth = location.pathname.startsWith('/auth');
 
-  // Pages with light/white backgrounds need dark header elements even when not scrolled
-  const isLightHeroPage = [
-    '/soul-maps', '/blog', '/about', '/contact', '/faq',
-    '/membership', '/privacy', '/terms', '/code-of-conduct', '/cookies',
-  ].some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
+  // In light mode, always force opaque header so logo/nav are visible
+  const isLightMode = resolvedTheme === 'light';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,8 +38,8 @@ export const Header = () => {
   // Hide header on portal, admin, and auth pages
   if (isPortal || isAdmin || isAuth) return null;
 
-  // On light-hero pages, always use "scrolled" styling (dark logo, dark text)
-  const isTransparent = !scrolled && !isLightHeroPage;
+  // In light mode, never use transparent styling; in dark mode, transparent until scrolled
+  const isTransparent = !scrolled && !isLightMode;
 
   return (
     <header
