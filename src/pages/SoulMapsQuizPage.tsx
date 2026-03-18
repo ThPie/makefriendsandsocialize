@@ -9,6 +9,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { AuthGateModal } from '@/components/soul-maps/AuthGateModal';
 import { AttachmentResults } from '@/components/soul-maps/AttachmentResults';
+import { QuizSidebar } from '@/components/soul-maps/QuizSidebar';
+import { RelatedQuizzes } from '@/components/soul-maps/RelatedQuizzes';
 import {
   attachmentQuestions,
   calculateScores,
@@ -103,7 +105,6 @@ const SoulMapsQuizPage = () => {
       setShowResults(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      // Store answers and show auth gate
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
       setShowAuthGate(true);
     }
@@ -122,6 +123,7 @@ const SoulMapsQuizPage = () => {
         </Helmet>
         <div className="content-container py-24 md:py-32">
           <AttachmentResults scores={scores} winningStyle={winningStyle} />
+          <RelatedQuizzes />
           <div className="flex justify-center mt-10">
             <Button
               variant="outline"
@@ -143,83 +145,103 @@ const SoulMapsQuizPage = () => {
         <meta name="description" content="Discover your attachment style with this 3-minute psychology-backed quiz." />
       </Helmet>
 
-      <div className="content-container py-24 md:py-32 max-w-2xl mx-auto">
-        {/* Progress */}
-        <div className="space-y-2 mb-8">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Question {currentQ + 1} of {attachmentQuestions.length}</span>
-            <span>How Do You Love & Connect?</span>
+      <div className="content-container py-24 md:py-32">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+          {/* Main quiz area */}
+          <div className="flex-1 max-w-2xl">
+            {/* Progress */}
+            <div className="space-y-2 mb-8">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Question {currentQ + 1} of {attachmentQuestions.length}</span>
+                <span>How Do You Love & Connect?</span>
+              </div>
+              <Progress value={progressPct} className="h-1.5" indicatorClassName="bg-[hsl(var(--accent-gold))]" />
+            </div>
+
+            {/* Question */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentQ}
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-6"
+              >
+                <div className="space-y-2">
+                  <p className="text-xs uppercase tracking-[0.15em] text-[hsl(var(--accent-gold))]">{question.scenario}</p>
+                  <h2 className="text-xl md:text-2xl font-display font-semibold text-foreground leading-snug">
+                    {question.question}
+                  </h2>
+                </div>
+
+                <div className="space-y-3">
+                  {question.options.map((opt, i) => (
+                    <button
+                      key={i}
+                      onClick={() => selectAnswer(opt.style)}
+                      className={cn(
+                        "w-full text-left p-4 rounded-xl border transition-all duration-150 text-sm leading-relaxed",
+                        answers[currentQ] === opt.style
+                          ? "border-[hsl(var(--accent-gold))] bg-[hsl(var(--accent-gold))]/5 text-foreground"
+                          : "border-border/60 bg-card text-foreground/80 hover:border-border hover:bg-accent/30"
+                      )}
+                    >
+                      {opt.text}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Navigation */}
+            <div className="flex items-center justify-between mt-8">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleBack}
+                disabled={currentQ === 0}
+                className="gap-1.5 text-muted-foreground"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back
+              </Button>
+
+              {isLastQuestion ? (
+                <Button
+                  onClick={handleSeeResults}
+                  disabled={!allAnswered}
+                  className="rounded-full px-6 h-10 bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-white uppercase tracking-widest text-xs font-medium"
+                >
+                  See My Results
+                </Button>
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleNext}
+                  disabled={!answers[currentQ]}
+                  className="gap-1.5 text-muted-foreground"
+                >
+                  Next <ArrowRight className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
           </div>
-          <Progress value={progressPct} className="h-1.5" indicatorClassName="bg-[hsl(var(--accent-gold))]" />
+
+          {/* Sidebar — hidden on mobile, visible on lg+ */}
+          <div className="hidden lg:block w-[300px] shrink-0">
+            <div className="sticky top-24">
+              <QuizSidebar />
+            </div>
+          </div>
         </div>
 
-        {/* Question */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentQ}
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -30 }}
-            transition={{ duration: 0.25 }}
-            className="space-y-6"
-          >
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.15em] text-[hsl(var(--accent-gold))]">{question.scenario}</p>
-              <h2 className="text-xl md:text-2xl font-display font-semibold text-foreground leading-snug">
-                {question.question}
-              </h2>
-            </div>
+        {/* Related quizzes at bottom */}
+        <RelatedQuizzes />
 
-            <div className="space-y-3">
-              {question.options.map((opt, i) => (
-                <button
-                  key={i}
-                  onClick={() => selectAnswer(opt.style)}
-                  className={cn(
-                    "w-full text-left p-4 rounded-xl border transition-all duration-150 text-sm leading-relaxed",
-                    answers[currentQ] === opt.style
-                      ? "border-[hsl(var(--accent-gold))] bg-[hsl(var(--accent-gold))]/5 text-foreground"
-                      : "border-border/60 bg-card text-foreground/80 hover:border-border hover:bg-accent/30"
-                  )}
-                >
-                  {opt.text}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Navigation */}
-        <div className="flex items-center justify-between mt-8">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBack}
-            disabled={currentQ === 0}
-            className="gap-1.5 text-muted-foreground"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back
-          </Button>
-
-          {isLastQuestion ? (
-            <Button
-              onClick={handleSeeResults}
-              disabled={!allAnswered}
-              className="rounded-full px-6 h-10 bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-white uppercase tracking-widest text-xs font-medium"
-            >
-              See My Results
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleNext}
-              disabled={!answers[currentQ]}
-              className="gap-1.5 text-muted-foreground"
-            >
-              Next <ArrowRight className="w-4 h-4" />
-            </Button>
-          )}
+        {/* Mobile sidebar content — shown below quiz on mobile */}
+        <div className="lg:hidden mt-12">
+          <QuizSidebar />
         </div>
       </div>
 
