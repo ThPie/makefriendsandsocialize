@@ -220,8 +220,8 @@ const ContactPage = () => {
             className="bg-card border border-border rounded-2xl p-8"
           >
             <div className="flex items-center gap-4 mb-8">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <MessageCircle className="w-6 h-6" strokeWidth={1.5} />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-border">
+                <MessageCircle className="w-6 h-6 text-foreground" strokeWidth={1} />
               </div>
               <div>
                 <h2 className="text-foreground text-2xl font-bold font-display">Send Us a Message</h2>

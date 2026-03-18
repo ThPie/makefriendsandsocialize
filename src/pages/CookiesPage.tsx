@@ -86,8 +86,8 @@ const CookiesPage = () => {
                 className={`group bg-card border border-border rounded-2xl p-6 hover:border-primary/50 transition-all duration-200 scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
               >
                 <div className="flex items-start gap-3 mb-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary flex-shrink-0">
-                    <cookie.icon className="w-5 h-5" strokeWidth={1.5} />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border flex-shrink-0 group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                    <cookie.icon className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" strokeWidth={1} />
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">

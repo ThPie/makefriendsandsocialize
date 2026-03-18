@@ -111,8 +111,8 @@ const PrivacyPage = () => {
                 className={`group bg-card border border-border rounded-2xl p-6 md:p-8 hover:border-primary/50 transition-all duration-200 scroll-animate scroll-animate-delay-${(index % 3) + 1} ${isVisible ? 'visible' : ''}`}
               >
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20 text-primary flex-shrink-0">
-                    <section.icon className="w-5 h-5" strokeWidth={1.5} />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border flex-shrink-0 group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                    <section.icon className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" strokeWidth={1} />
                   </div>
                   <h2 className="text-foreground text-lg font-bold font-display pt-1.5">{section.title}</h2>
                 </div>
