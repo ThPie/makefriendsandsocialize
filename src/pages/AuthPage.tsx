@@ -1031,7 +1031,7 @@ export default function AuthPage() {
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="lastName-m" className="text-xs uppercase tracking-wider text-muted-foreground font-medium ml-1">Last Name</Label>
-                    <Input id="lastName-m" placeholder="Harrington" value={lastName} onChange={(e) => setLastName(e.target.value)} className="bg-foreground/5 border-foreground/10 text-foreground placeholder:text-muted-foreground/50" autoComplete="family-name" />
+                    <Input id="lastName-m" placeholder="Harrington" value={lastName} onChange={(e) => setLastName(e.target.value)} className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50" autoComplete="family-name" />
                   </div>
                 </div>
               )}
