@@ -79,7 +79,7 @@ const GalleryPage = () => {
   return (
     <div className="flex-1 w-full bg-background min-h-screen">
       {/* Minimal header */}
-      <div className="content-container pt-12 pb-8 md:pt-20 md:pb-12">
+      <div className="content-container pt-24 pb-8 md:pt-28 md:pb-12">
         <div className="section-header">
           <span className="eyebrow block mb-3 text-[hsl(var(--accent-gold))]">Gallery</span>
           <h1 className="font-display text-3xl md:text-[44px] text-foreground leading-[1.1]">

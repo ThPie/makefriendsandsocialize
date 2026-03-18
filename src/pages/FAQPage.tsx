@@ -163,7 +163,7 @@ export default function FAQPage() {
   return (
     <main className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative w-full py-20 md:py-28 overflow-hidden">
+      <section className="relative w-full pt-28 md:pt-36 pb-16 md:pb-20 overflow-hidden">
         <div
           ref={heroAnimation.ref}
           className={`container max-w-4xl relative z-10 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}

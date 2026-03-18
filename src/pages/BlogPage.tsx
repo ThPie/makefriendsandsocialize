@@ -82,7 +82,7 @@ const BlogPage = () => {
   return (
     <div className="flex-1 w-full flex flex-col items-center bg-background">
       {/* Hero Section */}
-      <section className="relative w-full py-20 md:py-28 overflow-hidden">
+      <section className="relative w-full pt-28 md:pt-36 pb-16 md:pb-20 overflow-hidden">
         <div
           ref={heroAnimation.ref}
           className={`container max-w-5xl relative z-10 scroll-animate ${heroAnimation.isVisible ? 'visible' : ''}`}

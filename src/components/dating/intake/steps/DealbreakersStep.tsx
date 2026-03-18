@@ -41,7 +41,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
             return "Even for casual dating, what are some things you absolutely couldn't tolerate?";
         }
         if (formData.relationship_type === 'marriage') {
-            return "What would make marriage with someone impossible for you? Be specific - this saves everyone time.";
+            return "What would make marriage with someone impossible for you? Be specific — this saves everyone time.";
         }
         return "What are your absolute non-negotiables in a partner? Think about things that have ended past relationships.";
     };
@@ -62,12 +62,12 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                 {/* Dealbreakers */}
                 <div className="space-y-3">
                     <div className="flex items-center gap-2 flex-wrap">
-                        <Label htmlFor="dealbreakers" className="text-white/80 text-lg">
+                        <Label htmlFor="dealbreakers" className="text-foreground/80 text-lg">
                             Dealbreakers *
                         </Label>
                         <WeightBadge weight={5} />
                     </div>
-                    <p className="text-sm text-white/40">
+                    <p className="text-sm text-muted-foreground">
                         {getDealbreakersPrompt()}
                     </p>
                     <Textarea
@@ -75,33 +75,33 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         value={formData.dealbreakers}
                         onChange={(e) => updateField("dealbreakers", e.target.value)}
                         placeholder="What would be non-negotiable for you in a partner..."
-                        className="min-h-[120px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                        className="min-h-[120px] bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
                 {/* Political views */}
                 <div className="space-y-3">
                     <div className="flex items-center gap-2 flex-wrap">
-                        <Label htmlFor="politics_stance" className="text-white/80">
+                        <Label htmlFor="politics_stance" className="text-foreground/80">
                             Political Views {isCasualOnly && "(optional)"}
                         </Label>
                         <WeightBadge weight={3} />
                     </div>
-                    <p className="text-sm text-white/40">
+                    <p className="text-sm text-muted-foreground">
                         {isCasualOnly
                             ? "If it matters to you, how important is political alignment?"
                             : "How important is political alignment in a partner?"
                         }
                     </p>
                     <Select value={formData.politics_stance} onValueChange={(value) => updateField("politics_stance", value)}>
-                        <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                        <SelectTrigger className="bg-muted/50 border-border text-foreground h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                             <SelectValue placeholder="Select your preference" />
                         </SelectTrigger>
-                        <SelectContent className="bg-card border-border text-white">
-                            <SelectItem value="important" className="focus:bg-muted focus:text-white">Very important - we need to align</SelectItem>
-                            <SelectItem value="somewhat" className="focus:bg-muted focus:text-white">Somewhat important - open to discussion</SelectItem>
-                            <SelectItem value="flexible" className="focus:bg-muted focus:text-white">Flexible - it's not a priority</SelectItem>
-                            <SelectItem value="prefer_not" className="focus:bg-muted focus:text-white">Prefer not to discuss</SelectItem>
+                        <SelectContent className="bg-popover border-border text-popover-foreground">
+                            <SelectItem value="important" className="focus:bg-muted focus:text-foreground">Very important, we need to align</SelectItem>
+                            <SelectItem value="somewhat" className="focus:bg-muted focus:text-foreground">Somewhat important, open to discussion</SelectItem>
+                            <SelectItem value="flexible" className="focus:bg-muted focus:text-foreground">Flexible, it's not a priority</SelectItem>
+                            <SelectItem value="prefer_not" className="focus:bg-muted focus:text-foreground">Prefer not to discuss</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -109,36 +109,36 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                 {/* Religious views */}
                 <div className="space-y-3">
                     <div className="flex items-center gap-2 flex-wrap">
-                        <Label htmlFor="religion_stance" className="text-white/80">
+                        <Label htmlFor="religion_stance" className="text-foreground/80">
                             Religious/Spiritual Views {isCasualOnly && "(optional)"}
                         </Label>
                         <WeightBadge weight={4} />
                     </div>
-                    <p className="text-sm text-white/40">
+                    <p className="text-sm text-muted-foreground">
                         {isCasualOnly
                             ? "If it matters to you, how important is religious or spiritual alignment?"
                             : "How important is religious or spiritual alignment?"
                         }
                     </p>
                     <Select value={formData.religion_stance} onValueChange={(value) => updateField("religion_stance", value)}>
-                        <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                        <SelectTrigger className="bg-muted/50 border-border text-foreground h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                             <SelectValue placeholder="Select your preference" />
                         </SelectTrigger>
-                        <SelectContent className="bg-card border-border text-white">
-                            <SelectItem value="important" className="focus:bg-muted focus:text-white">Very important - we need to align</SelectItem>
-                            <SelectItem value="somewhat" className="focus:bg-muted focus:text-white">Somewhat important - open to discussion</SelectItem>
-                            <SelectItem value="flexible" className="focus:bg-muted focus:text-white">Flexible - it's not a priority</SelectItem>
-                            <SelectItem value="prefer_not" className="focus:bg-muted focus:text-white">Prefer not to discuss</SelectItem>
+                        <SelectContent className="bg-popover border-border text-popover-foreground">
+                            <SelectItem value="important" className="focus:bg-muted focus:text-foreground">Very important, we need to align</SelectItem>
+                            <SelectItem value="somewhat" className="focus:bg-muted focus:text-foreground">Somewhat important, open to discussion</SelectItem>
+                            <SelectItem value="flexible" className="focus:bg-muted focus:text-foreground">Flexible, it's not a priority</SelectItem>
+                            <SelectItem value="prefer_not" className="focus:bg-muted focus:text-foreground">Prefer not to discuss</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
                 {/* Future Goals */}
                 <div className="space-y-3">
-                    <Label htmlFor="future_goals" className="text-white/80 text-lg">
+                    <Label htmlFor="future_goals" className="text-foreground/80 text-lg">
                         {isCasualOnly ? "What's Ahead" : "Future Goals"}
                     </Label>
-                    <p className="text-sm text-white/40">
+                    <p className="text-sm text-muted-foreground">
                         {getFutureGoalsPrompt()}
                     </p>
                     <Textarea
@@ -149,15 +149,15 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             ? "What are you excited about in life right now..."
                             : "Be honest about what you're looking for in the long term..."
                         }
-                        className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                        className="min-h-[100px] bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                     />
                 </div>
 
                 {/* Political Issues - specific alignment */}
                 {isSeekingSerious && (formData.politics_stance === "important" || formData.politics_stance === "somewhat") && (
                     <div className="space-y-4 animate-fade-in pt-4 border-t border-border">
-                        <Label className="text-white/80">Which political topics are genuinely non-negotiable for you?</Label>
-                        <p className="text-sm text-white/40">
+                        <Label className="text-foreground/80">Which political topics are genuinely non-negotiable for you?</Label>
+                        <p className="text-sm text-muted-foreground">
                             Research shows specific issue alignment matters more than general political identity. Select all that apply.
                         </p>
                         <div className="grid grid-cols-2 gap-2">
@@ -170,7 +170,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                                     onClick={() => toggleArrayItem("political_issues", issue)}
                                     className={(formData.political_issues || []).includes(issue)
                                         ? "bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-black border-transparent"
-                                        : "bg-white/5 border-border text-white/70 hover:bg-muted hover:text-white"}
+                                        : "bg-muted/50 border-border text-foreground/70 hover:bg-muted hover:text-foreground"}
                                 >
                                     {issue}
                                 </Button>
@@ -183,34 +183,34 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                 {isSeekingSerious && (formData.religion_stance === "important" || formData.religion_stance === "somewhat") && (
                     <div className="space-y-6 animate-fade-in pt-4 border-t border-border">
                         <div className="space-y-3">
-                            <Label className="text-white/80">How would you describe your current religious practice?</Label>
+                            <Label className="text-foreground/80">How would you describe your current religious practice?</Label>
                             <Select value={formData.religious_practice} onValueChange={(value) => updateField("religious_practice", value)}>
-                                <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                                <SelectTrigger className="bg-muted/50 border-border text-foreground h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your practice" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-card border-border text-white">
-                                    <SelectItem value="actively_practicing" className="focus:bg-muted focus:text-white">Actively practicing (weekly+)</SelectItem>
-                                    <SelectItem value="occasionally" className="focus:bg-muted focus:text-white">Occasionally practicing</SelectItem>
-                                    <SelectItem value="culturally_connected" className="focus:bg-muted focus:text-white">Culturally connected but not practicing</SelectItem>
-                                    <SelectItem value="spiritual_not_religious" className="focus:bg-muted focus:text-white">Spiritual but not religious</SelectItem>
-                                    <SelectItem value="agnostic_atheist" className="focus:bg-muted focus:text-white">Agnostic/Atheist</SelectItem>
-                                    <SelectItem value="exploring" className="focus:bg-muted focus:text-white">Exploring/Questioning</SelectItem>
+                                <SelectContent className="bg-popover border-border text-popover-foreground">
+                                    <SelectItem value="actively_practicing" className="focus:bg-muted focus:text-foreground">Actively practicing (weekly+)</SelectItem>
+                                    <SelectItem value="occasionally" className="focus:bg-muted focus:text-foreground">Occasionally practicing</SelectItem>
+                                    <SelectItem value="culturally_connected" className="focus:bg-muted focus:text-foreground">Culturally connected but not practicing</SelectItem>
+                                    <SelectItem value="spiritual_not_religious" className="focus:bg-muted focus:text-foreground">Spiritual but not religious</SelectItem>
+                                    <SelectItem value="agnostic_atheist" className="focus:bg-muted focus:text-foreground">Agnostic or Atheist</SelectItem>
+                                    <SelectItem value="exploring" className="focus:bg-muted focus:text-foreground">Exploring or Questioning</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         <div className="space-y-3">
-                            <Label className="text-white/80">Would you want to raise children in a specific faith tradition?</Label>
+                            <Label className="text-foreground/80">Would you want to raise children in a specific faith tradition?</Label>
                             <Select value={formData.raise_children_faith} onValueChange={(value) => updateField("raise_children_faith", value)}>
-                                <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                                <SelectTrigger className="bg-muted/50 border-border text-foreground h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your preference" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-card border-border text-white">
-                                    <SelectItem value="yes_important" className="focus:bg-muted focus:text-white">Yes, this is important to me</SelectItem>
-                                    <SelectItem value="open_to_discussion" className="focus:bg-muted focus:text-white">Open to discussion with partner</SelectItem>
-                                    <SelectItem value="no_preference" className="focus:bg-muted focus:text-white">No specific preference</SelectItem>
-                                    <SelectItem value="prefer_secular" className="focus:bg-muted focus:text-white">Would prefer secular upbringing</SelectItem>
-                                    <SelectItem value="not_applicable" className="focus:bg-muted focus:text-white">Not applicable / not planning children</SelectItem>
+                                <SelectContent className="bg-popover border-border text-popover-foreground">
+                                    <SelectItem value="yes_important" className="focus:bg-muted focus:text-foreground">Yes, this is important to me</SelectItem>
+                                    <SelectItem value="open_to_discussion" className="focus:bg-muted focus:text-foreground">Open to discussion with partner</SelectItem>
+                                    <SelectItem value="no_preference" className="focus:bg-muted focus:text-foreground">No specific preference</SelectItem>
+                                    <SelectItem value="prefer_secular" className="focus:bg-muted focus:text-foreground">Would prefer secular upbringing</SelectItem>
+                                    <SelectItem value="not_applicable" className="focus:bg-muted focus:text-foreground">Not applicable, not planning children</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -224,17 +224,17 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full font-medium border border-[hsl(var(--accent-gold))]/20">
                                 Critical factor
                             </span>
-                            <span className="text-xs text-white/40">
+                            <span className="text-xs text-muted-foreground">
                                 Trust issues are the #1 cited reason for divorce
                             </span>
                         </div>
 
                         <div className="space-y-3">
                             <div className="flex items-center gap-2 flex-wrap">
-                                <Label htmlFor="trust_fidelity_views" className="text-white/80">Trust & Fidelity Views (optional but encouraged)</Label>
+                                <Label htmlFor="trust_fidelity_views" className="text-foreground/80">Trust & Fidelity Views (optional but encouraged)</Label>
                                 <WeightBadge weight={5} />
                             </div>
-                            <p className="text-sm text-white/40">
+                            <p className="text-sm text-muted-foreground">
                                 Have you ever been affected by infidelity? How has this shaped your views on trust?
                             </p>
                             <Textarea
@@ -242,31 +242,31 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                                 value={formData.trust_fidelity_views}
                                 onChange={(e) => updateField("trust_fidelity_views", e.target.value)}
                                 placeholder="Your experiences and expectations around trust..."
-                                className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                                className="min-h-[100px] bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                             />
                         </div>
 
                         <div className="space-y-3">
-                            <Label className="text-white/80">How flexible are you about where you live long-term?</Label>
+                            <Label className="text-foreground/80">How flexible are you about where you live long-term?</Label>
                             <Select value={formData.geographic_flexibility} onValueChange={(value) => updateField("geographic_flexibility", value)}>
-                                <SelectTrigger className="bg-white/5 border-border text-white h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
+                                <SelectTrigger className="bg-muted/50 border-border text-foreground h-12 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50">
                                     <SelectValue placeholder="Select your flexibility" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-card border-border text-white">
-                                    <SelectItem value="deeply_rooted" className="focus:bg-muted focus:text-white">Deeply rooted - not moving</SelectItem>
-                                    <SelectItem value="open_opportunity" className="focus:bg-muted focus:text-white">Open to moving for the right opportunity</SelectItem>
-                                    <SelectItem value="seeking_relocate" className="focus:bg-muted focus:text-white">Actively seeking to relocate</SelectItem>
-                                    <SelectItem value="flexible_partner" className="focus:bg-muted focus:text-white">Flexible - home is where my partner is</SelectItem>
+                                <SelectContent className="bg-popover border-border text-popover-foreground">
+                                    <SelectItem value="deeply_rooted" className="focus:bg-muted focus:text-foreground">Deeply rooted, not moving</SelectItem>
+                                    <SelectItem value="open_opportunity" className="focus:bg-muted focus:text-foreground">Open to moving for the right opportunity</SelectItem>
+                                    <SelectItem value="seeking_relocate" className="focus:bg-muted focus:text-foreground">Actively seeking to relocate</SelectItem>
+                                    <SelectItem value="flexible_partner" className="focus:bg-muted focus:text-foreground">Flexible, home is where my partner is</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         <div className="space-y-3">
                             <div className="flex items-center gap-2 flex-wrap">
-                                <Label htmlFor="ten_year_vision" className="text-white/80">10-Year Vision</Label>
+                                <Label htmlFor="ten_year_vision" className="text-foreground/80">10 Year Vision</Label>
                                 <WeightBadge weight={5} />
                             </div>
-                            <p className="text-sm text-white/40">
+                            <p className="text-sm text-muted-foreground">
                                 In 10 years, what does your ideal Saturday morning look like?
                             </p>
                             <Textarea
@@ -274,7 +274,7 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                                 value={formData.ten_year_vision}
                                 onChange={(e) => updateField("ten_year_vision", e.target.value)}
                                 placeholder="Paint a picture of your ideal future lifestyle..."
-                                className="min-h-[80px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                                className="min-h-[80px] bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                             />
                         </div>
                     </div>
@@ -286,14 +286,14 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                         <span className="text-xs bg-dating-terracotta/20 text-[hsl(var(--accent-gold))] px-2 py-1 rounded-full font-medium border border-[hsl(var(--accent-gold))]/20">
                             Self-awareness check
                         </span>
-                        <span className="text-xs text-white/40">
+                        <span className="text-xs text-muted-foreground">
                             These answers show emotional maturity
                         </span>
                     </div>
 
                     <div className="space-y-3">
-                        <Label htmlFor="accountability_reflection" className="text-white/80">Accountability Reflection</Label>
-                        <p className="text-sm text-white/40">
+                        <Label htmlFor="accountability_reflection" className="text-foreground/80">Accountability Reflection</Label>
+                        <p className="text-sm text-muted-foreground">
                             Think about your last major relationship that didn't work out. What role did you play in its ending?
                         </p>
                         <Textarea
@@ -301,13 +301,13 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.accountability_reflection}
                             onChange={(e) => updateField("accountability_reflection", e.target.value)}
                             placeholder="Self-awareness about past patterns is attractive..."
-                            className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                            className="min-h-[100px] bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
 
                     <div className="space-y-3">
-                        <Label htmlFor="ex_admiration" className="text-white/80">Respect Indicator</Label>
-                        <p className="text-sm text-white/40">
+                        <Label htmlFor="ex_admiration" className="text-foreground/80">Respect Indicator</Label>
+                        <p className="text-sm text-muted-foreground">
                             What's something you genuinely admire about an ex-partner? (Ability to speak positively indicates emotional maturity)
                         </p>
                         <Textarea
@@ -315,13 +315,13 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.ex_admiration}
                             onChange={(e) => updateField("ex_admiration", e.target.value)}
                             placeholder="Even if it ended badly, what did you appreciate about them..."
-                            className="min-h-[60px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                            className="min-h-[60px] bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
 
                     <div className="space-y-3">
-                        <Label htmlFor="growth_work" className="text-white/80">Growth Mindset</Label>
-                        <p className="text-sm text-white/40">
+                        <Label htmlFor="growth_work" className="text-foreground/80">Growth Mindset</Label>
+                        <p className="text-sm text-muted-foreground">
                             What's one way you've actively worked on yourself in the past year?
                         </p>
                         <Textarea
@@ -329,24 +329,24 @@ export const DealbreakersStep = ({ form }: DealbreakersStepProps) => {
                             value={formData.growth_work}
                             onChange={(e) => updateField("growth_work", e.target.value)}
                             placeholder="Therapy, books, workshops, habits, skills..."
-                            className="min-h-[60px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                            className="min-h-[60px] bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
 
                     {/* Fear of Finding Love */}
                     <div className="space-y-3">
-                        <Label htmlFor="finding_love_fear" className="text-white/80 text-lg">
+                        <Label htmlFor="finding_love_fear" className="text-foreground/80 text-lg">
                             What's holding you back?
                         </Label>
-                        <p className="text-sm text-white/40">
+                        <p className="text-sm text-muted-foreground">
                             What fear or belief do you think has kept you from finding "the one"? Understanding our patterns helps us grow beyond them.
                         </p>
                         <Textarea
                             id="finding_love_fear"
                             value={formData.finding_love_fear}
                             onChange={(e) => updateField("finding_love_fear", e.target.value)}
-                            placeholder="Be honest with yourself - awareness is the first step to change..."
-                            className="min-h-[100px] bg-white/5 border-border text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                            placeholder="Be honest with yourself — awareness is the first step to change..."
+                            className="min-h-[100px] bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
                     </div>
                 </div>
