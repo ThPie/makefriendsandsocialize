@@ -60,7 +60,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                     </div>
 
                     {/* RIGHT PANEL - The list of services */}
-                    <div className="flex-1 p-8 flex flex-col bg-[#FAF9F6] dark:bg-card relative overflow-y-auto">
+                    <div className="flex-1 p-8 flex flex-col bg-background relative overflow-y-auto">
                         <div className="grid grid-cols-2 gap-x-8 gap-y-4 flex-1">
 
                             {/* Column 1: Special Services */}
