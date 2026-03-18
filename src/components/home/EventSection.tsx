@@ -62,7 +62,7 @@ const EventCard = ({ event, className = '' }: {event: Event;className?: string;}
 
           {event.rsvp_count != null && event.rsvp_count > 0 &&
           <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" />
+              <Users className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" strokeWidth={1} />
               <span>{event.rsvp_count} attending</span>
             </div>
           }

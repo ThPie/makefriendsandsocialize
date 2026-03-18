@@ -94,7 +94,7 @@ export const SocialProofBanner = () => {
                 transition={{ delay: index * 0.1, duration: 0.4 }}
                 className="flex flex-col items-center text-center gap-2"
               >
-                <item.icon className={`h-5 w-5 ${item.color}`} />
+                <item.icon className={`h-5 w-5 ${item.color}`} strokeWidth={1} />
                 <span className="text-2xl md:text-3xl font-bold text-foreground font-display">
                   {item.value}
                 </span>
