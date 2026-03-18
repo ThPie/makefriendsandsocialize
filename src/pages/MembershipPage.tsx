@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useAuth } from '@/contexts/AuthContext';
-import { TIER_BENEFITS } from '@/lib/stripe-products';
+import { TIER_BENEFITS } from '@/lib/square-products';
 import {
   Check,
   Star,

@@ -1916,6 +1916,8 @@ export type Database = {
           pdf_url: string | null
           period_end: string | null
           period_start: string | null
+          square_order_id: string | null
+          square_payment_id: string | null
           status: string
           stripe_customer_id: string | null
           stripe_invoice_id: string | null
@@ -1934,6 +1936,8 @@ export type Database = {
           pdf_url?: string | null
           period_end?: string | null
           period_start?: string | null
+          square_order_id?: string | null
+          square_payment_id?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_invoice_id?: string | null
@@ -1952,6 +1956,8 @@ export type Database = {
           pdf_url?: string | null
           period_end?: string | null
           period_start?: string | null
+          square_order_id?: string | null
+          square_payment_id?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_invoice_id?: string | null
@@ -2134,6 +2140,8 @@ export type Database = {
           purchased_at: string
           reveals_total: number
           reveals_used: number
+          square_order_id: string | null
+          square_payment_id: string | null
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
           user_id: string
@@ -2146,6 +2154,8 @@ export type Database = {
           purchased_at?: string
           reveals_total?: number
           reveals_used?: number
+          square_order_id?: string | null
+          square_payment_id?: string | null
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           user_id: string
@@ -2158,6 +2168,8 @@ export type Database = {
           purchased_at?: string
           reveals_total?: number
           reveals_used?: number
+          square_order_id?: string | null
+          square_payment_id?: string | null
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
           user_id?: string
@@ -2469,6 +2481,8 @@ export type Database = {
           id: string
           last_payment_attempt_at: string | null
           last_payment_error: string | null
+          square_customer_id: string | null
+          square_subscription_id: string | null
           started_at: string | null
           status: Database["public"]["Enums"]["membership_status"]
           stripe_customer_id: string | null
@@ -2485,6 +2499,8 @@ export type Database = {
           id?: string
           last_payment_attempt_at?: string | null
           last_payment_error?: string | null
+          square_customer_id?: string | null
+          square_subscription_id?: string | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["membership_status"]
           stripe_customer_id?: string | null
@@ -2501,6 +2517,8 @@ export type Database = {
           id?: string
           last_payment_attempt_at?: string | null
           last_payment_error?: string | null
+          square_customer_id?: string | null
+          square_subscription_id?: string | null
           started_at?: string | null
           status?: Database["public"]["Enums"]["membership_status"]
           stripe_customer_id?: string | null

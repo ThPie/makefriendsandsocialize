@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { type DBTier, isTierAtLeast, toStripeCheckoutTier } from '@/lib/tier-utils';
+import { type DBTier, isTierAtLeast } from '@/lib/tier-utils';
 
 export interface SubscriptionStatus {
   subscribed: boolean;
@@ -119,7 +119,7 @@ export function useSubscription() {
 
   const openCheckout = useCallback(async (tier: 'member' | 'fellow', billingPeriod: 'monthly' | 'annual', trial = false) => {
     try {
-      const { data, error } = await supabase.functions.invoke('create-subscription-checkout', {
+      const { data, error } = await supabase.functions.invoke('create-square-checkout', {
         body: { tier, billing_period: billingPeriod, trial },
       });
 

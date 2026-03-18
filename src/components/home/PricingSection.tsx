@@ -4,7 +4,7 @@ import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { TIER_BENEFITS } from '@/lib/stripe-products';
+import { TIER_BENEFITS } from '@/lib/square-products';
 
 export const PricingSection = () => {
   const { ref, isVisible } = useScrollAnimation();

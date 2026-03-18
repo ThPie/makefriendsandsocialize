@@ -78,7 +78,7 @@ export function useMatchReveal() {
 
   const openRevealCheckout = async (packType: 'single', matchId?: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke('create-reveal-checkout', {
+      const { data, error } = await supabase.functions.invoke('create-square-reveal-checkout', {
         body: { pack_type: packType, match_id: matchId },
       });
 
