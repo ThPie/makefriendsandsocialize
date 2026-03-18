@@ -155,7 +155,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                             </div>
                             <TransitionLink
                                 to="/contact"
-                                className="bg-[#111111] hover:bg-black text-white px-8 py-3 rounded-full text-sm font-medium transition-colors shrink-0 whitespace-nowrap"
+                                className="bg-foreground hover:bg-foreground/90 text-background px-8 py-3 rounded-full text-sm font-medium transition-colors shrink-0 whitespace-nowrap"
                             >
                                 Contact us
                             </TransitionLink>
