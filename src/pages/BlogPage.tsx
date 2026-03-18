@@ -185,7 +185,7 @@ const BlogPage = () => {
           >
             {filteredArticles.map((article) => (
               <motion.div key={article.id} variants={itemVariants}>
-                <Link to={`/journal/${article.slug}`} className="group flex flex-col h-full bg-card border border-border rounded-xl overflow-hidden hover-lift transition-all duration-200 hover:border-primary/50">
+                <Link to={`/blog/${article.slug}`} className="group flex flex-col h-full bg-card border border-border rounded-xl overflow-hidden hover-lift transition-all duration-200 hover:border-primary/50">
                   <div className="aspect-[4/3] overflow-hidden relative">
                     {article.cover_image ? (
                       <div
