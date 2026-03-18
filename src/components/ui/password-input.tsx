@@ -81,7 +81,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
           <div className="space-y-2">
             {/* Strength Bar */}
             <div className="flex items-center gap-2">
-              <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                 <div
                   className={cn('h-full transition-all duration-300', strength.color)}
                   style={{ width: `${strength.score}%` }}
