@@ -21,7 +21,10 @@ export const Header = () => {
   const isAuth = location.pathname.startsWith('/auth');
 
   // Pages with light/white backgrounds need dark header elements even when not scrolled
-  const isLightHeroPage = /^\/soul-maps(\/.*)?$/.test(location.pathname);
+  const isLightHeroPage = [
+    '/soul-maps', '/journal', '/about', '/contact', '/faq',
+    '/membership', '/privacy', '/terms', '/code-of-conduct', '/cookies',
+  ].some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
 
   useEffect(() => {
     const handleScroll = () => {

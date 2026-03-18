@@ -1,35 +1,76 @@
 import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, Calendar, Share2, Eye } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, Share2, Loader2, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { blogArticles } from '@/data/blogArticles';
 import { SocialShareButtons } from '@/components/blog/SocialShareButtons';
 import { BlogLikeBookmark } from '@/components/blog/BlogLikeBookmark';
 import { BlogCommentsSection } from '@/components/blog/BlogCommentsSection';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
+import { format } from 'date-fns';
 
 const JournalPostPage = () => {
   const { id } = useParams<{ id: string }>();
-  const article = blogArticles.find(a => a.id === id);
+
+  const { data: article, isLoading } = useQuery({
+    queryKey: ["journal-post", id],
+    queryFn: async () => {
+      // Try by slug first, then by id
+      let { data, error } = await supabase
+        .from("journal_posts")
+        .select("*")
+        .eq("slug", id!)
+        .eq("is_published", true)
+        .maybeSingle();
+
+      if (!data) {
+        ({ data, error } = await supabase
+          .from("journal_posts")
+          .select("*")
+          .eq("id", id!)
+          .eq("is_published", true)
+          .maybeSingle());
+      }
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
+
+  const { data: relatedPosts } = useQuery({
+    queryKey: ["related-posts", article?.category, article?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("journal_posts")
+        .select("id, title, slug, excerpt, cover_image, category, reading_time_minutes, published_at")
+        .eq("is_published", true)
+        .eq("category", article!.category!)
+        .neq("id", article!.id)
+        .order("published_at", { ascending: false })
+        .limit(2);
+      return data || [];
+    },
+    enabled: !!article?.category && !!article?.id,
+  });
 
   // Track page view
   useEffect(() => {
-    if (id) {
-      // Increment view count if article exists in database
-      // This is a soft increment - won't fail if article doesn't exist in DB
-      const incrementView = async () => {
-        try {
-          await supabase.rpc('increment_post_view_count', { _post_id: id });
-        } catch (error) {
-          // Silently fail for static articles not in DB
-        }
-      };
-      incrementView();
+    if (article?.id) {
+      supabase.rpc('increment_post_view_count', { _post_id: article.id }).catch(() => {});
     }
-  }, [id]);
+  }, [article?.id]);
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 w-full flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   if (!article) {
     return (
@@ -41,10 +82,6 @@ const JournalPostPage = () => {
       </div>
     );
   }
-
-  const relatedArticles = blogArticles
-    .filter(a => a.id !== article.id && a.category === article.category)
-    .slice(0, 2);
 
   return (
     <div className="flex-1 w-full flex flex-col items-center px-4 md:px-10 py-12 animate-fade-in">
@@ -77,16 +114,18 @@ const JournalPostPage = () => {
         </motion.div>
 
         {/* Category Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="mb-4"
-        >
-          <span className="text-primary text-sm font-medium bg-primary/10 px-4 py-1.5 rounded-full">
-            {article.category}
-          </span>
-        </motion.div>
+        {article.category && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="mb-4"
+          >
+            <span className="text-primary text-sm font-medium bg-primary/10 px-4 py-1.5 rounded-full">
+              {article.category}
+            </span>
+          </motion.div>
+        )}
 
         {/* Title */}
         <motion.h1
@@ -105,88 +144,46 @@ const JournalPostPage = () => {
           transition={{ delay: 0.25 }}
           className="flex flex-wrap items-center gap-6 pb-8 border-b border-border"
         >
-          <div className="flex items-center gap-3">
-            <img
-              src={article.author.avatar}
-              alt={article.author.name}
-              className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
-            />
-            <div>
-              <p className="text-foreground font-medium">{article.author.name}</p>
-              <p className="text-muted-foreground text-sm">{article.author.role}</p>
-            </div>
-          </div>
           <div className="flex items-center gap-4 text-muted-foreground text-sm">
-            <span className="flex items-center gap-1.5">
-              <Calendar className="h-4 w-4" />
-              {article.date}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Clock className="h-4 w-4" />
-              {article.readTime}
-            </span>
+            {article.published_at && (
+              <span className="flex items-center gap-1.5">
+                <Calendar className="h-4 w-4" />
+                {format(new Date(article.published_at), 'MMMM d, yyyy')}
+              </span>
+            )}
+            {article.reading_time_minutes && (
+              <span className="flex items-center gap-1.5">
+                <Clock className="h-4 w-4" />
+                {article.reading_time_minutes} min read
+              </span>
+            )}
           </div>
         </motion.div>
 
         {/* Hero Image */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3 }}
-          className="my-8"
-        >
-          <div
-            className="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-2xl min-h-[400px] md:min-h-[500px]"
-            style={{ backgroundImage: `url("${article.image}")` }}
-          />
-        </motion.div>
+        {article.cover_image && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
+            className="my-8"
+          >
+            <img
+              src={article.cover_image}
+              alt={article.title}
+              className="w-full rounded-2xl object-cover max-h-[500px]"
+            />
+          </motion.div>
+        )}
 
-        {/* Content */}
+        {/* Content — rendered as markdown */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="prose prose-lg max-w-none mx-auto text-muted-foreground leading-relaxed"
-        >
-          {/* Intro */}
-          <p className="text-xl text-foreground font-light leading-relaxed mb-8">
-            {article.content.intro}
-          </p>
-
-          {/* Sections */}
-          {article.content.sections.map((section, index) => (
-            <div key={index} className="mb-10">
-              {section.title && (
-                <h2 className="font-display text-2xl md:text-3xl text-foreground font-bold mt-12 mb-4">
-                  {section.title}
-                </h2>
-              )}
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                {section.content}
-              </p>
-
-              {section.quote && (
-                <blockquote className="border-l-4 border-primary pl-6 py-2 my-8 bg-primary/5 rounded-r-lg pr-6">
-                  <p className="font-display text-xl md:text-2xl text-foreground italic leading-relaxed">
-                    "{section.quote.text}"
-                  </p>
-                  <cite className="text-primary not-italic block mt-3 font-medium">
-                    — {section.quote.author}
-                  </cite>
-                </blockquote>
-              )}
-
-              {section.image && (
-                <div className="my-8">
-                  <div
-                    className="w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl min-h-80"
-                    style={{ backgroundImage: `url("${section.image}")` }}
-                  />
-                </div>
-              )}
-            </div>
-          ))}
-        </motion.div>
+          className="prose prose-lg dark:prose-invert max-w-none mx-auto"
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(article.content || '') }}
+        />
 
         {/* Like, Bookmark & Share */}
         <motion.div
@@ -196,10 +193,7 @@ const JournalPostPage = () => {
           className="mt-12 pt-8 border-t border-border"
         >
           <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
-            {/* Like & Bookmark */}
-            <BlogLikeBookmark postId={id!} />
-
-            {/* Share */}
+            <BlogLikeBookmark postId={article.id} />
             <div className="flex items-center gap-4">
               <span className="text-muted-foreground text-sm flex items-center gap-1">
                 <Share2 className="h-4 w-4" />
@@ -207,35 +201,22 @@ const JournalPostPage = () => {
               </span>
               <SocialShareButtons
                 title={article.title}
-                excerpt={article.excerpt}
+                excerpt={article.excerpt || ''}
               />
             </div>
           </div>
         </motion.div>
 
-        {/* Author Bio */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.55 }}
-          className="mt-12 p-8 bg-card border border-border rounded-2xl"
-        >
-          <div className="flex items-start gap-4">
-            <img
-              src={article.author.avatar}
-              alt={article.author.name}
-              className="w-16 h-16 rounded-full object-cover border-2 border-primary/20"
-            />
-            <div>
-              <p className="text-foreground font-display text-xl font-medium">{article.author.name}</p>
-              <p className="text-primary text-sm mb-3">{article.author.role}</p>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                A passionate advocate for building meaningful human connections in our increasingly digital world.
-                Regularly hosts workshops and events focused on authentic networking and community building.
-              </p>
-            </div>
+        {/* Tags */}
+        {article.tags && article.tags.length > 0 && (
+          <div className="mt-8 flex flex-wrap gap-2">
+            {article.tags.map((tag: string) => (
+              <span key={tag} className="text-xs bg-muted text-muted-foreground px-3 py-1 rounded-full">
+                #{tag}
+              </span>
+            ))}
           </div>
-        </motion.div>
+        )}
 
         {/* Comments Section */}
         <motion.div
@@ -245,12 +226,12 @@ const JournalPostPage = () => {
           className="mt-12"
         >
           <Separator className="mb-8" />
-          <BlogCommentsSection postId={id!} />
+          <BlogCommentsSection postId={article.id} />
         </motion.div>
       </article>
 
       {/* Related Posts */}
-      {relatedArticles.length > 0 && (
+      {relatedPosts && relatedPosts.length > 0 && (
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -261,13 +242,19 @@ const JournalPostPage = () => {
             Related Articles
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {relatedArticles.map((post) => (
-              <TransitionLink key={post.id} to={`/journal/${post.id}`} className="flex flex-col group cursor-pointer">
+            {relatedPosts.map((post) => (
+              <TransitionLink key={post.id} to={`/journal/${post.slug}`} className="flex flex-col group cursor-pointer">
                 <div className="overflow-hidden rounded-2xl border border-border/50 group-hover:border-primary/50 transition-colors">
-                  <div
-                    className="w-full bg-center bg-no-repeat bg-cover aspect-[4/3] group-hover:scale-105 transition-transform duration-500"
-                    style={{ backgroundImage: `url("${post.image}")` }}
-                  />
+                  {post.cover_image ? (
+                    <div
+                      className="w-full bg-center bg-no-repeat bg-cover aspect-[4/3] group-hover:scale-105 transition-transform duration-500"
+                      style={{ backgroundImage: `url("${post.cover_image}")` }}
+                    />
+                  ) : (
+                    <div className="w-full aspect-[4/3] bg-primary/10 flex items-center justify-center">
+                      <FileText className="h-12 w-12 text-primary/30" />
+                    </div>
+                  )}
                 </div>
                 <div className="mt-4">
                   <span className="text-primary text-sm font-medium">{post.category}</span>
@@ -275,16 +262,17 @@ const JournalPostPage = () => {
                     {post.title}
                   </h3>
                   <p className="text-muted-foreground text-sm line-clamp-2">{post.excerpt}</p>
-                  <div className="flex items-center gap-2 mt-3 text-sm text-muted-foreground">
-                    <Clock className="h-3.5 w-3.5" />
-                    {post.readTime}
-                  </div>
+                  {post.reading_time_minutes && (
+                    <div className="flex items-center gap-2 mt-3 text-sm text-muted-foreground">
+                      <Clock className="h-3.5 w-3.5" />
+                      {post.reading_time_minutes} min read
+                    </div>
+                  )}
                 </div>
               </TransitionLink>
             ))}
           </div>
 
-          {/* Back to Journal CTA */}
           <div className="text-center mt-12">
             <Button asChild variant="outline" size="lg" className="rounded-full">
               <TransitionLink to="/journal">
@@ -297,5 +285,33 @@ const JournalPostPage = () => {
     </div>
   );
 };
+
+/** Simple markdown to HTML converter for blog content */
+function renderMarkdown(md: string): string {
+  return md
+    // Headers
+    .replace(/^### (.*$)/gm, '<h3 class="font-display text-xl text-foreground font-bold mt-8 mb-3">$1</h3>')
+    .replace(/^## (.*$)/gm, '<h2 class="font-display text-2xl md:text-3xl text-foreground font-bold mt-12 mb-4">$1</h2>')
+    .replace(/^# (.*$)/gm, '<h1 class="font-display text-3xl text-foreground font-bold mt-12 mb-4">$1</h1>')
+    // Bold & italic
+    .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    // Links
+    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" class="text-primary hover:underline">$1</a>')
+    // Unordered lists
+    .replace(/^- (.*$)/gm, '<li class="text-muted-foreground ml-4">$1</li>')
+    // Blockquotes
+    .replace(/^> (.*$)/gm, '<blockquote class="border-l-4 border-primary pl-6 py-2 my-6 bg-primary/5 rounded-r-lg pr-6 italic text-foreground">$1</blockquote>')
+    // Horizontal rules
+    .replace(/^---$/gm, '<hr class="my-8 border-border" />')
+    // Paragraphs (double newlines)
+    .replace(/\n\n/g, '</p><p class="text-muted-foreground leading-relaxed mb-4">')
+    // Wrap in paragraph
+    .replace(/^(.+)$/gm, (match) => {
+      if (match.startsWith('<')) return match;
+      return match;
+    });
+}
 
 export default JournalPostPage;
