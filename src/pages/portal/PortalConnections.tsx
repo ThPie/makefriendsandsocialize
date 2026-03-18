@@ -175,9 +175,9 @@ export default function PortalConnections() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <h1 className="font-display text-2xl md:text-3xl text-foreground">
           The Network
         </h1>
