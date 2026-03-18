@@ -447,7 +447,7 @@ const MembershipPage = () => {
                       {/* Missing features in grayscale */}
                       {tier.missingFeatures.map((feature, i) => (
                         <li key={`missing-${i}`} className="flex items-start gap-3 text-muted-foreground/50">
-                          <Check className="h-5 w-5 flex-shrink-0 mt-0.5 opacity-30" strokeWidth={1.5} />
+                          <Check className="h-5 w-5 flex-shrink-0 mt-0.5 opacity-30" strokeWidth={1} />
                           <span className="text-sm font-light leading-snug line-through">{feature}</span>
                         </li>
                       ))}

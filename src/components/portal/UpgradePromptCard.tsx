@@ -130,8 +130,8 @@ export function UpgradePromptCard({
       className
     )}>
       <CardContent className="p-8 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
-          <Icon className="h-8 w-8 text-primary" />
+        <div className="w-16 h-16 rounded-full border border-border flex items-center justify-center mx-auto mb-6">
+          <Icon className="h-7 w-7 text-foreground" strokeWidth={1} />
         </div>
         
         <h2 className="font-display text-2xl text-foreground mb-3">{config.title}</h2>
