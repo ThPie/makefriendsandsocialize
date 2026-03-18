@@ -215,6 +215,7 @@ export const MainRoutes = () => (
         <Route path="/admin/perks" element={<ProtectedRoute requireAdmin><AdminLayout><AdminPerks /></AdminLayout></ProtectedRoute>} />
         <Route path="/admin/concierge" element={<ProtectedRoute requireAdmin><AdminLayout><AdminConcierge /></AdminLayout></ProtectedRoute>} />
         <Route path="/admin/dating/review" element={<ProtectedRoute requireAdmin><AdminLayout><AdminDatingReview /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/research" element={<ProtectedRoute requireAdmin><AdminLayout><AdminResearch /></AdminLayout></ProtectedRoute>} />
 
         <Route path="*" element={<Layout><NotFound /></Layout>} />
     </Routes>
