@@ -7,6 +7,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Primary location — more cities will be added in the future
+const PRIMARY_LOCATIONS = ["Salt Lake City, Utah"];
+
 const CIRCLES = [
   "The Gentlemen",
   "The Ladies Society",
@@ -28,10 +31,13 @@ const SEARCH_QUERIES = [
   "site:reddit.com women's circles empowerment community",
   "site:reddit.com couples social life tips",
   "site:reddit.com entrepreneur loneliness networking",
+  "site:reddit.com Salt Lake City social scene meetups friends",
+  "site:reddit.com Utah social clubs community events",
   // LinkedIn-focused
   "site:linkedin.com professional networking community building trends",
   "site:linkedin.com founders circle mastermind groups",
   "site:linkedin.com women leadership community",
+  "site:linkedin.com Salt Lake City networking professionals",
   // Twitter/X-focused
   "site:x.com OR site:twitter.com adult friendship loneliness trending",
   "site:x.com OR site:twitter.com social clubs community viral",
@@ -50,6 +56,11 @@ const SEARCH_QUERIES = [
   "networking events alternatives community based",
   "relationship psychology trending topics",
   "friendship recession statistics latest",
+  // Location-specific
+  "Salt Lake City Utah social events community 2025 2026",
+  "Utah outdoor groups hiking social clubs",
+  "Salt Lake City dating scene singles events",
+  "SLC young professionals networking events",
 ];
 
 /** Use Perplexity to search the real internet */
@@ -191,7 +202,7 @@ serve(async (req) => {
             messages: [
               {
                 role: "system",
-                content: `You are a content strategist for MakeFriends & Socialize, a premium social club. Analyze real internet research data and extract actionable insights for blog content creation.
+                content: `You are a content strategist for MakeFriends & Socialize, a premium social club based in ${PRIMARY_LOCATIONS.join(", ")}. Analyze real internet research data and extract actionable insights for blog content creation. Always consider the local context of ${PRIMARY_LOCATIONS.join(", ")} — what resonates with people in this area, local events, culture, outdoor activities, and the social landscape there.
 
 The club has these circles: The Gentlemen, The Ladies Society, Les Amis (Francophone), Couple's Circle, Active & Outdoor, Founders Circle, Soul Maps (psychology quizzes), and Dating & Relationships (slow dating).`,
               },
