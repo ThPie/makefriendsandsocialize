@@ -13,7 +13,7 @@ import { WidgetErrorBoundary } from '@/components/ui/widget-error-boundary';
 import { RelationshipHealthSection } from '@/components/portal/RelationshipHealthSection';
 import { DashboardStats } from '@/components/portal/dashboard/DashboardStats';
 import { UpcomingSchedule } from '@/components/portal/dashboard/UpcomingSchedule';
-import { QuickActions } from '@/components/portal/dashboard/QuickActions';
+import { DiscoverForYou } from '@/components/portal/dashboard/DiscoverForYou';
 import { BadgeDisplay } from '@/components/portal/BadgeDisplay';
 import { format } from 'date-fns';
 
@@ -85,7 +85,7 @@ export default function PortalDashboard() {
         />
       )}
 
-      {/* Welcome header — left-aligned, clean */}
+      {/* Welcome header */}
       <div>
         <h1 className="font-display font-semibold text-2xl md:text-3xl text-foreground">
           Welcome back, <span className="text-[hsl(var(--accent-gold))]">{profile?.first_name || user?.user_metadata?.full_name?.split(' ')[0] || 'Member'}</span> 👋
@@ -98,12 +98,12 @@ export default function PortalDashboard() {
         <UpgradePromptCard variant="compact" context="general" />
       )}
 
-      {/* Stats Row */}
+      {/* Asymmetric Stats Row */}
       <WidgetErrorBoundary title="Dashboard Stats">
         <DashboardStats />
       </WidgetErrorBoundary>
 
-      {/* Two-column layout: Schedule + Quick Actions */}
+      {/* Two-column layout: Schedule (60%) + Discover (40%) */}
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <WidgetErrorBoundary title="Upcoming Schedule">
@@ -111,7 +111,7 @@ export default function PortalDashboard() {
           </WidgetErrorBoundary>
         </div>
         <div className="lg:col-span-2">
-          <QuickActions />
+          <DiscoverForYou />
         </div>
       </div>
 
