@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { SubmitReview } from '@/components/portal/SubmitReview';
 import { ProfileCompletionIndicator } from '@/components/portal/ProfileCompletionIndicator';
@@ -16,19 +17,36 @@ import { UpcomingSchedule } from '@/components/portal/dashboard/UpcomingSchedule
 import { DiscoverForYou } from '@/components/portal/dashboard/DiscoverForYou';
 import { BadgeDisplay } from '@/components/portal/BadgeDisplay';
 import { SwipeDismiss } from '@/components/ui/swipe-dismiss';
+import { PullToRefresh } from '@/components/ui/pull-to-refresh';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { haptic } from '@/lib/haptics';
 import { format } from 'date-fns';
 
 export default function PortalDashboard() {
   const { user, profile, refreshProfile, canAccessMatchmaking } = useAuth();
   const { subscription } = useSubscription();
+  const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [earnedBadges, setEarnedBadges] = useState<{ badge_type: string; earned_at: string }[]>([]);
   const [newBadge, setNewBadge] = useState<{ name: string; icon: string; description: string; features?: string[] } | null>(null);
   const [dismissedCards, setDismissedCards] = useState<Set<string>>(new Set());
 
   const dismissCard = useCallback((id: string) => {
+    haptic('selection');
     setDismissedCards(prev => new Set(prev).add(id));
   }, []);
+
+  const handleRefresh = useCallback(async () => {
+    haptic('medium');
+    await Promise.all([
+      refreshProfile(),
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] }),
+      queryClient.invalidateQueries({ queryKey: ['dashboard-schedule'] }),
+      queryClient.invalidateQueries({ queryKey: ['recommended-events'] }),
+    ]);
+    haptic('success');
+  }, [refreshProfile, queryClient]);
 
   const completionPercentage = useMemo(() => {
     if (!profile) return 0;
@@ -71,7 +89,7 @@ export default function PortalDashboard() {
   const today = format(new Date(), 'EEEE, MMMM do yyyy');
   const showUpgrade = (!subscription?.subscribed || subscription?.tier === 'patron') && !subscription?.is_trialing;
 
-  return (
+  const dashboardContent = (
     <div className="space-y-6">
       <EmailVerificationBanner />
 
@@ -188,4 +206,15 @@ export default function PortalDashboard() {
       )}
     </div>
   );
+
+  // Wrap with pull-to-refresh on mobile
+  if (isMobile) {
+    return (
+      <PullToRefresh onRefresh={handleRefresh}>
+        {dashboardContent}
+      </PullToRefresh>
+    );
+  }
+
+  return dashboardContent;
 }
