@@ -36,7 +36,7 @@ const itemVariants = {
   },
 };
 
-const JournalPage = () => {
+const BlogPage = () => {
   const [activeCategory, setActiveCategory] = useState("All Posts");
   const [searchQuery, setSearchQuery] = useState("");
   const heroAnimation = useScrollAnimation();
