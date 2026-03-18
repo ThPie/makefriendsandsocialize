@@ -34,12 +34,15 @@ export const Header = () => {
   // Hide header on portal, admin, and auth pages
   if (isPortal || isAdmin || isAuth) return null;
 
+  // On light-hero pages, always use "scrolled" styling (dark logo, dark text)
+  const isTransparent = !scrolled && !isLightHeroPage;
+
   return (
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-250',
         'h-[60px] md:h-[68px]',
-        scrolled
+        scrolled || isLightHeroPage
           ? 'dark:frosted-nav frosted-nav-light border-b border-border/40'
           : 'bg-transparent'
       )}
@@ -47,13 +50,13 @@ export const Header = () => {
       <div className="content-container h-full flex items-center justify-between">
         {/* Logo — far left */}
         <TransitionLink to="/" className="flex items-center">
-          <BrandLogo width={140} height={40} forceWhite={!scrolled} />
+          <BrandLogo width={140} height={40} forceWhite={isTransparent} />
         </TransitionLink>
 
         {/* Right side — minimal */}
         <div className="flex items-center gap-6 h-full">
           {/* Circles Megamenu */}
-          <CirclesMegamenu isTransparent={!scrolled} />
+          <CirclesMegamenu isTransparent={isTransparent} />
 
           {/* Desktop nav links */}
           {['Events', 'Membership', 'Blog', 'Soul Maps'].map((label) => (
@@ -62,7 +65,7 @@ export const Header = () => {
               to={label === 'Blog' ? '/journal' : label === 'Soul Maps' ? '/soul-maps' : `/${label.toLowerCase()}`}
               className={cn(
                 "hidden lg:inline-block text-sm font-light transition-colors duration-150",
-                !scrolled ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
+                isTransparent ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
               )}
             >
               {label}
@@ -75,7 +78,7 @@ export const Header = () => {
               to="/auth"
               className={cn(
                 "hidden lg:inline-block text-sm font-light transition-colors duration-150",
-                !scrolled ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
+                isTransparent ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
               )}
             >
               Sign In
@@ -95,10 +98,10 @@ export const Header = () => {
           )}
 
           {/* Theme Toggle */}
-          <ThemeToggle isTransparent={!scrolled} />
+          <ThemeToggle isTransparent={isTransparent} />
 
           {/* Mobile hamburger menu */}
-          <MobileMenu isTransparent={!scrolled} />
+          <MobileMenu isTransparent={isTransparent} />
         </div>
       </div>
     </header>
