@@ -28,10 +28,10 @@ export function DashboardStats() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-12 gap-4">
-        <div className="col-span-2 lg:col-span-7"><Skeleton className="h-[140px] w-full rounded-2xl" /></div>
-        <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => <Skeleton key={i} className="h-[140px] w-full rounded-2xl" />)}
+      <div className="space-y-4">
+        <Skeleton className="h-[120px] w-full rounded-2xl" />
+        <div className="grid grid-cols-3 gap-3">
+          {[1, 2, 3].map(i => <Skeleton key={i} className="h-[100px] w-full rounded-2xl" />)}
         </div>
       </div>
     );
