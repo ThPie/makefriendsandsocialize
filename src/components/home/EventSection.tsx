@@ -49,7 +49,7 @@ const EventCard = ({ event, className = '' }: {event: Event;className?: string;}
 
         <div className="flex flex-col gap-1.5 text-muted-foreground text-sm">
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" />
+            <Calendar className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" strokeWidth={1} />
             <span>{format(parseLocalDate(event.date), 'MMM d, yyyy')}{event.time ? ` · ${event.time}` : ''}</span>
           </div>
 
