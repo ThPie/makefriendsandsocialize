@@ -120,8 +120,8 @@ export const MainRoutes = () => (
         <Route path="/gallery" element={<Layout><GalleryPage /></Layout>} />
         <Route path="/about" element={<Layout><AboutPage /></Layout>} />
         <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
-        <Route path="/journal" element={<Layout><JournalPage /></Layout>} />
-        <Route path="/journal/:id" element={<Layout><JournalPostPage /></Layout>} />
+        <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
+        <Route path="/blog/:id" element={<Layout><BlogPostPage /></Layout>} />
         <Route path="/privacy" element={<Layout><PrivacyPage /></Layout>} />
         <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
         <Route path="/rules" element={<Layout><CodeOfConductPage /></Layout>} />
