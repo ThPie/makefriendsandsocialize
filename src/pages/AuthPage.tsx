@@ -934,13 +934,6 @@ export default function AuthPage() {
                   )}
                 </Button>
 
-                {/* Divider */}
-                <div className="flex items-center gap-3">
-                  <div className="h-px flex-1 bg-foreground/10" />
-                  <span className="text-xs text-muted-foreground uppercase tracking-wider">or</span>
-                  <div className="h-px flex-1 bg-foreground/10" />
-                </div>
-
 
               </div>
               )}
