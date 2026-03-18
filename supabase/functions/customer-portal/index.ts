@@ -33,12 +33,12 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id });
 
-    // Square doesn't have a billing portal like Stripe
-    // Redirect to our own membership management page
+    // Square doesn't have a hosted billing portal like Stripe.
+    // Route users into the in-app billing screen instead of a dead link.
     const origin = req.headers.get("origin") || "https://makefriendsandsocialize.com";
-    const portalUrl = `${origin}/portal/membership`;
+    const portalUrl = `${origin}/portal/billing`;
 
-    logStep("Redirecting to membership portal");
+    logStep("Redirecting to billing portal", { portalUrl });
 
     return new Response(JSON.stringify({ url: portalUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
