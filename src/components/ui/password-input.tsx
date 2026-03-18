@@ -45,13 +45,13 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
     return (
       <div className="space-y-2">
         <div className="relative">
-          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/40 pointer-events-none z-10" />
+          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/60 pointer-events-none z-10" />
           <Input
             ref={ref}
             type={showPassword ? 'text' : 'password'}
             value={value}
             className={cn(
-              'bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10 pr-12 focus:border-primary/50 focus:ring-primary/20',
+              'bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 pl-10 pr-12 focus:border-primary/50 focus:ring-primary/20',
               error && 'border-destructive focus:border-destructive',
               className
             )}
@@ -61,7 +61,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
             type="button"
             variant="ghost"
             size="sm"
-            className="absolute right-1 top-1/2 -translate-y-1/2 h-9 w-9 p-0 text-white/40 hover:text-white hover:bg-white/10"
+            className="absolute right-1 top-1/2 -translate-y-1/2 h-9 w-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted"
             onClick={() => setShowPassword(!showPassword)}
             tabIndex={-1}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
@@ -81,7 +81,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
           <div className="space-y-2">
             {/* Strength Bar */}
             <div className="flex items-center gap-2">
-              <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                 <div
                   className={cn('h-full transition-all duration-300', strength.color)}
                   style={{ width: `${strength.score}%` }}
@@ -109,7 +109,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
                     key={req.label}
                     className={cn(
                       'flex items-center gap-1.5 text-xs transition-colors',
-                      passed ? 'text-green-400' : 'text-white/40'
+                      passed ? 'text-green-400' : 'text-muted-foreground/60'
                     )}
                   >
                     {passed ? (

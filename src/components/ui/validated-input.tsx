@@ -22,7 +22,7 @@ export const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputP
           <Input
             ref={ref}
             className={cn(
-              'bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-primary/20',
+              'bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-primary/50 focus:ring-primary/20',
               icon && 'pl-10',
               error && 'border-destructive focus:border-destructive',
               success && 'border-green-500/50 focus:border-green-500',
