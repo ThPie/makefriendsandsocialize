@@ -271,7 +271,7 @@ Return a JSON object using the tool provided with these fields:
       throw new Error(`Failed to insert post: ${insertError.message}`);
     }
 
-    console.log(`✅ Auto-published: "${post.title}" → /journal/${uniqueSlug}`);
+    console.log(`✅ Auto-published: "${post.title}" → /blog/${uniqueSlug}`);
 
     return new Response(
       JSON.stringify({

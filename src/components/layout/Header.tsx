@@ -24,7 +24,7 @@ export const Header = () => {
 
   // Pages with light/white backgrounds need dark header elements even when not scrolled
   const isLightHeroPage = [
-    '/soul-maps', '/journal', '/about', '/contact', '/faq',
+    '/soul-maps', '/blog', '/about', '/contact', '/faq',
     '/membership', '/privacy', '/terms', '/code-of-conduct', '/cookies',
   ].some(p => location.pathname === p || location.pathname.startsWith(p + '/'));
 
@@ -65,7 +65,7 @@ export const Header = () => {
 
           {/* Desktop nav links */}
           {['Events', 'Membership', 'Blog', 'Soul Maps'].map((label) => {
-            const href = label === 'Blog' ? '/journal' : label === 'Soul Maps' ? '/soul-maps' : `/${label.toLowerCase()}`;
+            const href = label === 'Soul Maps' ? '/soul-maps' : `/${label.toLowerCase()}`;
             // Logged-in users clicking "Membership" get the in-app upgrade modal
             if (label === 'Membership' && user) {
               return (

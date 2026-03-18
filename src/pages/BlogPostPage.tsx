@@ -12,11 +12,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 
-const JournalPostPage = () => {
+const BlogPostPage = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: article, isLoading } = useQuery({
-    queryKey: ["journal-post", id],
+    queryKey: ["blog-post", id],
     queryFn: async () => {
       // Try by slug first, then by id
       let { data, error } = await supabase
@@ -80,7 +80,7 @@ const JournalPostPage = () => {
       <div className="flex-1 w-full flex flex-col items-center justify-center px-4 py-20">
         <h1 className="text-2xl font-display text-foreground mb-4">Article not found</h1>
         <Button asChild>
-          <TransitionLink to="/journal">Back to Blog</TransitionLink>
+          <TransitionLink to="/blog">Back to Blog</TransitionLink>
         </Button>
       </div>
     );
@@ -96,7 +96,7 @@ const JournalPostPage = () => {
       >
         <TransitionLink to="/" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Home</TransitionLink>
         <span className="text-primary/70 text-sm font-medium leading-normal">/</span>
-        <TransitionLink to="/journal" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Blog</TransitionLink>
+        <TransitionLink to="/blog" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Blog</TransitionLink>
         <span className="text-primary/70 text-sm font-medium leading-normal">/</span>
         <span className="text-foreground text-sm font-medium leading-normal line-clamp-1">{article.title}</span>
       </motion.div>
@@ -109,7 +109,7 @@ const JournalPostPage = () => {
           transition={{ delay: 0.1 }}
         >
           <Button variant="ghost" asChild className="mb-6 -ml-4">
-            <TransitionLink to="/journal" className="flex items-center gap-2">
+            <TransitionLink to="/blog" className="flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back to Blog
             </TransitionLink>
@@ -246,7 +246,7 @@ const JournalPostPage = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {relatedPosts.map((post) => (
-              <TransitionLink key={post.id} to={`/journal/${post.slug}`} className="flex flex-col group cursor-pointer">
+              <TransitionLink key={post.id} to={`/blog/${post.slug}`} className="flex flex-col group cursor-pointer">
                 <div className="overflow-hidden rounded-2xl border border-border/50 group-hover:border-primary/50 transition-colors">
                   {post.cover_image ? (
                     <div
@@ -278,7 +278,7 @@ const JournalPostPage = () => {
 
           <div className="text-center mt-12">
             <Button asChild variant="outline" size="lg" className="rounded-full">
-              <TransitionLink to="/journal">
+              <TransitionLink to="/blog">
                 View All Articles
               </TransitionLink>
             </Button>
@@ -317,4 +317,4 @@ function renderMarkdown(md: string): string {
     });
 }
 
-export default JournalPostPage;
+export default BlogPostPage;

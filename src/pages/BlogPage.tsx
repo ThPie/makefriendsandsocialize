@@ -36,14 +36,14 @@ const itemVariants = {
   },
 };
 
-const JournalPage = () => {
+const BlogPage = () => {
   const [activeCategory, setActiveCategory] = useState("All Posts");
   const [searchQuery, setSearchQuery] = useState("");
   const heroAnimation = useScrollAnimation();
   const articlesAnimation = useScrollAnimation();
 
   const { data: posts, isLoading, isError } = useQuery({
-    queryKey: ["journal-posts"],
+    queryKey: ["blog-posts"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("journal_posts")
@@ -51,7 +51,7 @@ const JournalPage = () => {
         .eq("is_published", true)
         .order("published_at", { ascending: false });
       if (error) {
-        console.warn('Journal posts fetch error:', error.message);
+        console.warn('Blog posts fetch error:', error.message);
         return [];
       }
       return data || [];
@@ -185,7 +185,7 @@ const JournalPage = () => {
           >
             {filteredArticles.map((article) => (
               <motion.div key={article.id} variants={itemVariants}>
-                <Link to={`/journal/${article.slug}`} className="group flex flex-col h-full bg-card border border-border rounded-xl overflow-hidden hover-lift transition-all duration-200 hover:border-primary/50">
+                <Link to={`/blog/${article.slug}`} className="group flex flex-col h-full bg-card border border-border rounded-xl overflow-hidden hover-lift transition-all duration-200 hover:border-primary/50">
                   <div className="aspect-[4/3] overflow-hidden relative">
                     {article.cover_image ? (
                       <div
@@ -235,4 +235,4 @@ const JournalPage = () => {
   );
 };
 
-export default JournalPage;
+export default BlogPage;

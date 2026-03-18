@@ -13,8 +13,8 @@ const MembershipPage = lazy(() => import("@/pages/MembershipPage"));
 const GalleryPage = lazy(() => import("@/pages/GalleryPage"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
-const JournalPage = lazy(() => import("@/pages/JournalPage"));
-const JournalPostPage = lazy(() => import("@/pages/JournalPostPage"));
+const BlogPage = lazy(() => import("@/pages/BlogPage"));
+const BlogPostPage = lazy(() => import("@/pages/BlogPostPage"));
 const PrivacyPage = lazy(() => import("@/pages/PrivacyPage"));
 const TermsPage = lazy(() => import("@/pages/TermsPage"));
 const CodeOfConductPage = lazy(() => import("@/pages/CodeOfConductPage"));
@@ -120,8 +120,8 @@ export const MainRoutes = () => (
         <Route path="/gallery" element={<Layout><GalleryPage /></Layout>} />
         <Route path="/about" element={<Layout><AboutPage /></Layout>} />
         <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
-        <Route path="/journal" element={<Layout><JournalPage /></Layout>} />
-        <Route path="/journal/:id" element={<Layout><JournalPostPage /></Layout>} />
+        <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
+        <Route path="/blog/:id" element={<Layout><BlogPostPage /></Layout>} />
         <Route path="/privacy" element={<Layout><PrivacyPage /></Layout>} />
         <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
         <Route path="/rules" element={<Layout><CodeOfConductPage /></Layout>} />
@@ -131,8 +131,8 @@ export const MainRoutes = () => (
         <Route path="/founders-circle" element={<Layout><ConnectedCirclePage /></Layout>} />
         <Route path="/founders-circle/directory" element={<Layout><ConnectedCircleDirectoryPage /></Layout>} />
         {/* Redirects from old URLs for SEO */}
-        <Route path="/blog" element={<Navigate to="/journal" replace />} />
-        <Route path="/blog/:id" element={<Navigate to="/journal" replace />} />
+        <Route path="/journal" element={<Navigate to="/blog" replace />} />
+        <Route path="/journal/:id" element={<Navigate to="/blog" replace />} />
         <Route path="/connected-circle" element={<Navigate to="/founders-circle" replace />} />
         <Route path="/connected-circle/directory" element={<Navigate to="/founders-circle/directory" replace />} />
         {/* Connected Circle / Founders Circle Routing */}
