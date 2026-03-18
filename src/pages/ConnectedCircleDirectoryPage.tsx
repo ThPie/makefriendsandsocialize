@@ -304,7 +304,7 @@ const ConnectedCircleDirectoryPage = () => {
                 <div>
                   <h3 className="font-display text-lg text-foreground">Preview Mode</h3>
                   <p className="text-muted-foreground text-sm">
-                    You're viewing a preview. Upgrade to Fellow or Founder to access the full directory.
+                    You're viewing a preview. Upgrade to Insider or Patron to access the full directory.
                   </p>
                 </div>
               </div>
