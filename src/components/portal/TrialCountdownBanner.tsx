@@ -1,7 +1,6 @@
 import { useState, useEffect, memo } from 'react';
-import { Link } from 'react-router-dom';
-import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useSubscription, SubscriptionStatus } from '@/hooks/useSubscription';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { Button } from '@/components/ui/button';
 import { Clock, X, Sparkles, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -11,6 +10,16 @@ interface TrialCountdownBannerProps {
   subscription?: SubscriptionStatus | null;
   isLoading?: boolean;
 }
+
+const TrialUpgradeButton = ({ urgencyLevel }: { urgencyLevel: string }) => {
+  const { openUpgrade } = useUpgrade();
+  return (
+    <Button size="sm" variant={urgencyLevel === 'critical' ? 'destructive' : 'default'} onClick={openUpgrade}>
+      Upgrade Now
+      <ArrowRight className="ml-2 h-4 w-4" />
+    </Button>
+  );
+};
 
 // Memoized component to prevent unnecessary re-renders
 export const TrialCountdownBanner = memo(function TrialCountdownBanner({ 
@@ -131,12 +140,7 @@ export const TrialCountdownBanner = memo(function TrialCountdownBanner({
         </div>
 
         <div className="flex items-center gap-3">
-          <Button asChild size="sm" variant={urgencyLevel === 'critical' ? 'destructive' : 'default'}>
-            <TransitionLink to="/membership">
-              Upgrade Now
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </TransitionLink>
-          </Button>
+          <TrialUpgradeButton urgencyLevel={urgencyLevel} />
           <button
             onClick={handleDismiss}
             className="p-1 rounded-full hover:bg-foreground/10 transition-colors"

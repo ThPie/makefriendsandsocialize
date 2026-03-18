@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom';
-import { TransitionLink } from '@/components/ui/TransitionLink';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Crown, Heart, Users, Calendar, Sparkles, ArrowRight, Lock, Gift, Briefcase } from 'lucide-react';
@@ -67,6 +66,7 @@ export function UpgradePromptCard({
   lockedFeature,
 }: UpgradePromptCardProps) {
   const { subscription, isLoading } = useSubscription();
+  const { openUpgrade } = useUpgrade();
 
   // Don't show for paying members
   if (isLoading || (subscription?.subscribed && !subscription?.is_trialing)) {
@@ -74,7 +74,6 @@ export function UpgradePromptCard({
   }
 
   // Don't show for Patron tier if context doesn't require it
-  // Patron tier (founder in DB) has all features - check using string comparison
   const tier = subscription?.tier as string | undefined;
   if ((tier === 'founder' || tier === 'fellow') && context !== 'business' && context !== 'general') {
     return null;
@@ -95,8 +94,8 @@ export function UpgradePromptCard({
             {lockedFeature || 'This feature'} requires {config.tier === 'patron' ? 'Patron' : 'Insider'} membership
           </span>
         </div>
-        <Button asChild size="sm" variant="outline">
-          <TransitionLink to="/membership">Upgrade</TransitionLink>
+        <Button size="sm" variant="outline" onClick={openUpgrade}>
+          Upgrade
         </Button>
       </div>
     );
@@ -113,11 +112,9 @@ export function UpgradePromptCard({
             <div className="flex-1 min-w-0">
               <h3 className="font-display text-lg text-foreground mb-1">{config.title}</h3>
               <p className="text-sm text-muted-foreground mb-3">{config.description}</p>
-              <Button asChild size="sm">
-                <TransitionLink to="/membership">
-                  {subscription?.is_trialing ? 'Upgrade Now' : 'Start Free Trial'}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </TransitionLink>
+              <Button size="sm" onClick={openUpgrade}>
+                {subscription?.is_trialing ? 'Upgrade Now' : 'Start Free Trial'}
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -149,11 +146,9 @@ export function UpgradePromptCard({
           ))}
         </div>
 
-        <Button asChild size="lg">
-          <TransitionLink to="/membership">
-            {subscription?.is_trialing ? 'Upgrade Now' : 'Start 7-Day Free Trial'}
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </TransitionLink>
+        <Button size="lg" onClick={openUpgrade}>
+          {subscription?.is_trialing ? 'Upgrade Now' : 'Start 7-Day Free Trial'}
+          <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
 
         {!subscription?.is_trialing && (

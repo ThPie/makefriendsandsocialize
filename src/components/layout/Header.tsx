@@ -4,6 +4,7 @@ import { TransitionLink } from '@/components/ui/TransitionLink';
 import { Button } from '@/components/ui/button';
 import { BrandLogo } from '@/components/common/BrandLogo';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { CirclesMegamenu } from './CirclesMegamenu';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
@@ -13,6 +14,7 @@ import { cn } from '@/lib/utils';
 export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const { user, profile } = useAuth();
+  const { openUpgrade } = useUpgrade();
   const location = useLocation();
 
   // Don't show public header on portal/admin pages
@@ -62,18 +64,36 @@ export const Header = () => {
           <CirclesMegamenu isTransparent={isTransparent} />
 
           {/* Desktop nav links */}
-          {['Events', 'Membership', 'Blog'].map((label) => (
-            <TransitionLink
-              key={label}
-              to={label === 'Blog' ? '/journal' : `/${label.toLowerCase()}`}
-              className={cn(
-                "hidden lg:inline-block text-sm font-light transition-colors duration-150",
-                isTransparent ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
-              )}
-            >
-              {label}
-            </TransitionLink>
-          ))}
+          {['Events', 'Membership', 'Blog'].map((label) => {
+            const href = label === 'Blog' ? '/journal' : `/${label.toLowerCase()}`;
+            // Logged-in users clicking "Membership" get the in-app upgrade modal
+            if (label === 'Membership' && user) {
+              return (
+                <button
+                  key={label}
+                  onClick={openUpgrade}
+                  className={cn(
+                    "hidden lg:inline-block text-sm font-light transition-colors duration-150 bg-transparent border-none cursor-pointer",
+                    isTransparent ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
+                  )}
+                >
+                  {label}
+                </button>
+              );
+            }
+            return (
+              <TransitionLink
+                key={label}
+                to={href}
+                className={cn(
+                  "hidden lg:inline-block text-sm font-light transition-colors duration-150",
+                  isTransparent ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
+                )}
+              >
+                {label}
+              </TransitionLink>
+            );
+          })}
 
           {/* Sign In — text link, desktop only */}
           {!user && (

@@ -66,7 +66,7 @@ const SlowDatingPage = () => {
     },
     {
       question: "Is there an additional cost for Slow Dating?",
-      answer: "Slow Dating is included at no extra cost with Fellow and Founder memberships. Patron members can upgrade to Fellow tier to access this service, or inquire about our standalone Slow Dating subscription."
+      answer: "Slow Dating is included at no extra cost with Insider and Patron memberships. Socialite members can upgrade to Insider tier to access this service, or inquire about our standalone Slow Dating subscription."
     },
     {
       question: "How is my information protected?",

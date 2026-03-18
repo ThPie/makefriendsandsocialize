@@ -151,7 +151,7 @@ export default function PortalConnections() {
     return (
       <PremiumPaywall
         title="Connections"
-        description="Upgrade to Fellow membership to request and receive introductions from fellow members."
+        description="Upgrade to Insider membership to request and receive introductions from fellow members."
         features={[
           'Send & receive introduction requests',
           'View member profiles & styles',

@@ -17,6 +17,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import { RegisterSW } from "./components/common/RegisterSW";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { Toaster } from "@/components/ui/toaster";
+import { UpgradeProvider } from "@/contexts/UpgradeContext";
+import { InAppUpgradeModal } from "@/components/portal/InAppUpgradeModal";
 
 import { SlowDatingRoutes, MainRoutes } from "@/routes/config";
 
@@ -51,6 +53,7 @@ const App = () => {
         <QueryClientProvider client={appQueryClient}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="makefriends-theme">
             <AuthProvider>
+              <UpgradeProvider>
               <TooltipProvider>
                 <RegisterSW />
                 <PublishedDomainRedirect />
@@ -65,10 +68,12 @@ const App = () => {
                     </Suspense>
                     <BackToTop />
                     <Toaster />
+                    <InAppUpgradeModal />
                     <SpeedInsights />
                   </SessionProvider>
                 </BrowserRouter>
               </TooltipProvider>
+              </UpgradeProvider>
             </AuthProvider>
           </ThemeProvider>
         </QueryClientProvider>

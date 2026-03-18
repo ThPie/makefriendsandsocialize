@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Building2, Loader2, CheckCircle, Clock, XCircle, ExternalLink, Users, Link2, Copy, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TransitionLink } from "@/components/ui/TransitionLink";
+import { useUpgrade } from "@/contexts/UpgradeContext";
 import { BusinessVerificationStatus } from "@/components/business/BusinessVerificationStatus";
 import { Lead } from "@/components/business/LeadCard";
 import { LeadDetailSheet } from "@/components/business/LeadDetailSheet";
@@ -18,6 +19,11 @@ import { BusinessLeadsSection } from "@/components/portal/business/BusinessLeads
 import { BusinessSynergySection } from "@/components/portal/business/BusinessSynergySection";
 
 type LeadStatus = "new" | "contacted" | "converted" | "lost";
+
+const UpgradeButtonInline = () => {
+  const { openUpgrade } = useUpgrade();
+  return <Button onClick={openUpgrade}>Upgrade Membership</Button>;
+};
 
 const PortalBusiness = () => {
   const { user, membership } = useAuth();
@@ -246,12 +252,10 @@ const PortalBusiness = () => {
           Upgrade Required
         </h1>
         <p className="text-muted-foreground mb-8">
-          The Founders Circle is available to Fellow and Founder members.
+          The Founders Circle is available to Insider and Patron members.
           Upgrade your membership to list your company.
         </p>
-        <Button asChild>
-          <TransitionLink to="/membership">Upgrade Membership</TransitionLink>
-        </Button>
+        <UpgradeButtonInline />
       </div>
     );
   }

@@ -1,7 +1,7 @@
-import { TransitionLink } from '@/components/ui/TransitionLink';
 import { Button } from '@/components/ui/button';
 import { Crown, ArrowRight, Sparkles, Users, Heart, Headphones } from 'lucide-react';
 import { getTierDisplayName } from '@/lib/tier-utils';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 
 interface PremiumPaywallProps {
   title: string;
@@ -42,6 +42,7 @@ const PreviewContent = () => (
 
 export function PremiumPaywall({ title, description, features, currentTier, icon = 'network' }: PremiumPaywallProps) {
   const Icon = ICON_MAP[icon];
+  const { openUpgrade } = useUpgrade();
 
   return (
     <div className="relative min-h-[60vh] rounded-2xl overflow-hidden border border-border bg-card">
@@ -77,11 +78,13 @@ export function PremiumPaywall({ title, description, features, currentTier, icon
           </div>
 
           {/* CTA */}
-          <Button asChild size="lg" className="w-full rounded-full bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-white uppercase tracking-widest text-xs font-bold h-12">
-            <TransitionLink to="/membership">
-              Upgrade to Premium
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </TransitionLink>
+          <Button
+            size="lg"
+            className="w-full rounded-full bg-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/90 text-white uppercase tracking-widest text-xs font-bold h-12"
+            onClick={openUpgrade}
+          >
+            Upgrade to Premium
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
 
           {/* Current tier */}
