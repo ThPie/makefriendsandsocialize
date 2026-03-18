@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { type DBTier, isTierAtLeast, toStripeCheckoutTier } from '@/lib/tier-utils';
+import { type DBTier, isTierAtLeast } from '@/lib/tier-utils';
 
 export interface SubscriptionStatus {
   subscribed: boolean;
