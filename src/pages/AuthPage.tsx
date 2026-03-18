@@ -423,40 +423,24 @@ export default function AuthPage() {
       setIsSubmitting(true);
       clearFormFeedback();
 
-      // Record login attempt for rate limiting (non-blocking, 3s timeout)
       try {
-        await Promise.race([
-          recordAttempt(false),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Rate limit timeout')), 3000))
-        ]);
-      } catch {
-        // Rate limit check failed/timed out — proceed with login anyway
-      }
+        const { error } = await signIn(email, password);
 
-      // Check if rate limited before proceeding
-      if (isRateLimited) {
-        setFormError('Too many sign-in attempts. Please try again later.');
+        if (error) {
+          setIsSubmitting(false);
+          setFormError('Invalid email or password. Please check your credentials and try again.');
+          return;
+        }
+
+        // Create session (non-blocking, don't let it block navigation)
+        createSession(rememberMe).catch(() => {});
+
         setIsSubmitting(false);
-        return;
-      }
-
-      const { error } = await signIn(email, password);
-
-      if (error) {
-        // Record failed attempt (non-blocking)
-        recordAttempt(true).catch(() => {});
+        navigate('/portal');
+      } catch (err) {
         setIsSubmitting(false);
-
-        // Prevent account enumeration - use generic error message
-        setFormError('Invalid email or password. Please check your credentials and try again.');
-        return;
+        setFormError('An error occurred during sign in. Please try again.');
       }
-
-      // Create session with remember me preference
-      await createSession(rememberMe);
-
-      setIsSubmitting(false);
-      navigate('/portal');
     } else {
       // For signup, redirect to email verification page
       setIsSubmitting(true);
