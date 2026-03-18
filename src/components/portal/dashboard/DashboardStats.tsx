@@ -83,7 +83,7 @@ export function DashboardStats() {
             {eventsCount}
           </h3>
           <span className="text-xs text-muted-foreground">
-            {eventsCount === 0 ? 'Discover events below' : `${eventsCount === 1 ? '1 event' : `${eventsCount} events`} on your calendar`}
+            {eventsCount === 0 ? 'Discover events below' : `${eventsCount === 1 ? '1 event' : `${eventsCount} events`} coming up`}
           </span>
         </div>
       </div>
