@@ -32,7 +32,7 @@
 
     --popover: 0 0% 100%;
     /* #FFFFFF → surface-raised */
-    --popover-foreground: 140 34% 9%;
+    --popover-foreground: 145 30% 15%;
 
     /* Primary — Gold (unified with accent-gold for brand consistency) */
     --primary: 43 76% 31%;
