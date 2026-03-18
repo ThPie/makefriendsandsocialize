@@ -351,6 +351,7 @@ export default function PortalEvents() {
   };
 
   const handleRSVP = (event: Event) => {
+    haptic('medium');
     if (!canAccessEvent(event.tier)) {
       setSelectedEvent(event);
       setShowUpgradeModal(true);
