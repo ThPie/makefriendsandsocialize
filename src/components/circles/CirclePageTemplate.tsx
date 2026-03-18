@@ -199,7 +199,7 @@ const CirclePageTemplate = ({ config }: { config: CircleConfig }) => {
                       </h3>
                       <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
                         <Calendar className="h-3.5 w-3.5" />
-                        <span>{format(new Date(event.date), "MMM d, yyyy")}</span>
+                        <span>{format(parseLocalDate(event.date), "MMM d, yyyy")}</span>
                       </div>
                       {(event.venue_name || event.location) && (
                         <div className="flex items-center gap-2 text-muted-foreground text-sm">
