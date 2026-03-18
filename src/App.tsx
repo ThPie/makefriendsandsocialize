@@ -68,10 +68,12 @@ const App = () => {
                     </Suspense>
                     <BackToTop />
                     <Toaster />
+                    <InAppUpgradeModal />
                     <SpeedInsights />
                   </SessionProvider>
                 </BrowserRouter>
               </TooltipProvider>
+              </UpgradeProvider>
             </AuthProvider>
           </ThemeProvider>
         </QueryClientProvider>
