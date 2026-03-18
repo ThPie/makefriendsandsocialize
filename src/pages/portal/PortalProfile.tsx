@@ -175,7 +175,7 @@ export default function PortalProfile() {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-8 pb-16">
+    <div className="w-full max-w-3xl mx-auto space-y-6 sm:space-y-8 pb-24 md:pb-16">
       {/* Header */}
       <div>
         <h1 className="font-display text-2xl md:text-3xl text-foreground inline-flex items-center gap-2">
