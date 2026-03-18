@@ -38,6 +38,7 @@ import {
   Gift,
   Scale,
   ClipboardList,
+  Microscope,
 } from 'lucide-react';
 import { PageTransition } from '@/components/ui/page-transition';
 import { MFAGuard } from './MFAGuard';
