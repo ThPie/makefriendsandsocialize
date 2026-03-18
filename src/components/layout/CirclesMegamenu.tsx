@@ -23,7 +23,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                 {/* Pointer Triangle intentionally omitted to match the clean rounded glass look of the reference */}
 
                 {/* Content Box - matching the exact reference layout: Left dark panel, right white options */}
-                <div className="bg-[#FAF9F6] dark:bg-card border border-border/40 rounded-[32px] shadow-2xl overflow-hidden flex flex-row min-h-[420px] max-h-[85vh]">
+                <div className="bg-background border border-border/40 rounded-[32px] shadow-2xl dark:shadow-none overflow-hidden flex flex-row min-h-[420px] max-h-[85vh]">
 
                     {/* LEFT PANEL - The dark rounded container inside */}
                     <div className="w-[300px] m-2 rounded-[24px] overflow-hidden relative flex flex-col justify-between p-8 bg-[#1A1A1A]">
@@ -60,14 +60,14 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                     </div>
 
                     {/* RIGHT PANEL - The list of services */}
-                    <div className="flex-1 p-8 flex flex-col bg-[#FAF9F6] dark:bg-card relative overflow-y-auto">
+                    <div className="flex-1 p-8 flex flex-col bg-background relative overflow-y-auto">
                         <div className="grid grid-cols-2 gap-x-8 gap-y-4 flex-1">
 
                             {/* Column 1: Special Services */}
                             <div>
                                 <h3 className="text-muted-foreground font-light text-sm mb-3">Our Circles</h3>
                                 <div className="flex flex-col gap-2">
-                                    <TransitionLink to="/founders-circle" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                    <TransitionLink to="/founders-circle" className="bg-muted dark:bg-muted/30 rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg dark:hover:shadow-none transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
                                             <Hexagon strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
@@ -77,7 +77,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                         </div>
                                     </TransitionLink>
 
-                                    <TransitionLink to="/circles/the-gentlemen" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                    <TransitionLink to="/circles/the-gentlemen" className="bg-muted dark:bg-muted/30 rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg dark:hover:shadow-none transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
                                             <Diamond strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
@@ -87,7 +87,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                         </div>
                                     </TransitionLink>
 
-                                    <TransitionLink to="/slow-dating" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                    <TransitionLink to="/slow-dating" className="bg-muted dark:bg-muted/30 rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg dark:hover:shadow-none transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
                                             <BringToFront strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
@@ -103,7 +103,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                             <div>
                                 <h3 className="text-muted-foreground font-light text-sm mb-3">More Circles</h3>
                                 <div className="flex flex-col gap-2">
-                                    <TransitionLink to="/circles/couples-circle" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                    <TransitionLink to="/circles/couples-circle" className="bg-muted dark:bg-muted/30 rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg dark:hover:shadow-none transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
                                             <Circle strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
@@ -113,7 +113,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                         </div>
                                     </TransitionLink>
 
-                                    <TransitionLink to="/circles/active-outdoor" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                    <TransitionLink to="/circles/active-outdoor" className="bg-muted dark:bg-muted/30 rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg dark:hover:shadow-none transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
                                             <Circle strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
@@ -123,7 +123,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                         </div>
                                     </TransitionLink>
 
-                                    <TransitionLink to="/circles/the-exchange" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                    <TransitionLink to="/circles/the-exchange" className="bg-muted dark:bg-muted/30 rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg dark:hover:shadow-none transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
                                             <Lightbulb strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
@@ -133,7 +133,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                                         </div>
                                     </TransitionLink>
 
-                                    <TransitionLink to="/circles/the-ladies-society" className="bg-white dark:bg-background rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
+                                    <TransitionLink to="/circles/the-ladies-society" className="bg-muted dark:bg-muted/30 rounded-2xl p-4 flex items-center gap-4 hover:shadow-lg dark:hover:shadow-none transition-all duration-200 group border border-transparent hover:border-[hsl(var(--accent-gold))]/30">
                                         <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
                                             <Circle strokeWidth={1} className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" />
                                         </div>
@@ -155,7 +155,7 @@ export function CirclesMegamenu({ isTransparent = false }: CirclesMegamenuProps)
                             </div>
                             <TransitionLink
                                 to="/contact"
-                                className="bg-[#111111] hover:bg-black text-white px-8 py-3 rounded-full text-sm font-medium transition-colors shrink-0 whitespace-nowrap"
+                                className="bg-foreground hover:bg-foreground/90 text-background px-8 py-3 rounded-full text-sm font-medium transition-colors shrink-0 whitespace-nowrap"
                             >
                                 Contact us
                             </TransitionLink>

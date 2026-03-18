@@ -64,8 +64,8 @@ export const Header = () => {
           <CirclesMegamenu isTransparent={isTransparent} />
 
           {/* Desktop nav links */}
-          {['Events', 'Membership', 'Blog'].map((label) => {
-            const href = label === 'Blog' ? '/journal' : `/${label.toLowerCase()}`;
+          {['Events', 'Membership', 'Blog', 'Soul Maps'].map((label) => {
+            const href = label === 'Blog' ? '/journal' : label === 'Soul Maps' ? '/soul-maps' : `/${label.toLowerCase()}`;
             // Logged-in users clicking "Membership" get the in-app upgrade modal
             if (label === 'Membership' && user) {
               return (
