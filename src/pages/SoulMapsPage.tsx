@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Heart, Users, Briefcase, Sparkles, Swords, Brain } from 'lucide-react';
 import { QuizCard } from '@/components/soul-maps/QuizCard';
+import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
 const quizzes = [
@@ -52,53 +54,64 @@ const comingSoon = [
   },
 ];
 
-const SoulMapsPage = () => (
-  <>
-    <Helmet>
-      <title>Soul Maps — Know Yourself. Connect Better. | MakeFriends & Socialize</title>
-      <meta name="description" content="Beautifully designed quizzes to help you understand how you show up in friendship, dating, work, and life. Discover your attachment style and more." />
-    </Helmet>
+const INITIAL_VISIBLE = 6;
 
-    {/* Hero */}
-    <section className="relative min-h-[50vh] md:min-h-[55vh] flex items-end bg-background overflow-hidden">
-      {/* Decorative gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--accent-gold))]/5 via-transparent to-primary/5 pointer-events-none" />
-      <div className="content-container w-full pb-12 pt-32 md:pt-40 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-2xl space-y-4"
-        >
-          <span className="inline-block text-[10px] uppercase tracking-[0.2em] font-medium px-3 py-1.5 rounded-full bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border border-[hsl(var(--accent-gold))]/20">
-            New — Soul Maps
-          </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-foreground leading-[1.1]">
-            Know Yourself.<br />Connect Better.
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-lg leading-relaxed">
-            Beautifully designed quizzes to help you understand how you show up in friendship, dating, work, and life.
-          </p>
-        </motion.div>
-      </div>
-    </section>
+const SoulMapsPage = () => {
+  const allCards = [...quizzes.map(q => ({ ...q, comingSoon: false })), ...comingSoon.map(q => ({ ...q, comingSoon: true }))];
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+  const hasMore = visibleCount < allCards.length;
 
-    {/* Quiz Grid */}
-    <section className="content-container py-12 md:py-20">
-      <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 scrollbar-hide md:grid md:grid-cols-3 lg:grid-cols-4 md:overflow-visible md:snap-none">
-        {quizzes.map((q) => (
-          <div key={q.title} className="min-w-[78vw] snap-start md:min-w-0">
-            <QuizCard {...q} />
+  return (
+    <>
+      <Helmet>
+        <title>Soul Maps — Know Yourself. Connect Better. | MakeFriends & Socialize</title>
+        <meta name="description" content="Beautifully designed quizzes to help you understand how you show up in friendship, dating, work, and life. Discover your attachment style and more." />
+      </Helmet>
+
+      {/* Hero */}
+      <section className="relative min-h-[50vh] md:min-h-[55vh] flex items-end bg-background overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--accent-gold))]/5 via-transparent to-primary/5 pointer-events-none" />
+        <div className="content-container w-full pb-12 pt-32 md:pt-40 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-2xl space-y-4"
+          >
+            <span className="inline-block text-[10px] uppercase tracking-[0.2em] font-medium px-3 py-1.5 rounded-full bg-[hsl(var(--accent-gold))]/10 text-[hsl(var(--accent-gold))] border border-[hsl(var(--accent-gold))]/20">
+              New — Soul Maps
+            </span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-semibold text-foreground leading-[1.1]">
+              Know Yourself.<br />Connect Better.
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-lg leading-relaxed">
+              Beautifully designed quizzes to help you understand how you show up in friendship, dating, work, and life.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Quiz Grid */}
+      <section className="content-container py-12 md:py-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {allCards.slice(0, visibleCount).map((q) => (
+            <QuizCard key={q.title} {...q} comingSoon={q.comingSoon} to={q.comingSoon ? undefined : (q as any).to} />
+          ))}
+        </div>
+        {hasMore && (
+          <div className="flex justify-center mt-8">
+            <Button
+              variant="outline"
+              onClick={() => setVisibleCount(allCards.length)}
+              className="rounded-full uppercase tracking-widest text-xs px-8"
+            >
+              Load More Quizzes
+            </Button>
           </div>
-        ))}
-        {comingSoon.map((q) => (
-          <div key={q.title} className="min-w-[78vw] snap-start md:min-w-0">
-            <QuizCard {...q} comingSoon />
-          </div>
-        ))}
-      </div>
-    </section>
-  </>
-);
+        )}
+      </section>
+    </>
+  );
+};
 
 export default SoulMapsPage;

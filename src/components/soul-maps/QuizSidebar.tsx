@@ -1,4 +1,5 @@
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb, ChevronDown } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 const didYouKnowFacts = [
   {
@@ -38,28 +39,43 @@ const didYouKnowFacts = [
   },
 ];
 
+const FactCard = ({ item, defaultOpen }: { item: typeof didYouKnowFacts[0]; defaultOpen: boolean }) => {
+  if (defaultOpen) {
+    return (
+      <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-2.5">
+        <div className="flex items-center gap-2">
+          <Lightbulb className="w-3.5 h-3.5 text-[hsl(var(--accent-gold))]" />
+          <p className="text-[10px] uppercase tracking-[0.15em] font-medium text-muted-foreground">Did You Know?</p>
+        </div>
+        <p className="text-sm font-medium text-foreground leading-snug">{item.title}</p>
+        <p className="text-sm text-foreground/80 leading-relaxed italic font-display">"{item.fact}"</p>
+        {item.source && <p className="text-xs text-muted-foreground">— {item.source}</p>}
+      </div>
+    );
+  }
+
+  return (
+    <Collapsible>
+      <CollapsibleTrigger className="w-full rounded-2xl border border-border/60 bg-card px-5 py-4 flex items-center justify-between gap-3 group text-left hover:bg-accent/30 transition-colors">
+        <div className="flex items-center gap-2 min-w-0">
+          <Lightbulb className="w-3.5 h-3.5 text-[hsl(var(--accent-gold))] shrink-0" />
+          <p className="text-sm font-medium text-foreground leading-snug truncate">{item.title}</p>
+        </div>
+        <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0 transition-transform group-data-[state=open]:rotate-180" />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="rounded-b-2xl border border-t-0 border-border/60 bg-card px-5 pb-4 pt-2 -mt-2 space-y-2">
+        <p className="text-sm text-foreground/80 leading-relaxed italic font-display">"{item.fact}"</p>
+        {item.source && <p className="text-xs text-muted-foreground">— {item.source}</p>}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};
+
 export const QuizSidebar = () => {
   return (
-    <aside className="space-y-4">
+    <aside className="space-y-3">
       {didYouKnowFacts.map((item, i) => (
-        <div
-          key={i}
-          className="rounded-2xl border border-border/60 bg-card p-5 space-y-2.5"
-        >
-          <div className="flex items-center gap-2">
-            <Lightbulb className="w-3.5 h-3.5 text-[hsl(var(--accent-gold))]" />
-            <p className="text-[10px] uppercase tracking-[0.15em] font-medium text-muted-foreground">
-              Did You Know?
-            </p>
-          </div>
-          <p className="text-sm font-medium text-foreground leading-snug">{item.title}</p>
-          <p className="text-sm text-foreground/80 leading-relaxed italic font-display">
-            "{item.fact}"
-          </p>
-          {item.source && (
-            <p className="text-xs text-muted-foreground">— {item.source}</p>
-          )}
-        </div>
+        <FactCard key={i} item={item} defaultOpen={i < 2} />
       ))}
     </aside>
   );
