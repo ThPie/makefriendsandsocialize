@@ -2861,6 +2861,30 @@ export type Database = {
           },
         ]
       }
+      soul_maps_leads: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          quiz_slug: string
+          source_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          quiz_slug?: string
+          source_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          quiz_slug?: string
+          source_url?: string | null
+        }
+        Relationships: []
+      }
       soul_maps_results: {
         Row: {
           answers: Json
