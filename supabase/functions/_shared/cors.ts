@@ -20,7 +20,7 @@ export const allowedOrigins = [
 
 export const getCorsHeaders = (req: Request) => {
     const origin = req.headers.get('origin');
-    if (origin && allowedOrigins.some(o => origin === o || origin.endsWith('.lovable.app'))) {
+    if (origin && allowedOrigins.some(o => origin === o || origin.endsWith('.lovable.app') || origin.endsWith('.lovableproject.com'))) {
         return {
             'Access-Control-Allow-Origin': origin,
             'Access-Control-Allow-Headers': ALLOWED_HEADERS,
