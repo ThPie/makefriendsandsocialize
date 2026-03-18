@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { TransitionLink } from '@/components/ui/TransitionLink';
+import { PremiumPaywall } from '@/components/portal/PremiumPaywall';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { supabase } from '@/integrations/supabase/client';
