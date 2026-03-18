@@ -4,6 +4,7 @@ import { Heart, Users, Briefcase, Sparkles, Swords, Brain } from 'lucide-react';
 import { QuizCard } from '@/components/soul-maps/QuizCard';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import soulMapsHero from '@/assets/soul-maps-hero.png';
 
 const quizzes = [
   {
@@ -71,6 +72,17 @@ const SoulMapsPage = () => {
       {/* Hero */}
       <section className="relative min-h-[50vh] md:min-h-[55vh] flex items-end bg-background overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--accent-gold))]/5 via-transparent to-primary/5 pointer-events-none" />
+
+        {/* Hero illustration — right side on desktop */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="absolute right-0 bottom-0 md:right-8 lg:right-16 w-[260px] md:w-[340px] lg:w-[420px] opacity-20 md:opacity-100 pointer-events-none select-none"
+        >
+          <img src={soulMapsHero} alt="" className="w-full h-auto" />
+        </motion.div>
+
         <div className="content-container w-full pb-12 pt-32 md:pt-40 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

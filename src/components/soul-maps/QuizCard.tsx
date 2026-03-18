@@ -32,16 +32,16 @@ export const QuizCard = ({ title, description, category, time, icon: Icon, to, c
         "h-full p-6 transition-all duration-200",
         comingSoon
           ? "opacity-50 cursor-default"
-          : "hover:border-[hsl(var(--accent-gold))]/40 hover:shadow-md"
+          : "hover:border-[hsl(var(--accent-gold))]/40 hover:shadow-md dark:hover:shadow-none"
       )}>
         <div className="flex flex-col h-full gap-4">
           {/* Top row: icon + category */}
           <div className="flex items-start justify-between">
-            <div className="w-10 h-10 rounded-xl bg-accent/50 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center bg-transparent group-hover:border-[hsl(var(--accent-gold))] transition-colors">
               {comingSoon ? (
-                <Lock className="w-4 h-4 text-muted-foreground" />
+                <Lock className="w-5 h-5 text-muted-foreground" strokeWidth={1} />
               ) : (
-                <Icon className="w-4 h-4 text-foreground" strokeWidth={1.5} />
+                <Icon className="w-5 h-5 text-foreground group-hover:text-[hsl(var(--accent-gold))]" strokeWidth={1} />
               )}
             </div>
             <span className={cn(
@@ -61,7 +61,7 @@ export const QuizCard = ({ title, description, category, time, icon: Icon, to, c
           {/* Footer */}
           <div className="flex items-center justify-between pt-2">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Clock className="w-3.5 h-3.5" />
+              <Clock className="w-3.5 h-3.5" strokeWidth={1} />
               <span>{time}</span>
             </div>
             {!comingSoon && (

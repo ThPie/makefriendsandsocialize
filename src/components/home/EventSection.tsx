@@ -38,7 +38,7 @@ const EventCard = ({ event, className = '' }: {event: Event;className?: string;}
 
 
         <div className="w-full h-full bg-muted flex items-center justify-center">
-            <Calendar className="h-12 w-12 text-muted-foreground/20" />
+            <Calendar className="h-12 w-12 text-muted-foreground/20" strokeWidth={1} />
           </div>
         }
       </div>
@@ -49,20 +49,20 @@ const EventCard = ({ event, className = '' }: {event: Event;className?: string;}
 
         <div className="flex flex-col gap-1.5 text-muted-foreground text-sm">
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" />
+            <Calendar className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" strokeWidth={1} />
             <span>{format(parseLocalDate(event.date), 'MMM d, yyyy')}{event.time ? ` · ${event.time}` : ''}</span>
           </div>
 
           {(event.venue_name || event.location || event.city) &&
           <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" />
+              <MapPin className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" strokeWidth={1} />
               <span className="truncate">{event.venue_name || event.city || event.location}</span>
             </div>
           }
 
           {event.rsvp_count != null && event.rsvp_count > 0 &&
           <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" />
+              <Users className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" strokeWidth={1} />
               <span>{event.rsvp_count} attending</span>
             </div>
           }

@@ -50,8 +50,8 @@ export const BusinessEventsSection = () => {
               key={index}
               className={`group bg-card rounded-2xl p-8 shadow-elegant border border-border/50 transition-all duration-500 hover:shadow-lg hover:-translate-y-1 text-center scroll-animate scroll-animate-delay-${index + 1} ${isVisible ? 'visible' : ''}`}
             >
-              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto group-hover:bg-primary/20 transition-colors">
-                <feature.icon className="w-7 h-7 text-primary" />
+              <div className="w-14 h-14 rounded-full border border-border flex items-center justify-center mb-6 mx-auto group-hover:border-[hsl(var(--accent-gold))] transition-colors">
+                <feature.icon className="w-6 h-6 text-foreground group-hover:text-[hsl(var(--accent-gold))]" strokeWidth={1} />
               </div>
               <h3 className="font-display text-xl md:text-2xl font-semibold text-foreground mb-3">
                 {feature.title}
