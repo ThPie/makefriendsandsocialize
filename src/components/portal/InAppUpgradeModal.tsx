@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Check, ArrowRight, ArrowLeft, Loader2, ShieldCheck } from 'lucide-react';
+import { Check, ArrowRight, ArrowLeft, Loader2, ShieldCheck, AlertCircle } from 'lucide-react';
 import { useUpgrade } from '@/contexts/UpgradeContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { TIER_BENEFITS } from '@/lib/square-products';
