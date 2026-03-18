@@ -1074,14 +1074,6 @@ export default function AuthPage() {
                 {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : mode === 'signin' ? 'Login' : <>Continue <ArrowRight className="ml-2 h-4 w-4" /></>}
               </Button>
 
-              {/* Divider */}
-              <div className="flex items-center gap-3">
-                <div className="h-px flex-1 bg-foreground/10" />
-                <span className="text-xs text-muted-foreground uppercase tracking-wider">or</span>
-                <div className="h-px flex-1 bg-foreground/10" />
-              </div>
-
-
 
             </div>
             )}

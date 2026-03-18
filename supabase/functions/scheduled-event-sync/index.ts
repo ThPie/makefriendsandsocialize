@@ -22,12 +22,11 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
-    // Use Mountain Time (UTC-7) for date calculations since events are in Salt Lake City
-    // This ensures events don't get marked as "past" while they're still happening locally
-    const nowUtc = new Date();
-    const mountainTimeOffset = -7 * 60; // UTC-7 in minutes
-    const mountainTime = new Date(nowUtc.getTime() + (mountainTimeOffset * 60 * 1000) + (nowUtc.getTimezoneOffset() * 60 * 1000));
-    const today = mountainTime.toISOString().split('T')[0];
+    // Use Mountain Time (America/Denver) for date calculations since events are in Salt Lake City, Utah
+    const today = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Denver',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(new Date());
     
     console.log('Starting scheduled event sync...');
     console.log('Today:', today);
