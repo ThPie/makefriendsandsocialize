@@ -8,6 +8,7 @@ import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import { parseLocalDate } from '@/lib/date-utils';
 
 export interface CircleFeature {
   id: string;
