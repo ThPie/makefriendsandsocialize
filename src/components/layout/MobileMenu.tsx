@@ -4,6 +4,7 @@ import { X, Menu, Home, Calendar, Users, Heart, Newspaper, Mail, HelpCircle, Che
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import { BrandLogo } from '@/components/common/BrandLogo';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -46,6 +47,7 @@ export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {
   const [circlesOpen, setCirclesOpen] = useState(false);
   const [dailyQuote, setDailyQuote] = useState<string | null>(null);
   const { user, profile } = useAuth();
+  const { openUpgrade } = useUpgrade();
   const location = useLocation();
 
   // Auto-close menu on route change (safety net in case onClick doesn't fire)
@@ -96,7 +98,6 @@ export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {
 
   return (
     <div className="lg:hidden flex items-center gap-3">
-
       {/* Hamburger trigger */}
       <button
         onClick={() => setOpen(true)}
@@ -160,17 +161,36 @@ export const MobileMenu = ({ isTransparent }: { isTransparent: boolean }) => {
         <div className="flex-1 overflow-y-auto scrollbar-hide">
           {/* Nav links */}
           <nav className="flex flex-col p-5 gap-0.5">
-            {navLinks.map((link) => (
-              <TransitionLink
-                key={link.label}
-                to={link.to}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 py-3 px-3 text-base font-medium text-foreground hover:text-[hsl(var(--accent-gold))] hover:bg-accent/50 rounded-xl transition-colors duration-150"
-              >
-                <link.icon className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.5} />
-                {link.label}
-              </TransitionLink>
-            ))}
+            {navLinks.map((link) => {
+              if (link.label === 'Membership' && user) {
+                return (
+                  <button
+                    key={link.label}
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      openUpgrade();
+                    }}
+                    className="flex items-center gap-3 py-3 px-3 text-base font-medium text-foreground hover:text-[hsl(var(--accent-gold))] hover:bg-accent/50 rounded-xl transition-colors duration-150 text-left"
+                  >
+                    <link.icon className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.5} />
+                    {link.label}
+                  </button>
+                );
+              }
+
+              return (
+                <TransitionLink
+                  key={link.label}
+                  to={link.to}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 py-3 px-3 text-base font-medium text-foreground hover:text-[hsl(var(--accent-gold))] hover:bg-accent/50 rounded-xl transition-colors duration-150"
+                >
+                  <link.icon className="w-[18px] h-[18px] text-muted-foreground" strokeWidth={1.5} />
+                  {link.label}
+                </TransitionLink>
+              );
+            })}
 
             {/* Circles dropdown */}
             <button

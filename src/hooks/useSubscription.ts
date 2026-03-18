@@ -139,10 +139,9 @@ export function useSubscription() {
       const { data, error } = await supabase.functions.invoke('customer-portal');
 
       if (error) throw error;
+      if (!data?.url) throw new Error('No billing destination returned');
 
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      }
+      window.location.assign(data.url);
     } catch (err) {
       console.error('Error opening customer portal:', err);
       throw err;
