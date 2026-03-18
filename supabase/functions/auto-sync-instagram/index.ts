@@ -5,9 +5,62 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface InstagramPhoto {
-  id: string;
-  imageUrl: string;
+// Use AI to check if an image is a real photo (not a poster, text graphic, or carousel)
+async function isRealPhoto(imageUrl: string, apiKey: string): Promise<boolean> {
+  try {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash-lite',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: `Analyze this image. Is it a real photograph of people, a place, or an event? Answer ONLY "yes" or "no".
+
+Answer "no" if the image is any of:
+- A poster, flyer, or graphic design with mostly text
+- A carousel indicator or multi-slide post cover
+- A quote card or text overlay graphic
+- A logo, brand graphic, or promotional banner
+- A screenshot of text or a social media post
+- An infographic or chart
+
+Answer "yes" if it is:
+- A real photograph of people socializing, at events, dining, etc.
+- A candid or posed photo of real people
+- A photo of a venue, food, drinks, or event setting`
+              },
+              {
+                type: 'image_url',
+                image_url: { url: imageUrl }
+              }
+            ]
+          }
+        ],
+        max_tokens: 10,
+      }),
+    });
+
+    if (!response.ok) {
+      console.warn(`AI analysis failed (${response.status}), skipping image`);
+      return false;
+    }
+
+    const data = await response.json();
+    const answer = (data.choices?.[0]?.message?.content || '').trim().toLowerCase();
+    console.log(`AI verdict for image: "${answer}"`);
+    return answer.startsWith('yes');
+  } catch (err) {
+    console.warn('AI analysis error, skipping image:', err);
+    return false;
+  }
 }
 
 Deno.serve(async (req) => {
@@ -19,11 +72,20 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
     if (!firecrawlKey) {
       console.error('FIRECRAWL_API_KEY not configured');
       return new Response(
         JSON.stringify({ success: false, error: 'Firecrawl not configured' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!lovableApiKey) {
+      console.error('LOVABLE_API_KEY not configured');
+      return new Response(
+        JSON.stringify({ success: false, error: 'AI analysis not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -50,6 +112,7 @@ Deno.serve(async (req) => {
     }
 
     let totalImported = 0;
+    let totalRejected = 0;
 
     for (const setting of settings) {
       const username = setting.instagram_username.replace(/^@/, '').trim();
@@ -87,7 +150,7 @@ Deno.serve(async (req) => {
 
       if (!response.ok) {
         console.error(`Firecrawl error for @${username}:`, data);
-        continue; // Skip this account, try next
+        continue;
       }
 
       // Parse HTML for image URLs
@@ -107,7 +170,6 @@ Deno.serve(async (req) => {
           let url = match[1] || match[0];
           url = url.replace(/&amp;/g, '&');
 
-          // Filter out tiny images and profile pics
           if (url.includes('s150x150') || url.includes('s44x44') ||
               url.includes('s40x40') || url.includes('s32x32') ||
               url.includes('profile_pic') || url.includes('_s.jpg')) {
@@ -127,7 +189,7 @@ Deno.serve(async (req) => {
 
       let nextOrder = (maxOrderData?.[0]?.display_order ?? 0) + 1;
 
-      // Insert new photos (skip duplicates)
+      // Filter and insert new photos
       const newPhotos: Array<{
         image_url: string;
         instagram_post_id: string;
@@ -139,10 +201,22 @@ Deno.serve(async (req) => {
       let photoIndex = 0;
 
       for (const url of foundUrls) {
+        if (photoIndex >= 30) break;
+
         const postId = `ig_${username}_${Buffer.from(url).toString('base64').slice(0, 20)}`;
 
         if (existingIds.has(postId)) {
-          continue; // Already imported
+          continue;
+        }
+
+        // AI analysis: check if it's a real photo
+        console.log(`Analyzing image ${photoIndex + 1}...`);
+        const isPhoto = await isRealPhoto(url, lovableApiKey);
+
+        if (!isPhoto) {
+          console.log(`Rejected (not a real photo): ${url.slice(0, 80)}...`);
+          totalRejected++;
+          continue;
         }
 
         newPhotos.push({
@@ -155,7 +229,6 @@ Deno.serve(async (req) => {
         });
 
         photoIndex++;
-        if (photoIndex >= 30) break;
       }
 
       if (newPhotos.length > 0) {
@@ -166,11 +239,11 @@ Deno.serve(async (req) => {
         if (insertError) {
           console.error(`Error inserting photos for @${username}:`, insertError);
         } else {
-          console.log(`Imported ${newPhotos.length} new photos from @${username}`);
+          console.log(`Imported ${newPhotos.length} photos, rejected ${totalRejected} from @${username}`);
           totalImported += newPhotos.length;
         }
       } else {
-        console.log(`No new photos to import from @${username}`);
+        console.log(`No new real photos to import from @${username}`);
       }
 
       // Update last_synced_at
@@ -181,7 +254,7 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ success: true, imported: totalImported }),
+      JSON.stringify({ success: true, imported: totalImported, rejected: totalRejected }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
