@@ -51,7 +51,7 @@ export const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputPro
             type={showPassword ? 'text' : 'password'}
             value={value}
             className={cn(
-              'bg-white/5 border-white/10 text-white placeholder:text-white/30 pl-10 pr-12 focus:border-primary/50 focus:ring-primary/20',
+              'bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 pl-10 pr-12 focus:border-primary/50 focus:ring-primary/20',
               error && 'border-destructive focus:border-destructive',
               className
             )}
