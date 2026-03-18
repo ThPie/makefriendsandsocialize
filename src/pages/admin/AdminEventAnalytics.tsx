@@ -8,11 +8,12 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts';
 import { format, subMonths, startOfMonth, endOfMonth, parseISO } from 'date-fns';
+import { parseLocalDate } from '@/lib/date-utils';
+import {
 import {
   TrendingUp, Users, Calendar, Star, MapPin, Clock,
   ArrowUpRight, ArrowDownRight, Loader2
