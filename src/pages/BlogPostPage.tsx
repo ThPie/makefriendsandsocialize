@@ -12,7 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 
-const JournalPostPage = () => {
+const BlogPostPage = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: article, isLoading } = useQuery({
