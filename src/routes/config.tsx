@@ -82,6 +82,7 @@ const PortalEventCheckin = lazy(() => import("@/pages/portal/PortalEventCheckin"
 const AdminPerks = lazy(() => import("@/pages/admin/AdminPerks"));
 const AdminConcierge = lazy(() => import("@/pages/admin/AdminConcierge"));
 const AdminDatingReview = lazy(() => import("@/pages/admin/AdminDatingReview"));
+const AdminResearch = lazy(() => import("@/pages/admin/AdminResearch"));
 const PortalSecurity = lazy(() => import("@/pages/portal/PortalSecurity"));
 const SoulMapsPage = lazy(() => import("@/pages/SoulMapsPage"));
 const SoulMapsQuizPage = lazy(() => import("@/pages/SoulMapsQuizPage"));

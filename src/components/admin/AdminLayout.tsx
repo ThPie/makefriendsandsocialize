@@ -74,6 +74,7 @@ const menuItems = [
   { title: 'Testimonials', url: '/admin/testimonials', icon: Quote, sensitive: false, endpoint: null },
   { title: 'Concierge', url: '/admin/concierge', icon: Headphones, sensitive: false, endpoint: null },
   { title: 'Content', url: '/admin/content', icon: Image, sensitive: false, endpoint: null },
+  { title: 'Research', url: '/admin/research', icon: Microscope, sensitive: false, endpoint: null },
   { title: 'Roles', url: '/admin/roles', icon: Shield, sensitive: true, endpoint: 'security' },
   { title: 'Settings', url: '/admin/settings', icon: Settings, sensitive: false, endpoint: null },
 ];
