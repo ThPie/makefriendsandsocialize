@@ -20,6 +20,9 @@ export const Header = () => {
   const isAdmin = location.pathname.startsWith('/admin');
   const isAuth = location.pathname.startsWith('/auth');
 
+  // Pages with light/white backgrounds need dark header elements even when not scrolled
+  const isLightHeroPage = /^\/soul-maps\/.+/.test(location.pathname);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
