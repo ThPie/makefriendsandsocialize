@@ -14,7 +14,6 @@ import {
 import { format, subMonths, startOfMonth, endOfMonth, parseISO } from 'date-fns';
 import { parseLocalDate } from '@/lib/date-utils';
 import {
-import {
   TrendingUp, Users, Calendar, Star, MapPin, Clock,
   ArrowUpRight, ArrowDownRight, Loader2
 } from 'lucide-react';
