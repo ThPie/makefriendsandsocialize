@@ -246,7 +246,7 @@ const BlogPostPage = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {relatedPosts.map((post) => (
-              <TransitionLink key={post.id} to={`/journal/${post.slug}`} className="flex flex-col group cursor-pointer">
+              <TransitionLink key={post.id} to={`/blog/${post.slug}`} className="flex flex-col group cursor-pointer">
                 <div className="overflow-hidden rounded-2xl border border-border/50 group-hover:border-primary/50 transition-colors">
                   {post.cover_image ? (
                     <div
