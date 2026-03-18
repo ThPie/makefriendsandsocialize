@@ -105,6 +105,10 @@
       "destination": "https://makefriendsandsocializecom.lovable.app/~oauth/$1"
     },
     {
+      "source": "/api/square-webhook",
+      "destination": "https://qzqomqctuqldexnxgmlh.supabase.co/functions/v1/square-webhook"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
