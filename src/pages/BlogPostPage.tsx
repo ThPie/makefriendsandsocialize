@@ -96,7 +96,7 @@ const BlogPostPage = () => {
       >
         <TransitionLink to="/" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Home</TransitionLink>
         <span className="text-primary/70 text-sm font-medium leading-normal">/</span>
-        <TransitionLink to="/journal" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Blog</TransitionLink>
+        <TransitionLink to="/blog" className="text-primary/70 text-sm font-medium leading-normal hover:text-primary transition-colors">Blog</TransitionLink>
         <span className="text-primary/70 text-sm font-medium leading-normal">/</span>
         <span className="text-foreground text-sm font-medium leading-normal line-clamp-1">{article.title}</span>
       </motion.div>
