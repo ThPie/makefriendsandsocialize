@@ -423,26 +423,24 @@ export default function AuthPage() {
       setIsSubmitting(true);
       clearFormFeedback();
 
-      // Record login attempt for rate limiting
-      await recordAttempt(false);
+      try {
+        const { error } = await signIn(email, password);
 
-      const { error } = await signIn(email, password);
+        if (error) {
+          setIsSubmitting(false);
+          setFormError('Invalid email or password. Please check your credentials and try again.');
+          return;
+        }
 
-      if (error) {
-        // Record failed attempt
-        await recordAttempt(true);
+        // Create session (non-blocking, don't let it block navigation)
+        createSession(rememberMe).catch(() => {});
+
         setIsSubmitting(false);
-
-        // Prevent account enumeration - use generic error message
-        setFormError('Invalid email or password. Please check your credentials and try again.');
-        return;
+        navigate('/portal');
+      } catch (err) {
+        setIsSubmitting(false);
+        setFormError('An error occurred during sign in. Please try again.');
       }
-
-      // Create session with remember me preference
-      await createSession(rememberMe);
-
-      setIsSubmitting(false);
-      navigate('/portal');
     } else {
       // For signup, redirect to email verification page
       setIsSubmitting(true);
