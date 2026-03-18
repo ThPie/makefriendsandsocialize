@@ -335,9 +335,9 @@ export default function PortalProfile() {
           </div>
         </div>
 
-        {/* Save Button */}
-        <div className="flex justify-end">
-          <Button type="submit" disabled={isSaving} className="min-w-[140px]">
+        {/* Save Button — sticky on mobile for easy reach */}
+        <div className="sticky bottom-20 md:bottom-0 md:static flex justify-end z-10">
+          <Button type="submit" disabled={isSaving} className="min-w-[140px] w-full sm:w-auto shadow-lg md:shadow-none">
             {isSaving ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
             ) : (

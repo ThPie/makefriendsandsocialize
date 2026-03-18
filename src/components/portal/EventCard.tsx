@@ -99,7 +99,7 @@ export const EventCard = ({
                 </div>
                 {/* Event title overlay on image */}
                 <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="font-display text-xl text-white font-semibold mb-1 drop-shadow-lg">{event.title}</h3>
+                    <h3 className="font-display text-lg sm:text-xl text-white font-semibold mb-1 drop-shadow-lg line-clamp-2">{event.title}</h3>
                     <div className="flex items-center gap-1.5 text-white/80 text-sm">
                         <MapPin className="h-3.5 w-3.5" />
                         <span>{event.venue_name || event.location}{event.city && `, ${event.city}`}</span>
