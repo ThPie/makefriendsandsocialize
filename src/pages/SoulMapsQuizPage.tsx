@@ -110,6 +110,12 @@ const SoulMapsQuizPage = () => {
     }
   };
 
+  const handleEmailSubmitted = () => {
+    setShowAuthGate(false);
+    setShowResults(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const isLastQuestion = currentQ === attachmentQuestions.length - 1;
   const allAnswered = answers.every(Boolean);
   const question = attachmentQuestions[currentQ];
@@ -146,9 +152,9 @@ const SoulMapsQuizPage = () => {
       </Helmet>
 
       <div className="content-container py-24 md:py-32">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
           {/* Main quiz area */}
-          <div className="flex-1 max-w-2xl">
+          <div className="flex-1 min-w-0">
             {/* Progress */}
             <div className="space-y-2 mb-8">
               <div className="flex justify-between text-xs text-muted-foreground">
@@ -229,8 +235,8 @@ const SoulMapsQuizPage = () => {
           </div>
 
           {/* Sidebar — hidden on mobile, visible on lg+ */}
-          <div className="hidden lg:block w-[300px] shrink-0">
-            <div className="sticky top-24">
+          <div className="hidden lg:block w-[280px] shrink-0">
+            <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-hide">
               <QuizSidebar />
             </div>
           </div>
@@ -249,6 +255,7 @@ const SoulMapsQuizPage = () => {
         open={showAuthGate}
         onOpenChange={setShowAuthGate}
         redirectPath="/soul-maps/attachment-style?showResults=true"
+        onEmailSubmitted={handleEmailSubmitted}
       />
     </>
   );
