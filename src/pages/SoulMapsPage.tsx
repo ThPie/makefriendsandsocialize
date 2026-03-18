@@ -85,12 +85,16 @@ const SoulMapsPage = () => (
 
     {/* Quiz Grid */}
     <section className="content-container py-12 md:py-20">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 scrollbar-hide md:grid md:grid-cols-3 lg:grid-cols-4 md:overflow-visible md:snap-none">
         {quizzes.map((q) => (
-          <QuizCard key={q.title} {...q} />
+          <div key={q.title} className="min-w-[78vw] snap-start md:min-w-0">
+            <QuizCard {...q} />
+          </div>
         ))}
         {comingSoon.map((q) => (
-          <QuizCard key={q.title} {...q} comingSoon />
+          <div key={q.title} className="min-w-[78vw] snap-start md:min-w-0">
+            <QuizCard {...q} comingSoon />
+          </div>
         ))}
       </div>
     </section>

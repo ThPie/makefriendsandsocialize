@@ -1,4 +1,4 @@
-import { Heart, Users, Briefcase, Sparkles, Swords, Brain } from 'lucide-react';
+import { Users, Briefcase, Sparkles, Brain } from 'lucide-react';
 import { QuizCard } from './QuizCard';
 
 const relatedQuizzes = [
@@ -17,6 +17,13 @@ const relatedQuizzes = [
     icon: Briefcase,
   },
   {
+    title: 'What Do You Need in a Social Life?',
+    description: 'Map your social energy, preferences, and what truly recharges you.',
+    category: 'Self',
+    time: '4 min',
+    icon: Sparkles,
+  },
+  {
     title: 'Are You Ready to Date?',
     description: 'An honest look at where you are emotionally before inviting someone new in.',
     category: 'Dating',
@@ -31,9 +38,11 @@ export const RelatedQuizzes = () => (
       <p className="text-xs uppercase tracking-[0.15em] text-[hsl(var(--accent-gold))]">You May Also Like</p>
       <h3 className="text-xl font-display font-semibold text-foreground">Explore More Quizzes</h3>
     </div>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 scrollbar-hide md:grid md:grid-cols-4 md:overflow-visible md:snap-none">
       {relatedQuizzes.map((q) => (
-        <QuizCard key={q.title} {...q} comingSoon />
+        <div key={q.title} className="min-w-[78vw] snap-start md:min-w-0">
+          <QuizCard {...q} comingSoon />
+        </div>
       ))}
     </div>
   </section>
