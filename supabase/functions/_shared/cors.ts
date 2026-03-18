@@ -9,6 +9,7 @@ export const corsHeaders = {
 export const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:5173',
+    'http://localhost:8080',
     'https://makefriendsandsocialize.com',
     'https://www.makefriendsandsocialize.com',
     'https://makefriendsandsocialize.ca',
