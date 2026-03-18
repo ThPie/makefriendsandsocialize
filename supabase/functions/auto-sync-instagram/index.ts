@@ -22,20 +22,22 @@ async function isRealPhoto(imageUrl: string, apiKey: string): Promise<boolean> {
             content: [
               {
                 type: 'text',
-                text: `Analyze this image. Is it a real photograph of people, a place, or an event? Answer ONLY "yes" or "no".
+                text: `Analyze this image. Is it a real photograph? Answer ONLY "yes" or "no".
 
 Answer "no" if the image is any of:
 - A poster, flyer, or graphic design with mostly text
-- A carousel indicator or multi-slide post cover
 - A quote card or text overlay graphic
 - A logo, brand graphic, or promotional banner
 - A screenshot of text or a social media post
 - An infographic or chart
+- A digitally created graphic that is NOT a photo
 
 Answer "yes" if it is:
 - A real photograph of people socializing, at events, dining, etc.
 - A candid or posed photo of real people
-- A photo of a venue, food, drinks, or event setting`
+- A photo of a venue, food, drinks, or event setting
+- A carousel image that contains real event photography
+- Any real photo, even if it's part of a multi-image post`
               },
               {
                 type: 'image_url',
