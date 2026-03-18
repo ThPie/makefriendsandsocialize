@@ -112,7 +112,7 @@ export const EventCard = ({
                 )}
             </div>
 
-            <CardContent className="p-5">
+            <CardContent className="p-4 sm:p-5">
                 <div className="space-y-2 mb-4 text-sm text-muted-foreground">
 
                     {event.time && (
