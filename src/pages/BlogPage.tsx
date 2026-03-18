@@ -43,7 +43,7 @@ const BlogPage = () => {
   const articlesAnimation = useScrollAnimation();
 
   const { data: posts, isLoading, isError } = useQuery({
-    queryKey: ["journal-posts"],
+    queryKey: ["blog-posts"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("journal_posts")
@@ -51,7 +51,7 @@ const BlogPage = () => {
         .eq("is_published", true)
         .order("published_at", { ascending: false });
       if (error) {
-        console.warn('Journal posts fetch error:', error.message);
+        console.warn('Blog posts fetch error:', error.message);
         return [];
       }
       return data || [];
