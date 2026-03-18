@@ -535,8 +535,8 @@ const MembershipPage = () => {
                 className={`flex flex-col items-center text-center group ${index === processSteps.length - 1 ? 'col-span-2 md:col-span-1 max-w-[calc(50%-8px)] mx-auto md:max-w-none' : ''}`}
               >
                 <div className="relative mb-6">
-                  <div className="w-20 h-20 rounded-2xl bg-card border border-border flex items-center justify-center transition-all duration-200 group-hover:border-primary/50">
-                    <item.icon className="h-8 w-8 text-primary" />
+                  <div className="w-20 h-20 rounded-full border border-border flex items-center justify-center transition-all duration-200 group-hover:border-[hsl(var(--accent-gold))]">
+                    <item.icon className="h-7 w-7 text-foreground group-hover:text-[hsl(var(--accent-gold))]" strokeWidth={1} />
                   </div>
                   <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
                     {item.step}
