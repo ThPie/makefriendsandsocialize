@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Lightbulb, ChevronDown } from 'lucide-react';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const didYouKnowFacts = [
   {
@@ -39,44 +41,56 @@ const didYouKnowFacts = [
   },
 ];
 
-const FactCard = ({ item, defaultOpen }: { item: typeof didYouKnowFacts[0]; defaultOpen: boolean }) => {
-  if (defaultOpen) {
-    return (
-      <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-2.5">
-        <div className="flex items-center gap-2">
-          <Lightbulb className="w-3.5 h-3.5 text-[hsl(var(--accent-gold))]" />
-          <p className="text-[10px] uppercase tracking-[0.15em] font-medium text-muted-foreground">Did You Know?</p>
-        </div>
-        <p className="text-sm font-medium text-foreground leading-snug">{item.title}</p>
-        <p className="text-sm text-foreground/80 leading-relaxed italic font-display">"{item.fact}"</p>
-        {item.source && <p className="text-xs text-muted-foreground">— {item.source}</p>}
-      </div>
-    );
-  }
-
-  return (
-    <Collapsible>
-      <CollapsibleTrigger className="w-full rounded-2xl border border-border/60 bg-card px-5 py-4 flex items-center justify-between gap-3 group text-left hover:bg-accent/30 transition-colors">
-        <div className="flex items-center gap-2 min-w-0">
-          <Lightbulb className="w-3.5 h-3.5 text-[hsl(var(--accent-gold))] shrink-0" />
-          <p className="text-sm font-medium text-foreground leading-snug truncate">{item.title}</p>
-        </div>
-        <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0 transition-transform group-data-[state=open]:rotate-180" />
-      </CollapsibleTrigger>
-      <CollapsibleContent className="rounded-b-2xl border border-t-0 border-border/60 bg-card px-5 pb-4 pt-2 -mt-2 space-y-2">
-        <p className="text-sm text-foreground/80 leading-relaxed italic font-display">"{item.fact}"</p>
-        {item.source && <p className="text-xs text-muted-foreground">— {item.source}</p>}
-      </CollapsibleContent>
-    </Collapsible>
-  );
-};
-
 export const QuizSidebar = () => {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const toggle = (i: number) => {
+    setOpenIndex(prev => prev === i ? null : i);
+  };
+
   return (
-    <aside className="space-y-3">
-      {didYouKnowFacts.map((item, i) => (
-        <FactCard key={i} item={item} defaultOpen={i < 2} />
-      ))}
+    <aside className="space-y-2">
+      {didYouKnowFacts.map((item, i) => {
+        const isOpen = openIndex === i;
+        return (
+          <button
+            key={i}
+            onClick={() => toggle(i)}
+            className={cn(
+              "w-full text-left rounded-2xl border border-border/60 bg-card transition-colors hover:bg-accent/30",
+              isOpen ? "p-5" : "px-5 py-3.5"
+            )}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 min-w-0">
+                <Lightbulb className="w-3.5 h-3.5 text-[hsl(var(--accent-gold))] shrink-0" />
+                <p className="text-sm font-medium text-foreground leading-snug truncate">{item.title}</p>
+              </div>
+              <ChevronDown className={cn(
+                "w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200",
+                isOpen && "rotate-180"
+              )} />
+            </div>
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="pt-3 space-y-2">
+                    <p className="text-[10px] uppercase tracking-[0.15em] font-medium text-muted-foreground">Did You Know?</p>
+                    <p className="text-sm text-foreground/80 leading-relaxed italic font-display">"{item.fact}"</p>
+                    {item.source && <p className="text-xs text-muted-foreground">— {item.source}</p>}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </button>
+        );
+      })}
     </aside>
   );
 };
