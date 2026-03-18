@@ -18,7 +18,7 @@ const ReviewRow = ({ label, value }: { label: string; value?: string | null }) =
     return (
         <div className="flex gap-2 text-sm py-1.5 border-b border-border/50 last:border-0">
             <span className="text-muted-foreground min-w-[140px] shrink-0">{label}</span>
-            <span className="text-foreground/80 capitalize">{value.replace(/_/g, ' ')}</span>
+            <span className="text-foreground/80 capitalize">{value.replace(/_/g, ' ').replace(/-/g, ' ')}</span>
         </div>
     );
 };
