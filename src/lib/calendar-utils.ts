@@ -11,7 +11,7 @@ export function generateGoogleCalendarUrl(event: {
   description?: string | null;
   venue_name?: string | null;
 }): string {
-  const startDate = new Date(event.date);
+  const startDate = parseLocalDate(event.date);
   
   // Parse time if available
   if (event.time) {
