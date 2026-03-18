@@ -11,8 +11,8 @@ export const AvailabilitySection = () => {
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-[hsl(var(--accent-gold))]/10 blur-[50px] rounded-full pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col items-center">
-                    <div className="w-12 h-12 rounded-full bg-[hsl(var(--accent-gold))] flex items-center justify-center text-foreground mb-6 shadow-lg">
-                        <Star className="w-6 h-6 fill-current" />
+                    <div className="w-12 h-12 rounded-full border border-[hsl(var(--accent-gold))]/40 flex items-center justify-center text-[hsl(var(--accent-gold))] mb-6">
+                        <Star className="w-5 h-5" strokeWidth={1} />
                     </div>
 
                     <h3 className="font-display text-3xl text-white italic mb-4">
