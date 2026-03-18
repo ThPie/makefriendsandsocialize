@@ -42,7 +42,7 @@ const JournalPage = () => {
   const heroAnimation = useScrollAnimation();
   const articlesAnimation = useScrollAnimation();
 
-  const { data: posts, isLoading } = useQuery({
+  const { data: posts, isLoading, isError } = useQuery({
     queryKey: ["journal-posts"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -50,9 +50,13 @@ const JournalPage = () => {
         .select("*")
         .eq("is_published", true)
         .order("published_at", { ascending: false });
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.warn('Journal posts fetch error:', error.message);
+        return [];
+      }
+      return data || [];
     },
+    retry: 1,
   });
 
   const filteredArticles = useMemo(() => {
