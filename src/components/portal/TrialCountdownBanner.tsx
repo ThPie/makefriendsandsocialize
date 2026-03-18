@@ -130,12 +130,7 @@ export const TrialCountdownBanner = memo(function TrialCountdownBanner({
         </div>
 
         <div className="flex items-center gap-3">
-          <Button asChild size="sm" variant={urgencyLevel === 'critical' ? 'destructive' : 'default'}>
-            <TransitionLink to="/membership">
-              Upgrade Now
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </TransitionLink>
-          </Button>
+          <TrialUpgradeButton urgencyLevel={urgencyLevel} />
           <button
             onClick={handleDismiss}
             className="p-1 rounded-full hover:bg-foreground/10 transition-colors"

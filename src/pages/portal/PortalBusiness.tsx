@@ -20,6 +20,11 @@ import { BusinessSynergySection } from "@/components/portal/business/BusinessSyn
 
 type LeadStatus = "new" | "contacted" | "converted" | "lost";
 
+const UpgradeButtonInline = () => {
+  const { openUpgrade } = useUpgrade();
+  return <Button onClick={openUpgrade}>Upgrade Membership</Button>;
+};
+
 const PortalBusiness = () => {
   const { user, membership } = useAuth();
   const queryClient = useQueryClient();
