@@ -83,6 +83,8 @@ const AdminPerks = lazy(() => import("@/pages/admin/AdminPerks"));
 const AdminConcierge = lazy(() => import("@/pages/admin/AdminConcierge"));
 const AdminDatingReview = lazy(() => import("@/pages/admin/AdminDatingReview"));
 const PortalSecurity = lazy(() => import("@/pages/portal/PortalSecurity"));
+const SoulMapsPage = lazy(() => import("@/pages/SoulMapsPage"));
+const SoulMapsQuizPage = lazy(() => import("@/pages/SoulMapsQuizPage"));
 
 // Slow Dating subdomain routes
 export const SlowDatingRoutes = () => (
@@ -144,6 +146,8 @@ export const MainRoutes = () => (
         <Route path="/circles/the-exchange" element={<Layout><TheExchangePage /></Layout>} />
         <Route path="/become-a-host" element={<Layout><HostApplicationPage /></Layout>} />
         <Route path="/appeal" element={<Layout><AppealPage /></Layout>} />
+        <Route path="/soul-maps" element={<Layout><SoulMapsPage /></Layout>} />
+        <Route path="/soul-maps/attachment-style" element={<Layout><SoulMapsQuizPage /></Layout>} />
 
         {/* Health check endpoint for deployment verification */}
         <Route path="/health" element={<HealthCheckPage />} />
