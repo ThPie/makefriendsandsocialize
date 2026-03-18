@@ -173,7 +173,7 @@ export const PricingSection = () => {
                     {/* Missing features — struck through, muted */}
                     {missingFeatures.map((feature, fi) => (
                       <li key={`m-${fi}`} className="flex items-start gap-3 text-sm text-[hsl(var(--text-muted))]">
-                        <Check className="h-4 w-4 flex-shrink-0 mt-0.5 opacity-30" strokeWidth={1.5} />
+                        <Check className="h-4 w-4 flex-shrink-0 mt-0.5 opacity-30" strokeWidth={1} />
                         <span className="font-light line-through">{feature}</span>
                       </li>
                     ))}
