@@ -181,12 +181,17 @@ export function InAppUpgradeModal() {
             billingPeriod={billingPeriod}
             squareConfig={squareConfig}
             configLoading={configLoading}
+            configError={configError}
             processing={processing}
             isTrial={!subscription?.subscribed}
             onBack={() => setStep('select')}
             onTokenize={handleTokenize}
             squareReady={squareReady}
             setSquareReady={setSquareReady}
+            onRetryConfig={() => {
+              setSquareConfig(null);
+              setConfigError(null);
+            }}
           />
         )}
       </DialogContent>
