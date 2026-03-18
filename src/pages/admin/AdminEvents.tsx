@@ -17,6 +17,7 @@ import { EventImageUpload } from '@/components/admin/EventImageUpload';
 import { EventQRCodeDialog } from '@/components/admin/EventQRCodeDialog';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { parseLocalDate } from '@/lib/date-utils';
 import { 
   Calendar, MapPin, Users, Plus, Edit, Trash2, Loader2, 
   Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw, QrCode
