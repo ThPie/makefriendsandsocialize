@@ -3,13 +3,15 @@
  * Falls back silently on unsupported devices.
  */
 
-type HapticStyle = 'light' | 'medium' | 'heavy' | 'selection';
+type HapticStyle = 'light' | 'medium' | 'heavy' | 'selection' | 'success' | 'error';
 
 const patterns: Record<HapticStyle, number | number[]> = {
   light: 10,
   medium: 20,
   heavy: 30,
   selection: 5,
+  success: [10, 30, 10],
+  error: [30, 50, 30],
 };
 
 export function haptic(style: HapticStyle = 'light') {

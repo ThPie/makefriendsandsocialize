@@ -175,7 +175,7 @@ export default function PortalProfile() {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-8 pb-16">
+    <div className="w-full max-w-3xl mx-auto space-y-6 sm:space-y-8 pb-24 md:pb-16">
       {/* Header */}
       <div>
         <h1 className="font-display text-2xl md:text-3xl text-foreground inline-flex items-center gap-2">
@@ -197,7 +197,7 @@ export default function PortalProfile() {
       {/* Avatar + Form */}
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Avatar Section */}
-        <div className="rounded-2xl border border-border bg-card p-6">
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
           <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Profile Photo</h2>
           <div className="flex items-center gap-5">
             <div className="relative">
@@ -237,7 +237,7 @@ export default function PortalProfile() {
         </div>
 
         {/* Basic Info */}
-        <div className="rounded-2xl border border-border bg-card p-6 space-y-5">
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 space-y-5">
           <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Basic Information</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -311,7 +311,7 @@ export default function PortalProfile() {
         </div>
 
         {/* Professional Info */}
-        <div className="rounded-2xl border border-border bg-card p-6 space-y-5">
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 space-y-5">
           <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Professional</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -335,9 +335,9 @@ export default function PortalProfile() {
           </div>
         </div>
 
-        {/* Save Button */}
-        <div className="flex justify-end">
-          <Button type="submit" disabled={isSaving} className="min-w-[140px]">
+        {/* Save Button — sticky on mobile for easy reach */}
+        <div className="sticky bottom-20 md:bottom-0 md:static flex justify-end z-10">
+          <Button type="submit" disabled={isSaving} className="min-w-[140px] w-full sm:w-auto shadow-lg md:shadow-none">
             {isSaving ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
             ) : (

@@ -73,7 +73,7 @@ export const EventCard = ({
     };
 
     return (
-        <Card className="overflow-hidden group border-border bg-card">
+        <Card className="overflow-hidden group border-border bg-card rounded-2xl">
             {/* Image */}
             <div className="aspect-[16/9] relative overflow-hidden">
                 <img
@@ -99,7 +99,7 @@ export const EventCard = ({
                 </div>
                 {/* Event title overlay on image */}
                 <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="font-display text-xl text-white font-semibold mb-1 drop-shadow-lg">{event.title}</h3>
+                    <h3 className="font-display text-lg sm:text-xl text-white font-semibold mb-1 drop-shadow-lg line-clamp-2">{event.title}</h3>
                     <div className="flex items-center gap-1.5 text-white/80 text-sm">
                         <MapPin className="h-3.5 w-3.5" />
                         <span>{event.venue_name || event.location}{event.city && `, ${event.city}`}</span>
@@ -112,7 +112,7 @@ export const EventCard = ({
                 )}
             </div>
 
-            <CardContent className="p-5">
+            <CardContent className="p-4 sm:p-5">
                 <div className="space-y-2 mb-4 text-sm text-muted-foreground">
 
                     {event.time && (

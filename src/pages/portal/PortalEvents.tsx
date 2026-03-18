@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { haptic } from '@/lib/haptics';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -350,6 +351,7 @@ export default function PortalEvents() {
   };
 
   const handleRSVP = (event: Event) => {
+    haptic('medium');
     if (!canAccessEvent(event.tier)) {
       setSelectedEvent(event);
       setShowUpgradeModal(true);
@@ -392,9 +394,9 @@ export default function PortalEvents() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <h1 className="font-display text-2xl md:text-3xl text-foreground">
           Exclusive Events
         </h1>
@@ -434,7 +436,7 @@ export default function PortalEvents() {
             </Card>
           ) : (
             <div className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
                 {allUpcomingEvents.map((event) => (
                   <EventCard
                     key={event.id}

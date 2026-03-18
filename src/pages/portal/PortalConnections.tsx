@@ -175,9 +175,9 @@ export default function PortalConnections() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <h1 className="font-display text-2xl md:text-3xl text-foreground">
           The Network
         </h1>
@@ -206,17 +206,17 @@ export default function PortalConnections() {
       )}
 
       <Tabs defaultValue="received" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-6">
-          <TabsTrigger value="received" className="relative">
+        <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6">
+          <TabsTrigger value="received" className="relative text-xs sm:text-sm">
             Received
             {pendingReceived.length > 0 && (
-              <span className="ml-2 px-1.5 py-0.5 text-xs bg-primary text-primary-foreground rounded-full">
+              <span className="ml-1.5 px-1.5 py-0.5 text-[10px] bg-primary text-primary-foreground rounded-full">
                 {pendingReceived.length}
               </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="sent">Sent</TabsTrigger>
-          <TabsTrigger value="accepted">Connected</TabsTrigger>
+          <TabsTrigger value="sent" className="text-xs sm:text-sm">Sent</TabsTrigger>
+          <TabsTrigger value="accepted" className="text-xs sm:text-sm">Connected</TabsTrigger>
         </TabsList>
 
         <TabsContent value="received" className="space-y-4">
