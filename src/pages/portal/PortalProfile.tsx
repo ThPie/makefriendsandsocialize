@@ -197,7 +197,7 @@ export default function PortalProfile() {
       {/* Avatar + Form */}
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Avatar Section */}
-        <div className="rounded-2xl border border-border bg-card p-6">
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
           <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">Profile Photo</h2>
           <div className="flex items-center gap-5">
             <div className="relative">
