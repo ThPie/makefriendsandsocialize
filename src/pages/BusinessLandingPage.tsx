@@ -162,7 +162,7 @@ export default function BusinessLandingPage() {
 
       <div className="min-h-screen bg-background text-foreground">
         {/* Hero Section */}
-        <section className="py-16 md:py-24 relative overflow-hidden">
+        <section className="pt-24 md:pt-28 pb-16 md:pb-24 relative overflow-hidden">
           {/* Ambient background */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-[hsl(var(--accent-gold))]/5 blur-[120px] rounded-full pointer-events-none" />
 
