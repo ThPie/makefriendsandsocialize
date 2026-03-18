@@ -423,14 +423,28 @@ export default function AuthPage() {
       setIsSubmitting(true);
       clearFormFeedback();
 
-      // Record login attempt for rate limiting
-      await recordAttempt(false);
+      // Record login attempt for rate limiting (non-blocking, 3s timeout)
+      try {
+        await Promise.race([
+          recordAttempt(false),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('Rate limit timeout')), 3000))
+        ]);
+      } catch {
+        // Rate limit check failed/timed out — proceed with login anyway
+      }
+
+      // Check if rate limited before proceeding
+      if (isRateLimited) {
+        setFormError('Too many sign-in attempts. Please try again later.');
+        setIsSubmitting(false);
+        return;
+      }
 
       const { error } = await signIn(email, password);
 
       if (error) {
-        // Record failed attempt
-        await recordAttempt(true);
+        // Record failed attempt (non-blocking)
+        recordAttempt(true).catch(() => {});
         setIsSubmitting(false);
 
         // Prevent account enumeration - use generic error message
