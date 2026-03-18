@@ -80,7 +80,7 @@ const BlogPostPage = () => {
       <div className="flex-1 w-full flex flex-col items-center justify-center px-4 py-20">
         <h1 className="text-2xl font-display text-foreground mb-4">Article not found</h1>
         <Button asChild>
-          <TransitionLink to="/journal">Back to Blog</TransitionLink>
+          <TransitionLink to="/blog">Back to Blog</TransitionLink>
         </Button>
       </div>
     );
