@@ -23,16 +23,16 @@
   :root {
     --background: 0 0% 100%;
     /* #FFFFFF — Pure white */
-    --foreground: 140 34% 9%;
-    /* #0D1F0F */
+    --foreground: 145 30% 15%;
+    /* #1B3621 — Dark forest green */
 
     --card: 37 9% 95%;
     /* #F2F1EE — Warm neutral surface */
-    --card-foreground: 140 34% 9%;
+    --card-foreground: 145 30% 15%;
 
     --popover: 0 0% 100%;
     /* #FFFFFF → surface-raised */
-    --popover-foreground: 140 34% 9%;
+    --popover-foreground: 145 30% 15%;
 
     /* Primary — Gold (unified with accent-gold for brand consistency) */
     --primary: 43 76% 31%;
@@ -47,7 +47,7 @@
     /* #4A5A4D → text-secondary */
 
     --accent: 60 5% 93%;
-    --accent-foreground: 140 34% 9%;
+    --accent-foreground: 145 30% 15%;
 
     /* Gold accent */
     --accent-gold: 43 76% 31%;
