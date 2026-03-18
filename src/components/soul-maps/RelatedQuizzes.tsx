@@ -38,11 +38,9 @@ export const RelatedQuizzes = () => (
       <p className="text-xs uppercase tracking-[0.15em] text-[hsl(var(--accent-gold))]">You May Also Like</p>
       <h3 className="text-xl font-display font-semibold text-foreground">Explore More Quizzes</h3>
     </div>
-    <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 scrollbar-hide md:grid md:grid-cols-4 md:overflow-visible md:snap-none">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {relatedQuizzes.map((q) => (
-        <div key={q.title} className="min-w-[78vw] snap-start md:min-w-0">
-          <QuizCard {...q} comingSoon />
-        </div>
+        <QuizCard key={q.title} {...q} comingSoon />
       ))}
     </div>
   </section>
