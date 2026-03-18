@@ -1,4 +1,5 @@
 import { useAuth } from '@/contexts/AuthContext';
+import { parseLocalDate } from '@/lib/date-utils';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { TransitionLink } from '@/components/ui/TransitionLink';
