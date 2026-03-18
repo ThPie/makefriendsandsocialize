@@ -62,10 +62,10 @@ export const IntakeProgress = ({
                                     className={cn(
                                         'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200',
                                         isCurrent
-                                            ? 'bg-white/10 text-white'
+                                            ? 'bg-primary/10 text-foreground'
                                             : isCompleted
-                                                ? 'text-white/70 hover:bg-white/5'
-                                                : 'text-white/30',
+                                                ? 'text-foreground/70 hover:bg-muted/50'
+                                                : 'text-muted-foreground/50',
                                         isClickable && 'cursor-pointer'
                                     )}
                                     aria-label={`${s.title} - ${isCompleted ? 'completed' : isCurrent ? 'current step' : 'not started'}`}
@@ -78,7 +78,7 @@ export const IntakeProgress = ({
                                             ? 'bg-[hsl(var(--accent-gold))] border-[hsl(var(--accent-gold))] text-black'
                                             : isCompleted
                                                 ? 'bg-[hsl(var(--accent-gold))]/20 border-[hsl(var(--accent-gold))]/60 text-[hsl(var(--accent-gold))]'
-                                                : 'border-white/20 bg-transparent'
+                                                : 'border-border bg-transparent'
                                     )}>
                                         {isCompleted ? (
                                             <Check className="h-3.5 w-3.5" />
@@ -90,7 +90,7 @@ export const IntakeProgress = ({
                                     {/* Label */}
                                     <span className={cn(
                                         "text-sm font-medium transition-colors",
-                                        isCurrent ? "text-white" : isCompleted ? "text-white/70" : "text-white/30"
+                                        isCurrent ? "text-foreground" : isCompleted ? "text-foreground/70" : "text-muted-foreground/50"
                                     )}>
                                         {s.title}
                                     </span>
@@ -101,7 +101,7 @@ export const IntakeProgress = ({
                                     <div className="absolute left-[26px] top-[42px] w-[2px] h-[8px]" aria-hidden="true">
                                         <div className={cn(
                                             'w-full h-full rounded-full transition-colors duration-300',
-                                            currentStep > s.number ? 'bg-[hsl(var(--accent-gold))]/50' : 'bg-white/10'
+                                            currentStep > s.number ? 'bg-[hsl(var(--accent-gold))]/50' : 'bg-border'
                                         )} />
                                     </div>
                                 )}
@@ -115,7 +115,7 @@ export const IntakeProgress = ({
                     <button
                         type="button"
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
+                        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         Go back
@@ -123,7 +123,7 @@ export const IntakeProgress = ({
                     <button
                         type="button"
                         onClick={() => navigate('/contact')}
-                        className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
+                        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                         <HelpCircle className="h-4 w-4" />
                         Need help?
@@ -137,7 +137,7 @@ export const IntakeProgress = ({
                     <h2 className="text-[hsl(var(--accent-gold))] font-display text-xl">
                         {steps.find(s => s.number === currentStep)?.title}
                     </h2>
-                    <p className="text-white/40 text-xs uppercase tracking-widest mt-1">
+                    <p className="text-muted-foreground text-xs uppercase tracking-widest mt-1">
                         Step {currentStep} of {totalSteps}
                     </p>
                 </div>
@@ -159,7 +159,7 @@ export const IntakeProgress = ({
                                         ? 'bg-[hsl(var(--accent-gold))] scale-125 shadow-[0_0_8px_rgba(212,175,55,0.5)]'
                                         : isCompleted
                                             ? 'bg-[hsl(var(--accent-gold))]/50'
-                                            : 'bg-white/15',
+                                            : 'bg-border',
                                     (isCompleted || isCurrent) && 'cursor-pointer'
                                 )}
                                 aria-label={`Go to ${s.title}`}
@@ -170,7 +170,7 @@ export const IntakeProgress = ({
 
                 <Progress
                     value={progressPercentage}
-                    className="h-1 bg-white/10"
+                    className="h-1 bg-border"
                     aria-label={`Step ${currentStep} of ${totalSteps}`}
                 />
             </div>

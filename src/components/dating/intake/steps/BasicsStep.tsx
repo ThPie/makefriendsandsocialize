@@ -52,12 +52,12 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
     const inputErrorClass = (field: string) =>
         hasError(field)
             ? 'border-red-500/70 ring-1 ring-red-500/30 focus:border-red-500 focus:ring-red-500/30'
-            : 'border-white/10 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20';
+            : 'border-border focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20';
 
     const selectErrorClass = (field: string) =>
         hasError(field)
             ? 'border-red-500/70 ring-1 ring-red-500/30 focus:ring-red-500/30 focus:border-red-500'
-            : 'border-white/10 focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50';
+            : 'border-border focus:ring-[hsl(var(--accent-gold))]/20 focus:border-[hsl(var(--accent-gold))]/50';
 
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -79,17 +79,17 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                 ? "border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.3)]"
                                 : formData.photo_url
                                     ? "border-[hsl(var(--accent-gold))] shadow-[0_0_30px_rgba(212,175,55,0.2)]"
-                                    : "border-white/10 hover:border-dating-terracotta/50"
+                                    : "border-border hover:border-dating-terracotta/50"
                         )}>
                             <AvatarImage src={formData.photo_url} className="object-cover" />
-                            <AvatarFallback className="bg-[#1a231b] text-white/20 text-4xl">
+                            <AvatarFallback className="bg-muted text-muted-foreground text-4xl">
                                 {formData.display_name ? formData.display_name[0] : <Camera className="h-12 w-12" />}
                             </AvatarFallback>
                         </Avatar>
 
                         <div className={cn(
-                            "absolute bottom-2 right-2 p-2 rounded-full text-[#1a231b] shadow-lg transform transition-transform duration-300 group-hover:scale-110",
-                            hasError('photo_url') ? "bg-red-500" : "bg-[hsl(var(--accent-gold))]"
+                            "absolute bottom-2 right-2 p-2 rounded-full shadow-lg transform transition-transform duration-300 group-hover:scale-110",
+                            hasError('photo_url') ? "bg-red-500 text-white" : "bg-[hsl(var(--accent-gold))] text-black"
                         )}>
                             {formData.photo_url ? <Sparkles className="h-5 w-5" /> : <Upload className="h-5 w-5" />}
                         </div>
@@ -159,7 +159,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                         {hasError('photo_url') ? (
                             <p className="text-xs text-red-400 font-medium">{errorMsg('photo_url')}</p>
                         ) : (
-                            <p className="text-xs text-white/40 uppercase tracking-widest font-medium">
+                            <p className="text-xs text-muted-foreground uppercase tracking-widest font-medium">
                                 Required • High Quality
                             </p>
                         )}
@@ -169,20 +169,20 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                 {/* Personal Information */}
                 <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
                     <div className="space-y-2">
-                        <Label htmlFor="display_name" className="text-white/80">Full Name</Label>
+                        <Label htmlFor="display_name" className="text-foreground/80">Full Name</Label>
                         <Input
                             id="display_name"
                             value={formData.display_name}
                             onChange={(e) => updateField("display_name", e.target.value)}
                             placeholder="e.g. James St. Patrick"
-                            className={cn("bg-white/5 text-white placeholder:text-white/20 h-12", inputErrorClass('display_name'))}
+                            className={cn("bg-muted/50 text-foreground placeholder:text-muted-foreground/50 h-12", inputErrorClass('display_name'))}
                         />
                         {hasError('display_name') && (
                             <p className="text-xs text-red-400">{errorMsg('display_name')}</p>
                         )}
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="age" className="text-white/80">Age</Label>
+                        <Label htmlFor="age" className="text-foreground/80">Age</Label>
                         <Input
                             id="age"
                             type="number"
@@ -190,7 +190,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             max={100}
                             value={formData.age}
                             onChange={(e) => updateField("age", parseInt(e.target.value) || 18)}
-                            className={cn("bg-white/5 text-white placeholder:text-white/20 h-12", inputErrorClass('age'))}
+                            className={cn("bg-muted/50 text-foreground placeholder:text-muted-foreground/50 h-12", inputErrorClass('age'))}
                         />
                         {hasError('age') && (
                             <p className="text-xs text-red-400">{errorMsg('age')}</p>
@@ -201,17 +201,17 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                 {/* Gender & Preferences */}
                 <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
                     <div className="space-y-2">
-                        <Label className="text-white/80">Gender Identity</Label>
+                        <Label className="text-foreground/80">Gender Identity</Label>
                         <Select value={formData.gender} onValueChange={(value) => updateField("gender", value)}>
-                            <SelectTrigger className={cn("bg-white/5 text-white h-12", selectErrorClass('gender'))}>
+                            <SelectTrigger className={cn("bg-muted/50 text-foreground h-12", selectErrorClass('gender'))}>
                                 <SelectValue placeholder="Select gender" />
                             </SelectTrigger>
-                            <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                                <SelectItem value="Man" className="focus:bg-white/10 focus:text-white">Man</SelectItem>
-                                <SelectItem value="Woman" className="focus:bg-white/10 focus:text-white">Woman</SelectItem>
-                                <SelectItem value="Non-binary" className="focus:bg-white/10 focus:text-white">Non-binary</SelectItem>
-                                <SelectItem value="Trans Man" className="focus:bg-white/10 focus:text-white">Trans Man</SelectItem>
-                                <SelectItem value="Trans Woman" className="focus:bg-white/10 focus:text-white">Trans Woman</SelectItem>
+                            <SelectContent className="bg-popover border-border text-popover-foreground">
+                                <SelectItem value="Man" className="focus:bg-muted focus:text-foreground">Man</SelectItem>
+                                <SelectItem value="Woman" className="focus:bg-muted focus:text-foreground">Woman</SelectItem>
+                                <SelectItem value="Non-binary" className="focus:bg-muted focus:text-foreground">Non-binary</SelectItem>
+                                <SelectItem value="Trans Man" className="focus:bg-muted focus:text-foreground">Trans Man</SelectItem>
+                                <SelectItem value="Trans Woman" className="focus:bg-muted focus:text-foreground">Trans Woman</SelectItem>
                             </SelectContent>
                         </Select>
                         {hasError('gender') && (
@@ -219,8 +219,8 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                         )}
                     </div>
                     <div className="space-y-2">
-                        <Label className="text-white/80">Interested in meeting</Label>
-                        <p className="text-xs text-white/40 mt-0.5">Select all that apply</p>
+                        <Label className="text-foreground/80">Interested in meeting</Label>
+                        <p className="text-xs text-muted-foreground mt-0.5">Select all that apply</p>
                         <div className="flex flex-wrap gap-2 pt-1">
                             {["Men", "Women", "Non-binary", "Everyone"].map((option) => {
                                 const selected = formData.target_gender?.split(", ").includes(option) || false;
@@ -241,7 +241,7 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                             "px-4 py-2 rounded-full text-sm border transition-all duration-200",
                                             selected
                                                 ? "bg-[hsl(var(--accent-gold))]/20 border-[hsl(var(--accent-gold))] text-[hsl(var(--accent-gold))]"
-                                                : "bg-white/5 border-white/15 text-white/60 hover:border-white/30"
+                                                : "bg-muted/50 border-border text-muted-foreground hover:border-foreground/30"
                                         )}
                                     >
                                         {option}
@@ -257,31 +257,31 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
 
                 {/* Relationship Type */}
                 <div className={cn(
-                    "space-y-3 p-6 rounded-xl bg-white/5 border transition-colors",
-                    hasError('relationship_type') ? "border-red-500/50" : "border-white/10"
+                    "space-y-3 p-6 rounded-xl bg-muted/50 border transition-colors",
+                    hasError('relationship_type') ? "border-red-500/50" : "border-border"
                 )}>
-                    <Label className="text-white/90 text-lg font-display">Relationship Intent</Label>
+                    <Label className="text-foreground text-lg font-display">Relationship Intent</Label>
                     <Select value={formData.relationship_type} onValueChange={(value) => updateField("relationship_type", value)}>
-                        <SelectTrigger className={cn("bg-transparent text-white h-12", selectErrorClass('relationship_type'))}>
+                        <SelectTrigger className={cn("bg-transparent text-foreground h-12", selectErrorClass('relationship_type'))}>
                             <SelectValue placeholder="What are you looking for?" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#1a231b] border-white/10 text-white">
-                            <SelectItem value="serious" className="focus:bg-white/10 focus:text-white">
+                        <SelectContent className="bg-popover border-border text-popover-foreground">
+                            <SelectItem value="serious" className="focus:bg-muted focus:text-foreground">
                                 <div className="flex flex-col py-1">
                                     <span className="font-medium">Serious Relationship</span>
-                                    <span className="text-xs text-white/50">Looking for a partner</span>
+                                    <span className="text-xs text-muted-foreground">Looking for a partner</span>
                                 </div>
                             </SelectItem>
-                            <SelectItem value="marriage" className="focus:bg-white/10 focus:text-white">
+                            <SelectItem value="marriage" className="focus:bg-muted focus:text-foreground">
                                 <div className="flex flex-col py-1">
                                     <span className="font-medium">Marriage Minded</span>
-                                    <span className="text-xs text-white/50">Ready for long-term commitment</span>
+                                    <span className="text-xs text-muted-foreground">Ready for long-term commitment</span>
                                 </div>
                             </SelectItem>
-                            <SelectItem value="casual" className="focus:bg-white/10 focus:text-white">
+                            <SelectItem value="casual" className="focus:bg-muted focus:text-foreground">
                                 <div className="flex flex-col py-1">
                                     <span className="font-medium">Casual Dating</span>
-                                    <span className="text-xs text-white/50">Seeing where things go</span>
+                                    <span className="text-xs text-muted-foreground">Seeing where things go</span>
                                 </div>
                             </SelectItem>
                         </SelectContent>
@@ -295,12 +295,12 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                 <div className="space-y-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <Label className="text-white/80">Age Preference</Label>
-                            <p className="text-xs text-white/40 mt-0.5">We'll try to match within this range</p>
+                            <Label className="text-foreground/80">Age Preference</Label>
+                            <p className="text-xs text-muted-foreground mt-0.5">We'll try to match within this range</p>
                         </div>
-                        <div className="flex items-center gap-3 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                        <div className="flex items-center gap-3 bg-muted/50 px-3 py-1.5 rounded-lg border border-border/50">
                             <span className="text-[hsl(var(--accent-gold))] font-mono font-medium">{formData.age_range_min}</span>
-                            <span className="text-white/30 text-xs uppercase">to</span>
+                            <span className="text-muted-foreground text-xs uppercase">to</span>
                             <span className="text-[hsl(var(--accent-gold))] font-mono font-medium">{formData.age_range_max}</span>
                         </div>
                     </div>
@@ -318,22 +318,22 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                 </div>
 
                 {/* Location - Elegant Design */}
-                <div className="space-y-6 pt-6 border-t border-white/10">
+                <div className="space-y-6 pt-6 border-t border-border">
                     <div className="flex items-start justify-between">
                         <div className="flex-1">
-                            <Label className="text-base text-white flex items-center gap-2 mb-1">
+                            <Label className="text-base text-foreground flex items-center gap-2 mb-1">
                                 <MapPin className="h-4 w-4 text-[hsl(var(--accent-gold))]" />
                                 Location
                             </Label>
                             {profile?.city && !locationEditing ? (
                                 <div className="flex items-center gap-3">
-                                    <p className="text-white/60 text-sm">
-                                        Based in <span className="text-white">{formData.location || [profile.city, profile.state, profile.country].filter(Boolean).join(", ")}</span>
+                                    <p className="text-muted-foreground text-sm">
+                                        Based in <span className="text-foreground">{formData.location || [profile.city, profile.state, profile.country].filter(Boolean).join(", ")}</span>
                                     </p>
                                     <button
                                         type="button"
                                         onClick={() => setLocationEditing(true)}
-                                        className="text-xs text-white/40 hover:text-[hsl(var(--accent-gold))] transition-colors flex items-center gap-1"
+                                        className="text-xs text-muted-foreground hover:text-[hsl(var(--accent-gold))] transition-colors flex items-center gap-1"
                                     >
                                         <Pencil className="h-3 w-3" /> Edit
                                     </button>
@@ -344,13 +344,13 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                                         value={formData.location}
                                         onChange={(e) => updateField("location", e.target.value)}
                                         placeholder="e.g. New York, NY, USA"
-                                        className="bg-white/5 border-white/10 text-white placeholder:text-white/20 h-10 text-sm"
+                                        className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 h-10 text-sm"
                                     />
                                     {locationEditing && (
                                         <button
                                             type="button"
                                             onClick={() => setLocationEditing(false)}
-                                            className="text-xs text-white/40 hover:text-white/70 transition-colors"
+                                            className="text-xs text-muted-foreground hover:text-foreground/70 transition-colors"
                                         >
                                             ← Done editing
                                         </button>
@@ -362,8 +362,8 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
 
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                            <Label className="text-white/80 text-sm">Search Radius</Label>
-                            <span className="text-xs text-white/40">{formData.search_radius} miles</span>
+                            <Label className="text-foreground/80 text-sm">Search Radius</Label>
+                            <span className="text-xs text-muted-foreground">{formData.search_radius} miles</span>
                         </div>
                         <Slider
                             value={[formData.search_radius]}
@@ -377,21 +377,21 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                 </div>
 
                 {/* Occupation & Bio */}
-                <div className="space-y-6 pt-6 border-t border-white/10">
+                <div className="space-y-6 pt-6 border-t border-border">
                     <div className="space-y-2">
-                        <Label htmlFor="occupation" className="text-white/80">Occupation</Label>
+                        <Label htmlFor="occupation" className="text-foreground/80">Occupation</Label>
                         <Input
                             id="occupation"
                             value={formData.occupation}
                             onChange={(e) => updateField("occupation", e.target.value)}
                             placeholder="e.g. Architect"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 h-12"
+                            className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 h-12"
                         />
                     </div>
 
                     <div className="space-y-3">
                         <div className="flex items-center justify-between">
-                            <Label htmlFor="bio" className="text-white/80">Bio</Label>
+                            <Label htmlFor="bio" className="text-foreground/80">Bio</Label>
                             <VoiceBioRecorder
                                 currentBio={formData.bio}
                                 onBioUpdate={(bio) => updateField("bio", bio)}
@@ -402,26 +402,26 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             value={formData.bio}
                             onChange={(e) => updateField("bio", e.target.value)}
                             placeholder="Share a glimpse into your world..."
-                            className="min-h-[100px] bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
+                            className="min-h-[100px] bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 focus:border-[hsl(var(--accent-gold))]/50 focus:ring-[hsl(var(--accent-gold))]/20 resize-none"
                         />
-                        <p className="text-xs text-right text-white/40">
+                        <p className="text-xs text-right text-muted-foreground">
                             {formData.bio?.length || 0} characters
                         </p>
                     </div>
                 </div>
 
                 {/* Social Verification - Minimalist */}
-                <div className="pt-6 border-t border-white/10">
+                <div className="pt-6 border-t border-border">
                     <div className="flex items-center gap-2 mb-4">
-                        <Label className="text-white">Social Verification (Private)</Label>
+                        <Label className="text-foreground">Social Verification (Private)</Label>
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <button type="button" className="text-white/40 hover:text-white/70 transition-colors">
+                                    <button type="button" className="text-muted-foreground hover:text-foreground/70 transition-colors">
                                         <Info className="h-4 w-4" />
                                     </button>
                                 </TooltipTrigger>
-                                <TooltipContent className="max-w-[240px] text-center bg-[#1a231b] border-white/10 text-white/80 text-xs">
+                                <TooltipContent className="max-w-[240px] text-center bg-popover border-border text-popover-foreground text-xs">
                                     These links are only visible to your matchmaker. They are never shown publicly and are used solely for identity verification.
                                 </TooltipContent>
                             </Tooltip>
@@ -432,13 +432,13 @@ export const BasicsStep = ({ form, profile }: BasicsStepProps) => {
                             value={formData.linkedin_url}
                             onChange={(e) => updateField("linkedin_url", e.target.value)}
                             placeholder="LinkedIn URL"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 h-10 text-sm"
+                            className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 h-10 text-sm"
                         />
                         <Input
                             value={formData.instagram_url}
                             onChange={(e) => updateField("instagram_url", e.target.value)}
                             placeholder="Instagram Handle"
-                            className="bg-white/5 border-white/10 text-white placeholder:text-white/20 h-10 text-sm"
+                            className="bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/50 h-10 text-sm"
                         />
                     </div>
                 </div>
