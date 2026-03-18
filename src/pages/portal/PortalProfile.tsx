@@ -311,7 +311,7 @@ export default function PortalProfile() {
         </div>
 
         {/* Professional Info */}
-        <div className="rounded-2xl border border-border bg-card p-6 space-y-5">
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 space-y-5">
           <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider">Professional</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
