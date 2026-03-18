@@ -49,6 +49,7 @@ export function InAppUpgradeModal() {
   const [configLoading, setConfigLoading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [squareReady, setSquareReady] = useState(false);
+  const [configError, setConfigError] = useState<string | null>(null);
 
   const currentDbTier = subscription?.tier || 'patron';
 
@@ -56,13 +57,16 @@ export function InAppUpgradeModal() {
   useEffect(() => {
     if (isUpgradeOpen && !squareConfig && !configLoading) {
       setConfigLoading(true);
+      setConfigError(null);
       supabase.functions.invoke('square-config')
         .then(({ data, error }) => {
           if (error) throw error;
+          if (data?.error) throw new Error(data.error);
           setSquareConfig(data);
         })
         .catch((err) => {
           console.error('Failed to load Square config:', err);
+          setConfigError('Unable to load payment system. Please try again.');
         })
         .finally(() => setConfigLoading(false));
     }
@@ -177,12 +181,17 @@ export function InAppUpgradeModal() {
             billingPeriod={billingPeriod}
             squareConfig={squareConfig}
             configLoading={configLoading}
+            configError={configError}
             processing={processing}
             isTrial={!subscription?.subscribed}
             onBack={() => setStep('select')}
             onTokenize={handleTokenize}
             squareReady={squareReady}
             setSquareReady={setSquareReady}
+            onRetryConfig={() => {
+              setSquareConfig(null);
+              setConfigError(null);
+            }}
           />
         )}
       </DialogContent>
@@ -339,12 +348,14 @@ interface PaymentStepProps {
   billingPeriod: 'monthly' | 'annual';
   squareConfig: SquareConfig | null;
   configLoading: boolean;
+  configError: string | null;
   processing: boolean;
   isTrial: boolean;
   onBack: () => void;
   onTokenize: (token: { token: string }) => void;
   squareReady: boolean;
   setSquareReady: (v: boolean) => void;
+  onRetryConfig: () => void;
 }
 
 function PaymentStep({
@@ -352,12 +363,14 @@ function PaymentStep({
   billingPeriod,
   squareConfig,
   configLoading,
+  configError,
   processing,
   isTrial,
   onBack,
   onTokenize,
   squareReady,
   setSquareReady,
+  onRetryConfig,
 }: PaymentStepProps) {
   const [SquareComponents, setSquareComponents] = useState<{
     PaymentForm: any;
@@ -373,6 +386,21 @@ function PaymentStep({
       });
     });
   }, []);
+
+  if (configError) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 gap-4">
+        <AlertCircle className="h-8 w-8 text-destructive" />
+        <p className="text-sm text-muted-foreground text-center">{configError}</p>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={onBack}>
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back
+          </Button>
+          <Button size="sm" onClick={onRetryConfig}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
 
   if (configLoading || !squareConfig || !SquareComponents) {
     return (
