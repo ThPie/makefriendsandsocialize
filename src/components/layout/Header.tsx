@@ -64,18 +64,36 @@ export const Header = () => {
           <CirclesMegamenu isTransparent={isTransparent} />
 
           {/* Desktop nav links */}
-          {['Events', 'Membership', 'Blog'].map((label) => (
-            <TransitionLink
-              key={label}
-              to={label === 'Blog' ? '/journal' : `/${label.toLowerCase()}`}
-              className={cn(
-                "hidden lg:inline-block text-sm font-light transition-colors duration-150",
-                isTransparent ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
-              )}
-            >
-              {label}
-            </TransitionLink>
-          ))}
+          {['Events', 'Membership', 'Blog'].map((label) => {
+            const href = label === 'Blog' ? '/journal' : `/${label.toLowerCase()}`;
+            // Logged-in users clicking "Membership" get the in-app upgrade modal
+            if (label === 'Membership' && user) {
+              return (
+                <button
+                  key={label}
+                  onClick={openUpgrade}
+                  className={cn(
+                    "hidden lg:inline-block text-sm font-light transition-colors duration-150 bg-transparent border-none cursor-pointer",
+                    isTransparent ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
+                  )}
+                >
+                  {label}
+                </button>
+              );
+            }
+            return (
+              <TransitionLink
+                key={label}
+                to={href}
+                className={cn(
+                  "hidden lg:inline-block text-sm font-light transition-colors duration-150",
+                  isTransparent ? "text-white/80 hover:text-white" : "text-foreground/70 hover:text-foreground"
+                )}
+              >
+                {label}
+              </TransitionLink>
+            );
+          })}
 
           {/* Sign In — text link, desktop only */}
           {!user && (
