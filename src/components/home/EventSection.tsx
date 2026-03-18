@@ -55,7 +55,7 @@ const EventCard = ({ event, className = '' }: {event: Event;className?: string;}
 
           {(event.venue_name || event.location || event.city) &&
           <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" />
+              <MapPin className="w-4 h-4 text-[hsl(var(--accent-gold))] shrink-0" strokeWidth={1} />
               <span className="truncate">{event.venue_name || event.city || event.location}</span>
             </div>
           }
