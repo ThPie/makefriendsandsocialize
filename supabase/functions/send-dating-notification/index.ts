@@ -304,7 +304,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "Match Update";
             pushTitle = "Match Update";
             pushBody = "An update about your recent match.";
-            smsMessage = "An update on your match. Log in for details.";
+            
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: SENDERS.dating,
