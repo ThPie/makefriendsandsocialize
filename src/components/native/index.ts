@@ -4,3 +4,4 @@ export { NativeHeader } from './NativeHeader';
 export { NativePageTransition } from './NativePageTransition';
 export { PullToRefresh } from './PullToRefresh';
 export { SwipeBack } from './SwipeBack';
+export { NativeDialog } from './NativeDialog';
