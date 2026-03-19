@@ -17,14 +17,16 @@ export function PortalOnboardingLayout({
     <div className="min-h-screen relative flex flex-col overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <iframe
-          src="https://www.youtube.com/embed/bpRUQw2Gzmc?autoplay=1&mute=1&loop=1&playlist=bpRUQw2Gzmc&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1"
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[177.78vh] min-h-[100vh] w-auto h-auto"
-          style={{ border: 'none', aspectRatio: '9/16' }}
-          title="Background video"
-        />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/images/hero-poster.webp"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover"
+        >
+          <source src="/videos/hero-1.mp4" type="video/mp4" />
+        </video>
       </div>
 
       {/* Gradient Overlay — Stitch forest green */}

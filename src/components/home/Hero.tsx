@@ -11,21 +11,21 @@ const MemberAvatarsWithStats = lazy(() =>
   import('@/components/home/MemberAvatarsWithStats').then((m) => ({ default: m.MemberAvatarsWithStats }))
 );
 
-const HERO_VIDEO_ID = 'bpRUQw2Gzmc';
-
 export const Hero = () => {
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
-      {/* Full-bleed background video — 9:16 YouTube Short scaled to cover landscape */}
+      {/* Full-bleed background video */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <iframe
-          src={`https://www.youtube.com/embed/${HERO_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${HERO_VIDEO_ID}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1`}
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          style={{ border: 'none', width: '177.78vh', height: '100vh', minWidth: '100vw', minHeight: '56.25vw' }}
-          title="Background video"
-        />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/images/hero-poster.webp"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover"
+        >
+          <source src="/videos/hero-1.mp4" type="video/mp4" />
+        </video>
       </div>
 
       {/* Luxury dark overlay */}
