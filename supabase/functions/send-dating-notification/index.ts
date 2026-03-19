@@ -256,7 +256,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "Your Meeting is Confirmed! 📅";
             pushTitle = "Meeting Confirmed! 📅";
             pushBody = `Your meeting is scheduled for ${meetingDate}`;
-            smsMessage = `📅 Your date is confirmed for ${meetingDate} (${meetingTime.split(' ')[0]}). Good luck!`;
+            
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: SENDERS.dating,
