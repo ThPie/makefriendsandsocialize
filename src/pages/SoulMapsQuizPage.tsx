@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { AuthGateModal } from '@/components/soul-maps/AuthGateModal';
 import { AttachmentResults } from '@/components/soul-maps/AttachmentResults';
+import { QuizCompletionCTAs } from '@/components/soul-maps/QuizCompletionCTAs';
 import { QuizSidebar } from '@/components/soul-maps/QuizSidebar';
 import { RelatedQuizzes } from '@/components/soul-maps/RelatedQuizzes';
 import {
