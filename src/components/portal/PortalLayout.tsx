@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNativeAppContext } from '@/components/native/NativeAppProvider';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { useSubscription } from '@/hooks/useSubscription';
