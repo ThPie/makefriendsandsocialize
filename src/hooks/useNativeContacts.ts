@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Capacitor } from '@capacitor/core';
-import { Contacts, PhoneType, EmailType } from '@capacitor-community/contacts';
+import { Contacts } from '@capacitor-community/contacts';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
