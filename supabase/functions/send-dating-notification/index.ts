@@ -221,7 +221,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "Welcome to Slow Dating - You've Been Approved! 💚";
             pushTitle = "Profile Approved! 💚";
             pushBody = "Your dating profile has been approved. Start meeting your matches!";
-            smsMessage = "💚 Your dating profile has been approved! Log in to start meeting your matches.";
+            
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: SENDERS.dating,
