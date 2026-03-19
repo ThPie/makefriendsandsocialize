@@ -78,6 +78,7 @@ const App = () => {
                     <ScrollToTop />
                     <RecoveryRedirectHandler />
                     <NativeStatusBarManager />
+                    <OfflineBanner />
                     {/* Show geo-redirect banner for Canadian users on .com */}
                     {showGeoRedirectBanner && <CountryRedirectBanner />}
                     <Suspense fallback={<BrandedLoader />}>
