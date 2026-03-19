@@ -247,6 +247,32 @@ export const EventCard = ({
                         )}
                     </Button>
                 )}
+
+                {/* Quick actions: Calendar + Share */}
+                {isRSVPd && (
+                    <div className="flex gap-2 mt-3">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex-1 text-xs text-muted-foreground"
+                            onClick={handleAddToCalendar}
+                        >
+                            <CalendarPlus className="h-4 w-4 mr-1.5" />
+                            Add to Calendar
+                        </Button>
+                        {canShare && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="flex-1 text-xs text-muted-foreground"
+                                onClick={handleShare}
+                            >
+                                <Share2 className="h-4 w-4 mr-1.5" />
+                                Share
+                            </Button>
+                        )}
+                    </div>
+                )}
             </CardContent>
         </Card>
     );
