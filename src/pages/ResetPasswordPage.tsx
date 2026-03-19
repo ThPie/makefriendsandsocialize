@@ -335,21 +335,7 @@ export default function ResetPasswordPage() {
   // MFA Verification state
   if (showMfaVerification) {
     return (
-      <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4">
-        {/* Video Background */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0"
-          poster="/images/hero-poster.webp"
-        >
-          <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
-        </video>
-        
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/60 z-[1]" />
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 bg-background">
         
         <div className="z-[2]">
           <FloatingParticles />
