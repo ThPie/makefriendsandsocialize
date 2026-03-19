@@ -39,6 +39,7 @@ import {
 import { NotificationBell } from './NotificationBell';
 import { TrialCountdownBanner } from './TrialCountdownBanner';
 import { PageTransition } from '@/components/ui/page-transition';
+import { NativePageTransition } from '@/components/native/NativePageTransition';
 import { BrandLogo } from '@/components/common/BrandLogo';
 import { PendingMemberBanner } from './PendingMemberBanner';
 import { PortalBreadcrumb } from './PortalBreadcrumb';
