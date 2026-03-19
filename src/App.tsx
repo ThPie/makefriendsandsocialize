@@ -55,6 +55,7 @@ const App = () => {
         <QueryClientProvider client={appQueryClient}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="makefriends-theme">
             <AuthProvider>
+              <NativeAppProvider>
               <UpgradeProvider>
               <TooltipProvider>
                 <RegisterSW />
