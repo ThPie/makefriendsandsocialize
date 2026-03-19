@@ -1095,7 +1095,7 @@ export default function AuthPage() {
         className="absolute inset-0 w-full h-full object-cover"
         poster="/images/hero-poster.webp"
       >
-        <source src="/videos/hero-1.mp4" type="video/mp4" />
+        <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
       </video>
 
       {/* Gradient Overlay — Stitch forest green */}
