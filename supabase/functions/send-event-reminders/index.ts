@@ -113,20 +113,6 @@ const handler = async (req: Request): Promise<Response> => {
         );
         if (pushSent) pushNotificationsSent++;
 
-        // Send SMS reminder
-        const { data: profileWithPhone } = await supabase
-          .from("dating_profiles")
-          .select("phone_number, sms_notifications_enabled")
-          .eq("user_id", rsvp.user_id)
-          .single();
-
-        if (profileWithPhone?.sms_notifications_enabled && profileWithPhone?.phone_number) {
-          const smsResult = await sendSms(
-            profileWithPhone.phone_number,
-            `⏰ Reminder: ${event.title} is tomorrow! ${eventTime} at ${eventLocation}. See you there! - Make Friends and Socialize`
-          );
-          if (smsResult.success) console.log(`SMS reminder sent to ${rsvp.user_id}`);
-        }
 
         const userProfile = rsvp.profiles as { email_reminders_enabled?: boolean | null };
         if (userProfile?.email_reminders_enabled === false) {

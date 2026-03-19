@@ -371,15 +371,6 @@ const handler = async (req: Request): Promise<Response> => {
           }
         }
 
-        // Send SMS if enabled — direct Twilio call (no JWT needed)
-        if (smsEnabled && smsMessage && phoneNumber) {
-          try {
-            const smsResult = await sendSms(phoneNumber, `${smsMessage} - Make Friends and Socialize`);
-            if (!smsResult.success) console.warn("SMS failed:", smsResult.error);
-          } catch (smsError) {
-            console.error("SMS error:", smsError);
-          }
-        }
 
         // Update notification status
         await supabaseClient
