@@ -24,7 +24,7 @@ export function useNetworkStatus() {
     const handleOffline = () => {
       setIsOnline(false);
       setWasOffline(true);
-      toast.warning('You're offline — using cached data');
+      toast.warning("You're offline — using cached data");
     };
 
     window.addEventListener('online', handleOnline);
