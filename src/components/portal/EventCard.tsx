@@ -51,6 +51,24 @@ export const EventCard = ({
     onLeaveWaitlist,
     onClaimSpot,
 }: EventCardProps) => {
+    const { addToCalendar } = useNativeCalendar();
+    const { share, canShare } = useNativeShare();
+
+    const handleAddToCalendar = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        addToCalendar(event);
+    };
+
+    const handleShare = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const location = [event.venue_name, event.location, event.city].filter(Boolean).join(', ');
+        share({
+            title: event.title,
+            text: `${event.title} — ${event.date}${event.time ? ` at ${event.time}` : ''}${location ? ` | ${location}` : ''}`,
+            url: window.location.origin + '/portal/events',
+        });
+    };
+
     const getTierBadge = (tier: 'patron' | 'fellow' | 'founder') => {
         const colors = {
             patron: 'bg-white/10 text-white/70 border border-white/20',
