@@ -34,7 +34,8 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
 
     // Not authenticated → redirect to auth, preserving the intended destination
     if (!user) {
-        return <Navigate to="/auth" state={{ from: location.pathname }} replace />;
+        const returnTo = encodeURIComponent(location.pathname + location.search);
+        return <Navigate to={`/auth?returnTo=${returnTo}`} replace />;
     }
 
     // Admin routes
