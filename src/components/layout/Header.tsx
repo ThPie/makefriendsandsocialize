@@ -40,7 +40,8 @@ export const Header = () => {
   if (isPortal || isAdmin || isAuth) return null;
 
   // In light mode, never use transparent styling; in dark mode, transparent until scrolled
-  const isTransparent = !scrolled && !isLightMode;
+  // Transparent header: on homepage when not scrolled (both light and dark mode)
+  const isTransparent = !scrolled && isHomePage;
 
   return (
     <header
