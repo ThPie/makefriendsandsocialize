@@ -981,18 +981,6 @@ export default function AuthPage() {
                 {mode === 'signin' ? 'Sign Up' : 'Log in'}
               </button>
             </p>
-            <h1 className="font-display italic text-3xl text-foreground mb-1">
-              {mode === 'signin' ? 'Welcome back' : 'Create an account'}
-            </h1>
-            <p className="text-muted-foreground text-sm mb-6">
-              {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
-              <button
-                onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setStep(1); clearFormFeedback(); }}
-                className="text-foreground underline underline-offset-4"
-              >
-                {mode === 'signin' ? 'Sign Up' : 'Log in'}
-              </button>
-            </p>
 
             {formError && (
               <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm mb-4">
