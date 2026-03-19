@@ -548,3 +548,46 @@
     padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
   }
 }
+
+/* ===== Native App — Platform-Adaptive Fonts ===== */
+/* iOS: Use the system SF Pro font stack */
+.native-ios {
+  --font-sans: -apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+  --font-display: 'SF Pro Display', -apple-system, system-ui, serif;
+}
+.native-ios body,
+.native-ios input,
+.native-ios textarea,
+.native-ios select,
+.native-ios button {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Android: Use the system Roboto font stack */
+.native-android {
+  --font-sans: 'Roboto', system-ui, sans-serif;
+  --font-display: 'Roboto', system-ui, sans-serif;
+}
+.native-android body,
+.native-android input,
+.native-android textarea,
+.native-android select,
+.native-android button {
+  font-family: var(--font-sans);
+}
+
+/* Native app global tweaks */
+.native-app {
+  /* Prevent text selection on interactive elements */
+  -webkit-user-select: none;
+  user-select: none;
+  /* Disable callout on long-press */
+  -webkit-touch-callout: none;
+}
+.native-app input,
+.native-app textarea,
+.native-app [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}

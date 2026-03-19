@@ -21,6 +21,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { UpgradeProvider } from "@/contexts/UpgradeContext";
 import { InAppUpgradeModal } from "@/components/portal/InAppUpgradeModal";
 import { NativeAppProvider } from "@/components/native/NativeAppProvider";
+import { useNativeStatusBar } from "@/hooks/useNativeStatusBar";
 
 import { SlowDatingRoutes, MainRoutes } from "@/routes/config";
 
@@ -38,6 +39,11 @@ function RecoveryRedirectHandler() {
     }
   }, [isRecoveryMode, navigate]);
 
+  return null;
+}
+
+function NativeStatusBarManager() {
+  useNativeStatusBar();
   return null;
 }
 
@@ -64,6 +70,7 @@ const App = () => {
                   <SessionProvider>
                     <ScrollToTop />
                     <RecoveryRedirectHandler />
+                    <NativeStatusBarManager />
                     {/* Show geo-redirect banner for Canadian users on .com */}
                     {showGeoRedirectBanner && <CountryRedirectBanner />}
                     <Suspense fallback={<BrandedLoader />}>
