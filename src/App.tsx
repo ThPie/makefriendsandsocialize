@@ -21,8 +21,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { UpgradeProvider } from "@/contexts/UpgradeContext";
 import { InAppUpgradeModal } from "@/components/portal/InAppUpgradeModal";
 import { NativeAppProvider } from "@/components/native/NativeAppProvider";
+import { BiometricLockScreen } from "@/components/native/BiometricLockScreen";
 import { useNativeStatusBar } from "@/hooks/useNativeStatusBar";
 import { useAppBadge } from "@/hooks/useAppBadge";
+import { useDeepLinkRouter } from "@/hooks/useDeepLinkRouter";
 
 import { SlowDatingRoutes, MainRoutes } from "@/routes/config";
 
@@ -46,6 +48,7 @@ function RecoveryRedirectHandler() {
 function NativeStatusBarManager() {
   useNativeStatusBar();
   useAppBadge();
+  useDeepLinkRouter();
   return null;
 }
 
@@ -64,6 +67,7 @@ const App = () => {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="makefriends-theme">
             <AuthProvider>
               <NativeAppProvider>
+              <BiometricLockScreen>
               <UpgradeProvider>
               <TooltipProvider>
                 <RegisterSW />
@@ -87,6 +91,7 @@ const App = () => {
                 </BrowserRouter>
               </TooltipProvider>
               </UpgradeProvider>
+              </BiometricLockScreen>
               </NativeAppProvider>
             </AuthProvider>
           </ThemeProvider>
