@@ -78,6 +78,7 @@ const App = () => {
                 </BrowserRouter>
               </TooltipProvider>
               </UpgradeProvider>
+              </NativeAppProvider>
             </AuthProvider>
           </ThemeProvider>
         </QueryClientProvider>
