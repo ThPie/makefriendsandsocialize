@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +16,7 @@ import {
   attachmentQuestions,
   calculateScores,
   getWinningStyle,
+  resultProfiles,
   type AttachmentStyle,
 } from '@/components/soul-maps/quizData';
 import { cn } from '@/lib/utils';
@@ -36,6 +37,21 @@ const SoulMapsQuizPage = () => {
 
   const scores = showResults ? calculateScores(answers.filter(Boolean) as AttachmentStyle[]) : null;
   const winningStyle = scores ? getWinningStyle(scores) : null;
+
+  // Build quiz results payload for the auth gate modal
+  const quizResultsForEmail = useMemo(() => {
+    if (!scores || !winningStyle) return undefined;
+    const profile = resultProfiles[winningStyle];
+    return {
+      winningStyle,
+      scores,
+      profileTitle: profile.title,
+      profileSubtitle: profile.subtitle,
+      profileDescription: profile.description,
+      traits: profile.traits,
+      growthEdge: profile.growthEdge,
+    };
+  }, [scores, winningStyle]);
 
   // On mount: check for stored answers after auth redirect
   useEffect(() => {
@@ -107,9 +123,42 @@ const SoulMapsQuizPage = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
-      setShowAuthGate(true);
+      // Calculate scores now so they're available for the email
+      const tempScores = calculateScores(answers.filter(Boolean) as AttachmentStyle[]);
+      const tempWinning = getWinningStyle(tempScores);
+      // Force state so quizResultsForEmail is computed
+      setShowResults(true);
+      setTimeout(() => {
+        setShowResults(false);
+        setShowAuthGate(true);
+      }, 0);
     }
   };
+
+  // We need scores available even before showResults for the auth gate
+  const previewScores = useMemo(() => {
+    const validAnswers = answers.filter(Boolean) as AttachmentStyle[];
+    if (validAnswers.length === attachmentQuestions.length) {
+      return calculateScores(validAnswers);
+    }
+    return null;
+  }, [answers]);
+
+  const previewWinningStyle = previewScores ? getWinningStyle(previewScores) : null;
+
+  const previewQuizResults = useMemo(() => {
+    if (!previewScores || !previewWinningStyle) return undefined;
+    const profile = resultProfiles[previewWinningStyle];
+    return {
+      winningStyle: previewWinningStyle,
+      scores: previewScores,
+      profileTitle: profile.title,
+      profileSubtitle: profile.subtitle,
+      profileDescription: profile.description,
+      traits: profile.traits,
+      growthEdge: profile.growthEdge,
+    };
+  }, [previewScores, previewWinningStyle]);
 
   const handleEmailSubmitted = () => {
     setShowAuthGate(false);
@@ -163,9 +212,7 @@ const SoulMapsQuizPage = () => {
 
       <div className="content-container py-24 md:py-32">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
-          {/* Main quiz area */}
           <div className="flex-1 min-w-0">
-            {/* Progress */}
             <div className="space-y-2 mb-8">
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>Question {currentQ + 1} of {attachmentQuestions.length}</span>
@@ -174,7 +221,6 @@ const SoulMapsQuizPage = () => {
               <Progress value={progressPct} className="h-1.5" indicatorClassName="bg-[hsl(var(--accent-gold))]" />
             </div>
 
-            {/* Question */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentQ}
@@ -210,7 +256,6 @@ const SoulMapsQuizPage = () => {
               </motion.div>
             </AnimatePresence>
 
-            {/* Navigation */}
             <div className="flex items-center justify-between mt-8">
               <Button
                 variant="ghost"
@@ -244,7 +289,6 @@ const SoulMapsQuizPage = () => {
             </div>
           </div>
 
-          {/* Sidebar — hidden on mobile, visible on lg+ */}
           <div className="hidden lg:block w-[280px] shrink-0">
             <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-hide">
               <QuizSidebar />
@@ -252,10 +296,8 @@ const SoulMapsQuizPage = () => {
           </div>
         </div>
 
-        {/* Related quizzes at bottom */}
         <RelatedQuizzes />
 
-        {/* Mobile sidebar content — shown below quiz on mobile */}
         <div className="lg:hidden mt-12">
           <QuizSidebar />
         </div>
@@ -266,6 +308,7 @@ const SoulMapsQuizPage = () => {
         onOpenChange={setShowAuthGate}
         redirectPath="/soul-maps/attachment-style?showResults=true"
         onEmailSubmitted={handleEmailSubmitted}
+        quizResults={previewQuizResults}
       />
     </>
   );

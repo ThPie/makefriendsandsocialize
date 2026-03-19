@@ -38,30 +38,29 @@ export const AuthGateModal = ({ open, onOpenChange, redirectPath, onEmailSubmitt
     setLoading(true);
     const trimmedEmail = email.trim();
     try {
-      const promises: Promise<any>[] = [
-        supabase.from('soul_maps_leads').insert({
-          email: trimmedEmail,
-          quiz_slug: 'attachment-style',
-          source_url: window.location.href,
-        }),
+      // Store lead
+      await supabase.from('soul_maps_leads').insert({
+        email: trimmedEmail,
+        quiz_slug: 'attachment-style',
+        source_url: window.location.href,
+      });
+
+      // Subscribe to newsletter + send results email in parallel
+      const bgTasks: Promise<any>[] = [
         supabase.functions.invoke('sync-mailchimp-subscriber', {
           body: { email: trimmedEmail },
         }),
       ];
 
-      // Send quiz results email instead of generic newsletter
       if (quizResults) {
-        promises.push(
+        bgTasks.push(
           supabase.functions.invoke('send-quiz-results-email', {
-            body: {
-              email: trimmedEmail,
-              ...quizResults,
-            },
+            body: { email: trimmedEmail, ...quizResults },
           })
         );
       }
 
-      await Promise.all(promises);
+      await Promise.all(bgTasks);
       setSubmitted(true);
       toast.success('Thanks! Your results are unlocked. Check your email for a copy.');
       onEmailSubmitted?.();
