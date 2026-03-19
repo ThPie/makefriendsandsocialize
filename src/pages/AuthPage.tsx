@@ -671,7 +671,7 @@ export default function AuthPage() {
   // Split-screen layout for Step 1 (credentials)
   if (step === 1) {
     return (
-      <div className="min-h-screen flex relative bg-background">
+      <div className="min-h-screen relative bg-background">
         {/* Outer frame with subtle border */}
         <div className="hidden lg:flex w-full min-h-screen p-3">
           {/* Left Side — Image Panel with overlay */}
