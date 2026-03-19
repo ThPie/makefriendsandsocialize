@@ -204,14 +204,12 @@ const handler = async (req: Request): Promise<Response> => {
 
         const { data: datingProfile } = await supabaseClient
           .from("dating_profiles")
-          .select("email_notifications_enabled, push_notifications_enabled, phone_number, sms_notifications_enabled")
+          .select("email_notifications_enabled, push_notifications_enabled")
           .eq("user_id", notification.user_id)
           .single();
 
         const emailEnabled = datingProfile?.email_notifications_enabled !== false;
         const pushEnabled = datingProfile?.push_notifications_enabled !== false;
-        const smsEnabled = datingProfile?.sms_notifications_enabled === true && !!datingProfile?.phone_number;
-        const phoneNumber = datingProfile?.phone_number;
 
         let emailResult;
         let smsMessage = "";
