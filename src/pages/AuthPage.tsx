@@ -432,7 +432,7 @@ export default function AuthPage() {
         createSession(rememberMe).catch(() => {});
 
         setIsSubmitting(false);
-        navigate('/portal');
+        // The useEffect redirect handler will take care of navigation
       } catch (err) {
         setIsSubmitting(false);
         setFormError('An error occurred during sign in. Please try again.');
