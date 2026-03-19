@@ -54,7 +54,8 @@ export const AuthGateModal = ({ open, onOpenChange, redirectPath, onEmailSubmitt
   };
 
   const handleSignIn = () => {
-    const params = new URLSearchParams({ redirect: redirectPath });
+    // Store answers in sessionStorage so they survive the auth flow
+    const params = new URLSearchParams({ returnTo: redirectPath });
     navigate(`/auth?${params.toString()}`);
   };
 

@@ -266,31 +266,27 @@ export default function AuthPage() {
       if (!user || isLoading) return;
 
       const returnTo = searchParams.get('returnTo');
-      if (returnTo && returnTo.startsWith('/portal')) {
-        // For portal routes, still check if onboarding is needed
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('onboarding_completed, first_name, last_name, bio, avatar_urls, interests, industry, job_title, city')
-          .eq('id', user.id)
-          .maybeSingle();
-
-        if (profileData && !profileData.onboarding_completed) {
-          navigate('/portal/onboarding');
-          return;
-        }
+      
+      // If returnTo is a non-portal route (e.g. /soul-maps/..., /events/...), go there directly
+      if (returnTo && !returnTo.startsWith('/portal') && !returnTo.startsWith('/auth')) {
         navigate(returnTo);
         return;
       }
 
-      // For new logins, check profile completion
+      // For portal routes or default, check onboarding first
       const { data: profileData } = await supabase
         .from('profiles')
-        .select('onboarding_completed')
+        .select('onboarding_completed, first_name, last_name, bio, avatar_urls, interests, industry, job_title, city')
         .eq('id', user.id)
         .maybeSingle();
 
-      if (!profileData?.onboarding_completed) {
+      if (profileData && !profileData.onboarding_completed) {
         navigate('/portal/onboarding');
+        return;
+      }
+
+      if (returnTo && returnTo.startsWith('/portal')) {
+        navigate(returnTo);
         return;
       }
 
