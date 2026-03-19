@@ -67,6 +67,7 @@ const App = () => {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="makefriends-theme">
             <AuthProvider>
               <NativeAppProvider>
+              <BiometricLockScreen>
               <UpgradeProvider>
               <TooltipProvider>
                 <RegisterSW />
