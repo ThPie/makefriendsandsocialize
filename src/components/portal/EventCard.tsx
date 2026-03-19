@@ -1,10 +1,12 @@
-import { Calendar, MapPin, Clock, Crown, Users, AlertCircle, Clock3 } from 'lucide-react';
+import { Calendar, MapPin, Clock, Crown, Users, AlertCircle, Clock3, Share2, CalendarPlus } from 'lucide-react';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { EventAttendeePreview } from './EventAttendeePreview';
 import { parseLocalDate } from '@/lib/date-utils';
+import { useNativeCalendar } from '@/hooks/useNativeCalendar';
+import { useNativeShare } from '@/hooks/useNativeShare';
 
 interface Event {
     id: string;
@@ -49,6 +51,24 @@ export const EventCard = ({
     onLeaveWaitlist,
     onClaimSpot,
 }: EventCardProps) => {
+    const { addToCalendar } = useNativeCalendar();
+    const { share, canShare } = useNativeShare();
+
+    const handleAddToCalendar = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        addToCalendar(event);
+    };
+
+    const handleShare = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const location = [event.venue_name, event.location, event.city].filter(Boolean).join(', ');
+        share({
+            title: event.title,
+            text: `${event.title} — ${event.date}${event.time ? ` at ${event.time}` : ''}${location ? ` | ${location}` : ''}`,
+            url: window.location.origin + '/portal/events',
+        });
+    };
+
     const getTierBadge = (tier: 'patron' | 'fellow' | 'founder') => {
         const colors = {
             patron: 'bg-white/10 text-white/70 border border-white/20',
@@ -226,6 +246,32 @@ export const EventCard = ({
                             'RSVP Now'
                         )}
                     </Button>
+                )}
+
+                {/* Quick actions: Calendar + Share */}
+                {isRSVPd && (
+                    <div className="flex gap-2 mt-3">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="flex-1 text-xs text-muted-foreground"
+                            onClick={handleAddToCalendar}
+                        >
+                            <CalendarPlus className="h-4 w-4 mr-1.5" />
+                            Add to Calendar
+                        </Button>
+                        {canShare && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="flex-1 text-xs text-muted-foreground"
+                                onClick={handleShare}
+                            >
+                                <Share2 className="h-4 w-4 mr-1.5" />
+                                Share
+                            </Button>
+                        )}
+                    </div>
                 )}
             </CardContent>
         </Card>

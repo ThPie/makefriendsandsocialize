@@ -34,8 +34,7 @@ export function usePushNotifications() {
 
   // Check if push notifications are supported
   useEffect(() => {
-    // For native apps, we'll handle push differently in Phase 3
-    // For now, mark as not supported on native until Phase 3 implementation
+    // Native apps use useNativePushNotifications hook instead
     if (isNativePlatform) {
       setIsSupported(false);
       setIsLoading(false);
