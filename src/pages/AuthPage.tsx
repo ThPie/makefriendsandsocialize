@@ -685,7 +685,7 @@ export default function AuthPage() {
                 poster="/images/hero-poster.webp"
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover"
               >
-                <source src="/videos/hero-1.mp4" type="video/mp4" />
+                <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
               </video>
             </div>
             {/* Dark gradient overlay */}
