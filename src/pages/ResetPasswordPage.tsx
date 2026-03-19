@@ -323,7 +323,7 @@ export default function ResetPasswordPage() {
           className="absolute inset-0 w-full h-full object-cover z-0"
           poster="/images/hero-poster.webp"
         >
-          <source src="/videos/hero-1.mp4" type="video/mp4" />
+          <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
         </video>
         
         {/* Overlay */}
