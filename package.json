@@ -16,7 +16,9 @@
     "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
+    "@capacitor-community/contacts": "^7.1.0",
     "@capacitor/app": "^6.0.2",
+    "@capacitor/camera": "^8.0.2",
     "@capacitor/core": "^6.2.0",
     "@capacitor/push-notifications": "^8.0.2",
     "@capacitor/share": "^8.0.1",
