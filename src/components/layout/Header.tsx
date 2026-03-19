@@ -17,6 +17,7 @@ export const Header = () => {
   const { user, profile } = useAuth();
   const { openUpgrade } = useUpgrade();
   const location = useLocation();
+  const isHomePage = location.pathname === '/';
   const { resolvedTheme } = useTheme();
 
   // Don't show public header on portal/admin pages
