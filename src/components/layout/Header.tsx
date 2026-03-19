@@ -48,9 +48,9 @@ export const Header = () => {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-250',
         'h-[60px] md:h-[68px]',
-        scrolled || isLightMode
-          ? 'dark:frosted-nav frosted-nav-light border-b border-border/40'
-          : 'bg-transparent'
+        isTransparent
+          ? 'bg-transparent'
+          : 'dark:frosted-nav frosted-nav-light border-b border-border/40'
       )}
     >
       <div className="content-container h-full flex items-center justify-between">
