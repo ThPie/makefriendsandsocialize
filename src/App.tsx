@@ -21,8 +21,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { UpgradeProvider } from "@/contexts/UpgradeContext";
 import { InAppUpgradeModal } from "@/components/portal/InAppUpgradeModal";
 import { NativeAppProvider } from "@/components/native/NativeAppProvider";
+import { BiometricLockScreen } from "@/components/native/BiometricLockScreen";
 import { useNativeStatusBar } from "@/hooks/useNativeStatusBar";
 import { useAppBadge } from "@/hooks/useAppBadge";
+import { useDeepLinkRouter } from "@/hooks/useDeepLinkRouter";
 
 import { SlowDatingRoutes, MainRoutes } from "@/routes/config";
 
