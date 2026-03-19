@@ -15,12 +15,12 @@ const variants = {
   enter: {
     x: 0,
     opacity: 1,
-    transition: { type: 'spring', stiffness: 400, damping: 35, mass: 0.8 },
+    transition: { type: 'spring' as const, stiffness: 400, damping: 35, mass: 0.8 },
   },
   exit: {
     x: '-4%',
     opacity: 0.5,
-    transition: { duration: 0.15, ease: 'easeIn' },
+    transition: { duration: 0.15, ease: 'easeIn' as const },
   },
 };
 
