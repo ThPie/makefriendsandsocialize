@@ -289,7 +289,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "🎉 It's a Connection!";
             pushTitle = "It's a Connection! 🎉";
             pushBody = `You and ${mutualMatchName} both want to continue!`;
-            smsMessage = `🎉 It's a match! You and ${mutualMatchName} both said yes. Full profile now revealed!`;
+            
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: SENDERS.dating,
