@@ -13,9 +13,18 @@ interface AuthGateModalProps {
   onOpenChange: (open: boolean) => void;
   redirectPath: string;
   onEmailSubmitted?: () => void;
+  quizResults?: {
+    winningStyle: string;
+    scores: Record<string, number>;
+    profileTitle: string;
+    profileSubtitle: string;
+    profileDescription: string;
+    traits: string[];
+    growthEdge: string;
+  };
 }
 
-export const AuthGateModal = ({ open, onOpenChange, redirectPath, onEmailSubmitted }: AuthGateModalProps) => {
+export const AuthGateModal = ({ open, onOpenChange, redirectPath, onEmailSubmitted, quizResults }: AuthGateModalProps) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [email, setEmail] = useState('');
@@ -29,22 +38,31 @@ export const AuthGateModal = ({ open, onOpenChange, redirectPath, onEmailSubmitt
     setLoading(true);
     const trimmedEmail = email.trim();
     try {
-      // Store email as a lead + auto-subscribe to newsletter
-      await Promise.all([
-        supabase.from('soul_maps_leads').insert({
-          email: trimmedEmail,
-          quiz_slug: 'attachment-style',
-          source_url: window.location.href,
-        }),
-        supabase.functions.invoke('send-newsletter-confirmation', {
-          body: { email: trimmedEmail },
-        }),
+      // Store lead
+      await supabase.from('soul_maps_leads').insert({
+        email: trimmedEmail,
+        quiz_slug: 'attachment-style',
+        source_url: window.location.href,
+      });
+
+      // Subscribe to newsletter + send results email in parallel
+      const bgTasks: Promise<any>[] = [
         supabase.functions.invoke('sync-mailchimp-subscriber', {
           body: { email: trimmedEmail },
         }),
-      ]);
+      ];
+
+      if (quizResults) {
+        bgTasks.push(
+          supabase.functions.invoke('send-quiz-results-email', {
+            body: { email: trimmedEmail, ...quizResults },
+          })
+        );
+      }
+
+      await Promise.all(bgTasks);
       setSubmitted(true);
-      toast.success('Thanks! Your results are unlocked.');
+      toast.success('Thanks! Your results are unlocked. Check your email for a copy.');
       onEmailSubmitted?.();
     } catch {
       toast.error('Something went wrong. Please try again.');
@@ -54,7 +72,6 @@ export const AuthGateModal = ({ open, onOpenChange, redirectPath, onEmailSubmitt
   };
 
   const handleSignIn = () => {
-    // Store answers in sessionStorage so they survive the auth flow
     const params = new URLSearchParams({ returnTo: redirectPath });
     navigate(`/auth?${params.toString()}`);
   };
@@ -69,7 +86,7 @@ export const AuthGateModal = ({ open, onOpenChange, redirectPath, onEmailSubmitt
         </div>
         <div className="space-y-2">
           <h3 className="text-xl font-display font-semibold text-foreground">Your results are ready</h3>
-          <p className="text-sm text-muted-foreground">Enter your email to unlock your full Soul Maps report.</p>
+          <p className="text-sm text-muted-foreground">Enter your email to unlock your full Soul Maps report. We'll also send you a copy.</p>
         </div>
         <form onSubmit={handleSubmitEmail} className="space-y-3 pt-2">
           <div className="relative">
