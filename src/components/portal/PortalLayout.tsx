@@ -141,6 +141,51 @@ export function PortalLayout({ children }: PortalLayoutProps) {
     </span>
   ) : null;
 
+  const TransitionComponent = isNative ? NativePageTransition : PageTransition;
+
+  // ── Native App Layout ──────────────────────────────────────────────
+  // No sidebar, no desktop header — just mobile header + bottom tabs
+  if (isNative) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        {/* Native Mobile Header */}
+        <header
+          className="sticky top-0 z-40 flex items-center justify-between h-14 px-4 border-b border-border/20 bg-background/95 backdrop-blur-xl"
+          style={{ paddingTop: 'env(safe-area-inset-top)' }}
+        >
+          <div className="flex items-center gap-3">
+            <BrandLogo className="h-7 w-auto" height={28} width={84} />
+          </div>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <Link to="/portal/profile">
+              <Avatar className="h-8 w-8 border-2 border-primary/20">
+                <AvatarImage src={profile?.avatar_urls?.[0]} />
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+          </div>
+        </header>
+
+        <main id="main-content" className="flex-1 overflow-auto scroll-smooth scroll-touch">
+          <div className="p-4 pb-24 space-y-6">
+            {isPending && <PendingMemberBanner className="mb-4" />}
+            <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
+
+            <TransitionComponent>
+              {children}
+            </TransitionComponent>
+          </div>
+        </main>
+
+        <PortalBottomNav />
+      </div>
+    );
+  }
+
+  // ── Web Layout (unchanged) ─────────────────────────────────────────
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
       <SidebarProvider>
@@ -236,7 +281,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
           </Sidebar>
 
           <main id="main-content" className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
-            {/* Desktop Top Bar — clean, no mail icon */}
+            {/* Desktop Top Bar */}
             <header className="hidden md:flex items-center justify-between h-20 px-8 border-b border-border bg-background/95 backdrop-blur z-40">
               <div className="flex-1" />
               <div className="flex items-center gap-6 ml-4">
@@ -295,9 +340,9 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                   <PortalBreadcrumb type="portal" />
                 </div>
 
-                <PageTransition>
+                <TransitionComponent>
                   {children}
-                </PageTransition>
+                </TransitionComponent>
               </div>
             </div>
 
