@@ -42,6 +42,11 @@ function RecoveryRedirectHandler() {
   return null;
 }
 
+function NativeStatusBarManager() {
+  useNativeStatusBar();
+  return null;
+}
+
 
 
 const App = () => {
