@@ -122,6 +122,14 @@ const SoulMapsQuizPage = () => {
   const question = attachmentQuestions[currentQ];
   const progressPct = ((currentQ + 1) / attachmentQuestions.length) * 100;
 
+  const handleRetake = () => {
+    setShowResults(false);
+    setSaved(false);
+    setCurrentQ(0);
+    setAnswers(Array(attachmentQuestions.length).fill(null));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (showResults && scores && winningStyle) {
     return (
       <>
@@ -130,6 +138,7 @@ const SoulMapsQuizPage = () => {
         </Helmet>
         <div className="content-container py-24 md:py-32">
           <AttachmentResults scores={scores} winningStyle={winningStyle} />
+          <QuizCompletionCTAs onRetake={handleRetake} />
           <RelatedQuizzes />
           <div className="flex justify-center mt-10">
             <Button
