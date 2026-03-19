@@ -48,6 +48,7 @@ function RecoveryRedirectHandler() {
 function NativeStatusBarManager() {
   useNativeStatusBar();
   useAppBadge();
+  useDeepLinkRouter();
   return null;
 }
 
