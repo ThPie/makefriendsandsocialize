@@ -45,6 +45,7 @@ function RecoveryRedirectHandler() {
 
 function NativeStatusBarManager() {
   useNativeStatusBar();
+  useAppBadge();
   return null;
 }
 

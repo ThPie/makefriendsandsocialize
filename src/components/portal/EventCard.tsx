@@ -1,10 +1,12 @@
-import { Calendar, MapPin, Clock, Crown, Users, AlertCircle, Clock3 } from 'lucide-react';
+import { Calendar, MapPin, Clock, Crown, Users, AlertCircle, Clock3, Share2, CalendarPlus } from 'lucide-react';
 import { getTierDisplayName } from '@/lib/tier-utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { EventAttendeePreview } from './EventAttendeePreview';
 import { parseLocalDate } from '@/lib/date-utils';
+import { useNativeCalendar } from '@/hooks/useNativeCalendar';
+import { useNativeShare } from '@/hooks/useNativeShare';
 
 interface Event {
     id: string;
