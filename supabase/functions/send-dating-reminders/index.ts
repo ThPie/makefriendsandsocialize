@@ -3,7 +3,6 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { Resend } from "https://esm.sh/resend@2.0.0";
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { buildBrandedEmail, SITE_URL, SENDERS, p, infoBox, detailRow, alertBox } from '../_shared/email-layout.ts';
-import { sendSms } from '../_shared/sms.ts';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -148,13 +147,6 @@ const handler = async (req: Request): Promise<Response> => {
             });
           }
 
-          if (profile.sms_notifications_enabled && profile.phone_number) {
-            const smsResult = await sendSms(
-              profile.phone_number,
-              `⏰ Reminder: Your date with ${matchedProfile.display_name} is tomorrow! ${meetingTime}. Good luck! - Make Friends and Socialize`
-            );
-            if (!smsResult.success) console.warn("SMS reminder failed:", smsResult.error);
-          }
 
           await supabaseClient
             .from("dating_meeting_reminders")

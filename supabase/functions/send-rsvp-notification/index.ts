@@ -3,7 +3,6 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { Resend } from "https://esm.sh/resend@2.0.0";
 import { getCorsHeaders } from '../_shared/cors.ts';
 import { buildBrandedEmail, SENDERS, SITE_URL, p, infoBox, detailRow } from '../_shared/email-layout.ts';
-import { sendSms } from '../_shared/sms.ts';
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -103,20 +102,6 @@ serve(async (req) => {
 
     console.log("Email sent successfully:", emailResponse);
 
-    // Send SMS notification
-    const { data: profileData } = await supabase
-      .from('dating_profiles')
-      .select('phone_number, sms_notifications_enabled')
-      .eq('user_id', userId)
-      .single();
-
-    if (profileData?.sms_notifications_enabled && profileData?.phone_number) {
-      const smsBody = action === 'rsvp'
-        ? `🎉 You're confirmed for ${event.title} on ${formattedDate}! See you there. - Make Friends and Socialize`
-        : `Your RSVP for ${event.title} has been cancelled. You can RSVP again anytime. - Make Friends and Socialize`;
-      const smsResult = await sendSms(profileData.phone_number, smsBody);
-      console.log("SMS result:", smsResult);
-    }
 
     return new Response(
       JSON.stringify({ success: true, message: "Notification sent" }),
