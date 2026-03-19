@@ -73,7 +73,8 @@ export function useNativeContacts() {
   }, [isNative]);
 
   /**
-   * Find which contacts are already members by matching emails.
+   * Find which contacts are already members by matching emails via edge function.
+   * Falls back to empty results if the function isn't available.
    */
   const findMembers = useCallback(async (contactList?: ContactEntry[]): Promise<ContactMatchResult[]> => {
     const list = contactList || contacts;
@@ -84,27 +85,16 @@ export function useNativeContacts() {
       // Collect all unique emails
       const allEmails = [...new Set(list.flatMap((c) => c.emails.map((e) => e.toLowerCase())))];
 
-      // Query profiles that match any of these emails (batch in chunks)
-      const chunkSize = 50;
+      // Call edge function to match emails against auth users
+      const { data, error } = await supabase.functions.invoke('match-contacts', {
+        body: { emails: allEmails.slice(0, 200) }, // Limit to 200 emails
+      });
+
       const memberEmails = new Map<string, { id: string; name: string }>();
-
-      for (let i = 0; i < allEmails.length; i += chunkSize) {
-        const chunk = allEmails.slice(i, i + chunkSize);
-        const { data } = await supabase
-          .from('profiles')
-          .select('id, first_name, email')
-          .in('email', chunk);
-
-        if (data) {
-          data.forEach((p) => {
-            if (p.email) {
-              memberEmails.set(p.email.toLowerCase(), {
-                id: p.id,
-                name: p.first_name || 'Member',
-              });
-            }
-          });
-        }
+      if (!error && data?.matches) {
+        (data.matches as Array<{ email: string; id: string; name: string }>).forEach((m) => {
+          memberEmails.set(m.email.toLowerCase(), { id: m.id, name: m.name });
+        });
       }
 
       const results: ContactMatchResult[] = list.map((contact) => {
