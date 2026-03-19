@@ -17,6 +17,7 @@ export const Header = () => {
   const { user, profile } = useAuth();
   const { openUpgrade } = useUpgrade();
   const location = useLocation();
+  const isHomePage = location.pathname === '/';
   const { resolvedTheme } = useTheme();
 
   // Don't show public header on portal/admin pages
@@ -39,16 +40,17 @@ export const Header = () => {
   if (isPortal || isAdmin || isAuth) return null;
 
   // In light mode, never use transparent styling; in dark mode, transparent until scrolled
-  const isTransparent = !scrolled && !isLightMode;
+  // Transparent header: on homepage when not scrolled (both light and dark mode)
+  const isTransparent = !scrolled && isHomePage;
 
   return (
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-250',
         'h-[60px] md:h-[68px]',
-        scrolled || isLightMode
-          ? 'dark:frosted-nav frosted-nav-light border-b border-border/40'
-          : 'bg-transparent'
+        isTransparent
+          ? 'bg-transparent'
+          : 'dark:frosted-nav frosted-nav-light border-b border-border/40'
       )}
     >
       <div className="content-container h-full flex items-center justify-between">
