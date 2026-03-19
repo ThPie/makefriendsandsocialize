@@ -87,6 +87,7 @@ const navGroups = [
 export function PortalLayout({ children }: PortalLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isNative } = useNativeAppContext();
   const { user, profile, membership, applicationStatus, isLoading, isAdmin, signOut } = useAuth();
   const { subscription, isLoading: subscriptionLoading } = useSubscription();
 
