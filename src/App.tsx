@@ -13,6 +13,7 @@ import { PublishedDomainRedirect } from "@/components/PublishedDomainRedirect";
 import { isSlowDatingSubdomain, isCanadianDomain } from "@/lib/subdomain-utils";
 import { CountryRedirectBanner } from "@/components/ui/country-redirect-banner";
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
 import { HelmetProvider } from 'react-helmet-async';
 import { RegisterSW } from "./components/common/RegisterSW";
 import { BackToTop } from "@/components/ui/back-to-top";
@@ -70,6 +71,7 @@ const App = () => {
                     <Toaster />
                     <InAppUpgradeModal />
                     <SpeedInsights />
+                    <Analytics />
                   </SessionProvider>
                 </BrowserRouter>
               </TooltipProvider>
