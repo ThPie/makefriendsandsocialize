@@ -320,7 +320,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = `📅 ${proposerName} Proposed Dates to Meet!`;
             pushTitle = "New Date Proposals! 📅";
             pushBody = `${proposerName} has proposed dates to meet you!`;
-            smsMessage = `📅 ${proposerName} proposed dates to meet! Log in to review and accept.`;
+            
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: SENDERS.dating,
