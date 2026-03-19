@@ -40,6 +40,7 @@ import { NotificationBell } from './NotificationBell';
 import { TrialCountdownBanner } from './TrialCountdownBanner';
 import { PageTransition } from '@/components/ui/page-transition';
 import { NativePageTransition } from '@/components/native/NativePageTransition';
+import { SwipeBack } from '@/components/native/SwipeBack';
 import { BrandLogo } from '@/components/common/BrandLogo';
 import { PendingMemberBanner } from './PendingMemberBanner';
 import { PortalBreadcrumb } from './PortalBreadcrumb';
@@ -146,6 +147,8 @@ export function PortalLayout({ children }: PortalLayoutProps) {
   // ── Native App Layout ──────────────────────────────────────────────
   // No sidebar, no desktop header — just mobile header + bottom tabs
   if (isNative) {
+    const isHome = location.pathname === '/portal';
+
     return (
       <div className="min-h-screen flex flex-col bg-background">
         {/* Native Mobile Header */}
@@ -170,14 +173,16 @@ export function PortalLayout({ children }: PortalLayoutProps) {
         </header>
 
         <main id="main-content" className="flex-1 overflow-auto scroll-smooth scroll-touch">
-          <div className="p-4 pb-24 space-y-6">
-            {isPending && <PendingMemberBanner className="mb-4" />}
-            <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
+          <SwipeBack disabled={isHome}>
+            <div className="p-4 pb-24 space-y-6">
+              {isPending && <PendingMemberBanner className="mb-4" />}
+              <TrialCountdownBanner subscription={subscription} isLoading={subscriptionLoading} />
 
-            <TransitionComponent>
-              {children}
-            </TransitionComponent>
-          </div>
+              <TransitionComponent>
+                {children}
+              </TransitionComponent>
+            </div>
+          </SwipeBack>
         </main>
 
         <PortalBottomNav />
