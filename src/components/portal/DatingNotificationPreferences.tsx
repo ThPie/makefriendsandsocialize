@@ -3,17 +3,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Bell, Mail, MessageSquare, Phone, Save, Loader2 } from 'lucide-react';
+import { Bell, Mail, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface NotificationPreferences {
   email_notifications_enabled: boolean;
   push_notifications_enabled: boolean;
-  sms_notifications_enabled: boolean;
-  phone_number: string | null;
 }
 
 export function DatingNotificationPreferences() {
@@ -21,8 +18,6 @@ export function DatingNotificationPreferences() {
   const [preferences, setPreferences] = useState<NotificationPreferences>({
     email_notifications_enabled: true,
     push_notifications_enabled: true,
-    sms_notifications_enabled: false,
-    phone_number: null,
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -34,7 +29,7 @@ export function DatingNotificationPreferences() {
 
       const { data, error } = await supabase
         .from('dating_profiles')
-        .select('email_notifications_enabled, push_notifications_enabled, sms_notifications_enabled')
+        .select('email_notifications_enabled, push_notifications_enabled')
         .eq('user_id', user.id)
         .single();
 
@@ -47,8 +42,6 @@ export function DatingNotificationPreferences() {
         setPreferences({
           email_notifications_enabled: data.email_notifications_enabled ?? true,
           push_notifications_enabled: data.push_notifications_enabled ?? true,
-          sms_notifications_enabled: data.sms_notifications_enabled ?? false,
-          phone_number: null, // Phone is stored in sensitive_data table
         });
       }
       setIsLoading(false);
@@ -65,22 +58,8 @@ export function DatingNotificationPreferences() {
     setHasChanges(true);
   };
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPreferences((prev) => ({
-      ...prev,
-      phone_number: e.target.value || null,
-    }));
-    setHasChanges(true);
-  };
-
   const handleSave = async () => {
     if (!user?.id) return;
-
-    // Validate phone number if SMS is enabled
-    if (preferences.sms_notifications_enabled && !preferences.phone_number?.trim()) {
-      toast.error('Please enter a phone number to enable SMS notifications');
-      return;
-    }
 
     setIsSaving(true);
 
@@ -89,7 +68,6 @@ export function DatingNotificationPreferences() {
       .update({
         email_notifications_enabled: preferences.email_notifications_enabled,
         push_notifications_enabled: preferences.push_notifications_enabled,
-        sms_notifications_enabled: preferences.sms_notifications_enabled,
       })
       .eq('user_id', user.id);
 
@@ -164,49 +142,6 @@ export function DatingNotificationPreferences() {
             checked={preferences.push_notifications_enabled}
             onCheckedChange={() => handleToggle('push_notifications_enabled')}
           />
-        </div>
-
-        {/* SMS Notifications */}
-        <div className="py-3 border-b border-border space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <MessageSquare className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <Label className="text-foreground font-medium">SMS Notifications</Label>
-                <p className="text-sm text-muted-foreground">
-                  Receive text messages for important updates and reminders
-                </p>
-              </div>
-            </div>
-            <Switch
-              checked={preferences.sms_notifications_enabled}
-              onCheckedChange={() => handleToggle('sms_notifications_enabled')}
-            />
-          </div>
-
-          {preferences.sms_notifications_enabled && (
-            <div className="ml-13 space-y-2">
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <Label htmlFor="phone" className="text-sm text-muted-foreground">
-                  Phone Number
-                </Label>
-              </div>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="+1 (555) 123-4567"
-                value={preferences.phone_number || ''}
-                onChange={handlePhoneChange}
-                className="max-w-xs"
-              />
-              <p className="text-xs text-muted-foreground">
-                Your number is never shared with other members.
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Save Button */}
