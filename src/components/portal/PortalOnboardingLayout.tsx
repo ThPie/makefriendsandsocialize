@@ -15,19 +15,8 @@ export function PortalOnboardingLayout({
 }: PortalOnboardingLayoutProps) {
   return (
     <div className="min-h-screen relative flex flex-col overflow-hidden">
-      {/* Video Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/images/hero-poster.webp"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover"
-        >
-          <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
-        </video>
-      </div>
+      {/* Background */}
+      <div className="absolute inset-0 bg-background" />
 
       {/* Gradient Overlay — Stitch forest green */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/85 to-background/80" />
