@@ -239,7 +239,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "You Have a New Match! 💕";
             pushTitle = "New Match! 💕";
             pushBody = `You've been matched with ${matchName}. Check it out!`;
-            smsMessage = `💕 You have a new match! Log in to see your ${compatibilityScore}% compatibility with ${matchName}.`;
+            
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: SENDERS.dating,
