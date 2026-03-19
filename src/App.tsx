@@ -91,6 +91,7 @@ const App = () => {
                 </BrowserRouter>
               </TooltipProvider>
               </UpgradeProvider>
+              </BiometricLockScreen>
               </NativeAppProvider>
             </AuthProvider>
           </ThemeProvider>
