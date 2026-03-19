@@ -338,7 +338,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = `🎉 ${accepterName} Accepted Your Date!`;
             pushTitle = "Date Confirmed! 🎉";
             pushBody = `${accepterName} accepted your date for ${acceptedDate}!`;
-            smsMessage = `🎉 ${accepterName} accepted your date for ${acceptedDate}! Log in for details.`;
+            
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: SENDERS.dating,
