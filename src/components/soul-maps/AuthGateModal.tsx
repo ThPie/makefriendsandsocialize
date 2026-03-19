@@ -27,13 +27,22 @@ export const AuthGateModal = ({ open, onOpenChange, redirectPath, onEmailSubmitt
     if (!email.trim()) return;
 
     setLoading(true);
+    const trimmedEmail = email.trim();
     try {
-      // Store email as a lead
-      await supabase.from('soul_maps_leads').insert({
-        email: email.trim(),
-        quiz_slug: 'attachment-style',
-        source_url: window.location.href,
-      });
+      // Store email as a lead + auto-subscribe to newsletter
+      await Promise.all([
+        supabase.from('soul_maps_leads').insert({
+          email: trimmedEmail,
+          quiz_slug: 'attachment-style',
+          source_url: window.location.href,
+        }),
+        supabase.functions.invoke('send-newsletter-confirmation', {
+          body: { email: trimmedEmail },
+        }),
+        supabase.functions.invoke('sync-mailchimp-subscriber', {
+          body: { email: trimmedEmail },
+        }),
+      ]);
       setSubmitted(true);
       toast.success('Thanks! Your results are unlocked.');
       onEmailSubmitted?.();
