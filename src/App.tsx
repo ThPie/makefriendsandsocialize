@@ -20,6 +20,7 @@ import { BackToTop } from "@/components/ui/back-to-top";
 import { Toaster } from "@/components/ui/toaster";
 import { UpgradeProvider } from "@/contexts/UpgradeContext";
 import { InAppUpgradeModal } from "@/components/portal/InAppUpgradeModal";
+import { NativeAppProvider } from "@/components/native/NativeAppProvider";
 
 import { SlowDatingRoutes, MainRoutes } from "@/routes/config";
 
@@ -54,6 +55,7 @@ const App = () => {
         <QueryClientProvider client={appQueryClient}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="makefriends-theme">
             <AuthProvider>
+              <NativeAppProvider>
               <UpgradeProvider>
               <TooltipProvider>
                 <RegisterSW />
@@ -76,6 +78,7 @@ const App = () => {
                 </BrowserRouter>
               </TooltipProvider>
               </UpgradeProvider>
+              </NativeAppProvider>
             </AuthProvider>
           </ThemeProvider>
         </QueryClientProvider>
