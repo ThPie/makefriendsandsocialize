@@ -1,12 +1,11 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Share2, Link2, Check, BookOpen } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { type AttachmentStyle, type ResultProfile, resultProfiles } from './quizData';
+import { ResultsShareActions } from './ResultsShareActions';
 
 interface AttachmentResultsProps {
   scores: Record<AttachmentStyle, number>;
@@ -15,7 +14,6 @@ interface AttachmentResultsProps {
 
 const styleOrder: AttachmentStyle[] = ['secure', 'anxious', 'avoidant', 'disorganized'];
 
-// Map quiz results to blog search keywords
 const styleBlogKeywords: Record<AttachmentStyle, string[]> = {
   secure: ['attachment', 'secure attachment', 'healthy relationship', 'emotional safety'],
   anxious: ['attachment', 'anxious attachment', 'anxiety', 'relationship anxiety'],
@@ -25,15 +23,12 @@ const styleBlogKeywords: Record<AttachmentStyle, string[]> = {
 
 export const AttachmentResults = ({ scores, winningStyle }: AttachmentResultsProps) => {
   const profile: ResultProfile = resultProfiles[winningStyle];
-  const [copied, setCopied] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Fetch a related blog post if one exists
   const { data: relatedPost } = useQuery({
     queryKey: ['related-blog', winningStyle],
     queryFn: async () => {
       const keywords = styleBlogKeywords[winningStyle];
-      // Search for published posts matching any keyword in title or category
       for (const keyword of keywords) {
         const { data } = await supabase
           .from('journal_posts')
@@ -47,69 +42,6 @@ export const AttachmentResults = ({ scores, winningStyle }: AttachmentResultsPro
       return null;
     },
   });
-
-  const handleShare = async () => {
-    const shareData = {
-      title: `My Attachment Style: ${profile.title}`,
-      text: `I just discovered I'm ${profile.title} — "${profile.subtitle}". Take the quiz to find yours!`,
-      url: window.location.origin + '/soul-maps/attachment-style',
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch {
-        // User cancelled
-      }
-    } else {
-      // Fallback: copy link
-      handleCopyLink();
-    }
-  };
-
-  const handleCopyLink = async () => {
-    const url = window.location.origin + '/soul-maps/attachment-style';
-    await navigator.clipboard.writeText(
-      `I'm "${profile.title}" — ${profile.subtitle}. Take the Attachment Style quiz: ${url}`
-    );
-    setCopied(true);
-    toast.success('Copied to clipboard!');
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleDownload = () => {
-    const text = [
-      `YOUR ATTACHMENT STYLE RESULTS`,
-      `============================`,
-      ``,
-      `Style: ${profile.title}`,
-      `"${profile.subtitle}"`,
-      ``,
-      profile.description,
-      ``,
-      `TRAITS:`,
-      ...profile.traits.map(t => `• ${t}`),
-      ``,
-      `GROWTH EDGE:`,
-      profile.growthEdge,
-      ``,
-      `SCORE BREAKDOWN:`,
-      ...styleOrder.map(s => `${resultProfiles[s].title}: ${scores[s]}%`),
-      ``,
-      `---`,
-      `Taken on MakeFriends & Socialize — Soul Maps`,
-      `${window.location.origin}/soul-maps`,
-    ].join('\n');
-
-    const blob = new Blob([text], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `attachment-style-results.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success('Results downloaded!');
-  };
 
   return (
     <motion.div
@@ -128,7 +60,6 @@ export const AttachmentResults = ({ scores, winningStyle }: AttachmentResultsPro
 
       <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 space-y-6">
         <p className="text-base text-muted-foreground leading-relaxed">{profile.description}</p>
-
         <div className="space-y-2">
           {profile.traits.map((trait, i) => (
             <div key={i} className="flex items-start gap-2">
@@ -137,7 +68,6 @@ export const AttachmentResults = ({ scores, winningStyle }: AttachmentResultsPro
             </div>
           ))}
         </div>
-
         <div className="pt-4 border-t border-border/40">
           <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-2">Growth Edge</p>
           <p className="text-sm text-foreground/80 italic leading-relaxed">{profile.growthEdge}</p>
@@ -162,37 +92,8 @@ export const AttachmentResults = ({ scores, winningStyle }: AttachmentResultsPro
         ))}
       </div>
 
-      {/* Share & Download actions */}
-      <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8">
-        <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground mb-4">Save & Share</p>
-        <div className="flex flex-wrap gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDownload}
-            className="rounded-full gap-2 text-xs uppercase tracking-widest"
-          >
-            <Download className="w-3.5 h-3.5" /> Download
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleShare}
-            className="rounded-full gap-2 text-xs uppercase tracking-widest"
-          >
-            <Share2 className="w-3.5 h-3.5" /> Share
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleCopyLink}
-            className="rounded-full gap-2 text-xs uppercase tracking-widest"
-          >
-            {copied ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
-            {copied ? 'Copied!' : 'Copy Link'}
-          </Button>
-        </div>
-      </div>
+      {/* Share & Download */}
+      <ResultsShareActions scores={scores} winningStyle={winningStyle} profile={profile} />
 
       {/* Related blog post */}
       {relatedPost && (

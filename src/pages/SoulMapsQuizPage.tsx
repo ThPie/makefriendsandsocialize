@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { AuthGateModal } from '@/components/soul-maps/AuthGateModal';
 import { AttachmentResults } from '@/components/soul-maps/AttachmentResults';
+import { QuizCompletionCTAs } from '@/components/soul-maps/QuizCompletionCTAs';
 import { QuizSidebar } from '@/components/soul-maps/QuizSidebar';
 import { RelatedQuizzes } from '@/components/soul-maps/RelatedQuizzes';
 import {
@@ -121,6 +122,14 @@ const SoulMapsQuizPage = () => {
   const question = attachmentQuestions[currentQ];
   const progressPct = ((currentQ + 1) / attachmentQuestions.length) * 100;
 
+  const handleRetake = () => {
+    setShowResults(false);
+    setSaved(false);
+    setCurrentQ(0);
+    setAnswers(Array(attachmentQuestions.length).fill(null));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (showResults && scores && winningStyle) {
     return (
       <>
@@ -129,6 +138,7 @@ const SoulMapsQuizPage = () => {
         </Helmet>
         <div className="content-container py-24 md:py-32">
           <AttachmentResults scores={scores} winningStyle={winningStyle} />
+          <QuizCompletionCTAs onRetake={handleRetake} />
           <RelatedQuizzes />
           <div className="flex justify-center mt-10">
             <Button
