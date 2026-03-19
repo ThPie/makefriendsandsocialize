@@ -943,17 +943,44 @@ export default function AuthPage() {
         </div>
 
         {/* Mobile Layout */}
-        <div className="lg:hidden min-h-screen flex flex-col bg-background">
-          {/* Mobile image header */}
-          <div className="relative h-56 overflow-hidden">
-            <img src={golfSunsetImg} alt="Golf course sunset" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-            <Link to="/" className="absolute top-4 left-4 z-10">
+        <div className="lg:hidden min-h-screen relative flex flex-col">
+          {/* Full-screen video background */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              poster="/images/hero-poster.webp"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover"
+            >
+              <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
+            </video>
+          </div>
+          {/* Dark overlay for readability */}
+          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+
+          {/* Logo */}
+          <div className="relative z-10 px-6 pt-6">
+            <Link to="/">
               <BrandLogo forceWhite className="h-8 w-auto" />
             </Link>
           </div>
 
-          <div className="flex-1 px-6 py-6 -mt-8 relative z-10">
+          <div className="flex-1 px-6 py-6 relative z-10 flex flex-col justify-end pb-10">
+            <h1 className="font-display italic text-3xl text-white mb-1">
+              {mode === 'signin' ? 'Welcome back' : 'Create an account'}
+            </h1>
+            <p className="text-white/60 text-sm mb-6">
+              {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
+              <button
+                onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setStep(1); clearFormFeedback(); }}
+                className="text-white underline underline-offset-4"
+              >
+                {mode === 'signin' ? 'Sign Up' : 'Log in'}
+              </button>
+            </p>
             <h1 className="font-display italic text-3xl text-foreground mb-1">
               {mode === 'signin' ? 'Welcome back' : 'Create an account'}
             </h1>
