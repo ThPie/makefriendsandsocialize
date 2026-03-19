@@ -212,7 +212,6 @@ const handler = async (req: Request): Promise<Response> => {
         const pushEnabled = datingProfile?.push_notifications_enabled !== false;
 
         let emailResult;
-        let smsMessage = "";
         let subject = "";
         let pushTitle = "";
         let pushBody = "";
