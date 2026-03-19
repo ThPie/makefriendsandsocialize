@@ -272,7 +272,7 @@ const handler = async (req: Request): Promise<Response> => {
             subject = "How Did Your Meeting Go? 💭";
             pushTitle = "Decision Time 💭";
             pushBody = "How did your meeting go? Share your decision now.";
-            smsMessage = "💭 How did your date go? Log in to share your decision.";
+            
             if (emailEnabled) {
               emailResult = await resend.emails.send({
                 from: SENDERS.dating,
