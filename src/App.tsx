@@ -22,6 +22,7 @@ import { UpgradeProvider } from "@/contexts/UpgradeContext";
 import { InAppUpgradeModal } from "@/components/portal/InAppUpgradeModal";
 import { NativeAppProvider } from "@/components/native/NativeAppProvider";
 import { useNativeStatusBar } from "@/hooks/useNativeStatusBar";
+import { useAppBadge } from "@/hooks/useAppBadge";
 
 import { SlowDatingRoutes, MainRoutes } from "@/routes/config";
 
