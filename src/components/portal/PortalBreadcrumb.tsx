@@ -28,7 +28,7 @@ const adminRouteLabels: Record<string, string> = {
   [`${ADMIN_BASE}/circles`]: 'Circle Applications',
   [`${ADMIN_BASE}/members`]: 'Members',
   [`${ADMIN_BASE}/appeals`]: 'Appeals',
-  [`${ADMIN_BASE}/referrals`]: 'Referrals',
+  
   [`${ADMIN_BASE}/businesses`]: 'Founder Companies',
   [`${ADMIN_BASE}/security`]: 'Security Reports',
   [`${ADMIN_BASE}/security-dashboard`]: 'Security Dashboard',

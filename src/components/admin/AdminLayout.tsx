@@ -92,7 +92,6 @@ const sidebarSections = [
       { title: 'Review Queue', url: `${ADMIN_BASE}/dating/review`, icon: ClipboardList, sensitive: true, endpoint: 'dating' },
       { title: 'Matches', url: `${ADMIN_BASE}/matches`, icon: Heart, sensitive: true, endpoint: 'dating' },
       { title: 'Testimonials', url: `${ADMIN_BASE}/testimonials`, icon: Quote, sensitive: false, endpoint: null },
-      { title: 'Concierge', url: `${ADMIN_BASE}/concierge`, icon: Headphones, sensitive: false, endpoint: null },
     ],
   },
   {

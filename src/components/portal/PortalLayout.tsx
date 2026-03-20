@@ -71,8 +71,6 @@ const navGroups = [
     items: [
       { title: 'Directory', url: '/founders-circle/directory', icon: Buildings, requiresApproval: false },
       { title: 'Events', url: '/portal/events', icon: CalendarBlank, requiresApproval: false },
-      { title: 'Perks', url: '/portal/perks', icon: Gift, requiresApproval: false },
-      { title: 'Referrals', url: '/portal/referrals', icon: Gift, requiresApproval: false },
     ],
   },
   {
