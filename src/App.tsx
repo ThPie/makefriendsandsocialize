@@ -88,6 +88,7 @@ const App = () => {
                     <BackToTop />
                     <Toaster />
                     <InAppUpgradeModal />
+                    <AppUpdateModal />
                     <SpeedInsights />
                     <Analytics />
                   </SessionProvider>
