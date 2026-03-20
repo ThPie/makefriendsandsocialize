@@ -1,32 +1,58 @@
 
 
-# Fix Hero Video Loading + Default Dark Mode
+# Obfuscate Admin & Sensitive Route Paths
 
-## Problem 1: Video Loading Flash
+## What's Changing
 
-The hero section shows the poster image first, then abruptly swaps to the video once it loads. This creates a jarring visual jump. The root cause is that the browser shows the `poster` frame until enough video data has buffered, then starts playback — revealing a different frame with a visible transition.
+Replace all predictable route paths (`/admin`, `/auth/waiting`, `/health`) with non-obvious alternatives that don't reveal their purpose to attackers scanning URLs.
 
-**Fix**: Hide the video element until it has enough data to play smoothly, then crossfade it in over the poster. This eliminates the jarring swap.
+| Current Path | New Path | Why |
+|---|---|---|
+| `/admin` | `/cx` | Generic, meaningless prefix |
+| `/admin/*` | `/cx/*` | All admin sub-routes |
+| `/health` | `/sys/status` | Less discoverable |
 
-**Changes to `src/components/home/Hero.tsx`**:
-- Add a `useState` for `videoReady` (default `false`)
-- Add an `onCanPlayThrough` handler on the `<video>` element that sets `videoReady` to `true`
-- Add `preload="auto"` to tell the browser to aggressively buffer the video
-- Apply `opacity-0` by default and transition to `opacity-100` when `videoReady` is true — creating a smooth crossfade over the poster/dark background
-- The poster image is already preloaded in `index.html`, so the dark background + poster shows instantly while the video silently buffers underneath
+> **Note:** The `/portal` and `/auth` paths are fine — they serve authenticated users and are expected to be discoverable. The security concern is specifically about admin paths that signal "attack surface here."
 
-## Problem 2: Default Theme Should Be Dark
+## Files to Modify
 
-Currently `defaultTheme="system"` — so users on light-mode OS get light theme by default.
+### 1. Route constant file (NEW) — `src/lib/route-paths.ts`
+Create a single source of truth for the admin base path so it's easy to change in the future:
+```ts
+export const ADMIN_BASE = '/cx';
+```
 
-**Fix in `src/App.tsx`**:
-- Change `defaultTheme="system"` to `defaultTheme="dark"` on the `ThemeProvider`
-- Keep `enableSystem` removed so dark is always the default for new visitors
-- The theme toggle still works — users can switch to light mode and their preference is saved to `localStorage`
+### 2. `src/routes/config.tsx`
+Replace all `/admin` path prefixes with the constant.
 
-## Files Modified
-| File | Change |
-|------|--------|
-| `src/components/home/Hero.tsx` | Add `videoReady` state, `onCanPlayThrough`, crossfade transition, `preload="auto"` |
-| `src/App.tsx` | Change `defaultTheme` from `"system"` to `"dark"`, remove `enableSystem` |
+### 3. `src/components/admin/AdminLayout.tsx`
+Update all `menuItems` URLs and `SENSITIVE_ROUTES` array to use the new base.
+
+### 4. `src/lib/auth-redirect.ts`
+Change the `'/admin'` redirect destination type and return value.
+
+### 5. `src/components/auth/ProtectedRoute.tsx`
+Update the admin fallback redirect from `/portal` (already correct, no `/admin` reference to change).
+
+### 6. `src/components/portal/PortalLayout.tsx`
+Update the admin link from `/admin` to the new path.
+
+### 7. `src/pages/AuthWaitingPage.tsx`
+Update `navigate('/admin')` call.
+
+### 8. `src/pages/admin/*.tsx` (6 files)
+Update internal navigation links in `AdminDashboard`, `AdminApplications`, `AdminDating`, `AdminDatingProfile`, `AdminEvents`, `AdminSettings`.
+
+### 9. `src/pages/HealthCheckPage` route
+Change from `/health` to `/sys/status` in `routes/config.tsx`.
+
+### 10. `src/components/dating/MatchCard.tsx`
+Update admin dating profile navigation.
+
+## Technical Details
+
+- All changes are string replacements of `/admin` → `${ADMIN_BASE}` (or the literal `/cx`)
+- No database changes needed — routes are purely frontend
+- The `ProtectedRoute` with `requireAdmin` still guards all admin routes server-side via role check
+- Old `/admin` URLs will hit the 404 page (no redirect to avoid confirming the path existed)
 
