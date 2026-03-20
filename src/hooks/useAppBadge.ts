@@ -48,7 +48,7 @@ export function useAppBadge() {
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
           schema: 'public',
           table: 'notification_queue',
           filter: `user_id=eq.${user.id}`,

@@ -91,7 +91,6 @@ export function ActivityFeed({ limit = 10, compact = false }: ActivityFeedProps)
     },
     enabled: !!user,
     staleTime: 60000, // Data stays fresh for 60 seconds
-    refetchInterval: 60000, // Refresh every 60 seconds (reduced from 30s)
     refetchOnWindowFocus: false, // Don't refetch on window focus
   });
 
