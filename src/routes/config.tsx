@@ -40,7 +40,7 @@ const PortalBilling = lazy(() => import("@/pages/portal/PortalBilling"));
 const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
 const AdminApplications = lazy(() => import("@/pages/admin/AdminApplications"));
 const AdminMembers = lazy(() => import("@/pages/admin/AdminMembers"));
-const AdminConnections = lazy(() => import("@/pages/admin/AdminConnections"));
+
 const AdminEvents = lazy(() => import("@/pages/admin/AdminEvents"));
 const AdminContent = lazy(() => import("@/pages/admin/AdminContent"));
 const AdminRoles = lazy(() => import("@/pages/admin/AdminRoles"));
