@@ -171,8 +171,7 @@ export default function ForgotPasswordPage() {
                 <Button 
                   type="submit" 
                   disabled={isSubmitting} 
-                  variant="outline"
-                  className="w-full h-12 rounded-lg text-base font-medium bg-white text-secondary hover:bg-white/90 border-0" 
+                  className="w-full h-12 rounded-lg text-base font-medium" 
                   size="lg"
                 >
                   {isSubmitting ? (
