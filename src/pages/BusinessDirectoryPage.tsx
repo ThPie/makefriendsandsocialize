@@ -10,7 +10,7 @@ import { BusinessCard } from '@/components/business/BusinessCard';
 import { BusinessProfileDialog } from '@/components/business/BusinessProfileDialog';
 import { SEOHead } from '@/components/SEOHead';
 import { motion } from 'framer-motion';
-import { Search, Filter, Building2, Star, ArrowRight, Lock } from 'lucide-react';
+import { Search, Filter, Building2, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import {
@@ -55,13 +55,11 @@ const INDUSTRIES = [
 ];
 
 export default function BusinessDirectoryPage() {
-  const { user, membership } = useAuth();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [industryFilter, setIndustryFilter] = useState('All Industries');
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessProfile | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const canAccessDirectory = membership?.tier === 'fellow' || membership?.tier === 'founder';
 
   // Fetch approved businesses
   const { data: businesses, isLoading } = useQuery({
@@ -101,7 +99,6 @@ export default function BusinessDirectoryPage() {
   const regularBusinesses = filteredBusinesses.filter((b) => b.status !== 'featured');
 
   const handleBusinessClick = (business: BusinessProfile) => {
-    if (!canAccessDirectory) return;
     setSelectedBusiness(business);
     setDialogOpen(true);
   };
@@ -129,8 +126,7 @@ export default function BusinessDirectoryPage() {
               Business Directory
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8">
-              Connect with trusted businesses and professionals within our exclusive community.
-              Request warm introductions through our network.
+              Discover member businesses and reach out directly to connect.
             </p>
           </motion.div>
         </div>
@@ -139,48 +135,6 @@ export default function BusinessDirectoryPage() {
       {/* Main Content */}
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 md:px-8">
-          {/* Access Gate for non-members */}
-          {!canAccessDirectory && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="max-w-2xl mx-auto mb-12"
-            >
-              <div className="rounded-2xl border border-border bg-card p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-8 h-8 text-primary" />
-                </div>
-                <h2 className="text-2xl font-semibold text-foreground mb-3">
-                  Exclusive Member Access
-                </h2>
-                <p className="text-muted-foreground mb-6">
-                  The Business Directory is available to Fellow and Founder members.
-                  Upgrade your membership to connect with trusted professionals.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  {user ? (
-                    <Button asChild>
-                      <TransitionLink to="/portal/billing">
-                        Upgrade Membership <ArrowRight className="w-4 h-4 ml-2" />
-                      </TransitionLink>
-                    </Button>
-                  ) : (
-                    <>
-                      <Button asChild>
-                        <TransitionLink to="/membership">
-                          View Memberships <ArrowRight className="w-4 h-4 ml-2" />
-                        </TransitionLink>
-                      </Button>
-                      <Button variant="outline" asChild>
-                        <TransitionLink to="/auth">Sign In</TransitionLink>
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
           {/* Search and Filters */}
           <div className="flex flex-col md:flex-row gap-4 mb-8">
             <div className="relative flex-1">
@@ -190,13 +144,11 @@ export default function BusinessDirectoryPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
-                disabled={!canAccessDirectory}
               />
             </div>
             <Select
               value={industryFilter}
               onValueChange={setIndustryFilter}
-              disabled={!canAccessDirectory}
             >
               <SelectTrigger className="w-full md:w-[200px]">
                 <Filter className="w-4 h-4 mr-2" />
@@ -235,7 +187,6 @@ export default function BusinessDirectoryPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className={!canAccessDirectory ? 'opacity-60 pointer-events-none' : ''}
                   >
                     <BusinessCard
                       business={business}
@@ -258,7 +209,6 @@ export default function BusinessDirectoryPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className={!canAccessDirectory ? 'opacity-60 pointer-events-none' : ''}
                   >
                     <BusinessCard
                       business={business}

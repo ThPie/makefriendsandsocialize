@@ -53,18 +53,19 @@ export function DiscoverForYou() {
         });
       });
 
-      // Get member count for social proof
+      // Get business directory count
       if (user) {
         const { count } = await supabase
-          .from('profiles')
-          .select('*', { count: 'exact', head: true });
+          .from('business_profiles')
+          .select('*', { count: 'exact', head: true })
+          .in('status', ['approved', 'featured']);
 
         if (count && count > 0) {
           items.push({
             type: 'connection',
-            title: 'Browse the Network',
-            subtitle: `${count} members to connect with`,
-            link: '/portal/network',
+            title: 'Business Directory',
+            subtitle: `${count} businesses to discover`,
+            link: '/founders-circle/directory',
             icon: UsersThree,
             accentClass: 'text-[hsl(var(--accent-gold))] bg-[hsl(var(--accent-gold))]/10',
           });

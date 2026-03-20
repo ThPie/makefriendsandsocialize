@@ -32,8 +32,6 @@ const AuthWaitingPage = lazy(() => import("@/pages/AuthWaitingPage"));
 const EmailVerificationPage = lazy(() => import("@/pages/EmailVerificationPage"));
 const PortalDashboard = lazy(() => import("@/pages/portal/PortalDashboard"));
 const PortalProfile = lazy(() => import("@/pages/portal/PortalProfile"));
-const PortalNetwork = lazy(() => import("@/pages/portal/PortalNetwork"));
-const PortalConnections = lazy(() => import("@/pages/portal/PortalConnections"));
 const PortalEvents = lazy(() => import("@/pages/portal/PortalEvents"));
 const PortalSlowDating = lazy(() => import("@/pages/portal/PortalSlowDating"));
 const PortalMatchDetail = lazy(() => import("@/pages/portal/PortalMatchDetail"));
@@ -42,7 +40,7 @@ const PortalBilling = lazy(() => import("@/pages/portal/PortalBilling"));
 const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
 const AdminApplications = lazy(() => import("@/pages/admin/AdminApplications"));
 const AdminMembers = lazy(() => import("@/pages/admin/AdminMembers"));
-const AdminConnections = lazy(() => import("@/pages/admin/AdminConnections"));
+
 const AdminEvents = lazy(() => import("@/pages/admin/AdminEvents"));
 const AdminContent = lazy(() => import("@/pages/admin/AdminContent"));
 const AdminRoles = lazy(() => import("@/pages/admin/AdminRoles"));
@@ -55,7 +53,7 @@ const AdminAnalytics = lazy(() => import("@/pages/admin/AdminAnalytics"));
 const AdminEventAnalytics = lazy(() => import("@/pages/admin/AdminEventAnalytics"));
 const AdminSecurityReports = lazy(() => import("@/pages/admin/AdminSecurityReports"));
 const AdminSecurityDashboard = lazy(() => import("@/pages/admin/AdminSecurityDashboard"));
-const AdminLeads = lazy(() => import("@/pages/admin/AdminLeads"));
+
 const AdminReferrals = lazy(() => import("@/pages/admin/AdminReferrals"));
 const AdminPhotos = lazy(() => import("@/pages/admin/AdminPhotos"));
 const AdminAppeals = lazy(() => import("@/pages/admin/AdminAppeals"));
@@ -174,8 +172,6 @@ export const MainRoutes = () => (
         <Route path="/portal/onboarding" element={<ProtectedRoute><PortalOnboarding /></ProtectedRoute>} />
         <Route path="/portal" element={<ProtectedRoute><PortalLayout><PortalDashboard /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/profile" element={<ProtectedRoute><PortalLayout><PortalProfile /></PortalLayout></ProtectedRoute>} />
-        <Route path="/portal/network" element={<ProtectedRoute><PortalLayout><PortalNetwork /></PortalLayout></ProtectedRoute>} />
-        <Route path="/portal/connections" element={<ProtectedRoute><PortalLayout><PortalConnections /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/slow-dating" element={<ProtectedRoute><PortalLayout><PortalSlowDating /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/match/:matchId" element={<ProtectedRoute><PortalLayout><PortalMatchDetail /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/events" element={<ProtectedRoute><PortalLayout><PortalEvents /></PortalLayout></ProtectedRoute>} />
@@ -194,7 +190,7 @@ export const MainRoutes = () => (
         <Route path={ADMIN_BASE} element={<ProtectedRoute requireAdmin><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/applications`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminApplications /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/members`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminMembers /></AdminLayout></ProtectedRoute>} />
-        <Route path={`${ADMIN_BASE}/leads`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminLeads /></AdminLayout></ProtectedRoute>} />
+        
         <Route path={`${ADMIN_BASE}/security`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminSecurityReports /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/security-dashboard`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminSecurityDashboard /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/dating`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminDating /></AdminLayout></ProtectedRoute>} />
@@ -204,7 +200,7 @@ export const MainRoutes = () => (
         <Route path={`${ADMIN_BASE}/event-analytics`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminEventAnalytics /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/events`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminEvents /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/photos`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminPhotos /></AdminLayout></ProtectedRoute>} />
-        <Route path={`${ADMIN_BASE}/connections`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminConnections /></AdminLayout></ProtectedRoute>} />
+        
         <Route path={`${ADMIN_BASE}/testimonials`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminTestimonials /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/content`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminContent /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/roles`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminRoles /></AdminLayout></ProtectedRoute>} />

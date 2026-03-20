@@ -1,12 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { House, CalendarBlank, UsersThree, HeartStraight, UserCircle } from '@phosphor-icons/react';
+import { House, CalendarBlank, Buildings, HeartStraight, UserCircle } from '@phosphor-icons/react';
 import { haptic } from '@/lib/haptics';
 import { cn } from '@/lib/utils';
 
 const tabs = [
   { label: 'Home', icon: House, path: '/portal' },
   { label: 'Events', icon: CalendarBlank, path: '/portal/events' },
-  { label: 'Network', icon: UsersThree, path: '/portal/connections' },
+  { label: 'Directory', icon: Buildings, path: '/founders-circle/directory' },
   { label: 'Connect', icon: HeartStraight, path: '/portal/slow-dating' },
   { label: 'Profile', icon: UserCircle, path: '/portal/profile' },
 ];

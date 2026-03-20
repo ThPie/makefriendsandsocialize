@@ -1,9 +1,9 @@
 import { TransitionLink } from '@/components/ui/TransitionLink';
-import { User, Users, Calendar, Heart, Gift, Crown, ArrowRight } from 'lucide-react';
+import { User, Building2, Calendar, Heart, Gift, Crown, ArrowRight } from 'lucide-react';
 
 const actions = [
     { label: 'Edit Profile', icon: User, to: '/portal/profile', color: 'text-primary', bg: 'bg-primary/10' },
-    { label: 'Browse Network', icon: Users, to: '/portal/network', color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Directory', icon: Building2, to: '/founders-circle/directory', color: 'text-primary', bg: 'bg-primary/10' },
     { label: 'Find Events', icon: Calendar, to: '/portal/events', color: 'text-[hsl(var(--accent-gold))]', bg: 'bg-[hsl(var(--accent-gold))]/10' },
     { label: 'Slow Dating', icon: Heart, to: '/portal/slow-dating', color: 'text-primary', bg: 'bg-primary/10' },
     { label: 'View Perks', icon: Gift, to: '/portal/perks', color: 'text-[hsl(var(--accent-gold))]', bg: 'bg-[hsl(var(--accent-gold))]/10' },

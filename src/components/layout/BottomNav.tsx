@@ -1,11 +1,11 @@
 import { useLocation, Link } from 'react-router-dom';
-import { Home, Calendar, Users, Heart, User } from 'lucide-react';
+import { Home, Calendar, Building2, Heart, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const tabs = [
     { label: 'Home', icon: Home, path: '/portal' },
     { label: 'Events', icon: Calendar, path: '/portal/events' },
-    { label: 'Circles', icon: Users, path: '/portal/connections' },
+    { label: 'Directory', icon: Building2, path: '/founders-circle/directory' },
     { label: 'Connect', icon: Heart, path: '/portal/slow-dating' },
     { label: 'Profile', icon: User, path: '/portal/profile' },
 ];
