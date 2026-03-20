@@ -181,8 +181,8 @@ export PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
 
 The app is configured to handle these URL schemes:
 
-- **iOS**: `makefriends://` and Universal Links via `https://makefriendsandsocializecom.lovable.app`
-- **Android**: `makefriends://` and App Links via `https://makefriendsandsocializecom.lovable.app`
+- **iOS**: `makefriends://` and Universal Links via `https://makefriendsandsocialize.com`
+- **Android**: `makefriends://` and App Links via `https://makefriendsandsocialize.com`
 
 ### iOS Setup (ios/App/App/Info.plist)
 
