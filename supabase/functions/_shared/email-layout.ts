@@ -1,7 +1,6 @@
 // Shared branded email layout for all transactional emails
 // Brand: Dark green header (#0D1F0F), gold accents (#8B6914), cream surface (#F2F1EE)
 // Typography: Cormorant Garamond (headings), Inter (body)
-// Production URL: makefriendsandsocializecom.lovable.app
 
 export const SITE_URL = "https://makefriendsandsocialize.com";
 export const BRAND_NAME = "Make Friends and Socialize";
@@ -39,6 +38,10 @@ interface EmailLayoutOptions {
 /**
  * Wraps email content in the branded Make Friends and Socialize layout.
  * Uses table-based HTML for maximum email client compatibility.
+ *
+ * Premium design: header with background image + dark overlay containing
+ * the heading in Cormorant Garamond italic, cream card body, gold pill CTA,
+ * dark forest-green footer with white logo.
  */
 export function buildBrandedEmail(options: EmailLayoutOptions): string {
   const {
@@ -54,10 +57,10 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
   } = options;
 
   const ctaBlock = ctaUrl && ctaText
-    ? `<table cellpadding="0" cellspacing="0" style="margin:28px auto 0;">
+    ? `<table cellpadding="0" cellspacing="0" style="margin:32px auto 0;">
         <tr>
-          <td style="background-color:${ctaColor};border-radius:10px;">
-            <a href="${ctaUrl}" style="display:inline-block;padding:14px 36px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;font-weight:600;color:#ffffff;text-decoration:none;letter-spacing:0.04em;text-transform:uppercase;">
+          <td style="background:linear-gradient(135deg,${ctaColor},#A47D1E);border-radius:28px;box-shadow:0 4px 14px rgba(139,105,20,0.3);">
+            <a href="${ctaUrl}" style="display:inline-block;padding:16px 44px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.08em;text-transform:uppercase;">
               ${ctaText}
             </a>
           </td>
@@ -66,35 +69,39 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
     : "";
 
   const subheadingBlock = subheading
-    ? `<p style="margin:8px 0 0;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.6);">${subheading}</p>`
+    ? `<p style="margin:8px 0 0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.55);">${subheading}</p>`
     : "";
 
   const footerBlock = footerText
-    ? `<p style="margin:0 0 8px;font-size:12px;color:#9BA89D;line-height:20px;">${footerText}</p>`
+    ? `<p style="margin:0 0 12px;font-size:12px;color:#9BA89D;line-height:20px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">${footerText}</p>`
     : "";
 
   return `<!DOCTYPE html>
-<html>
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   ${preheader ? `<title>${preheader}</title>` : ""}
+  <!--[if !mso]><!-->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!--<![endif]-->
 </head>
-<body style="margin:0;padding:0;background-color:#ffffff;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-  ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;">${preheader}</div>` : ""}
+<body style="margin:0;padding:0;background-color:#ffffff;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;">
+  ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}${"&zwnj;&nbsp;".repeat(20)}</div>` : ""}
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff;">
     <tr>
-      <td align="center" style="padding:40px 20px;">
-        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#F2F1EE;border-radius:16px;overflow:hidden;">
-          <!-- Header with background image -->
+      <td align="center" style="padding:40px 16px;">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(13,31,15,0.08);">
+          <!-- Header -->
           <tr>
-            <td style="padding:40px 40px 24px;text-align:center;background-image:url('${HEADER_BG_URL}');background-size:cover;background-position:center;background-color:${headerBg};">
+            <td style="background-image:url('${HEADER_BG_URL}');background-size:cover;background-position:center;background-color:${headerBg};">
               <!--[if gte mso 9]>
               <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;">
               <v:fill type="frame" src="${HEADER_BG_URL}" />
-              <v:textbox style="mso-fit-shape-to-text:true" inset="40px,40px,24px,40px">
+              <v:textbox style="mso-fit-shape-to-text:true" inset="0,0,0,0">
               <![endif]-->
-              <div style="background:rgba(0,0,0,0.55);border-radius:16px 16px 0 0;margin:-40px -40px -24px;padding:40px 40px 24px;">
+              <div style="background:linear-gradient(180deg,rgba(13,31,15,0.78) 0%,rgba(13,31,15,0.88) 100%);padding:48px 40px 40px;text-align:center;">
+                <h1 style="margin:0;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-size:32px;font-weight:600;font-style:italic;color:#ffffff;line-height:1.2;letter-spacing:0.01em;">${heading}</h1>
                 ${subheadingBlock}
               </div>
               <!--[if gte mso 9]>
@@ -105,20 +112,20 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
           </tr>
           <!-- Body -->
           <tr>
-            <td style="padding:32px 40px;">
+            <td style="padding:36px 40px 40px;background-color:#F2F1EE;">
               ${body}
               ${ctaBlock}
             </td>
           </tr>
           <!-- Footer -->
           <tr>
-            <td style="padding:24px 40px;border-top:1px solid #E3E0D8;text-align:center;background-color:#0D1F0F;border-radius:0 0 16px 16px;">
-              <img src="${BRAND_LOGO_FULL_URL}" alt="Make Friends and Socialize" width="160" height="auto" style="display:block;margin:0 auto 16px;max-width:160px;" />
+            <td style="padding:28px 40px 32px;text-align:center;background-color:#0D1F0F;">
+              <img src="${BRAND_LOGO_FULL_URL}" alt="Make Friends and Socialize" width="140" height="auto" style="display:block;margin:0 auto 20px;max-width:140px;" />
               ${footerBlock}
-              <p style="margin:0 0 8px;font-size:12px;color:#9BA89D;">
+              <p style="margin:0 0 6px;font-size:11px;color:rgba(155,168,157,0.7);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
                 ${COPYRIGHT}
               </p>
-              <p style="margin:0;font-size:11px;color:#9BA89D;">
+              <p style="margin:0;font-size:11px;color:rgba(155,168,157,0.5);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
                 Salt Lake City, Utah, USA
               </p>
             </td>
@@ -133,20 +140,20 @@ export function buildBrandedEmail(options: EmailLayoutOptions): string {
 
 /** Helper: styled paragraph */
 export const p = (text: string) =>
-  `<p style="margin:0 0 20px;font-size:15px;line-height:24px;color:#4A5A4D;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">${text}</p>`;
+  `<p style="margin:0 0 20px;font-size:15px;line-height:26px;color:#4A5A4D;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">${text}</p>`;
 
 /** Helper: styled heading inside body */
 export const h2 = (text: string) =>
-  `<h2 style="margin:0 0 16px;font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;font-style:italic;color:#0D1F0F;">${text}</h2>`;
+  `<h2 style="margin:0 0 16px;font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:600;font-style:italic;color:#0D1F0F;line-height:1.3;">${text}</h2>`;
 
 /** Helper: info/detail box */
 export const infoBox = (content: string) =>
-  `<div style="background-color:#E8E6E1;border-radius:10px;padding:20px;margin:0 0 20px;">${content}</div>`;
+  `<div style="background-color:#E8E6E1;border-radius:12px;padding:24px;margin:0 0 24px;">${content}</div>`;
 
 /** Helper: warning/alert box */
 export const alertBox = (content: string) =>
-  `<div style="background-color:#FEF3CD;border-left:4px solid #8B6914;border-radius:0 10px 10px 0;padding:16px 20px;margin:0 0 20px;">${content}</div>`;
+  `<div style="background-color:#FEF3CD;border-left:4px solid #8B6914;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">${content}</div>`;
 
 /** Helper: detail row inside info box */
 export const detailRow = (icon: string, label: string, value: string) =>
-  `<p style="margin:0 0 8px;font-size:14px;color:#4A5A4D;">${icon} <strong style="color:#0D1F0F;">${label}:</strong> ${value}</p>`;
+  `<p style="margin:0 0 10px;font-size:14px;color:#4A5A4D;line-height:22px;">${icon} <strong style="color:#0D1F0F;">${label}:</strong> ${value}</p>`;
