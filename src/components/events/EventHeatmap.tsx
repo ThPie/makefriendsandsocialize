@@ -37,7 +37,7 @@ export const EventHeatmap = ({ eventId }: EventHeatmapProps) => {
                 count,
             })) as ZoneDensity[];
         },
-        refetchInterval: 10000, // Refresh every 10 seconds
+        refetchInterval: 60000, // Refresh every 60 seconds
     });
 
     if (isLoading) return null;
