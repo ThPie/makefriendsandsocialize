@@ -342,7 +342,7 @@ const AdminDating = () => {
                 <Card 
                   key={profile.id}
                   className="group cursor-pointer border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 overflow-hidden"
-                  onClick={() => navigate(`/admin/dating/${profile.id}`)}
+                  onClick={() => navigate(`${ADMIN_BASE}/dating/${profile.id}`)}
                 >
                   <CardContent className="p-0">
                     {/* Photo Header */}
