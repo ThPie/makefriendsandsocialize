@@ -12,8 +12,6 @@ import { ADMIN_BASE } from '@/lib/route-paths';
 const portalRouteLabels: Record<string, string> = {
   '/portal': 'Dashboard',
   '/portal/profile': 'My Profile',
-  '/portal/network': 'The Network',
-  '/portal/connections': 'Connections',
   '/portal/slow-dating': 'Slow Dating',
   '/portal/match': 'Match Details',
   '/portal/events': 'Events',
