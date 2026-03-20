@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ADMIN_BASE } from '@/lib/route-paths';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { AnimatedCard, AnimatedCardContent } from '@/components/ui/animated-card';
