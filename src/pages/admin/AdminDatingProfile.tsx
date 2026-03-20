@@ -296,7 +296,7 @@ const AdminDatingProfile = () => {
     return (
       <div className="text-center py-12">
         <p className="text-muted-foreground">Profile not found</p>
-        <Button variant="outline" onClick={() => navigate("/admin/dating")} className="mt-4">
+        <Button variant="outline" onClick={() => navigate(`${ADMIN_BASE}/dating`)} className="mt-4">
           Back to Profiles
         </Button>
       </div>
