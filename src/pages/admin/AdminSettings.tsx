@@ -353,16 +353,16 @@ export default function AdminSettings() {
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Button variant="outline" asChild>
-                <a href="/admin/applications">Applications</a>
+                <a href={`${ADMIN_BASE}/applications`}>Applications</a>
               </Button>
               <Button variant="outline" asChild>
-                <a href="/admin/members">Members</a>
+                <a href={`${ADMIN_BASE}/members`}>Members</a>
               </Button>
               <Button variant="outline" asChild>
-                <a href="/admin/events">Events</a>
+                <a href={`${ADMIN_BASE}/events`}>Events</a>
               </Button>
               <Button variant="outline" asChild>
-                <a href="/admin/connections">Connections</a>
+                <a href={`${ADMIN_BASE}/connections`}>Connections</a>
               </Button>
             </div>
           </CardContent>

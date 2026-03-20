@@ -545,7 +545,7 @@ export default function AdminApplications() {
 
                   {selectedApp.security_report?.id && (
                     <Button variant="link" size="sm" className="p-0 h-auto" asChild>
-                      <Link to={`/admin/security?report=${selectedApp.security_report.id}`}>
+                      <Link to={`${ADMIN_BASE}/security?report=${selectedApp.security_report.id}`}>
                         View Full Report →
                       </Link>
                     </Button>

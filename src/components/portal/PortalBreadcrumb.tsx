@@ -7,6 +7,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { ADMIN_BASE } from '@/lib/route-paths';
 
 const portalRouteLabels: Record<string, string> = {
   '/portal': 'Dashboard',
@@ -26,27 +27,27 @@ const portalRouteLabels: Record<string, string> = {
 };
 
 const adminRouteLabels: Record<string, string> = {
-  '/admin': 'Overview',
-  '/admin/applications': 'Applications',
-  '/admin/circles': 'Circle Applications',
-  '/admin/members': 'Members',
-  '/admin/appeals': 'Appeals',
-  '/admin/referrals': 'Referrals',
-  '/admin/businesses': 'Founder Companies',
-  '/admin/leads': 'Lead Generation',
-  '/admin/security': 'Security Reports',
-  '/admin/security-dashboard': 'Security Dashboard',
-  '/admin/dating': 'Introductions',
-  '/admin/matches': 'Matches',
-  '/admin/analytics': 'Analytics',
-  '/admin/events': 'Events',
-  '/admin/event-analytics': 'Event Analytics',
-  '/admin/photos': 'Event Photos',
-  '/admin/connections': 'Connections',
-  '/admin/testimonials': 'Testimonials',
-  '/admin/content': 'Content',
-  '/admin/roles': 'Roles',
-  '/admin/settings': 'Settings',
+  [ADMIN_BASE]: 'Overview',
+  [`${ADMIN_BASE}/applications`]: 'Applications',
+  [`${ADMIN_BASE}/circles`]: 'Circle Applications',
+  [`${ADMIN_BASE}/members`]: 'Members',
+  [`${ADMIN_BASE}/appeals`]: 'Appeals',
+  [`${ADMIN_BASE}/referrals`]: 'Referrals',
+  [`${ADMIN_BASE}/businesses`]: 'Founder Companies',
+  [`${ADMIN_BASE}/leads`]: 'Lead Generation',
+  [`${ADMIN_BASE}/security`]: 'Security Reports',
+  [`${ADMIN_BASE}/security-dashboard`]: 'Security Dashboard',
+  [`${ADMIN_BASE}/dating`]: 'Introductions',
+  [`${ADMIN_BASE}/matches`]: 'Matches',
+  [`${ADMIN_BASE}/analytics`]: 'Analytics',
+  [`${ADMIN_BASE}/events`]: 'Events',
+  [`${ADMIN_BASE}/event-analytics`]: 'Event Analytics',
+  [`${ADMIN_BASE}/photos`]: 'Event Photos',
+  [`${ADMIN_BASE}/connections`]: 'Connections',
+  [`${ADMIN_BASE}/testimonials`]: 'Testimonials',
+  [`${ADMIN_BASE}/content`]: 'Content',
+  [`${ADMIN_BASE}/roles`]: 'Roles',
+  [`${ADMIN_BASE}/settings`]: 'Settings',
 };
 
 interface PortalBreadcrumbProps {
@@ -56,7 +57,7 @@ interface PortalBreadcrumbProps {
 export function PortalBreadcrumb({ type }: PortalBreadcrumbProps) {
   const location = useLocation();
   const routeLabels = type === 'portal' ? portalRouteLabels : adminRouteLabels;
-  const basePath = type === 'portal' ? '/portal' : '/admin';
+  const basePath = type === 'portal' ? '/portal' : ADMIN_BASE;
   const baseLabel = type === 'portal' ? 'Portal' : 'Admin';
   
   // Get the current page label - handle dynamic routes like /portal/match/:id
