@@ -2,10 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { Resend } from "https://esm.sh/resend@2.0.0";
 import { getCorsHeaders } from '../_shared/cors.ts';
-
-
-
-const SITE_URL = 'https://qzqomqctuqldexnxgmlh.lovableproject.com';
+import { buildBrandedEmail, SENDERS, SITE_URL, p, infoBox, detailRow } from '../_shared/email-layout.ts';
 
 const NOTIFICATION_TYPE_LABELS: Record<string, { icon: string; label: string }> = {
   'new_match': { icon: '💕', label: 'New Match' },
@@ -17,65 +14,6 @@ const NOTIFICATION_TYPE_LABELS: Record<string, { icon: string; label: string }> 
   'match_declined': { icon: '👋', label: 'Match Update' },
   'meeting_scheduled': { icon: '🗓️', label: 'Meeting Scheduled' },
 };
-
-function getBundledEmailHtml(displayName: string, notifications: Array<{ type: string; payload: Record<string, unknown>; created_at: string }>): string {
-  const notificationRows = notifications.map(n => {
-    const typeInfo = NOTIFICATION_TYPE_LABELS[n.type] || { icon: '📬', label: 'Update' };
-    const description = getNotificationDescription(n.type, n.payload);
-    return `
-      <tr>
-        <td style="padding: 16px; border-bottom: 1px solid #eee;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 24px;">${typeInfo.icon}</span>
-            <div>
-              <div style="font-weight: 600; color: #333; margin-bottom: 4px;">${typeInfo.label}</div>
-              <div style="color: #666; font-size: 14px;">${description}</div>
-            </div>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join('');
-
-  return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
-      <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px 16px 0 0; padding: 32px; text-align: center;">
-          <h1 style="color: #fff; margin: 0; font-size: 28px;">Your Dating Updates 📬</h1>
-        </div>
-        
-        <div style="background: #fff; padding: 32px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
-          <p style="color: #333; font-size: 16px; margin-bottom: 24px;">
-            Hi ${displayName},<br><br>
-            Here's a summary of what happened while you were away:
-          </p>
-          
-          <table style="width: 100%; border-collapse: collapse; background: #fafafa; border-radius: 12px; overflow: hidden;">
-            ${notificationRows}
-          </table>
-          
-          <div style="text-align: center; margin-top: 32px;">
-            <a href="${SITE_URL}/portal/slow-dating" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
-              View All Updates
-            </a>
-          </div>
-          
-          <p style="color: #999; font-size: 12px; text-align: center; margin-top: 32px;">
-            You're receiving this bundled summary to keep your inbox manageable.<br>
-            <a href="${SITE_URL}/portal/slow-dating" style="color: #667eea;">Manage notification preferences</a>
-          </p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
-}
 
 function getNotificationDescription(type: string, payload: Record<string, unknown>): string {
   switch (type) {
@@ -92,12 +30,34 @@ function getNotificationDescription(type: string, payload: Record<string, unknow
     case 'dating_vetted':
       return 'Your dating profile has been approved';
     case 'match_declined':
-      return 'A match has ended - we\'ll find you someone new';
+      return 'A match has ended — we\'ll find you someone new';
     case 'meeting_scheduled':
       return `Meeting scheduled for ${payload.meeting_date || 'soon'}`;
     default:
       return 'You have a new update';
   }
+}
+
+function buildNotificationRows(notifications: Array<{ type: string; payload: Record<string, unknown>; created_at: string }>): string {
+  return notifications.map(n => {
+    const typeInfo = NOTIFICATION_TYPE_LABELS[n.type] || { icon: '📬', label: 'Update' };
+    const description = getNotificationDescription(n.type, n.payload);
+    return `
+      <tr>
+        <td style="padding:14px 20px;border-bottom:1px solid #E3E0D8;">
+          <table cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+              <td width="36" valign="top" style="font-size:22px;padding-right:14px;">${typeInfo.icon}</td>
+              <td>
+                <p style="margin:0 0 2px;font-size:14px;font-weight:600;color:#0D1F0F;">${typeInfo.label}</p>
+                <p style="margin:0;font-size:13px;color:#4A5A4D;line-height:1.4;">${description}</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -114,7 +74,6 @@ const handler = async (req: Request): Promise<Response> => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
-    // Get all pending bundled_summary notifications
     const { data: bundledNotifications, error } = await supabase
       .from('notification_queue')
       .select('*')
@@ -144,7 +103,6 @@ const handler = async (req: Request): Promise<Response> => {
           continue;
         }
 
-        // Get user info
         const { data: authUser } = await supabase.auth.admin.getUserById(userId);
         const userEmail = authUser?.user?.email;
 
@@ -156,12 +114,29 @@ const handler = async (req: Request): Promise<Response> => {
 
         const displayName = datingProfile?.display_name || 'there';
 
-        // Send email if enabled
         if (resend && userEmail && datingProfile?.email_notifications_enabled !== false) {
-          const emailHtml = getBundledEmailHtml(displayName, bundledItems);
+          const notificationRows = buildNotificationRows(bundledItems);
+
+          const emailHtml = buildBrandedEmail({
+            preheader: `You have ${bundledItems.length} new dating updates`,
+            heading: "Your Dating Updates",
+            subheading: "Intentional Connections Summary",
+            body: `
+              ${p(`Hi ${displayName},`)}
+              ${p(`Here's a summary of what happened while you were away:`)}
+              <div style="background-color:#E8E6E1;border-radius:12px;overflow:hidden;margin:0 0 24px;">
+                <table cellpadding="0" cellspacing="0" width="100%">
+                  ${notificationRows}
+                </table>
+              </div>
+            `,
+            ctaUrl: `${SITE_URL}/portal/slow-dating`,
+            ctaText: "View All Updates",
+            footerText: "You're receiving this bundled summary to keep your inbox manageable.",
+          });
 
           await resend.emails.send({
-            from: 'Slow Dating <notifications@resend.dev>',
+            from: SENDERS.dating,
             to: [userEmail],
             subject: `📬 ${bundledItems.length} Dating Updates for You`,
             html: emailHtml,
@@ -170,7 +145,6 @@ const handler = async (req: Request): Promise<Response> => {
           console.log(`Sent bundled email to ${userEmail} with ${bundledItems.length} notifications`);
         }
 
-        // Mark as sent
         await supabase
           .from('notification_queue')
           .update({ status: 'sent', sent_at: new Date().toISOString() })

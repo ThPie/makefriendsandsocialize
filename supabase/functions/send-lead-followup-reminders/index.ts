@@ -1,8 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { getCorsHeaders } from '../_shared/cors.ts';
-
-
+import { buildBrandedEmail, SENDERS, SITE_URL, p, infoBox, detailRow, alertBox } from '../_shared/email-layout.ts';
 
 interface UncontactedLead {
   id: string;
@@ -32,7 +31,6 @@ serve(async (req: Request) => {
 
     console.log("Checking for uncontacted leads...");
 
-    // Find leads that haven't been contacted at different intervals
     const { data: leads, error: leadsError } = await supabase
       .from("business_leads")
       .select(`
@@ -67,7 +65,6 @@ serve(async (req: Request) => {
 
     console.log(`Found ${leads.length} uncontacted leads`);
 
-    // Check for existing reminders
     const { data: existingReminders } = await supabase
       .from("lead_followup_reminders")
       .select("lead_id, reminder_type");
@@ -105,7 +102,6 @@ serve(async (req: Request) => {
         hours_old: hoursOld,
       };
 
-      // Check which reminders to send based on age
       if (hoursOld >= 72 && !reminderSet.has(`${lead.id}-72h`)) {
         remindersToSend.push({ lead: enrichedLead, reminderType: "72h" });
       } else if (hoursOld >= 48 && hoursOld < 72 && !reminderSet.has(`${lead.id}-48h`)) {
@@ -122,7 +118,6 @@ serve(async (req: Request) => {
 
     for (const { lead, reminderType } of remindersToSend) {
       try {
-        // Get user email
         const { data: authUser } = await supabase.auth.admin.getUserById(
           lead.business_user_id
         );
@@ -135,22 +130,43 @@ serve(async (req: Request) => {
           continue;
         }
 
-        // Build urgency message based on reminder type
         let urgencyMessage = "";
+        let urgencyLevel = "";
         switch (reminderType) {
           case "24h":
             urgencyMessage = "has been waiting for 24 hours";
+            urgencyLevel = "Friendly Reminder";
             break;
           case "48h":
             urgencyMessage = "has been waiting for 48 hours. Leads contacted within 48h are 3x more likely to convert!";
+            urgencyLevel = "Important";
             break;
           case "72h":
-            urgencyMessage = "has been waiting for 72 hours. This is a final reminder - leads older than 72h have significantly lower conversion rates.";
+            urgencyMessage = "has been waiting for 72 hours. This is a final reminder — leads older than 72h have significantly lower conversion rates.";
+            urgencyLevel = "Final Reminder";
             break;
         }
 
-        // Send email via Resend if available
         if (resendApiKey) {
+          const emailHtml = buildBrandedEmail({
+            preheader: `Follow-up reminder: ${lead.contact_name} is waiting`,
+            heading: "Lead Follow-Up Reminder",
+            subheading: urgencyLevel,
+            body: `
+              ${p(`Your lead <strong style="color:#0D1F0F;">${lead.contact_name}</strong>${lead.company_name ? ` from ${lead.company_name}` : ''} ${urgencyMessage}.`)}
+              ${infoBox(`
+                <p style="margin:0 0 12px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#8B6914;font-weight:600;">Contact Details</p>
+                ${detailRow('👤', 'Name', lead.contact_name)}
+                <p style="margin:0 0 10px;font-size:14px;color:#4A5A4D;line-height:22px;">📧 <strong style="color:#0D1F0F;">Email:</strong> <a href="mailto:${lead.contact_email}" style="color:#8B6914;text-decoration:none;">${lead.contact_email}</a></p>
+                ${lead.company_name ? detailRow('🏢', 'Company', lead.company_name) : ''}
+              `)}
+              ${reminderType === '72h' ? alertBox(`<p style="margin:0;font-size:14px;color:#856404;text-align:center;">⚡ This is your final reminder. Quick response times lead to higher conversion rates!</p>`) : ''}
+            `,
+            ctaUrl: `${SITE_URL}/portal/business`,
+            ctaText: "View in Dashboard",
+            footerText: "The Founders Circle · Quick response times lead to higher conversion rates.",
+          });
+
           const emailResponse = await fetch("https://api.resend.com/emails", {
             method: "POST",
             headers: {
@@ -158,33 +174,10 @@ serve(async (req: Request) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              from: "Make Friends and Socialize <noreply@makefriendsandsocialize.com>",
+              from: SENDERS.business,
               to: [recipientEmail],
-              subject: `⏰ Follow-up reminder: ${lead.contact_name} ${urgencyMessage.split(" ")[0]}...`,
-              html: `
-                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                  <h2 style="color: #333;">Lead Follow-up Reminder</h2>
-                  <p>Hi there,</p>
-                  <p>Your lead <strong>${lead.contact_name}</strong> ${lead.company_name ? `from ${lead.company_name}` : ""} ${urgencyMessage}.</p>
-                  
-                  <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin: 20px 0;">
-                    <p style="margin: 0 0 8px 0;"><strong>Contact:</strong> ${lead.contact_name}</p>
-                    <p style="margin: 0 0 8px 0;"><strong>Email:</strong> ${lead.contact_email}</p>
-                    ${lead.company_name ? `<p style="margin: 0;"><strong>Company:</strong> ${lead.company_name}</p>` : ""}
-                  </div>
-                  
-                  <p>
-                    <a href="${supabaseUrl.replace(".supabase.co", ".lovable.app")}/portal/business" 
-                       style="background: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
-                      View in Dashboard
-                    </a>
-                  </p>
-                  
-                  <p style="color: #666; font-size: 14px; margin-top: 30px;">
-                    Quick response times lead to higher conversion rates. Don't let this lead go cold!
-                  </p>
-                </div>
-              `,
+              subject: `⏰ Follow-up reminder: ${lead.contact_name} is waiting`,
+              html: emailHtml,
             }),
           });
 
@@ -196,7 +189,6 @@ serve(async (req: Request) => {
           }
         }
 
-        // Record the reminder
         await supabase.from("lead_followup_reminders").insert({
           lead_id: lead.id,
           business_id: lead.business_id,
@@ -204,7 +196,6 @@ serve(async (req: Request) => {
           sent_at: new Date().toISOString(),
         });
 
-        // Also add to notification queue
         await supabase.from("notification_queue").insert({
           user_id: lead.business_user_id,
           notification_type: "lead_followup_reminder",

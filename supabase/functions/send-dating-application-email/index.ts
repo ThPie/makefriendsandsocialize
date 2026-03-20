@@ -1,98 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { getCorsHeaders } from '../_shared/cors.ts';
+import { buildBrandedEmail, SENDERS, SITE_URL, p, infoBox } from '../_shared/email-layout.ts';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
-
-function getApplicationReceivedEmailHtml(displayName: string, coachingMessage: string): string {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Application Received – Intentional Connections</title>
-  <style>
-    body { margin: 0; padding: 0; background-color: #0a0f0b; font-family: Georgia, 'Times New Roman', serif; }
-    .wrapper { max-width: 600px; margin: 0 auto; background-color: #0a0f0b; }
-    .header { background-color: #0a2118; padding: 48px 40px 36px; text-align: center; border-bottom: 1px solid #D4AF3730; }
-    .heart { font-size: 48px; display: block; margin-bottom: 16px; }
-    .header h1 { color: #D4AF37; font-size: 28px; font-weight: 300; letter-spacing: 0.05em; margin: 0; }
-    .header p { color: #ffffff80; font-size: 14px; margin: 8px 0 0; letter-spacing: 0.1em; text-transform: uppercase; }
-    .body { padding: 40px; }
-    .greeting { color: #f5f0e8; font-size: 18px; line-height: 1.7; margin-bottom: 28px; }
-    .timeline-box { background-color: #0a2118; border: 1px solid #D4AF3730; border-radius: 12px; padding: 28px; margin-bottom: 28px; }
-    .timeline-box h2 { color: #D4AF37; font-size: 14px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 16px; }
-    .timeline-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
-    .timeline-dot { width: 6px; height: 6px; background-color: #D4AF37; border-radius: 50%; margin-top: 8px; flex-shrink: 0; }
-    .timeline-text { color: #ffffffcc; font-size: 15px; line-height: 1.6; }
-    .coach-box { background-color: #f5f0e8; border-left: 3px solid #D4AF37; border-radius: 8px; padding: 28px; margin-bottom: 28px; }
-    .coach-label { color: #5a4a2a; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
-    .coach-message { color: #2a1f0a; font-size: 16px; line-height: 1.8; font-style: italic; margin: 0; }
-    .email-notice { color: #ffffff60; font-size: 14px; line-height: 1.6; margin-bottom: 32px; text-align: center; }
-    .cta-wrapper { text-align: center; margin-bottom: 32px; }
-    .cta-btn { display: inline-block; background-color: #D4AF37; color: #0a0f0b; text-decoration: none; padding: 14px 36px; border-radius: 50px; font-size: 15px; font-weight: 600; letter-spacing: 0.05em; }
-    .resource-link { text-align: center; margin-bottom: 40px; }
-    .resource-link a { color: #D4AF3799; font-size: 13px; text-decoration: none; border-bottom: 1px solid #D4AF3740; padding-bottom: 2px; }
-    .footer { border-top: 1px solid #ffffff10; padding: 32px 40px; text-align: center; }
-    .footer p { color: #ffffff40; font-size: 13px; line-height: 1.8; margin: 0; }
-  </style>
-</head>
-<body>
-  <div class="wrapper">
-    <div class="header">
-      <span class="heart">🌿</span>
-      <h1>Application Received</h1>
-      <p>Intentional Connections</p>
-    </div>
-    <div class="body">
-      <p class="greeting">
-        Dear ${displayName},<br/><br/>
-        Congratulations on taking this step. Submitting your Intentional Connections profile takes courage — it means you're ready to be known, and to find someone worth knowing.
-      </p>
-
-      <div class="timeline-box">
-        <h2>⏱ What Happens Next</h2>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <span class="timeline-text"><strong style="color:#D4AF37">24–48 hours:</strong> Our matchmaking team reviews your application personally.</span>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <span class="timeline-text"><strong style="color:#D4AF37">Social verification:</strong> We gently verify your profile to keep our community authentic.</span>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <span class="timeline-text"><strong style="color:#D4AF37">We'll reach out:</strong> If you're a great fit, expect a brief consultation call from our team.</span>
-        </div>
-      </div>
-
-      <div class="coach-box">
-        <div class="coach-label">💌 A note from your dating coach</div>
-        <p class="coach-message">"${coachingMessage}"</p>
-      </div>
-
-      <p class="email-notice">📧 Keep an eye on your inbox — we may reach out with next steps or any follow-up questions.</p>
-
-      <div class="cta-wrapper">
-        <a href="https://www.gottman.com/blog/the-importance-of-being-intentional-in-your-relationship/" class="cta-btn">
-          Read: The Art of Intentional Dating →
-        </a>
-      </div>
-
-      <div class="resource-link">
-        <a href="https://makefriendsandsocializecom.lovable.app/slow-dating">View your application status in the portal</a>
-      </div>
-    </div>
-    <div class="footer">
-      <p>With warmth,<br/><strong style="color:#D4AF3799">The Intentional Connections Team</strong><br/><br/>
-      makefriendsandsocialize.com · You're receiving this because you applied to Intentional Connections.</p>
-    </div>
-  </div>
-</body>
-</html>`;
-}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -117,7 +31,6 @@ serve(async (req) => {
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY is not configured");
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) throw new Error("Supabase env vars missing");
 
-    // 1. Get user email via service role
     const adminSupabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const { data: userData, error: userError } = await adminSupabase.auth.admin.getUserById(userId);
 
@@ -127,7 +40,7 @@ serve(async (req) => {
 
     const userEmail = userData.user.email;
 
-    // 2. Generate AI coaching message (fail gracefully)
+    // Generate AI coaching message (fail gracefully)
     let coachingMessage = `You've shown real bravery by putting yourself out there with intention. The fact that you took the time to share your true self speaks volumes about the kind of partner you'll be. Trust the process — the right connection is worth the wait.`;
 
     if (LOVABLE_API_KEY) {
@@ -163,8 +76,35 @@ serve(async (req) => {
       }
     }
 
-    // 3. Send email via Resend
-    const emailHtml = getApplicationReceivedEmailHtml(displayName, coachingMessage);
+    const emailHtml = buildBrandedEmail({
+      preheader: `Your Intentional Connections application has been received`,
+      heading: "Application Received",
+      subheading: "Intentional Connections",
+      body: `
+        ${p(`Dear ${displayName},`)}
+        ${p(`Congratulations on taking this step. Submitting your Intentional Connections profile takes courage — it means you're ready to be known, and to find someone worth knowing.`)}
+        ${infoBox(`
+          <p style="margin:0 0 12px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8B6914;font-weight:600;">⏱ What Happens Next</p>
+          <p style="margin:0 0 10px;font-size:14px;color:#4A5A4D;line-height:1.6;">
+            <strong style="color:#0D1F0F;">24–48 hours:</strong> Our matchmaking team reviews your application personally.
+          </p>
+          <p style="margin:0 0 10px;font-size:14px;color:#4A5A4D;line-height:1.6;">
+            <strong style="color:#0D1F0F;">Social verification:</strong> We gently verify your profile to keep our community authentic.
+          </p>
+          <p style="margin:0;font-size:14px;color:#4A5A4D;line-height:1.6;">
+            <strong style="color:#0D1F0F;">We'll reach out:</strong> If you're a great fit, expect a brief consultation call from our team.
+          </p>
+        `)}
+        <div style="background-color:#E8E6E1;border-left:4px solid #8B6914;border-radius:0 12px 12px 0;padding:20px 24px;margin:0 0 24px;">
+          <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8B6914;font-weight:600;">💌 A note from your dating coach</p>
+          <p style="margin:0;font-size:15px;line-height:1.7;font-style:italic;color:#4A5A4D;">"${coachingMessage}"</p>
+        </div>
+        ${p(`📧 Keep an eye on your inbox — we may reach out with next steps or any follow-up questions.`)}
+      `,
+      ctaUrl: `${SITE_URL}/slow-dating`,
+      ctaText: "View Your Application Status",
+      footerText: "Intentional Connections · You're receiving this because you applied to our matchmaking service.",
+    });
 
     const resendRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -173,7 +113,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Intentional Connections <dating@makefriendsandsocialize.com>",
+        from: SENDERS.dating,
         to: [userEmail],
         subject: "Your Application is In — What Happens Next 🌿",
         html: emailHtml,
