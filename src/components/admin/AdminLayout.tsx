@@ -108,7 +108,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   // Determine current endpoint for rate limiting
   const currentEndpoint = useMemo(() => {
-    const currentItem = menuItems.find(item => location.pathname.startsWith(item.url) && item.url !== '/admin');
+    const currentItem = menuItems.find(item => location.pathname.startsWith(item.url) && item.url !== ADMIN_BASE);
     return currentItem?.endpoint || null;
   }, [location.pathname]);
 

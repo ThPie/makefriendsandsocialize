@@ -45,6 +45,7 @@ import { BrandLogo } from '@/components/common/BrandLogo';
 import { PendingMemberBanner } from './PendingMemberBanner';
 import { PortalBreadcrumb } from './PortalBreadcrumb';
 import { canAccessProtectedFeatures, getRestrictedRoutesForPending } from '@/lib/auth-redirect';
+import { ADMIN_BASE } from '@/lib/route-paths';
 const MobileDashboardNav = lazy(() => import('./MobileDashboardNav').then(module => ({ default: module.MobileDashboardNav })));
 import { SkipLink } from '@/components/ui/skip-link';
 import { PortalBottomNav } from './PortalBottomNav';
