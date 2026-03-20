@@ -75,7 +75,7 @@ const TheExchangePage = lazy(() => import("@/pages/circles/TheExchangePage"));
 const HostApplicationPage = lazy(() => import("@/pages/HostApplicationPage"));
 const HealthCheckPage = lazy(() => import("@/pages/HealthCheckPage"));
 const PortalOnboarding = lazy(() => import("@/pages/portal/PortalOnboarding"));
-const PortalPerks = lazy(() => import("@/pages/portal/PortalPerks"));
+
 const PortalConcierge = lazy(() => import("@/pages/portal/PortalConcierge"));
 const PortalEventCheckin = lazy(() => import("@/pages/portal/PortalEventCheckin"));
 const AdminPerks = lazy(() => import("@/pages/admin/AdminPerks"));
