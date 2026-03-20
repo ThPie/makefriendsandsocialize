@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { User, MapPin, Briefcase, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ADMIN_BASE } from '@/lib/route-paths';
 
 interface DatingProfile {
   id: string;
