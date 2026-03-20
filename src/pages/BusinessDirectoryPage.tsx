@@ -55,13 +55,11 @@ const INDUSTRIES = [
 ];
 
 export default function BusinessDirectoryPage() {
-  const { user, membership } = useAuth();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [industryFilter, setIndustryFilter] = useState('All Industries');
   const [selectedBusiness, setSelectedBusiness] = useState<BusinessProfile | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const canAccessDirectory = membership?.tier === 'fellow' || membership?.tier === 'founder';
 
   // Fetch approved businesses
   const { data: businesses, isLoading } = useQuery({
