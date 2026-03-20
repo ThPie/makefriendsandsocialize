@@ -1109,8 +1109,8 @@ export default function AuthPage() {
         <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
       </video>
 
-      {/* Gradient Overlay — Stitch forest green */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background/85" />
+      {/* Gradient Overlay — always dark so white text remains visible */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[hsl(150,38%,6%)]/95 via-[hsl(150,38%,6%)]/90 to-[hsl(150,38%,6%)]/85" />
 
       {/* Floating Particles */}
       <FloatingParticles count={20} />
