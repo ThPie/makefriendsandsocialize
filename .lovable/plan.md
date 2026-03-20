@@ -1,107 +1,59 @@
 
 
-# CPU at 99% — Root Cause Analysis & Fix Plan
+# Modernize All Emails — Unified Premium Design
 
-## Diagnosis Summary
+## Current State
 
-Your database has **only 37 events, 2 profiles, and 2 user_roles rows** — yet it's performing **hundreds of thousands of sequential scans**. The CPU isn't overloaded by traffic; it's overloaded by **RLS policy evaluation overhead**.
+Your project has **two separate email systems** with inconsistent designs:
 
-### The Bottleneck: `has_role()` called on every single query
+1. **Auth emails** (10 React Email templates — signup, recovery, magic-link, etc.)
+   - Plain white background, logo at top, minimal styling
+   - No header background image, no branded footer with logo
+   - Look "basic" compared to the transactional emails
 
-```text
-Every authenticated query path:
+2. **Transactional emails** (19 Edge Functions using `buildBrandedEmail()`)
+   - Richer: header background image, cream card (#F2F1EE), dark footer with white logo
+   - But the layout is missing a heading inside the header, the header overlay is just a subheading label
+   - Some functions use different Resend import patterns (mixed `esm.sh` and `npm:`)
 
-  User query → Table RLS check
-                 ├── Policy 1: has_role(auth.uid(), 'admin')  → scans user_roles table
-                 ├── Policy 2: user_id = auth.uid()           → simple, fast
-                 └── Policy 3: has_role(auth.uid(), 'admin')  → scans user_roles AGAIN
+3. **One outlier** — `welcome.tsx` uses completely different colors (#1a1a1a black buttons, generic fonts, wrong brand name "MakeFriends Social Club")
 
-  × 44 tables with has_role policies
-  × 166 total RLS policies
-  = thousands of redundant user_roles lookups per page load
-```
+## The Plan
 
-**Key stats from your database right now:**
-- `user_roles` index: **7,184 scans** (for a 2-row table)
-- `profiles` table: **6,712 sequential scans** (for 2 rows)
-- `memberships` table: **6,155 sequential scans** (for 2 rows)
-- `meeting_proposals` table: **6,816 sequential scans** (for 0 rows!)
-- `testimonials` table: **6,200 sequential scans** (for 10 rows)
+### Step 1: Redesign `buildBrandedEmail()` layout (the shared template for all 19 transactional emails)
 
-### Additional CPU drains found:
-- **Nested subquery RLS policies** on `meeting_proposals` — 3 levels deep (dating_profiles → dating_matches → meeting_proposals) evaluated on every scan
-- **`is_connected_with()` in profiles RLS** — joins connections + profiles on every profile read
-- **Realtime subscriptions** on 5 channels (each triggers RLS checks)
-- **EventHeatmap** polling every **10 seconds** (hits events table + RLS)
-- **DashboardStats** polling every **30 seconds**
-- **Subscription check** polling every **5 minutes** (edge function invoke)
+Upgrade the HTML layout to a modern, premium design:
+- **Header**: Background image with darker overlay, the heading text rendered large with Cormorant Garamond italic, subheading below it — both inside the header
+- **Body**: Clean cream card with more generous spacing, refined typography
+- **CTA button**: Pill-shaped with subtle shadow, gold gradient
+- **Footer**: Keep the dark forest-green footer with white logo, add social icons placeholder, refine spacing
+- **Mobile-responsive**: Add media query fallbacks for smaller screens
 
----
+### Step 2: Redesign all 10 auth email templates to match
 
-## Fix Plan
+Rebuild each auth template (signup, recovery, magic-link, invite, email-change, reauthentication) to use the same visual language:
+- Add the header background image section with overlay
+- Match the cream card body, gold CTA buttons, dark footer with white logo
+- Use Cormorant Garamond for headings, Inter for body — matching the transactional layout
+- Fix `welcome.tsx` to use correct brand colors, name, and fonts
 
-### Phase 1: Eliminate redundant `has_role()` calls with a cached session variable
+Also update: `event-confirmation.tsx`, `payment-failed.tsx`, `subscription-renewed.tsx`
 
-Instead of querying `user_roles` on every single policy check, set the role once per connection using a session variable.
+### Step 3: Deploy updated auth-email-hook
 
-**Migration:**
-1. Create a function `set_user_role_context()` that runs once per request and stores the role in `current_setting('app.user_role')`
-2. Replace `has_role(auth.uid(), 'admin')` in all 44 tables with a simple `current_setting('app.user_role', true) = 'admin'` check — zero table lookups
+Deploy the updated templates so auth emails start using the new design.
 
-### Phase 2: Simplify nested RLS policies
+## What Changes
 
-1. **meeting_proposals**: Replace 3-level nested subquery with a `SECURITY DEFINER` helper function `is_match_participant(auth.uid(), match_id)` that does one efficient join
-2. **dating_matches**: Same — replace nested `dating_profiles` subqueries with a helper
-3. **profiles**: Replace `is_connected_with()` call in SELECT policy with a simpler approach — allow all authenticated users to see basic profiles (first_name, avatar) since the `get_connected_profile_limited` RPC already handles access control
+| Component | Before | After |
+|-----------|--------|-------|
+| Auth emails | Plain white, logo-only header | Header image + overlay, cream card, branded footer |
+| Transactional layout | Heading not in header, basic overlay | Heading rendered in header with elegant typography |
+| `welcome.tsx` | Wrong brand name, black buttons | Correct brand, gold buttons, matching design |
+| All emails | Two different visual styles | One unified premium look |
 
-### Phase 3: Reduce client-side polling
-
-1. **EventHeatmap**: Change from 10s to 60s polling (or remove — event density doesn't change every 10 seconds)
-2. **DashboardStats**: Change from 30s to 120s polling
-3. **EmailVerificationPage**: Already at 5s, which is fine for its specific use case
-4. **Remove duplicate realtime channels**: `notification_updates` and `badge_updates` both listen to `notification_queue` — consolidate to one
-
-### Phase 4: Add missing indexes for RLS query patterns
-
-```sql
--- For is_connected_with() function
-CREATE INDEX IF NOT EXISTS idx_connections_pair 
-  ON connections (requester_id, requested_id) WHERE status = 'accepted';
-
--- For meeting_proposals nested subquery
-CREATE INDEX IF NOT EXISTS idx_dating_profiles_user_id 
-  ON dating_profiles (user_id);
-
--- For testimonials seq scans
-CREATE INDEX IF NOT EXISTS idx_testimonials_approved 
-  ON testimonials (is_approved) WHERE is_approved = true;
-```
-
----
-
-## Expected Impact
-
-| Change | CPU Reduction |
-|--------|--------------|
-| Session-cached role check | ~40-50% (eliminates 7K+ user_roles lookups) |
-| Simplified nested RLS | ~15-20% (eliminates 6K+ meeting_proposals scans) |
-| Reduced polling intervals | ~10-15% (fewer total queries) |
-| New indexes | ~5-10% (faster remaining queries) |
-
-**Realistic outcome**: CPU should drop from 99% to 20-40%, potentially allowing a downgrade from XLarge to a smaller instance.
-
----
-
-## Technical Details
-
-### Files to modify:
-- **Database migration**: New helper functions + updated RLS policies for all 44 tables
-- `src/components/events/EventHeatmap.tsx` — increase polling interval
-- `src/components/portal/dashboard/DashboardStats.tsx` — increase polling interval
-- `src/hooks/useAppBadge.ts` + `src/components/portal/NotificationBell.tsx` — consolidate realtime channels
-
-### Risk mitigation:
-- All RLS changes are additive (create new policies, then drop old ones)
-- Helper functions are `SECURITY DEFINER` with `search_path = public`
-- Changes can be rolled back by re-creating original policies
+## Files Modified
+- `supabase/functions/_shared/email-layout.ts` — redesigned layout
+- All 10 files in `supabase/functions/_shared/email-templates/` — redesigned auth templates
+- Deploy `auth-email-hook` after changes
 
