@@ -78,7 +78,7 @@ const PortalOnboarding = lazy(() => import("@/pages/portal/PortalOnboarding"));
 
 const PortalConcierge = lazy(() => import("@/pages/portal/PortalConcierge"));
 const PortalEventCheckin = lazy(() => import("@/pages/portal/PortalEventCheckin"));
-const AdminPerks = lazy(() => import("@/pages/admin/AdminPerks"));
+
 const AdminConcierge = lazy(() => import("@/pages/admin/AdminConcierge"));
 const AdminDatingReview = lazy(() => import("@/pages/admin/AdminDatingReview"));
 const AdminResearch = lazy(() => import("@/pages/admin/AdminResearch"));
