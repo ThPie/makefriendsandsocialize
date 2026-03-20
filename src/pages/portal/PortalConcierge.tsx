@@ -201,12 +201,6 @@ export default function PortalConcierge() {
             Your personal guide to an exceptional membership
           </p>
         </div>
-        {!showForm && upcomingBookings.length === 0 && (
-          <Button onClick={() => setShowForm(true)} size="sm">
-            <Headphones className="h-4 w-4 mr-2" />
-            Book Session
-          </Button>
-        )}
       </div>
 
       {/* Service Overview - Show when no form and no bookings */}

@@ -35,7 +35,7 @@ const PortalProfile = lazy(() => import("@/pages/portal/PortalProfile"));
 const PortalEvents = lazy(() => import("@/pages/portal/PortalEvents"));
 const PortalSlowDating = lazy(() => import("@/pages/portal/PortalSlowDating"));
 const PortalMatchDetail = lazy(() => import("@/pages/portal/PortalMatchDetail"));
-const PortalReferrals = lazy(() => import("@/pages/portal/PortalReferrals"));
+
 const PortalBilling = lazy(() => import("@/pages/portal/PortalBilling"));
 const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
 const AdminApplications = lazy(() => import("@/pages/admin/AdminApplications"));
@@ -54,7 +54,7 @@ const AdminEventAnalytics = lazy(() => import("@/pages/admin/AdminEventAnalytics
 const AdminSecurityReports = lazy(() => import("@/pages/admin/AdminSecurityReports"));
 const AdminSecurityDashboard = lazy(() => import("@/pages/admin/AdminSecurityDashboard"));
 
-const AdminReferrals = lazy(() => import("@/pages/admin/AdminReferrals"));
+
 const AdminPhotos = lazy(() => import("@/pages/admin/AdminPhotos"));
 const AdminAppeals = lazy(() => import("@/pages/admin/AdminAppeals"));
 const AdminCircles = lazy(() => import("@/pages/admin/AdminCircles"));
@@ -75,10 +75,10 @@ const TheExchangePage = lazy(() => import("@/pages/circles/TheExchangePage"));
 const HostApplicationPage = lazy(() => import("@/pages/HostApplicationPage"));
 const HealthCheckPage = lazy(() => import("@/pages/HealthCheckPage"));
 const PortalOnboarding = lazy(() => import("@/pages/portal/PortalOnboarding"));
-const PortalPerks = lazy(() => import("@/pages/portal/PortalPerks"));
+
 const PortalConcierge = lazy(() => import("@/pages/portal/PortalConcierge"));
 const PortalEventCheckin = lazy(() => import("@/pages/portal/PortalEventCheckin"));
-const AdminPerks = lazy(() => import("@/pages/admin/AdminPerks"));
+
 const AdminConcierge = lazy(() => import("@/pages/admin/AdminConcierge"));
 const AdminDatingReview = lazy(() => import("@/pages/admin/AdminDatingReview"));
 const AdminResearch = lazy(() => import("@/pages/admin/AdminResearch"));
@@ -176,9 +176,9 @@ export const MainRoutes = () => (
         <Route path="/portal/match/:matchId" element={<ProtectedRoute><PortalLayout><PortalMatchDetail /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/events" element={<ProtectedRoute><PortalLayout><PortalEvents /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/billing" element={<ProtectedRoute><PortalLayout><PortalBilling /></PortalLayout></ProtectedRoute>} />
-        <Route path="/portal/referrals" element={<ProtectedRoute><PortalLayout><PortalReferrals /></PortalLayout></ProtectedRoute>} />
+        
         <Route path="/portal/business" element={<ProtectedRoute><PortalLayout><PortalBusiness /></PortalLayout></ProtectedRoute>} />
-        <Route path="/portal/perks" element={<ProtectedRoute><PortalLayout><PortalPerks /></PortalLayout></ProtectedRoute>} />
+        
         <Route path="/portal/concierge" element={<ProtectedRoute><PortalLayout><PortalConcierge /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/security" element={<ProtectedRoute><PortalLayout><PortalSecurity /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/checkin/:eventId/:code" element={<ProtectedRoute><PortalEventCheckin /></ProtectedRoute>} />
@@ -205,11 +205,11 @@ export const MainRoutes = () => (
         <Route path={`${ADMIN_BASE}/content`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminContent /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/roles`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminRoles /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/settings`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
-        <Route path={`${ADMIN_BASE}/referrals`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminReferrals /></AdminLayout></ProtectedRoute>} />
+        
         <Route path={`${ADMIN_BASE}/appeals`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminAppeals /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/circles`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminCircles /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/businesses`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminBusinesses /></AdminLayout></ProtectedRoute>} />
-        <Route path={`${ADMIN_BASE}/perks`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminPerks /></AdminLayout></ProtectedRoute>} />
+        
         <Route path={`${ADMIN_BASE}/concierge`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminConcierge /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/dating/review`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminDatingReview /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/research`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminResearch /></AdminLayout></ProtectedRoute>} />

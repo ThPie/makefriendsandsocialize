@@ -79,7 +79,6 @@ const sidebarSections = [
       { title: 'Circle Applications', url: `${ADMIN_BASE}/circles`, icon: Users, sensitive: false, endpoint: null },
       { title: 'Members', url: `${ADMIN_BASE}/members`, icon: Users, sensitive: true, endpoint: 'members' },
       { title: 'Appeals', url: `${ADMIN_BASE}/appeals`, icon: Scale, sensitive: true, endpoint: 'applications' },
-      { title: 'Referrals', url: `${ADMIN_BASE}/referrals`, icon: Gift, sensitive: true, endpoint: 'referrals' },
       { title: 'Founder Companies', url: `${ADMIN_BASE}/businesses`, icon: Users, sensitive: true, endpoint: 'businesses' },
     ],
   },
@@ -93,7 +92,6 @@ const sidebarSections = [
       { title: 'Review Queue', url: `${ADMIN_BASE}/dating/review`, icon: ClipboardList, sensitive: true, endpoint: 'dating' },
       { title: 'Matches', url: `${ADMIN_BASE}/matches`, icon: Heart, sensitive: true, endpoint: 'dating' },
       { title: 'Testimonials', url: `${ADMIN_BASE}/testimonials`, icon: Quote, sensitive: false, endpoint: null },
-      { title: 'Concierge', url: `${ADMIN_BASE}/concierge`, icon: Headphones, sensitive: false, endpoint: null },
     ],
   },
   {
