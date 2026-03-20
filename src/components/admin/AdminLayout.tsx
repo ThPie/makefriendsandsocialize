@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { ADMIN_BASE } from '@/lib/route-paths';
 import { useAuth } from '@/contexts/AuthContext';
 import { useInactivityLogout } from '@/hooks/useInactivityLogout';
 import {
