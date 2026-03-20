@@ -37,7 +37,7 @@ const adminRouteLabels: Record<string, string> = {
   [`${ADMIN_BASE}/leads`]: 'Lead Generation',
   [`${ADMIN_BASE}/security`]: 'Security Reports',
   [`${ADMIN_BASE}/security-dashboard`]: 'Security Dashboard',
-  [`${ADMIN_BASE}/dating`]: 'Introductions',
+  [`${ADMIN_BASE}/dating`]: 'Slow Dating',
   [`${ADMIN_BASE}/matches`]: 'Matches',
   [`${ADMIN_BASE}/analytics`]: 'Analytics',
   [`${ADMIN_BASE}/events`]: 'Events',
