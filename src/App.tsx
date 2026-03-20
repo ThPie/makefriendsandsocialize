@@ -64,6 +64,7 @@ const App = () => {
   const showGeoRedirectBanner = !isCanadianDomain() && !showSlowDatingRoutes;
 
   return (
+    <AnimatedSplash>
     <ErrorBoundary>
       <HelmetProvider>
         <QueryClientProvider client={appQueryClient}>
