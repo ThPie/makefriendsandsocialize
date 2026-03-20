@@ -20,7 +20,9 @@ export default function ForgotPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
-  const { memberCount, avatarUrls, isLoading: isLoadingStats } = useSiteStats();
+  const { data: siteStats, isLoading: isLoadingStats } = useSiteStats();
+  const avatarUrls = siteStats?.avatarUrls ?? [];
+  const memberCount = siteStats?.memberCount ?? 0;
 
   // Redirect directly to the reset password page — NOT the home page.
   // Landing on "/" relied on PASSWORD_RECOVERY event detection which is
