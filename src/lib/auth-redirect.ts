@@ -3,11 +3,13 @@
  * Determines where users should be redirected after authentication
  */
 
+import { ADMIN_BASE } from './route-paths';
+
 export type RedirectDestination = 
   | '/portal/onboarding'   // Profile incomplete
   | '/auth/waiting'        // Profile complete, application pending
   | '/portal'              // Approved member
-  | '/admin';              // Admin user
+  | typeof ADMIN_BASE;     // Admin user
 
 interface AuthRedirectParams {
   isAdmin: boolean;
@@ -62,7 +64,7 @@ export function calculateProfileCompletion(profile: {
 export function getAuthRedirect(params: AuthRedirectParams): RedirectDestination {
   // Admin users always go to admin dashboard
   if (params.isAdmin) {
-    return '/admin';
+    return ADMIN_BASE;
   }
 
   // Users who haven't completed onboarding go to onboarding

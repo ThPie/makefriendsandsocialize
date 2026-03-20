@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { User, MapPin, Briefcase, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ADMIN_BASE } from '@/lib/route-paths';
 
 interface DatingProfile {
   id: string;
@@ -97,7 +98,7 @@ export const MatchCard = ({ match }: MatchCardProps) => {
               variant="outline"
               size="sm"
               className="flex-1"
-              onClick={() => navigate(`/admin/dating/${profile.id}`)}
+              onClick={() => navigate(`${ADMIN_BASE}/dating/${profile.id}`)}
             >
               <Eye className="h-4 w-4 mr-2" />
               View Profile

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { ADMIN_BASE } from '@/lib/route-paths';
 import { Search, User, Heart, Check, X, Eye, UserSearch, Users, Clock, RefreshCw, Sparkles, Activity } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
@@ -341,7 +342,7 @@ const AdminDating = () => {
                 <Card 
                   key={profile.id}
                   className="group cursor-pointer border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 overflow-hidden"
-                  onClick={() => navigate(`/admin/dating/${profile.id}`)}
+                  onClick={() => navigate(`${ADMIN_BASE}/dating/${profile.id}`)}
                 >
                   <CardContent className="p-0">
                     {/* Photo Header */}
@@ -417,7 +418,7 @@ const AdminDating = () => {
                             className="flex-1"
                             onClick={(e) => {
                               e.stopPropagation();
-                              navigate(`/admin/dating/${profile.id}`);
+                              navigate(`${ADMIN_BASE}/dating/${profile.id}`);
                             }}
                           >
                             <UserSearch className="h-4 w-4 mr-1" />
@@ -429,7 +430,7 @@ const AdminDating = () => {
                           variant="ghost"
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/admin/dating/${profile.id}`);
+                            navigate(`${ADMIN_BASE}/dating/${profile.id}`);
                           }}
                         >
                           <Eye className="h-4 w-4" />

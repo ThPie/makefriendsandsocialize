@@ -22,7 +22,7 @@ export const Header = () => {
 
   // Don't show public header on portal/admin pages
   const isPortal = location.pathname.startsWith('/portal');
-  const isAdmin = location.pathname.startsWith('/admin');
+  const isAdmin = location.pathname.startsWith('/cx');
   const isAuth = location.pathname.startsWith('/auth');
 
   // In light mode, always force opaque header so logo/nav are visible

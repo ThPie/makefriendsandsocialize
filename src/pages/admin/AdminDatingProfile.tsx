@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { ADMIN_BASE } from '@/lib/route-paths';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -295,7 +296,7 @@ const AdminDatingProfile = () => {
     return (
       <div className="text-center py-12">
         <p className="text-muted-foreground">Profile not found</p>
-        <Button variant="outline" onClick={() => navigate("/admin/dating")} className="mt-4">
+        <Button variant="outline" onClick={() => navigate(`${ADMIN_BASE}/dating`)} className="mt-4">
           Back to Profiles
         </Button>
       </div>
@@ -306,7 +307,7 @@ const AdminDatingProfile = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/admin/dating")}>
+        <Button variant="ghost" size="icon" onClick={() => navigate(`${ADMIN_BASE}/dating`)}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex-1 flex flex-col md:flex-row md:items-center gap-4">

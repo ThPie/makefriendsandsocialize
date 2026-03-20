@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ADMIN_BASE } from '@/lib/route-paths';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -281,7 +282,7 @@ export default function AdminApplications() {
         {getSecurityBadge(app.security_report)}
         {app.security_report?.id && (
           <Button variant="ghost" size="icon" asChild>
-            <Link to={`/admin/security?report=${app.security_report.id}`}>
+            <Link to={`${ADMIN_BASE}/security?report=${app.security_report.id}`}>
               <Shield className="h-4 w-4" />
             </Link>
           </Button>
@@ -544,7 +545,7 @@ export default function AdminApplications() {
 
                   {selectedApp.security_report?.id && (
                     <Button variant="link" size="sm" className="p-0 h-auto" asChild>
-                      <Link to={`/admin/security?report=${selectedApp.security_report.id}`}>
+                      <Link to={`${ADMIN_BASE}/security?report=${selectedApp.security_report.id}`}>
                         View Full Report →
                       </Link>
                     </Button>

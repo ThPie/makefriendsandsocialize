@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { ADMIN_BASE } from '@/lib/route-paths';
 import { useAuth } from '@/contexts/AuthContext';
 import { useInactivityLogout } from '@/hooks/useInactivityLogout';
 import {
@@ -53,46 +54,46 @@ interface AdminLayoutProps {
 }
 
 const menuItems = [
-  { title: 'Overview', url: '/admin', icon: LayoutDashboard, sensitive: false, endpoint: null },
-  { title: 'Applications', url: '/admin/applications', icon: FileText, sensitive: true, endpoint: 'applications' },
-  { title: 'Circle Applications', url: '/admin/circles', icon: Users, sensitive: false, endpoint: null },
-  { title: 'Members', url: '/admin/members', icon: Users, sensitive: true, endpoint: 'members' },
-  { title: 'Appeals', url: '/admin/appeals', icon: Scale, sensitive: true, endpoint: 'applications' },
-  { title: 'Referrals', url: '/admin/referrals', icon: Gift, sensitive: true, endpoint: 'referrals' },
-  { title: 'Founder Companies', url: '/admin/businesses', icon: Users, sensitive: true, endpoint: 'businesses' },
-  { title: 'Lead Generation', url: '/admin/leads', icon: Target, sensitive: true, endpoint: 'leads' },
-  { title: 'Security Reports', url: '/admin/security', icon: ShieldAlert, sensitive: true, endpoint: 'security' },
-  { title: 'Security Dashboard', url: '/admin/security-dashboard', icon: Shield, sensitive: true, endpoint: 'security' },
-  { title: 'Introductions', url: '/admin/dating', icon: HeartHandshake, sensitive: true, endpoint: 'dating' },
-  { title: 'Review Queue', url: '/admin/dating/review', icon: ClipboardList, sensitive: true, endpoint: 'dating' },
-  { title: 'Matches', url: '/admin/matches', icon: Heart, sensitive: true, endpoint: 'dating' },
-  { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp, sensitive: false, endpoint: null },
-  { title: 'Events', url: '/admin/events', icon: Calendar, sensitive: false, endpoint: null },
-  { title: 'Event Analytics', url: '/admin/event-analytics', icon: TrendingUp, sensitive: false, endpoint: null },
-  { title: 'Event Photos', url: '/admin/photos', icon: Image, sensitive: false, endpoint: null },
-  { title: 'Connections', url: '/admin/connections', icon: UserCog, sensitive: false, endpoint: null },
-  { title: 'Testimonials', url: '/admin/testimonials', icon: Quote, sensitive: false, endpoint: null },
-  { title: 'Concierge', url: '/admin/concierge', icon: Headphones, sensitive: false, endpoint: null },
-  { title: 'Content', url: '/admin/content', icon: Image, sensitive: false, endpoint: null },
-  { title: 'Research', url: '/admin/research', icon: Microscope, sensitive: false, endpoint: null },
-  { title: 'Roles', url: '/admin/roles', icon: Shield, sensitive: true, endpoint: 'security' },
-  { title: 'Settings', url: '/admin/settings', icon: Settings, sensitive: false, endpoint: null },
+  { title: 'Overview', url: ADMIN_BASE, icon: LayoutDashboard, sensitive: false, endpoint: null },
+  { title: 'Applications', url: `${ADMIN_BASE}/applications`, icon: FileText, sensitive: true, endpoint: 'applications' },
+  { title: 'Circle Applications', url: `${ADMIN_BASE}/circles`, icon: Users, sensitive: false, endpoint: null },
+  { title: 'Members', url: `${ADMIN_BASE}/members`, icon: Users, sensitive: true, endpoint: 'members' },
+  { title: 'Appeals', url: `${ADMIN_BASE}/appeals`, icon: Scale, sensitive: true, endpoint: 'applications' },
+  { title: 'Referrals', url: `${ADMIN_BASE}/referrals`, icon: Gift, sensitive: true, endpoint: 'referrals' },
+  { title: 'Founder Companies', url: `${ADMIN_BASE}/businesses`, icon: Users, sensitive: true, endpoint: 'businesses' },
+  { title: 'Lead Generation', url: `${ADMIN_BASE}/leads`, icon: Target, sensitive: true, endpoint: 'leads' },
+  { title: 'Security Reports', url: `${ADMIN_BASE}/security`, icon: ShieldAlert, sensitive: true, endpoint: 'security' },
+  { title: 'Security Dashboard', url: `${ADMIN_BASE}/security-dashboard`, icon: Shield, sensitive: true, endpoint: 'security' },
+  { title: 'Introductions', url: `${ADMIN_BASE}/dating`, icon: HeartHandshake, sensitive: true, endpoint: 'dating' },
+  { title: 'Review Queue', url: `${ADMIN_BASE}/dating/review`, icon: ClipboardList, sensitive: true, endpoint: 'dating' },
+  { title: 'Matches', url: `${ADMIN_BASE}/matches`, icon: Heart, sensitive: true, endpoint: 'dating' },
+  { title: 'Analytics', url: `${ADMIN_BASE}/analytics`, icon: TrendingUp, sensitive: false, endpoint: null },
+  { title: 'Events', url: `${ADMIN_BASE}/events`, icon: Calendar, sensitive: false, endpoint: null },
+  { title: 'Event Analytics', url: `${ADMIN_BASE}/event-analytics`, icon: TrendingUp, sensitive: false, endpoint: null },
+  { title: 'Event Photos', url: `${ADMIN_BASE}/photos`, icon: Image, sensitive: false, endpoint: null },
+  { title: 'Connections', url: `${ADMIN_BASE}/connections`, icon: UserCog, sensitive: false, endpoint: null },
+  { title: 'Testimonials', url: `${ADMIN_BASE}/testimonials`, icon: Quote, sensitive: false, endpoint: null },
+  { title: 'Concierge', url: `${ADMIN_BASE}/concierge`, icon: Headphones, sensitive: false, endpoint: null },
+  { title: 'Content', url: `${ADMIN_BASE}/content`, icon: Image, sensitive: false, endpoint: null },
+  { title: 'Research', url: `${ADMIN_BASE}/research`, icon: Microscope, sensitive: false, endpoint: null },
+  { title: 'Roles', url: `${ADMIN_BASE}/roles`, icon: Shield, sensitive: true, endpoint: 'security' },
+  { title: 'Settings', url: `${ADMIN_BASE}/settings`, icon: Settings, sensitive: false, endpoint: null },
 ];
 
 // Routes that require MFA verification
 const SENSITIVE_ROUTES = [
-  '/admin/applications',
-  '/admin/members',
-  '/admin/appeals',
-  '/admin/referrals',
-  '/admin/businesses',
-  '/admin/leads',
-  '/admin/security',
-  '/admin/security-dashboard',
-  '/admin/dating',
-  '/admin/dating/review',
-  '/admin/matches',
-  '/admin/roles',
+  `${ADMIN_BASE}/applications`,
+  `${ADMIN_BASE}/members`,
+  `${ADMIN_BASE}/appeals`,
+  `${ADMIN_BASE}/referrals`,
+  `${ADMIN_BASE}/businesses`,
+  `${ADMIN_BASE}/leads`,
+  `${ADMIN_BASE}/security`,
+  `${ADMIN_BASE}/security-dashboard`,
+  `${ADMIN_BASE}/dating`,
+  `${ADMIN_BASE}/dating/review`,
+  `${ADMIN_BASE}/matches`,
+  `${ADMIN_BASE}/roles`,
 ];
 
 export function AdminLayout({ children }: AdminLayoutProps) {
@@ -107,7 +108,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   // Determine current endpoint for rate limiting
   const currentEndpoint = useMemo(() => {
-    const currentItem = menuItems.find(item => location.pathname.startsWith(item.url) && item.url !== '/admin');
+    const currentItem = menuItems.find(item => location.pathname.startsWith(item.url) && item.url !== ADMIN_BASE);
     return currentItem?.endpoint || null;
   }, [location.pathname]);
 
