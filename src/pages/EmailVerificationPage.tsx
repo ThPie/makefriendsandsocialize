@@ -34,7 +34,7 @@ export default function EmailVerificationPage() {
     };
 
     checkVerification();
-    const interval = setInterval(checkVerification, 5000);
+    const interval = setInterval(checkVerification, 15000);
     return () => clearInterval(interval);
   }, [user, navigate]);
 
