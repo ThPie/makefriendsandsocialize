@@ -104,6 +104,7 @@ const App = () => {
         </QueryClientProvider>
       </HelmetProvider>
     </ErrorBoundary>
+    </AnimatedSplash>
   );
 };
 
