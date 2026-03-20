@@ -90,26 +90,10 @@ export function NotificationBell() {
 
     fetchNotifications();
 
-    // Subscribe to real-time updates
-    const channel = supabase
-      .channel('notification_updates')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'notification_queue',
-          filter: `user_id=eq.${user.id}`,
-        },
-        (payload) => {
-          setNotifications(prev => [payload.new as Notification, ...prev]);
-        }
-      )
-      .subscribe();
+    // Poll every 30 seconds instead of realtime to reduce CPU overhead
+    const interval = setInterval(fetchNotifications, 30_000);
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => clearInterval(interval);
   }, [user]);
 
   const markAsRead = async (notificationId: string) => {
