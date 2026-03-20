@@ -19,7 +19,7 @@ async function getRedirectDestination(userId: string): Promise<string> {
     .maybeSingle();
 
   if (roleData) {
-    return '/admin';
+    return ADMIN_BASE;
   }
 
   // Check profile completion

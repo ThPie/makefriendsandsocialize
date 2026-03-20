@@ -64,7 +64,7 @@ export function calculateProfileCompletion(profile: {
 export function getAuthRedirect(params: AuthRedirectParams): RedirectDestination {
   // Admin users always go to admin dashboard
   if (params.isAdmin) {
-    return '/admin';
+    return ADMIN_BASE;
   }
 
   // Users who haven't completed onboarding go to onboarding

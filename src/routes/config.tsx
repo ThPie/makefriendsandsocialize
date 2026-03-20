@@ -4,6 +4,7 @@ import { Layout } from "@/components/layout/Layout";
 import { PortalLayout } from "@/components/portal/PortalLayout";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { ADMIN_BASE, HEALTH_PATH } from "@/lib/route-paths";
 
 // Lazy imports for all pages
 const HomePage = lazy(() => import("@/pages/HomePage"));
@@ -151,7 +152,7 @@ export const MainRoutes = () => (
         <Route path="/soul-maps/attachment-style" element={<Layout><SoulMapsQuizPage /></Layout>} />
 
         {/* Health check endpoint for deployment verification */}
-        <Route path="/health" element={<HealthCheckPage />} />
+        <Route path={HEALTH_PATH} element={<HealthCheckPage />} />
 
         {/* Dev testing route for subdomain landing page */}
         {import.meta.env.DEV && (
@@ -190,32 +191,32 @@ export const MainRoutes = () => (
         <Route path="/dating/apply" element={<Layout><DatingIntakePage /></Layout>} />
 
         {/* Admin routes with admin layout — ProtectedRoute requireAdmin blocks non-admin access */}
-        <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/applications" element={<ProtectedRoute requireAdmin><AdminLayout><AdminApplications /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/members" element={<ProtectedRoute requireAdmin><AdminLayout><AdminMembers /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/leads" element={<ProtectedRoute requireAdmin><AdminLayout><AdminLeads /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/security" element={<ProtectedRoute requireAdmin><AdminLayout><AdminSecurityReports /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/security-dashboard" element={<ProtectedRoute requireAdmin><AdminLayout><AdminSecurityDashboard /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/dating" element={<ProtectedRoute requireAdmin><AdminLayout><AdminDating /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/dating/:id" element={<ProtectedRoute requireAdmin><AdminLayout><AdminDatingProfile /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/matches" element={<ProtectedRoute requireAdmin><AdminLayout><AdminMatches /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/analytics" element={<ProtectedRoute requireAdmin><AdminLayout><AdminAnalytics /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/event-analytics" element={<ProtectedRoute requireAdmin><AdminLayout><AdminEventAnalytics /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/events" element={<ProtectedRoute requireAdmin><AdminLayout><AdminEvents /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/photos" element={<ProtectedRoute requireAdmin><AdminLayout><AdminPhotos /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/connections" element={<ProtectedRoute requireAdmin><AdminLayout><AdminConnections /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/testimonials" element={<ProtectedRoute requireAdmin><AdminLayout><AdminTestimonials /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/content" element={<ProtectedRoute requireAdmin><AdminLayout><AdminContent /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/roles" element={<ProtectedRoute requireAdmin><AdminLayout><AdminRoles /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/settings" element={<ProtectedRoute requireAdmin><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/referrals" element={<ProtectedRoute requireAdmin><AdminLayout><AdminReferrals /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/appeals" element={<ProtectedRoute requireAdmin><AdminLayout><AdminAppeals /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/circles" element={<ProtectedRoute requireAdmin><AdminLayout><AdminCircles /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/businesses" element={<ProtectedRoute requireAdmin><AdminLayout><AdminBusinesses /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/perks" element={<ProtectedRoute requireAdmin><AdminLayout><AdminPerks /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/concierge" element={<ProtectedRoute requireAdmin><AdminLayout><AdminConcierge /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/dating/review" element={<ProtectedRoute requireAdmin><AdminLayout><AdminDatingReview /></AdminLayout></ProtectedRoute>} />
-        <Route path="/admin/research" element={<ProtectedRoute requireAdmin><AdminLayout><AdminResearch /></AdminLayout></ProtectedRoute>} />
+        <Route path={ADMIN_BASE} element={<ProtectedRoute requireAdmin><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/applications`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminApplications /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/members`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminMembers /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/leads`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminLeads /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/security`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminSecurityReports /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/security-dashboard`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminSecurityDashboard /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/dating`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminDating /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/dating/:id`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminDatingProfile /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/matches`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminMatches /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/analytics`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminAnalytics /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/event-analytics`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminEventAnalytics /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/events`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminEvents /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/photos`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminPhotos /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/connections`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminConnections /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/testimonials`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminTestimonials /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/content`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminContent /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/roles`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminRoles /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/settings`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/referrals`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminReferrals /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/appeals`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminAppeals /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/circles`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminCircles /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/businesses`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminBusinesses /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/perks`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminPerks /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/concierge`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminConcierge /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/dating/review`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminDatingReview /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/research`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminResearch /></AdminLayout></ProtectedRoute>} />
 
         <Route path="*" element={<Layout><NotFound /></Layout>} />
     </Routes>

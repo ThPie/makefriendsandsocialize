@@ -262,7 +262,7 @@ export function PortalLayout({ children }: PortalLayoutProps) {
               {isAdmin && (
                 <div className="mt-4 pt-4 border-t border-border">
                   <Link
-                    to="/admin"
+                    to={ADMIN_BASE}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-[hsl(var(--accent-gold))] hover:bg-[hsl(var(--accent-gold))]/10 transition-colors text-sm font-medium"
                   >
                     <ShieldCheck size={20} weight="duotone" />

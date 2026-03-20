@@ -40,7 +40,7 @@ export default function AuthWaitingPage() {
     }
     
     if (isAdmin) {
-      navigate('/admin');
+      navigate(ADMIN_BASE);
       return;
     }
 
