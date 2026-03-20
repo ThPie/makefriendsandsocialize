@@ -79,7 +79,6 @@ const sidebarSections = [
       { title: 'Circle Applications', url: `${ADMIN_BASE}/circles`, icon: Users, sensitive: false, endpoint: null },
       { title: 'Members', url: `${ADMIN_BASE}/members`, icon: Users, sensitive: true, endpoint: 'members' },
       { title: 'Appeals', url: `${ADMIN_BASE}/appeals`, icon: Scale, sensitive: true, endpoint: 'applications' },
-      { title: 'Referrals', url: `${ADMIN_BASE}/referrals`, icon: Gift, sensitive: true, endpoint: 'referrals' },
       { title: 'Founder Companies', url: `${ADMIN_BASE}/businesses`, icon: Users, sensitive: true, endpoint: 'businesses' },
     ],
   },
