@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { toast } from 'sonner';
 
@@ -11,18 +11,21 @@ export function useNetworkStatus() {
     typeof navigator !== 'undefined' ? navigator.onLine : true,
   );
   const [wasOffline, setWasOffline] = useState(false);
+  const wasOfflineRef = useRef(false);
 
   useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true);
-      if (wasOffline) {
+      if (wasOfflineRef.current) {
         toast.success('Back online — syncing data…');
+        wasOfflineRef.current = false;
         setWasOffline(false);
       }
     };
 
     const handleOffline = () => {
       setIsOnline(false);
+      wasOfflineRef.current = true;
       setWasOffline(true);
       toast.warning("You're offline — using cached data");
     };
@@ -34,7 +37,7 @@ export function useNetworkStatus() {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, [wasOffline]);
+  }, []);
 
   return { isOnline, wasOffline };
 }

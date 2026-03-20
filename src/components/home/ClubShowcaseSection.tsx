@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -125,8 +125,9 @@ export const ClubShowcaseSection = () => {
     return () => el.removeEventListener('scroll', updateScrollState);
   }, []);
 
-  // Auto-scroll animation loop
-  useEffect(() => {
+  // Auto-scroll animation — only runs while mouse is over the strip
+  const startScrollLoop = useCallback(() => {
+    if (animationRef.current) return;
     const tick = () => {
       const el = scrollRef.current;
       if (el && scrollSpeedRef.current !== 0) {
@@ -135,9 +136,14 @@ export const ClubShowcaseSection = () => {
       animationRef.current = requestAnimationFrame(tick);
     };
     animationRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
+  }, []);
+
+  const stopScrollLoop = useCallback(() => {
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+    scrollSpeedRef.current = 0;
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -158,10 +164,6 @@ export const ClubShowcaseSection = () => {
     } else {
       scrollSpeedRef.current = 0;
     }
-  };
-
-  const handleMouseLeave = () => {
-    scrollSpeedRef.current = 0;
   };
 
   const scroll = (dir: 'left' | 'right') => {
@@ -194,7 +196,7 @@ export const ClubShowcaseSection = () => {
 
       <div ref={ref} className={`transition-all duration-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="content-container">
-          <div ref={scrollRef} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className="flex gap-5 overflow-x-auto snap-x snap-mandatory md:snap-none scrollbar-hide pb-4">
+          <div ref={scrollRef} onMouseEnter={startScrollLoop} onMouseMove={handleMouseMove} onMouseLeave={stopScrollLoop} className="flex gap-5 overflow-x-auto snap-x snap-mandatory md:snap-none scrollbar-hide pb-4">
             {clubs.map((club) => (
               <CircleCard key={club.id} club={club} />
             ))}

@@ -79,6 +79,9 @@ export function useInactivityLogout({
   }, [resetTimer]);
 
   // Track user activity
+  const showWarningRef = useRef(showWarning);
+  useEffect(() => { showWarningRef.current = showWarning; }, [showWarning]);
+
   useEffect(() => {
     if (!enabled) return;
 
@@ -99,7 +102,7 @@ export function useInactivityLogout({
       lastUpdate = now;
       
       // Only reset if warning is not showing
-      if (!showWarning) {
+      if (!showWarningRef.current) {
         lastActivityRef.current = now;
         resetTimer();
       }
@@ -111,7 +114,7 @@ export function useInactivityLogout({
 
     // Handle visibility change - reset when user returns
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && !showWarning) {
+      if (document.visibilityState === 'visible' && !showWarningRef.current) {
         resetTimer();
       }
     };
@@ -127,7 +130,7 @@ export function useInactivityLogout({
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       clearAllTimers();
     };
-  }, [enabled, resetTimer, clearAllTimers, showWarning]);
+  }, [enabled, resetTimer, clearAllTimers]);
 
   return {
     showWarning,

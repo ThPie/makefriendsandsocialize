@@ -31,6 +31,27 @@ export const PhotoGallerySection = () => {
     setLightboxOpen(true);
   };
 
+  // Auto-scroll animation — only runs while mouse is over the strip
+  const startScrollLoop = useCallback(() => {
+    if (animFrameRef.current) return; // already running
+    const tick = () => {
+      const el = stripRef.current;
+      if (el && scrollSpeed.current !== 0) {
+        el.scrollLeft += scrollSpeed.current;
+      }
+      animFrameRef.current = requestAnimationFrame(tick);
+    };
+    animFrameRef.current = requestAnimationFrame(tick);
+  }, []);
+
+  const stopScrollLoop = useCallback(() => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = 0;
+    }
+    scrollSpeed.current = 0;
+  }, []);
+
   // Auto-scroll on hover (desktop only)
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const el = stripRef.current;
@@ -45,22 +66,6 @@ export const PhotoGallerySection = () => {
     } else {
       scrollSpeed.current = 0;
     }
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    scrollSpeed.current = 0;
-  }, []);
-
-  useEffect(() => {
-    const tick = () => {
-      const el = stripRef.current;
-      if (el && scrollSpeed.current !== 0) {
-        el.scrollLeft += scrollSpeed.current;
-      }
-      animFrameRef.current = requestAnimationFrame(tick);
-    };
-    animFrameRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(animFrameRef.current);
   }, []);
 
   // Masonry columns for mobile
@@ -100,8 +105,9 @@ export const PhotoGallerySection = () => {
       {/* Desktop: edge-to-edge horizontal strip with auto-scroll */}
       <div
         ref={stripRef}
+        onMouseEnter={startScrollLoop}
         onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        onMouseLeave={stopScrollLoop}
         className="hidden md:flex overflow-x-auto scrollbar-hide cursor-default"
         style={{ scrollBehavior: 'auto' }}
       >
