@@ -83,8 +83,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      {/* Left Panel - Branding */}
-      <div className="relative w-full lg:w-1/2 bg-secondary p-8 lg:p-12 flex flex-col justify-between min-h-[40vh] lg:min-h-screen overflow-hidden">
+      {/* Left Panel - Branding (dark background in both modes) */}
+      <div className="relative w-full lg:w-1/2 bg-[hsl(150,38%,6%)] p-8 lg:p-12 flex flex-col justify-between min-h-[40vh] lg:min-h-screen overflow-hidden">
         {/* Gradient glow effect */}
         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/15 rounded-full blur-[150px]" />
         <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px]" />
@@ -110,16 +110,16 @@ export default function ForgotPasswordPage() {
                 key={index}
                 className={`rounded-2xl p-4 md:p-5 min-w-[140px] flex-1 max-w-[180px] ${
                   index === 0 
-                    ? 'bg-white text-secondary' 
+                    ? 'bg-white text-[hsl(150,38%,6%)]' 
                     : 'bg-white/10 backdrop-blur-sm text-white border border-white/10'
                 }`}
               >
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mb-3 ${
-                  index === 0 ? 'bg-secondary text-white' : 'bg-white/20 text-white'
+                  index === 0 ? 'bg-[hsl(150,38%,6%)] text-white' : 'bg-white/20 text-white'
                 }`}>
                   {index + 1}
                 </div>
-                <p className={`text-sm font-medium ${index === 0 ? 'text-secondary' : 'text-white/90'}`}>
+                <p className={`text-sm font-medium ${index === 0 ? 'text-[hsl(150,38%,6%)]' : 'text-white/90'}`}>
                   {step.title}
                 </p>
               </div>
