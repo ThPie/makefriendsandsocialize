@@ -144,13 +144,11 @@ export default function BusinessDirectoryPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
-                disabled={!canAccessDirectory}
               />
             </div>
             <Select
               value={industryFilter}
               onValueChange={setIndustryFilter}
-              disabled={!canAccessDirectory}
             >
               <SelectTrigger className="w-full md:w-[200px]">
                 <Filter className="w-4 h-4 mr-2" />
