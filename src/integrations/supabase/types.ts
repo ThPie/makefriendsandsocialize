@@ -3355,6 +3355,10 @@ export type Database = {
         Returns: number
       }
       get_upcoming_events_count: { Args: never; Returns: number }
+      get_user_dating_profile_id: {
+        Args: { _user_id: string }
+        Returns: string
+      }
       has_active_membership: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
@@ -3386,6 +3390,10 @@ export type Database = {
       increment_rsvp_count: { Args: { event_id: string }; Returns: undefined }
       is_connected_with: {
         Args: { _other_user_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_dating_match_participant: {
+        Args: { _match_id: string; _user_id: string }
         Returns: boolean
       }
       is_matched_with: {
