@@ -56,6 +56,7 @@ export function useRevenueCat() {
     async function init() {
       try {
         // Dynamic import — only loads on native where the plugin exists
+        // @ts-ignore — dynamic import, types only available when native plugin is installed
         const { Purchases } = await import('@revenuecat/purchases-capacitor');
 
         // Configure with your RevenueCat API key (set via edge function / config)
