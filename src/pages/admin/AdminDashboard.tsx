@@ -218,7 +218,7 @@ export default function AdminDashboard() {
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-4">
         <Button asChild>
-          <TransitionLink to="/admin/applications">
+          <TransitionLink to={`${ADMIN_BASE}/applications`}>
             <FileText className="h-4 w-4 mr-2" />
             Review Applications
           </TransitionLink>
@@ -228,7 +228,7 @@ export default function AdminDashboard() {
           asChild
           className="dark:border-border dark:hover:bg-muted"
         >
-          <TransitionLink to="/admin/members">
+          <TransitionLink to={`${ADMIN_BASE}/members`}>
             <Users className="h-4 w-4 mr-2" />
             View Members
           </TransitionLink>
@@ -238,7 +238,7 @@ export default function AdminDashboard() {
           asChild
           className="dark:border-border dark:hover:bg-muted"
         >
-          <TransitionLink to="/admin/analytics">
+          <TransitionLink to={`${ADMIN_BASE}/analytics`}>
             <TrendingUp className="h-4 w-4 mr-2" />
             Analytics
           </TransitionLink>

@@ -307,7 +307,7 @@ const AdminDatingProfile = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/admin/dating")}>
+        <Button variant="ghost" size="icon" onClick={() => navigate(`${ADMIN_BASE}/dating`)}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex-1 flex flex-col md:flex-row md:items-center gap-4">
