@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 
@@ -12,6 +12,8 @@ const MemberAvatarsWithStats = lazy(() =>
 );
 
 export const Hero = () => {
+  const [videoReady, setVideoReady] = useState(false);
+
   return (
     <section className="relative w-full h-[100dvh] bg-[#050505] overflow-hidden">
       {/* Full-bleed background video */}
@@ -21,8 +23,10 @@ export const Hero = () => {
           muted
           loop
           playsInline
+          preload="auto"
           poster="/images/hero-poster.webp"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover"
+          onCanPlayThrough={() => setVideoReady(true)}
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover transition-opacity duration-1000 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
         >
           <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
         </video>
