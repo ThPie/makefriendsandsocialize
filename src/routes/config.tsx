@@ -205,7 +205,7 @@ export const MainRoutes = () => (
         <Route path={`${ADMIN_BASE}/content`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminContent /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/roles`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminRoles /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/settings`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminSettings /></AdminLayout></ProtectedRoute>} />
-        <Route path={`${ADMIN_BASE}/referrals`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminReferrals /></AdminLayout></ProtectedRoute>} />
+        
         <Route path={`${ADMIN_BASE}/appeals`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminAppeals /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/circles`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminCircles /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/businesses`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminBusinesses /></AdminLayout></ProtectedRoute>} />
