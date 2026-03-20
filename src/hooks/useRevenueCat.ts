@@ -147,6 +147,7 @@ export function useRevenueCat() {
 
     setIsPurchasing(true);
     try {
+      // @ts-ignore — dynamic import, types only available when native plugin is installed
       const { Purchases } = await import('@revenuecat/purchases-capacitor');
       const info = await Purchases.restorePurchases();
       setCustomerInfo(mapCustomerInfo(info));
