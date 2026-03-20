@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { BrandedLoader } from "@/components/ui/branded-loader";
+import { ADMIN_BASE } from "@/lib/route-paths";
 import { AuthErrorCard } from "@/components/auth/AuthErrorCard";
 
 /**
