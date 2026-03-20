@@ -684,8 +684,8 @@ export default function AuthPage() {
                 <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
               </video>
             </div>
-            {/* Dark gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-background/20" />
+            {/* Dark gradient overlay — always dark for video panel */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(150,38%,6%)]/90 via-[hsl(150,38%,6%)]/40 to-[hsl(150,38%,6%)]/20" />
             
             {/* Logo + Back to website */}
             <div className="absolute top-8 left-8 right-8 flex items-center justify-between z-10">
@@ -1109,8 +1109,8 @@ export default function AuthPage() {
         <source src="https://s56qldubneyttjo2.public.blob.vercel-storage.com/Videos/hero" type="video/mp4" />
       </video>
 
-      {/* Gradient Overlay — Stitch forest green */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/90 to-background/85" />
+      {/* Gradient Overlay — always dark so white text remains visible */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[hsl(150,38%,6%)]/95 via-[hsl(150,38%,6%)]/90 to-[hsl(150,38%,6%)]/85" />
 
       {/* Floating Particles */}
       <FloatingParticles count={20} />

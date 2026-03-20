@@ -10,15 +10,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { PasswordInput, validatePassword, getPasswordStrength } from '@/components/ui/password-input';
 import { FloatingParticles } from '@/components/ui/floating-particles';
 import { BrandedLoader } from '@/components/ui/branded-loader';
-import logoWhite from '@/assets/logo-white.png';
-import logoDark from '@/assets/logo-dark.png';
-import { useTheme } from 'next-themes';
+import { BrandLogo } from '@/components/common/BrandLogo';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
   const { session, isRecoveryMode, isLoading: authLoading } = useAuth();
-  const { resolvedTheme } = useTheme();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,7 +54,6 @@ export default function ResetPasswordPage() {
           return;
         }
         
-        // Check for verified TOTP factors
         const verifiedFactors = factors?.totp?.filter(f => f.status === 'verified') || [];
         
         if (verifiedFactors.length > 0) {
@@ -83,7 +79,6 @@ export default function ResetPasswordPage() {
     setMfaError(null);
     
     try {
-      // Create MFA challenge
       const { data: challenge, error: challengeError } = await supabase.auth.mfa.challenge({
         factorId: mfaFactorId,
       });
@@ -94,7 +89,6 @@ export default function ResetPasswordPage() {
         return;
       }
       
-      // Verify with the code
       const { error: verifyError } = await supabase.auth.mfa.verify({
         factorId: mfaFactorId,
         challengeId: challenge.id,
@@ -108,7 +102,6 @@ export default function ResetPasswordPage() {
         return;
       }
       
-      // MFA verified successfully - session is now AAL2
       setMfaVerified(true);
       setMfaRequired(false);
     } catch (err) {
@@ -119,15 +112,11 @@ export default function ResetPasswordPage() {
     }
   };
 
-  // The user arrives here after being redirected from the home page by RecoveryRedirectHandler.
   const hasValidSession = session !== null || isRecoveryMode;
   const isLoading = authLoading || (hasValidSession && !mfaChecked);
   const showError = !authLoading && !hasValidSession;
   const showMfaVerification = hasValidSession && mfaChecked && mfaRequired && !mfaVerified;
   const showPasswordForm = hasValidSession && mfaChecked && (!mfaRequired || mfaVerified);
-  
-  // Get the right logo based on theme
-  const logoSrc = resolvedTheme === 'dark' ? logoWhite : logoDark;
 
   // Password validation
   const validatePasswordField = useCallback((value: string) => {
@@ -140,7 +129,6 @@ export default function ResetPasswordPage() {
     return true;
   }, []);
 
-  // Confirm password validation
   const validateConfirmPasswordField = useCallback((value: string) => {
     if (value !== password) {
       setConfirmPasswordError('Passwords do not match');
@@ -150,7 +138,6 @@ export default function ResetPasswordPage() {
     return true;
   }, [password]);
 
-  // Handle password change with validation and breach check
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
@@ -161,7 +148,6 @@ export default function ResetPasswordPage() {
       validatePasswordField(value);
     }
     
-    // Also validate confirm password when password changes
     if (confirmPasswordTouched && confirmPassword) {
       if (value !== confirmPassword) {
         setConfirmPasswordError('Passwords do not match');
@@ -170,7 +156,6 @@ export default function ResetPasswordPage() {
       }
     }
 
-    // Debounced server-side password breach check
     if (value.length >= 10) {
       if (passwordCheckTimeout) {
         clearTimeout(passwordCheckTimeout);
@@ -201,7 +186,6 @@ export default function ResetPasswordPage() {
     }
   };
 
-  // Handle confirm password change
   const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setConfirmPassword(value);
@@ -216,7 +200,6 @@ export default function ResetPasswordPage() {
     setPasswordTouched(true);
     setConfirmPasswordTouched(true);
     
-    // Validate password strength
     const { isValid, errors } = validatePassword(password);
     if (!isValid) {
       setPasswordError(errors[0]);
@@ -230,7 +213,6 @@ export default function ResetPasswordPage() {
       return;
     }
     
-    // Check for server-side password issues
     if (passwordServerError) {
       setFormError(passwordServerError);
       return;
@@ -238,7 +220,6 @@ export default function ResetPasswordPage() {
 
     setIsSubmitting(true);
 
-    // Final server-side check before updating
     try {
       const { data, error: checkError } = await supabase.functions.invoke('check-password-strength', {
         body: { password },
@@ -261,7 +242,6 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    // Send password changed confirmation email
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -271,7 +251,6 @@ export default function ResetPasswordPage() {
       }
     } catch (emailError) {
       console.error('Failed to send confirmation email:', emailError);
-      // Don't block success on email failure
     }
 
     setIsSubmitting(false);
@@ -284,11 +263,9 @@ export default function ResetPasswordPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen relative overflow-hidden flex items-center justify-center bg-background">
-        
         <div className="z-[2]">
           <FloatingParticles />
         </div>
-        
         <div className="relative z-10 text-center">
           <BrandedLoader message="Verifying reset link..." />
         </div>
@@ -300,19 +277,17 @@ export default function ResetPasswordPage() {
   if (showError) {
     return (
       <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 bg-background">
-        
         <div className="z-[2]">
           <FloatingParticles />
         </div>
-        
         <div className="relative z-10 w-full max-w-md animate-fade-in">
           <TransitionLink to="/" className="inline-block mb-8">
-            <img src={logoWhite} alt="MakeFriends & Socialize" className="h-12 md:h-14" />
+            <BrandLogo className="h-12 md:h-14" />
           </TransitionLink>
 
-          <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10 text-center">
+          <div className="bg-card backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-border">
             <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="h-8 w-8 text-amber-400" />
+              <AlertTriangle className="h-8 w-8 text-amber-500 dark:text-amber-400" />
             </div>
             <h1 className="font-display text-2xl text-card-foreground mb-2">Link Expired</h1>
             <p className="text-muted-foreground text-sm mb-6">
@@ -322,7 +297,7 @@ export default function ResetPasswordPage() {
               <Button asChild className="w-full" size="lg">
                 <TransitionLink to="/auth/forgot-password">Request New Reset Link</TransitionLink>
               </Button>
-              <Button asChild variant="outline" className="w-full border-white/20 text-white hover:bg-white/10" size="lg">
+              <Button asChild variant="outline" className="w-full" size="lg">
                 <TransitionLink to="/auth">Back to Sign In</TransitionLink>
               </Button>
             </div>
@@ -336,29 +311,25 @@ export default function ResetPasswordPage() {
   if (showMfaVerification) {
     return (
       <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 bg-background">
-        
         <div className="z-[2]">
           <FloatingParticles />
         </div>
-        
         <div className="relative z-10 w-full max-w-md animate-fade-in">
           <TransitionLink to="/" className="inline-block mb-8">
-            <img src={logoWhite} alt="MakeFriends & Socialize" className="h-12 md:h-14" />
+            <BrandLogo className="h-12 md:h-14" />
           </TransitionLink>
 
-          <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
-            {/* Header with Shield Icon */}
+          <div className="bg-card backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-border">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                 <Smartphone className="h-5 w-5 text-primary" />
               </div>
-              <h1 className="font-display text-2xl text-white">Verify Your Identity</h1>
+              <h1 className="font-display text-2xl text-card-foreground">Verify Your Identity</h1>
             </div>
-            <p className="text-white/60 text-sm mb-6 ml-[52px]">
+            <p className="text-muted-foreground text-sm mb-6 ml-[52px]">
               Your account has two-factor authentication enabled. Enter the code from your authenticator app.
             </p>
 
-            {/* MFA Error Banner */}
             {mfaError && (
               <div className="mb-6 p-3 rounded-lg bg-destructive/20 border border-destructive/30 flex items-start gap-2">
                 <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
@@ -367,9 +338,8 @@ export default function ResetPasswordPage() {
             )}
 
             <div className="space-y-6">
-              {/* OTP Input */}
               <div className="flex flex-col items-center gap-4">
-                <Label className="text-white/80 text-center">Enter 6-digit code</Label>
+                <Label className="text-muted-foreground text-center">Enter 6-digit code</Label>
                 <InputOTP
                   maxLength={6}
                   value={mfaCode}
@@ -387,7 +357,6 @@ export default function ResetPasswordPage() {
                 </InputOTP>
               </div>
 
-              {/* Verify Button */}
               <Button 
                 onClick={handleMfaVerify}
                 disabled={isVerifyingMfa || mfaCode.length !== 6} 
@@ -405,19 +374,17 @@ export default function ResetPasswordPage() {
               </Button>
             </div>
 
-            {/* Security Note */}
-            <div className="mt-6 p-3 rounded-lg bg-white/5 border border-white/10">
-              <p className="text-white/60 text-xs text-center">
+            <div className="mt-6 p-3 rounded-lg bg-muted border border-border">
+              <p className="text-muted-foreground text-xs text-center">
                 🔒 This extra step keeps your account secure when changing your password.
               </p>
             </div>
 
-            {/* Back to Sign In Link */}
             <div className="mt-6 text-center">
               <Button 
                 variant="link"
                 onClick={() => navigate('/auth')}
-                className="text-sm text-white/60 hover:text-primary inline-flex items-center gap-1 transition-colors"
+                className="text-sm text-muted-foreground hover:text-primary inline-flex items-center gap-1 transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to Sign In
@@ -433,35 +400,30 @@ export default function ResetPasswordPage() {
   if (isSuccess) {
     return (
       <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 bg-background">
-        
         <div className="z-[2]">
           <FloatingParticles />
         </div>
-        
         <div className="relative z-10 w-full max-w-md animate-fade-in">
-          {/* Logo */}
           <TransitionLink to="/" className="inline-block mb-8">
-            <img src={logoWhite} alt="MakeFriends & Socialize" className="h-12 md:h-14" />
+            <BrandLogo className="h-12 md:h-14" />
           </TransitionLink>
           
-          <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10 text-center">
-            {/* Success Icon */}
+          <div className="bg-card backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-border text-center">
             <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="h-10 w-10 text-green-400" />
+              <CheckCircle className="h-10 w-10 text-green-500 dark:text-green-400" />
             </div>
             
-            <h1 className="font-display text-2xl text-white mb-3">Password Updated!</h1>
+            <h1 className="font-display text-2xl text-card-foreground mb-3">Password Updated!</h1>
             
-            <p className="text-white/70 mb-6">
+            <p className="text-muted-foreground mb-6">
               Your password has been successfully changed. You can now sign in with your new password.
             </p>
             
-            {/* Email confirmation notice */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-6 flex items-start gap-3 text-left">
+            <div className="bg-muted border border-border rounded-lg p-4 mb-6 flex items-start gap-3 text-left">
               <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />
               <div>
-                <p className="text-white/90 text-sm font-medium">Confirmation Email Sent</p>
-                <p className="text-white/60 text-xs mt-1">
+                <p className="text-foreground text-sm font-medium">Confirmation Email Sent</p>
+                <p className="text-muted-foreground text-xs mt-1">
                   We've sent a confirmation email to your registered address for your records.
                 </p>
               </div>
@@ -475,7 +437,7 @@ export default function ResetPasswordPage() {
               Go to Your Portal
             </Button>
             
-            <p className="text-white/40 text-xs mt-4">
+            <p className="text-muted-foreground text-xs mt-4">
               If you didn't make this change, please contact support immediately.
             </p>
           </div>
@@ -487,35 +449,26 @@ export default function ResetPasswordPage() {
   // Main form
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center px-4 bg-background">
-      
       <div className="z-[2]">
         <FloatingParticles />
       </div>
       
       <div className="relative z-10 w-full max-w-md animate-fade-in">
-        {/* Logo - visible for both themes */}
         <TransitionLink to="/" className="inline-block mb-8">
-          <img 
-            src={logoWhite} 
-            alt="MakeFriends & Socialize" 
-            className="h-12 md:h-14" 
-          />
+          <BrandLogo className="h-12 md:h-14" />
         </TransitionLink>
 
-        {/* Glassmorphism Card */}
-        <div className="bg-card/80 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
-          {/* Header with Shield Icon */}
+        <div className="bg-card backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-border">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
               <Shield className="h-5 w-5 text-primary" />
             </div>
-            <h1 className="font-display text-2xl text-white">Set New Password</h1>
+            <h1 className="font-display text-2xl text-card-foreground">Set New Password</h1>
           </div>
-          <p className="text-white/60 text-sm mb-6 ml-[52px]">
+          <p className="text-muted-foreground text-sm mb-6 ml-[52px]">
             Create a strong, secure password for your account.
           </p>
 
-          {/* Form Error Banner */}
           {formError && (
             <div className="mb-6 p-3 rounded-lg bg-destructive/20 border border-destructive/30 flex items-start gap-2">
               <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
@@ -524,9 +477,8 @@ export default function ResetPasswordPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* New Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white/80">New Password</Label>
+              <Label htmlFor="password" className="text-foreground/80">New Password</Label>
               <PasswordInput
                 id="password"
                 placeholder="Enter your new password"
@@ -540,16 +492,15 @@ export default function ResetPasswordPage() {
                 error={passwordError || passwordServerError || undefined}
               />
               {isCheckingPassword && (
-                <p className="text-xs text-white/50 flex items-center gap-1">
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
                   <Loader2 className="h-3 w-3 animate-spin" />
                   Checking password security...
                 </p>
               )}
             </div>
 
-            {/* Confirm Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-white/80">Confirm Password</Label>
+              <Label htmlFor="confirmPassword" className="text-foreground/80">Confirm Password</Label>
               <PasswordInput
                 id="confirmPassword"
                 placeholder="Confirm your new password"
@@ -563,10 +514,9 @@ export default function ResetPasswordPage() {
               />
             </div>
 
-            {/* Password Match Indicator */}
             {confirmPassword.length > 0 && (
               <div className={`flex items-center gap-2 text-xs ${
-                password === confirmPassword ? 'text-green-400' : 'text-white/40'
+                password === confirmPassword ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'
               }`}>
                 {password === confirmPassword ? (
                   <>
@@ -582,7 +532,6 @@ export default function ResetPasswordPage() {
               </div>
             )}
 
-            {/* Submit Button */}
             <Button 
               type="submit" 
               disabled={isSubmitting || isCheckingPassword || strength.score < 100} 
@@ -597,12 +546,11 @@ export default function ResetPasswordPage() {
             </Button>
           </form>
 
-          {/* Back to Sign In Link */}
           <div className="mt-6 text-center">
             <Button 
               variant="link"
               onClick={() => navigate('/auth')}
-              className="text-sm text-white/60 hover:text-primary inline-flex items-center gap-1 transition-colors"
+              className="text-sm text-muted-foreground hover:text-primary inline-flex items-center gap-1 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Sign In
@@ -610,8 +558,7 @@ export default function ResetPasswordPage() {
           </div>
         </div>
 
-        {/* Security Note */}
-        <p className="text-center text-white/40 text-xs mt-6">
+        <p className="text-center text-muted-foreground text-xs mt-6">
           🔒 Your password is encrypted and never stored in plain text
         </p>
       </div>

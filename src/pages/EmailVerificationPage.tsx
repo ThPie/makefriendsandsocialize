@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Mail, CheckCircle2, RefreshCw, Loader2, ArrowRight, AlertTriangle } from 'lucide-react';
-import logoWhite from '@/assets/logo-white.png';
+import { BrandLogo } from '@/components/common/BrandLogo';
 import { BrandedLoader } from '@/components/ui/branded-loader';
 import { FloatingParticles } from '@/components/ui/floating-particles';
 
@@ -17,20 +17,16 @@ export default function EmailVerificationPage() {
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const [isVerified, setIsVerified] = useState(false);
 
-  // Check if coming from email confirmation link
   const isConfirmed = searchParams.get('confirmed') === 'true';
 
-  // Check email verification status
   useEffect(() => {
     if (!user) return;
 
     const checkVerification = async () => {
-      // Refresh user to get latest email_confirmed_at
       const { data: { user: freshUser } } = await supabase.auth.getUser();
       
       if (freshUser?.email_confirmed_at) {
         setIsVerified(true);
-        // Redirect to onboarding or waiting page after short delay
         setTimeout(() => {
           navigate('/portal/onboarding');
         }, 2000);
@@ -38,13 +34,10 @@ export default function EmailVerificationPage() {
     };
 
     checkVerification();
-
-    // Poll for verification status every 5 seconds
     const interval = setInterval(checkVerification, 5000);
     return () => clearInterval(interval);
   }, [user, navigate]);
 
-  // Handle cooldown timer
   useEffect(() => {
     if (cooldownSeconds > 0) {
       const timer = setTimeout(() => {
@@ -56,7 +49,6 @@ export default function EmailVerificationPage() {
     }
   }, [cooldownSeconds, resendStatus]);
 
-  // Redirect to auth if no user
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/auth');
@@ -88,7 +80,7 @@ export default function EmailVerificationPage() {
         }
       } else {
         setResendStatus('success');
-        setCooldownSeconds(60); // 60 second cooldown between resends
+        setCooldownSeconds(60);
       }
     } catch (err) {
       console.error('Error resending verification:', err);
@@ -105,23 +97,21 @@ export default function EmailVerificationPage() {
   // Success state - email verified
   if (isVerified || isConfirmed) {
     return (
-      <div className="min-h-screen relative flex items-center justify-center px-4 py-16 overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)]" />
+      <div className="min-h-screen relative flex items-center justify-center px-4 py-16 overflow-hidden bg-background">
         <FloatingParticles count={15} />
         
         <div className="relative z-10 max-w-md text-center animate-fade-in">
           <Link to="/" className="inline-block mb-8">
-            <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10 mx-auto" />
+            <BrandLogo className="h-10 mx-auto" />
           </Link>
 
-          <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+          <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-8 shadow-2xl">
             <div className="w-20 h-20 mx-auto rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center mb-6">
               <CheckCircle2 className="h-10 w-10 text-primary" />
             </div>
 
-            <h1 className="font-display text-3xl text-white mb-3">Email Verified!</h1>
-            <p className="text-white/60 mb-6">
+            <h1 className="font-display text-3xl text-card-foreground mb-3">Email Verified!</h1>
+            <p className="text-muted-foreground mb-6">
               Your email has been successfully verified. Redirecting you to complete your profile...
             </p>
 
@@ -136,18 +126,15 @@ export default function EmailVerificationPage() {
   }
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4 py-16 overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(180,45%,8%)] via-[hsl(180,50%,12%)] to-[hsl(180,55%,15%)]" />
+    <div className="min-h-screen relative flex items-center justify-center px-4 py-16 overflow-hidden bg-background">
       <FloatingParticles count={15} />
       
       <div className="relative z-10 max-w-md w-full text-center animate-fade-in">
-        {/* Logo */}
         <Link to="/" className="inline-block mb-8">
-          <img src={logoWhite} alt="MakeFriends & Socialize" className="h-10 mx-auto" />
+          <BrandLogo className="h-10 mx-auto" />
         </Link>
 
-        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+        <div className="bg-card backdrop-blur-xl border border-border rounded-2xl p-8 shadow-2xl">
           {/* Mail Icon with Animation */}
           <div className="relative w-24 h-24 mx-auto mb-6">
             <div className="absolute inset-0 rounded-full bg-primary/20 animate-pulse" />
@@ -156,18 +143,18 @@ export default function EmailVerificationPage() {
             </div>
           </div>
 
-          <h1 className="font-display text-3xl text-white mb-3">Verify Your Email</h1>
+          <h1 className="font-display text-3xl text-card-foreground mb-3">Verify Your Email</h1>
           
-          <p className="text-white/60 mb-2">
+          <p className="text-muted-foreground mb-2">
             We've sent a verification link to:
           </p>
           <p className="text-primary font-medium mb-6 break-all">
             {user?.email}
           </p>
 
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6 text-left">
-            <h3 className="text-white font-medium text-sm mb-2">Next Steps:</h3>
-            <ol className="text-white/60 text-sm space-y-2">
+          <div className="bg-muted border border-border rounded-xl p-4 mb-6 text-left">
+            <h3 className="text-foreground font-medium text-sm mb-2">Next Steps:</h3>
+            <ol className="text-muted-foreground text-sm space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-primary font-semibold">1.</span>
                 Check your inbox (and spam folder)
@@ -185,14 +172,14 @@ export default function EmailVerificationPage() {
 
           {/* Status Messages */}
           {resendStatus === 'success' && (
-            <div className="flex items-center gap-2 justify-center text-green-400 text-sm mb-4 bg-green-500/10 border border-green-500/20 rounded-lg p-3">
+            <div className="flex items-center gap-2 justify-center text-green-600 dark:text-green-400 text-sm mb-4 bg-green-500/10 border border-green-500/20 rounded-lg p-3">
               <CheckCircle2 className="h-4 w-4" />
               <span>Verification email sent! Check your inbox.</span>
             </div>
           )}
           
           {resendStatus === 'error' && (
-            <div className="flex items-center gap-2 justify-center text-red-400 text-sm mb-4 bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+            <div className="flex items-center gap-2 justify-center text-destructive text-sm mb-4 bg-destructive/10 border border-destructive/20 rounded-lg p-3">
               <AlertTriangle className="h-4 w-4" />
               <span>Failed to send email. Please try again.</span>
             </div>
@@ -203,7 +190,7 @@ export default function EmailVerificationPage() {
             onClick={handleResendVerification}
             disabled={isResending || cooldownSeconds > 0}
             variant="outline"
-            className="w-full bg-white/5 border-white/20 text-white hover:bg-white/10 mb-4"
+            className="w-full mb-4"
           >
             {isResending ? (
               <>
@@ -223,14 +210,14 @@ export default function EmailVerificationPage() {
             )}
           </Button>
 
-          <p className="text-white/40 text-xs mt-4">
+          <p className="text-muted-foreground text-xs mt-4">
             Please verify your email to continue. Check your inbox and spam folder.
           </p>
         </div>
 
         {/* Help Text */}
         <div className="mt-6 text-center">
-          <p className="text-white/40 text-sm mb-2">
+          <p className="text-muted-foreground text-sm mb-2">
             Wrong email address?
           </p>
           <Button
