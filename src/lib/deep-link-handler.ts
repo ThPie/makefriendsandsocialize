@@ -8,7 +8,7 @@ import { App } from '@capacitor/app';
 export const DEEP_LINK_SCHEMES = {
   ios: 'makefriends://',
   android: 'makefriends://',
-  universal: 'https://makefriendsandsocializecom.lovable.app'
+  universal: 'https://makefriendsandsocialize.com'
 };
 
 export const APP_STORE_URLS = {

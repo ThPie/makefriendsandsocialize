@@ -48,7 +48,7 @@ function mapDeepLinkPath(path: string): string {
   // Strip leading slashes and normalise
   const clean = path.replace(/^\/+/, '/');
 
-  // Direct portal routes pass through
+  // Direct portal/auth routes pass through
   if (clean.startsWith('/portal')) return clean;
   if (clean.startsWith('/auth')) return clean;
 
@@ -66,10 +66,20 @@ function mapDeepLinkPath(path: string): string {
   // Check exact matches
   if (mappings[clean]) return mappings[clean];
 
-  // Pattern-based routes
-  if (clean.startsWith('/event/')) return `/portal/events`;
-  if (clean.startsWith('/match/')) return `/portal/match/${clean.split('/').pop()}`;
-  if (clean.startsWith('/member/')) return `/portal/network`;
+  // Pattern-based routes with ID/slug extraction
+  const patterns: Array<{ regex: RegExp; toRoute: (m: RegExpMatchArray) => string }> = [
+    { regex: /^\/events?\/([a-f0-9-]+)$/i, toRoute: (m) => `/portal/events/${m[1]}` },
+    { regex: /^\/(?:profile|member)\/([a-f0-9-]+)$/i, toRoute: (m) => `/portal/network/${m[1]}` },
+    { regex: /^\/match\/([a-f0-9-]+)$/i, toRoute: () => `/portal/slow-dating` },
+    { regex: /^\/business\/([a-zA-Z0-9-]+)$/i, toRoute: (m) => `/business/${m[1]}` },
+    { regex: /^\/journal\/([a-zA-Z0-9-]+)$/i, toRoute: (m) => `/journal/${m[1]}` },
+    { regex: /^\/refer\/([a-zA-Z0-9]+)$/i, toRoute: (m) => `/join?ref=${m[1]}` },
+  ];
+
+  for (const { regex, toRoute } of patterns) {
+    const match = clean.match(regex);
+    if (match) return toRoute(match);
+  }
 
   // Fallback — let the router handle it
   return clean || '/portal/dashboard';
