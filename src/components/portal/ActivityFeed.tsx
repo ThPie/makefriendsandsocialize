@@ -94,28 +94,13 @@ export function ActivityFeed({ limit = 10, compact = false }: ActivityFeedProps)
     refetchOnWindowFocus: false, // Don't refetch on window focus
   });
 
-  // Subscribe to realtime updates
+  // Poll for updates instead of realtime to reduce CPU overhead
   useEffect(() => {
     if (!user) return;
-
-    const channel = supabase
-      .channel('activity-feed-realtime')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'activity_feed',
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['activity-feed'] });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    const interval = setInterval(() => {
+      queryClient.invalidateQueries({ queryKey: ['activity-feed'] });
+    }, 60_000);
+    return () => clearInterval(interval);
   }, [user, queryClient]);
 
   if (isLoading) {
