@@ -99,7 +99,6 @@ export default function BusinessDirectoryPage() {
   const regularBusinesses = filteredBusinesses.filter((b) => b.status !== 'featured');
 
   const handleBusinessClick = (business: BusinessProfile) => {
-    if (!canAccessDirectory) return;
     setSelectedBusiness(business);
     setDialogOpen(true);
   };
