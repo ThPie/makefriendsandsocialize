@@ -35,7 +35,7 @@ const PortalProfile = lazy(() => import("@/pages/portal/PortalProfile"));
 const PortalEvents = lazy(() => import("@/pages/portal/PortalEvents"));
 const PortalSlowDating = lazy(() => import("@/pages/portal/PortalSlowDating"));
 const PortalMatchDetail = lazy(() => import("@/pages/portal/PortalMatchDetail"));
-const PortalReferrals = lazy(() => import("@/pages/portal/PortalReferrals"));
+
 const PortalBilling = lazy(() => import("@/pages/portal/PortalBilling"));
 const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
 const AdminApplications = lazy(() => import("@/pages/admin/AdminApplications"));
