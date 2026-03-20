@@ -63,14 +63,13 @@ const navGroups = [
     items: [
       { title: 'Dashboard', url: '/portal', icon: SquaresFour, requiresApproval: false },
       { title: 'My Profile', url: '/portal/profile', icon: UserCircle, requiresApproval: false },
-      { title: 'Connections', url: '/portal/connections', icon: Handshake, requiresApproval: true },
       { title: 'Slow Dating', url: '/portal/slow-dating', icon: HeartStraight, requiresApproval: true },
     ],
   },
   {
     label: 'Explore',
     items: [
-      { title: 'The Network', url: '/portal/network', icon: UsersThree, requiresApproval: true },
+      { title: 'Directory', url: '/founders-circle/directory', icon: Buildings, requiresApproval: false },
       { title: 'Events', url: '/portal/events', icon: CalendarBlank, requiresApproval: false },
       { title: 'Perks', url: '/portal/perks', icon: Gift, requiresApproval: false },
       { title: 'Referrals', url: '/portal/referrals', icon: Gift, requiresApproval: false },
