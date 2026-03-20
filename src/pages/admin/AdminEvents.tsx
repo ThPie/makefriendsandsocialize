@@ -399,7 +399,7 @@ export default function AdminEvents() {
           </Button>
           
           <Button variant="outline" asChild className="rounded-xl">
-            <Link to="/admin/event-analytics">
+            <Link to={`${ADMIN_BASE}/event-analytics`}>
               <BarChart3 className="h-4 w-4 mr-2" />
               View Analytics
             </Link>

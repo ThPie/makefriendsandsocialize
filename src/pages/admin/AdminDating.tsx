@@ -430,7 +430,7 @@ const AdminDating = () => {
                           variant="ghost"
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`/admin/dating/${profile.id}`);
+                            navigate(`${ADMIN_BASE}/dating/${profile.id}`);
                           }}
                         >
                           <Eye className="h-4 w-4" />
