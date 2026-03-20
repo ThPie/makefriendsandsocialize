@@ -82,18 +82,18 @@ const menuItems = [
 
 // Routes that require MFA verification
 const SENSITIVE_ROUTES = [
-  '/admin/applications',
-  '/admin/members',
-  '/admin/appeals',
-  '/admin/referrals',
-  '/admin/businesses',
-  '/admin/leads',
-  '/admin/security',
-  '/admin/security-dashboard',
-  '/admin/dating',
-  '/admin/dating/review',
-  '/admin/matches',
-  '/admin/roles',
+  `${ADMIN_BASE}/applications`,
+  `${ADMIN_BASE}/members`,
+  `${ADMIN_BASE}/appeals`,
+  `${ADMIN_BASE}/referrals`,
+  `${ADMIN_BASE}/businesses`,
+  `${ADMIN_BASE}/leads`,
+  `${ADMIN_BASE}/security`,
+  `${ADMIN_BASE}/security-dashboard`,
+  `${ADMIN_BASE}/dating`,
+  `${ADMIN_BASE}/dating/review`,
+  `${ADMIN_BASE}/matches`,
+  `${ADMIN_BASE}/roles`,
 ];
 
 export function AdminLayout({ children }: AdminLayoutProps) {
