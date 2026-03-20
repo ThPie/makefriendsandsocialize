@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ADMIN_BASE } from '@/lib/route-paths';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
