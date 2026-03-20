@@ -32,8 +32,6 @@ const AuthWaitingPage = lazy(() => import("@/pages/AuthWaitingPage"));
 const EmailVerificationPage = lazy(() => import("@/pages/EmailVerificationPage"));
 const PortalDashboard = lazy(() => import("@/pages/portal/PortalDashboard"));
 const PortalProfile = lazy(() => import("@/pages/portal/PortalProfile"));
-const PortalNetwork = lazy(() => import("@/pages/portal/PortalNetwork"));
-const PortalConnections = lazy(() => import("@/pages/portal/PortalConnections"));
 const PortalEvents = lazy(() => import("@/pages/portal/PortalEvents"));
 const PortalSlowDating = lazy(() => import("@/pages/portal/PortalSlowDating"));
 const PortalMatchDetail = lazy(() => import("@/pages/portal/PortalMatchDetail"));
