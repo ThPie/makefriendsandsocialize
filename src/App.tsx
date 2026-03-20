@@ -26,6 +26,7 @@ import { OfflineBanner } from "@/components/native/OfflineBanner";
 import { useNativeStatusBar } from "@/hooks/useNativeStatusBar";
 import { useAppBadge } from "@/hooks/useAppBadge";
 import { useDeepLinkRouter } from "@/hooks/useDeepLinkRouter";
+import { AppUpdateModal } from "@/hooks/useAppUpdate";
 
 import { SlowDatingRoutes, MainRoutes } from "@/routes/config";
 
@@ -87,6 +88,7 @@ const App = () => {
                     <BackToTop />
                     <Toaster />
                     <InAppUpgradeModal />
+                    <AppUpdateModal />
                     <SpeedInsights />
                     <Analytics />
                   </SessionProvider>
