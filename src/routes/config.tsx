@@ -190,7 +190,7 @@ export const MainRoutes = () => (
         <Route path={ADMIN_BASE} element={<ProtectedRoute requireAdmin><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/applications`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminApplications /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/members`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminMembers /></AdminLayout></ProtectedRoute>} />
-        <Route path={`${ADMIN_BASE}/leads`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminLeads /></AdminLayout></ProtectedRoute>} />
+        
         <Route path={`${ADMIN_BASE}/security`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminSecurityReports /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/security-dashboard`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminSecurityDashboard /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/dating`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminDating /></AdminLayout></ProtectedRoute>} />
