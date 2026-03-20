@@ -126,8 +126,7 @@ export default function BusinessDirectoryPage() {
               Business Directory
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8">
-              Connect with trusted businesses and professionals within our exclusive community.
-              Request warm introductions through our network.
+              Discover member businesses and reach out directly to connect.
             </p>
           </motion.div>
         </div>
