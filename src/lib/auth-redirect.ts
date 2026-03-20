@@ -3,11 +3,13 @@
  * Determines where users should be redirected after authentication
  */
 
+import { ADMIN_BASE } from './route-paths';
+
 export type RedirectDestination = 
   | '/portal/onboarding'   // Profile incomplete
   | '/auth/waiting'        // Profile complete, application pending
   | '/portal'              // Approved member
-  | '/admin';              // Admin user
+  | typeof ADMIN_BASE;     // Admin user
 
 interface AuthRedirectParams {
   isAdmin: boolean;
