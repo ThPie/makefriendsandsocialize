@@ -418,7 +418,7 @@ const AdminDating = () => {
                             className="flex-1"
                             onClick={(e) => {
                               e.stopPropagation();
-                              navigate(`/admin/dating/${profile.id}`);
+                              navigate(`${ADMIN_BASE}/dating/${profile.id}`);
                             }}
                           >
                             <UserSearch className="h-4 w-4 mr-1" />
