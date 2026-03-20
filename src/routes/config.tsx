@@ -172,8 +172,6 @@ export const MainRoutes = () => (
         <Route path="/portal/onboarding" element={<ProtectedRoute><PortalOnboarding /></ProtectedRoute>} />
         <Route path="/portal" element={<ProtectedRoute><PortalLayout><PortalDashboard /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/profile" element={<ProtectedRoute><PortalLayout><PortalProfile /></PortalLayout></ProtectedRoute>} />
-        <Route path="/portal/network" element={<ProtectedRoute><PortalLayout><PortalNetwork /></PortalLayout></ProtectedRoute>} />
-        <Route path="/portal/connections" element={<ProtectedRoute><PortalLayout><PortalConnections /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/slow-dating" element={<ProtectedRoute><PortalLayout><PortalSlowDating /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/match/:matchId" element={<ProtectedRoute><PortalLayout><PortalMatchDetail /></PortalLayout></ProtectedRoute>} />
         <Route path="/portal/events" element={<ProtectedRoute><PortalLayout><PortalEvents /></PortalLayout></ProtectedRoute>} />
