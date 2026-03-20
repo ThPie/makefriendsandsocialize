@@ -220,10 +220,8 @@ export function PortalLayout({ children }: PortalLayoutProps) {
                     <SidebarMenu>
                       {group.items.map((item) => {
                         const isActive = location.pathname === item.url;
-                        const isPatronRestricted = (item.url === '/portal/network' || item.url === '/portal/connections')
-                          && membership?.tier === 'patron';
                         const isPendingRestricted = item.requiresApproval && isPending;
-                        const isRestricted = isPatronRestricted || isPendingRestricted;
+                        const isRestricted = isPendingRestricted;
 
                         return (
                           <SidebarMenuItem key={item.title}>

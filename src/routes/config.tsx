@@ -200,7 +200,7 @@ export const MainRoutes = () => (
         <Route path={`${ADMIN_BASE}/event-analytics`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminEventAnalytics /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/events`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminEvents /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/photos`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminPhotos /></AdminLayout></ProtectedRoute>} />
-        <Route path={`${ADMIN_BASE}/connections`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminConnections /></AdminLayout></ProtectedRoute>} />
+        
         <Route path={`${ADMIN_BASE}/testimonials`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminTestimonials /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/content`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminContent /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/roles`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminRoles /></AdminLayout></ProtectedRoute>} />
