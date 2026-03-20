@@ -1,5 +1,6 @@
 import { useEffect, Suspense } from "react";
 import { BrandedLoader } from "@/components/ui/branded-loader";
+import { AnimatedSplash } from "@/components/native/AnimatedSplash";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { appQueryClient } from "@/lib/queryClient";
@@ -63,6 +64,7 @@ const App = () => {
   const showGeoRedirectBanner = !isCanadianDomain() && !showSlowDatingRoutes;
 
   return (
+    <AnimatedSplash>
     <ErrorBoundary>
       <HelmetProvider>
         <QueryClientProvider client={appQueryClient}>
@@ -102,6 +104,7 @@ const App = () => {
         </QueryClientProvider>
       </HelmetProvider>
     </ErrorBoundary>
+    </AnimatedSplash>
   );
 };
 

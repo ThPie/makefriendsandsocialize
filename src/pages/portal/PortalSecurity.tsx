@@ -4,8 +4,19 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Shield, ShieldCheck, ShieldOff, Loader2, Copy, CheckCircle, Clock } from 'lucide-react';
+import { Shield, ShieldCheck, ShieldOff, Loader2, Copy, CheckCircle, Clock, Trash2, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 type MFAStep = 'loading' | 'disabled' | 'setup_intro' | 'setup_qr' | 'setup_verify' | 'enabled';
 
@@ -339,6 +350,111 @@ export default function PortalSecurity() {
           </p>
         </CardContent>
       </Card>
+
+      {/* Delete Account Card */}
+      <DeleteAccountCard />
     </div>
+  );
+}
+
+function DeleteAccountCard() {
+  const { user, signOut } = useAuth();
+  const [confirmText, setConfirmText] = useState('');
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (confirmText !== 'DELETE' || !user) return;
+
+    setDeleting(true);
+    try {
+      const { error } = await supabase.functions.invoke('delete-account', {
+        body: { user_id: user.id },
+      });
+
+      if (error) throw error;
+
+      toast.success('Your account has been deleted.');
+      await signOut();
+    } catch (err) {
+      console.error('Delete account error:', err);
+      toast.error('Failed to delete account. Please contact support.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <Card className="max-w-2xl mx-auto border-destructive/30">
+      <CardHeader>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
+            <Trash2 className="h-5 w-5 text-destructive" />
+          </div>
+          <div>
+            <CardTitle className="text-destructive">Delete Account</CardTitle>
+            <CardDescription>
+              Permanently delete your account and all associated data
+            </CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="rounded-lg bg-destructive/5 border border-destructive/20 p-4">
+          <div className="flex gap-2">
+            <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+            <div className="text-sm text-muted-foreground">
+              <p className="font-medium text-foreground mb-1">This action is irreversible</p>
+              <ul className="list-disc list-inside space-y-1">
+                <li>Your profile and all personal data will be permanently deleted</li>
+                <li>Active subscriptions will be cancelled</li>
+                <li>Event RSVPs and connections will be removed</li>
+                <li>You will not be able to recover your account</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" className="w-full sm:w-auto">
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete My Account
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete your account and remove all your data.
+                Type <span className="font-mono font-bold text-foreground">DELETE</span> to confirm.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <Input
+              placeholder="Type DELETE to confirm"
+              value={confirmText}
+              onChange={(e) => setConfirmText(e.target.value)}
+              className="font-mono"
+            />
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setConfirmText('')}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                disabled={confirmText !== 'DELETE' || deleting}
+                className="bg-destructive hover:bg-destructive/90"
+              >
+                {deleting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Deleting…
+                  </>
+                ) : (
+                  'Delete Forever'
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </CardContent>
+    </Card>
   );
 }
