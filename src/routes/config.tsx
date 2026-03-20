@@ -54,7 +54,7 @@ const AdminEventAnalytics = lazy(() => import("@/pages/admin/AdminEventAnalytics
 const AdminSecurityReports = lazy(() => import("@/pages/admin/AdminSecurityReports"));
 const AdminSecurityDashboard = lazy(() => import("@/pages/admin/AdminSecurityDashboard"));
 
-const AdminReferrals = lazy(() => import("@/pages/admin/AdminReferrals"));
+
 const AdminPhotos = lazy(() => import("@/pages/admin/AdminPhotos"));
 const AdminAppeals = lazy(() => import("@/pages/admin/AdminAppeals"));
 const AdminCircles = lazy(() => import("@/pages/admin/AdminCircles"));
