@@ -4,8 +4,19 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Shield, ShieldCheck, ShieldOff, Loader2, Copy, CheckCircle, Clock } from 'lucide-react';
+import { Shield, ShieldCheck, ShieldOff, Loader2, Copy, CheckCircle, Clock, Trash2, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 type MFAStep = 'loading' | 'disabled' | 'setup_intro' | 'setup_qr' | 'setup_verify' | 'enabled';
 
