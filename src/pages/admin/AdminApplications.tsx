@@ -282,7 +282,7 @@ export default function AdminApplications() {
         {getSecurityBadge(app.security_report)}
         {app.security_report?.id && (
           <Button variant="ghost" size="icon" asChild>
-            <Link to={`/admin/security?report=${app.security_report.id}`}>
+            <Link to={`${ADMIN_BASE}/security?report=${app.security_report.id}`}>
               <Shield className="h-4 w-4" />
             </Link>
           </Button>
