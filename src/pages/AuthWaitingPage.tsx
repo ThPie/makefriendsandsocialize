@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Clock, CheckCircle2, Mail, RefreshCw, Loader2, AlertTriangle } from 'lucide-react';
 import { BrandLogo } from '@/components/common/BrandLogo';
+import { ADMIN_BASE } from '@/lib/route-paths';
 import { BrandedLoader } from '@/components/ui/branded-loader';
 
 export default function AuthWaitingPage() {
