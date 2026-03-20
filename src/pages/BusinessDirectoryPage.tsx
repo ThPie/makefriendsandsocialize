@@ -135,48 +135,6 @@ export default function BusinessDirectoryPage() {
       {/* Main Content */}
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 md:px-8">
-          {/* Access Gate for non-members */}
-          {!canAccessDirectory && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="max-w-2xl mx-auto mb-12"
-            >
-              <div className="rounded-2xl border border-border bg-card p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-8 h-8 text-primary" />
-                </div>
-                <h2 className="text-2xl font-semibold text-foreground mb-3">
-                  Exclusive Member Access
-                </h2>
-                <p className="text-muted-foreground mb-6">
-                  The Business Directory is available to Fellow and Founder members.
-                  Upgrade your membership to connect with trusted professionals.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  {user ? (
-                    <Button asChild>
-                      <TransitionLink to="/portal/billing">
-                        Upgrade Membership <ArrowRight className="w-4 h-4 ml-2" />
-                      </TransitionLink>
-                    </Button>
-                  ) : (
-                    <>
-                      <Button asChild>
-                        <TransitionLink to="/membership">
-                          View Memberships <ArrowRight className="w-4 h-4 ml-2" />
-                        </TransitionLink>
-                      </Button>
-                      <Button variant="outline" asChild>
-                        <TransitionLink to="/auth">Sign In</TransitionLink>
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
           {/* Search and Filters */}
           <div className="flex flex-col md:flex-row gap-4 mb-8">
             <div className="relative flex-1">
