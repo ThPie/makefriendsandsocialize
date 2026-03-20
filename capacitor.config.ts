@@ -16,7 +16,7 @@ const config: CapacitorConfig = {
     contentInset: 'automatic',
     backgroundColor: '#1a1a1a',
     preferredContentMode: 'mobile',
-    scheme: 'MakeFriends'
+    scheme: 'makefriends'
   },
   
   // Android specific configuration
@@ -33,11 +33,30 @@ const config: CapacitorConfig = {
       launchAutoHide: true,
       backgroundColor: '#1a1a1a',
       androidSplashResourceName: 'splash',
-      showSpinner: false
+      showSpinner: false,
+      splashImmersive: true,
+      splashFullScreen: true
     },
     StatusBar: {
       style: 'dark',
       backgroundColor: '#1a1a1a'
+    },
+    PushNotifications: {
+      presentationOptions: ['badge', 'sound', 'alert']
+    },
+    Keyboard: {
+      resize: 'body',
+      resizeOnFullScreen: true
+    },
+    Camera: {
+      presentationStyle: 'fullscreen'
+    },
+    Geolocation: {
+      // Requesting fine location for nearby events
+    },
+    LocalNotifications: {
+      smallIcon: 'ic_stat_icon',
+      iconColor: '#6366f1'
     }
   }
 };
