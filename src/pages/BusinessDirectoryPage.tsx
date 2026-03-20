@@ -10,7 +10,7 @@ import { BusinessCard } from '@/components/business/BusinessCard';
 import { BusinessProfileDialog } from '@/components/business/BusinessProfileDialog';
 import { SEOHead } from '@/components/SEOHead';
 import { motion } from 'framer-motion';
-import { Search, Filter, Building2, Star, ArrowRight, Lock } from 'lucide-react';
+import { Search, Filter, Building2, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { TransitionLink } from '@/components/ui/TransitionLink';
 import {
