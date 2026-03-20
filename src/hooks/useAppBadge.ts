@@ -42,9 +42,9 @@ export function useAppBadge() {
 
     fetchCount();
 
-    // Listen for real-time notification changes
+    // Listen for real-time notification changes (shares channel name with NotificationBell)
     const channel = supabase
-      .channel('badge_updates')
+      .channel('notification_updates')
       .on(
         'postgres_changes',
         {
@@ -54,7 +54,6 @@ export function useAppBadge() {
           filter: `user_id=eq.${user.id}`,
         },
         () => {
-          // Re-fetch count on any change
           fetchCount();
         }
       )

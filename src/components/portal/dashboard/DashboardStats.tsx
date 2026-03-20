@@ -23,7 +23,7 @@ export function DashboardStats() {
       return data[0];
     },
     enabled: !!user,
-    refetchInterval: 30000,
+    refetchInterval: 120000,
   });
 
   if (isLoading) {
