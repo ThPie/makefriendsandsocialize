@@ -146,9 +146,9 @@ export default function ResetPasswordPage() {
     }
   };
 
-  const hasValidSession = session !== null || isRecoveryMode;
-  const isLoading = authLoading || (hasValidSession && !mfaChecked);
-  const showError = !authLoading && !hasValidSession;
+  const hasValidSession = session !== null || isRecoveryMode || codeExchangeSession;
+  const isLoading = authLoading || !codeExchangeDone || (hasValidSession && !mfaChecked);
+  const showError = !authLoading && codeExchangeDone && !hasValidSession;
   const showMfaVerification = hasValidSession && mfaChecked && mfaRequired && !mfaVerified;
   const showPasswordForm = hasValidSession && mfaChecked && (!mfaRequired || mfaVerified);
 
