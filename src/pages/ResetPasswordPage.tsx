@@ -20,6 +20,8 @@ export default function ResetPasswordPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [codeExchangeDone, setCodeExchangeDone] = useState(false);
+  const [codeExchangeSession, setCodeExchangeSession] = useState(false);
   
   // MFA states
   const [mfaRequired, setMfaRequired] = useState(false);
@@ -39,6 +41,38 @@ export default function ResetPasswordPage() {
   const [passwordServerError, setPasswordServerError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [passwordCheckTimeout, setPasswordCheckTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
+
+  // Explicitly handle PKCE code exchange when landing with ?code= parameter
+  useEffect(() => {
+    const handleCodeExchange = async () => {
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get('code');
+      
+      if (code) {
+        try {
+          console.log('Reset password: exchanging PKCE code for session');
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          
+          if (error) {
+            console.error('Code exchange failed:', error);
+          } else if (data?.session) {
+            console.log('Code exchange successful, session established');
+            setCodeExchangeSession(true);
+          }
+          
+          // Clean up URL
+          url.searchParams.delete('code');
+          window.history.replaceState({}, '', url.pathname + url.search);
+        } catch (err) {
+          console.error('Code exchange error:', err);
+        }
+      }
+      
+      setCodeExchangeDone(true);
+    };
+    
+    handleCodeExchange();
+  }, []);
 
   // Check for MFA factors when session is established
   useEffect(() => {
