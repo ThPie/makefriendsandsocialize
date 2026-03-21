@@ -933,6 +933,16 @@ export default function AdminEvents() {
           event={qrDialogEvent}
         />
       )}
+
+      {/* Publish Everywhere Panel */}
+      {publishEvent && (
+        <PublishEverywherePanel
+          open={!!publishEvent}
+          onOpenChange={(open) => !open && setPublishEvent(null)}
+          eventId={publishEvent.id}
+          eventTitle={publishEvent.title}
+        />
+      )}
     </div>
   );
 }
