@@ -137,3 +137,7 @@ project_id = "qzqomqctuqldexnxgmlh"
     verify_jwt = true
   [functions.square-webhook]
     verify_jwt = false
+  [functions.publish-event]
+    verify_jwt = true
+  [functions.publish-event-callback]
+    verify_jwt = false

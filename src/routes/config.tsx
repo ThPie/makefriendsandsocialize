@@ -80,6 +80,7 @@ const PortalConcierge = lazy(() => import("@/pages/portal/PortalConcierge"));
 const PortalEventCheckin = lazy(() => import("@/pages/portal/PortalEventCheckin"));
 
 const AdminConcierge = lazy(() => import("@/pages/admin/AdminConcierge"));
+const AdminIntegrations = lazy(() => import("@/pages/admin/AdminIntegrations"));
 const AdminDatingReview = lazy(() => import("@/pages/admin/AdminDatingReview"));
 const AdminResearch = lazy(() => import("@/pages/admin/AdminResearch"));
 const PortalSecurity = lazy(() => import("@/pages/portal/PortalSecurity"));
@@ -213,6 +214,7 @@ export const MainRoutes = () => (
         <Route path={`${ADMIN_BASE}/concierge`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminConcierge /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/dating/review`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminDatingReview /></AdminLayout></ProtectedRoute>} />
         <Route path={`${ADMIN_BASE}/research`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminResearch /></AdminLayout></ProtectedRoute>} />
+        <Route path={`${ADMIN_BASE}/integrations`} element={<ProtectedRoute requireAdmin><AdminLayout><AdminIntegrations /></AdminLayout></ProtectedRoute>} />
 
         <Route path="*" element={<Layout><NotFound /></Layout>} />
     </Routes>

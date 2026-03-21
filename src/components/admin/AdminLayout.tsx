@@ -108,6 +108,7 @@ const sidebarSections = [
       { title: 'Analytics', url: `${ADMIN_BASE}/analytics`, icon: TrendingUp, sensitive: false, endpoint: null },
       { title: 'Content', url: `${ADMIN_BASE}/content`, icon: Image, sensitive: false, endpoint: null },
       { title: 'Research', url: `${ADMIN_BASE}/research`, icon: Microscope, sensitive: false, endpoint: null },
+      { title: 'Integrations', url: `${ADMIN_BASE}/integrations`, icon: Settings, sensitive: false, endpoint: null },
       { title: 'Settings', url: `${ADMIN_BASE}/settings`, icon: Settings, sensitive: false, endpoint: null },
     ],
   },

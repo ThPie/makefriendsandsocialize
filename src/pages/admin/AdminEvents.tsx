@@ -21,9 +21,11 @@ import { format } from 'date-fns';
 import { parseLocalDate } from '@/lib/date-utils';
 import { 
   Calendar, MapPin, Users, Plus, Edit, Trash2, Loader2, 
-  Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw, QrCode
+  Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw, QrCode, Send, Globe
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { PlatformSyncStatus } from '@/components/admin/PlatformSyncStatus';
+import { PublishEverywherePanel } from '@/components/admin/PublishEverywherePanel';
 
 interface Event {
   id: string;
@@ -132,6 +134,7 @@ export default function AdminEvents() {
   const [activeTab, setActiveTab] = useState('all');
   const [isSyncingMeetup, setIsSyncingMeetup] = useState(false);
   const [qrDialogEvent, setQrDialogEvent] = useState<Event | null>(null);
+  const [publishEvent, setPublishEvent] = useState<Event | null>(null);
 
   useEffect(() => {
     fetchEvents();
@@ -314,6 +317,7 @@ export default function AdminEvents() {
       case 'ongoing': return 'bg-blue-500/10 text-blue-400 border-blue-500/30';
       case 'past': return 'bg-muted text-muted-foreground border-border';
       case 'cancelled': return 'bg-destructive/10 text-destructive border-destructive/30';
+      case 'draft': return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
       default: return 'bg-muted text-muted-foreground border-border';
     }
   };
@@ -331,6 +335,7 @@ export default function AdminEvents() {
     if (activeTab === 'upcoming') return event.status === 'upcoming';
     if (activeTab === 'past') return event.status === 'past';
     if (activeTab === 'featured') return event.is_featured;
+    if (activeTab === 'drafts') return event.status === 'draft';
     return true;
   });
 
@@ -689,6 +694,7 @@ export default function AdminEvents() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="draft">Draft</SelectItem>
                         <SelectItem value="upcoming">Upcoming</SelectItem>
                         <SelectItem value="ongoing">Ongoing</SelectItem>
                         <SelectItem value="past">Past</SelectItem>
@@ -739,6 +745,9 @@ export default function AdminEvents() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="bg-card border border-border">
           <TabsTrigger value="all">All ({events.length})</TabsTrigger>
+          <TabsTrigger value="drafts">
+            Drafts ({events.filter(e => e.status === 'draft').length})
+          </TabsTrigger>
           <TabsTrigger value="upcoming">
             Upcoming ({events.filter(e => e.status === 'upcoming').length})
           </TabsTrigger>
@@ -863,9 +872,23 @@ export default function AdminEvents() {
                             ))}
                           </div>
                         )}
+
+                        {/* Platform sync status icons */}
+                        <div className="mt-3">
+                          <PlatformSyncStatus eventId={event.id} />
+                        </div>
                       </div>
                       
                       <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setPublishEvent(event)}
+                          className="text-muted-foreground hover:text-primary"
+                          title="Publish Everywhere"
+                        >
+                          <Globe className="h-4 w-4" />
+                        </Button>
                         <Button 
                           variant="ghost" 
                           size="icon" 
@@ -908,6 +931,16 @@ export default function AdminEvents() {
           open={!!qrDialogEvent}
           onOpenChange={(open) => !open && setQrDialogEvent(null)}
           event={qrDialogEvent}
+        />
+      )}
+
+      {/* Publish Everywhere Panel */}
+      {publishEvent && (
+        <PublishEverywherePanel
+          open={!!publishEvent}
+          onOpenChange={(open) => !open && setPublishEvent(null)}
+          eventId={publishEvent.id}
+          eventTitle={publishEvent.title}
         />
       )}
     </div>
