@@ -134,6 +134,7 @@ export default function AdminEvents() {
   const [activeTab, setActiveTab] = useState('all');
   const [isSyncingMeetup, setIsSyncingMeetup] = useState(false);
   const [qrDialogEvent, setQrDialogEvent] = useState<Event | null>(null);
+  const [publishEvent, setPublishEvent] = useState<Event | null>(null);
 
   useEffect(() => {
     fetchEvents();
