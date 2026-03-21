@@ -1,107 +1,121 @@
 
 
-# Simplify Platform: Keep Slow Dating + Business Directory, Remove Network/Connections/Leads
+# Multi-Platform Event Publishing System
 
 ## Summary
 
-Strip out the Network (member browsing/introductions) and Connections features entirely. Simplify the Business portal by removing the lead generation system — founders just list their business, it appears in a public directory, and members reach out directly. Slow Dating remains the core premium feature.
+Build a "Publish Everywhere" system on top of your existing Admin Events dashboard. Direct Eventbrite API publishing (you already have the key), plus webhook-based publishing for Luma, Meetup, Posh, Partiful, and others. Includes a Platform Connections settings page and per-platform sync status tracking.
 
-## Changes
+## Database Changes
 
-### 1. Remove Network & Connections from Portal Navigation
+### New table: `event_platform_sync`
+Tracks publish status per platform per event.
 
-**Files**: `PortalLayout.tsx`, `MobileDashboardNav.tsx`, `PortalBottomNav.tsx`, `BottomNav.tsx`, `PortalBreadcrumb.tsx`
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | |
+| event_id | uuid FK → events | ON DELETE CASCADE |
+| platform | text | 'eventbrite', 'luma', 'meetup', 'posh', 'partiful', 'facebook', 'linkedin' |
+| status | text | 'pending', 'publishing', 'published', 'failed', 'skipped' |
+| external_id | text | Platform's event ID |
+| external_url | text | Link to event on platform |
+| error_message | text | |
+| enabled | boolean | Default true |
+| last_synced_at | timestamptz | |
+| created_at | timestamptz | Default now() |
+| UNIQUE(event_id, platform) | | |
 
-- Remove "Connections" and "The Network" nav items from all sidebar/bottom nav groups
-- Update bottom nav: replace "Network" tab with "Directory" pointing to `/founders-circle/directory`
-- Remove breadcrumb entries for `/portal/network` and `/portal/connections`
+RLS: Admin-only (all operations).
 
-### 2. Remove Network & Connections Routes
+### New table: `platform_connections`
+Stores webhook URLs and connection status per platform.
 
-**File**: `src/routes/config.tsx`
+| Column | Type | Notes |
+|---|---|---|
+| id | uuid PK | |
+| platform | text UNIQUE | |
+| connection_type | text | 'api', 'webhook' |
+| webhook_url | text | Zapier/Make webhook URL |
+| is_active | boolean | Default false |
+| created_at | timestamptz | |
+| updated_at | timestamptz | |
 
-- Remove routes for `/portal/network` and `/portal/connections`
-- Remove lazy imports for `PortalNetwork` and `PortalConnections`
-- Remove admin `/connections` route and lazy import for `AdminConnections`
+RLS: Admin-only.
 
-### 3. Remove Lead System from Business Portal
+### Add column to `events` table
+- `publish_status` text DEFAULT 'draft' — values: 'draft', 'published', 'partial'
 
-**File**: `src/pages/portal/PortalBusiness.tsx`
+## New Edge Function: `publish-event`
 
-- Remove the "Leads" tab and "Synergy" tab — keep only the "Profile" tab (business listing form)
-- Remove all lead-related queries (`business-leads`, `business-lead-stats`, `business-lead-usage`)
-- Remove `useLeadRealtime`, `LeadDetailSheet`, `BusinessLeadsSection`, `BusinessSynergySection` imports
-- Remove lead state variables (`statusFilter`, `selectedLead`, `leadSheetOpen`, `showAnalytics`)
-- Simplify to just: create/edit your business profile → it shows in directory
+Receives `{ event_id, platforms: string[] }` from admin UI.
 
-### 4. Remove Admin Lead Generation Page
+1. Fetches the event from DB
+2. For **Eventbrite** (if toggled): calls `POST /v3/organizations/{org_id}/events/` using existing `EVENTBRITE_API_KEY` to create the event, then publishes it via `POST /v3/events/{id}/publish/`
+3. For **all other platforms**: sends structured JSON to the configured webhook URL from `platform_connections`
+4. Updates `event_platform_sync` row for each platform with status/URL
+5. Updates `events.publish_status` to 'published' or 'partial'
 
-**File**: `src/components/admin/AdminLayout.tsx`
+Webhook payload shape (for Zapier/Make):
+```json
+{
+  "action": "create_event",
+  "event": { "title", "description", "date", "time", "location", "capacity", "price", "image_url", "tags" },
+  "target_platform": "luma",
+  "callback_url": "https://.../functions/v1/publish-event-callback"
+}
+```
 
-- Remove "Lead Generation" from admin sidebar
-- Remove admin `/leads` route from `config.tsx`
+## New Edge Function: `publish-event-callback`
 
-### 5. Update Dashboard Quick Actions & Discover Section
+Simple endpoint that receives `{ event_id, platform, external_id, external_url }` from Zapier/Make after event creation, and updates `event_platform_sync`.
 
-**Files**: `QuickActions.tsx`, `DiscoverForYou.tsx`
+## UI Changes
 
-- Replace "Browse Network" with "Business Directory" linking to `/founders-circle/directory`
-- Remove any network-related discovery cards
+### 1. AdminEvents.tsx — Add Draft Mode + Publish Panel
 
-### 6. Make Business Directory Public & Visible
+- Add "Draft" to the status dropdown (currently: upcoming/ongoing/past/cancelled)
+- After saving an event, show a **"Publish Everywhere" panel** — a section below the event form or a modal with:
+  - Toggle switches for each connected platform (fetched from `platform_connections`)
+  - "Publish Selected" button
+  - Real-time status per platform: spinner → green check / red X with error message
+- Add a "Drafts" tab alongside All/Upcoming/Past/Featured
+- Event list: show small platform icons (colored by status) next to each event
+- RSVP column: tooltip breakdown showing Eventbrite/Meetup/Luma counts
 
-**File**: `src/pages/BusinessDirectoryPage.tsx` (already exists at `/founders-circle/directory`)
+### 2. New Page: AdminIntegrations.tsx (`/cx/integrations`)
 
-- Remove the `canAccessDirectory` tier gate — make it visible to ALL visitors (public page)
-- Keep search and filter functionality working for everyone
-- The `BusinessProfileDialog` already shows contact info — this becomes the "reach out" mechanism
-- Update copy to remove "request introductions" language → "discover member businesses"
+- Card per platform: Eventbrite, Luma, Meetup, Posh, Partiful, Facebook, LinkedIn
+- Eventbrite card: shows "Connected" (API key exists), no webhook needed
+- All others: webhook URL input + active toggle + "Test" button (sends a test payload)
+- Save button persists to `platform_connections` table
 
-### 7. Update Admin Sidebar — Remove Connections
+### 3. AdminLayout.tsx
 
-**File**: `src/components/admin/AdminLayout.tsx`
+- Add "Integrations" item to "System Insights" section
 
-- Remove "Connections" item from the "Engagement & Events" section
+### 4. routes/config.tsx
 
-### 8. Clean Up Auth Context
+- Add lazy import + route for `AdminIntegrations`
 
-**File**: `src/contexts/AuthContext.tsx`
+## New Components
 
-- Keep `canAccessMatchmaking` for Slow Dating — it's still used there
-- No changes needed here
+| Component | Purpose |
+|---|---|
+| `PublishEverywherePanel.tsx` | Modal/panel with platform toggles, publish button, status indicators |
+| `PlatformSyncStatus.tsx` | Small icon row showing publish status per platform on event cards |
 
-### 9. Update Portal Dashboard
+## Files Summary
 
-**File**: `src/pages/portal/PortalDashboard.tsx`
-
-- Remove any references to connections/network widgets if present
-
-### 10. Remove `useLeadRealtime` Hook
-
-**File**: `src/hooks/useLeadRealtime.ts` — can be deleted (no longer used)
-
----
-
-## Files to Modify
 | File | Action |
-|------|--------|
-| `src/components/portal/PortalLayout.tsx` | Remove Connections & Network nav items |
-| `src/components/portal/MobileDashboardNav.tsx` | Remove Connections & Network nav items |
-| `src/components/portal/PortalBottomNav.tsx` | Replace Network with Directory |
-| `src/components/layout/BottomNav.tsx` | Replace Network with Directory |
-| `src/components/portal/PortalBreadcrumb.tsx` | Remove network/connections entries |
-| `src/components/portal/dashboard/QuickActions.tsx` | Replace Browse Network → Business Directory |
-| `src/components/portal/dashboard/DiscoverForYou.tsx` | Remove network discovery card |
-| `src/routes/config.tsx` | Remove network/connections/leads routes |
-| `src/pages/portal/PortalBusiness.tsx` | Remove leads/synergy tabs, keep profile only |
-| `src/pages/BusinessDirectoryPage.tsx` | Make public (remove tier gate) |
-| `src/components/admin/AdminLayout.tsx` | Remove Connections & Lead Generation sidebar items |
-| `src/hooks/useLeadRealtime.ts` | Delete |
-
-## What's Preserved
-- **Slow Dating** — untouched, remains the core feature
-- **Business Profile creation** — founders can still list their business
-- **Business Directory page** — now public so all members (and visitors) can browse and reach out
-- **Events, Perks, Referrals, Concierge** — all unchanged
-- **Database tables** — no schema changes needed; the `connections` and `business_leads` tables remain but are simply unused by the UI
+|---|---|
+| DB migration | Create `event_platform_sync`, `platform_connections`, add `publish_status` to `events` |
+| `supabase/functions/publish-event/index.ts` | New — Eventbrite API + webhook dispatch |
+| `supabase/functions/publish-event-callback/index.ts` | New — webhook callback receiver |
+| `src/pages/admin/AdminEvents.tsx` | Add draft mode, publish panel trigger, sync status icons, RSVP breakdown |
+| `src/pages/admin/AdminIntegrations.tsx` | New — platform connection manager |
+| `src/components/admin/PublishEverywherePanel.tsx` | New — publish modal with per-platform status |
+| `src/components/admin/PlatformSyncStatus.tsx` | New — sync status icons for event list |
+| `src/components/admin/AdminLayout.tsx` | Add "Integrations" sidebar item |
+| `src/routes/config.tsx` | Add integrations route |
+| `supabase/config.toml` | Add publish-event + publish-event-callback function config |
 
