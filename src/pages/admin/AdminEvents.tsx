@@ -889,6 +889,15 @@ export default function AdminEvents() {
                       </div>
                       
                       <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setPublishEvent(event)}
+                          className="text-muted-foreground hover:text-primary"
+                          title="Publish Everywhere"
+                        >
+                          <Globe className="h-4 w-4" />
+                        </Button>
                         <Button 
                           variant="ghost" 
                           size="icon" 
