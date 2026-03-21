@@ -317,6 +317,7 @@ export default function AdminEvents() {
       case 'ongoing': return 'bg-blue-500/10 text-blue-400 border-blue-500/30';
       case 'past': return 'bg-muted text-muted-foreground border-border';
       case 'cancelled': return 'bg-destructive/10 text-destructive border-destructive/30';
+      case 'draft': return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
       default: return 'bg-muted text-muted-foreground border-border';
     }
   };
