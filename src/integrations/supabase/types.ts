@@ -1571,6 +1571,53 @@ export type Database = {
           },
         ]
       }
+      event_platform_sync: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          error_message: string | null
+          event_id: string
+          external_id: string | null
+          external_url: string | null
+          id: string
+          last_synced_at: string | null
+          platform: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          error_message?: string | null
+          event_id: string
+          external_id?: string | null
+          external_url?: string | null
+          id?: string
+          last_synced_at?: string | null
+          platform: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          error_message?: string | null
+          event_id?: string
+          external_id?: string | null
+          external_url?: string | null
+          id?: string
+          last_synced_at?: string | null
+          platform?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_platform_sync_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_reminders: {
         Row: {
           created_at: string | null
@@ -1707,6 +1754,7 @@ export type Database = {
           luma_id: string | null
           luma_rsvp_count: number | null
           meetup_rsvp_count: number | null
+          publish_status: string
           registration_deadline: string | null
           rsvp_count: number | null
           source: string | null
@@ -1739,6 +1787,7 @@ export type Database = {
           luma_id?: string | null
           luma_rsvp_count?: number | null
           meetup_rsvp_count?: number | null
+          publish_status?: string
           registration_deadline?: string | null
           rsvp_count?: number | null
           source?: string | null
@@ -1771,6 +1820,7 @@ export type Database = {
           luma_id?: string | null
           luma_rsvp_count?: number | null
           meetup_rsvp_count?: number | null
+          publish_status?: string
           registration_deadline?: string | null
           rsvp_count?: number | null
           source?: string | null
@@ -2698,6 +2748,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      platform_connections: {
+        Row: {
+          connection_type: string
+          created_at: string
+          id: string
+          is_active: boolean
+          platform: string
+          updated_at: string
+          webhook_url: string | null
+        }
+        Insert: {
+          connection_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          platform: string
+          updated_at?: string
+          webhook_url?: string | null
+        }
+        Update: {
+          connection_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          platform?: string
+          updated_at?: string
+          webhook_url?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
