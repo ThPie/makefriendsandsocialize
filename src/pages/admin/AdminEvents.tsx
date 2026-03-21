@@ -335,6 +335,7 @@ export default function AdminEvents() {
     if (activeTab === 'upcoming') return event.status === 'upcoming';
     if (activeTab === 'past') return event.status === 'past';
     if (activeTab === 'featured') return event.is_featured;
+    if (activeTab === 'drafts') return event.status === 'draft';
     return true;
   });
 
