@@ -872,6 +872,20 @@ export default function AdminEvents() {
                             ))}
                           </div>
                         )}
+
+                        {/* Platform sync status icons */}
+                        <div className="mt-3">
+                          <PlatformSyncStatus eventId={event.id} />
+                        </div>
+                              <span 
+                                key={i}
+                                className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                       
                       <div className="flex items-center gap-1">
