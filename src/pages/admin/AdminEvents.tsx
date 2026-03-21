@@ -745,6 +745,9 @@ export default function AdminEvents() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="bg-card border border-border">
           <TabsTrigger value="all">All ({events.length})</TabsTrigger>
+          <TabsTrigger value="drafts">
+            Drafts ({events.filter(e => e.status === 'draft').length})
+          </TabsTrigger>
           <TabsTrigger value="upcoming">
             Upcoming ({events.filter(e => e.status === 'upcoming').length})
           </TabsTrigger>
