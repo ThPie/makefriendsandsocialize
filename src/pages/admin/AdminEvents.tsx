@@ -21,9 +21,11 @@ import { format } from 'date-fns';
 import { parseLocalDate } from '@/lib/date-utils';
 import { 
   Calendar, MapPin, Users, Plus, Edit, Trash2, Loader2, 
-  Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw, QrCode
+  Copy, Star, DollarSign, Clock, Tag, BarChart3, RefreshCw, QrCode, Send, Globe
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { PlatformSyncStatus } from '@/components/admin/PlatformSyncStatus';
+import { PublishEverywherePanel } from '@/components/admin/PublishEverywherePanel';
 
 interface Event {
   id: string;
